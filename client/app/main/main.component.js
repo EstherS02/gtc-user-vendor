@@ -3,12 +3,11 @@ import uiRouter from 'angular-ui-router';
 import routing from './main.routes';
 
 export class MainController {
-  $http;
+  /*$http;
 
   awesomeThings = [];
   newThing = '';
 
-  /*@ngInject*/
   constructor($http) {
     this.$http = $http;
   }
@@ -31,7 +30,7 @@ export class MainController {
 
   deleteThing(thing) {
     this.$http.delete(`/api/things/${thing._id}`);
-  }
+  }*/
 }
 
 export default angular.module('gtcApp.main', [uiRouter])

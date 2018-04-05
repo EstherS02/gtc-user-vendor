@@ -3,13 +3,13 @@
  * to disable, edit config/environment/index.js, and set `seedDB: false`
  */
 
-'use strict';
+/*'use strict';
 import sqldb from '../sqldb';
 import config from './environment/';
 
 export default function seedDatabaseIfNeeded() {
   if(config.seedDB) {
-    let Thing = sqldb.Thing;
+    let User = sqldb.User;
 
     return Thing.destroy({ where: {} })
       .then(() => {
@@ -46,4 +46,4 @@ export default function seedDatabaseIfNeeded() {
       .then(() => console.log('finished populating things'))
       .catch(err => console.log('error populating things', err));
   }
-}
+}*/
