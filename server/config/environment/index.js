@@ -43,7 +43,13 @@ var all = {
         safe: true
       }
     }
+  },
+
+  GTC_ENV: {
+    GTC_APP_NAME: process.env.GTC_APP_NAME
   }
+
+
 };
 
 // Export the config object based on the NODE_ENV
