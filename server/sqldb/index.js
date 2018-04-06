@@ -4,10 +4,10 @@ import Sequelize from 'sequelize';
 import config from '../config/environment';
 
 
-var sequelizeDB = new Sequelize(config.sequelize.mysql_db, config.sequelize.mysql_user, config.sequelize.mysql_pwd, {
-	host: config.sequelize.mysql_host,
+var sequelizeDB = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
+	host: config.mysql.host,
 	dialect: 'mysql',
-	port: config.sequelize.mysql_port,
+	port: config.mysql.port,
 	define: {
         timestamps: false
     }

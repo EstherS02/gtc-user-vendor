@@ -5,10 +5,10 @@ import path from 'path';
 import _ from 'lodash';
 
 /*function requiredProcessEnv(name) {
-  if(!process.env[name]) {
-    throw new Error('You must set the ' + name + ' environment variable');
-  }
-  return process.env[name];
+if(!process.env[name]) {
+  throw new Error('You must set the ' + name + ' environment variable');
+}
+return process.env[name];
 }*/
 
 // All configurations will extend these options
@@ -36,6 +36,14 @@ var all = {
     session: 'gtc-secret'
   },
 
+  mysql: {
+    host: process.env.MYSQL_HOST,
+    database: process.env.MYSQL_DATABASE,
+    username: process.env.MYSQL_USERNAME,
+    password: process.env.MYSQL_PASSWORD,
+    port: process.env.MYSQL_PORT
+  },
+
   // MongoDB connection options
   mongo: {
     options: {
@@ -43,13 +51,7 @@ var all = {
         safe: true
       }
     }
-  },
-
-  GTC_ENV: {
-    GTC_APP_NAME: process.env.GTC_APP_NAME
   }
-
-
 };
 
 // Export the config object based on the NODE_ENV

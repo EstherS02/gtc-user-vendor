@@ -7,12 +7,14 @@ import config from '../../config/environment';
 var model = test.init(sequelizeDB);
 
 export function index(req, res) {
-	console.log('req.params', req.params.entity_end_point);
-	console.log("CHECKING CONFIG VARIABLES", config);
 	model['Mark'].findOne({
-		raw: true,
-		include: [{ all: true }]
+		include: [{
+			all: true,
+			nested: true
+		}],
+		raw: true
 	}).then(row => {
+		console.log('row', row);
 		res.send(200, row);
 		return;
 	});

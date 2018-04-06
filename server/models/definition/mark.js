@@ -1,7 +1,5 @@
 /* jshint indent: 2 */
 
-import model from '../index';
-
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('mark', {
     id: {
@@ -43,6 +41,7 @@ module.exports = function(sequelize, DataTypes) {
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
+    const model = require('../index');
     const Mark = model.Mark;
     const Student = model.Student;
 
