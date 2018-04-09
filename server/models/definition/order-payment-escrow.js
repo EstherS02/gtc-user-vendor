@@ -1,0 +1,84 @@
+/* eslint new-cap: "off", global-require: "off" */
+
+module.exports = (sequelize, DataTypes) => {
+    return sequelize.define('OrderPaymentEscrow', {
+        id: {
+            type: DataTypes.BIGINT,
+            field: 'id',
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        order_payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'order_payment_id',
+            allowNull: false,
+            references: {
+                model: 'order_payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        processing_time: {
+            type: DataTypes.DATE,
+            field: 'processing_time',
+            allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
+        payment_response: {
+            type: DataTypes.TEXT,
+            field: 'payment_response',
+            allowNull: true
+        },
+        action: {
+            type: DataTypes.INTEGER,
+            field: 'action',
+            allowNull: true
+        },
+        created_by: {
+            type: DataTypes.STRING(64),
+            field: 'created_by',
+            allowNull: true
+        },
+        created_on: {
+            type: DataTypes.DATE,
+            field: 'created_on',
+            allowNull: true
+        },
+        last_updated_by: {
+            type: DataTypes.STRING(64),
+            field: 'last_updated_by',
+            allowNull: true
+        },
+        last_updated_on: {
+            type: DataTypes.DATE,
+            field: 'last_updated_on',
+            allowNull: true
+        },
+        deleted_at: {
+            type: DataTypes.DATE,
+            field: 'deleted_at',
+            allowNull: true
+        }
+    }, {
+        tableName: 'order_payment_escrow'
+    });
+};
+
+module.exports.initRelations = () => {
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
+    const model = require('../index');
+    const OrderPaymentEscrow = model.OrderPaymentEscrow;
+    const OrderPayment = model.OrderPayment;
+
+    OrderPaymentEscrow.belongsTo(OrderPayment, {
+        foreignKey: 'order_payment_id'
+    });
+
+};
