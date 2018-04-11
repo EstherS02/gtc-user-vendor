@@ -1,4 +1,4 @@
-/* eslint new-cap: "off", global-require: "off" */
+    /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('TalkThread', {

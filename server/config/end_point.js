@@ -40,7 +40,7 @@ var endPointModel = {
 	"sub-categories":"SubCategory",
 	"subscriptions":"Subscription",
 	"talk-settings":"TalkSetting",
-	"talk-threads":"TicketThread",
+	"talk-threads":"TalkThread",
 	"talks":"Talk",
 	"taxes":"Tax",
 	"ticket-threads":"TicketThread",

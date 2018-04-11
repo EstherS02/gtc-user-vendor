@@ -79,9 +79,8 @@ export function index(req, res) {
 		.catch(handleError(res));
 }
 
-export function show(req, res) {
-	model[req.entityEndPoint].find({
-			include: req.includeArr,	
+export function findOne(req, res) {
+	model[req.entityEndPoint].findOne({
 			where: {
 				id: req.params.id
 			}
@@ -117,7 +116,7 @@ export function destroy(req, res) {
 		.catch(handleError(res));
 }
 
-export function upsert(req, res) {
+export function update(req, res) {
 	if (req.body.id) {
 		Reflect.deleteProperty(req.body, 'id');
 	}
