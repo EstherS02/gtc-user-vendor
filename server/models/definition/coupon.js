@@ -207,50 +207,43 @@ module.exports.initRelations = () => {
     Coupon.belongsToMany(Category, {
         through: CouponCategory,
         foreignKey: 'coupon_id',
-        otherKey: 'category_id',
-        as:'CouponCategory'
+        otherKey: 'category_id'
     });
 
     Coupon.belongsToMany(Category, {
         through: CouponExcludedCategory,
         foreignKey: 'coupon_id',
-        otherKey: 'category_id',
-        as:'CouponExcludedCategory'
+        otherKey: 'category_id'
     });
 
     Coupon.belongsToMany(Product, {
         through: CouponExcludedProduct,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id',
-        as:'CouponExcludedProduct'
+        otherKey: 'product_id'
     });
 
     Coupon.belongsToMany(Product, {
         through: CouponProduct,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id',
-        as:'CouponProduct'
+        otherKey: 'product_id'
     });
 
     Coupon.belongsToMany(Order, {
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'order_id',
-        as:'OrderItem'
+        otherKey: 'order_id'
     });
 
     Coupon.belongsToMany(Product, {
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id',
-        as:'OrderItem'
+        otherKey: 'product_id'
     });
 
     Coupon.belongsToMany(Tax, {
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'tax_id',
-        as:'OrderItem'
+        otherKey: 'tax_id'
     });
 
 };

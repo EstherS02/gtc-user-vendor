@@ -71,6 +71,9 @@ function removeEntity(res) {
 }
 
 export function index(req, res) {
+
+	console.log("req.entityEndPoint")
+
 	     model[req.entityEndPoint].findAndCountAll({})
 		.then(respondWithResult(res, 200, req.method))
 		.catch(handleError(res));
@@ -88,6 +91,8 @@ export function show(req, res) {
 }
 
 export function create(req, res) {
+
+	console.log("Comming to create",req.entityEndPoint);
 
 	req.body['created_on'] = new Date();
 	

@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'marketplace'
+            tableName: 'marketplace'
     });
 };
 
@@ -90,57 +90,49 @@ module.exports.initRelations = () => {
     Marketplace.belongsToMany(Plan, {
         through: PlanMarketplace,
         foreignKey: 'marketplace_id',
-        otherKey: 'plan_id',
-        as:'PlanMarketplace'
+        otherKey: 'plan_id'
     });
 
     Marketplace.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'vendor_id',
-        as:'Product'
+        otherKey: 'vendor_id'
     });
 
     Marketplace.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'marketplace_type_id',
-        as:'Product'
+        otherKey: 'marketplace_type_id'
     });
 
     Marketplace.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     Marketplace.belongsToMany(Category, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_category_id',
-        as:'Product'
+        otherKey: 'product_category_id'
     });
 
     Marketplace.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'sub_category_id',
-        as:'Product'
+        otherKey: 'sub_category_id'
     });
 
     Marketplace.belongsToMany(Country, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_location',
-        as:'Product'
+        otherKey: 'product_location'
     });
 
     Marketplace.belongsToMany(State, {
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
 };

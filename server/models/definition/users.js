@@ -64,9 +64,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'email_verified_token',
             allowNull: true
         },
-        email_verified_token_generated_at: {
+        email_verified_token_generated: {
             type: DataTypes.DATE,
-            field: 'email_verified_token_generated_at',
+            field: 'email_verified_token_generated',
             allowNull: true
         },
         last_login_at: {
@@ -79,9 +79,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'forgot_password_token',
             allowNull: true
         },
-        forgot_password_token_generated_at: {
+        forgot_password_token_generated: {
             type: DataTypes.DATE,
-            field: 'forgot_password_token_generated_at',
+            field: 'forgot_password_token_generated',
             allowNull: true
         },
         created_by: {
@@ -200,64 +200,55 @@ module.exports.initRelations = () => {
     User.belongsToMany(Country, {
         through: Address,
         foreignKey: 'user_id',
-        otherKey: 'country_id',
-        as:'Address'
+        otherKey: 'country_id'
     });
 
     User.belongsToMany(State, {
         through: Address,
         foreignKey: 'user_id',
-        otherKey: 'province_id',
-        as:'Address'
+        otherKey: 'province_id'
     });
 
     User.belongsToMany(Product, {
         through: Cart,
         foreignKey: 'user_id',
-        otherKey: 'product_id',
-        as:'Cart'
+        otherKey: 'product_id'
     });
 
     User.belongsToMany(Shipping, {
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'shipping_id',
-        as:'Order'
+        otherKey: 'shipping_id'
     });
 
     User.belongsToMany(Address, {
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'shipping_address_id',
-        as:'Order'
+        otherKey: 'shipping_address_id'
     });
 
     User.belongsToMany(Address, {
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'billing_address_id',
-        as:'Order'
+        otherKey: 'billing_address_id'
     });
 
     User.belongsToMany(Product, {
         through: ProductReview,
         foreignKey: 'user_id',
-        otherKey: 'product_id',
-        as:'ProductReview'
+        otherKey: 'product_id'
     });
 
     User.belongsToMany(Product, {
         through: Subscription,
         foreignKey: 'user_id',
-        otherKey: 'product_id',
-        as:'Subscription'
+        otherKey: 'product_id'
     });
 
     User.belongsToMany(TalkSetting, {
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'talk_setting_id',
-        as:'Talk'
+        otherKey: 'talk_setting_id'
     });
 
     User.belongsToMany(User, {
@@ -270,15 +261,13 @@ module.exports.initRelations = () => {
     User.belongsToMany(TalkThread, {
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'last_thread_id',
-        as:'Talk'
+        otherKey: 'last_thread_id'
     });
 
     User.belongsToMany(TalkSetting, {
         through: Talk,
         foreignKey: 'to_id',
-        otherKey: 'talk_setting_id',
-        as:'Talk'
+        otherKey: 'talk_setting_id'
     });
 
     User.belongsToMany(User, {
@@ -291,57 +280,49 @@ module.exports.initRelations = () => {
     User.belongsToMany(TalkThread, {
         through: Talk,
         foreignKey: 'to_id',
-        otherKey: 'last_thread_id',
-        as:'Talk'
+        otherKey: 'last_thread_id'
     });
 
     User.belongsToMany(Ticket, {
         through: TicketThread,
         foreignKey: 'user_id',
-        otherKey: 'ticket_id',
-        as:'TicketThread'
+        otherKey: 'ticket_id'
     });
 
     User.belongsToMany(Country, {
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'base_location',
-        as:'Vendor'
+        otherKey: 'base_location'
     });
 
     User.belongsToMany(Plan, {
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'vendor_plan_id',
-        as:'Vendor'
+        otherKey: 'vendor_plan_id'
     });
 
     User.belongsToMany(Currency, {
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'currency_id',
-        as:'Vendor'
+        otherKey: 'currency_id'
     });
 
     User.belongsToMany(Timezone, {
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'timezone_id',
-        as:'Vendor'
+        otherKey: 'timezone_id'
     });
 
     User.belongsToMany(Vendor, {
         through: VendorFollower,
         foreignKey: 'user_id',
-        otherKey: 'vendor_id',
-        as:'VendorFollower'
+        otherKey: 'vendor_id'
     });
 
     User.belongsToMany(Product, {
         through: WishList,
         foreignKey: 'user_id',
-        otherKey: 'product_id',
-        as:'WishList'
+        otherKey: 'product_id'
     });
 
 };

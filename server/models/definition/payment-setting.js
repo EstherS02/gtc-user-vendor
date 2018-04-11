@@ -95,8 +95,7 @@ module.exports.initRelations = () => {
     PaymentSetting.belongsToMany(Order, {
         through: OrderPayment,
         foreignKey: 'payment_id',
-        otherKey: 'order_id',
-        as:'OrderPayment'
+        otherKey: 'order_id'
     });
 
 };

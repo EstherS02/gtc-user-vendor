@@ -279,8 +279,7 @@ module.exports.initRelations = () => {
     Product.belongsToMany(User, {
         through: Cart,
         foreignKey: 'product_id',
-        otherKey: 'user_id',
-        as:'Cart'
+        otherKey: 'user_id'
     });
 
     Product.belongsToMany(Product, {
@@ -293,15 +292,13 @@ module.exports.initRelations = () => {
     Product.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'product_id',
-        otherKey: 'category_id',
-        as:'Coupon'
+        otherKey: 'category_id'
     });
 
     Product.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'product_id',
-        otherKey: 'exclude_category_id',
-        as:'Coupon'
+        otherKey: 'exclude_category_id'
     });
 
     Product.belongsToMany(Product, {
@@ -314,92 +311,79 @@ module.exports.initRelations = () => {
     Product.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'exclude_product_id',
-        otherKey: 'category_id',
-        as:'Coupon'
+        otherKey: 'category_id'
     });
 
     Product.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'exclude_product_id',
-        otherKey: 'exclude_category_id',
-        as:'Coupon'
+        otherKey: 'exclude_category_id'
     });
 
     Product.belongsToMany(Coupon, {
         through: CouponExcludedProduct,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id',
-        as:'CouponExcludedProduct'
+        otherKey: 'coupon_id'
     });
 
     Product.belongsToMany(Coupon, {
         through: CouponProduct,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id',
-        as:'CouponProduct'
+        otherKey: 'coupon_id'
     });
 
     Product.belongsToMany(Order, {
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'order_id',
-        as:'OrderItem'
+        otherKey: 'order_id'
     });
 
     Product.belongsToMany(Coupon, {
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id',
-        as:'OrderItem'
+        otherKey: 'coupon_id'
     });
 
     Product.belongsToMany(Tax, {
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'tax_id',
-        as:'OrderItem'
+        otherKey: 'tax_id'
     });
 
     Product.belongsToMany(Country, {
         through: ProductAdsSetting,
         foreignKey: 'product_id',
-        otherKey: 'country_id',
-        as:'ProductAdsSetting'
+        otherKey: 'country_id'
     });
 
     Product.belongsToMany(State, {
         through: ProductAdsSetting,
         foreignKey: 'product_id',
-        otherKey: 'state_id',
-        as:'ProductAdsSetting'
+        otherKey: 'state_id'
     });
 
     Product.belongsToMany(Attribute, {
         through: ProductAttribute,
         foreignKey: 'product_id',
-        otherKey: 'attribute_id',
-        as:'ProductAttribute'
+        otherKey: 'attribute_id'
     });
 
     Product.belongsToMany(User, {
         through: ProductReview,
         foreignKey: 'product_id',
-        otherKey: 'user_id',
-        as:'ProductReview'
+        otherKey: 'user_id'
     });
 
     Product.belongsToMany(User, {
         through: Subscription,
         foreignKey: 'product_id',
-        otherKey: 'user_id',
-        as:'Subscription'
+        otherKey: 'user_id'
     });
 
     Product.belongsToMany(User, {
         through: WishList,
         foreignKey: 'product_id',
-        otherKey: 'user_id',
-        as:'WishList'
+        otherKey: 'user_id'
     });
 
 };

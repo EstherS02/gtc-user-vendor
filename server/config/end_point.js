@@ -7,7 +7,7 @@ var endPointModel = {
 	"carts":"Cart",
 	"category-attributes":"CategoryAttribute",
 	"categories":"Category",
-	"countries":"country",
+	"countries":"Country",
 	"coupon-categories":"CouponCategory",
 	"coupon-excluded-categories":"CouponExcludedCategory",
 	"coupon-excluded-products":"CouponExcludedProduct",

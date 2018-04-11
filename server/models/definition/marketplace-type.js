@@ -90,50 +90,43 @@ module.exports.initRelations = () => {
     MarketplaceType.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'vendor_id',
-        as:'Product'
+        otherKey: 'vendor_id'
     });
 
     MarketplaceType.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'marketplace_id',
-        as:'Product'
+        otherKey: 'marketplace_id'
     });
 
     MarketplaceType.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     MarketplaceType.belongsToMany(Category, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'product_category_id',
-        as:'Product'
+        otherKey: 'product_category_id'
     });
 
     MarketplaceType.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'sub_category_id',
-        as:'Product'
+        otherKey: 'sub_category_id'
     });
 
     MarketplaceType.belongsToMany(Country, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'product_location',
-        as:'Product'
+        otherKey: 'product_location'
     });
 
     MarketplaceType.belongsToMany(State, {
         through: Product,
         foreignKey: 'marketplace_type_id',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
 };

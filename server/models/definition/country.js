@@ -142,113 +142,97 @@ module.exports.initRelations = () => {
     Country.belongsToMany(User, {
         through: Address,
         foreignKey: 'country_id',
-        otherKey: 'user_id',
-        as:'Address'
+        otherKey: 'user_id'
     });
 
     Country.belongsToMany(State, {
         through: Address,
         foreignKey: 'country_id',
-        otherKey: 'province_id',
-        as:'Address'
+        otherKey: 'province_id'
     });
 
     Country.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'vendor_id',
-        as:'Product'
+        otherKey: 'vendor_id'
     });
 
     Country.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'marketplace_id',
-        as:'Product'
+        otherKey: 'marketplace_id'
     });
 
     Country.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'marketplace_type_id',
-        as:'Product'
+        otherKey: 'marketplace_type_id'
     });
 
     Country.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     Country.belongsToMany(Category, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'product_category_id',
-        as:'Product'
+        otherKey: 'product_category_id'
     });
 
     Country.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'sub_category_id',
-        as:'Address'
+        otherKey: 'sub_category_id'
     });
 
     Country.belongsToMany(State, {
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
     Country.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
-        otherKey: 'product_id',
-        as:'ProductAdsSetting'
+        otherKey: 'product_id'
     });
 
     Country.belongsToMany(State, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
-        otherKey: 'state_id',
-        as:'ProductAdsSetting'
+        otherKey: 'state_id'
     });
 
     Country.belongsToMany(User, {
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'user_id',
-        as:'Vendor'
+        otherKey: 'user_id'
     });
 
     Country.belongsToMany(Plan, {
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'vendor_plan_id',
-        as:'Vendor'
+        otherKey: 'vendor_plan_id'
     });
 
     Country.belongsToMany(Currency, {
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'currency_id',
-        as:'Vendor'
+        otherKey: 'currency_id'
     });
 
     Country.belongsToMany(Timezone, {
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'timezone_id',
-        as:'Vendor'
+        otherKey: 'timezone_id'
     });
 
     Country.belongsToMany(Vendor, {
         through: VendorShippingLocation,
         foreignKey: 'country_id',
-        otherKey: 'vendor_id',
-        as:'Vendor'
+        otherKey: 'vendor_id'
     });
 
 };

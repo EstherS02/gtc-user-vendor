@@ -87,36 +87,31 @@ module.exports.initRelations = () => {
     Currency.belongsToMany(Region, {
         through: Country,
         foreignKey: 'currency_id',
-        otherKey: 'region_id',
-        as:'Country'
+        otherKey: 'region_id'
     });
 
     Currency.belongsToMany(User, {
         through: Vendor,
         foreignKey: 'currency_id',
-        otherKey: 'user_id',
-        as:'Vendor'
+        otherKey: 'user_id'
     });
 
     Currency.belongsToMany(Country, {
         through: Vendor,
         foreignKey: 'currency_id',
-        otherKey: 'base_location',
-        as:'Vendor'
+        otherKey: 'base_location'
     });
 
     Currency.belongsToMany(Plan, {
         through: Vendor,
         foreignKey: 'currency_id',
-        otherKey: 'vendor_plan_id',
-        as:'Vendor'
+        otherKey: 'vendor_plan_id'
     });
 
     Currency.belongsToMany(Timezone, {
         through: Vendor,
         foreignKey: 'currency_id',
-        otherKey: 'timezone_id',
-        as:'Vendor'
+        otherKey: 'timezone_id'
     });
 
 };

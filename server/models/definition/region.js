@@ -64,8 +64,7 @@ module.exports.initRelations = () => {
     Region.belongsToMany(Currency, {
         through: Country,
         foreignKey: 'region_id',
-        otherKey: 'currency_id',
-        as:'Country'
+        otherKey: 'currency_id'
     });
 
 };

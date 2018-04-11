@@ -94,8 +94,7 @@ module.exports.initRelations = () => {
     Ticket.belongsToMany(User, {
         through: TicketThread,
         foreignKey: 'ticket_id',
-        otherKey: 'user_id',
-        as:'TicketThread'
+        otherKey: 'user_id'
     });
 
 };

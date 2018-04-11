@@ -234,71 +234,61 @@ module.exports.initRelations = () => {
     Vendor.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'marketplace_id',
-        as:'Product'
+        otherKey: 'marketplace_id'
     });
 
     Vendor.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'marketplace_type_id',
-        as:'Product'
+        otherKey: 'marketplace_type_id'
     });
 
     Vendor.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     Vendor.belongsToMany(Category, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_category_id',
-        as:'Product'
+        otherKey: 'product_category_id'
     });
 
     Vendor.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'sub_category_id',
-        as:'Product'
+        otherKey: 'sub_category_id'
     });
 
     Vendor.belongsToMany(Country, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_location',
-        as:'Product'
+        otherKey: 'product_location'
     });
 
     Vendor.belongsToMany(State, {
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
     Vendor.belongsToMany(User, {
         through: VendorFollower,
         foreignKey: 'vendor_id',
-        otherKey: 'user_id',
-        as:'VendorFollower'
+        otherKey: 'user_id'
     });
 
     Vendor.belongsToMany(Plan, {
         through: VendorPlan,
         foreignKey: 'vendor_id',
-        otherKey: 'plan_id',
-        as:'VendorPlan'
+        otherKey: 'plan_id'
     });
 
     Vendor.belongsToMany(Country, {
         through: VendorShippingLocation,
         foreignKey: 'vendor_id',
-        otherKey: 'country_id',
-        as:'VendorShippingLocation'
+        otherKey: 'country_id'
     });
 
 };

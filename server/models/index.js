@@ -11,9 +11,6 @@ function init(sequelize) {
     delete module.exports.init; // Destroy itself to prevent repeated calls and clash with a model named 'init'.
     initialized = true;
     // Import model files and assign them to `model` object.
-    model.Student = sequelize.import('./definition/student.js');
-    model.Mark = sequelize.import('./definition/mark.js');
-
     model.Address = sequelize.import('./definition/address.js');
     model.Admin = sequelize.import('./definition/admin.js');
     model.Announcement = sequelize.import('./definition/announcement.js');
@@ -70,13 +67,7 @@ function init(sequelize) {
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
     model.WishList = sequelize.import('./definition/wish-list.js');
 
-
-
-// All models are initialized. Now connect them with relations.
-    require('./definition/student.js').initRelations();
-    require('./definition/mark.js').initRelations();
-
-
+    // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
     require('./definition/admin.js').initRelations();
     require('./definition/announcement.js').initRelations();
@@ -132,7 +123,6 @@ function init(sequelize) {
     require('./definition/vendor-shipping-location.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
     require('./definition/wish-list.js').initRelations();
-
     return model;
 }
 

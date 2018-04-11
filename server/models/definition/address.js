@@ -136,43 +136,39 @@ module.exports.initRelations = () => {
     Address.belongsToMany(User, {
         through: Order,
         foreignKey: 'shipping_address_id',
-        otherKey: 'user_id',
-        as:'address'
+        otherKey: 'user_id'
     });
 
     Address.belongsToMany(Shipping, {
         through: Order,
         foreignKey: 'shipping_address_id',
-        otherKey: 'shipping_id',
-        as:'address'
+        otherKey: 'shipping_id'
     });
 
     Address.belongsToMany(Address, {
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
-        as:'address'
+        as: 'Order'
     });
 
     Address.belongsToMany(User, {
         through: Order,
         foreignKey: 'billing_address_id',
-        otherKey: 'user_id',
-        as:'address'
+        otherKey: 'user_id'
     });
 
     Address.belongsToMany(Shipping, {
         through: Order,
         foreignKey: 'billing_address_id',
-        otherKey: 'shipping_id',
-        as:'address'
+        otherKey: 'shipping_id'
     });
 
     Address.belongsToMany(Address, {
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',
-        as:'address'
+        as: 'Order'
     });
 
 };

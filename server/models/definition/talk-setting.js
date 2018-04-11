@@ -86,22 +86,19 @@ module.exports.initRelations = () => {
     TalkSetting.belongsToMany(User, {
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'from_id',
-        as:'Talk'
+        otherKey: 'from_id'
     });
 
     TalkSetting.belongsToMany(User, {
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'to_id',
-        as:'Talk'
+        otherKey: 'to_id'
     });
 
     TalkSetting.belongsToMany(TalkThread, {
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'last_thread_id',
-        as:'Talk'
+        otherKey: 'last_thread_id'
     });
 
 };

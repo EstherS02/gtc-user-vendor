@@ -92,22 +92,19 @@ module.exports.initRelations = () => {
     Tax.belongsToMany(Order, {
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'order_id',
-        as:'OrderItem'
+        otherKey: 'order_id'
     });
 
     Tax.belongsToMany(Product, {
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'product_id',
-        as:'OrderItem'
+        otherKey: 'product_id'
     });
 
     Tax.belongsToMany(Coupon, {
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'coupon_id',
-        as:'OrderItem'
+        otherKey: 'coupon_id'
     });
 
 };

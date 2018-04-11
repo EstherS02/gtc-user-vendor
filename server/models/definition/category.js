@@ -1,3 +1,4 @@
+
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
@@ -109,113 +110,99 @@ module.exports.initRelations = () => {
     Category.belongsToMany(Attribute, {
         through: CategoryAttribute,
         foreignKey: 'category_id',
-        otherKey: 'attribute_id',
-        as:'AttributeCategory'
+        otherKey: 'attribute_id'
     });
 
     Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'category_id',
-        otherKey: 'product_id',
-        as:'ProductCategory'
+        otherKey: 'product_id'
     });
 
     Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'category_id',
-        otherKey: 'exclude_product_id',
-        as:'ProductCategory'
+        otherKey: 'exclude_product_id'
     });
 
     Category.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'exclude_category_id',
-        as:'Category'
+        as: 'Coupon'
     });
 
     Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'exclude_category_id',
-        otherKey: 'product_id',
-        as:'ProductCategory'
+        otherKey: 'product_id'
     });
 
     Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'exclude_category_id',
-        otherKey: 'exclude_product_id',
-        as:'ProductCategory'
+        otherKey: 'exclude_product_id'
     });
 
     Category.belongsToMany(Category, {
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'category_id',
-        as:'Category'
+        as: 'Coupon' 
     });
 
     Category.belongsToMany(Coupon, {
         through: CouponCategory,
         foreignKey: 'category_id',
-        otherKey: 'coupon_id',
-        as:'CouponCategory'
+        otherKey: 'coupon_id'
     });
 
     Category.belongsToMany(Coupon, {
         through: CouponExcludedCategory,
         foreignKey: 'category_id',
-        otherKey: 'coupon_id',
-        as:'CouponExcludedCategory'
+        otherKey: 'coupon_id'
     });
 
     Category.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'vendor_id',
-        as:'Product'
+        otherKey: 'vendor_id'
     });
 
     Category.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'marketplace_id',
-        as:'Product'
+        otherKey: 'marketplace_id'
     });
 
     Category.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'marketplace_type_id',
-        as:'Product'
+        otherKey: 'marketplace_type_id'
     });
 
     Category.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     Category.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'sub_category_id',
-        as:'Product'
+        otherKey: 'sub_category_id'
     });
 
     Category.belongsToMany(Country, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'product_location',
-        as:'Product'
+        otherKey: 'product_location'
     });
 
     Category.belongsToMany(State, {
         through: Product,
         foreignKey: 'product_category_id',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
 };

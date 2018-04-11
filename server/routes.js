@@ -7,11 +7,11 @@
 import errors from './components/errors';
 import path from 'path';
 
-import controller from './api/auth/auth.controller';
+//import controller from './api/auth/auth.controller';
 
 export default function(app) {
 
-  app.use('/api/auth', require('./api/auth'));
+  //app.use('/api/auth', require('./api/auth'));
   // Insert routes below
   app.use('/api', require('./api/gtc'));
   // All undefined asset or api routes should return a 404

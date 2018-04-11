@@ -75,15 +75,13 @@ module.exports.initRelations = () => {
     Attribute.belongsToMany(Category, {
         through: CategoryAttribute,
         foreignKey: 'attribute_id',
-        otherKey: 'category_id',
-        as:'CategoryAttribute'
+        otherKey: 'category_id'
     });
 
     Attribute.belongsToMany(Product, {
         through: ProductAttribute,
         foreignKey: 'attribute_id',
-        otherKey: 'product_id',
-        as:'ProductAttribute'
+        otherKey: 'product_id'
     });
 
 };

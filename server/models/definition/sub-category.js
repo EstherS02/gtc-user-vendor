@@ -90,50 +90,43 @@ module.exports.initRelations = () => {
     SubCategory.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'vendor_id',
-        as:'Product'
+        otherKey: 'vendor_id'
     });
 
     SubCategory.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'marketplace_id',
-        as:'Product'
+        otherKey: 'marketplace_id'
     });
 
     SubCategory.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'marketplace_type_id',
-        as:'Product'
+        otherKey: 'marketplace_type_id'
     });
 
     SubCategory.belongsToMany(ProductMedium, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'product_media_id',
-        as:'Product'
+        otherKey: 'product_media_id'
     });
 
     SubCategory.belongsToMany(Category, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'product_category_id',
-        as:'Product'
+        otherKey: 'product_category_id'
     });
 
     SubCategory.belongsToMany(Country, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'product_location',
-        as:'Product'
+        otherKey: 'product_location'
     });
 
     SubCategory.belongsToMany(State, {
         through: Product,
         foreignKey: 'sub_category_id',
-        otherKey: 'state_id',
-        as:'Product'
+        otherKey: 'state_id'
     });
 
 };
