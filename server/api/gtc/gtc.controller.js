@@ -1,4 +1,4 @@
-'use strict';
+		'use strict';
 
 import sequelizeDB from '../../sqldb';
 import test from '../../models/index';
@@ -72,9 +72,9 @@ function removeEntity(res) {
 
 export function index(req, res) {
 
-	console.log("req.entityEndPoint")
+	console.log(req.entityEndPoint);
 
-	     model[req.entityEndPoint].findAndCountAll({})
+	     model[req.entityEndPoint].findAndCountAll({include: [{all: true}]})
 		.then(respondWithResult(res, 200, req.method))
 		.catch(handleError(res));
 }
