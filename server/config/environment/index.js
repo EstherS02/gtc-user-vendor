@@ -11,6 +11,8 @@ if(!process.env[name]) {
 return process.env[name];
 }*/
 
+var baseUrl = process.env.DOMAIN;
+
 // All configurations will extend these options
 // ============================================
 var all = {
@@ -33,7 +35,11 @@ var all = {
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
-    session: 'gtc-secret'
+    session: 'gtc-secret',
+    refTokenKey: process.env.REFRESH_TOKEN_KEY_SECRET,
+    globalAccessToken: process.env.GLOBAL_ACCESS_TOKEN_SECRET,
+    accessToken: process.env.ACCESS_TOKEN_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN_SECRET
   },
 
   mysql: {
@@ -42,6 +48,16 @@ var all = {
     username: process.env.MYSQL_USERNAME,
     password: process.env.MYSQL_PASSWORD,
     port: process.env.MYSQL_PORT
+  },
+
+  token: {
+    expiresInMinutes: process.env.TOKEN_EXPIRES_IN_MIN || 600
+  },
+
+  auth: {
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    url: baseUrl + "/auth/token",
   },
 
   // MongoDB connection options

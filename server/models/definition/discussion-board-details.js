@@ -1,0 +1,79 @@
+/* eslint new-cap: "off", global-require: "off" */
+
+module.exports = (sequelize, DataTypes) => {
+    return sequelize.define('DiscussionBoardDetail', {
+        id: {
+            type: DataTypes.BIGINT,
+            field: 'id',
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        discussion_board_id: {
+            type: DataTypes.BIGINT,
+            field: 'discussion_board_id',
+            allowNull: false,
+            references: {
+                model: 'discussion_board',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        type: {
+            type: DataTypes.INTEGER,
+            field: 'type',
+            allowNull: false
+        },
+        comment_text: {
+            type: DataTypes.TEXT,
+            field: 'comment_text',
+            allowNull: true
+        },
+        comment_image_url: {
+            type: DataTypes.TEXT,
+            field: 'comment_image_url',
+            allowNull: true
+        },
+        created_by: {
+            type: DataTypes.STRING(64),
+            field: 'created_by',
+            allowNull: true
+        },
+        created_on: {
+            type: DataTypes.DATE,
+            field: 'created_on',
+            allowNull: true
+        },
+        last_updated_by: {
+            type: DataTypes.STRING(64),
+            field: 'last_updated_by',
+            allowNull: true
+        },
+        last_updated_on: {
+            type: DataTypes.DATE,
+            field: 'last_updated_on',
+            allowNull: true
+        },
+        deleted_at: {
+            type: DataTypes.DATE,
+            field: 'deleted_at',
+            allowNull: true
+        }
+    }, {
+        tableName: 'discussion_board_details'
+    });
+};
+
+module.exports.initRelations = () => {
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
+    const model = require('../index');
+    const DiscussionBoardDetail = model.DiscussionBoardDetail;
+    const DiscussionBoard = model.DiscussionBoard;
+
+    DiscussionBoardDetail.belongsTo(DiscussionBoard, {
+        foreignKey: 'discussion_board_id'
+    });
+
+};

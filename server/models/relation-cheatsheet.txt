@@ -1,0 +1,566 @@
+
+
+Address
+-------
+has many          orders                                   as FkOrder3s 
+has many          orders                                   as FkOrder4s 
+belongs to        users                                    as User 
+belongs to        country                                  as Country 
+belongs to        state                                    as Province 
+belongs to many   users                                    as OrderUsers 
+belongs to many   shipping                                 as OrderShippings 
+belongs to many   address                                  as OrderBillingAddresses 
+belongs to many   users                                    as OrderUsers 
+belongs to many   shipping                                 as OrderShippings 
+belongs to many   address                                  as OrderShippingAddresses 
+
+
+Admin
+-----
+
+
+Announcement
+------------
+
+
+Appclient
+---------
+
+
+Attribute
+---------
+has many          category_attribute                       as FkCategoryAttribute1s 
+has many          product_attribute                        as FkProductAttribute1s 
+belongs to many   category                                 as CategoryAttributeCategories 
+belongs to many   product                                  as ProductAttributeProducts 
+
+
+BusinessHour
+------------
+belongs to        vendor                                   as Vendor 
+
+
+Cart
+----
+belongs to        users                                    as User 
+belongs to        product                                  as Product 
+
+
+Category
+--------
+has many          category_attribute                       as FkCategoryAttribute2s 
+has many          coupon                                   as FkCoupon3s 
+has many          coupon                                   as FkCoupon4s 
+has many          coupon_category                          as FkCouponCategory2s 
+has many          coupon_excluded_category                 as FkCouponExcludedCategory2s 
+has many          product                                  as FkProduct5s 
+has many          sub_category                             as FkSubCategory1s 
+belongs to many   attribute                                as CategoryAttributeAttributes 
+belongs to many   product                                  as CouponProducts 
+belongs to many   product                                  as CouponExcludeProducts 
+belongs to many   category                                 as CouponExcludeCategories 
+belongs to many   product                                  as CouponProducts 
+belongs to many   product                                  as CouponExcludeProducts 
+belongs to many   category                                 as CouponCategories 
+belongs to many   coupon                                   as CouponCategoryCoupons 
+belongs to many   coupon                                   as CouponExcludedCategoryCoupons 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+
+
+CategoryAttribute
+-----------------
+belongs to        attribute                                as Attribute 
+belongs to        category                                 as Category 
+
+
+Country
+-------
+has many          address                                  as FkAddress2s 
+has many          product                                  as FkProduct7s 
+has many          product_ads_setting                      as FkProductAdsSetting2s 
+has many          state                                    as FkState1s 
+has many          tax                                      as FkTax1s 
+has many          timezone                                 as FkTimeZone1s 
+has many          vendor                                   as FkVendor2s 
+has many          vendor_shipping_location                 as FkVendorShippingLocation2s 
+belongs to        region                                   as Region 
+belongs to        currency                                 as Currency 
+belongs to many   users                                    as AddressUsers 
+belongs to many   state                                    as AddressProvinces 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   state                                    as ProductStates 
+belongs to many   product                                  as ProductAdsSettingProducts 
+belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   users                                    as VendorUsers 
+belongs to many   plan                                     as VendorVendorPlans 
+belongs to many   currency                                 as VendorCurrencies 
+belongs to many   timezone                                 as VendorTimezones 
+belongs to many   vendor                                   as VendorShippingLocationVendors 
+
+
+Coupon
+------
+has many          coupon_category                          as FkCouponCategory1s 
+has many          coupon_excluded_category                 as FkCouponExcludedCategory1s 
+has many          coupon_excluded_product                  as FkCouponExcludedProduct1s 
+has many          coupon_product                           as FkCouponProduct1s 
+has many          order_items                              as FkOrderItems3s 
+belongs to        product                                  as Product 
+belongs to        product                                  as ExcludeProduct 
+belongs to        category                                 as Category 
+belongs to        category                                 as ExcludeCategory 
+belongs to many   category                                 as CouponCategoryCategories 
+belongs to many   category                                 as CouponExcludedCategoryCategories 
+belongs to many   product                                  as CouponExcludedProductProducts 
+belongs to many   product                                  as CouponProductProducts 
+belongs to many   orders                                   as OrderItemOrders 
+belongs to many   product                                  as OrderItemProducts 
+belongs to many   tax                                      as OrderItemTaxes 
+
+
+CouponCategory
+--------------
+belongs to        coupon                                   as Coupon 
+belongs to        category                                 as Category 
+
+
+CouponExcludedCategory
+----------------------
+belongs to        coupon                                   as Coupon 
+belongs to        category                                 as Category 
+
+
+CouponExcludedProduct
+---------------------
+belongs to        coupon                                   as Coupon 
+belongs to        product                                  as Product 
+
+
+CouponProduct
+-------------
+belongs to        coupon                                   as Coupon 
+belongs to        product                                  as Product 
+
+
+Currency
+--------
+has many          country                                  as FkCountry2s 
+has many          vendor                                   as FkVendor4s 
+belongs to many   region                                   as CountryRegions 
+belongs to many   users                                    as VendorUsers 
+belongs to many   country                                  as VendorBaseLocations 
+belongs to many   plan                                     as VendorVendorPlans 
+belongs to many   timezone                                 as VendorTimezones 
+
+
+DiscussionBoard
+---------------
+has many          discussion_board_details                 as FkDiscussionBoardDetails1s 
+belongs to        vendor                                   as Vendor 
+
+
+DiscussionBoardDetail
+---------------------
+belongs to        discussion_board                         as DiscussionBoard 
+
+
+EmailTemplate
+-------------
+
+
+FeaturedProduct
+---------------
+belongs to        product                                  as Product 
+
+
+GlobalSetting
+-------------
+
+
+Marketplace
+-----------
+has many          marketplace_type                         as FkMarketplaceType1s 
+has many          plan_marketplace                         as FkPlanMarketplace2s 
+has many          product                                  as FkProduct2s 
+belongs to many   plan                                     as PlanMarketplacePlans 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+
+
+MarketplaceType
+---------------
+has many          product                                  as FkProduct3s 
+belongs to        marketplace                              as Marketplace 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+
+
+OrderItem
+---------
+belongs to        orders                                   as Order 
+belongs to        product                                  as Product 
+belongs to        coupon                                   as Coupon 
+belongs to        tax                                      as Tax 
+
+
+OrderPayment
+------------
+has many          order_payment_escrow                     as FkOrderPaymentEscrow1s 
+belongs to        orders                                   as Order 
+belongs to        payment_setting                          as Payment 
+
+
+OrderPaymentEscrow
+------------------
+belongs to        order_payment                            as OrderPayment 
+
+
+Order
+-----
+has many          order_items                              as FkOrderItems1s 
+has many          order_payment                            as FkOrderPayment1s 
+belongs to        users                                    as User 
+belongs to        shipping                                 as Shipping 
+belongs to        address                                  as ShippingAddress 
+belongs to        address                                  as BillingAddress 
+belongs to many   product                                  as OrderItemProducts 
+belongs to many   coupon                                   as OrderItemCoupons 
+belongs to many   tax                                      as OrderItemTaxes 
+belongs to many   payment_setting                          as OrderPaymentPayments 
+
+
+PaymentSetting
+--------------
+has many          order_payment                            as FkOrderPayment2s 
+belongs to        users                                    as User 
+belongs to many   orders                                   as OrderPaymentOrders 
+
+
+Plan
+----
+has many          plan_limit                               as FkPlanLimit1s 
+has many          plan_marketplace                         as FkPlanMarketplace1s 
+has many          vendor                                   as FkVendor3s 
+has many          vendor_plan                              as FkVendorPlan2s 
+belongs to many   marketplace                              as PlanMarketplaceMarketplaces 
+belongs to many   users                                    as VendorUsers 
+belongs to many   country                                  as VendorBaseLocations 
+belongs to many   currency                                 as VendorCurrencies 
+belongs to many   timezone                                 as VendorTimezones 
+belongs to many   vendor                                   as VendorPlanVendors 
+
+
+PlanLimit
+---------
+belongs to        plan                                     as Plan 
+
+
+PlanMarketplace
+---------------
+belongs to        plan                                     as Plan 
+belongs to        marketplace                              as Marketplace 
+
+
+Product
+-------
+has many          cart                                     as FkCart2s 
+has many          coupon                                   as FkCoupon1s 
+has many          coupon                                   as FkCoupon2s 
+has many          coupon_excluded_product                  as FkCouponExcludedProduct2s 
+has many          coupon_product                           as FkCouponProduct2s 
+has many          featured_product                         as FkFeaturedProduct1s 
+has many          order_items                              as FkOrderItems2s 
+has many          product_ads_setting                      as FkProductAdsSetting1s 
+has many          product_attribute                        as FkProductAttribute2s 
+has many          product_review                           as FkProductReview1s 
+has many          subscription                             as FkSubscription2s 
+has many          wish_list                                as FkWishList2s 
+belongs to        vendor                                   as Vendor 
+belongs to        marketplace                              as Marketplace 
+belongs to        marketplace_type                         as MarketplaceType 
+belongs to        product_media                            as ProductMedia 
+belongs to        category                                 as ProductCategory 
+belongs to        sub_category                             as SubCategory 
+belongs to        country                                  as RelatedProductLocation 
+belongs to        state                                    as State 
+belongs to many   users                                    as CartUsers 
+belongs to many   product                                  as CouponExcludeProducts 
+belongs to many   category                                 as CouponCategories 
+belongs to many   category                                 as CouponExcludeCategories 
+belongs to many   product                                  as CouponProducts 
+belongs to many   category                                 as CouponCategories 
+belongs to many   category                                 as CouponExcludeCategories 
+belongs to many   coupon                                   as CouponExcludedProductCoupons 
+belongs to many   coupon                                   as CouponProductCoupons 
+belongs to many   orders                                   as OrderItemOrders 
+belongs to many   coupon                                   as OrderItemCoupons 
+belongs to many   tax                                      as OrderItemTaxes 
+belongs to many   country                                  as ProductAdsSettingCountries 
+belongs to many   state                                    as ProductAdsSettingStates 
+belongs to many   attribute                                as ProductAttributeAttributes 
+belongs to many   users                                    as ProductReviewUsers 
+belongs to many   users                                    as SubscriptionUsers 
+belongs to many   users                                    as WishListUsers 
+
+
+ProductAdsSetting
+-----------------
+belongs to        product                                  as Product 
+belongs to        country                                  as Country 
+belongs to        state                                    as State 
+
+
+ProductAttribute
+----------------
+belongs to        attribute                                as Attribute 
+belongs to        product                                  as Product 
+
+
+ProductMedia
+-------------
+has many          product                                  as FkProduct4s 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+
+
+ProductReview
+-------------
+belongs to        product                                  as Product 
+belongs to        users                                    as User 
+
+
+Region
+------
+has many          country                                  as FkCountry1s 
+belongs to many   currency                                 as CountryCurrencies 
+
+
+Shipping
+--------
+has many          orders                                   as FkOrder2s 
+belongs to many   users                                    as OrderUsers 
+belongs to many   address                                  as OrderShippingAddresses 
+belongs to many   address                                  as OrderBillingAddresses 
+
+
+State
+-----
+has many          address                                  as FkAddress3s 
+has many          product                                  as FkProduct8s 
+has many          product_ads_setting                      as FkProductAdsSetting3s 
+belongs to        country                                  as Country 
+belongs to many   users                                    as AddressUsers 
+belongs to many   country                                  as AddressCountries 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   product                                  as ProductAdsSettingProducts 
+belongs to many   country                                  as ProductAdsSettingCountries 
+
+
+SubCategory
+-----------
+has many          product                                  as FkProduct6s 
+belongs to        category                                 as Category 
+belongs to many   vendor                                   as ProductVendors 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+
+
+Subscription
+------------
+belongs to        users                                    as User 
+belongs to        product                                  as Product 
+
+
+Talk
+----
+belongs to        talk_setting                             as TalkSetting 
+belongs to        users                                    as From 
+belongs to        users                                    as To 
+belongs to        talk_thread                              as LastThread 
+
+
+TalkSetting
+-----------
+has many          talk                                     as FkTalk1s 
+belongs to        vendor                                   as Vendor 
+belongs to many   users                                    as TalkFroms 
+belongs to many   users                                    as TalkTos 
+belongs to many   talk_thread                              as TalkLastThreads 
+
+
+TalkThread
+----------
+has many          talk                                     as FkTalk4s 
+belongs to        users                                    as From 
+belongs to many   talk_setting                             as TalkTalkSettings 
+belongs to many   users                                    as TalkFroms 
+belongs to many   users                                    as TalkTos 
+
+
+Tax
+---
+has many          order_items                              as FkOrderItems4s 
+belongs to        country                                  as Country 
+belongs to many   orders                                   as OrderItemOrders 
+belongs to many   product                                  as OrderItemProducts 
+belongs to many   coupon                                   as OrderItemCoupons 
+
+
+Ticket
+------
+has many          ticket_thread                            as FkTicketThread1s 
+belongs to        users                                    as User 
+belongs to many   users                                    as TicketThreadUsers 
+
+
+TicketThread
+------------
+belongs to        ticket                                   as Ticket 
+belongs to        users                                    as User 
+
+
+Timezone
+--------
+has many          vendor                                   as FkVendor5s 
+belongs to        country                                  as Country 
+belongs to many   users                                    as VendorUsers 
+belongs to many   country                                  as VendorBaseLocations 
+belongs to many   plan                                     as VendorVendorPlans 
+belongs to many   currency                                 as VendorCurrencies 
+
+
+User
+----
+has many          address                                  as FkAddress1s 
+has many          cart                                     as FkCart1s 
+has many          orders                                   as FkOrder1s 
+has many          payment_setting                          as FkPaymentSetting1s 
+has many          product_review                           as FkProductReview2s 
+has many          subscription                             as FkSubscription1s 
+has many          talk                                     as FkTalk2s 
+has many          talk                                     as FkTalk3s 
+has many          talk_thread                              as FkTalkThread2s 
+has many          ticket                                   as FkTicket1s 
+has many          ticket_thread                            as FkTicketThread2s 
+has many          vendor                                   as FkVendor1s 
+has many          vendor_follower                          as FkVendorFollower2s 
+has many          wish_list                                as FkWishList1s 
+belongs to many   country                                  as AddressCountries 
+belongs to many   state                                    as AddressProvinces 
+belongs to many   product                                  as CartProducts 
+belongs to many   shipping                                 as OrderShippings 
+belongs to many   address                                  as OrderShippingAddresses 
+belongs to many   address                                  as OrderBillingAddresses 
+belongs to many   product                                  as ProductReviewProducts 
+belongs to many   product                                  as SubscriptionProducts 
+belongs to many   talk_setting                             as TalkTalkSettings 
+belongs to many   users                                    as TalkTos 
+belongs to many   talk_thread                              as TalkLastThreads 
+belongs to many   talk_setting                             as TalkTalkSettings 
+belongs to many   users                                    as TalkFroms 
+belongs to many   talk_thread                              as TalkLastThreads 
+belongs to many   ticket                                   as TicketThreadTickets 
+belongs to many   country                                  as VendorBaseLocations 
+belongs to many   plan                                     as VendorVendorPlans 
+belongs to many   currency                                 as VendorCurrencies 
+belongs to many   timezone                                 as VendorTimezones 
+belongs to many   vendor                                   as VendorFollowerVendors 
+belongs to many   product                                  as WishListProducts 
+
+
+Vendor
+------
+has many          business_hours                           as FkBusinessHours1s 
+has many          discussion_board                         as FkDiscussionBoard1s 
+has many          product                                  as FkProduct1s 
+has many          talk_setting                             as FkTalkSetting1s 
+has many          vendor_follower                          as FkVendorFollower1s 
+has many          vendor_notification_setting              as FkVendorNotificationSetting1s 
+has many          vendor_plan                              as FkVendorPlan1s 
+has many          vendor_shipping_location                 as FkVendorShippingLocation1s 
+has many          vendor_verification                      as FkVendorVerification1s 
+belongs to        users                                    as User 
+belongs to        country                                  as RelatedBaseLocation 
+belongs to        plan                                     as VendorPlan 
+belongs to        currency                                 as Currency 
+belongs to        timezone                                 as Timezone 
+belongs to many   marketplace                              as ProductMarketplaces 
+belongs to many   marketplace_type                         as ProductMarketplaceTypes 
+belongs to many   product_media                            as ProductProductMedia 
+belongs to many   category                                 as ProductProductCategories 
+belongs to many   sub_category                             as ProductSubCategories 
+belongs to many   country                                  as ProductProductLocations 
+belongs to many   state                                    as ProductStates 
+belongs to many   users                                    as VendorFollowerUsers 
+belongs to many   plan                                     as VendorPlanPlans 
+belongs to many   country                                  as VendorShippingLocationCountries 
+
+
+VendorFollower
+--------------
+belongs to        vendor                                   as Vendor 
+belongs to        users                                    as User 
+
+
+VendorNotificationSetting
+-------------------------
+belongs to        vendor                                   as Vendor 
+
+
+VendorPlan
+----------
+belongs to        vendor                                   as Vendor 
+belongs to        plan                                     as Plan 
+
+
+VendorShippingLocation
+----------------------
+belongs to        vendor                                   as Vendor 
+belongs to        country                                  as Country 
+
+
+VendorVerification
+------------------
+belongs to        vendor                                   as Vendor 
+
+
+WishList
+--------
+belongs to        users                                    as User 
+belongs to        product                                  as Product 

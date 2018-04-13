@@ -1,21 +1,38 @@
 'use strict';
 
-import sequelizeDB from '../../sqldb';
-import test from '../../models/index';
-import config from '../../config/environment';
-
-var model = test.init(sequelizeDB);
+const config = require('../../config/environment');
+const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
-	model['Mark'].findOne({
-		include: [{
-			all: true,
-			nested: true
-		}],
-		raw: true
-	}).then(row => {
-		console.log('row', row);
-		res.send(200, row);
-		return;
+	model[req.endpoint].findAndCountAll()
+		.then(function(rows) {
+			if (rows) {
+				res.status(200).send(rows);
+				return
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send("Internal server error");
+				return;
+			}
+		});
+}
+
+export function create(req, res, next) {
+	var bodyParams = req.body;
+
+	model[req.endpoint].create(bodyParams)
+		.then(function(row) {
+			console.log('row', plainTextResponse(row));
+		})
+		.catch(function(error) {
+			console.log('error', error);
+		});
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
 	});
 }

@@ -12,6 +12,7 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import errorHandler from 'errorhandler';
+import expressValidator from 'express-validator';
 import path from 'path';
 import lusca from 'lusca';
 import config from './environment';
@@ -41,6 +42,7 @@ export default function(app) {
   app.use(shrinkRay());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  app.use(expressValidator());
   app.use(methodOverride());
   app.use(cookieParser());
 
