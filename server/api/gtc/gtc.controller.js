@@ -8,18 +8,20 @@ const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
 
-	//console.log(req.query.offset, req.query.limit)
+	var offset = req.query.offset || 1;
+	var limit = req.query.limit || 10;
+	var field = req.query.field || 'id';
+	var order = req.query.order || 'DESC';
 
 	model[req.endpoint].findAndCountAll({
 			include: [{
 					all: true
-				}]
-				//where: req.query.condition,
-				/* offset: req.query.skip,
-			limit: req.query.limit,
+				}],
+			offset: offset,
+			limit: limit,
 			order: [
-				[req.query.field, req.query.order]
-			]*/
+				[field, order]
+			]
 		})
 		.then(function(rows) {
 			if (rows) {
@@ -44,15 +46,15 @@ export function show(req, res) {
 
 
 	model[req.endpoint].findOne({
-			// include: [{
-			// 	all: true
-			// }]
+			include: [{
+				all: true
+			}]
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
 				return
 			}
-		})
+		})	
 		.catch(function(error) {
 			if (error) {
 				res.status(500).send(error);
@@ -65,11 +67,11 @@ export function show(req, res) {
 
 export function findById(req, res) {
 
-	console.log(req.params.id);
+	console.log("req.params.id",req.params.id);
 
 	model[req.endpoint].findById(req.params.id)
 		.then(function(row) {
-			if (rows) {
+			if (row) {
 				res.status(200).send(row);
 				return
 			}
