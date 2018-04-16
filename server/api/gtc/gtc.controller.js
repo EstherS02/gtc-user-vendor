@@ -6,14 +6,16 @@ const model = require('../../sqldb/model-connect');
 
 // To find all the records in the table
 
-export function index(req, res) { 
+export function index(req, res) {
 
-	console.log(req.query.offset, req.query.limit)
+	//console.log(req.query.offset, req.query.limit)
 
 	model[req.endpoint].findAndCountAll({
-			include: [{all: true}]
-			//where: req.query.condition,
-		   /* offset: req.query.skip,
+			include: [{
+					all: true
+				}]
+				//where: req.query.condition,
+				/* offset: req.query.skip,
 			limit: req.query.limit,
 			order: [
 				[req.query.field, req.query.order]
@@ -22,6 +24,9 @@ export function index(req, res) {
 		.then(function(rows) {
 			if (rows) {
 				res.status(200).send(rows);
+				return;
+			} else {
+				res.status(200).send("err");
 				return;
 			}
 		})
@@ -39,7 +44,9 @@ export function show(req, res) {
 
 
 	model[req.endpoint].findOne({
-			include: [{all: true}]
+			// include: [{
+			// 	all: true
+			// }]
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
@@ -61,8 +68,8 @@ export function findById(req, res) {
 	console.log(req.params.id);
 
 	model[req.endpoint].findById(req.params.id)
-	.then(function(row) {
-			if (rows) {	
+		.then(function(row) {
+			if (rows) {
 				res.status(200).send(row);
 				return
 			}
@@ -113,7 +120,7 @@ export function update(req, res) {
 		.then(function(rows) {
 			if (rows) {
 				res.status(200).send(rows);
-				return	
+				return
 			}
 		})
 		.catch(function(error) {
