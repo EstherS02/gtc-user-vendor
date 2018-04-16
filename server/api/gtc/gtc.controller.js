@@ -3,8 +3,142 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 
-export function index(req, res) {
-	model[req.endpoint].findAndCountAll()
+
+// To find all the records in the table
+
+export function index(req, res) { 
+
+	console.log(req.query.offset, req.query.limit)
+
+	model[req.endpoint].findAndCountAll({
+			include: [{all: true}]
+			//where: req.query.condition,
+		   /* offset: req.query.skip,
+			limit: req.query.limit,
+			order: [
+				[req.query.field, req.query.order]
+			]*/
+		})
+		.then(function(rows) {
+			if (rows) {
+				res.status(200).send(rows);
+				return;
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send(error);
+				return;
+			}
+		});
+}
+
+// To find first record of the table	
+
+export function show(req, res) {
+
+
+	model[req.endpoint].findOne({
+			include: [{all: true}]
+		}).then(function(row) {
+			if (row) {
+				res.status(200).send(row);
+				return
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send(error);
+				return;
+			}
+		});
+}
+
+//  To find the record of known id
+
+export function findById(req, res) {
+
+	console.log(req.params.id);
+
+	model[req.endpoint].findById(req.params.id)
+	.then(function(row) {
+			if (rows) {	
+				res.status(200).send(row);
+				return
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send(error);
+				return;
+			}
+		});
+}
+
+// To create
+
+export function create(req, res) {
+	req.body['created_on'] = new Date();
+
+	model[req.endpoint].create(req.body)
+		.then(function(row) {
+			if (rows) {
+				res.status(201).send("Created");
+				return
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send(error);
+				return;
+			}
+		});
+}
+
+// To update 
+
+export function update(req, res) {
+	if (req.body.id) {
+		Reflect.deleteProperty(req.body, 'id');
+	}
+
+	req.body['last_updated_on'] = new Date();
+
+	model[req.endpoint].update(req.body, {
+			where: {
+				id: req.params.id
+			},
+			individualHooks: true
+		})
+		.then(function(rows) {
+			if (rows) {
+				res.status(200).send(rows);
+				return	
+			}
+		})
+		.catch(function(error) {
+			if (error) {
+				res.status(500).send(error);
+				return;
+			}
+		});
+}
+
+// For soft delete
+
+
+export function softDelete(req, res) {
+	if (req.body.id) {
+		Reflect.deleteProperty(req.body, 'id');
+	}
+	model[req.endpoint].update({
+			deleted: true
+		}, {
+			where: {
+				id: req.params.id
+			},
+			individualHooks: true
+		})
 		.then(function(rows) {
 			if (rows) {
 				res.status(200).send(rows);
@@ -13,11 +147,50 @@ export function index(req, res) {
 		})
 		.catch(function(error) {
 			if (error) {
-				res.status(500).send("Internal server error");
+				res.status(500).send(error);
 				return;
 			}
 		});
 }
+
+//To deleted
+
+
+export function destroy(req, res) {
+	model[req.endpoint].find({
+			where: {
+				id: req.params.id
+			},
+			individualHooks: true
+		})
+		.then(function(entity) {
+			if (entity) {
+				model[req.endpoint].destroy({
+						where: {
+							id: req.params.id
+						},
+						individualHooks: true
+					})
+					.then(() => {
+						res.status(200).send("Deleted");
+						return;
+					}).catch(function(err) {
+						res.send(err);
+						return;
+					});
+			} else {
+
+				res.status(404).send("Not Found");
+				return;
+
+			}
+		})
+		.catch(function(err) {
+			res.send(err);
+			return;
+		});
+}
+/*
 
 export function create(req, res, next) {
 	var bodyParams = req.body;
@@ -36,3 +209,5 @@ function plainTextResponse(response) {
 		plain: true
 	});
 }
+
+*/
