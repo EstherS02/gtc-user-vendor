@@ -12,8 +12,8 @@ router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
 router.post('/:endpoint', middleware.validateEndpoint(), controller.create);
-router.put('/:endpoint', middleware.validateEndpoint(), controller.update);
-router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.softDelete);
+router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.update);
+router.put('/:endpoint/:id/delete', middleware.validateEndpoint(), controller.softDelete);
 router.delete('/:endpoint/:id', middleware.validateEndpoint(), controller.destroy);
 
 module.exports = router;

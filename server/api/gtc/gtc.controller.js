@@ -8,10 +8,22 @@ const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
 
-	var offset = req.query.offset || 1;
+	console.log(req.query.offset);
+    console.log(req.query.limit);
+    console.log(req.query.field);
+    console.log(req.query.order);
+   
+/*
+	var offset = JSON.parse(req.query.offset) || 0;
+	var limit = JSON.parse(req.query.limit) || 10;
+	var field = req.query.field || 'id';
+	var order =req.query.order || 'ASC';
+	*/
+
+	var offset = req.query.offset || 0;
 	var limit = req.query.limit || 10;
 	var field = req.query.field || 'id';
-	var order = req.query.order || 'DESC';
+	var order =req.query.order || 'ASC';
 
 	model[req.endpoint].findAndCountAll({
 			include: [{
@@ -28,7 +40,7 @@ export function index(req, res) {
 				res.status(200).send(rows);
 				return;
 			} else {
-				res.status(200).send("err");
+				res.status(404).send("Not Found");
 				return;
 			}
 		})
@@ -48,12 +60,17 @@ export function show(req, res) {
 	model[req.endpoint].findOne({
 			include: [{
 				all: true
-			}]
+			}],
+			where: req.query.condition
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
-				return
+				return;
+			}  else {
+				res.status(404).send("Not Found");
+				return;
 			}
+
 		})	
 		.catch(function(error) {
 			if (error) {
@@ -67,13 +84,14 @@ export function show(req, res) {
 
 export function findById(req, res) {
 
-	console.log("req.params.id",req.params.id);
-
 	model[req.endpoint].findById(req.params.id)
 		.then(function(row) {
 			if (row) {
 				res.status(200).send(row);
 				return
+			} else {
+				res.status(404).send("Not Found");
+				return;
 			}
 		})
 		.catch(function(error) {
@@ -94,6 +112,9 @@ export function create(req, res) {
 			if (rows) {
 				res.status(201).send("Created");
 				return
+			} else {
+				res.status(500).send("Unable to create");
+				return;
 			}
 		})
 		.catch(function(error) {
@@ -123,7 +144,11 @@ export function update(req, res) {
 			if (rows) {
 				res.status(200).send(rows);
 				return
+			}else {
+				res.status(500).send("Unable to Update");
+				return;
 			}
+
 		})
 		.catch(function(error) {
 			if (error) {
@@ -152,6 +177,10 @@ export function softDelete(req, res) {
 			if (rows) {
 				res.status(200).send(rows);
 				return
+			}
+			else {
+				res.status(500).send("Unable to Delete");
+				return;
 			}
 		})
 		.catch(function(error) {
