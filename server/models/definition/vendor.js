@@ -41,17 +41,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_plan_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_plan_id',
-            allowNull: false,
-            references: {
-                model: 'plan',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
         vendor_cover_pic_url: {
             type: DataTypes.TEXT,
             field: 'vendor_cover_pic_url',
