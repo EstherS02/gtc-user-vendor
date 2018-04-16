@@ -7,9 +7,6 @@ var sequelizeDB = new Sequelize(config.mysql.database, config.mysql.username, co
 	host: config.mysql.host,
 	dialect: 'mysql',
 	port: config.mysql.port,
-	query: {
-		raw: true
-	},
 	define: {
 		timestamps: false
 	}
