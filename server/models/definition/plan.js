@@ -87,10 +87,6 @@ module.exports.initRelations = () => {
         foreignKey: 'plan_id'
     });
 
-    Plan.hasMany(Vendor, {
-        foreignKey: 'vendor_plan_id'
-    });
-
     Plan.hasMany(VendorPlan, {
         foreignKey: 'plan_id'
     });
@@ -99,30 +95,6 @@ module.exports.initRelations = () => {
         through: PlanMarketplace,
         foreignKey: 'plan_id',
         otherKey: 'marketplace_id'
-    });
-
-    Plan.belongsToMany(User, {
-        through: Vendor,
-        foreignKey: 'vendor_plan_id',
-        otherKey: 'user_id'
-    });
-
-    Plan.belongsToMany(Country, {
-        through: Vendor,
-        foreignKey: 'vendor_plan_id',
-        otherKey: 'base_location'
-    });
-
-    Plan.belongsToMany(Currency, {
-        through: Vendor,
-        foreignKey: 'vendor_plan_id',
-        otherKey: 'currency_id'
-    });
-
-    Plan.belongsToMany(Timezone, {
-        through: Vendor,
-        foreignKey: 'vendor_plan_id',
-        otherKey: 'timezone_id'
     });
 
     Plan.belongsToMany(Vendor, {
