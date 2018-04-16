@@ -35,6 +35,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'refresh_token',
             allowNull: true
+        },
+        admin_id: {
+            type: DataTypes.BIGINT,
+            field: 'admin_id',
+            allowNull: true,
+            references: {
+                model: 'admin',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         }
     }, {
         tableName: 'user_token'
@@ -48,6 +59,7 @@ module.exports.initRelations = () => {
     const UserToken = model.UserToken;
     const User = model.User;
     const Appclient = model.Appclient;
+    const Admin = model.Admin;
 
     UserToken.belongsTo(User, {
         foreignKey: 'user_id'
@@ -55,6 +67,10 @@ module.exports.initRelations = () => {
 
     UserToken.belongsTo(Appclient, {
         foreignKey: 'client_id'
+    });
+
+    UserToken.belongsTo(Admin, {
+        foreignKey: 'admin_id'
     });
 
 };

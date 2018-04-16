@@ -32,7 +32,8 @@ function createToken(req, res, user) {
 			model['User'].update(token, {
 					where: {
 						id: user.id
-					}
+					},
+					returning: true
 				}).then(function(row) {
 					res.send(200, rspTokens)
 					return;

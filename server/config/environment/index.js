@@ -60,6 +60,12 @@ var all = {
     url: baseUrl + "/auth/token",
   },
 
+  adminAuth: {
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    url: baseUrl + "/auth/admin-token",
+  },
+
   // MongoDB connection options
   mongo: {
     options: {

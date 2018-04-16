@@ -24,11 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
-        refresh_token: {
-            type: DataTypes.TEXT,
-            field: 'refresh_token',
-            allowNull: true
-        },
         salt: {
             type: DataTypes.STRING(128),
             field: 'salt',
@@ -66,5 +61,27 @@ module.exports = (sequelize, DataTypes) => {
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
+    const model = require('../index');
+    const Admin = model.Admin;
+    const UserToken = model.UserToken;
+    const User = model.User;
+    const Appclient = model.Appclient;
+
+    Admin.hasMany(UserToken, {
+        foreignKey: 'admin_id'
+    });
+
+    Admin.belongsToMany(User, {
+        through: UserToken,
+        foreignKey: 'admin_id',
+        otherKey: 'user_id'
+    });
+
+    Admin.belongsToMany(Appclient, {
+        through: UserToken,
+        foreignKey: 'admin_id',
+        otherKey: 'client_id'
+    });
 
 };

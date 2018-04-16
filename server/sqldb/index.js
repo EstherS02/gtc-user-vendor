@@ -8,11 +8,11 @@ var sequelizeDB = new Sequelize(config.mysql.database, config.mysql.username, co
 	dialect: 'mysql',
 	port: config.mysql.port,
 	query: {
-		raw:true
+		raw: true
 	},
 	define: {
-        timestamps: false
-    }
+		timestamps: false
+	}
 });
- 
+
 module.exports = sequelizeDB;

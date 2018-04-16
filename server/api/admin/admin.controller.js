@@ -1,7 +1,6 @@
 'use strict';
 
 const crypto = require('crypto');
-const uuid = require('node-uuid');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -9,20 +8,10 @@ const providers = require('../../config/providers');
 
 export function create(req, res) {
 	var queryObj = {};
-	var randomCode = uuid.v1();
-
-	req.checkBody('first_name', 'Missing Query Param').notEmpty();
-	req.checkBody('provider', 'Missing Query Param').notEmpty();
-	req.checkBody('role', 'Missing Query Param').notEmpty();
-	req.checkBody('status', 'Missing Query Param').notEmpty();
-	req.checkBody('email_verified', 'Missing Query Param').notEmpty();
-
-	if (providers[req.body.provider] == providers[1]) {
-		req.checkBody('email', 'Missing Query Param').notEmpty();
-		req.checkBody('email', 'Please enter a valid email address').isEmail();
-		req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
-		req.checkBody('password', 'Missing Query Param').notEmpty();
-	}
+	req.checkBody('email', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Please enter a valid email address').isEmail();
+	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
+	req.checkBody('password', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
@@ -33,32 +22,22 @@ export function create(req, res) {
 	req.body.hashed_pwd = encryptPassword(req);
 
 	var bodyParams = req.body;
-	bodyParams['created_on'] = new Date();
 
 	if (req.body.email) {
 		queryObj['email'] = req.body.email;
 	}
 
-	model['User'].findOne({
+	model['Admin'].findOne({
 		where: queryObj
-	}).then(function(user) {
-		if (user) {
-			if (providers[user.provider] != providers[1]) {
-				console.log('social login');
-				return;
-			} else {
-				res.status(409).send("Email address already exists");
-				return;
-			}
+	}).then(function(admin) {
+		if (admin) {
+			res.status(409).send("Email address already exists");
+			return;
 		} else {
-			if (req.body.email_verified == 0) {
-				bodyParams['email_verified_token'] = randomCode;
-				bodyParams['email_verified_token_generated'] = Date.now();
-			}
-			model['User'].create(bodyParams)
-				.then(function(row) {
-					if (row) {
-						res.status(201).send(plainTextResponse(row));
+			model['Admin'].create(bodyParams)
+				.then(function(admin) {
+					if (admin) {
+						res.status(201).send(plainTextResponse(admin));
 						return;
 					}
 				})
@@ -78,8 +57,8 @@ export function create(req, res) {
 }
 
 export function me(req, res) {
-	if (req.user) {
-		res.status(200).send(req.user);
+	if (req.admin) {
+		res.status(200).send(req.admin);
 		return;
 	}
 }
@@ -90,15 +69,15 @@ function plainTextResponse(response) {
 	});
 }
 
-function authenticate(plainText, user) {
+function authenticate(plainText, admin) {
 	var customBody = {
 		body: {
 			password: plainText,
-			salt: user.salt,
-			email: user.email
+			salt: admin.salt,
+			email: admin.email
 		}
 	};
-	return encryptPassword(customBody) == user.hashed_pwd;
+	return encryptPassword(customBody) == admin.hashed_pwd;
 }
 
 function makeSalt() {

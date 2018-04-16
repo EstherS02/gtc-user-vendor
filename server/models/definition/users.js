@@ -44,11 +44,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
-        refresh_token: {
-            type: DataTypes.TEXT,
-            field: 'refresh_token',
-            allowNull: true
-        },
         salt: {
             type: DataTypes.STRING(128),
             field: 'salt',

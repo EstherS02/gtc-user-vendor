@@ -23,13 +23,13 @@ function isAuthenticated() {
 			validateJwt(req, res, next);
 		})
 		.use(function(req, res, next) {
-			model['User'].findById(req.user.userId)
-				.then(function(user) {
-					if (user) {
-						req.user = user;
+			model['Admin'].findById(req.user.adminId)
+				.then(function(admin) {
+					if (admin) {
+						req.admin = admin;
 						next();
 					} else {
-						res.status(404).send("User not found");
+						res.status(404).send("Admin not found");
 						return;
 					}
 				})
@@ -42,31 +42,4 @@ function isAuthenticated() {
 		});
 }
 
-function hasPermission(withAction) {
-	console.log('withAction', withAction);
-	if (!withAction) throw new Error('Required action needs to be set');
-
-	return compose()
-		.use(isAuthenticated())
-		.use(function(req, res, next) {
-			return;
-		});
-}
-
-function getIndexOfAction(array, value) {
-	if (value) {
-		if (array.length > 0) {
-			for (var i = 0; i < array.length; i++) {
-				if (array[i]) {
-					if (array[i] == value) {
-						return i;
-					}
-				}
-			}
-		}
-		return -1;
-	}
-}
-
 exports.isAuthenticated = isAuthenticated;
-exports.hasPermission = hasPermission;

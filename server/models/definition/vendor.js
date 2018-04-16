@@ -219,10 +219,6 @@ module.exports.initRelations = () => {
         foreignKey: 'base_location'
     });
 
-    Vendor.belongsTo(Plan, {
-        foreignKey: 'vendor_plan_id'
-    });
-
     Vendor.belongsTo(Currency, {
         foreignKey: 'currency_id'
     });

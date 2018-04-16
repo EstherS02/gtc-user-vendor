@@ -6,7 +6,6 @@ const passport = require('passport');
 const _ = require('lodash');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const auth = require('./auth');
 const uservalidate = require('../api/users/users.controller')
 const config = require('../config/environment');
 
@@ -25,20 +24,20 @@ var server = oauth2orize.createServer();
  */
 server.exchange(oauth2orize.exchange.password(function(client, email, password,
 	scope, done) {
-	model['User'].findOne({
+	model['Admin'].findOne({
 		where: {
 			email: email
 		}
-	}).then(function(user) {
-		if (!user) {
+	}).then(function(admin) {
+		if (!admin) {
 			return done(null, false);
 		}
-		if (!uservalidate.authenticate(password, user)) {
+		/*if (!uservalidate.authenticate(password, user)) {
 			return done(null, false);
-		}
+		}*/
 		var tokenPayload = {
-			userId: user.id,
-			email: user.email,
+			adminId: admin.id,
+			email: admin.email,
 			client: client
 		};
 		var accessToken = jwt.sign(tokenPayload, config.secrets.accessToken, {
@@ -47,7 +46,7 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 
 		model["UserToken"].findOne({
 			where: {
-				user_id: user.id,
+				admin_id: admin.id,
 				client_id: client.id
 			}
 		}).then(function(token) {
@@ -57,21 +56,21 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 				});
 			} else {
 				var refreshTokenPayload = {
-					userId: user.id,
-					email: user.email,
+					adminId: admin.id,
+					email: admin.email,
 					client: client
 				};
 				var refreshToken = jwt.sign(refreshTokenPayload, config.secrets.refreshToken);
 
 				var token = {
 					client_id: client.id,
-					user_id: user.id,
+					admin_id: admin.id,
 					refresh_token: refreshToken
 				};
 
 				model['UserToken'].update(token, {
 					where: {
-						user_id: user.id,
+						admin_id: admin.id,
 						client_id: client.id
 					},
 					returning: true
@@ -87,26 +86,26 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 									expires_in: config.token.expiresInMinutes * 60
 								});
 							}
-						}).catch(function(error) {
-							if (error) {
-								return done(error);
+						}).catch(function(err) {
+							if (err) {
+								return done(err);
 							}
 						});
 					}
-				}).catch(function(error) {
-					if (error) {
-						return done(error);
+				}).catch(function(err) {
+					if (err) {
+						return done(err);
 					}
 				});
 			}
-		}).catch(function(error) {
-			if (error) {
-				return done(error);
+		}).catch(function(err) {
+			if (err) {
+				return done(err);
 			}
 		});
-	}).catch(function(error) {
-		if (error) {
-			return done(error);
+	}).catch(function(err) {
+		if (err) {
+			return done(err);
 		}
 	});
 }));
@@ -133,13 +132,13 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 			return done(null, false);
 		}
 
-		model['User'].findById(tokenPayload.userId).then(function(user) {
-			if (!user) {
+		model['Admin'].findById(tokenPayload.adminId).then(function(admin) {
+			if (!admin) {
 				return done(null, false);
 			} else {
 				var newTokenPayload = {
-					userId: user.id,
-					email: user.email,
+					adminId: admin.id,
+					email: admin.email,
 					client: client
 				};
 				var accessToken = jwt.sign(newTokenPayload,
@@ -149,13 +148,13 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 
 				var token = {
 					client_id: client.id,
-					user_id: user.id,
+					admin_id: admin.id,
 					refresh_token: refreshToken
 				};
 
 				model['UserToken'].findOne({
 					where: {
-						user_id: user.id,
+						admin_id: admin.id,
 						client_id: client.id,
 						refresh_token: refreshToken
 					}

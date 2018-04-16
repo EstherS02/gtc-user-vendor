@@ -12,11 +12,11 @@ export function login(req, res) {
 	params.username = req.body.email;
 	params.password = req.body.password;
 	params.grant_type = "password";
-	var clientId = config.auth.clientId;
-	var clientSecret = config.auth.clientSecret;
+	var clientId = config.adminAuth.clientId;
+	var clientSecret = config.adminAuth.clientSecret;
 	var authCode = new Buffer(clientId + ":" + clientSecret).toString('base64');
 	request.post({
-		url: config.auth.url,
+		url: config.adminAuth.url,
 		form: params,
 		headers: {
 			"Authorization": "Basic " + authCode
@@ -39,17 +39,17 @@ export function login(req, res) {
 		tokens.clientId = clientId;
 		tokens.refreshToken = JSON.parse(body).refresh_token;
 
-		model['User'].findOne({
+		model['Admin'].findOne({
 			where: {
 				email: email
 			}
-		}).then(function(user) {
-			if (user) {
-				res.cookie("gtc_refresh_token", encryptedRefToken);
+		}).then(function(admin) {
+			if (admin) {
+				res.cookie("gtc_admin_refresh_token", encryptedRefToken);
 				res.status(200).send(rspTokens);
 				return;
 			} else {
-				res.status(404).send("User not found");
+				res.status(404).send("Admin not found");
 				return;
 			}
 		}).catch(function(err) {
@@ -62,16 +62,16 @@ export function login(req, res) {
 }
 
 exports.refreshToken = function(req, res, next) {
-	var decryptedRefToken = cryptography.decrypt(req.cookies.gtc_refresh_token);
-	model['User'].findOne({
+	var decryptedRefToken = cryptography.decrypt(req.cookies.gtc_admin_refresh_token);
+	model['Admin'].findOne({
 		where: {
 			email: req.body.email
 		}
-	}).then(function(user) {
-		if (user) {
+	}).then(function(admin) {
+		if (admin) {
 			model['UserToken'].findOne({
 				where: {
-					user_id: user.id
+					admin_id: admin.id
 				}
 			}).then(function(token) {
 				if (token) {
@@ -84,14 +84,14 @@ exports.refreshToken = function(req, res, next) {
 						return;
 					}
 					var params = {};
-					var clientId = config.auth.clientId;
-					var clientSecret = config.auth.clientSecret;
+					var clientId = config.adminAuth.clientId;
+					var clientSecret = config.adminAuth.clientSecret;
 					params.refresh_token = decryptedRefToken;
 					params.grant_type = "refresh_token";
 
 					var authCode = new Buffer(clientId + ":" + clientSecret).toString('base64');
 					request.post({
-						url: config.auth.url,
+						url: config.adminAuth.url,
 						form: params,
 						headers: {
 							"Authorization": "Basic " + authCode
@@ -100,7 +100,7 @@ exports.refreshToken = function(req, res, next) {
 						res.status(200).send(JSON.parse(body))
 					});
 				} else {
-					res.status(404).send("User token not found");
+					res.status(404).send("Admin token not found");
 					return;
 				}
 			}).catch(function(error) {
@@ -110,8 +110,8 @@ exports.refreshToken = function(req, res, next) {
 				}
 			});
 		} else {
-			res.clearCookie('gtc_refresh_token');
-			res.status(404).send("User not found");
+			res.clearCookie('gtc_admin_refresh_token');
+			res.status(404).send("Admin not found");
 			return
 		}
 	}).catch(function(error) {
@@ -123,11 +123,11 @@ exports.refreshToken = function(req, res, next) {
 }
 
 export function logout(req, res, next) {
-	var refreshToken = cryptography.decrypt(req.cookies.gtc_refresh_token);
-	res.clearCookie('gtc_refresh_token');
+	var refreshToken = cryptography.decrypt(req.cookies.gtc_admin_refresh_token);
+	res.clearCookie('gtc_admin_refresh_token');
 	model['UserToken'].destroy({
 		where: {
-			user_id: req.user.id,
+			admin_id: req.admin.id,
 			refresh_token: refreshToken
 		},
 		returning: true
