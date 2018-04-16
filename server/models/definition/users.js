@@ -302,12 +302,6 @@ module.exports.initRelations = () => {
         otherKey: 'base_location'
     });
 
-    User.belongsToMany(Plan, {
-        through: Vendor,
-        foreignKey: 'user_id',
-        otherKey: 'vendor_plan_id'
-    });
-
     User.belongsToMany(Currency, {
         through: Vendor,
         foreignKey: 'user_id',

@@ -13,6 +13,7 @@ export function index(req, res) {
 		})
 		.catch(function(error) {
 			if (error) {
+				console.log('error', error);
 				res.status(500).send("Internal server error");
 				return;
 			}
