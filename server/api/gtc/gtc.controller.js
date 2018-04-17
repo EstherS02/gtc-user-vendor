@@ -45,15 +45,15 @@ export function index(req, res) {
 
 export function show(req, res) {
 
-	 console.log("req.query.condition", req.query.condition);
+	 console.log("req.query.condition", req.query);
 
 	//var condition = req.query.condition;
 
 	model[req.endpoint].findOne({
-			/*include: [{
+			include: [{
 				all: true
-			}],*/
-             where:  req.query.condition 
+			}],
+             where:  req.query
 			//where: condition
 		}).then(function(row) {
 			if (row) {
@@ -162,7 +162,7 @@ export function softDelete(req, res) {
 	req.body['deleted_at'] = new Date();
 
 	model[req.endpoint].update({
-			deleted: true
+			status: 10
 		}, {
 			where: {
 				id: req.params.id
