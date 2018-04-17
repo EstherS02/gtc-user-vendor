@@ -146,7 +146,6 @@ export function update(req, res) {
 		});
 }
 
-
 // For soft delete
 
 
@@ -155,10 +154,11 @@ export function softDelete(req, res) {
 		Reflect.deleteProperty(req.body, 'id');
 	}
 
-	req.body['deleted_at'] = new Date();
+	var deleted_at = new Date();
 
 	model[req.endpoint].update({
-			status: 10
+			status: 10,
+			deleted_at: deleted_at
 		}, {
 			where: {
 				id: req.params.id
@@ -167,7 +167,7 @@ export function softDelete(req, res) {
 		})
 		.then(function(rows) {
 
-			res.status(200).send(rows);
+			res.status(200).send("Deleted");
 			return;
 
 		})
