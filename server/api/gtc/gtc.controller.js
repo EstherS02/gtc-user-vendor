@@ -25,19 +25,13 @@ export function index(req, res) {
 			]
 		})
 		.then(function(rows) {
-			if (rows) {
-				res.status(200).send(rows);
-				return;
-			} else {
-				res.status(404).send("Not Found");
-				return;
-			}
+			res.status(200).send(rows);
+			return;
+
 		})
 		.catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
-				return;
-			}
+			res.status(500).send(error);
+			return;
 		});
 }
 
@@ -102,13 +96,8 @@ export function create(req, res) {
 
 	model[req.endpoint].create(req.body)
 		.then(function(row) {
-			if (row) {
-				res.status(201).send("Created");
-				return;
-			} else {
-				res.status(500).send("Unable to create");
-				return;
-			}
+			res.status(201).send("Created");
+			return;
 		})
 		.catch(function(error) {
 			if (error) {
@@ -120,36 +109,43 @@ export function create(req, res) {
 
 // To update 
 
+
+
 export function update(req, res) {
-	if (req.body.id) {
-		Reflect.deleteProperty(req.body, 'id');
-	}
-
-	req.body['last_updated_on'] = new Date();
-
-	model[req.endpoint].update(req.body, {
+	model[req.endpoint].find({
 			where: {
 				id: req.params.id
 			},
 			individualHooks: true
 		})
-		.then(function(rows) {
-			if (rows) {
-				res.status(200).send("Updated");
-				return
+		.then(function(entity) {
+			if (entity) {
+				model[req.endpoint].update(req.body,{
+						where: {
+							id: req.params.id
+						},
+						individualHooks: true
+					})
+					.then(() => {
+						res.status(200).send("Updated");
+						return;
+					}).catch(function(err) {
+						res.send(err);
+						return;
+					});
 			} else {
-				res.status(500).send("Unable to Update");
-				return;
-			}
 
-		})
-		.catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
+				res.status(404).send("Not Found");
 				return;
+
 			}
+		})
+		.catch(function(err) {
+			res.send(err);
+			return;
 		});
 }
+
 
 // For soft delete
 
@@ -170,13 +166,10 @@ export function softDelete(req, res) {
 			individualHooks: true
 		})
 		.then(function(rows) {
-			if (rows) {
-				res.status(200).send(rows);
-				return
-			} else {
-				res.status(500).send("Unable to Delete");
-				return;
-			}
+
+			res.status(200).send(rows);
+			return;
+
 		})
 		.catch(function(error) {
 			if (error) {
