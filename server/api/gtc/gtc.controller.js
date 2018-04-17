@@ -45,15 +45,16 @@ export function index(req, res) {
 
 export function show(req, res) {
 
-	console.log("req.query.condition", req.query.condition);
+	 console.log("req.query.condition", req.query.condition);
 
-	var condition = JSON.parse(req.query.condition);
+	//var condition = req.query.condition;
 
 	model[req.endpoint].findOne({
 			/*include: [{
 				all: true
 			}],*/
-			where: condition
+             where:  req.query.condition 
+			//where: condition
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
