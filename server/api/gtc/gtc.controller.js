@@ -8,27 +8,16 @@ const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
 
-	console.log(req.query.offset);
-    console.log(req.query.limit);
-    console.log(req.query.field);
-    console.log(req.query.order);
-   
-/*
-	var offset = JSON.parse(req.query.offset) || 0;
-	var limit = JSON.parse(req.query.limit) || 10;
+	var offset = parseInt(req.query.offset) || 0;
+	var limit = parseInt(req.query.limit) || 10;
 	var field = req.query.field || 'id';
-	var order =req.query.order || 'ASC';
-	*/
+	var order = req.query.order || 'ASC';
 
-	var offset = req.query.offset || 0;
-	var limit = req.query.limit || 10;
-	var field = req.query.field || 'id';
-	var order =req.query.order || 'ASC';
 
 	model[req.endpoint].findAndCountAll({
 			include: [{
-					all: true
-				}],
+				all: true
+			}],
 			offset: offset,
 			limit: limit,
 			order: [
@@ -56,22 +45,25 @@ export function index(req, res) {
 
 export function show(req, res) {
 
+	console.log("req.query.condition", req.query.condition);
+
+	var condition = JSON.parse(req.query.condition);
 
 	model[req.endpoint].findOne({
-			include: [{
+			/*include: [{
 				all: true
-			}],
-			where: req.query.condition
+			}],*/
+			where: condition
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
 				return;
-			}  else {
+			} else {
 				res.status(404).send("Not Found");
 				return;
 			}
 
-		})	
+		})
 		.catch(function(error) {
 			if (error) {
 				res.status(500).send(error);
@@ -109,9 +101,9 @@ export function create(req, res) {
 
 	model[req.endpoint].create(req.body)
 		.then(function(row) {
-			if (rows) {
+			if (row) {
 				res.status(201).send("Created");
-				return
+				return;
 			} else {
 				res.status(500).send("Unable to create");
 				return;
@@ -142,9 +134,9 @@ export function update(req, res) {
 		})
 		.then(function(rows) {
 			if (rows) {
-				res.status(200).send(rows);
+				res.status(200).send("Updated");
 				return
-			}else {
+			} else {
 				res.status(500).send("Unable to Update");
 				return;
 			}
@@ -165,6 +157,9 @@ export function softDelete(req, res) {
 	if (req.body.id) {
 		Reflect.deleteProperty(req.body, 'id');
 	}
+
+	req.body['deleted_at'] = new Date();
+
 	model[req.endpoint].update({
 			deleted: true
 		}, {
@@ -177,8 +172,7 @@ export function softDelete(req, res) {
 			if (rows) {
 				res.status(200).send(rows);
 				return
-			}
-			else {
+			} else {
 				res.status(500).send("Unable to Delete");
 				return;
 			}
