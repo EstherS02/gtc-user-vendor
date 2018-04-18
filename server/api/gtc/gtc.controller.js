@@ -2,6 +2,7 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
+const reference = require('../../config/model-reference');
 
 
 // To find all the records in the table
@@ -24,6 +25,8 @@ export function index(req, res) {
 	var limit = req.query.limit || 10;
 	var field = req.query.field || 'id';
 	var order =req.query.order || 'ASC';
+
+	console.log(model[req.endpoint])
 
 	model[req.endpoint].findAndCountAll({
 			include: [{
@@ -56,11 +59,16 @@ export function index(req, res) {
 
 export function show(req, res) {
 
+	var includeArr = [];
+
+	for(var i=0; i<reference[req.endpoint].length; i++){
+		includeArr.push({
+			model: model[reference[req.endpoint][i]]
+		}) 
+	} 
 
 	model[req.endpoint].findOne({
-			include: [{
-				all: true
-			}],
+			include: includeArr,		
 			where: req.query.condition
 		}).then(function(row) {
 			if (row) {
