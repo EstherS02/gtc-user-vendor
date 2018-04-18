@@ -62,10 +62,19 @@ export function show(req, res) {
 	var includeArr = [];
 
 	for(var i=0; i<reference[req.endpoint].length; i++){
-		includeArr.push({
-			model: model[reference[req.endpoint][i]]
-		}) 
-	} 
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
+
+	console.log("includeArr", includeArr)
 
 	model[req.endpoint].findOne({
 			include: includeArr,		
