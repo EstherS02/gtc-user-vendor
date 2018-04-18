@@ -189,19 +189,23 @@ module.exports.initRelations = () => {
     });
 
     Coupon.belongsTo(Product, {
-        foreignKey: 'product_id'
+        foreignKey: 'product_id',
+        as:'includedProduct'
     });
 
     Coupon.belongsTo(Product, {
-        foreignKey: 'exclude_product_id'
+        foreignKey: 'exclude_product_id',
+        as:'excludedProduct'
     });
 
     Coupon.belongsTo(Category, {
-        foreignKey: 'category_id'
+        foreignKey: 'category_id',
+        as:'includedCategory'
     });
 
     Coupon.belongsTo(Category, {
-        foreignKey: 'exclude_category_id'
+        foreignKey: 'exclude_category_id',
+        as:'excludedCategory'
     });
 
     Coupon.belongsToMany(Category, {

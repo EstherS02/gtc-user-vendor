@@ -19,12 +19,18 @@ export function index(req, res) {
 
 	var includeArr = [];
 
-	for(var i=0; i<reference[req.endpoint].length; i++){
-		includeArr.push({
-			model: model[reference[req.endpoint][i]]
-		}) 
-	} 
-
+		for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
 
 	model[req.endpoint].findAndCountAll({
 			include: includeArr,
@@ -45,17 +51,26 @@ export function index(req, res) {
 		});
 }
 
-// To find first record of the table	
+// To find first record of the table for the specified condition
 
 export function show(req, res) {
 
 	var includeArr = [];
 
 	for(var i=0; i<reference[req.endpoint].length; i++){
-		includeArr.push({
-			model: model[reference[req.endpoint][i]]
-		}) 
-	} 
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
+
+	console.log("includeArr", includeArr)
 
 	model[req.endpoint].findOne({
 			include: includeArr,		
@@ -83,7 +98,30 @@ export function show(req, res) {
 
 export function findById(req, res) {
 
-	model[req.endpoint].findById(req.params.id)
+	var includeArr = [];
+
+	for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
+
+	console.log("includeArr", includeArr)
+
+	model[req.endpoint].find({
+		where:{
+			id:req.params.id
+		},
+		include: includeArr
+
+		})
 		.then(function(row) {
 			if (row) {
 				res.status(200).send(row);

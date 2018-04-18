@@ -97,10 +97,12 @@ module.exports.initRelations = () => {
     });
 
     Talk.belongsTo(User, {
+        as: "fromUser",
         foreignKey: 'from_id'
     });
 
     Talk.belongsTo(User, {
+        as: "toUser",
         foreignKey: 'to_id'
     });
 
