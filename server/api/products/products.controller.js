@@ -81,13 +81,13 @@ export function totalPrice(req, res) {
 
 export function couponExp(req, res){
 
+	var current_date = new Date();
+
 	model['Coupon'].update({	
-			status: 10
+			status: 5
 		}, {
 			where: {
-				expiry_date : {	
-					[Op.lt]:new Date()
-				}
+				expiry_date : '2018-06-05 00:00:00'
 			},
 			individualHooks: true
 		})
