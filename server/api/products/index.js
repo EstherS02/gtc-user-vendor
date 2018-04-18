@@ -8,6 +8,8 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.put('/order/:id', controller.productDec);
+//router.put('/order/:id', controller.productDec);
+router.get('/order/total-price', controller.totalPrice);
+router.put('/order/couponExp', controller.couponExp)
 
 module.exports = router;

@@ -39,7 +39,7 @@ export function index(req, res) {
 
 export function show(req, res) {
 
-	 console.log("req.query.condition", req.query);
+	console.log("req.query.condition", req.query);
 
 	//var condition = req.query.condition;
 
@@ -47,8 +47,8 @@ export function show(req, res) {
 			include: [{
 				all: true
 			}],
-             where:  req.query
-			//where: condition
+			where: req.query
+				//where: condition
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
@@ -120,7 +120,7 @@ export function update(req, res) {
 		})
 		.then(function(entity) {
 			if (entity) {
-				model[req.endpoint].update(req.body,{
+				model[req.endpoint].update(req.body, {
 						where: {
 							id: req.params.id
 						},
