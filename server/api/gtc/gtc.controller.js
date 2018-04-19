@@ -9,29 +9,31 @@ const reference = require('../../config/model-reference');
 
 export function index(req, res) {
 
-	console.log(req.query.offset);
-    console.log(req.query.limit);
-    console.log(req.query.field);
-    console.log(req.query.order);
-   
-/*
-	var offset = JSON.parse(req.query.offset) || 0;
-	var limit = JSON.parse(req.query.limit) || 10;
+	var offset = parseInt(req.query.offset) || 0;
+	var limit = parseInt(req.query.limit) || 10;
 	var field = req.query.field || 'id';
-	var order =req.query.order || 'ASC';
-	*/
+	var order = req.query.order || 'ASC';
 
-	var offset = req.query.offset || 0;
-	var limit = req.query.limit || 10;
-	var field = req.query.field || 'id';
-	var order =req.query.order || 'ASC';
 
 	console.log(model[req.endpoint])
 
+	var includeArr = [];
+
+		for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
+
 	model[req.endpoint].findAndCountAll({
-			include: [{
-					all: true
-				}],
+			include: includeArr,
 			offset: offset,
 			limit: limit,
 			order: [
@@ -39,23 +41,17 @@ export function index(req, res) {
 			]
 		})
 		.then(function(rows) {
-			if (rows) {
-				res.status(200).send(rows);
-				return;
-			} else {
-				res.status(404).send("Not Found");
-				return;
-			}
+			res.status(200).send(rows);
+			return;
+
 		})
 		.catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
-				return;
-			}
+			res.status(500).send(error);
+			return;
 		});
 }
 
-// To find first record of the table	
+// To find first record of the table for the specified condition
 
 export function show(req, res) {
 
@@ -78,17 +74,18 @@ export function show(req, res) {
 
 	model[req.endpoint].findOne({
 			include: includeArr,		
-			where: req.query.condition
+			where: req.query
+
 		}).then(function(row) {
 			if (row) {
 				res.status(200).send(row);
 				return;
-			}  else {
+			} else {
 				res.status(404).send("Not Found");
 				return;
 			}
 
-		})	
+		})
 		.catch(function(error) {
 			if (error) {
 				res.status(500).send(error);
@@ -101,7 +98,30 @@ export function show(req, res) {
 
 export function findById(req, res) {
 
-	model[req.endpoint].findById(req.params.id)
+	var includeArr = [];
+
+	for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object'){
+			includeArr.push({
+				model: model[reference[req.endpoint][i].model_name],
+				as: reference[req.endpoint][i].model_as
+			});
+		}else{
+			includeArr.push({
+				model: model[reference[req.endpoint][i]]
+			});
+		} 
+	}
+
+	console.log("includeArr", includeArr)
+
+	model[req.endpoint].find({
+		where:{
+			id:req.params.id
+		},
+		include: includeArr
+
+		})
 		.then(function(row) {
 			if (row) {
 				res.status(200).send(row);
@@ -126,13 +146,8 @@ export function create(req, res) {
 
 	model[req.endpoint].create(req.body)
 		.then(function(row) {
-			if (rows) {
-				res.status(201).send("Created");
-				return
-			} else {
-				res.status(500).send("Unable to create");
-				return;
-			}
+			res.status(201).send("Created");
+			return;
 		})
 		.catch(function(error) {
 			if (error) {
@@ -144,34 +159,40 @@ export function create(req, res) {
 
 // To update 
 
+
+
 export function update(req, res) {
-	if (req.body.id) {
-		Reflect.deleteProperty(req.body, 'id');
-	}
-
-	req.body['last_updated_on'] = new Date();
-
-	model[req.endpoint].update(req.body, {
+	model[req.endpoint].find({
 			where: {
 				id: req.params.id
 			},
 			individualHooks: true
 		})
-		.then(function(rows) {
-			if (rows) {
-				res.status(200).send(rows);
-				return
-			}else {
-				res.status(500).send("Unable to Update");
-				return;
-			}
+		.then(function(entity) {
+			if (entity) {
+				model[req.endpoint].update(req.body, {
+						where: {
+							id: req.params.id
+						},
+						individualHooks: true
+					})
+					.then(() => {
+						res.status(200).send("Updated");
+						return;
+					}).catch(function(err) {
+						res.send(err);
+						return;
+					});
+			} else {
 
-		})
-		.catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
+				res.status(404).send("Not Found");
 				return;
+
 			}
+		})
+		.catch(function(err) {
+			res.send(err);
+			return;
 		});
 }
 
@@ -182,8 +203,12 @@ export function softDelete(req, res) {
 	if (req.body.id) {
 		Reflect.deleteProperty(req.body, 'id');
 	}
+
+	var deleted_at = new Date();
+
 	model[req.endpoint].update({
-			deleted: true
+			status: 10,
+			deleted_at: deleted_at
 		}, {
 			where: {
 				id: req.params.id
@@ -191,14 +216,10 @@ export function softDelete(req, res) {
 			individualHooks: true
 		})
 		.then(function(rows) {
-			if (rows) {
-				res.status(200).send(rows);
-				return
-			}
-			else {
-				res.status(500).send("Unable to Delete");
-				return;
-			}
+
+			res.status(200).send("Deleted");
+			return;
+
 		})
 		.catch(function(error) {
 			if (error) {
