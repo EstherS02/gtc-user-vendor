@@ -42,52 +42,54 @@ export function productDec(req, res) {
 		});
 }
 
-export function totalPrice(req, res) {
+export function productComp(req, res) {
+	console.log("comming", req.params.id);
 
-	var totalPrice;
-	var quantity = req.query.quantity;
-
-	console.log("req.query", req.query.id)
-
-	model['Product'].findOne({
-			include: [{
-				all: true
-			}],
-			where: {
-				id: req.query.id
-			}
-
-		}).then(function(row) {
+	model['Product'].findById(req.params.id)
+		.then(function(row) {
 			if (row) {
-				totalPrice = row.price * quantity;
+				console.log("row.sub_category_id" + row.sub_category_id)
+				model['Product'].findAll({
+						where: {
+							sub_category_id: row.sub_category_id
+						},
+						individualHooks: true
+					})
+					.then(function(rows) {
+						res.status(200).send(rows);
+						return;
+					})
+					.catch(function(error) {
+						res.status(500).send(error);
+						return;
+					});
 
-				console.log("Total price=", totalPrice);
-
-				res.status(404).send("Total price Calculated");
-				return;
 			} else {
-				res.status(404).send(" Found");
-				return;
-			}
 
-		})
-		.catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
+				res.status(404).send("Not Found");
 				return;
 			}
+		})
+		.catch(function(err) {
+			res.send(err);
+			return;
 		});
 }
+
 
 export function couponExp(req, res){
 
 	var current_date = new Date();
+	
+	var date = new Date(current_date);
 
-	model['Coupon'].update({	
-			status: 5
+	console.log("date"+date);
+
+	    model['Coupon'].update({	
+			status: 15
 		}, {
 			where: {
-				expiry_date : '2018-06-05 00:00:00'
+				expiry_date : date
 			},
 			individualHooks: true
 		})

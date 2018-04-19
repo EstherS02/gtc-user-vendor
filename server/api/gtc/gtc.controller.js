@@ -19,18 +19,19 @@ export function index(req, res) {
 
 	var includeArr = [];
 
-		for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object'){
+			for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name],
 				as: reference[req.endpoint][i].model_as
 			});
 		}else{
 			includeArr.push({
-				model: model[reference[req.endpoint][i]]
+				model: model[reference[req.endpoint][i].model_name]
 			});
 		} 
 	}
+
 
 	model[req.endpoint].findAndCountAll({
 			include: includeArr,
@@ -38,9 +39,12 @@ export function index(req, res) {
 			limit: limit,
 			order: [
 				[field, order]
-			]
+			],
+			where: req.query
 		})
 		.then(function(rows) {
+
+
 			res.status(200).send(rows);
 			return;
 
@@ -57,18 +61,19 @@ export function show(req, res) {
 
 	var includeArr = [];
 
-	for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object'){
+		for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name],
 				as: reference[req.endpoint][i].model_as
 			});
 		}else{
 			includeArr.push({
-				model: model[reference[req.endpoint][i]]
+				model: model[reference[req.endpoint][i].model_name]
 			});
 		} 
 	}
+
 
 	console.log("includeArr", includeArr)
 
@@ -100,18 +105,19 @@ export function findById(req, res) {
 
 	var includeArr = [];
 
-	for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object'){
+		for(var i=0; i<reference[req.endpoint].length; i++){
+		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name],
 				as: reference[req.endpoint][i].model_as
 			});
 		}else{
 			includeArr.push({
-				model: model[reference[req.endpoint][i]]
+				model: model[reference[req.endpoint][i].model_name]
 			});
 		} 
 	}
+
 
 	console.log("includeArr", includeArr)
 
