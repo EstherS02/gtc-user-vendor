@@ -14,6 +14,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'email',
             allowNull: false
         },
+        role: {
+            type: DataTypes.INTEGER,
+            field: 'role',
+            allowNull: false
+        },
+        name: {
+            type: DataTypes.STRING(64),
+            field: 'name',
+            allowNull: false
+        },
         hashed_pwd: {
             type: DataTypes.TEXT,
             field: 'hashed_pwd',

@@ -33,6 +33,8 @@ var all = {
   // Should we populate the DB with sample data?
   seedDB: false,
 
+  clientURL: process.env.CLIENT_BASE_URL,
+
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
     session: 'gtc-secret',
