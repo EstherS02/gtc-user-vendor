@@ -6,7 +6,7 @@ const passport = require('passport');
 const _ = require('lodash');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const uservalidate = require('../api/users/users.controller')
+const adminvalidate = require('../api/admin/admin.controller')
 const config = require('../config/environment');
 
 const model = require('../sqldb/model-connect');
@@ -27,14 +27,15 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 	model['Admin'].findOne({
 		where: {
 			email: email
-		}
+		},
+		raw: true
 	}).then(function(admin) {
 		if (!admin) {
 			return done(null, false);
 		}
-		/*if (!uservalidate.authenticate(password, user)) {
+		if (!adminvalidate.authenticate(password, admin)) {
 			return done(null, false);
-		}*/
+		}
 		var tokenPayload = {
 			adminId: admin.id,
 			email: admin.email,
@@ -48,7 +49,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 			where: {
 				admin_id: admin.id,
 				client_id: client.id
-			}
+			},
+			raw: true
 		}).then(function(token) {
 			if (token) {
 				return done(null, accessToken, token.refresh_token, {
