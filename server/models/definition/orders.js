@@ -170,11 +170,13 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsTo(Address, {
-        foreignKey: 'shipping_address_id'
+        foreignKey: 'shipping_address_id',
+        as:'shippingAddress'
     });
 
     Order.belongsTo(Address, {
-        foreignKey: 'billing_address_id'
+        foreignKey: 'billing_address_id',
+        as:'billingAddress'
     });
 
     Order.belongsToMany(Product, {
