@@ -42,6 +42,17 @@ export default function(app) {
   app.use(shrinkRay());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  app.use(function(req, res, next) {
+    var allowedOrigins = [config.clientURL];
+    var origin = req.headers.origin;
+    if (allowedOrigins.indexOf(origin) > -1) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
+    res.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.set('Access-Control-Allow-Credentials', 'true');
+    next();
+  });
   app.use(expressValidator());
   app.use(methodOverride());
   app.use(cookieParser());
