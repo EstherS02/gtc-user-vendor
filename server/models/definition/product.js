@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         sku: {
             type: DataTypes.INTEGER,
@@ -163,7 +162,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'product'
+        // schema: 'public',
+        tableName: 'product',
+        timestamps: false
     });
 };
 
@@ -186,7 +187,7 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const Country = model.Country;
@@ -197,193 +198,305 @@ module.exports.initRelations = () => {
     const Attribute = model.Attribute;
 
     Product.hasMany(Cart, {
-        foreignKey: 'product_id'
+        as: 'FkCart2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Coupon, {
-        foreignKey: 'product_id'
+        as: 'FkCoupon1s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Coupon, {
-        foreignKey: 'exclude_product_id'
+        as: 'FkCoupon2s',
+        foreignKey: 'exclude_product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(CouponExcludedProduct, {
-        foreignKey: 'product_id'
+        as: 'FkCouponExcludedProduct2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(CouponProduct, {
-        foreignKey: 'product_id'
+        as: 'FkCouponProduct2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(FeaturedProduct, {
-        foreignKey: 'product_id'
+        as: 'FkFeaturedProduct1s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(OrderItem, {
-        foreignKey: 'product_id'
+        as: 'FkOrderItems2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductAdsSetting, {
-        foreignKey: 'product_id'
+        as: 'FkProductAdsSetting1s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductAttribute, {
-        foreignKey: 'product_id'
+        as: 'FkProductAttribute2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductReview, {
-        foreignKey: 'product_id'
+        as: 'FkProductReview1s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Subscription, {
-        foreignKey: 'product_id'
+        as: 'FkSubscription2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(WishList, {
-        foreignKey: 'product_id'
+        as: 'FkWishList2s',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Vendor, {
-        foreignKey: 'vendor_id'
+        as: 'Vendor',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Marketplace, {
-        foreignKey: 'marketplace_id'
+        as: 'Marketplace',
+        foreignKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(MarketplaceType, {
-        foreignKey: 'marketplace_type_id'
+        as: 'MarketplaceType',
+        foreignKey: 'marketplace_type_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
-    Product.belongsTo(ProductMedia, {
-        foreignKey: 'product_media_id'
+    Product.belongsTo(ProductMedium, {
+        as: 'ProductMedium',
+        foreignKey: 'product_media_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Category, {
-        foreignKey: 'product_category_id'
+        as: 'ProductCategory',
+        foreignKey: 'product_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(SubCategory, {
-        foreignKey: 'sub_category_id'
+        as: 'SubCategory',
+        foreignKey: 'sub_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Country, {
-        foreignKey: 'product_location'
+        as: 'RelatedProductLocation',
+        foreignKey: 'product_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(State, {
-        foreignKey: 'state_id'
+        as: 'State',
+        foreignKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(User, {
+        as: 'CartUsers',
         through: Cart,
         foreignKey: 'product_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Product, {
-        as: 'product',
+        as: 'CouponExcludeProducts',
         through: Coupon,
         foreignKey: 'product_id',
-        otherKey: 'exclude_product_id'
+        otherKey: 'exclude_product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Category, {
+        as: 'CouponCategories',
         through: Coupon,
         foreignKey: 'product_id',
-        otherKey: 'category_id'
+        otherKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Category, {
+        as: 'CouponExcludeCategories',
         through: Coupon,
         foreignKey: 'product_id',
-        otherKey: 'exclude_category_id'
+        otherKey: 'exclude_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Product, {
-        as: 'product',
+        as: 'CouponProducts',
         through: Coupon,
         foreignKey: 'exclude_product_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Category, {
+        as: 'CouponCategories',
         through: Coupon,
         foreignKey: 'exclude_product_id',
-        otherKey: 'category_id'
+        otherKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Category, {
+        as: 'CouponExcludeCategories',
         through: Coupon,
         foreignKey: 'exclude_product_id',
-        otherKey: 'exclude_category_id'
+        otherKey: 'exclude_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Coupon, {
+        as: 'CouponExcludedProductCoupons',
         through: CouponExcludedProduct,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id'
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Coupon, {
+        as: 'CouponProductCoupons',
         through: CouponProduct,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id'
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Order, {
+        as: 'OrderItemOrders',
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'order_id'
+        otherKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Coupon, {
+        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'coupon_id'
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Tax, {
+        as: 'OrderItemTaxes',
         through: OrderItem,
         foreignKey: 'product_id',
-        otherKey: 'tax_id'
+        otherKey: 'tax_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Country, {
+        as: 'ProductAdsSettingCountries',
         through: ProductAdsSetting,
         foreignKey: 'product_id',
-        otherKey: 'country_id'
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(State, {
+        as: 'ProductAdsSettingStates',
         through: ProductAdsSetting,
         foreignKey: 'product_id',
-        otherKey: 'state_id'
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(Attribute, {
+        as: 'ProductAttributeAttributes',
         through: ProductAttribute,
         foreignKey: 'product_id',
-        otherKey: 'attribute_id'
+        otherKey: 'attribute_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(User, {
+        as: 'ProductReviewUsers',
         through: ProductReview,
         foreignKey: 'product_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(User, {
+        as: 'SubscriptionUsers',
         through: Subscription,
         foreignKey: 'product_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(User, {
+        as: 'WishListUsers',
         through: WishList,
         foreignKey: 'product_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

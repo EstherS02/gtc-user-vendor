@@ -60,7 +60,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'plan'
+        // schema: 'public',
+        tableName: 'plan',
+        timestamps: false
     });
 };
 
@@ -71,36 +73,47 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
     const PlanLimit = model.PlanLimit;
     const PlanMarketplace = model.PlanMarketplace;
-    const Vendor = model.Vendor;
     const VendorPlan = model.VendorPlan;
     const Marketplace = model.Marketplace;
-    const User = model.User;
-    const Country = model.Country;
-    const Currency = model.Currency;
-    const Timezone = model.Timezone;
+    const Vendor = model.Vendor;
 
     Plan.hasMany(PlanLimit, {
-        foreignKey: 'plan_id'
+        as: 'FkPlanLimit1s',
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Plan.hasMany(PlanMarketplace, {
-        foreignKey: 'plan_id'
+        as: 'FkPlanMarketplace1s',
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Plan.hasMany(VendorPlan, {
-        foreignKey: 'plan_id'
+        as: 'FkVendorPlan2s',
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Plan.belongsToMany(Marketplace, {
+        as: 'PlanMarketplaceMarketplaces',
         through: PlanMarketplace,
         foreignKey: 'plan_id',
-        otherKey: 'marketplace_id'
+        otherKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Plan.belongsToMany(Vendor, {
+        as: 'VendorPlanVendors',
         through: VendorPlan,
         foreignKey: 'plan_id',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

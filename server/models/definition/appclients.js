@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         secret: {
             type: DataTypes.STRING(255),
@@ -25,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'appclients'
+        // schema: 'public',
+        tableName: 'appclients',
+        timestamps: false
     });
 };
 
@@ -38,13 +39,19 @@ module.exports.initRelations = () => {
     const User = model.User;
 
     Appclient.hasMany(UserToken, {
-        foreignKey: 'client_id'
+        as: 'FkUserToken2s',
+        foreignKey: 'client_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Appclient.belongsToMany(User, {
+        as: 'UserTokenUsers',
         through: UserToken,
         foreignKey: 'client_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

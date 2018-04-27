@@ -16,6 +16,7 @@ export default function(app) {
   
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
+  app.use('/api/vendor', require('./api/vendor'));
   app.use('/api/users', require('./api/users'));
   app.use('/api', require('./api/gtc'));
   app.use('/api/product',require('./api/products'))

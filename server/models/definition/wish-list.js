@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         user_id: {
             type: DataTypes.BIGINT,
@@ -57,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'wish_list'
+        // schema: 'public',
+        tableName: 'wish_list',
+        timestamps: false
     });
 };
 
@@ -70,11 +71,17 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     WishList.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     WishList.belongsTo(Product, {
-        foreignKey: 'product_id'
+        as: 'Product',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

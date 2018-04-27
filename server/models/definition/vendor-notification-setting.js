@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -56,7 +55,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_notification_setting'
+        // schema: 'public',
+        tableName: 'vendor_notification_setting',
+        timestamps: false
     });
 };
 
@@ -68,7 +69,10 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     VendorNotificationSetting.belongsTo(Vendor, {
-        foreignKey: 'vendor_id'
+        as: 'Vendor',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

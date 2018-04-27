@@ -105,7 +105,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'users'
+        // schema: 'public',
+        tableName: 'users',
+        timestamps: false
     });
 };
 
@@ -115,6 +117,7 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const User = model.User;
     const Address = model.Address;
+    const Admin = model.Admin;
     const Cart = model.Cart;
     const Order = model.Order;
     const PaymentSetting = model.PaymentSetting;
@@ -134,196 +137,308 @@ module.exports.initRelations = () => {
     const Shipping = model.Shipping;
     const TalkSetting = model.TalkSetting;
     const Appclient = model.Appclient;
-    const Plan = model.Plan;
     const Currency = model.Currency;
     const Timezone = model.Timezone;
 
     User.hasMany(Address, {
-        foreignKey: 'user_id'
+        as: 'FkAddress1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(Admin, {
+        as: 'FkAdmin1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Cart, {
-        foreignKey: 'user_id'
+        as: 'FkCart1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Order, {
-        foreignKey: 'user_id'
+        as: 'FkOrder1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(PaymentSetting, {
-        foreignKey: 'user_id'
+        as: 'FkPaymentSetting1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(ProductReview, {
-        foreignKey: 'user_id'
+        as: 'FkProductReview2s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Subscription, {
-        foreignKey: 'user_id'
+        as: 'FkSubscription1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Talk, {
-        foreignKey: 'from_id'
+        as: 'FkTalk2s',
+        foreignKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Talk, {
-        foreignKey: 'to_id'
+        as: 'FkTalk3s',
+        foreignKey: 'to_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(TalkThread, {
-        foreignKey: 'from_id'
+        as: 'FkTalkThread2s',
+        foreignKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Ticket, {
-        foreignKey: 'user_id'
+        as: 'FkTicket1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(TicketThread, {
-        foreignKey: 'user_id'
+        as: 'FkTicketThread2s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(UserToken, {
-        foreignKey: 'user_id'
+        as: 'FkUserToken1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(Vendor, {
-        foreignKey: 'user_id'
+        as: 'FkVendor1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(VendorFollower, {
-        foreignKey: 'user_id'
+        as: 'FkVendorFollower2s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.hasMany(WishList, {
-        foreignKey: 'user_id'
+        as: 'FkWishList1s',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Country, {
+        as: 'AddressCountries',
         through: Address,
         foreignKey: 'user_id',
-        otherKey: 'country_id'
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(State, {
+        as: 'AddressProvinces',
         through: Address,
         foreignKey: 'user_id',
-        otherKey: 'province_id'
+        otherKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Product, {
+        as: 'CartProducts',
         through: Cart,
         foreignKey: 'user_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Shipping, {
+        as: 'OrderShippings',
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'shipping_id'
+        otherKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Address, {
+        as: 'OrderShippingAddresses',
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'shipping_address_id'
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Address, {
+        as: 'OrderBillingAddresses',
         through: Order,
         foreignKey: 'user_id',
-        otherKey: 'billing_address_id'
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Product, {
+        as: 'ProductReviewProducts',
         through: ProductReview,
         foreignKey: 'user_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Product, {
+        as: 'SubscriptionProducts',
         through: Subscription,
         foreignKey: 'user_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(TalkSetting, {
+        as: 'TalkTalkSettings',
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'talk_setting_id'
+        otherKey: 'talk_setting_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(User, {
-        as: 'user',
+        as: 'TalkTos',
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'to_id'
+        otherKey: 'to_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(TalkThread, {
+        as: 'TalkLastThreads',
         through: Talk,
         foreignKey: 'from_id',
-        otherKey: 'last_thread_id'
+        otherKey: 'last_thread_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(TalkSetting, {
+        as: 'TalkTalkSettings',
         through: Talk,
         foreignKey: 'to_id',
-        otherKey: 'talk_setting_id'
+        otherKey: 'talk_setting_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(User, {
-        as: 'user',
+        as: 'TalkFroms',
         through: Talk,
         foreignKey: 'to_id',
-        otherKey: 'from_id'
+        otherKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(TalkThread, {
+        as: 'TalkLastThreads',
         through: Talk,
         foreignKey: 'to_id',
-        otherKey: 'last_thread_id'
+        otherKey: 'last_thread_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Ticket, {
+        as: 'TicketThreadTickets',
         through: TicketThread,
         foreignKey: 'user_id',
-        otherKey: 'ticket_id'
+        otherKey: 'ticket_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Appclient, {
+        as: 'UserTokenClients',
         through: UserToken,
         foreignKey: 'user_id',
-        otherKey: 'client_id'
+        otherKey: 'client_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Country, {
+        as: 'VendorBaseLocations',
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'base_location'
+        otherKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Currency, {
+        as: 'VendorCurrencies',
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'currency_id'
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Timezone, {
+        as: 'VendorTimezones',
         through: Vendor,
         foreignKey: 'user_id',
-        otherKey: 'timezone_id'
+        otherKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Vendor, {
+        as: 'VendorFollowerVendors',
         through: VendorFollower,
         foreignKey: 'user_id',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     User.belongsToMany(Product, {
+        as: 'WishListProducts',
         through: WishList,
         foreignKey: 'user_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

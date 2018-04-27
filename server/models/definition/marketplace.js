@@ -55,7 +55,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'marketplace'
+        // schema: 'public',
+        tableName: 'marketplace',
+        timestamps: false
     });
 };
 
@@ -69,70 +71,103 @@ module.exports.initRelations = () => {
     const Product = model.Product;
     const Plan = model.Plan;
     const Vendor = model.Vendor;
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const Country = model.Country;
     const State = model.State;
 
     Marketplace.hasMany(MarketplaceType, {
-        foreignKey: 'marketplace_id'
+        as: 'FkMarketplaceType1s',
+        foreignKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.hasMany(PlanMarketplace, {
-        foreignKey: 'marketplace_id'
+        as: 'FkPlanMarketplace2s',
+        foreignKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.hasMany(Product, {
-        foreignKey: 'marketplace_id'
+        as: 'FkProduct2s',
+        foreignKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(Plan, {
+        as: 'PlanMarketplacePlans',
         through: PlanMarketplace,
         foreignKey: 'marketplace_id',
-        otherKey: 'plan_id'
+        otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(Vendor, {
+        as: 'ProductVendors',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(MarketplaceType, {
+        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'marketplace_type_id'
+        otherKey: 'marketplace_type_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
-    Marketplace.belongsToMany(ProductMedia, {
+    Marketplace.belongsToMany(ProductMedium, {
+        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_media_id'
+        otherKey: 'product_media_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(Category, {
+        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_category_id'
+        otherKey: 'product_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(SubCategory, {
+        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'sub_category_id'
+        otherKey: 'sub_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(Country, {
+        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'product_location'
+        otherKey: 'product_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Marketplace.belongsToMany(State, {
+        as: 'ProductStates',
         through: Product,
         foreignKey: 'marketplace_id',
-        otherKey: 'state_id'
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

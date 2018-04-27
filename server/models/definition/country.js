@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         region_id: {
             type: DataTypes.BIGINT,
@@ -72,7 +71,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'country'
+        // schema: 'public',
+        tableName: 'country',
+        timestamps: false
     });
 };
 
@@ -94,139 +95,213 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
-    const Plan = model.Plan;
 
     Country.hasMany(Address, {
-        foreignKey: 'country_id'
+        as: 'FkAddress2s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Product, {
-        foreignKey: 'product_location'
+        as: 'FkProduct7s',
+        foreignKey: 'product_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(ProductAdsSetting, {
-        foreignKey: 'country_id'
+        as: 'FkProductAdsSetting2s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(State, {
-        foreignKey: 'country_id'
+        as: 'FkState1s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Tax, {
-        foreignKey: 'country_id'
+        as: 'FkTax1s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Timezone, {
-        foreignKey: 'country_id'
+        as: 'FkTimeZone1s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Vendor, {
-        foreignKey: 'base_location'
+        as: 'FkVendor2s',
+        foreignKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(VendorShippingLocation, {
-        foreignKey: 'country_id'
+        as: 'FkVendorShippingLocation2s',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsTo(Region, {
-        foreignKey: 'region_id'
+        as: 'Region',
+        foreignKey: 'region_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsTo(Currency, {
-        foreignKey: 'currency_id'
+        as: 'Currency',
+        foreignKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(User, {
+        as: 'AddressUsers',
         through: Address,
         foreignKey: 'country_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(State, {
+        as: 'AddressProvinces',
         through: Address,
         foreignKey: 'country_id',
-        otherKey: 'province_id'
+        otherKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Vendor, {
+        as: 'ProductVendors',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Marketplace, {
+        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'marketplace_id'
+        otherKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(MarketplaceType, {
+        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'marketplace_type_id'
+        otherKey: 'marketplace_type_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
-    Country.belongsToMany(ProductMedia, {
+    Country.belongsToMany(ProductMedium, {
+        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'product_media_id'
+        otherKey: 'product_media_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Category, {
+        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'product_category_id'
+        otherKey: 'product_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(SubCategory, {
+        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'sub_category_id'
+        otherKey: 'sub_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(State, {
+        as: 'ProductStates',
         through: Product,
         foreignKey: 'product_location',
-        otherKey: 'state_id'
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Product, {
+        as: 'ProductAdsSettingProducts',
         through: ProductAdsSetting,
         foreignKey: 'country_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(State, {
+        as: 'ProductAdsSettingStates',
         through: ProductAdsSetting,
         foreignKey: 'country_id',
-        otherKey: 'state_id'
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(User, {
+        as: 'VendorUsers',
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Currency, {
+        as: 'VendorCurrencies',
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'currency_id'
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Timezone, {
+        as: 'VendorTimezones',
         through: Vendor,
         foreignKey: 'base_location',
-        otherKey: 'timezone_id'
+        otherKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(Vendor, {
+        as: 'VendorShippingLocationVendors',
         through: VendorShippingLocation,
         foreignKey: 'country_id',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

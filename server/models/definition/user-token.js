@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         user_id: {
             type: DataTypes.BIGINT,
@@ -35,20 +34,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'refresh_token',
             allowNull: true
-        },
-        admin_id: {
-            type: DataTypes.BIGINT,
-            field: 'admin_id',
-            allowNull: true,
-            references: {
-                model: 'admin',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
         }
     }, {
-        tableName: 'user_token'
+        // schema: 'public',
+        tableName: 'user_token',
+        timestamps: false
     });
 };
 
@@ -59,18 +49,19 @@ module.exports.initRelations = () => {
     const UserToken = model.UserToken;
     const User = model.User;
     const Appclient = model.Appclient;
-    const Admin = model.Admin;
 
     UserToken.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     UserToken.belongsTo(Appclient, {
-        foreignKey: 'client_id'
-    });
-
-    UserToken.belongsTo(Admin, {
-        foreignKey: 'admin_id'
+        as: 'Client',
+        foreignKey: 'client_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

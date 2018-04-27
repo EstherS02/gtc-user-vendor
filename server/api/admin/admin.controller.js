@@ -5,55 +5,81 @@ const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
+const status = require('../../config/status');
+const roles = require('../../config/roles');
 
 export function create(req, res) {
+
 	var queryObj = {};
+
 	req.checkBody('email', 'Missing Query Param').notEmpty();
 	req.checkBody('email', 'Please enter a valid email address').isEmail();
 	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
 	req.checkBody('password', 'Missing Query Param').notEmpty();
+	req.checkBody('first_name', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
 		res.status(400).send('Missing Query Params');
 		return;
 	}
+
 	req.body.salt = makeSalt();
 	req.body.hashed_pwd = encryptPassword(req);
-
-	var bodyParams = req.body;
 
 	if (req.body.email) {
 		queryObj['email'] = req.body.email;
 	}
+	const bodyParams = req.body;
 
-	model['Admin'].findOne({
+	model['User'].findOne({
 		where: queryObj
-	}).then(function(admin) {
-		if (admin) {
+	}).then(function(user) {
+		if (user) {
 			res.status(409).send("Email address already exists");
 			return;
 		} else {
-			model['Admin'].create(bodyParams)
-				.then(function(admin) {
-					if (admin) {
-						res.status(201).send(plainTextResponse(admin));
+			bodyParams["provider"] = providers["OWN"];
+			bodyParams["status"] = status["ACTIVE"];
+			bodyParams["role"] = roles["ADMIN"];
+			bodyParams["email_verified"] = 0;
+
+			model['User'].create(bodyParams)
+				.then(function(user) {
+					if (user) {
+						const rspUser = plainTextResponse(user);
+						model['Admin'].create({
+							user_id: rspUser.id
+						}).then(function(admin) {
+							if (admin) {
+								delete rspUser.salt;
+								delete rspUser.hashed_pwd;
+								res.status(201).send(rspUser);
+								return;
+							} else {
+								res.status(404).send("Not found");
+								return;
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return;
+						});
+					} else {
+						res.status(404).send("Not found");
 						return;
 					}
-				})
-				.catch(function(error) {
-					if (error) {
-						res.status(500).send("Internal server error");
-						return;
-					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return;
 				});
+
 		}
 	}).catch(function(error) {
-		if (error) {
-			res.status(500).send("Internal server error");
-			return
-		}
-	});
+		res.status(500).send("Internal server error");
+		return;
+	})
 }
 
 export function me(req, res) {

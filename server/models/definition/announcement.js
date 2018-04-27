@@ -80,7 +80,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'announcement'
+        // schema: 'public',
+        tableName: 'announcement',
+        timestamps: false
     });
 };
 

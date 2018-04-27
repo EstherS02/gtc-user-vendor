@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING(128),
@@ -66,7 +65,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'tax'
+        // schema: 'public',
+        tableName: 'tax',
+        timestamps: false
     });
 };
 
@@ -82,29 +83,44 @@ module.exports.initRelations = () => {
     const Coupon = model.Coupon;
 
     Tax.hasMany(OrderItem, {
-        foreignKey: 'tax_id'
+        as: 'FkOrderItems4s',
+        foreignKey: 'tax_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Tax.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Tax.belongsToMany(Order, {
+        as: 'OrderItemOrders',
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'order_id'
+        otherKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Tax.belongsToMany(Product, {
+        as: 'OrderItemProducts',
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Tax.belongsToMany(Coupon, {
+        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'tax_id',
-        otherKey: 'coupon_id'
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

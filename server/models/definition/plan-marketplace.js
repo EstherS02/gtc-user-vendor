@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         plan_id: {
             type: DataTypes.BIGINT,
@@ -62,7 +61,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'plan_marketplace'
+        // schema: 'public',
+        tableName: 'plan_marketplace',
+        timestamps: false
     });
 };
 
@@ -75,11 +76,17 @@ module.exports.initRelations = () => {
     const Marketplace = model.Marketplace;
 
     PlanMarketplace.belongsTo(Plan, {
-        foreignKey: 'plan_id'
+        as: 'Plan',
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     PlanMarketplace.belongsTo(Marketplace, {
-        foreignKey: 'marketplace_id'
+        as: 'Marketplace',
+        foreignKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };
