@@ -24,91 +24,103 @@ var server = oauth2orize.createServer();
  */
 server.exchange(oauth2orize.exchange.password(function(client, email, password,
 	scope, done) {
-	model['Admin'].findOne({
+	model['User'].findOne({
 		where: {
 			email: email
 		},
 		raw: true
-	}).then(function(admin) {
-		if (!admin) {
+	}).then(function(user) {
+		if (!user) {
 			return done(null, false);
 		}
-		if (!adminvalidate.authenticate(password, admin)) {
-			return done(null, false);
-		}
-		var tokenPayload = {
-			adminId: admin.id,
-			email: admin.email,
-			client: client
-		};
-		var accessToken = jwt.sign(tokenPayload, config.secrets.accessToken, {
-			expiresIn: config.token.expiresInMinutes * 60
-		});
-
-		model["UserToken"].findOne({
+		model['Admin'].findOne({
 			where: {
-				admin_id: admin.id,
-				client_id: client.id
+				user_id: user.id
 			},
 			raw: true
-		}).then(function(token) {
-			if (token) {
-				return done(null, accessToken, token.refresh_token, {
-					expires_in: config.token.expiresInMinutes * 60
-				});
-			} else {
-				var refreshTokenPayload = {
-					adminId: admin.id,
-					email: admin.email,
-					client: client
-				};
-				var refreshToken = jwt.sign(refreshTokenPayload, config.secrets.refreshToken);
-
-				var token = {
-					client_id: client.id,
-					admin_id: admin.id,
-					refresh_token: refreshToken
-				};
-
-				model['UserToken'].update(token, {
-					where: {
-						admin_id: admin.id,
-						client_id: client.id
-					},
-					returning: true
-				}).then(function(row) {
-					if (row > 0) {
-						return done(null, accessToken, refreshToken, {
-							expires_in: config.token.expiresInMinutes * 60
-						});
-					} else {
-						model['UserToken'].create(token).then(function(row) {
-							if (row) {
-								return done(null, accessToken, refreshToken, {
-									expires_in: config.token.expiresInMinutes * 60
-								});
-							}
-						}).catch(function(err) {
-							if (err) {
-								return done(err);
-							}
-						});
-					}
-				}).catch(function(err) {
-					if (err) {
-						return done(err);
-					}
-				});
+		}).then(function(admin) {
+			if (!admin) {
+				return done(null, false);
 			}
-		}).catch(function(err) {
-			if (err) {
-				return done(err);
+			if (!adminvalidate.authenticate(password, user)) {
+				return done(null, false);
 			}
-		});
-	}).catch(function(err) {
-		if (err) {
-			return done(err);
-		}
+
+			var tokenPayload = {
+				userId: user.id,
+				email: user.email,
+				client: client
+			};
+
+			var accessToken = jwt.sign(tokenPayload, config.secrets.accessToken, {
+				expiresIn: config.token.expiresInMinutes * 60
+			});
+
+			model["UserToken"].findOne({
+				where: {
+					user_id: user.id,
+					client_id: client.id
+				},
+				raw: true
+			}).then(function(token) {
+				if (token) {
+					return done(null, accessToken, token.refresh_token, {
+						expires_in: config.token.expiresInMinutes * 60
+					});
+				} else {
+					var refreshTokenPayload = {
+						userId: user.id,
+						email: user.email,
+						client: client
+					};
+					var refreshToken = jwt.sign(refreshTokenPayload, config.secrets.refreshToken);
+
+					var token = {
+						client_id: client.id,
+						user_id: user.id,
+						refresh_token: refreshToken
+					};
+
+					model['UserToken'].update(token, {
+						where: {
+							user_id: user.id,
+							client_id: client.id
+						},
+						returning: true
+					}).then(function(row) {
+						console.log('row', row);
+						if (row > 0) {
+							return done(null, accessToken, refreshToken, {
+								expires_in: config.token.expiresInMinutes * 60
+							});
+						} else {
+							model['UserToken'].create(token).then(function(row) {
+								if (row) {
+									return done(null, accessToken, refreshToken, {
+										expires_in: config.token.expiresInMinutes * 60
+									});
+								}
+							}).catch(function(error) {
+								console.log("Error:::", error);
+								return done(error);
+							});
+						}
+					}).catch(function(error) {
+						console.log("Error:::", error);
+						return done(error);
+					})
+				}
+			}).catch(function(error) {
+				console.log("Error:::", error);
+				return done(error);
+			});
+		}).catch(function(error) {
+			console.log("Error:::", error);
+			return done(error);
+		})
+	}).catch(function(error) {
+		console.log("Error:::", error);
+		return done(error);
 	});
 }));
 
@@ -134,42 +146,54 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 			return done(null, false);
 		}
 
-		model['Admin'].findById(tokenPayload.adminId).then(function(admin) {
-			if (!admin) {
+		model['User'].findById(tokenPayload.userId).then(function(user) {
+			if (!user) {
 				return done(null, false);
 			} else {
-				var newTokenPayload = {
-					adminId: admin.id,
-					email: admin.email,
-					client: client
-				};
-				var accessToken = jwt.sign(newTokenPayload,
-					config.secrets.accessToken, {
-						expiresIn: config.token.expiresInMinutes * 60
-					});
-
-				var token = {
-					client_id: client.id,
-					admin_id: admin.id,
-					refresh_token: refreshToken
-				};
-
-				model['UserToken'].findOne({
+				model['Admin'].findOne({
 					where: {
-						admin_id: admin.id,
-						client_id: client.id,
-						refresh_token: refreshToken
-					}
-				}).then(function(token) {
-					if (token) {
-						return done(null, accessToken, null, {
-							expires_in: config.token.expiresInMinutes * 60
-						});
-					} else {
-						model['UserToken'].create(token).then(function(row) {
-							if (row) {
+						user_id: user.id
+					},
+					raw: true
+				}).then(function(admin) {
+					if (admin) {
+						var newTokenPayload = {
+							userId: user.id,
+							email: user.email,
+							client: client
+						};
+						var accessToken = jwt.sign(newTokenPayload,
+							config.secrets.accessToken, {
+								expiresIn: config.token.expiresInMinutes * 60
+							});
+						var token = {
+							client_id: client.id,
+							user_id: user.id,
+							refresh_token: refreshToken
+						}
+
+						model['UserToken'].findOne({
+							where: {
+								user_id: user.id,
+								client_id: client.id,
+								refresh_token: refreshToken
+							}
+						}).then(function(token) {
+							if (token) {
 								return done(null, accessToken, null, {
 									expires_in: config.token.expiresInMinutes * 60
+								});
+							} else {
+								model['UserToken'].create(token).then(function(row) {
+									if (row) {
+										return done(null, accessToken, null, {
+											expires_in: config.token.expiresInMinutes * 60
+										});
+									}
+								}).catch(function(err) {
+									if (err) {
+										return done(err);
+									}
 								});
 							}
 						}).catch(function(err) {
@@ -177,17 +201,15 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 								return done(err);
 							}
 						});
+					} else {
+						return done(null, false);
 					}
-				}).catch(function(err) {
-					if (err) {
-						return done(err);
-					}
-				});
+				}).catch(function(error) {
+					return done(error);
+				})
 			}
 		}).catch(function(error) {
-			if (error) {
-				return done(error);
-			}
+			return done(error);
 		});
 	});
 }));

@@ -2,12 +2,75 @@
 
 const crypto = require('crypto');
 const uuid = require('node-uuid');
+const sequelize = require('sequelize');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+
+export function index(req, res) {
+	var offset, limit, field, order;
+	var queryObj = {};
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	queryObj = req.query;
+	queryObj.role = roles['USER'];
+
+	model['User'].findAndCountAll({
+		where: queryObj,
+		offset: offset,
+		limit: limit,
+		attributes: {
+			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+		},
+		order: [
+			[field, order]
+		],
+		raw: true
+	}).then(function(rows) {
+		if (rows.length > 0) {
+			res.status(200).send(rows);
+			return;
+		} else {
+			res.status(200).send(rows);
+			return;
+		}
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	})
+
+}
+
+export function orderUsers(req, res) {
+	model['User'].findAll({
+		attributes: [
+			'id'
+		],
+		include: [{
+			model: model['Order'], as: 'FkOrder1s',
+			attributes: [
+				[sequelize.fn('sum', sequelize.col('id')), 'count']
+			]
+		}],
+		group: ['id']
+	}).then(function(rows) {
+		console.log('rows', rows);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+	})
+}
 
 export function create(req, res) {
 	var queryObj = {};
@@ -86,6 +149,27 @@ export function me(req, res) {
 		res.status(200).send(req.user);
 		return;
 	}
+}
+
+export function destroy(req, res) {
+	const ids = req.params.ids.split(' ').map(Number);
+	model['User'].destroy({
+		where: {
+			id: ids
+		}
+	}).then(function(row) {
+		if (row > 0) {
+			res.status(200).send("Users deleted successfully");
+			return;
+		} else {
+			res.status(404).send("Cannot delete users");
+			return
+		}
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	})
 }
 
 function plainTextResponse(response) {

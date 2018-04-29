@@ -26,10 +26,9 @@ export function create(req, res) {
 			}
 		})
 		.catch(function(error) {
-			if (error) {
-				res.status(500).send("Internal server error");
-				return;
-			}
+			console.log("Error:::", error);
+			res.status(500).send("Internal server error");
+			return;
 		});
 }
 

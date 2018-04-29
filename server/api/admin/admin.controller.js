@@ -83,8 +83,8 @@ export function create(req, res) {
 }
 
 export function me(req, res) {
-	if (req.admin) {
-		res.status(200).send(req.admin);
+	if (req.user) {
+		res.status(200).send(req.user);
 		return;
 	}
 }
