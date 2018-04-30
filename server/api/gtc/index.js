@@ -11,6 +11,7 @@ var router = express.Router();
 
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
+router.get('/:endpoint/search', middleware.validateEndpoint(), controller.search);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
 router.post('/:endpoint', middleware.validateEndpoint(), controller.create);
 router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.update);
