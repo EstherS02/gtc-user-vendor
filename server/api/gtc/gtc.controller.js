@@ -186,6 +186,9 @@ export function findById(req, res) {
 // To create
 
 export function create(req, res) {
+
+	console.log("request",req.body);
+
 	req.body['created_on'] = new Date();
 
 	model[req.endpoint].create(req.body)
