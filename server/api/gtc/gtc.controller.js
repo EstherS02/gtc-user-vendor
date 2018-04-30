@@ -5,6 +5,43 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 
 
+//Dynamic search for all endpoints
+
+export function search(req, res) {
+
+	var searchArray = [];
+
+	if(!req.query.text)
+		res.send(400).send("Missing text query to search");
+	if(!req.query.fields)
+		res.send(400).send("Missing which fields to search");
+
+	var searchText = req.query.text;
+
+	var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+
+	for(var i=0; i<searchFields.length; i++){
+		var searchObj = {}
+		searchObj[searchFields[i]] = { like: '%' + searchText + '%' }
+		searchArray.push(searchObj);
+	}
+
+	console.log("Search query", searchArray)
+
+	model[req.endpoint].findAndCountAll({
+		where: {
+			$or: searchArray
+		  }
+	}).then(function(rows) {
+		return res.status(200).send(rows);
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		return res.status(500).send("Internal server error");
+	}); 
+}
+
+
 // To find all the records in the table
 
 export function index(req, res) {
