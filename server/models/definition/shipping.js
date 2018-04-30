@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         provider_name: {
             type: DataTypes.STRING(128),
@@ -45,7 +44,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'shipping'
+        // schema: 'public',
+        tableName: 'shipping',
+        timestamps: false
     });
 };
 
@@ -59,25 +60,37 @@ module.exports.initRelations = () => {
     const Address = model.Address;
 
     Shipping.hasMany(Order, {
-        foreignKey: 'shipping_id'
+        as: 'FkOrder2s',
+        foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Shipping.belongsToMany(User, {
+        as: 'OrderUsers',
         through: Order,
         foreignKey: 'shipping_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Shipping.belongsToMany(Address, {
+        as: 'OrderShippingAddresses',
         through: Order,
         foreignKey: 'shipping_id',
-        otherKey: 'shipping_address_id'
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Shipping.belongsToMany(Address, {
+        as: 'OrderBillingAddresses',
         through: Order,
         foreignKey: 'shipping_id',
-        otherKey: 'billing_address_id'
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

@@ -2,7 +2,6 @@
 
 const crypto = require('crypto');
 const uuid = require('node-uuid');
-const sequelize = require('sequelize');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -10,50 +9,10 @@ const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 
-export function index(req, res) {
-	var offset, limit, field, order;
-	var queryObj = {};
-
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;
-
-	queryObj = req.query;
-	queryObj.role = roles['USER'];
-
-	model['User'].findAndCountAll({
-		where: queryObj,
-		offset: offset,
-		limit: limit,
-		attributes: {
-			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-		},
-		order: [
-			[field, order]
-		],
-		raw: true
-	}).then(function(rows) {
-		if (rows.length > 0) {
-			res.status(200).send(rows);
-			return;
-		} else {
-			res.status(200).send(rows);
-			return;
-		}
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	})
-}
-
 export function create(req, res) {
+	console.log('CREATE **************')
 	var queryObj = {};
+	var vendorBodyParams = {};
 	var randomCode = uuid.v1();
 
 	req.checkBody('first_name', 'Missing Query Param').notEmpty();
@@ -77,6 +36,59 @@ export function create(req, res) {
 
 	var bodyParams = req.body;
 
+	if (req.body.contact_email) {
+		vendorBodyParams.contact_email = req.body.contact_email;
+		delete req.body.contact_email;
+	}
+	if (req.body.base_location) {
+		vendorBodyParams.base_location = req.body.base_location;
+		delete req.body.base_location;
+	}
+	if (req.body.vendor_cover_pic_url) {
+		vendorBodyParams.vendor_cover_pic_url = req.body.vendor_cover_pic_url;
+		delete req.body.vendor_cover_pic_url;
+	}
+	if (req.body.vendor_profile_pic_url) {
+		vendorBodyParams.vendor_profile_pic_url = req.body.vendor_profile_pic_url;
+		delete req.body.vendor_profile_pic_url;
+	}
+	if (req.body.facebook_url) {
+		vendorBodyParams.facebook_url = req.body.facebook_url;
+		delete req.body.facebook_url;
+	}
+	if (req.body.google_plus_url) {
+		vendorBodyParams.google_plus_url = req.body.google_plus_url;
+		delete req.body.google_plus_url;
+	}
+	if (req.body.twitter_url) {
+		vendorBodyParams.twitter_url = req.body.twitter_url;
+		delete req.body.twitter_url;
+	}
+	if (req.body.linkedin_url) {
+		vendorBodyParams.linkedin_url = req.body.linkedin_url;
+		delete req.body.linkedin_url;
+	}
+	if (req.body.youtube_url) {
+		vendorBodyParams.youtube_url = req.body.youtube_url;
+		delete req.body.youtube_url;
+	}
+	if (req.body.instagram_url) {
+		vendorBodyParams.instagram_url = req.body.instagram_url;
+		delete req.body.instagram_url;
+	}
+	if (req.body.flickr_url) {
+		vendorBodyParams.flickr_url = req.body.flickr_url;
+		delete req.body.flickr_url;
+	}
+	if (req.body.currency_id) {
+		vendorBodyParams.currency_id = req.body.currency_id;
+		delete req.body.currency_id;
+	}
+	if (req.body.timezone_id) {
+		vendorBodyParams.timezone_id = req.body.timezone_id;
+		delete req.body.timezone_id;
+	}
+
 	bodyParams['created_on'] = new Date();
 
 	if (req.body.provider == providers["OWN"]) {
@@ -97,18 +109,38 @@ export function create(req, res) {
 			return;
 		} else {
 			bodyParams["status"] = status["ACTIVE"];
-			bodyParams["role"] = roles["USER"];
-
+			bodyParams["role"] = roles["VENDOR"];
+			console.log('bodyParams', bodyParams)
 			model['User'].create(bodyParams)
-				.then(function(row) {
-					if (row) {
-						const rspUser = plainTextResponse(row);
+				.then(function(user) {
+					if (user) {
+						const rspUser = plainTextResponse(user);
 						delete rspUser.salt;
 						delete rspUser.hashed_pwd;
 						delete rspUser.email_verified_token;
 						delete rspUser.email_verified_token_generated;
-						res.status(201).send(rspUser);
-						return;
+						vendorBodyParams.user_id = rspUser.id;
+
+						if (rspUser.first_name && rspUser.last_name) {
+							vendorBodyParams.vendor_name = rspUser.first_name + " " + rspUser.last_name;
+						} else {
+							vendorBodyParams.vendor_name = rspUser.first_name;
+						}
+
+						model['Vendor'].create(vendorBodyParams)
+							.then(function(vendor) {
+								if (vendor) {
+									res.status(201).send(rspUser);
+									return;
+								} else {
+									res.status(404).send("Not found");
+									return;
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
+								return;
+							})
 					}
 				})
 				.catch(function(error) {
@@ -129,27 +161,6 @@ export function me(req, res) {
 		res.status(200).send(req.user);
 		return;
 	}
-}
-
-export function destroy(req, res) {
-	const ids = req.params.ids.split(' ').map(Number);
-	model['User'].destroy({
-		where: {
-			id: ids
-		}
-	}).then(function(row) {
-		if (row > 0) {
-			res.status(200).send("Users deleted successfully");
-			return;
-		} else {
-			res.status(404).send("Cannot delete users");
-			return
-		}
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	})
 }
 
 function plainTextResponse(response) {

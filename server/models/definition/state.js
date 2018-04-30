@@ -61,7 +61,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'state'
+        // schema: 'public',
+        tableName: 'state',
+        timestamps: false
     });
 };
 
@@ -78,90 +80,135 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
 
     State.hasMany(Address, {
-        foreignKey: 'province_id'
+        as: 'FkAddress3s',
+        foreignKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.hasMany(Product, {
-        foreignKey: 'state_id'
+        as: 'FkProduct8s',
+        foreignKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.hasMany(ProductAdsSetting, {
-        foreignKey: 'state_id'
+        as: 'FkProductAdsSetting3s',
+        foreignKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(User, {
+        as: 'AddressUsers',
         through: Address,
         foreignKey: 'province_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Country, {
+        as: 'AddressCountries',
         through: Address,
         foreignKey: 'province_id',
-        otherKey: 'country_id'
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Vendor, {
+        as: 'ProductVendors',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'vendor_id'
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Marketplace, {
+        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'marketplace_id'
+        otherKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(MarketplaceType, {
+        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'marketplace_type_id'
+        otherKey: 'marketplace_type_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
-    State.belongsToMany(ProductMedia, {
+    State.belongsToMany(ProductMedium, {
+        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'product_media_id'
+        otherKey: 'product_media_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Category, {
+        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'product_category_id'
+        otherKey: 'product_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(SubCategory, {
+        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'sub_category_id'
+        otherKey: 'sub_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Country, {
+        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'state_id',
-        otherKey: 'product_location'
+        otherKey: 'product_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Product, {
+        as: 'ProductAdsSettingProducts',
         through: ProductAdsSetting,
         foreignKey: 'state_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     State.belongsToMany(Country, {
+        as: 'ProductAdsSettingCountries',
         through: ProductAdsSetting,
         foreignKey: 'state_id',
-        otherKey: 'country_id'
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

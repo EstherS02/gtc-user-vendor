@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         product_id: {
             type: DataTypes.BIGINT,
@@ -81,7 +80,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'featured_product'
+        // schema: 'public',
+        tableName: 'featured_product',
+        timestamps: false
     });
 };
 
@@ -93,7 +94,10 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     FeaturedProduct.belongsTo(Product, {
-        foreignKey: 'product_id'
+        as: 'Product',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var auth = require('../../admin-auth/auth.service');
+var auth = require('../../auth/auth.service');
 var controller = require('./auth.controller');
 
 var router = express.Router();

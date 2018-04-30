@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         order_id: {
             type: DataTypes.BIGINT,
@@ -99,7 +98,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'order_items'
+        // schema: 'public',
+        tableName: 'order_items',
+        timestamps: false
     });
 };
 
@@ -114,19 +115,31 @@ module.exports.initRelations = () => {
     const Tax = model.Tax;
 
     OrderItem.belongsTo(Order, {
-        foreignKey: 'order_id'
+        as: 'Order',
+        foreignKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Product, {
-        foreignKey: 'product_id'
+        as: 'Product',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Coupon, {
-        foreignKey: 'coupon_id'
+        as: 'Coupon',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Tax, {
-        foreignKey: 'tax_id'
+        as: 'Tax',
+        foreignKey: 'tax_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

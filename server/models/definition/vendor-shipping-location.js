@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -57,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_shipping_location'
+        // schema: 'public',
+        tableName: 'vendor_shipping_location',
+        timestamps: false
     });
 };
 
@@ -70,11 +71,17 @@ module.exports.initRelations = () => {
     const Country = model.Country;
 
     VendorShippingLocation.belongsTo(Vendor, {
-        foreignKey: 'vendor_id'
+        as: 'Vendor',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     VendorShippingLocation.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

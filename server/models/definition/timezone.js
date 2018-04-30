@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         country_id: {
             type: DataTypes.BIGINT,
@@ -61,7 +60,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'timezone'
+        // schema: 'public',
+        tableName: 'timezone',
+        timestamps: false
     });
 };
 
@@ -73,33 +74,47 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Country = model.Country;
     const User = model.User;
-    const Plan = model.Plan;
     const Currency = model.Currency;
 
     Timezone.hasMany(Vendor, {
-        foreignKey: 'timezone_id'
+        as: 'FkVendor5s',
+        foreignKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsToMany(User, {
+        as: 'VendorUsers',
         through: Vendor,
         foreignKey: 'timezone_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsToMany(Country, {
+        as: 'VendorBaseLocations',
         through: Vendor,
         foreignKey: 'timezone_id',
-        otherKey: 'base_location'
+        otherKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsToMany(Currency, {
+        as: 'VendorCurrencies',
         through: Vendor,
         foreignKey: 'timezone_id',
-        otherKey: 'currency_id'
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

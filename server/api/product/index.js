@@ -2,14 +2,13 @@
 
 var express = require('express');
 var auth = require('../../auth/auth.service');
-var controller = require('./products.controller');
+var controller = require('./product.controller');
 //var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 
 var router = express.Router();
 
-//router.put('/order/:id', controller.productDec);
-router.get('/order/total-price', controller.totalPrice);
-router.put('/order/couponExp', controller.couponExp)
+router.get('/', controller.index);
+
 
 module.exports = router;

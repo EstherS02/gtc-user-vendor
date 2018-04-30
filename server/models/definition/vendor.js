@@ -134,7 +134,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor'
+        // schema: 'public',
+        tableName: 'vendor',
+        timestamps: false
     });
 };
 
@@ -154,126 +156,195 @@ module.exports.initRelations = () => {
     const VendorVerification = model.VendorVerification;
     const User = model.User;
     const Country = model.Country;
-    const Plan = model.Plan;
     const Currency = model.Currency;
     const Timezone = model.Timezone;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const State = model.State;
+    const Plan = model.Plan;
 
     Vendor.hasMany(BusinessHour, {
-        foreignKey: 'vendor_id'
+        as: 'FkBusinessHours1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(DiscussionBoard, {
-        foreignKey: 'vendor_id'
+        as: 'FkDiscussionBoard1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(Product, {
-        foreignKey: 'vendor_id'
+        as: 'FkProduct1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(TalkSetting, {
-        foreignKey: 'vendor_id'
+        as: 'FkTalkSetting1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorFollower, {
-        foreignKey: 'vendor_id'
+        as: 'FkVendorFollower1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorNotificationSetting, {
-        foreignKey: 'vendor_id'
+        as: 'FkVendorNotificationSetting1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorPlan, {
-        foreignKey: 'vendor_id'
+        as: 'FkVendorPlan1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorShippingLocation, {
-        foreignKey: 'vendor_id'
+        as: 'FkVendorShippingLocation1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorVerification, {
-        foreignKey: 'vendor_id'
+        as: 'FkVendorVerification1s',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Country, {
-        foreignKey: 'base_location'
+        as: 'RelatedBaseLocation',
+        foreignKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Currency, {
-        foreignKey: 'currency_id'
+        as: 'Currency',
+        foreignKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Timezone, {
-        foreignKey: 'timezone_id'
+        as: 'Timezone',
+        foreignKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Marketplace, {
+        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'marketplace_id'
+        otherKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(MarketplaceType, {
+        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'marketplace_type_id'
+        otherKey: 'marketplace_type_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
-    Vendor.belongsToMany(ProductMedia, {
+    Vendor.belongsToMany(ProductMedium, {
+        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_media_id'
+        otherKey: 'product_media_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Category, {
+        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_category_id'
+        otherKey: 'product_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(SubCategory, {
+        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'sub_category_id'
+        otherKey: 'sub_category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Country, {
+        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'product_location'
+        otherKey: 'product_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(State, {
+        as: 'ProductStates',
         through: Product,
         foreignKey: 'vendor_id',
-        otherKey: 'state_id'
+        otherKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(User, {
+        as: 'VendorFollowerUsers',
         through: VendorFollower,
         foreignKey: 'vendor_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Plan, {
+        as: 'VendorPlanPlans',
         through: VendorPlan,
         foreignKey: 'vendor_id',
-        otherKey: 'plan_id'
+        otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Country, {
+        as: 'VendorShippingLocationCountries',
         through: VendorShippingLocation,
         foreignKey: 'vendor_id',
-        otherKey: 'country_id'
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

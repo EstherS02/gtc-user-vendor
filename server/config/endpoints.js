@@ -48,6 +48,7 @@ module.exports = {
 	"ticket-threads": "TicketThread",
 	"timezones": "Timezone",
 	"users": "User",
+	"user-orders": "UserOrder",
 	"user-tokens": "UserToken",
 	"vendor": "Vendor",
 	"vendor-followers": "VendorFollower",

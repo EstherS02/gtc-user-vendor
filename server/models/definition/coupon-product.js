@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         coupon_id: {
             type: DataTypes.BIGINT,
@@ -57,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'coupon_product'
+        // schema: 'public',
+        tableName: 'coupon_product',
+        timestamps: false
     });
 };
 
@@ -70,11 +71,17 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     CouponProduct.belongsTo(Coupon, {
-        foreignKey: 'coupon_id'
+        as: 'Coupon',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     CouponProduct.belongsTo(Product, {
-        foreignKey: 'product_id'
+        as: 'Product',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

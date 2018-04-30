@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         ticket_id: {
             type: DataTypes.BIGINT,
@@ -62,7 +61,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'ticket_thread'
+        // schema: 'public',
+        tableName: 'ticket_thread',
+        timestamps: false
     });
 };
 
@@ -75,11 +76,17 @@ module.exports.initRelations = () => {
     const User = model.User;
 
     TicketThread.belongsTo(Ticket, {
-        foreignKey: 'ticket_id'
+        as: 'Ticket',
+        foreignKey: 'ticket_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     TicketThread.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

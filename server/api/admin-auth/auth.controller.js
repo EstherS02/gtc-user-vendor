@@ -38,41 +38,42 @@ export function login(req, res) {
 		var encryptedRefToken = cryptography.encrypt(refreshToken);
 		tokens.clientId = clientId;
 		tokens.refreshToken = JSON.parse(body).refresh_token;
-
-		model['Admin'].findOne({
+		
+		model['User'].findOne({
 			where: {
 				email: email
 			}
-		}).then(function(admin) {
-			if (admin) {
+		}).then(function(user) {
+			if (user) {
 				res.cookie("gtc_admin_refresh_token", encryptedRefToken);
 				res.status(200).send(rspTokens);
 				return;
 			} else {
-				res.status(404).send("Admin not found");
+				res.status(404).send("User not found");
 				return;
 			}
-		}).catch(function(err) {
-			if (err) {
-				res.status(500).send("Internal server error");
-				return;
-			}
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
 		});
 	});
 }
 
 exports.refreshToken = function(req, res, next) {
 	var decryptedRefToken = cryptography.decrypt(req.cookies.gtc_admin_refresh_token);
-	model['Admin'].findOne({
+	model['User'].findOne({
 		where: {
 			email: req.body.email
-		}
-	}).then(function(admin) {
-		if (admin) {
+		},
+		raw: true
+	}).then(function(user) {
+		if (user) {
 			model['UserToken'].findOne({
 				where: {
-					admin_id: admin.id
-				}
+					user_id: user.id
+				},
+				raw: true
 			}).then(function(token) {
 				if (token) {
 					var flag = false;
@@ -99,35 +100,31 @@ exports.refreshToken = function(req, res, next) {
 					}, function(err, response, body) {
 						res.status(200).send(JSON.parse(body))
 					});
-				} else {
-					res.status(404).send("Admin token not found");
-					return;
 				}
 			}).catch(function(error) {
-				if (error) {
-					res.status(500).send("Internal server error");
-					return;
-				}
+				console.log("Error:::", error);
+				res.status(500).send("Internal server error");
+				return;
 			});
 		} else {
 			res.clearCookie('gtc_admin_refresh_token');
-			res.status(404).send("Admin not found");
-			return
-		}
-	}).catch(function(error) {
-		if (error) {
-			res.status(500).send("Internal server error");
+			res.status(404).send("User not found");
 			return;
 		}
+	}).catch(function(error) {
+		console.log("Error:::", error);
+		res.status(500).send("Internal server error");
+		return;
 	});
 }
 
 export function logout(req, res, next) {
 	var refreshToken = cryptography.decrypt(req.cookies.gtc_admin_refresh_token);
 	res.clearCookie('gtc_admin_refresh_token');
+
 	model['UserToken'].destroy({
 		where: {
-			admin_id: req.admin.id,
+			user_id: req.user.id,
 			refresh_token: refreshToken
 		},
 		returning: true
@@ -137,9 +134,8 @@ export function logout(req, res, next) {
 			return;
 		}
 	}).catch(function(error) {
-		if (error) {
-			res.status(500).send("Internal server error");
-			return;
-		}
+		console.log('Error:::', error);
+		res.status(500).send("Internal server error");
+		return;
 	});
 }
