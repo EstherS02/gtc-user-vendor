@@ -8,6 +8,44 @@ const reference = require('../../config/model-reference');
 // To find all the records in the table
 
 export function index(req, res) {
+	var offset, limit, field, order;
+	var queryObj = {};
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	queryObj = req.query;
+
+	model[req.endpoint].findAndCountAll({
+		where: queryObj,
+		offset: offset,
+		limit: limit,
+		order: [
+			[field, order]
+		],
+		raw: true
+	}).then(function(rows) {
+		if (rows.length > 0) {
+			res.status(200).send(rows);
+			return;
+		} else {
+			res.status(200).send(rows);
+			return;
+		}
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+}
+
+/*export function index(req, res) {
 
 	var offset = parseInt(req.query.offset) || 0;
 	var limit = parseInt(req.query.limit) || 10;
@@ -53,7 +91,7 @@ export function index(req, res) {
 			res.status(500).send(error);
 			return;
 		});
-}
+}*/
 
 // To find first record of the table for the specified condition
 
@@ -61,24 +99,24 @@ export function show(req, res) {
 
 	var includeArr = [];
 
-		for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
+	for (var i = 0; i < reference[req.endpoint].length; i++) {
+		if (typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as) {
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name],
 				as: reference[req.endpoint][i].model_as
 			});
-		}else{
+		} else {
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name]
 			});
-		} 
+		}
 	}
 
 
 	console.log("includeArr", includeArr)
 
 	model[req.endpoint].findOne({
-			include: includeArr,		
+			include: includeArr,
 			where: req.query
 
 		}).then(function(row) {
@@ -105,27 +143,27 @@ export function findById(req, res) {
 
 	var includeArr = [];
 
-		for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
+	for (var i = 0; i < reference[req.endpoint].length; i++) {
+		if (typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as) {
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name],
 				as: reference[req.endpoint][i].model_as
 			});
-		}else{
+		} else {
 			includeArr.push({
 				model: model[reference[req.endpoint][i].model_name]
 			});
-		} 
+		}
 	}
 
 
 	console.log("includeArr", includeArr)
 
 	model[req.endpoint].find({
-		where:{
-			id:req.params.id
-		},
-		include: includeArr
+			where: {
+				id: req.params.id
+			},
+			include: includeArr
 
 		})
 		.then(function(row) {

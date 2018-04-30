@@ -50,26 +50,6 @@ export function index(req, res) {
 		res.status(500).send("Internal server error");
 		return
 	})
-
-}
-
-export function orderUsers(req, res) {
-	model['User'].findAll({
-		attributes: [
-			'id'
-		],
-		include: [{
-			model: model['Order'], as: 'FkOrder1s',
-			attributes: [
-				[sequelize.fn('sum', sequelize.col('id')), 'count']
-			]
-		}],
-		group: ['id']
-	}).then(function(rows) {
-		console.log('rows', rows);
-	}).catch(function(error) {
-		console.log('Error:::', error);
-	})
 }
 
 export function create(req, res) {

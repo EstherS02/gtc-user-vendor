@@ -60,6 +60,7 @@ function init(sequelize) {
     model.TicketThread = sequelize.import('./definition/ticket-thread.js');
     model.Timezone = sequelize.import('./definition/timezone.js');
     model.User = sequelize.import('./definition/users.js');
+    model.UserOrder = sequelize.import('./definition/user-orders.js');
     model.UserToken = sequelize.import('./definition/user-token.js');
     model.Vendor = sequelize.import('./definition/vendor.js');
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
@@ -119,6 +120,7 @@ function init(sequelize) {
     require('./definition/ticket-thread.js').initRelations();
     require('./definition/timezone.js').initRelations();
     require('./definition/users.js').initRelations();
+    require('./definition/user-orders.js').initRelations();
     require('./definition/user-token.js').initRelations();
     require('./definition/vendor.js').initRelations();
     require('./definition/vendor-follower.js').initRelations();
