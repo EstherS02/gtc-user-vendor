@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         coupon_id: {
             type: DataTypes.BIGINT,
@@ -57,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'coupon_excluded_category'
+        // schema: 'public',
+        tableName: 'coupon_excluded_category',
+        timestamps: false
     });
 };
 
@@ -70,11 +71,17 @@ module.exports.initRelations = () => {
     const Category = model.Category;
 
     CouponExcludedCategory.belongsTo(Coupon, {
-        foreignKey: 'coupon_id'
+        as: 'Coupon',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     CouponExcludedCategory.belongsTo(Category, {
-        foreignKey: 'category_id'
+        as: 'Category',
+        foreignKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

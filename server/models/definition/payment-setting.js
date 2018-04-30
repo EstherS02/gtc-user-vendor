@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         user_id: {
             type: DataTypes.BIGINT,
@@ -71,7 +70,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'payment_setting'
+        // schema: 'public',
+        tableName: 'payment_setting',
+        timestamps: false
     });
 };
 
@@ -85,17 +86,26 @@ module.exports.initRelations = () => {
     const Order = model.Order;
 
     PaymentSetting.hasMany(OrderPayment, {
-        foreignKey: 'payment_id'
+        as: 'FkOrderPayment2s',
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     PaymentSetting.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     PaymentSetting.belongsToMany(Order, {
+        as: 'OrderPaymentOrders',
         through: OrderPayment,
         foreignKey: 'payment_id',
-        otherKey: 'order_id'
+        otherKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

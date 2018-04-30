@@ -50,7 +50,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'email_template'
+        // schema: 'public',
+        tableName: 'email_template',
+        timestamps: false
     });
 };
 

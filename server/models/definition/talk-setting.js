@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -61,7 +60,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'talk_setting'
+        // schema: 'public',
+        tableName: 'talk_setting',
+        timestamps: false
     });
 };
 
@@ -76,29 +77,44 @@ module.exports.initRelations = () => {
     const TalkThread = model.TalkThread;
 
     TalkSetting.hasMany(Talk, {
-        foreignKey: 'talk_setting_id'
+        as: 'FkTalk1s',
+        foreignKey: 'talk_setting_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsTo(Vendor, {
-        foreignKey: 'vendor_id'
+        as: 'Vendor',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsToMany(User, {
+        as: 'TalkFroms',
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'from_id'
+        otherKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsToMany(User, {
+        as: 'TalkTos',
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'to_id'
+        otherKey: 'to_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsToMany(TalkThread, {
+        as: 'TalkLastThreads',
         through: Talk,
         foreignKey: 'talk_setting_id',
-        otherKey: 'last_thread_id'
+        otherKey: 'last_thread_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

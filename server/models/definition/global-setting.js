@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING(255),
@@ -55,7 +54,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'global_setting'
+        // schema: 'public',
+        tableName: 'global_setting',
+        timestamps: false
     });
 };
 

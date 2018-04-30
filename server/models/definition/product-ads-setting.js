@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING(64),
@@ -123,7 +122,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'product_ads_setting'
+        // schema: 'public',
+        tableName: 'product_ads_setting',
+        timestamps: false
     });
 };
 
@@ -137,15 +138,24 @@ module.exports.initRelations = () => {
     const State = model.State;
 
     ProductAdsSetting.belongsTo(Product, {
-        foreignKey: 'product_id'
+        as: 'Product',
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     ProductAdsSetting.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     ProductAdsSetting.belongsTo(State, {
-        foreignKey: 'state_id'
+        as: 'State',
+        foreignKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

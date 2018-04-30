@@ -98,7 +98,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'address'
+        // schema: 'public',
+        tableName: 'address',
+        timestamps: false
     });
 };
 
@@ -114,61 +116,92 @@ module.exports.initRelations = () => {
     const Shipping = model.Shipping;
 
     Address.hasMany(Order, {
-        foreignKey: 'shipping_address_id'
+        as: 'FkOrder3s',
+        foreignKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.hasMany(Order, {
-        foreignKey: 'billing_address_id'
+        as: 'FkOrder4s',
+        foreignKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(Country, {
-        foreignKey: 'country_id'
+        as: 'Country',
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(State, {
-        foreignKey: 'province_id'
+        as: 'Province',
+        foreignKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(User, {
+        as: 'OrderUsers',
         through: Order,
         foreignKey: 'shipping_address_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(Shipping, {
+        as: 'OrderShippings',
         through: Order,
         foreignKey: 'shipping_address_id',
-        otherKey: 'shipping_id'
+        otherKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(Address, {
-        as: 'address',
+        as: 'OrderBillingAddresses',
         through: Order,
         foreignKey: 'shipping_address_id',
-        otherKey: 'billing_address_id'
+        otherKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(User, {
+        as: 'OrderUsers',
         through: Order,
         foreignKey: 'billing_address_id',
-        otherKey: 'user_id'
+        otherKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(Shipping, {
+        as: 'OrderShippings',
         through: Order,
         foreignKey: 'billing_address_id',
-        otherKey: 'shipping_id'
+        otherKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(Address, {
-        as: 'address',
+        as: 'OrderShippingAddresses',
         through: Order,
         foreignKey: 'billing_address_id',
-        otherKey: 'shipping_address_id'
+        otherKey: 'shipping_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

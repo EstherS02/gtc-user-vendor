@@ -9,35 +9,16 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        email: {
-            type: DataTypes.STRING(128),
-            field: 'email',
-            allowNull: false
-        },
-        role: {
-            type: DataTypes.INTEGER,
-            field: 'role',
-            allowNull: false
-        },
-        name: {
-            type: DataTypes.STRING(64),
-            field: 'name',
-            allowNull: false
-        },
-        hashed_pwd: {
-            type: DataTypes.TEXT,
-            field: 'hashed_pwd',
-            allowNull: false
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
-            allowNull: false
-        },
-        salt: {
-            type: DataTypes.STRING(128),
-            field: 'salt',
-            allowNull: true
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: true,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -65,7 +46,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'admin'
+        // schema: 'public',
+        tableName: 'admin',
+        timestamps: false
     });
 };
 
@@ -74,24 +57,13 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Admin = model.Admin;
-    const UserToken = model.UserToken;
     const User = model.User;
-    const Appclient = model.Appclient;
 
-    Admin.hasMany(UserToken, {
-        foreignKey: 'admin_id'
-    });
-
-    Admin.belongsToMany(User, {
-        through: UserToken,
-        foreignKey: 'admin_id',
-        otherKey: 'user_id'
-    });
-
-    Admin.belongsToMany(Appclient, {
-        through: UserToken,
-        foreignKey: 'admin_id',
-        otherKey: 'client_id'
+    Admin.belongsTo(User, {
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

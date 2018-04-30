@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         coupon_name: {
             type: DataTypes.STRING(64),
@@ -149,7 +148,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'coupon'
+        // schema: 'public',
+        tableName: 'coupon',
+        timestamps: false
     });
 };
 
@@ -169,85 +170,129 @@ module.exports.initRelations = () => {
     const Tax = model.Tax;
 
     Coupon.hasMany(CouponCategory, {
-        foreignKey: 'coupon_id'
+        as: 'FkCouponCategory1s',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.hasMany(CouponExcludedCategory, {
-        foreignKey: 'coupon_id'
+        as: 'FkCouponExcludedCategory1s',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.hasMany(CouponExcludedProduct, {
-        foreignKey: 'coupon_id'
+        as: 'FkCouponExcludedProduct1s',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.hasMany(CouponProduct, {
-        foreignKey: 'coupon_id'
+        as: 'FkCouponProduct1s',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.hasMany(OrderItem, {
-        foreignKey: 'coupon_id'
+        as: 'FkOrderItems3s',
+        foreignKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsTo(Product, {
+        as: 'Product',
         foreignKey: 'product_id',
-        as:'includedProduct'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsTo(Product, {
+        as: 'ExcludeProduct',
         foreignKey: 'exclude_product_id',
-        as:'excludedProduct'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsTo(Category, {
+        as: 'Category',
         foreignKey: 'category_id',
-        as:'includedCategory'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsTo(Category, {
+        as: 'ExcludeCategory',
         foreignKey: 'exclude_category_id',
-        as:'excludedCategory'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Category, {
+        as: 'CouponCategoryCategories',
         through: CouponCategory,
         foreignKey: 'coupon_id',
-        otherKey: 'category_id'
+        otherKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Category, {
+        as: 'CouponExcludedCategoryCategories',
         through: CouponExcludedCategory,
         foreignKey: 'coupon_id',
-        otherKey: 'category_id'
+        otherKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Product, {
+        as: 'CouponExcludedProductProducts',
         through: CouponExcludedProduct,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Product, {
+        as: 'CouponProductProducts',
         through: CouponProduct,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Order, {
+        as: 'OrderItemOrders',
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'order_id'
+        otherKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Product, {
+        as: 'OrderItemProducts',
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Coupon.belongsToMany(Tax, {
+        as: 'OrderItemTaxes',
         through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'tax_id'
+        otherKey: 'tax_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

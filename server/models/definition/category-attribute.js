@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         attribute_id: {
             type: DataTypes.BIGINT,
@@ -57,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'category_attribute'
+        // schema: 'public',
+        tableName: 'category_attribute',
+        timestamps: false
     });
 };
 
@@ -70,11 +71,17 @@ module.exports.initRelations = () => {
     const Category = model.Category;
 
     CategoryAttribute.belongsTo(Attribute, {
-        foreignKey: 'attribute_id'
+        as: 'Attribute',
+        foreignKey: 'attribute_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     CategoryAttribute.belongsTo(Category, {
-        foreignKey: 'category_id'
+        as: 'Category',
+        foreignKey: 'category_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

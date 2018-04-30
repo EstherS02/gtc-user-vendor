@@ -1,57 +1,51 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Announcement', {
+    return sequelize.define('UserOrder', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
-            allowNull: false,
             primaryKey: true,
-            autoIncrement: true
+            allowNull: true
         },
-        notification: {
-            type: DataTypes.STRING(255),
-            field: 'notification',
+        role: {
+            type: DataTypes.INTEGER,
+            field: 'role',
+            allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING(128),
+            field: 'email',
+            allowNull: false
+        },
+        first_name: {
+            type: DataTypes.STRING(64),
+            field: 'first_name',
+            allowNull: false
+        },
+        last_name: {
+            type: DataTypes.STRING(64),
+            field: 'last_name',
+            allowNull: true
+        },
+        provider: {
+            type: DataTypes.INTEGER,
+            field: 'provider',
             allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
-        },
-        visible_to_user: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_user',
-            allowNull: true
-        },
-        visible_to_wholesaler: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_wholesaler',
-            allowNull: true
-        },
-        visible_to_lifestyle_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_lifestyle_provider',
-            allowNull: true
-        },
-        visible_to_service_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_service_provider',
-            allowNull: true
-        },
-        link: {
-            type: DataTypes.TEXT,
-            field: 'link',
-            allowNull: true
-        },
-        start_date: {
-            type: DataTypes.DATEONLY,
-            field: 'start_date',
             allowNull: false
         },
-        end_date: {
-            type: DataTypes.DATEONLY,
-            field: 'end_date',
+        email_verified: {
+            type: DataTypes.INTEGER,
+            field: 'email_verified',
+            allowNull: false
+        },
+        last_login_at: {
+            type: DataTypes.DATE,
+            field: 'last_login_at',
             allowNull: true
         },
         created_by: {
@@ -78,15 +72,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'deleted_at',
             allowNull: true
+        },
+        order_count: {
+            type: DataTypes.BIGINT,
+            field: 'order_count',
+            allowNull: true
         }
     }, {
-        // schema: 'public',
-        tableName: 'announcement',
+        tableName: 'user_orders',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
-    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-
+    delete module.exports.initRelations;
 };

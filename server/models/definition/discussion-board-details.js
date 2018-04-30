@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         discussion_board_id: {
             type: DataTypes.BIGINT,
@@ -61,7 +60,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'discussion_board_details'
+        // schema: 'public',
+        tableName: 'discussion_board_details',
+        timestamps: false
     });
 };
 
@@ -73,7 +74,10 @@ module.exports.initRelations = () => {
     const DiscussionBoard = model.DiscussionBoard;
 
     DiscussionBoardDetail.belongsTo(DiscussionBoard, {
-        foreignKey: 'discussion_board_id'
+        as: 'DiscussionBoard',
+        foreignKey: 'discussion_board_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

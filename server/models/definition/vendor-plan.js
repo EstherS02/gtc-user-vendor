@@ -6,8 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -67,7 +66,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_plan'
+        // schema: 'public',
+        tableName: 'vendor_plan',
+        timestamps: false
     });
 };
 
@@ -80,11 +81,17 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
 
     VendorPlan.belongsTo(Vendor, {
-        foreignKey: 'vendor_id'
+        as: 'Vendor',
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     VendorPlan.belongsTo(Plan, {
-        foreignKey: 'plan_id'
+        as: 'Plan',
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

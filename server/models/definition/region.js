@@ -45,7 +45,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'region'
+        // schema: 'public',
+        tableName: 'region',
+        timestamps: false
     });
 };
 
@@ -58,13 +60,19 @@ module.exports.initRelations = () => {
     const Currency = model.Currency;
 
     Region.hasMany(Country, {
-        foreignKey: 'region_id'
+        as: 'FkCountry1s',
+        foreignKey: 'region_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Region.belongsToMany(Currency, {
+        as: 'CountryCurrencies',
         through: Country,
         foreignKey: 'region_id',
-        otherKey: 'currency_id'
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };

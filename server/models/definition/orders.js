@@ -134,7 +134,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'orders'
+        // schema: 'public',
+        tableName: 'orders',
+        timestamps: false
     });
 };
 
@@ -154,53 +156,81 @@ module.exports.initRelations = () => {
     const PaymentSetting = model.PaymentSetting;
 
     Order.hasMany(OrderItem, {
-        foreignKey: 'order_id'
+        as: 'FkOrderItems1s',
+        foreignKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.hasMany(OrderPayment, {
-        foreignKey: 'order_id'
+        as: 'FkOrderPayment1s',
+        foreignKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(User, {
-        foreignKey: 'user_id'
+        as: 'User',
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Shipping, {
-        foreignKey: 'shipping_id'
+        as: 'Shipping',
+        foreignKey: 'shipping_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
+        as: 'ShippingAddress',
         foreignKey: 'shipping_address_id',
-        as:'shippingAddress'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
+        as: 'BillingAddress',
         foreignKey: 'billing_address_id',
-        as:'billingAddress'
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsToMany(Product, {
+        as: 'OrderItemProducts',
         through: OrderItem,
         foreignKey: 'order_id',
-        otherKey: 'product_id'
+        otherKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsToMany(Coupon, {
+        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'order_id',
-        otherKey: 'coupon_id'
+        otherKey: 'coupon_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsToMany(Tax, {
+        as: 'OrderItemTaxes',
         through: OrderItem,
         foreignKey: 'order_id',
-        otherKey: 'tax_id'
+        otherKey: 'tax_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
     Order.belongsToMany(PaymentSetting, {
+        as: 'OrderPaymentPayments',
         through: OrderPayment,
         foreignKey: 'order_id',
-        otherKey: 'payment_id'
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
 
 };
