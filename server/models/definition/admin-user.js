@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_user_product',
+        tableName: 'admin_user',
         timestamps: false
     });
 };
