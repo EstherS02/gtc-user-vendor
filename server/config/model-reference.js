@@ -49,16 +49,6 @@ module.exports = {
     "TicketThread": [{"model_name":"Ticket"}, {"model_name":"User"}],
     "Timezone": [{"model_name":"Country"}],
     "User":[],
-<<<<<<< HEAD
-    "UserToken": ["User", "Appclient"],
-    "Vendor": ["User","Country","Currency","Timezone"],
-    "VendorFollower": ["Vendor","User"],
-    "VendorNotificationSetting": ["Vendor"],
-    "VendorPlan": ["Vendor","Plan"],
-    "VendorShippingLocation": ["Vendor","Country"],
-    "VendorVerification": ["Vendor"],
-    "WishList": ["User","Product"]
-=======
     "UserToken": [{"model_name":"User"}, {"model_name": "Appclient"}],
     "Vendor": [{"model_name":"User"}, {"model_name":"Country"},{"model_name":"Currency"},{"model_name":"Timezone"}],
     "VendorFollower": [{"model_name":"Vendor"}, {"model_name":"User"}],
@@ -67,5 +57,5 @@ module.exports = {
     "VendorShippingLocation": [{"model_name":"Vendor"}, {"model_name":"Country"}],
     "VendorVerification": [{"model_name":"Vendor"}],
     "WishList": [{"model_name":"User"}, {"model_name":"Product"}]
->>>>>>> devan-gtc
+
 }
