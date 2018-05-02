@@ -12,6 +12,7 @@ function init(sequelize) {
     initialized = true;
     // Import model files and assign them to `model` object.
     model.Address = sequelize.import('./definition/address.js');
+    model.AdminUser = sequelize.import('./definition/admin-user.js');
     model.Admin = sequelize.import('./definition/admin.js');
     model.Announcement = sequelize.import('./definition/announcement.js');
     model.Appclient = sequelize.import('./definition/appclients.js');
@@ -67,11 +68,13 @@ function init(sequelize) {
     model.VendorNotificationSetting = sequelize.import('./definition/vendor-notification-setting.js');
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
     model.VendorShippingLocation = sequelize.import('./definition/vendor-shipping-location.js');
+    model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
     model.WishList = sequelize.import('./definition/wish-list.js');
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
+    require('./definition/admin-user.js').initRelations();
     require('./definition/admin.js').initRelations();
     require('./definition/announcement.js').initRelations();
     require('./definition/appclients.js').initRelations();
@@ -127,6 +130,7 @@ function init(sequelize) {
     require('./definition/vendor-notification-setting.js').initRelations();
     require('./definition/vendor-plan.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();
+    require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
     require('./definition/wish-list.js').initRelations();
     return model;

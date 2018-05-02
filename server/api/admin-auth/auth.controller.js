@@ -122,6 +122,8 @@ export function logout(req, res, next) {
 	var refreshToken = cryptography.decrypt(req.cookies.gtc_admin_refresh_token);
 	res.clearCookie('gtc_admin_refresh_token');
 
+	console.log('refreshToken', refreshToken);
+
 	model['UserToken'].destroy({
 		where: {
 			user_id: req.user.id,

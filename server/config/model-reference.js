@@ -57,5 +57,4 @@ module.exports = {
     "VendorShippingLocation": [{"model_name":"Vendor"}, {"model_name":"Country"}],
     "VendorVerification": [{"model_name":"Vendor"}],
     "WishList": [{"model_name":"User"}, {"model_name":"Product"}]
-
 }
