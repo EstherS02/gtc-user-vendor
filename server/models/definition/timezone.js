@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'timezone_abbreviation',
             allowNull: true
         },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
         isactive: {
             type: DataTypes.INTEGER,
             field: 'isactive',

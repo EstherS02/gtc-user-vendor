@@ -1,7 +1,7 @@
 module.exports = {
 	"address": "Address",
 	"admin-user": "AdminUser",
-	"admins": "Admin",
+	"admin": "Admin",
 	"announcements": "Announcement",
 	"appclients": "Appclient",
 	"attributes": "Attribute",

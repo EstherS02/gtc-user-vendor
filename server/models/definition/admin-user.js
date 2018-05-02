@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false
+        },
         role: {
             type: DataTypes.INTEGER,
             field: 'role',
