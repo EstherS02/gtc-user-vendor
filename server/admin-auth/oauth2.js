@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const adminvalidate = require('../api/admin/admin.controller')
 const config = require('../config/environment');
+const status = require('../config/status');
 
 const model = require('../sqldb/model-connect');
 
@@ -26,7 +27,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 	scope, done) {
 	model['User'].findOne({
 		where: {
-			email: email
+			email: email,
+			status: status["ACTIVE"]
 		},
 		raw: true
 	}).then(function(user) {
