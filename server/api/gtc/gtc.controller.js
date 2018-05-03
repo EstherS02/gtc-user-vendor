@@ -95,8 +95,6 @@ export function index(req, res) {
 		}
 	}
 
-	console.log('query authenticated', queryObj);
-
 	model[req.endpoint].findAndCountAll({
 		where: queryObj,
 		offset: offset,
