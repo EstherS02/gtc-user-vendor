@@ -1,5 +1,6 @@
 module.exports = {
 	"address": "Address",
+	"admin-user": "AdminUser",
 	"admins": "Admin",
 	"announcements": "Announcement",
 	"appclients": "Appclient",
@@ -55,6 +56,7 @@ module.exports = {
 	"vendor-notification-settings": "VendorNotificationSetting",
 	"vendor-plans": "VendorPlan",
 	"vendor-shipping-locations": "VendorShippingLocation",
+	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",
 	"wish-list": "WishList"
 }

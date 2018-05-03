@@ -3,43 +3,49 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
+const status = require('../../config/status');
 
 
 //Dynamic search for all endpoints
 
-export function search(req, res) {
+/* export function search(req, res) {
 
 	var searchArray = [];
+	var queryObj = {};
 
-	if(!req.query.text)
-		res.send(400).send("Missing text query to search");
-	if(!req.query.fields)
-		res.send(400).send("Missing which fields to search");
-
-	var searchText = req.query.text;
-
-	var searchFields = req.query.fields;
-		searchFields = searchFields.split(",");
-
-	for(var i=0; i<searchFields.length; i++){
-		var searchObj = {}
-		searchObj[searchFields[i]] = { like: '%' + searchText + '%' }
-		searchArray.push(searchObj);
+	if (!req.query.text) {
+		res.send(400).send("Missing text query to search.");
+	}
+	if (!req.query.fields) {
+		res.send(400).send("Missing which fields to search.");
 	}
 
-	console.log("Search query", searchArray)
+	var searchText = req.query.text;
+	var searchFields = req.query.fields;
+	searchFields = searchFields.split(",");
+
+	for (var i = 0; i < searchFields.length; i++) {
+		var searchObj = {}
+		searchObj[searchFields[i]] = {
+			like: '%' + searchText + '%'
+		}
+		searchArray.push(searchObj);
+	}
+	delete req.query.text;
+	delete req.query.fields;
+
+	queryObj = req.query;
+	queryObj['$or'] = searchArray;
 
 	model[req.endpoint].findAndCountAll({
-		where: {
-			$or: searchArray
-		  }
+		where: queryObj
 	}).then(function(rows) {
 		return res.status(200).send(rows);
 	}).catch(function(error) {
 		console.log('Error :::', error);
 		return res.status(500).send("Internal server error");
-	}); 
-}
+	});
+} */
 
 
 // To find all the records in the table
@@ -47,6 +53,8 @@ export function search(req, res) {
 export function index(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
+	var searchObj = {};
+	var searchArray = [];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -57,7 +65,31 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
 
-	queryObj = req.query;
+	if (req.query.fields && req.query.text) {
+		var searchText = req.query.text;
+		var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+		for (var i = 0; i < searchFields.length; i++) {
+			var obj = {}
+			obj[searchFields[i]] = {
+				like: '%' + searchText + '%'
+			}
+			searchArray.push(obj);
+		}
+		searchObj['$or'] = searchArray;
+		delete req.query.text;
+		delete req.query.fields;
+	}
+
+	queryObj = Object.assign(searchObj, req.query);
+
+	if (queryObj.status && queryObj.status == status["DELETED"]) {
+		queryObj['status'] = {
+			'$ne': status["DELETED"]
+		}
+	}
+
+	console.log('query', queryObj);
 
 	model[req.endpoint].findAndCountAll({
 		where: queryObj,
@@ -68,67 +100,14 @@ export function index(req, res) {
 		],
 		raw: true
 	}).then(function(rows) {
-		if (rows.length > 0) {
-			res.status(200).send(rows);
-			return;
-		} else {
-			res.status(200).send(rows);
-			return;
-		}
+		res.status(200).send(rows);
+		return;
 	}).catch(function(error) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
 		return
 	});
 }
-
-/*export function index(req, res) {
-
-	var offset = parseInt(req.query.offset) || 0;
-	var limit = parseInt(req.query.limit) || 10;
-	var field = req.query.field || 'id';
-	var order = req.query.order || 'ASC';
-
-
-	console.log(model[req.endpoint])
-
-	var includeArr = [];
-
-			for(var i=0; i<reference[req.endpoint].length; i++){
-		if(typeof reference[req.endpoint][i] === 'object' && reference[req.endpoint][i].model_as){
-			includeArr.push({
-				model: model[reference[req.endpoint][i].model_name],
-				as: reference[req.endpoint][i].model_as
-			});
-		}else{
-			includeArr.push({
-				model: model[reference[req.endpoint][i].model_name]
-			});
-		} 
-	}
-
-
-	model[req.endpoint].findAndCountAll({
-			include: includeArr,
-			offset: offset,
-			limit: limit,
-			order: [
-				[field, order]
-			],
-			where: req.query
-		})
-		.then(function(rows) {
-
-
-			res.status(200).send(rows);
-			return;
-
-		})
-		.catch(function(error) {
-			res.status(500).send(error);
-			return;
-		});
-}*/
 
 // To find first record of the table for the specified condition
 
@@ -224,8 +203,6 @@ export function findById(req, res) {
 
 export function create(req, res) {
 
-	console.log("request",req.body);
-
 	req.body['created_on'] = new Date();
 
 	model[req.endpoint].create(req.body)
@@ -313,61 +290,57 @@ export function softDelete(req, res) {
 		});
 }
 
-//To deleted
-
+export function destroyMany(req, res) {
+	const ids = req.body.ids;
+	model[req.endpoint].update({
+		status: status["DELETED"],
+		deleted_at: new Date()
+	}, {
+		where: {
+			id: ids
+		}
+	}).then(function(rows) {
+		if (rows[0] > 0) {
+			res.status(200).send(rows);
+			return;
+		} else {
+			res.status(404).send("Unable to delete users");
+			return;
+		}
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		res.status(500).send("Internal server error");
+		return;
+	})
+}
 
 export function destroy(req, res) {
-	model[req.endpoint].find({
-			where: {
-				id: req.params.id
-			},
-			individualHooks: true
-		})
-		.then(function(entity) {
-			if (entity) {
-				model[req.endpoint].destroy({
-						where: {
-							id: req.params.id
-						},
-						individualHooks: true
-					})
-					.then(() => {
-						res.status(200).send("Deleted");
-						return;
-					}).catch(function(err) {
-						res.send(err);
-						return;
-					});
-			} else {
-
-				res.status(404).send("Not Found");
-				return;
-
-			}
-		})
-		.catch(function(err) {
-			res.send(err);
-			return;
-		});
-}
-/*
-
-export function create(req, res, next) {
-	var bodyParams = req.body;
-
-	model[req.endpoint].create(bodyParams)
+	model[req.endpoint].findById(req.params.id)
 		.then(function(row) {
-			console.log('row', plainTextResponse(row));
+			if (row) {
+				model[req.endpoint].update({
+					status: status["DELETED"],
+					deleted_at: new Date()
+				}, {
+					where: {
+						id: req.params.id
+					},
+					returning: true,
+					plain: true
+				}).then(function(result) {
+					res.status(200).send(result);
+					return
+				}).catch(function(error) {
+					res.status(500).send("Internal server error");
+					return;
+				});
+			} else {
+				res.status(404).send("Not found");
+				return;
+			}
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
 		})
-		.catch(function(error) {
-			console.log('error', error);
-		});
 }
-
-function plainTextResponse(response) {
-	return response.get({
-		plain: true
-	});
-}
-
-*/
