@@ -80,17 +80,18 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 					var token = {
 						client_id: client.id,
 						user_id: user.id,
+						status: status["ACTIVE"],
 						refresh_token: refreshToken
 					};
 
 					model['UserToken'].update(token, {
 						where: {
 							user_id: user.id,
-							client_id: client.id
+							client_id: client.id,
+							status: status["ACTIVE"]
 						},
 						returning: true
 					}).then(function(row) {
-						console.log('row', row);
 						if (row > 0) {
 							return done(null, accessToken, refreshToken, {
 								expires_in: config.token.expiresInMinutes * 60
@@ -171,6 +172,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 						var token = {
 							client_id: client.id,
 							user_id: user.id,
+							status: status["ACTIVE"],
 							refresh_token: refreshToken
 						}
 
