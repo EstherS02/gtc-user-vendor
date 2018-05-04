@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'value',
             allowNull: false
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
+            field: 'status',
             allowNull: false
         },
         created_by: {

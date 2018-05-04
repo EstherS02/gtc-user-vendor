@@ -40,10 +40,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'end_date',
             allowNull: false
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
-            allowNull: true
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

@@ -9,6 +9,8 @@ var permission = require('../../config/permission');
 var router = express.Router();
 
 router.get('/', controller.index);
+// router.put('/:endpoint/delete', middleware.validateEndpoint(), controller.destroyMany);
+// router.put('/:endpoint/delete/:id', middleware.validateEndpoint(), controller.destroy);
 
 
 module.exports = router;
