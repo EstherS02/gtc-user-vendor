@@ -13,12 +13,14 @@ export default function(app) {
   app.post('/auth/token', require('./auth'));
   app.use('/api/admin-auth', require('./api/admin-auth'));
   app.use('/api/auth', require('./api/auth'));
-  
+
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
-  app.use('/api/vendor', require('./api/vendor'));
+  app.use('/api/product', require('./api/product'));
   app.use('/api/users', require('./api/users'));
-   app.use('/api/product',require('./api/product'));
+  app.use('/api/tickets', require('./api/ticket'));
+  app.use('/api/ticket-threads', require('./api/ticket-thread'));
+  app.use('/api/vendor', require('./api/vendor'));
   app.use('/api', require('./api/gtc'));
 
   // All undefined asset or api routes should return a 404

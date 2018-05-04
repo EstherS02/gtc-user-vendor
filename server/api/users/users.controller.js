@@ -2,7 +2,6 @@
 
 const crypto = require('crypto');
 const uuid = require('node-uuid');
-const sequelize = require('sequelize');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -82,7 +81,7 @@ export function create(req, res) {
 	if (req.body.provider == providers["OWN"]) {
 		bodyParams["email_verified"] = 0;
 		bodyParams['email_verified_token'] = randomCode;
-		bodyParams['email_verified_token_generated'] = Date.now();
+		bodyParams['email_verified_token_generated'] = new Date();
 	}
 
 	if (req.body.email) {
