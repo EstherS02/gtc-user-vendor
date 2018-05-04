@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         end_date: {
             type: DataTypes.DATEONLY,
             field: 'end_date',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
