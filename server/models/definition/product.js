@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         marketplace_type_id: {
             type: DataTypes.BIGINT,
             field: 'marketplace_type_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'marketplace_type',
                 key: 'id'
