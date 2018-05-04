@@ -41,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
         vendor_cover_pic_url: {
             type: DataTypes.TEXT,
             field: 'vendor_cover_pic_url',

@@ -34,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'message',
             allowNull: true
         },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.INTEGER,
             field: 'created_by',

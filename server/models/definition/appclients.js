@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(8),
             field: 'type',
             allowNull: true
+        },
+         status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         }
     }, {
         // schema: 'public',

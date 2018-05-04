@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'url',
             allowNull: false
         },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',

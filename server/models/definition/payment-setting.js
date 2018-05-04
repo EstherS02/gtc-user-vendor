@@ -39,10 +39,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'card_type',
             allowNull: true
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
-            allowNull: true
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

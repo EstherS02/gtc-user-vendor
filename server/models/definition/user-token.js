@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'refresh_token',
             allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         }
     }, {
         // schema: 'public',
