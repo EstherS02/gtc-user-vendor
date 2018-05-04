@@ -559,6 +559,7 @@ grunt.initConfig({
             dir: paths.dist,
             commit: true,
             push: true,
+	    force: true,
             connectCommits: false,
             message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
         },
@@ -573,7 +574,14 @@ grunt.initConfig({
                 remote: 'openshift',
                 branch: 'master'
             }
+        },
+	ibc: {
+            options: {
+                remote: 'ssh://nodejstest@ibytecode.com/home/nodejstest/pjts/repos/gtc.git',
+                branch: 'master'
+            }
         }
+
     }
 });
 
@@ -589,6 +597,13 @@ gulp.task('buildcontrol:heroku', function(done) {
 gulp.task('buildcontrol:openshift', function(done) {
     grunt.tasks(
         ['buildcontrol:openshift'],    //you can add more grunt tasks in this array
+        {gruntfile: false}, //don't look for a Gruntfile - there is none. :-)
+        function() {done();}
+    );
+});
+gulp.task('buildcontrol:ibc', function(done) {
+    grunt.tasks(
+        ['buildcontrol:ibc'],    //you can add more grunt tasks in this array
         {gruntfile: false}, //don't look for a Gruntfile - there is none. :-)
         function() {done();}
     );

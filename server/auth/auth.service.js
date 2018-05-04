@@ -34,10 +34,8 @@ function isAuthenticated() {
 					}
 				})
 				.catch(function(error) {
-					if (error) {
-						console.log('error', error);
-						return next(error);
-					}
+					console.log('Error:::', error);
+					return next(error);
 				});
 		});
 }
