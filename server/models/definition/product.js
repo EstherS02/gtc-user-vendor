@@ -326,6 +326,7 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Product, {
+        as: "Product1",
         through: Coupon,
         foreignKey: 'product_id',
         otherKey: 'exclude_product_id',
@@ -350,6 +351,7 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Product, {
+        as: "Product2",
         through: Coupon,
         foreignKey: 'exclude_product_id',
         otherKey: 'product_id',

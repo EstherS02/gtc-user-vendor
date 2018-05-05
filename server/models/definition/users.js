@@ -308,6 +308,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
+        as: "User",
         through: Talk,
         foreignKey: 'from_id',
         otherKey: 'to_id',
@@ -332,6 +333,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
+        as: "User",
         through: Talk,
         foreignKey: 'to_id',
         otherKey: 'from_id',

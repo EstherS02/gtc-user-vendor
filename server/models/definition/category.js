@@ -146,6 +146,7 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Category, {
+        as: "Category1",
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'exclude_category_id',
@@ -170,6 +171,7 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Category, {
+        as: "Category2",
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'category_id',
