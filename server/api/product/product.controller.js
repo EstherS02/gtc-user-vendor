@@ -59,7 +59,7 @@ export function featureMany(req, res) {
 	}
 	console.log("array", arr)
 
-	model["FeaturedProduct"].bulkCreate(arr)
+	model["FeaturedProduct"].bulkCreate(arr,{ignoreDuplicates: true})
 		.then(function(row) {
 			res.status(201).send("Created");
 			return;
@@ -85,7 +85,7 @@ export function featureOne(req, res) {
 				obj['start_date'] = new Date();
 				obj['created_on'] = new Date();
 
-				model["FeaturedProduct"].create(obj)
+				model["FeaturedProduct"].upsert(obj)
 					.then(function(row) {
 						res.status(201).send("Created");
 						return;
