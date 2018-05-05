@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'product_id',
             allowNull: false,
+            unique:true,
             references: {
                 model: 'product',
                 key: 'id'
