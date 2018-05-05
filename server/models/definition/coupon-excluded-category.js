@@ -62,7 +62,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'coupon_excluded_category',
         timestamps: false
     });
@@ -77,14 +76,12 @@ module.exports.initRelations = () => {
     const Category = model.Category;
 
     CouponExcludedCategory.belongsTo(Coupon, {
-        as: 'Coupon',
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     CouponExcludedCategory.belongsTo(Category, {
-        as: 'Category',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

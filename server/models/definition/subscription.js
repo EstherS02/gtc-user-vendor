@@ -72,7 +72,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'subscription',
         timestamps: false
     });
@@ -87,14 +86,12 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     Subscription.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Subscription.belongsTo(Product, {
-        as: 'Product',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

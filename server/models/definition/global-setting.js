@@ -55,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'global_setting',
         timestamps: false
     });

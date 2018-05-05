@@ -72,7 +72,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'country',
         timestamps: false
     });
@@ -101,77 +100,66 @@ module.exports.initRelations = () => {
     const SubCategory = model.SubCategory;
 
     Country.hasMany(Address, {
-        as: 'FkAddress2s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Product, {
-        as: 'FkProduct7s',
         foreignKey: 'product_location',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(ProductAdsSetting, {
-        as: 'FkProductAdsSetting2s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(State, {
-        as: 'FkState1s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Tax, {
-        as: 'FkTax1s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Timezone, {
-        as: 'FkTimeZone1s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(Vendor, {
-        as: 'FkVendor2s',
         foreignKey: 'base_location',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.hasMany(VendorShippingLocation, {
-        as: 'FkVendorShippingLocation2s',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.belongsTo(Region, {
-        as: 'Region',
         foreignKey: 'region_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.belongsTo(Currency, {
-        as: 'Currency',
         foreignKey: 'currency_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Country.belongsToMany(User, {
-        as: 'AddressUsers',
         through: Address,
         foreignKey: 'country_id',
         otherKey: 'user_id',
@@ -180,7 +168,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(State, {
-        as: 'AddressProvinces',
         through: Address,
         foreignKey: 'country_id',
         otherKey: 'province_id',
@@ -189,7 +176,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Vendor, {
-        as: 'ProductVendors',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'vendor_id',
@@ -198,7 +184,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Marketplace, {
-        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'marketplace_id',
@@ -207,7 +192,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(MarketplaceType, {
-        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'marketplace_type_id',
@@ -216,7 +200,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(ProductMedium, {
-        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'product_media_id',
@@ -225,7 +208,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Category, {
-        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'product_category_id',
@@ -234,7 +216,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(SubCategory, {
-        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'sub_category_id',
@@ -243,7 +224,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(State, {
-        as: 'ProductStates',
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'state_id',
@@ -252,7 +232,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Product, {
-        as: 'ProductAdsSettingProducts',
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'product_id',
@@ -261,7 +240,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(State, {
-        as: 'ProductAdsSettingStates',
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'state_id',
@@ -270,7 +248,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(User, {
-        as: 'VendorUsers',
         through: Vendor,
         foreignKey: 'base_location',
         otherKey: 'user_id',
@@ -279,7 +256,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Currency, {
-        as: 'VendorCurrencies',
         through: Vendor,
         foreignKey: 'base_location',
         otherKey: 'currency_id',
@@ -288,7 +264,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Timezone, {
-        as: 'VendorTimezones',
         through: Vendor,
         foreignKey: 'base_location',
         otherKey: 'timezone_id',
@@ -297,7 +272,6 @@ module.exports.initRelations = () => {
     });
 
     Country.belongsToMany(Vendor, {
-        as: 'VendorShippingLocationVendors',
         through: VendorShippingLocation,
         foreignKey: 'country_id',
         otherKey: 'vendor_id',

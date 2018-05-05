@@ -67,7 +67,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'product_attribute',
         timestamps: false
     });
@@ -82,14 +81,12 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     ProductAttribute.belongsTo(Attribute, {
-        as: 'Attribute',
         foreignKey: 'attribute_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     ProductAttribute.belongsTo(Product, {
-        as: 'Product',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

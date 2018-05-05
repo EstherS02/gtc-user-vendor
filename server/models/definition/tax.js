@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'tax',
         timestamps: false
     });
@@ -84,21 +83,18 @@ module.exports.initRelations = () => {
     const Coupon = model.Coupon;
 
     Tax.hasMany(OrderItem, {
-        as: 'FkOrderItems4s',
         foreignKey: 'tax_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Tax.belongsTo(Country, {
-        as: 'Country',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Tax.belongsToMany(Order, {
-        as: 'OrderItemOrders',
         through: OrderItem,
         foreignKey: 'tax_id',
         otherKey: 'order_id',
@@ -107,7 +103,6 @@ module.exports.initRelations = () => {
     });
 
     Tax.belongsToMany(Product, {
-        as: 'OrderItemProducts',
         through: OrderItem,
         foreignKey: 'tax_id',
         otherKey: 'product_id',
@@ -116,7 +111,6 @@ module.exports.initRelations = () => {
     });
 
     Tax.belongsToMany(Coupon, {
-        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'tax_id',
         otherKey: 'coupon_id',

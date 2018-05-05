@@ -60,7 +60,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'plan',
         timestamps: false
     });
@@ -78,28 +77,24 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     Plan.hasMany(PlanLimit, {
-        as: 'FkPlanLimit1s',
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Plan.hasMany(PlanMarketplace, {
-        as: 'FkPlanMarketplace1s',
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Plan.hasMany(VendorPlan, {
-        as: 'FkVendorPlan2s',
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Plan.belongsToMany(Marketplace, {
-        as: 'PlanMarketplaceMarketplaces',
         through: PlanMarketplace,
         foreignKey: 'plan_id',
         otherKey: 'marketplace_id',
@@ -108,7 +103,6 @@ module.exports.initRelations = () => {
     });
 
     Plan.belongsToMany(Vendor, {
-        as: 'VendorPlanVendors',
         through: VendorPlan,
         foreignKey: 'plan_id',
         otherKey: 'vendor_id',

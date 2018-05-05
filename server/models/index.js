@@ -12,8 +12,8 @@ function init(sequelize) {
     initialized = true;
     // Import model files and assign them to `model` object.
     model.Address = sequelize.import('./definition/address.js');
-    model.AdminUser = sequelize.import('./definition/admin-user.js');
     model.Admin = sequelize.import('./definition/admin.js');
+    model.AdminUser = sequelize.import('./definition/admin-user.js');
     model.Announcement = sequelize.import('./definition/announcement.js');
     model.Appclient = sequelize.import('./definition/appclients.js');
     model.Attribute = sequelize.import('./definition/attribute.js');
@@ -48,7 +48,7 @@ function init(sequelize) {
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedium = sequelize.import('./definition/product-media.js');
     model.ProductReview = sequelize.import('./definition/product-review.js');
-    model.ProductSales = sequelize.import('./definition/product-sales.js');
+    model.ProductSale = sequelize.import('./definition/product-sales.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
@@ -61,8 +61,8 @@ function init(sequelize) {
     model.Ticket = sequelize.import('./definition/ticket.js');
     model.TicketThread = sequelize.import('./definition/ticket-thread.js');
     model.Timezone = sequelize.import('./definition/timezone.js');
-    model.User = sequelize.import('./definition/users.js');
     model.UserOrder = sequelize.import('./definition/user-orders.js');
+    model.User = sequelize.import('./definition/users.js');
     model.UserToken = sequelize.import('./definition/user-token.js');
     model.Vendor = sequelize.import('./definition/vendor.js');
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
@@ -75,8 +75,8 @@ function init(sequelize) {
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
-    require('./definition/admin-user.js').initRelations();
     require('./definition/admin.js').initRelations();
+    require('./definition/admin-user.js').initRelations();
     require('./definition/announcement.js').initRelations();
     require('./definition/appclients.js').initRelations();
     require('./definition/attribute.js').initRelations();
@@ -124,8 +124,8 @@ function init(sequelize) {
     require('./definition/ticket.js').initRelations();
     require('./definition/ticket-thread.js').initRelations();
     require('./definition/timezone.js').initRelations();
-    require('./definition/users.js').initRelations();
     require('./definition/user-orders.js').initRelations();
+    require('./definition/users.js').initRelations();
     require('./definition/user-token.js').initRelations();
     require('./definition/vendor.js').initRelations();
     require('./definition/vendor-follower.js').initRelations();

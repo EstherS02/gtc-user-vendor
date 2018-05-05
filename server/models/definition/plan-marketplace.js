@@ -62,7 +62,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'plan_marketplace',
         timestamps: false
     });
@@ -77,14 +76,12 @@ module.exports.initRelations = () => {
     const Marketplace = model.Marketplace;
 
     PlanMarketplace.belongsTo(Plan, {
-        as: 'Plan',
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     PlanMarketplace.belongsTo(Marketplace, {
-        as: 'Marketplace',
         foreignKey: 'marketplace_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

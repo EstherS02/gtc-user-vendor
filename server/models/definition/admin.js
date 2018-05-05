@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-         status: {
+        status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
@@ -51,7 +51,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'admin',
         timestamps: false
     });
@@ -65,7 +64,6 @@ module.exports.initRelations = () => {
     const User = model.User;
 
     Admin.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

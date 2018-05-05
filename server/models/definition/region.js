@@ -45,7 +45,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'region',
         timestamps: false
     });
@@ -60,14 +59,12 @@ module.exports.initRelations = () => {
     const Currency = model.Currency;
 
     Region.hasMany(Country, {
-        as: 'FkCountry1s',
         foreignKey: 'region_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Region.belongsToMany(Currency, {
-        as: 'CountryCurrencies',
         through: Country,
         foreignKey: 'region_id',
         otherKey: 'currency_id',

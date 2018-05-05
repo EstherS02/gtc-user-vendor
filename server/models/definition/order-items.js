@@ -104,7 +104,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'order_items',
         timestamps: false
     });
@@ -121,28 +120,24 @@ module.exports.initRelations = () => {
     const Tax = model.Tax;
 
     OrderItem.belongsTo(Order, {
-        as: 'Order',
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Product, {
-        as: 'Product',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Coupon, {
-        as: 'Coupon',
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     OrderItem.belongsTo(Tax, {
-        as: 'Tax',
         foreignKey: 'tax_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

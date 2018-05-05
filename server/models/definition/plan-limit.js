@@ -76,7 +76,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'plan_limit',
         timestamps: false
     });
@@ -90,7 +89,6 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
 
     PlanLimit.belongsTo(Plan, {
-        as: 'Plan',
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

@@ -42,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         }
     }, {
-        // schema: 'public',
         tableName: 'user_token',
         timestamps: false
     });
@@ -57,14 +56,12 @@ module.exports.initRelations = () => {
     const Appclient = model.Appclient;
 
     UserToken.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     UserToken.belongsTo(Appclient, {
-        as: 'Client',
         foreignKey: 'client_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

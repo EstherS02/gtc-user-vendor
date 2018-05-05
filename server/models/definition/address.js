@@ -35,23 +35,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address_line2',
             allowNull: true
         },
-        country_id: {
-            type: DataTypes.BIGINT,
-            field: 'country_id',
-            allowNull: false,
-            references: {
-                model: 'country',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
         province_id: {
             type: DataTypes.BIGINT,
             field: 'province_id',
             allowNull: false,
             references: {
                 model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        country_id: {
+            type: DataTypes.BIGINT,
+            field: 'country_id',
+            allowNull: false,
+            references: {
+                model: 'country',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -98,7 +98,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'address',
         timestamps: false
     });
@@ -116,42 +115,36 @@ module.exports.initRelations = () => {
     const Shipping = model.Shipping;
 
     Address.hasMany(Order, {
-        as: 'FkOrder3s',
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Address.hasMany(Order, {
-        as: 'FkOrder4s',
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(Country, {
-        as: 'Country',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Address.belongsTo(State, {
-        as: 'Province',
         foreignKey: 'province_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Address.belongsToMany(User, {
-        as: 'OrderUsers',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'user_id',
@@ -160,7 +153,6 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Shipping, {
-        as: 'OrderShippings',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'shipping_id',
@@ -169,7 +161,6 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'OrderBillingAddresses',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
@@ -178,7 +169,6 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(User, {
-        as: 'OrderUsers',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'user_id',
@@ -187,7 +177,6 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Shipping, {
-        as: 'OrderShippings',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_id',
@@ -196,7 +185,6 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'OrderShippingAddresses',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',

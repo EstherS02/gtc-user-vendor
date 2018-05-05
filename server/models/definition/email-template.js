@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         body: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(255),
             field: 'body',
             allowNull: true
         },
@@ -55,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'email_template',
         timestamps: false
     });

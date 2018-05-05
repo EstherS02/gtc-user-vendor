@@ -71,7 +71,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'payment_setting',
         timestamps: false
     });
@@ -87,21 +86,18 @@ module.exports.initRelations = () => {
     const Order = model.Order;
 
     PaymentSetting.hasMany(OrderPayment, {
-        as: 'FkOrderPayment2s',
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     PaymentSetting.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     PaymentSetting.belongsToMany(Order, {
-        as: 'OrderPaymentOrders',
         through: OrderPayment,
         foreignKey: 'payment_id',
         otherKey: 'order_id',
