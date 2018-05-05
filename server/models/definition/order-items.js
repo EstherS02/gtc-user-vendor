@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         order_id: {
             type: DataTypes.BIGINT,
@@ -70,6 +71,11 @@ module.exports = (sequelize, DataTypes) => {
         final_price: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'final_price',
+            allowNull: false
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
             allowNull: false
         },
         created_by: {

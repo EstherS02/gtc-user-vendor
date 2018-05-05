@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         ticket_id: {
             type: DataTypes.BIGINT,
@@ -34,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'message',
             allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

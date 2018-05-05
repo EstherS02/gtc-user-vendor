@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         attribute_id: {
             type: DataTypes.BIGINT,
@@ -34,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(128),
             field: 'value',
             allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -40,10 +41,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'end_date',
             allowNull: false
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
-            allowNull: true
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

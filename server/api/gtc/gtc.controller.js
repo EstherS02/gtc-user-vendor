@@ -83,13 +83,17 @@ export function index(req, res) {
 
 	queryObj = Object.assign(searchObj, req.query);
 
-	if (queryObj.status && queryObj.status == status["DELETED"]) {
+	if (!queryObj.status) {
 		queryObj['status'] = {
 			'$ne': status["DELETED"]
 		}
+	} else {
+		if (queryObj.status == status["DELETED"]) {
+			queryObj['status'] = {
+				'$eq': status["DELETED"]
+			}
+		}
 	}
-
-	console.log('query', queryObj);
 
 	model[req.endpoint].findAndCountAll({
 		where: queryObj,

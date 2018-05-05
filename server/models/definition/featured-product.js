@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         product_id: {
             type: DataTypes.BIGINT,
@@ -32,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         end_date: {
             type: DataTypes.DATEONLY,
             field: 'end_date',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,

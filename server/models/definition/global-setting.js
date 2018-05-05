@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING(255),
@@ -23,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'value',
             allowNull: false
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
+            field: 'status',
             allowNull: false
         },
         created_by: {

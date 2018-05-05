@@ -6,7 +6,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
+        },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false
         },
         role: {
             type: DataTypes.INTEGER,
@@ -69,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_user_product',
+        tableName: 'admin_user',
         timestamps: false
     });
 };

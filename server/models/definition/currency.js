@@ -29,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'decimal_points',
             allowNull: true
         },
-        isactive: {
+        status: {
             type: DataTypes.INTEGER,
-            field: 'isactive',
+            field: 'status',
             allowNull: false
         },
         created_by: {

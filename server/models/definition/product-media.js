@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         type: {
             type: DataTypes.INTEGER,
@@ -16,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.TEXT,
             field: 'url',
+            allowNull: false
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
             allowNull: false
         },
         created_by: {

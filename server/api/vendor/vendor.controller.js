@@ -10,7 +10,6 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 
 export function create(req, res) {
-	console.log('CREATE **************')
 	var queryObj = {};
 	var vendorBodyParams = {};
 	var randomCode = uuid.v1();
@@ -36,6 +35,10 @@ export function create(req, res) {
 
 	var bodyParams = req.body;
 
+	if (req.body.vendor_name) {
+		vendorBodyParams.vendor_name = req.body.vendor_name;
+		delete req.body.vendor_name;
+	}
 	if (req.body.contact_email) {
 		vendorBodyParams.contact_email = req.body.contact_email;
 		delete req.body.contact_email;
@@ -110,7 +113,6 @@ export function create(req, res) {
 		} else {
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams["role"] = roles["VENDOR"];
-			console.log('bodyParams', bodyParams)
 			model['User'].create(bodyParams)
 				.then(function(user) {
 					if (user) {
@@ -119,13 +121,9 @@ export function create(req, res) {
 						delete rspUser.hashed_pwd;
 						delete rspUser.email_verified_token;
 						delete rspUser.email_verified_token_generated;
+						
 						vendorBodyParams.user_id = rspUser.id;
-
-						if (rspUser.first_name && rspUser.last_name) {
-							vendorBodyParams.vendor_name = rspUser.first_name + " " + rspUser.last_name;
-						} else {
-							vendorBodyParams.vendor_name = rspUser.first_name;
-						}
+						vendorBodyParams['created_on'] = new Date();
 
 						model['Vendor'].create(vendorBodyParams)
 							.then(function(vendor) {

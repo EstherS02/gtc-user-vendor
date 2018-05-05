@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         product_count: {
             type: DataTypes.BIGINT,
@@ -42,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(64),
             field: 'last_name',
             allowNull: true
+        },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false
         },
         email: {
             type: DataTypes.STRING(128),

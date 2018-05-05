@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         provider_name: {
             type: DataTypes.STRING(128),
@@ -17,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             field: 'tracking_url',
             allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),
