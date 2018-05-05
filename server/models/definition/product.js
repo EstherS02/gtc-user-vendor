@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         sku: {
             type: DataTypes.INTEGER,
@@ -48,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         marketplace_type_id: {
             type: DataTypes.BIGINT,
             field: 'marketplace_type_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'marketplace_type',
                 key: 'id'
