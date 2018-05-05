@@ -36,6 +36,7 @@ module.exports = {
 	"product-attributes": "ProductAttribute",
 	"product-medias": "ProductMedia",
 	"product-reviews": "ProductReview",
+	"product-sales": "ProductSales",
 	"regions": "Region",
 	"shippings": "Shipping",
 	"states": "State",
