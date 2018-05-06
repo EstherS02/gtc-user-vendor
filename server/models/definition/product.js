@@ -163,7 +163,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'product',
         timestamps: false
     });
@@ -199,147 +198,126 @@ module.exports.initRelations = () => {
     const Attribute = model.Attribute;
 
     Product.hasMany(Cart, {
-        as: 'FkCart2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Coupon, {
-        as: 'FkCoupon1s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Coupon, {
-        as: 'FkCoupon2s',
         foreignKey: 'exclude_product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(CouponExcludedProduct, {
-        as: 'FkCouponExcludedProduct2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(CouponProduct, {
-        as: 'FkCouponProduct2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(FeaturedProduct, {
-        as: 'FkFeaturedProduct1s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(OrderItem, {
-        as: 'FkOrderItems2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductAdsSetting, {
-        as: 'FkProductAdsSetting1s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductAttribute, {
-        as: 'FkProductAttribute2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(ProductReview, {
-        as: 'FkProductReview1s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(Subscription, {
-        as: 'FkSubscription2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.hasMany(WishList, {
-        as: 'FkWishList2s',
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Marketplace, {
-        as: 'Marketplace',
         foreignKey: 'marketplace_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(MarketplaceType, {
-        as: 'MarketplaceType',
         foreignKey: 'marketplace_type_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(ProductMedium, {
-        as: 'ProductMedium',
         foreignKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Category, {
-        as: 'ProductCategory',
         foreignKey: 'product_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(SubCategory, {
-        as: 'SubCategory',
         foreignKey: 'sub_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(Country, {
-        as: 'RelatedProductLocation',
         foreignKey: 'product_location',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsTo(State, {
-        as: 'State',
         foreignKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Product.belongsToMany(User, {
-        as: 'CartUsers',
         through: Cart,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -348,7 +326,7 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Product, {
-        as: 'CouponExcludeProducts',
+        as: "Product1",
         through: Coupon,
         foreignKey: 'product_id',
         otherKey: 'exclude_product_id',
@@ -357,7 +335,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Category, {
-        as: 'CouponCategories',
         through: Coupon,
         foreignKey: 'product_id',
         otherKey: 'category_id',
@@ -366,7 +343,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Category, {
-        as: 'CouponExcludeCategories',
         through: Coupon,
         foreignKey: 'product_id',
         otherKey: 'exclude_category_id',
@@ -375,7 +351,7 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Product, {
-        as: 'CouponProducts',
+        as: "Product2",
         through: Coupon,
         foreignKey: 'exclude_product_id',
         otherKey: 'product_id',
@@ -384,7 +360,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Category, {
-        as: 'CouponCategories',
         through: Coupon,
         foreignKey: 'exclude_product_id',
         otherKey: 'category_id',
@@ -393,7 +368,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Category, {
-        as: 'CouponExcludeCategories',
         through: Coupon,
         foreignKey: 'exclude_product_id',
         otherKey: 'exclude_category_id',
@@ -402,7 +376,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Coupon, {
-        as: 'CouponExcludedProductCoupons',
         through: CouponExcludedProduct,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
@@ -411,7 +384,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Coupon, {
-        as: 'CouponProductCoupons',
         through: CouponProduct,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
@@ -420,7 +392,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Order, {
-        as: 'OrderItemOrders',
         through: OrderItem,
         foreignKey: 'product_id',
         otherKey: 'order_id',
@@ -429,7 +400,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Coupon, {
-        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
@@ -438,7 +408,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Tax, {
-        as: 'OrderItemTaxes',
         through: OrderItem,
         foreignKey: 'product_id',
         otherKey: 'tax_id',
@@ -447,7 +416,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Country, {
-        as: 'ProductAdsSettingCountries',
         through: ProductAdsSetting,
         foreignKey: 'product_id',
         otherKey: 'country_id',
@@ -456,7 +424,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(State, {
-        as: 'ProductAdsSettingStates',
         through: ProductAdsSetting,
         foreignKey: 'product_id',
         otherKey: 'state_id',
@@ -465,7 +432,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(Attribute, {
-        as: 'ProductAttributeAttributes',
         through: ProductAttribute,
         foreignKey: 'product_id',
         otherKey: 'attribute_id',
@@ -474,7 +440,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(User, {
-        as: 'ProductReviewUsers',
         through: ProductReview,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -483,7 +448,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(User, {
-        as: 'SubscriptionUsers',
         through: Subscription,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -492,7 +456,6 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(User, {
-        as: 'WishListUsers',
         through: WishList,
         foreignKey: 'product_id',
         otherKey: 'user_id',

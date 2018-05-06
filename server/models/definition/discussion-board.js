@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'discussion_board',
         timestamps: false
     });
@@ -81,14 +80,12 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     DiscussionBoard.hasMany(DiscussionBoardDetail, {
-        as: 'FkDiscussionBoardDetails1s',
         foreignKey: 'discussion_board_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     DiscussionBoard.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

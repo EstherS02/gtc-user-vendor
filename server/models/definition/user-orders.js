@@ -2,26 +2,31 @@
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('UserOrder', {
+        order_count: {
+            type: DataTypes.BIGINT,
+            field: 'order_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
-            primaryKey: true,
-            allowNull: true
+            allowNull: false,
+            primaryKey: true
         },
         role: {
             type: DataTypes.INTEGER,
             field: 'role',
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING(128),
             field: 'email',
-            allowNull: false
+            allowNull: true
         },
         first_name: {
             type: DataTypes.STRING(64),
             field: 'first_name',
-            allowNull: false
+            allowNull: true
         },
         last_name: {
             type: DataTypes.STRING(64),
@@ -36,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',
-            allowNull: false
+            allowNull: true
         },
         last_login_at: {
             type: DataTypes.DATE,
@@ -72,11 +77,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'deleted_at',
             allowNull: true
-        },
-        order_count: {
-            type: DataTypes.BIGINT,
-            field: 'order_count',
-            allowNull: true
         }
     }, {
         tableName: 'user_orders',
@@ -85,5 +85,6 @@ module.exports = (sequelize, DataTypes) => {
 };
 
 module.exports.initRelations = () => {
-    delete module.exports.initRelations;
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
 };

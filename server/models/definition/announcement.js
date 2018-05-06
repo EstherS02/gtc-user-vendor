@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
+            allowNull: false
         },
         visible_to_user: {
             type: DataTypes.INTEGER,
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         link: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(255),
             field: 'link',
             allowNull: true
         },
@@ -80,7 +80,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'announcement',
         timestamps: false
     });

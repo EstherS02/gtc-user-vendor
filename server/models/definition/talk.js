@@ -84,7 +84,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'talk',
         timestamps: false
     });
@@ -100,28 +99,24 @@ module.exports.initRelations = () => {
     const TalkThread = model.TalkThread;
 
     Talk.belongsTo(TalkSetting, {
-        as: 'TalkSetting',
         foreignKey: 'talk_setting_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Talk.belongsTo(User, {
-        as: 'From',
         foreignKey: 'from_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Talk.belongsTo(User, {
-        as: 'To',
         foreignKey: 'to_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Talk.belongsTo(TalkThread, {
-        as: 'LastThread',
         foreignKey: 'last_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

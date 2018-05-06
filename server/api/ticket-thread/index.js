@@ -3,9 +3,8 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../../auth/auth.service');
-var controller = require('./vendor.controller');
+var controller = require('./ticket-thread.controller');
 
-router.get('/me', auth.isAuthenticated(), controller.me);
-router.post('/', controller.create);
+router.post('/:ticket_id', auth.isAuthenticated(), controller.createTicketThread);
 
 module.exports = router;

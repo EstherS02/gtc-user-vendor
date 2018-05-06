@@ -2,72 +2,71 @@
 
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('VendorUserProduct', {
+        product_count: {
+            type: DataTypes.BIGINT,
+            field: 'product_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        product_count: {
-            type: DataTypes.BIGINT,
-            field: 'product_count',
-            allowNull: false
+            primaryKey: true
         },
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: false
+            allowNull: true
         },
         contact_email: {
             type: DataTypes.STRING(128),
             field: 'contact_email',
             allowNull: true
         },
-        marketplace_id: {
-            type: DataTypes.BIGINT,
-            field: 'marketplace_id',
-            allowNull: false
-        },
         type: {
             type: DataTypes.STRING(64),
             field: 'type',
-            allowNull: false
+            allowNull: true
+        },
+        marketplace_id: {
+            type: DataTypes.BIGINT,
+            field: 'marketplace_id',
+            allowNull: true
+        },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: true
+        },
+        email: {
+            type: DataTypes.STRING(128),
+            field: 'email',
+            allowNull: true
         },
         first_name: {
             type: DataTypes.STRING(64),
             field: 'first_name',
-            allowNull: false
+            allowNull: true
         },
         last_name: {
             type: DataTypes.STRING(64),
             field: 'last_name',
             allowNull: true
         },
-        user_id: {
-            type: DataTypes.BIGINT,
-            field: 'user_id',
-            allowNull: false
-        },
-        email: {
-            type: DataTypes.STRING(128),
-            field: 'email',
-            allowNull: false
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: true
         },
         role: {
             type: DataTypes.INTEGER,
             field: 'role',
-            allowNull: false
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
-            allowNull: false
+            allowNull: true
         },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -101,5 +100,6 @@ module.exports = (sequelize, DataTypes) => {
 };
 
 module.exports.initRelations = () => {
-    delete module.exports.initRelations;
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
 };

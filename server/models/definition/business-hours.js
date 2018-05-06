@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'business_hours',
         timestamps: false
     });
@@ -80,7 +79,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     BusinessHour.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

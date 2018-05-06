@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'order_payment',
         timestamps: false
     });
@@ -98,21 +97,18 @@ module.exports.initRelations = () => {
     const PaymentSetting = model.PaymentSetting;
 
     OrderPayment.hasMany(OrderPaymentEscrow, {
-        as: 'FkOrderPaymentEscrow1s',
         foreignKey: 'order_payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     OrderPayment.belongsTo(Order, {
-        as: 'Order',
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     OrderPayment.belongsTo(PaymentSetting, {
-        as: 'Payment',
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

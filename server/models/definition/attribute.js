@@ -55,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'attribute',
         timestamps: false
     });
@@ -72,21 +71,18 @@ module.exports.initRelations = () => {
     const Product = model.Product;
 
     Attribute.hasMany(CategoryAttribute, {
-        as: 'FkCategoryAttribute1s',
         foreignKey: 'attribute_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Attribute.hasMany(ProductAttribute, {
-        as: 'FkProductAttribute1s',
         foreignKey: 'attribute_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Attribute.belongsToMany(Category, {
-        as: 'CategoryAttributeCategories',
         through: CategoryAttribute,
         foreignKey: 'attribute_id',
         otherKey: 'category_id',
@@ -95,7 +91,6 @@ module.exports.initRelations = () => {
     });
 
     Attribute.belongsToMany(Product, {
-        as: 'ProductAttributeProducts',
         through: ProductAttribute,
         foreignKey: 'attribute_id',
         otherKey: 'product_id',

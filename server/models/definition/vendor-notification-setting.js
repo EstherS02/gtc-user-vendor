@@ -61,7 +61,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'vendor_notification_setting',
         timestamps: false
     });
@@ -75,7 +74,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     VendorNotificationSetting.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

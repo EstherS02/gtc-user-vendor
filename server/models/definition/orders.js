@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         status: {
-            type: DataTypes.STRING(45),
+            type: DataTypes.INTEGER,
             field: 'status',
             allowNull: true
         },
@@ -134,7 +134,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'orders',
         timestamps: false
     });
@@ -156,49 +155,42 @@ module.exports.initRelations = () => {
     const PaymentSetting = model.PaymentSetting;
 
     Order.hasMany(OrderItem, {
-        as: 'FkOrderItems1s',
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.hasMany(OrderPayment, {
-        as: 'FkOrderPayment1s',
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Shipping, {
-        as: 'Shipping',
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
-        as: 'ShippingAddress',
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
-        as: 'BillingAddress',
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsToMany(Product, {
-        as: 'OrderItemProducts',
         through: OrderItem,
         foreignKey: 'order_id',
         otherKey: 'product_id',
@@ -207,7 +199,6 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsToMany(Coupon, {
-        as: 'OrderItemCoupons',
         through: OrderItem,
         foreignKey: 'order_id',
         otherKey: 'coupon_id',
@@ -216,7 +207,6 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsToMany(Tax, {
-        as: 'OrderItemTaxes',
         through: OrderItem,
         foreignKey: 'order_id',
         otherKey: 'tax_id',
@@ -225,7 +215,6 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsToMany(PaymentSetting, {
-        as: 'OrderPaymentPayments',
         through: OrderPayment,
         foreignKey: 'order_id',
         otherKey: 'payment_id',

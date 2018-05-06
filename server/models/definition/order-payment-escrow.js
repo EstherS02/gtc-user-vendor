@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'order_payment_escrow',
         timestamps: false
     });
@@ -80,7 +79,6 @@ module.exports.initRelations = () => {
     const OrderPayment = model.OrderPayment;
 
     OrderPaymentEscrow.belongsTo(OrderPayment, {
-        as: 'OrderPayment',
         foreignKey: 'order_payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

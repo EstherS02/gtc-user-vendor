@@ -139,7 +139,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'vendor',
         timestamps: false
     });
@@ -172,98 +171,84 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
 
     Vendor.hasMany(BusinessHour, {
-        as: 'FkBusinessHours1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(DiscussionBoard, {
-        as: 'FkDiscussionBoard1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(Product, {
-        as: 'FkProduct1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(TalkSetting, {
-        as: 'FkTalkSetting1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorFollower, {
-        as: 'FkVendorFollower1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorNotificationSetting, {
-        as: 'FkVendorNotificationSetting1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorPlan, {
-        as: 'FkVendorPlan1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorShippingLocation, {
-        as: 'FkVendorShippingLocation1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.hasMany(VendorVerification, {
-        as: 'FkVendorVerification1s',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Country, {
-        as: 'RelatedBaseLocation',
         foreignKey: 'base_location',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Currency, {
-        as: 'Currency',
         foreignKey: 'currency_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsTo(Timezone, {
-        as: 'Timezone',
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Vendor.belongsToMany(Marketplace, {
-        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'marketplace_id',
@@ -272,7 +257,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(MarketplaceType, {
-        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'marketplace_type_id',
@@ -281,7 +265,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(ProductMedium, {
-        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'product_media_id',
@@ -290,7 +273,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(Category, {
-        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'product_category_id',
@@ -299,7 +281,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(SubCategory, {
-        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'sub_category_id',
@@ -308,7 +289,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(Country, {
-        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'product_location',
@@ -317,7 +297,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(State, {
-        as: 'ProductStates',
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'state_id',
@@ -326,7 +305,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(User, {
-        as: 'VendorFollowerUsers',
         through: VendorFollower,
         foreignKey: 'vendor_id',
         otherKey: 'user_id',
@@ -335,7 +313,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(Plan, {
-        as: 'VendorPlanPlans',
         through: VendorPlan,
         foreignKey: 'vendor_id',
         otherKey: 'plan_id',
@@ -344,7 +321,6 @@ module.exports.initRelations = () => {
     });
 
     Vendor.belongsToMany(Country, {
-        as: 'VendorShippingLocationCountries',
         through: VendorShippingLocation,
         foreignKey: 'vendor_id',
         otherKey: 'country_id',

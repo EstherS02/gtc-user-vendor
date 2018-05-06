@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -57,7 +62,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'vendor_shipping_location',
         timestamps: false
     });
@@ -72,14 +76,12 @@ module.exports.initRelations = () => {
     const Country = model.Country;
 
     VendorShippingLocation.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     VendorShippingLocation.belongsTo(Country, {
-        as: 'Country',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

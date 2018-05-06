@@ -71,7 +71,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'ticket',
         timestamps: false
     });
@@ -86,21 +85,18 @@ module.exports.initRelations = () => {
     const User = model.User;
 
     Ticket.hasMany(TicketThread, {
-        as: 'FkTicketThread1s',
         foreignKey: 'ticket_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Ticket.belongsTo(User, {
-        as: 'User',
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Ticket.belongsToMany(User, {
-        as: 'TicketThreadUsers',
         through: TicketThread,
         foreignKey: 'ticket_id',
         otherKey: 'user_id',

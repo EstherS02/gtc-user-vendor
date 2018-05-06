@@ -12,22 +12,22 @@ module.exports = (sequelize, DataTypes) => {
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: false
+            allowNull: true
         },
         role: {
             type: DataTypes.INTEGER,
             field: 'role',
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING(128),
             field: 'email',
-            allowNull: false
+            allowNull: true
         },
         first_name: {
             type: DataTypes.STRING(64),
             field: 'first_name',
-            allowNull: false
+            allowNull: true
         },
         last_name: {
             type: DataTypes.STRING(64),
@@ -37,16 +37,16 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',
-            allowNull: false
+            allowNull: true
         },
         last_login_at: {
             type: DataTypes.DATE,
-            field: 'created_on',
+            field: 'last_login_at',
             allowNull: true
         },
         created_by: {
@@ -81,5 +81,6 @@ module.exports = (sequelize, DataTypes) => {
 };
 
 module.exports.initRelations = () => {
-    delete module.exports.initRelations;
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
 };

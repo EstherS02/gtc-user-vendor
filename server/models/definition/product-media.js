@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -50,7 +50,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'product_media',
         timestamps: false
     });
@@ -71,14 +70,12 @@ module.exports.initRelations = () => {
     const State = model.State;
 
     ProductMedium.hasMany(Product, {
-        as: 'FkProduct4s',
         foreignKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     ProductMedium.belongsToMany(Vendor, {
-        as: 'ProductVendors',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'vendor_id',
@@ -87,7 +84,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(Marketplace, {
-        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'marketplace_id',
@@ -96,7 +92,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(MarketplaceType, {
-        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'marketplace_type_id',
@@ -105,7 +100,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(Category, {
-        as: 'ProductProductCategories',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'product_category_id',
@@ -114,7 +108,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(SubCategory, {
-        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'sub_category_id',
@@ -123,7 +116,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(Country, {
-        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'product_location',
@@ -132,7 +124,6 @@ module.exports.initRelations = () => {
     });
 
     ProductMedium.belongsToMany(State, {
-        as: 'ProductStates',
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'state_id',

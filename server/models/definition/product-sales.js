@@ -1,33 +1,47 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('EmailTemplate', {
+    return sequelize.define('ProductSale', {
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        name: {
-            type: DataTypes.STRING(64),
-            field: 'name',
-            allowNull: false
-        },
-        subject: {
-            type: DataTypes.STRING(255),
-            field: 'subject',
+        product_name: {
+            type: DataTypes.STRING(128),
+            field: 'product_name',
             allowNull: true
         },
-        body: {
-            type: DataTypes.STRING(255),
-            field: 'body',
+        publish_date: {
+            type: DataTypes.DATEONLY,
+            field: 'publish_date',
+            allowNull: true
+        },
+        sku: {
+            type: DataTypes.INTEGER,
+            field: 'sku',
+            allowNull: true
+        },
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: true
+        },
+        marketplace_id: {
+            type: DataTypes.BIGINT,
+            field: 'marketplace_id',
             allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -55,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'email_template',
+        tableName: 'product_sales',
         timestamps: false
     });
 };

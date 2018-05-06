@@ -26,7 +26,7 @@ function isAuthenticated() {
 			model['User'].findById(req.user.userId)
 				.then(function(user) {
 					if (user) {
-						req.user = user;
+						req.user = plainTextResponse(user);
 						next();
 					} else {
 						res.status(404).send("User not found");
@@ -38,6 +38,12 @@ function isAuthenticated() {
 					return next(error);
 				});
 		});
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }
 
 function hasPermission(withAction) {

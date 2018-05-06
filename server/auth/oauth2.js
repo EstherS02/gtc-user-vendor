@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('./auth');
 const uservalidate = require('../api/users/users.controller')
 const config = require('../config/environment');
+const status = require('../config/status');
 
 const model = require('../sqldb/model-connect');
 
@@ -27,7 +28,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 	scope, done) {
 	model['User'].findOne({
 		where: {
-			email: email
+			email: email,
+			status: status["ACTIVE"]
 		}
 	}).then(function(user) {
 		if (!user) {
@@ -66,6 +68,7 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 				var token = {
 					client_id: client.id,
 					user_id: user.id,
+					status: status["ACTIVE"],
 					refresh_token: refreshToken
 				};
 
@@ -150,6 +153,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 				var token = {
 					client_id: client.id,
 					user_id: user.id,
+					status: status["ACTIVE"],
 					refresh_token: refreshToken
 				};
 

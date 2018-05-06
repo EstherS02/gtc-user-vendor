@@ -61,7 +61,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'timezone',
         timestamps: false
     });
@@ -78,21 +77,18 @@ module.exports.initRelations = () => {
     const Currency = model.Currency;
 
     Timezone.hasMany(Vendor, {
-        as: 'FkVendor5s',
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsTo(Country, {
-        as: 'Country',
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Timezone.belongsToMany(User, {
-        as: 'VendorUsers',
         through: Vendor,
         foreignKey: 'timezone_id',
         otherKey: 'user_id',
@@ -101,7 +97,6 @@ module.exports.initRelations = () => {
     });
 
     Timezone.belongsToMany(Country, {
-        as: 'VendorBaseLocations',
         through: Vendor,
         foreignKey: 'timezone_id',
         otherKey: 'base_location',
@@ -110,7 +105,6 @@ module.exports.initRelations = () => {
     });
 
     Timezone.belongsToMany(Currency, {
-        as: 'VendorCurrencies',
         through: Vendor,
         foreignKey: 'timezone_id',
         otherKey: 'currency_id',

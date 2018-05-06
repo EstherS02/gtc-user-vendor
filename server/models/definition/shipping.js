@@ -50,7 +50,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'shipping',
         timestamps: false
     });
@@ -66,14 +65,12 @@ module.exports.initRelations = () => {
     const Address = model.Address;
 
     Shipping.hasMany(Order, {
-        as: 'FkOrder2s',
         foreignKey: 'shipping_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Shipping.belongsToMany(User, {
-        as: 'OrderUsers',
         through: Order,
         foreignKey: 'shipping_id',
         otherKey: 'user_id',
@@ -82,7 +79,6 @@ module.exports.initRelations = () => {
     });
 
     Shipping.belongsToMany(Address, {
-        as: 'OrderShippingAddresses',
         through: Order,
         foreignKey: 'shipping_id',
         otherKey: 'shipping_address_id',
@@ -91,7 +87,6 @@ module.exports.initRelations = () => {
     });
 
     Shipping.belongsToMany(Address, {
-        as: 'OrderBillingAddresses',
         through: Order,
         foreignKey: 'shipping_id',
         otherKey: 'billing_address_id',

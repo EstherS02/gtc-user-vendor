@@ -20,6 +20,10 @@ Admin
 belongs to        users                                    as User 
 
 
+AdminUser
+---------
+
+
 Announcement
 ------------
 
@@ -351,6 +355,10 @@ belongs to        product                                  as Product
 belongs to        users                                    as User 
 
 
+ProductSale
+-----------
+
+
 Region
 ------
 has many          country                                  as FkCountry1s 
@@ -460,6 +468,10 @@ belongs to many   country                                  as VendorBaseLocation
 belongs to many   currency                                 as VendorCurrencies 
 
 
+UserOrder
+---------
+
+
 User
 ----
 has many          address                                  as FkAddress1s 
@@ -471,7 +483,7 @@ has many          product_review                           as FkProductReview2s
 has many          subscription                             as FkSubscription1s 
 has many          talk                                     as FkTalk2s 
 has many          talk                                     as FkTalk3s 
-has many          talk_thread                              as FkTalkThread2s 
+has many          talk_thread                              as FkTalkThread1s 
 has many          ticket                                   as FkTicket1s 
 has many          ticket_thread                            as FkTicketThread2s 
 has many          user_token                               as FkUserToken1s 
@@ -555,6 +567,10 @@ VendorShippingLocation
 ----------------------
 belongs to        vendor                                   as Vendor 
 belongs to        country                                  as Country 
+
+
+VendorUserProduct
+-----------------
 
 
 VendorVerification

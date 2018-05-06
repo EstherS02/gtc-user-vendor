@@ -24,13 +24,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'type',
             allowNull: true
         },
-         status: {
+        status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'appclients',
         timestamps: false
     });
@@ -45,14 +44,12 @@ module.exports.initRelations = () => {
     const User = model.User;
 
     Appclient.hasMany(UserToken, {
-        as: 'FkUserToken2s',
         foreignKey: 'client_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Appclient.belongsToMany(User, {
-        as: 'UserTokenUsers',
         through: UserToken,
         foreignKey: 'client_id',
         otherKey: 'user_id',

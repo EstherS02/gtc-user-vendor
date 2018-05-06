@@ -76,7 +76,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'vendor_verification',
         timestamps: false
     });
@@ -90,7 +89,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
 
     VendorVerification.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

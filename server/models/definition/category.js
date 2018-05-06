@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         description: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(128),
             field: 'description',
             allowNull: true
         },
@@ -55,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'category',
         timestamps: false
     });
@@ -81,56 +80,48 @@ module.exports.initRelations = () => {
     const State = model.State;
 
     Category.hasMany(CategoryAttribute, {
-        as: 'FkCategoryAttribute2s',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(Coupon, {
-        as: 'FkCoupon3s',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(Coupon, {
-        as: 'FkCoupon4s',
         foreignKey: 'exclude_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(CouponCategory, {
-        as: 'FkCouponCategory2s',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(CouponExcludedCategory, {
-        as: 'FkCouponExcludedCategory2s',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(Product, {
-        as: 'FkProduct5s',
         foreignKey: 'product_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.hasMany(SubCategory, {
-        as: 'FkSubCategory1s',
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Category.belongsToMany(Attribute, {
-        as: 'CategoryAttributeAttributes',
         through: CategoryAttribute,
         foreignKey: 'category_id',
         otherKey: 'attribute_id',
@@ -139,7 +130,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Product, {
-        as: 'CouponProducts',
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'product_id',
@@ -148,7 +138,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Product, {
-        as: 'CouponExcludeProducts',
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'exclude_product_id',
@@ -157,7 +146,7 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Category, {
-        as: 'CouponExcludeCategories',
+        as: "Category1",
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'exclude_category_id',
@@ -166,7 +155,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Product, {
-        as: 'CouponProducts',
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'product_id',
@@ -175,7 +163,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Product, {
-        as: 'CouponExcludeProducts',
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'exclude_product_id',
@@ -184,7 +171,7 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Category, {
-        as: 'CouponCategories',
+        as: "Category2",
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'category_id',
@@ -193,7 +180,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Coupon, {
-        as: 'CouponCategoryCoupons',
         through: CouponCategory,
         foreignKey: 'category_id',
         otherKey: 'coupon_id',
@@ -202,7 +188,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Coupon, {
-        as: 'CouponExcludedCategoryCoupons',
         through: CouponExcludedCategory,
         foreignKey: 'category_id',
         otherKey: 'coupon_id',
@@ -211,7 +196,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Vendor, {
-        as: 'ProductVendors',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'vendor_id',
@@ -220,7 +204,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Marketplace, {
-        as: 'ProductMarketplaces',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'marketplace_id',
@@ -229,7 +212,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(MarketplaceType, {
-        as: 'ProductMarketplaceTypes',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'marketplace_type_id',
@@ -238,7 +220,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(ProductMedium, {
-        as: 'ProductProductMedia',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'product_media_id',
@@ -247,7 +228,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(SubCategory, {
-        as: 'ProductSubCategories',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'sub_category_id',
@@ -256,7 +236,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(Country, {
-        as: 'ProductProductLocations',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'product_location',
@@ -265,7 +244,6 @@ module.exports.initRelations = () => {
     });
 
     Category.belongsToMany(State, {
-        as: 'ProductStates',
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'state_id',

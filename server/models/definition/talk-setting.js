@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         default_msg: {
             type: DataTypes.STRING(255),
             field: 'default_msg',
-            allowNull: true
+            allowNull: true,
+            defaultValue: "Thank you for contacting us. A representative will respond to your message shortly"
         },
         status: {
             type: DataTypes.INTEGER,
@@ -66,7 +67,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        // schema: 'public',
         tableName: 'talk_setting',
         timestamps: false
     });
@@ -83,21 +83,18 @@ module.exports.initRelations = () => {
     const TalkThread = model.TalkThread;
 
     TalkSetting.hasMany(Talk, {
-        as: 'FkTalk1s',
         foreignKey: 'talk_setting_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsTo(Vendor, {
-        as: 'Vendor',
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     TalkSetting.belongsToMany(User, {
-        as: 'TalkFroms',
         through: Talk,
         foreignKey: 'talk_setting_id',
         otherKey: 'from_id',
@@ -106,7 +103,6 @@ module.exports.initRelations = () => {
     });
 
     TalkSetting.belongsToMany(User, {
-        as: 'TalkTos',
         through: Talk,
         foreignKey: 'talk_setting_id',
         otherKey: 'to_id',
@@ -115,7 +111,6 @@ module.exports.initRelations = () => {
     });
 
     TalkSetting.belongsToMany(TalkThread, {
-        as: 'TalkLastThreads',
         through: Talk,
         foreignKey: 'talk_setting_id',
         otherKey: 'last_thread_id',
