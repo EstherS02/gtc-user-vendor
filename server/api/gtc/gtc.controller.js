@@ -1,5 +1,7 @@
 'use strict';
 
+var mv = require('mv');
+
 const service = require('../service');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -200,8 +202,9 @@ exports.upload = function(req, res) {
 	mv(file.path, uploadPath, {
 		clobber: true,
 		mkdirp: true
-	}, function(err) {
-		if (err) {
+	}, function(error) {
+		if (error) {
+			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
 			var image = config.imageUrlRewritePath.products + file.originalFilename;
