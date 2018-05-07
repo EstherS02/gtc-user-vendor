@@ -48,7 +48,7 @@ function init(sequelize) {
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedium = sequelize.import('./definition/product-media.js');
     model.ProductReview = sequelize.import('./definition/product-review.js');
-    model.ProductSale = sequelize.import('./definition/product-sales.js');
+    model.ProductSales = sequelize.import('./definition/product-sales.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
