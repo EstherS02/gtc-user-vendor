@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductSale', {
+    return sequelize.define('ProductSales', {
         sales_count: {
             type: DataTypes.BIGINT,
             field: 'sales_count',
@@ -18,6 +18,26 @@ module.exports = (sequelize, DataTypes) => {
             field: 'product_name',
             allowNull: true
         },
+        vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
+            allowNull: false
+        },
+        owner_name: {
+            type: DataTypes.STRING(64),
+            field: 'owner_name',
+            allowNull: false
+        },
+        marketplace_id: {
+            type: DataTypes.BIGINT,
+            field: 'marketplace_id',
+            allowNull: false
+        },
+        type: {
+            type: DataTypes.STRING(64),
+            field: 'type',
+            allowNull: false
+        },
         publish_date: {
             type: DataTypes.DATEONLY,
             field: 'publish_date',
@@ -26,16 +46,6 @@ module.exports = (sequelize, DataTypes) => {
         sku: {
             type: DataTypes.INTEGER,
             field: 'sku',
-            allowNull: true
-        },
-        vendor_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_id',
-            allowNull: true
-        },
-        marketplace_id: {
-            type: DataTypes.BIGINT,
-            field: 'marketplace_id',
             allowNull: true
         },
         status: {
