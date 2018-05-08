@@ -54,6 +54,7 @@ function init(sequelize) {
     model.State = sequelize.import('./definition/state.js');
     model.SubCategory = sequelize.import('./definition/sub-category.js');
     model.Subscription = sequelize.import('./definition/subscription.js');
+    model.SubscriptionSales = sequelize.import('./definition/subscription-sales.js');
     model.Talk = sequelize.import('./definition/talk.js');
     model.TalkSetting = sequelize.import('./definition/talk-setting.js');
     model.TalkThread = sequelize.import('./definition/talk-thread.js');
@@ -117,6 +118,7 @@ function init(sequelize) {
     require('./definition/state.js').initRelations();
     require('./definition/sub-category.js').initRelations();
     require('./definition/subscription.js').initRelations();
+    require('./definition/subscription-sales.js').initRelations();
     require('./definition/talk.js').initRelations();
     require('./definition/talk-setting.js').initRelations();
     require('./definition/talk-thread.js').initRelations();

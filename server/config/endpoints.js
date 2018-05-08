@@ -42,6 +42,7 @@ module.exports = {
 	"states": "State",
 	"sub-categories": "SubCategory",
 	"subscriptions": "Subscription",
+	"subscription-sales": "SubscriptionSales",
 	"talks": "Talk",
 	"talk-settings": "TalkSetting",
 	"talk-threads": "TalkThread",
