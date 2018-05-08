@@ -11,6 +11,6 @@ var router = express.Router();
 router.get('/', controller.index);
 router.put('/feature_one/:id', controller.featureOne);
 router.put('/feature_many', controller.featureMany);
-
+router.post('/get-media-id', controller.getMediaId);
 
 module.exports = router;

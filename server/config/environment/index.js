@@ -38,7 +38,7 @@ var all = {
   upload_products_path: process.env.BASE_URL_LOCAL_UPLOAD + '/products',
 
   imageUrlRewritePath: {
-    products: "/images/products",
+    products: "/images/products/",
   },
 
   // Secret for session, you will want to change this and make it an environment variable
