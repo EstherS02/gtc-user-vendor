@@ -1,62 +1,46 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Announcement', {
+    return sequelize.define('SubscriptionSales', {
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        notification: {
-            type: DataTypes.STRING(255),
-            field: 'notification',
+        product_name: {
+            type: DataTypes.STRING(128),
+            field: 'product_name',
+            allowNull: true
+        },
+        vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
+            allowNull: false
+        },
+        owner_name: {
+            type: DataTypes.STRING(64),
+            field: 'owner_name',
+            allowNull: false
+        },
+        publish_date: {
+            type: DataTypes.DATEONLY,
+            field: 'publish_date',
+            allowNull: true
+        },
+        sku: {
+            type: DataTypes.INTEGER,
+            field: 'sku',
             allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
-        },
-        visible_to_user: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_user',
-            allowNull: true
-        },
-        visible_to_wholesaler: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_wholesaler',
-            allowNull: true
-        },
-        visible_to_retailer: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_retailer',
-            allowNull: true
-        },
-        visible_to_lifestyle_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_lifestyle_provider',
-            allowNull: true
-        },
-        visible_to_service_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_service_provider',
-            allowNull: true
-        },
-        link: {
-            type: DataTypes.STRING(255),
-            field: 'link',
-            allowNull: true
-        },
-        start_date: {
-            type: DataTypes.DATEONLY,
-            field: 'start_date',
-            allowNull: false
-        },
-        end_date: {
-            type: DataTypes.DATEONLY,
-            field: 'end_date',
             allowNull: true
         },
         created_by: {
@@ -85,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'announcement',
+        tableName: 'subscription_sales',
         timestamps: false
     });
 };

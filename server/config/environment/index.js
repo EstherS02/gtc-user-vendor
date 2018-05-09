@@ -35,6 +35,12 @@ var all = {
 
   clientURL: process.env.CLIENT_BASE_URL,
 
+  upload_products_path: process.env.BASE_URL_LOCAL_UPLOAD + '/products',
+
+  imageUrlRewritePath: {
+    products: "/images/products/",
+  },
+
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
     session: 'gtc-secret',

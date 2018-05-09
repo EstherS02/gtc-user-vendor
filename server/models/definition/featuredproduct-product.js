@@ -1,52 +1,21 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Announcement', {
+    return sequelize.define('FeaturedproductProduct', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        notification: {
-            type: DataTypes.STRING(255),
-            field: 'notification',
-            allowNull: true
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
+        product_name: {
+            type: DataTypes.STRING(128),
+            field: 'product_name',
             allowNull: false
         },
-        visible_to_user: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_user',
-            allowNull: true
-        },
-        visible_to_wholesaler: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_wholesaler',
-            allowNull: true
-        },
-        visible_to_retailer: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_retailer',
-            allowNull: true
-        },
-        visible_to_lifestyle_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_lifestyle_provider',
-            allowNull: true
-        },
-        visible_to_service_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_service_provider',
-            allowNull: true
-        },
-        link: {
-            type: DataTypes.STRING(255),
-            field: 'link',
+        position: {
+            type: DataTypes.STRING(45),
+            field: 'position',
             allowNull: true
         },
         start_date: {
@@ -57,6 +26,21 @@ module.exports = (sequelize, DataTypes) => {
         end_date: {
             type: DataTypes.DATEONLY,
             field: 'end_date',
+            allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
+        },
+        impression: {
+            type: DataTypes.INTEGER,
+            field: 'impression',
+            allowNull: true
+        },
+        clicks: {
+            type: DataTypes.INTEGER,
+            field: 'clicks',
             allowNull: true
         },
         created_by: {
@@ -85,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'announcement',
+        tableName: 'featuredproduct_product',
         timestamps: false
     });
 };

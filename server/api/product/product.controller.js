@@ -2,8 +2,9 @@
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
+const service = require('../service');
 
-export function index(req, res) {
+export function vendorMarketplace(req, res) {
 
 	model["VendorPlan"].find({
 			where: req.query
@@ -42,6 +43,31 @@ export function index(req, res) {
 				return;
 			}
 		})
+}
+
+export function getMediaId(req, res) {
+
+	
+	var bodyParams = req.body;
+
+	bodyParams["created_on"] = new Date();
+	bodyParams["type"] = 1;
+	bodyParams["status"] = 1;
+     
+     console.log("url.......",bodyParams);
+
+	service.createRow('ProductMedium', bodyParams)
+		.then(function(result) {
+			if (result) {
+				return res.status(201).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
 }
 
 export function featureMany(req, res) {
