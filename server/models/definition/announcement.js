@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'visible_to_wholesaler',
             allowNull: true
         },
+        visible_to_retailer: {
+            type: DataTypes.INTEGER,
+            field: 'visible_to_retailer',
+            allowNull: true
+        },
         visible_to_lifestyle_provider: {
             type: DataTypes.INTEGER,
             field: 'visible_to_lifestyle_provider',
