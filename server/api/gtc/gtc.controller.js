@@ -4,7 +4,6 @@ var mv = require('mv');
 
 const service = require('../service');
 const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 
