@@ -4,7 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 
-export function index(req, res) {
+export function vendorMarketplace(req, res) {
 
 	model["VendorPlan"].find({
 			where: req.query
