@@ -24,21 +24,23 @@ import config from './environment';
 export default function(app) {
   var env = app.get('env');
 
-  if(env === 'development' || env === 'test') {
+  /* if(env === 'development' || env === 'test') {
+    console.log(express.static(path.join(config.root, '.tmp')))
     app.use(express.static(path.join(config.root, '.tmp')));
   }
 
   if(env === 'production') {
     app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
   }
-
-  app.set('appPath', path.join(config.root, 'client'));
-  app.use(express.static(app.get('appPath')));
+ */
+//  app.set('appPath', path.join(config.root, 'client'));
+//  app.use(express.static(app.get('appPath')));
   app.use(morgan('dev'));
 
-  app.set('views', `${config.root}/server/views`);
-  app.engine('html', require('ejs').renderFile);
-  app.set('view engine', 'html');
+
+  //app.set('views', `${config.root}/server/views`);
+  //app.engine('html', require('ejs').renderFile);
+//  app.set('view engine', 'html');
   app.use(shrinkRay());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());

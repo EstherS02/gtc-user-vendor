@@ -8,7 +8,8 @@ import path from 'path';
 import errors from './components/errors';
 
 export default function(app) {
-  // Insert routes below
+  
+  /* Server REST API Routes */
   app.post('/auth/admin-token', require('./admin-auth'));
   app.post('/auth/token', require('./auth'));
   app.use('/api/admin-auth', require('./api/admin-auth'));
@@ -23,13 +24,35 @@ export default function(app) {
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api', require('./api/gtc'));
 
-  // All undefined asset or api routes should return a 404
+  
+  
+
+
+
+  /* Handlerbars routes */
+  app.use('/', require('./hbs-routes/home-page'))
+
+
+  //All other routes 404 page
+  
+  app.route('/*').get((req, res) => {
+      res.render('404', {
+        layout: false
+      });
+  });
+
+
+
+
+/*   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
-    .get(errors[404]);
+    .get(errors[404]); 
 
   // All other routes should redirect to the index.html
-  app.route('/*')
+   app.route('/*')
     .get((req, res) => {
-      res.sendFile(path.resolve(`${app.get('appPath')}/index.html`));
-    });
+      errors[404]
+      //console.log(path.resolve(`${app.get('appPath')}/index.html`))
+      //res.sendFile(path.resolve(`${app.get('appPath')}/index.html`));
+    }); */
 }
