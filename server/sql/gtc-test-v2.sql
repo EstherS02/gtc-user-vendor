@@ -133,6 +133,12 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`deleted_at`;
 
 
+ALTER TABLE `gtc-test`.`currency` 
+CHANGE COLUMN `symbol` `symbol` TEXT NOT NULL ;
+
+ALTER TABLE `gtc-test`.`product_ads_setting` 
+CHANGE COLUMN `position` `position` TINYINT(4) NULL DEFAULT NULL ;
+
 
 
 

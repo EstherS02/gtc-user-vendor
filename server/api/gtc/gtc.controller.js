@@ -6,6 +6,7 @@ const service = require('../service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const position = require('../../config/position');
 
 export function index(req, res) {
 	var offset, limit, field, order;
@@ -13,9 +14,9 @@ export function index(req, res) {
 	var searchObj = {};
 	var searchArray = [];
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;

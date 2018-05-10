@@ -1,6 +1,7 @@
 'use strict';
 
 const status = require('../../config/status');
+const position = require('../../config/position');
 
 const model = require('../../sqldb/model-connect');
 
