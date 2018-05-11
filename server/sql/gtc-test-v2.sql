@@ -42,9 +42,6 @@ CREATE VIEW `product_sales` AS
         `product`.`deleted_at`;
 
 
-
-
-
 CREATE VIEW `subscription_sales` AS
     SELECT 
         COALESCE(COUNT(`order_items`.`product_id`),
@@ -131,6 +128,51 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`last_updated_by`,
         `featured_product`.`last_updated_on`,
         `featured_product`.`deleted_at`;
+
+
+ALTER TABLE `gtc-test`.`currency` 
+CHANGE COLUMN `symbol` `symbol` TEXT NOT NULL ;
+
+ALTER TABLE `gtc-test`.`product_ads_setting` 
+CHANGE COLUMN `position` `position` TINYINT(4) NULL DEFAULT NULL ;
+
+
+CREATE VIEW `ad_featuredproduct` AS
+    SELECT 
+        `product_ads_setting`.`id` AS `id`,
+        `product_ads_setting`.`name` AS `product_name`,
+         1 AS `type`,
+        `product_ads_setting`.`position` AS `position`,
+        `product_ads_setting`.`start_date` AS `start_date`,
+        `product_ads_setting`.`end_date` AS `end_date`,
+        `product_ads_setting`.`impression` AS `impression`,
+        `product_ads_setting`.`clicks` AS `clicks`,
+        `product_ads_setting`.`status` AS `status`,
+        `product_ads_setting`.`created_by` AS `created_by`,
+        `product_ads_setting`.`created_on` AS `created_on`,
+        `product_ads_setting`.`last_updated_by` AS `last_updated_by`,
+        `product_ads_setting`.`last_updated_on` AS `last_updated_on`,
+        `product_ads_setting`.`deleted_at` AS `deleted_at`
+    FROM
+        `product_ads_setting`
+    Union
+      SELECT
+        `featuredproduct_product`.`id` AS `id`,
+        `featuredproduct_product`.`name` AS `product_name`,
+         2 AS `type`,
+        `featuredproduct_product`.`position` AS `position`,
+        `featuredproduct_product`.`start_date` AS `start_date`,
+        `featuredproduct_product`.`end_date` AS `end_date`,
+        `featuredproduct_product`.`impression` AS `impression`,
+        `featuredproduct_product`.`clicks` AS `clicks`,
+        `featuredproduct_product`.`status` AS `status`,
+        `featuredproduct_product`.`created_by` AS `created_by`,
+        `featuredproduct_product`.`created_on` AS `created_on`,
+        `featuredproduct_product`.`last_updated_by` AS `last_updated_by`,
+        `featuredproduct_product`.`last_updated_on` AS `last_updated_on`,
+        `featuredproduct_product`.`deleted_at` AS `deleted_at`
+    FROM
+        `featuredproduct_product`
 
 
 

@@ -1,5 +1,6 @@
 module.exports = {
 	"address": "Address",
+	"ad-featuredproduct":"AdFeaturedproduct",
 	"admin-user": "AdminUser",
 	"admin": "Admin",
 	"announcements": "Announcement",
