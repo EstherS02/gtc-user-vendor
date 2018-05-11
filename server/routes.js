@@ -30,7 +30,7 @@ export default function(app) {
 
 
   /* Handlerbars routes */
-  app.use('/', require('./hbs-routes/home-page'))
+  app.use('/', require('./hbs-routes/home-page'));
 
 
   //All other routes 404 page

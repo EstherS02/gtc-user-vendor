@@ -1,3 +1,142 @@
+<script type="text/javascript" src="//platform.linkedin.com/in.js">
+    api_key: 81q1ljfijajynj
+    authorize: false
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //Login with Facebook
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '393416147793353',
+                cookie: true,
+                xfbml: true,
+                version: 'v3.0'
+            });
+
+            FB.getLoginStatus(function (loginStatus) {
+                console.log(loginStatus);
+            });
+
+        };
+
+        function fb_login() {
+            FB.login(function (response) {
+
+                if (response.authResponse) {
+                    console.log('Welcome!  Fetching your information.... ');
+                    console.log(response);
+
+                    FB.api('/me?fields=id,name,email', function (profileInfo) {
+                        user_email = profileInfo.email;
+                        console.log(profileInfo)
+                        alert("Logged IN \n" + JSON.stringify(profileInfo))
+                    });
+
+                } else {
+                    //user hit cancel button
+                    alert("User cancelled login or did not fully authorize.")
+                    console.log('User cancelled login or did not fully authorize.');
+
+                }
+            }, {
+                    scope: 'public_profile,email'
+                });
+        }
+
+        // Load the SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        $("#gtc-fb-login").click(function () {
+            fb_login();
+        });
+
+
+    });
+
+
+
+    // Login with Google   
+    var googleUser = {};
+    var startGoogleLoginProcess = function () {
+        gapi.load('auth2', function () {
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            auth2 = gapi.auth2.init({
+                client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+                cookiepolicy: 'single_host_origin'
+            });
+            googleAttachSignin(document.getElementById('gtc-google-login'));
+        });
+    };
+
+    function googleAttachSignin(element) {
+        auth2.attachClickHandler(element, {},
+            function (googleUser) {
+                var id_token = googleUser.getAuthResponse().id_token;
+                console.log("ID Token: ", id_token);
+                console.log("UserInfo: ", decodeJwt(id_token))
+                alert("Signed In");
+            }, function (error) {
+                alert(JSON.stringify(error, undefined, 2));
+            });
+    }
+
+    startGoogleLoginProcess();
+
+
+    function googleSignOut() {
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+    }
+
+    function decodeJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    };
+
+
+    //Login with LinkedIn
+
+    function callLinkedInUserProfile() {
+        IN.API.Profile("me")
+            .fields("id","email-address","first-name","last-name","formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections","picture-url")
+            .result(function (profile) {
+                console.log(profile)
+            });
+    }
+
+    function linkedinAuth() {
+        console.log("LinkedIN User LoggedIn : " + IN.User.isAuthorized());
+        if (!IN.User.isAuthorized()) {
+            IN.User.authorize(function () {
+                callLinkedInUserProfile();
+            });
+        } else {
+            alert("Already Login In with LinkedIn");
+            console.log("Already Login In with LinkedIn");
+        }
+    }
+
+    function linkedinLogout() {
+        IN.User.logout(function () {
+            console.log("Linkedin User Logout successful");
+            alert("Linkedin User Logout successful");
+        });
+    }
+
+
+
+</script>
+
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
@@ -26,10 +165,19 @@
                     <p>Start searching the globe for the best bulk discount, wholesale pricing, subsriptions, services everywhere!
                         And it's FREE to join!</p>
                     <div class="col-md-6">
-                        <img src="img/login-facebook.png" alt="facebook" style="margin-bottom: 5px;" />
-                        <img src="img/login-google.png" alt="facebook" style="margin-bottom: 5px;" />
-                        <img src="img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;" />
-                        <img src="img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;" />
+
+                        <a id="gtc-fb-login">
+                            <img src="img/login-facebook.png" alt="facebook" style="margin-bottom: 5px;" />
+                        </a>
+                        <a id="gtc-google-login">
+                            <img src="img/login-google.png" alt="facebook" style="margin-bottom: 5px;" />
+                        </a>
+                        <a onclick="linkedinAuth();">
+                            <img src="img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;" />
+                        </a>
+                        <a href="">
+                            <img src="img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;" />
+                        </a>
                     </div>
                     <div class="col-md-6">
                         <input type="text" placeholder="Create a Username" class="acc_textbox" />

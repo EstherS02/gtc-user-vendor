@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/fontawesome/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="css/gtc-style.css">
+    <link rel="stylesheet" href="css/gtc-custom-style.css">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        $(window).scroll(function () {
+            $('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
+        });
+    </script>
+    
+
 </head>
 
 <body>
@@ -18,16 +31,6 @@
     
     {{> footer/footer}}
 
-
-<!-- Scripts should be at the bottom to load css faster -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script>
-        $(window).scroll(function () {
-            $('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-        });
-    </script>
 </body>
 
 </html>
