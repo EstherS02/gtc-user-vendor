@@ -41,6 +41,18 @@ export function index(req, res) {
 
 	queryObj = Object.assign(searchObj, req.query);
 
+	if (queryObj.startDate && queryObj.endDate) {
+		if (queryObj.columnName) {
+			queryObj[queryObj.columnName] = {
+				'$gte': queryObj.startDate,
+				'$lte': queryObj.endDate
+			}
+			delete queryObj.columnName;
+		}
+		delete queryObj.startDate;
+		delete queryObj.endDate;
+	}
+
 	if (!queryObj.status) {
 		queryObj['status'] = {
 			'$ne': status["DELETED"]
@@ -52,6 +64,8 @@ export function index(req, res) {
 			}
 		}
 	}
+
+	console.log('queryObj', queryObj);
 
 	service.findRows(req.endpoint, queryObj, offset, limit, field, order)
 		.then(function(rows) {
