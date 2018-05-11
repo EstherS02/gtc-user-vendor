@@ -12,6 +12,7 @@ function init(sequelize) {
     initialized = true;
     // Import model files and assign them to `model` object.
     model.Address = sequelize.import('./definition/address.js');
+    model.AdFeaturedproduct = sequelize.import('./definition/ad-featuredproduct.js');
     model.Admin = sequelize.import('./definition/admin.js');
     model.AdminUser = sequelize.import('./definition/admin-user.js');
     model.Announcement = sequelize.import('./definition/announcement.js');
@@ -77,6 +78,7 @@ function init(sequelize) {
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
+    require('./definition/ad-featuredproduct.js').initRelations();
     require('./definition/admin.js').initRelations();
     require('./definition/admin-user.js').initRelations();
     require('./definition/announcement.js').initRelations();
