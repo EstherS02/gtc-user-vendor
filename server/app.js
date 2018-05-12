@@ -15,15 +15,6 @@ import http from 'http';
 import https from 'https';
 
 
-var privateKey  = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.key'), 'utf8');
-var ssl_certificate = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.crt'), 'utf8');
-
-var ssl_credentials = {
-	key: privateKey, 
-	cert: ssl_certificate
-};
-
-
 // Setup server
 var app = express();
 
@@ -41,8 +32,23 @@ app.set('views', path.join(__dirname + '/views/layouts/'));
 app.set('view engine', '.hbs');
 
 
+var env = app.get('env');
+
+if (env === 'development') {
+	var privateKey  = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.key'), 'utf8');
+	var ssl_certificate = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.crt'), 'utf8');
+
+	var ssl_credentials = {
+		key: privateKey, 
+		cert: ssl_certificate
+	};
+
+}
+
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(ssl_credentials, app);
+if (env === 'development') {
+	var httpsServer = https.createServer(ssl_credentials, app);
+}
 require('./config/express').default(app);
 require('./routes').default(app);
 
@@ -51,10 +57,12 @@ function startServer() {
 	app.angularFullstack = httpServer.listen(config.port, config.ip, function() {
 		console.log('Express http server listening on %d, in %s mode', config.port, app.get('env'));
 	});
-
-	app.httpsAngularFullstack = httpsServer.listen(9010, config.ip, function() {
-		console.log('Express https server listening on 9010, in %s mode', config.port, app.get('env'));
-	});
+	
+	if (env === 'development') {
+		app.httpsAngularFullstack = httpsServer.listen(9010, config.ip, function() {
+			console.log('Express https server listening on 9010, in %s mode', config.port, app.get('env'));
+		});
+	}
 }
 
 sequelizeDB.authenticate()
