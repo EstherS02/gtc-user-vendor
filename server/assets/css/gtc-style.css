@@ -66,7 +66,7 @@ a:hover
 }
 .geo_bgimg
 {
-	background-image:url(../img/signup-hero-home.jpg);
+	/*background-image:url(../img/signup-hero-home.jpg);*/
 	background-position: 30% 50%;
 }
 .geo_bgimg1
