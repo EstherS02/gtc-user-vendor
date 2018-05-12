@@ -44,8 +44,8 @@ export function index(req, res) {
 	if (queryObj.startDate && queryObj.endDate) {
 		if (queryObj.columnName) {
 			queryObj[queryObj.columnName] = {
-				'$gte': queryObj.startDate,
-				'$lte': queryObj.endDate
+				'$gte': new Date(parseInt(queryObj.startDate)),
+				'$lte': new Date(parseInt(queryObj.endDate))
 			}
 			delete queryObj.columnName;
 		}
