@@ -338,7 +338,7 @@ gulp.task('serve', cb => {
             'env:all'
         ],
         // 'webpack:dev',
-        ['start:server', 'start:client'],
+        ['start:server'],
         'watch',
         cb
     );
@@ -365,7 +365,7 @@ gulp.task('serve:dist', cb => {
         'build',
         'env:all',
         'env:prod',
-        ['start:server:prod', 'start:client'],
+        ['start:server:prod'],
         cb);
 });
 
@@ -544,7 +544,9 @@ gulp.task('copy:assets', () => {
 
 gulp.task('copy:server', () => {
     return gulp.src([
-        'package.json'
+        'package.json',
+        'server/views/**',
+        'server/assets/**'
     ], {cwdbase: true})
         .pipe(gulp.dest(paths.dist));
 });
