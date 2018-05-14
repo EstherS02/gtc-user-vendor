@@ -8,20 +8,21 @@ const service = require('../../api/service');
 
 export function servicePage(req, res) {
 
-	var queryObj = {};
+	var queryObj = {
+		marketplace_id:3
+	};
 	var offset = 0;
-	var limit = 2;
+	var limit = 20;
 	var field = "id";
 	var order = "asc";
 
-	service.findRows('FeaturedproductProduct', queryObj, offset, limit, field, order)
+	service.findRows('ProductSales', queryObj, offset, limit, field, order)
 		.then(function(result) {
-			// console.log(result);
-			console.log("result.rows",result.rows);
+			console.log("result.rows",result.rows[0].product_name);
 			
 			res.render('servicePage', {
 				title: 'Global Trade Connect',
-				featuredProduct: result.rows
+				serviceProduct: result.rows
 			});
 		}).catch(function(error) {
 			console.log('Error :::', error);

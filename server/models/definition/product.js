@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'NO ACTION'
         },
         price: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 1),
             field: 'price',
             allowNull: false
         },

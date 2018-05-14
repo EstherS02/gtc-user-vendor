@@ -28,6 +28,26 @@ module.exports = (sequelize, DataTypes) => {
             field: 'end_date',
             allowNull: true
         },
+        price: {
+            type: DataTypes.DECIMAL(10, 1),
+            field: 'price',
+            allowNull: false
+        },
+        origin: {
+            type: DataTypes.STRING(128),
+            field: 'origin',
+            allowNull: false
+        },
+        category: {
+            type: DataTypes.STRING(128),
+            field: 'category',
+            allowNull: false
+        },
+        sub_category: {
+            type: DataTypes.STRING(128),
+            field: 'sub_category',
+            allowNull: false
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

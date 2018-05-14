@@ -8,6 +8,11 @@ CREATE VIEW `product_sales` AS
         `users`.`first_name` AS `owner_name`,
         `marketplace`.`id` AS `marketplace_id`,
         `marketplace`.`name` AS `type`,
+        `product`.`price` AS `price`,
+        `product_media`.`url` AS `url`,
+        `country`.`name` AS `origin`,
+        `category`.`name` AS `category`,
+        `sub_category`.`name` AS `sub_category`,
         `product`.`publish_date` AS `publish_date`,
         `product`.`sku` AS `sku`,
         `product`.`status` AS `status`,
@@ -18,28 +23,40 @@ CREATE VIEW `product_sales` AS
         `product`.`deleted_at` AS `deleted_at`
     FROM
         `product`
+        LEFT JOIN `product_media` ON `product_media`.`id` =`product`.`product_media_id`
         LEFT JOIN `order_items` ON `product`.`id` =`order_items`.`product_id`
         LEFT JOIN `vendor`
             INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
         ON `product`.`vendor_id` =`vendor`.`id`
         LEFT JOIN `marketplace` ON `product`.`marketplace_id` =`marketplace`.`id`
+        LEFT JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
+        LEFT JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`
+        LEFT JOIN `country` ON `country`.`id` = `product`.`product_location`
 
     GROUP BY 
-        `order_items`.`product_id`, 
-        `product`.`id`,
-        `product`.`product_name`,
+        `order_items`.`product_id` , 
+        `product`.`id` ,
+        `product`.`product_name` ,
         `vendor`.`vendor_name`,
         `users`.`first_name`,
         `marketplace`.`id` ,
         `marketplace`.`name`, 
-        `product`.`publish_date`,
-        `product`.`sku`,
-        `product`.`status`,
+        `product`.`price`,
+        `product_media`.`url`,
+        `country`.`name`,
+        `category`.`name`,
+        `sub_category`.`name`,
+        `product`.`publish_date`, 
+        `product`.`sku` ,
+        `product`.`status` ,
         `product`.`created_by`,
         `product`.`created_on` ,
-        `product`.`last_updated_by` ,
-        `product`.`last_updated_on` ,
+        `product`.`last_updated_by`,
+        `product`.`last_updated_on`,
         `product`.`deleted_at`;
+
+
+
 
 
 CREATE VIEW `subscription_sales` AS
@@ -102,6 +119,10 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`position` AS `position`,
         `featured_product`.`start_date` AS `start_date`,
         `featured_product`.`end_date` AS `end_date`,
+        `product`.`price` AS `price`,
+        `country`.`name` AS `origin`,
+        `category`.`name` AS `category`,
+        `sub_category`.`name` AS `sub_category`,
         `featured_product`.`status` AS `status`,
         `featured_product`.`impression` AS `impression`,
         `featured_product`.`clicks` AS `clicks`,
@@ -112,22 +133,31 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`deleted_at` AS `deleted_at`
     FROM
         `featured_product`
-        LEFT JOIN `product` ON `featured_product`.`product_id` =`product`.`id`
+        LEFT JOIN `product` 
+              INNER JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
+              INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`   
+              INNER JOIN `country` ON `country`.`id` = `product`.`product_location` 
+        ON `featured_product`.`product_id` =`product`.`id`
 
-    GROUP BY 
-        `featured_product`.`id` , 
-        `product`.`product_name`,
-        `featured_product`.`position`,
-        `featured_product`.`start_date`,
-        `featured_product`.`end_date`,
-        `featured_product`.`status`,
-        `featured_product`.`impression`, 
-        `featured_product`.`clicks`,
-        `featured_product`.`created_by`,
-        `featured_product`.`created_on`,
-        `featured_product`.`last_updated_by`,
-        `featured_product`.`last_updated_on`,
-        `featured_product`.`deleted_at`;
+    GROUP BY
+       `featured_product`.`id` , 
+       `product`.`product_name` ,
+       `featured_product`.`position` ,
+       `featured_product`.`start_date`,
+       `featured_product`.`end_date`,
+       `product`.`price`,
+       `country`.`name`,
+       `category`.`name`,
+       `sub_category`.`name`,
+       `featured_product`.`status` ,
+       `featured_product`.`impression`,
+       `featured_product`.`clicks`,
+       `featured_product`.`created_by` ,
+       `featured_product`.`created_on` ,
+       `featured_product`.`last_updated_by` ,
+       `featured_product`.`last_updated_on` ,
+       `featured_product`.`deleted_at`;
+
 
 
 ALTER TABLE `gtc-test`.`currency` 
@@ -172,7 +202,7 @@ CREATE VIEW `ad_featuredproduct` AS
         `featuredproduct_product`.`last_updated_on` AS `last_updated_on`,
         `featuredproduct_product`.`deleted_at` AS `deleted_at`
     FROM
-        `featuredproduct_product`
+        `featuredproduct_product`;
 
 
 
