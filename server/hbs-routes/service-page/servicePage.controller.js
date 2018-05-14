@@ -22,7 +22,8 @@ export function servicePage(req, res) {
 			
 			res.render('servicePage', {
 				title: 'Global Trade Connect',
-				serviceProduct: result.rows
+				serviceProduct: result.rows,
+				count:result.count
 			});
 		}).catch(function(error) {
 			console.log('Error :::', error);

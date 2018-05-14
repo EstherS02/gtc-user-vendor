@@ -123,6 +123,14 @@ CREATE VIEW `featuredproduct_product` AS
         `country`.`name` AS `origin`,
         `category`.`name` AS `category`,
         `sub_category`.`name` AS `sub_category`,
+        `vendor`.`vendor_name` AS `vendor_name`,
+        `marketplace`.`name` AS `marketplace`,
+        `marketplace_type`.`name` AS `marketplace_type`,
+        `product`.`publish_date` AS `publish_date`,
+        `product`.`moq` AS `moq`,
+        `product`.`quantity_available` AS `quantity_available`,
+        `product`.`description` AS `description`,
+        `product`.`city` AS `city`,
         `featured_product`.`status` AS `status`,
         `featured_product`.`impression` AS `impression`,
         `featured_product`.`clicks` AS `clicks`,
@@ -136,7 +144,10 @@ CREATE VIEW `featuredproduct_product` AS
         LEFT JOIN `product` 
               INNER JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
               INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`   
-              INNER JOIN `country` ON `country`.`id` = `product`.`product_location` 
+              INNER JOIN `country` ON `country`.`id` = `product`.`product_location`
+              INNER JOIN `vendor` ON `vendor`.`id` = `product`.`vendor_id` 
+              INNER JOIN `marketplace` ON `marketplace`.`id` = `product`.`marketplace_id`
+              INNER JOIN `marketplace_type` ON `marketplace_type`.`id` = `product`.`marketplace_type_id`
         ON `featured_product`.`product_id` =`product`.`id`
 
     GROUP BY
@@ -149,6 +160,14 @@ CREATE VIEW `featuredproduct_product` AS
        `country`.`name`,
        `category`.`name`,
        `sub_category`.`name`,
+       `vendor`.`vendor_name`,
+       `marketplace`.`name`,
+       `marketplace_type`.`name`,
+       `product`.`publish_date`,
+       `product`.`moq`,
+       `product`.`quantity_available`,
+       `product`.`description`,
+       `product`.`city`,
        `featured_product`.`status` ,
        `featured_product`.`impression`,
        `featured_product`.`clicks`,
@@ -203,6 +222,15 @@ CREATE VIEW `ad_featuredproduct` AS
         `featuredproduct_product`.`deleted_at` AS `deleted_at`
     FROM
         `featuredproduct_product`;
+
+
+
+ALTER TABLE `gtc-test`.`product` 
+CHANGE COLUMN `price` `price` DECIMAL(10,1) NOT NULL ;
+
+
+ALTER TABLE `gtc-test`.`product` 
+ADD COLUMN `moq` INT(11) NULL AFTER `city`;
 
 
 

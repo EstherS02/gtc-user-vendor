@@ -137,6 +137,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'city',
             allowNull: false
         },
+        moq: {
+            type: DataTypes.INTEGER,
+            field: 'moq',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
