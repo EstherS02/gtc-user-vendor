@@ -9,25 +9,46 @@ const service = require('../../api/service');
 export function servicePage(req, res) {
 
 	var queryObj = {
-		marketplace_id:3
+		marketplace: 'Service Marketplace'
 	};
-	var offset = 0;
-	var limit = 20;
 	var field = "id";
 	var order = "asc";
 
-	service.findRows('ProductSales', queryObj, offset, limit, field, order)
-		.then(function(result) {
-			console.log("result.rows",result.rows[0].product_name);
+
+	service.findRows('FeaturedproductProduct', queryObj, 0, 4, field, order)
+		.then(function (featuredService) {
 			
-			res.render('servicePage', {
-				title: 'Global Trade Connect',
-				serviceProduct: result.rows,
-				count:result.count
-			});
-		}).catch(function(error) {
+			service.findRows('ProductSales', queryObj, 0, 20, field, order)
+				.then(function (serviceProduct) {
+
+					console.log("featuredService.rows",featuredService.rows);
+			
+					res.render('servicePage', {
+						title: 'Global Trade Connect',
+						featuredService:featuredService.rows,
+						serviceProduct: serviceProduct.rows,
+						count: serviceProduct.count
+					});
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return
+				});
+
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
 		});
+
 }
+
+
+
+
+
+
+
+
+

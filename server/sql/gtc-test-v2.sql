@@ -7,7 +7,7 @@ CREATE VIEW `product_sales` AS
         `vendor`.`vendor_name` AS `vendor_name`,
         `users`.`first_name` AS `owner_name`,
         `marketplace`.`id` AS `marketplace_id`,
-        `marketplace`.`name` AS `type`,
+        `marketplace`.`name` AS `marketplace`,
         `product`.`price` AS `price`,
         `product_media`.`url` AS `url`,
         `country`.`name` AS `origin`,
