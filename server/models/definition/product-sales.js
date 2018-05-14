@@ -33,9 +33,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'marketplace_id',
             allowNull: false
         },
-        type: {
+        marketplace: {
             type: DataTypes.STRING(64),
-            field: 'type',
+            field: 'marketplace',
             allowNull: false
         },
         price: {
