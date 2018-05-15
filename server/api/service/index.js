@@ -84,9 +84,9 @@ export function createRow(modelName, bodyParams) {
 
 export function updateRow(modelName, bodyParams, id) {
 	return new Promise((resolve, reject) => {
-		model[req.endpoint].update(req.body, {
+		model[modelName].update(bodyParams, {
 			where: {
-				id: req.params.id
+				id: id
 			}
 		}).then(function(row) {
 			if (row) {

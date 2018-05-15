@@ -59,6 +59,7 @@ module.exports = {
 	"vendor-followers": "VendorFollower",
 	"vendor-notification-settings": "VendorNotificationSetting",
 	"vendor-plans": "VendorPlan",
+	"vendor-sales": "VendorSales",
 	"vendor-shipping-locations": "VendorShippingLocation",
 	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",

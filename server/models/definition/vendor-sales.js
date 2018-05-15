@@ -1,77 +1,42 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductSales', {
-        sales_count: {
-            type: DataTypes.BIGINT,
-            field: 'sales_count',
-            allowNull: true
-        },
+    return sequelize.define('VendorSales', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
             primaryKey: true
         },
-        product_name: {
-            type: DataTypes.STRING(128),
-            field: 'product_name',
-            allowNull: true
-        },
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
             allowNull: false
         },
-        owner_name: {
+        owner_first_name: {
             type: DataTypes.STRING(64),
-            field: 'owner_name',
+            field: 'owner_first_name',
             allowNull: false
         },
-        marketplace_id: {
+        owner_last_name: {
+            type: DataTypes.STRING(64),
+            field: 'owner_last_name',
+            allowNull: true
+        },
+        vendor_product_count: {
             type: DataTypes.BIGINT,
-            field: 'marketplace_id',
-            allowNull: false
+            field: 'vendor_product_count',
+            allowNull: true
         },
-        marketplace: {
-            type: DataTypes.STRING(64),
-            field: 'marketplace',
-            allowNull: false
-        },
-        price: {
-            type: DataTypes.DECIMAL(10,1),
-            field: 'price',
-            allowNull: false
-        },
-        url: {
+        cover_pic_url: {
             type: DataTypes.TEXT,
-            field: 'url',
-            allowNull: false
+            field: 'cover_pic_url',
+            allowNull: true
         },
         origin: {
             type: DataTypes.STRING(128),
             field: 'origin',
             allowNull: false
-        },
-        category: {
-            type: DataTypes.STRING(128),
-            field: 'category',
-            allowNull: false
-        },
-        sub_category: {
-            type: DataTypes.STRING(128),
-            field: 'sub_category',
-            allowNull: false
-        },
-        publish_date: {
-            type: DataTypes.DATEONLY,
-            field: 'publish_date',
-            allowNull: true
-        },
-        sku: {
-            type: DataTypes.INTEGER,
-            field: 'sku',
-            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -104,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'product_sales',
+        tableName: 'vendor_sales',
         timestamps: false
     });
 };

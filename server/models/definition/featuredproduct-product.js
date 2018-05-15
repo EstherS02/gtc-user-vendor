@@ -28,6 +28,71 @@ module.exports = (sequelize, DataTypes) => {
             field: 'end_date',
             allowNull: true
         },
+        price: {
+            type: DataTypes.DECIMAL(10, 1),
+            field: 'price',
+            allowNull: false
+        },
+        url: {
+            type: DataTypes.TEXT,
+            field: 'url',
+            allowNull: false
+        },
+        origin: {
+            type: DataTypes.STRING(128),
+            field: 'origin',
+            allowNull: false
+        },
+        category: {
+            type: DataTypes.STRING(128),
+            field: 'category',
+            allowNull: false
+        },
+        sub_category: {
+            type: DataTypes.STRING(128),
+            field: 'sub_category',
+            allowNull: false
+        },
+        vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
+            allowNull: false
+        },
+        marketplace: {
+            type: DataTypes.STRING(64),
+            field: 'marketplace',
+            allowNull: false
+        },
+        marketplace_type: {
+            type: DataTypes.STRING(64),
+            field: 'marketplace_type',
+            allowNull: false
+        },
+        publish_date: {
+            type: DataTypes.DATEONLY,
+            field: 'publish_date',
+            allowNull: false
+        },
+        moq: {
+            type: DataTypes.INTEGER,
+            field: 'moq',
+            allowNull: false
+        },
+        quantity_available: {
+            type: DataTypes.INTEGER,
+            field: 'quantity_available',
+            allowNull: false
+        },
+        description: {
+            type: DataTypes.TEXT,
+            field: 'description',
+            allowNull: true
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

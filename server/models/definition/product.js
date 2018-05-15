@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'NO ACTION'
         },
         price: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 1),
             field: 'price',
             allowNull: false
         },
@@ -135,6 +135,11 @@ module.exports = (sequelize, DataTypes) => {
         city: {
             type: DataTypes.STRING(128),
             field: 'city',
+            allowNull: false
+        },
+        moq: {
+            type: DataTypes.INTEGER,
+            field: 'moq',
             allowNull: false
         },
         created_by: {

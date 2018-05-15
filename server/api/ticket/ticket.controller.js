@@ -6,6 +6,7 @@ const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 
+const service = require('../service');
 const model = require('../../sqldb/model-connect');
 
 export function create(req, res) {
@@ -69,6 +70,53 @@ export function create(req, res) {
 		.catch(function(error) {
 			console.log('Error:::', error);
 			return res.status(500).send("Internal Server Error");
+		});
+}
+
+export function update(req, res) {
+	var paramsID = req.params.id;
+	var bodyParams = req.body;
+
+	service.findRow(req.endpoint, paramsID)
+		.then(function(row) {
+			if (row) {
+				delete bodyParams["id"];
+
+				if (req.user.first_name && req.user.last_name) {
+					bodyParams["last_updated_by"] = req.user.first_name + ' ' + req.user.last_name
+				} else {
+					bodyParams["last_updated_by"] = req.user.first_name
+				}
+				bodyParams["last_updated_on"] = new Date();
+
+				if (bodyParams["status"] == status["CLOSED"]) {
+					if (req.user.first_name && req.user.last_name) {
+						bodyParams["last_updated_by"] = req.user.first_name + ' ' + req.user.last_name
+					} else {
+						bodyParams["last_updated_by"] = req.user.first_name
+					}
+					bodyParams["closed_date"] = new Date();
+				}
+
+				service.updateRow(req.endpoint, bodyParams, paramsID)
+					.then(function(result) {
+						if (result) {
+							return res.status(200).send(result);
+						} else {
+							return res.status(404).send("Unable to update");
+						}
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+			} else {
+				return res.status(404).send("Tickets not found");
+			}
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
 		});
 }
 
