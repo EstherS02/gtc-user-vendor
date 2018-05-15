@@ -9,19 +9,22 @@ const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
 export function createTicketThread(req, res) {
+	var name;
 	var bodyParams = {};
 	var ticketID = req.params.ticket_id;
+
+	if (req.user.first_name && req.user.last_name) {
+		name = req.user.first_name + ' ' + req.user.last_name
+	} else {
+		name = req.user.first_name
+	}
 
 	bodyParams["user_id"] = req.user.id;
 	if (req.body.message) {
 		bodyParams["message"] = req.body.message;
 	}
 	bodyParams["status"] = status["ACTIVE"];
-	if (req.user.first_name && req.user.last_name) {
-		bodyParams["created_by"] = req.user.first_name + ' ' + req.user.last_name
-	} else {
-		bodyParams["created_by"] = req.user.first_name
-	}
+	bodyParams["created_by"] = name;
 	bodyParams["created_on"] = new Date();
 
 	model["Ticket"].findById(ticketID).then(function(ticket) {
@@ -33,8 +36,23 @@ export function createTicketThread(req, res) {
 				model["TicketThread"].create(bodyParams)
 					.then(function(thread) {
 						if (thread) {
-							var thread = plainTextResponse(thread);
-							return res.status(201).send(thread);
+							model["Ticket"].update({
+								last_updated_by: name,
+								last_updated_on: new Date()
+							}, {
+								where: {
+									id: ticketID
+								}
+							}).then(function(updatedTicket) {
+								if (updatedTicket) {
+									return res.status(201).send(thread);
+								} else {
+									return res.status(404).send("Unable to update ticket");
+								}
+							}).catch(function(error) {
+								console.log('Error:::', error);
+								return res.status(500).send("Internal server error");
+							});
 						} else {
 							return res.status(404).send("Unable to create thread");
 						}
