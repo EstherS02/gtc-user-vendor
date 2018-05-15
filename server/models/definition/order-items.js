@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         quantity: {
             type: DataTypes.INTEGER,
             field: 'quantity',
-            allowNull: true
+            allowNull: false
         },
         coupon_id: {
             type: DataTypes.BIGINT,

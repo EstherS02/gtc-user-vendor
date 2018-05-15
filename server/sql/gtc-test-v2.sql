@@ -235,6 +235,10 @@ CHANGE COLUMN `price` `price` DECIMAL(10,1) NOT NULL ;
 ALTER TABLE `gtc-test`.`product` 
 ADD COLUMN `moq` INT(11) NULL AFTER `city`;
 
+ALTER TABLE `gtc-test`.`order_items` 
+CHANGE COLUMN `quantity` `quantity` INT(11) NOT NULL ;
+
+
 
 
 CREATE VIEW `vendor_sales` AS
