@@ -29,7 +29,8 @@ export function servicePage(req, res) {
 								featuredService: featuredService.rows,
 								serviceProduct: serviceProduct.rows,
 								vendors:vendors.rows,
-								count: serviceProduct.count
+								count: serviceProduct.count,
+                                
 							});
 
 						}).catch(function (error) {
