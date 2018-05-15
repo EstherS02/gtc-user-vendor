@@ -119,6 +119,7 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`position` AS `position`,
         `featured_product`.`start_date` AS `start_date`,
         `featured_product`.`end_date` AS `end_date`,
+        `product_media`.`url` AS `url`,
         `product`.`price` AS `price`,
         `country`.`name` AS `origin`,
         `category`.`name` AS `category`,
@@ -142,6 +143,7 @@ CREATE VIEW `featuredproduct_product` AS
     FROM
         `featured_product`
         LEFT JOIN `product` 
+              INNER JOIN `product_media` ON `product_media`.`id` = `product`.`product_media_id`
               INNER JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
               INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`   
               INNER JOIN `country` ON `country`.`id` = `product`.`product_location`
@@ -156,6 +158,7 @@ CREATE VIEW `featuredproduct_product` AS
        `featured_product`.`position` ,
        `featured_product`.`start_date`,
        `featured_product`.`end_date`,
+       `product_media`.`url`,
        `product`.`price`,
        `country`.`name`,
        `category`.`name`,
@@ -231,6 +234,48 @@ CHANGE COLUMN `price` `price` DECIMAL(10,1) NOT NULL ;
 
 ALTER TABLE `gtc-test`.`product` 
 ADD COLUMN `moq` INT(11) NULL AFTER `city`;
+
+
+
+CREATE VIEW `vendor_sales` AS
+    SELECT 
+        `vendor`.`id` AS `id`,
+        `vendor`.`vendor_name` AS `vendor_name`,
+        `users`.`first_name` AS `owner_first_name`,
+        `users`.`last_name` AS `owner_last_name`,
+         COALESCE(COUNT(`product`.`vendor_id`),
+                0) AS `vendor_product_count`,
+        `country`.`name` AS `origin`,
+        `vendor`.`vendor_cover_pic_url` AS `cover_pic_url`,
+        `vendor`.`status` AS `status`,
+        `vendor`.`created_by` AS `created_by`,
+        `vendor`.`created_on` AS `created_on`,
+        `vendor`.`last_updated_by` AS `last_updated_by`,
+        `vendor`.`last_updated_on` AS `last_updated_on`,
+        `vendor`.`deleted_at` AS `deleted_at`
+    FROM
+        `vendor`
+            INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
+            INNER JOIN `country` ON `country`.`id` = `vendor`.`base_location`
+            LEFT JOIN `product` ON `product`.`vendor_id`=`vendor`.`id` 
+
+    GROUP BY 
+       `vendor`.`id`,
+       `vendor`.`vendor_name` ,
+       `users`.`first_name`, 
+       `users`.`last_name`, 
+       `product`.`vendor_id`,
+       `country`.`name`,
+       `vendor`.`vendor_cover_pic_url`,
+       `vendor`.`status`,
+       `vendor`.`created_by`,
+       `vendor`.`created_on`,
+       `vendor`.`last_updated_by`,
+       `vendor`.`last_updated_on`,
+       `vendor`.`deleted_at`;
+
+
+
 
 
 

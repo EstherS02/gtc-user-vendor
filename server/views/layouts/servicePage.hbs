@@ -41,19 +41,20 @@
 <section class="box4" style="margin-bottom:30px">
     <div class="container clearfix">
         <div class="row">
-            {{!-- <div class="col-md-3 common_top">
+            {{#each vendors}}
+            <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-2">
                         <p class="hash_num">#1</p>
                     </div>
                     <div class="col-md-3">
-                        <img src="../img/iphone.png" style="width: 30px; height: 70px;">
+                        <img src="{{cover_pic_url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-7">
                         <div class="row common_padding">
                             <div class="col-md-12">
                                 <p class="wts_header">
-                                    <a href="#">Greate Earth Expeditions</a>
+                                    <a href="#">{{vendor_name}} </a>
                                 </p>
                             </div>
 
@@ -63,7 +64,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-7">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -81,7 +82,7 @@
                             </div>
                             <div class="col-md-7">
                                 <p>
-                                    <b>83749 Products</b> Listed
+                                    <b>{{vendor_product_count}} Products</b> Listed
                                     <span class="wts_header_red">6 on Sale</span>
                                 </p>
                             </div>
@@ -101,22 +102,25 @@
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
+            {{/each}}
+
+            {{!-- {{#each featuredService}}
 
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
-                        <img src="../img/iphone.png" style="width: 30px; height: 70px;">
+                        <img src="{{url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
                                 <p class="wts_header">
-                                    <a href="#">WTS - iphone Pallets</a>
+                                    <a href="#">{{product_name}}</a>
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p>MOQ: 40</p>
+                                <p>$ {{price}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -124,7 +128,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -135,7 +139,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Electronic - Phones</p>
+                                <p>{{category}} > {{sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -161,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            
+             {{/each}} --}}
         </div>
 
 

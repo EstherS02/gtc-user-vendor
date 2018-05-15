@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'price',
             allowNull: false
         },
+        url: {
+            type: DataTypes.TEXT,
+            field: 'url',
+            allowNull: false
+        },
         origin: {
             type: DataTypes.STRING(128),
             field: 'origin',
