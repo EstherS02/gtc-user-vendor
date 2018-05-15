@@ -8,6 +8,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 
+
 export function index(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
