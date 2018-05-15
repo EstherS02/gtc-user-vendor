@@ -12,6 +12,7 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
+
 router.post('/:endpoint/upload', multipartMiddleware, controller.upload);
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);

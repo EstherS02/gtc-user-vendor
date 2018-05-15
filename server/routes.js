@@ -12,6 +12,7 @@ export default function(app) {
   /* Server REST API Routes */
   app.post('/auth/admin-token', require('./admin-auth'));
   app.post('/auth/token', require('./auth'));
+  app.use('/api/auth/twitter', require('./api/social-login-auth'));
   app.use('/api/admin-auth', require('./api/admin-auth'));
   app.use('/api/auth', require('./api/auth'));
 

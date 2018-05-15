@@ -59,6 +59,29 @@
         });
 
 
+        //Login with Twitter
+
+        var twitterWin;
+        var checkConnect;
+
+        $("#gtc-twitter-login").click(function(){
+            var oAuthURL = "/api/auth/twitter";
+            twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');         
+        });
+
+
+        checkConnect = setInterval(function() {
+                if (!twitterWin || !twitterWin.closed) return;
+                clearInterval(checkConnect);
+                console.log("Twitter OAuth Popup Closed");
+                //window.location.reload();
+            }, 100);
+
+
+        window.onTwitterAuthClose = function(data){
+            console.log('Twitter Authenticated', JSON.parse(decodeURIComponent(data)));
+        };
+
     });
 
 
@@ -133,11 +156,6 @@
         });
     }
 
-
-    //Login with Twitter
-
-
-
 </script>
 
 <section class="box1" style="margin-bottom:0">
@@ -178,7 +196,7 @@
                         <a onclick="linkedinAuth();">
                             <img src="img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;" />
                         </a>
-                        <a href="">
+                        <a id="gtc-twitter-login">
                             <img src="img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;" />
                         </a>
                     </div>
