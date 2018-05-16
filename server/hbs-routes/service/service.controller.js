@@ -8,7 +8,7 @@ const service = require('../../api/service');
 var async = require('async');
 import series from 'async/series';
 
-export function servicePage(req, res) {
+export function Service(req, res) {
 
 	var field = "id";
 	var order = "desc";
@@ -50,10 +50,10 @@ export function servicePage(req, res) {
 
 	}, function (err, results) {
 		if (!err) {
-			res.render('servicePage', results);
+			res.render('service', results);
 		}
 		else {
-			res.render('servicePage', err);
+			res.render('service', err);
 		}
 	});
 
