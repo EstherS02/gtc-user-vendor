@@ -25,16 +25,12 @@ export default function(app) {
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api', require('./api/gtc'));
 
-  
-  
-
-
 
   /* Handlerbars routes */
-  app.use('/', require('./hbs-routes/home-page'));
-  app.use('/cart', require('./hbs-routes/cart'));
-  app.use('/service', require('./hbs-routes/service-page'));
-  app.use('/vendor', require('./hbs-routes/vendor-page'));
+  app.use('/', require('./hbs-routes/home'));
+  app.use('/checkout', require('./hbs-routes/checkout'));
+  app.use('/service', require('./hbs-routes/service'));
+  app.use('/vendor', require('./hbs-routes/vendor'));
 
 
   //All other routes 404 page
