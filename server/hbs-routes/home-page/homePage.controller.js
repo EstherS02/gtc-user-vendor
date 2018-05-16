@@ -22,25 +22,65 @@ export function homePage(req, res) {
                         .then(function (wantToTrade) {
 
                             service.findRows('ProductSales', { marketplace_type: 'Request For Quote' }, 0, 5, field, order)
-                        .then(function (RequestForQuote) {
+                                .then(function (requestForQuote) {
+
+                                    service.findRows('ProductSales', { marketplace: 'Public Marketplace' }, 0, 5, field, order)
+                                        .then(function (publicMarketplace) {
+
+                                            service.findRows('ProductSales', { marketplace: 'Service Marketplace' }, 0, 5, field, order)
+                                                .then(function (serviceMarketplace) {
 
 
+                                                    service.findRows('ProductSales', { marketplace: 'Lifestyle Marketplace' }, 0, 5, field, order)
+                                                        .then(function (lifestyleMarketplace) {
 
-                            res.render('homePage', {
-                                title: 'Global Trade Connect',
-                                wantToSell: wantToSell.rows,
-                                wantToBuy: wantToBuy.rows,
-                                wantToTrade: wantToTrade.rows,
-                                RequestForQuote: RequestForQuote.rows
-
-                            });
+                                                            service.findRows('FeaturedproductProduct', {}, 0, 4, field, order)
+                                                                .then(function (featuredProducts) {
 
 
-                        }).catch(function (error) {
-                            console.log('Error :::', error);
-                            res.status(500).send("Internal server error");
-                            return
-                        });
+                                                                    res.render('homePage', {
+                                                                        title: 'Global Trade Connect',
+                                                                        wantToSell: wantToSell.rows,
+                                                                        wantToBuy: wantToBuy.rows,
+                                                                        wantToTrade: wantToTrade.rows,
+                                                                        requestForQuote: requestForQuote.rows,
+                                                                        publicMarketplace: publicMarketplace.rows,
+                                                                        serviceMarketplace: serviceMarketplace.rows,
+                                                                        featuredProducts: featuredProducts.rows
+
+                                                                    });
+
+
+                                                                }).catch(function (error) {
+                                                                    console.log('Error :::', error);
+                                                                    res.status(500).send("Internal server error");
+                                                                    return
+                                                                });
+
+                                                        }).catch(function (error) {
+                                                            console.log('Error :::', error);
+                                                            res.status(500).send("Internal server error");
+                                                            return
+                                                        });
+
+                                                }).catch(function (error) {
+                                                    console.log('Error :::', error);
+                                                    res.status(500).send("Internal server error");
+                                                    return
+                                                });
+
+                                        }).catch(function (error) {
+                                            console.log('Error :::', error);
+                                            res.status(500).send("Internal server error");
+                                            return
+                                        });
+
+                                }).catch(function (error) {
+                                    console.log('Error :::', error);
+                                    res.status(500).send("Internal server error");
+                                    return
+                                });
+
 
                         }).catch(function (error) {
                             console.log('Error :::', error);
@@ -53,7 +93,6 @@ export function homePage(req, res) {
                     res.status(500).send("Internal server error");
                     return
                 });
-
 
         }).catch(function (error) {
             console.log('Error :::', error);
