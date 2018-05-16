@@ -5,51 +5,57 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
+var async = require('async');
+import series from 'async/series';
 
 export function servicePage(req, res) {
 
-	var queryObj = {
-		// marketplace: 'Service Marketplace'
-	};
 	var field = "id";
 	var order = "desc";
 
-	service.findRows('VendorSales', queryObj, 0, 4, "vendor_product_count", order)
-		.then(function (vendors) {
+	async.series({
+		vendors: function (callback) {
 
-
-			service.findRows('FeaturedproductProduct', queryObj, 0, 4, field, order)
-				.then(function (featuredService) {
-
-					service.findRows('ProductSales', queryObj, 0, 20, field, order)
-						.then(function (serviceProduct) {
-
-							res.render('servicePage', {
-								title: 'Global Trade Connect',
-								featuredService: featuredService.rows,
-								serviceProduct: serviceProduct.rows,
-								vendors:vendors.rows,
-								count: serviceProduct.count,
-                                
-							});
-
-						}).catch(function (error) {
-							console.log('Error :::', error);
-							res.status(500).send("Internal server error");
-							return
-						});
+			service.findRows('VendorSales', {}, 0, 4, field, order)
+				.then(function (vendors) {
+					return callback(null, vendors.rows);
 
 				}).catch(function (error) {
 					console.log('Error :::', error);
-					res.status(500).send("Internal server error");
-					return
+					return callback(null);
 				});
+		},
+		featuredService: function (callback) {
 
-		}).catch(function (error) {
-			console.log('Error :::', error);
-			res.status(500).send("Internal server error");
-			return
-		});
+			service.findRows('FeaturedproductProduct', { marketplace: 'Service Marketplace' }, 0, 4, field, order)
+				.then(function (featuredService) {
+					return callback(null, featuredService.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		serviceProduct: function (callback) {
+
+			service.findRows('ProductSales', { marketplace: 'Service Marketplace' }, 0, 20, field, order)
+				.then(function (serviceProduct) {
+					return callback(null, serviceProduct.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
+
+	}, function (err, results) {
+		if (!err) {
+			res.render('servicePage', results);
+		}
+		else {
+			res.render('servicePage', err);
+		}
+	});
 
 }
 
