@@ -28,14 +28,19 @@ module.exports = (sequelize, DataTypes) => {
             field: 'owner_name',
             allowNull: false
         },
-        marketplace_id: {
-            type: DataTypes.BIGINT,
-            field: 'marketplace_id',
-            allowNull: false
-        },
         marketplace: {
             type: DataTypes.STRING(64),
             field: 'marketplace',
+            allowNull: false
+        },
+        marketplace_type: {
+            type: DataTypes.STRING(64),
+            field: 'marketplace_type',
+            allowNull: false
+        },
+        moq: {
+            type: DataTypes.INTEGER,
+            field: 'moq',
             allowNull: false
         },
         price: {

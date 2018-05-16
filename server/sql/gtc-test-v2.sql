@@ -6,9 +6,10 @@ CREATE VIEW `product_sales` AS
         `product`.`product_name` AS `product_name`,
         `vendor`.`vendor_name` AS `vendor_name`,
         `users`.`first_name` AS `owner_name`,
-        `marketplace`.`id` AS `marketplace_id`,
         `marketplace`.`name` AS `marketplace`,
+        `marketplace_type`.`name` AS `marketplace_type`,
         `product`.`price` AS `price`,
+        `product`.`moq` AS `moq`,
         `product_media`.`url` AS `url`,
         `country`.`name` AS `origin`,
         `category`.`name` AS `category`,
@@ -29,6 +30,7 @@ CREATE VIEW `product_sales` AS
             INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
         ON `product`.`vendor_id` =`vendor`.`id`
         LEFT JOIN `marketplace` ON `product`.`marketplace_id` =`marketplace`.`id`
+        LEFT JOIN `marketplace_type` ON `product`.`marketplace_type_id` =`marketplace_type`.`id`
         LEFT JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
         LEFT JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`
         LEFT JOIN `country` ON `country`.`id` = `product`.`product_location`
@@ -39,8 +41,9 @@ CREATE VIEW `product_sales` AS
         `product`.`product_name` ,
         `vendor`.`vendor_name`,
         `users`.`first_name`,
-        `marketplace`.`id` ,
-        `marketplace`.`name`, 
+        `marketplace`.`name`,
+        `marketplace_type`.`name`,
+        `product`.`moq`
         `product`.`price`,
         `product_media`.`url`,
         `country`.`name`,

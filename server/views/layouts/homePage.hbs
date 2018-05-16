@@ -64,21 +64,21 @@
         var twitterWin;
         var checkConnect;
 
-        $("#gtc-twitter-login").click(function(){
+        $("#gtc-twitter-login").click(function () {
             var oAuthURL = "/api/auth/twitter";
-            twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');         
+            twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
         });
 
 
-        checkConnect = setInterval(function() {
-                if (!twitterWin || !twitterWin.closed) return;
-                clearInterval(checkConnect);
-                console.log("Twitter OAuth Popup Closed");
-                //window.location.reload();
-            }, 100);
+        checkConnect = setInterval(function () {
+            if (!twitterWin || !twitterWin.closed) return;
+            clearInterval(checkConnect);
+            console.log("Twitter OAuth Popup Closed");
+            //window.location.reload();
+        }, 100);
 
 
-        window.onTwitterAuthClose = function(data){
+        window.onTwitterAuthClose = function (data) {
             console.log('Twitter Authenticated', JSON.parse(decodeURIComponent(data)));
         };
 
@@ -131,7 +131,7 @@
 
     function callLinkedInUserProfile() {
         IN.API.Profile("me")
-            .fields("id","email-address","first-name","last-name","formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections","picture-url")
+            .fields("id", "email-address", "first-name", "last-name", "formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections", "picture-url")
             .result(function (profile) {
                 console.log(profile)
             });
@@ -258,6 +258,7 @@
 <section class="box4" style="margin-bottom:20px;">
     <div class="container clearfix">
         <div class="row">
+            {{!-- {{#each wantToSell}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -266,10 +267,10 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
+                                <p class="wts_header">{{product_name}}</p>
                             </div>
                             <div class="col-md-4">
-                                <p>MOQ: 40</p>
+                                <p>MOQ: {{moq}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -277,7 +278,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -288,7 +289,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Electronic - Phones</p>
+                                <p>{{category}} > {{sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -314,6 +315,8 @@
                     </div>
                 </div>
             </div>
+
+            {{/each}} --}} {{!-- {{#each wantToBuy}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -322,10 +325,10 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
+                                <p class="wts_header">{{product_name}}</p>
                             </div>
                             <div class="col-md-4">
-                                <p>MOQ: 40</p>
+                                <p>MOQ: {{moq}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -333,7 +336,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -344,7 +347,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Electronic - Phones</p>
+                                <p>{{category}} > {{sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -370,6 +373,8 @@
                     </div>
                 </div>
             </div>
+
+            {{/each}} --}} {{!-- {{#each wantToTrade}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -378,10 +383,10 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
+                                <p class="wts_header">{{product_name}}</p>
                             </div>
                             <div class="col-md-4">
-                                <p>MOQ: 40</p>
+                                <p>MOQ: {{moq}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -389,7 +394,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -400,7 +405,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Electronic - Phones</p>
+                                <p>{{category}} > {{sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -426,6 +431,9 @@
                     </div>
                 </div>
             </div>
+            {{/each}} --}}
+            
+             {{#each RequestForQuote}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -434,10 +442,10 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
+                                <p class="wts_header">{{product_name}}</p>
                             </div>
                             <div class="col-md-4">
-                                <p>MOQ: 40</p>
+                                <p>MOQ: {{moq}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -445,7 +453,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Canada</p>
+                                <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -456,7 +464,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>Electronic - Phones</p>
+                                <p>{{category}} > {{sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -482,910 +490,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header_red">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="wts_header_red">24h 12m left!</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header_red">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="wts_header_red">24h 12m left!</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header_red">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="wts_header_red">24h 12m left!</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header_red">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="wts_header_red">24h 12m left!</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">WTS - iphone Pallets</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{/each}}
+
         </div>
     </div>
 </section>
