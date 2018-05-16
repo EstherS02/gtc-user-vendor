@@ -6,10 +6,8 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 
 
-export function checkout(req, res){
-    res.render('orderCheckout', {
+export function cart(req, res) {
+	res.render('cart', {
         title: 'Global Trade Connect'
     });
 }
-
-
