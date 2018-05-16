@@ -47,14 +47,14 @@ export function vendorMarketplace(req, res) {
 
 export function getMediaId(req, res) {
 
-	
+
 	var bodyParams = req.body;
 
 	bodyParams["created_on"] = new Date();
 	bodyParams["type"] = 1;
 	bodyParams["status"] = 1;
-     
-     console.log("url.......",bodyParams);
+
+	console.log("url.......", bodyParams);
 
 	service.createRow('ProductMedium', bodyParams)
 		.then(function(result) {
@@ -83,9 +83,10 @@ export function featureMany(req, res) {
 		obj['created_on'] = new Date();
 		arr.push(obj);
 	}
-	console.log("array", arr)
 
-	model["FeaturedProduct"].bulkCreate(arr,{ignoreDuplicates: true})
+	model["FeaturedProduct"].bulkCreate(arr, {
+			ignoreDuplicates: true
+		})
 		.then(function(row) {
 			res.status(201).send("Created");
 			return;
@@ -98,13 +99,9 @@ export function featureMany(req, res) {
 }
 
 export function featureOne(req, res) {
-
-	console.log("requested parameter id", req.params.id);
-
 	model["Product"].findById(req.params.id)
 		.then(function(row) {
 			if (row) {
-
 				var obj = {};
 				obj['product_id'] = row.id;
 				obj['status'] = 1;
