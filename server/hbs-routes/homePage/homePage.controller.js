@@ -9,7 +9,7 @@ import series from 'async/series';
 var async = require('async');
 
 
-export function home(req, res) {
+export function homePage(req, res) {
 
     var field = "id";
     var order = "asc";
@@ -106,10 +106,10 @@ export function home(req, res) {
 
     }, function (err, results) {
         if (!err) {
-            res.render('home', results);
+            res.render('homePage', results);
         }
         else {
-            res.render('home', err);
+            res.render('homePage', err);
         }
     });
 
