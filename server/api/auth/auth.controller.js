@@ -24,7 +24,7 @@ var oauth = new OAuth(
 
 export function twitterAuth(req, res) {
 
-	oauth.getOAuthRequestToken(function (error, oAuthToken, oAuthTokenSecret, results) {
+	oauth.getOAuthRequestToken(function(error, oAuthToken, oAuthTokenSecret, results) {
 
 		if (error === null && results && results.oauth_callback_confirmed) {
 
@@ -42,20 +42,21 @@ export function twitterAuth(req, res) {
 export function twitterCallbackAuth(req, res) {
 
 	oauth.getOAuthAccessToken(req.query.oauth_token, oauth.token_secret, req.query.oauth_verifier,
-		function (error, oauth_access_token, oauth_access_token_secret, results) {
+		function(error, oauth_access_token, oauth_access_token_secret, results) {
 			if (error === null) {
 
 				console.log(oauth_access_token, oauth_access_token_secret, results);
 
 				oauth.get('https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
 					oauth_access_token,
-					oauth_access_token_secret, function (error, twitterResponseData, result) {
+					oauth_access_token_secret,
+					function(error, twitterResponseData, result) {
 						if (error === null) {
 							console.log(JSON.parse(twitterResponseData));
 							console.log(typeof JSON.parse(twitterResponseData))
 
 							var responseData = JSON.parse(twitterResponseData);
-							
+
 							res.render('twitterCallbackClose', {
 								layout: false,
 								twitterResponseData: encodeURIComponent(twitterResponseData)

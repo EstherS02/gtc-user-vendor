@@ -124,6 +124,7 @@ export function create(req, res) {
 }
 
 export function me(req, res) {
+	console.log('req.user', req.user);
 	if (req.user) {
 		delete req.user.email_verified_token;
 		delete req.user.email_verified_token_generated;
