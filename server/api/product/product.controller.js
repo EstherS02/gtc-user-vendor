@@ -1,4 +1,4 @@
-'	use strict';
+'use strict';
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
