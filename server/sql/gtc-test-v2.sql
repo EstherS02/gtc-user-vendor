@@ -97,27 +97,30 @@ ADD UNIQUE INDEX `product_id_UNIQUE` (`product_id` ASC);
 
 
 
-
-CREATE VIEW `featuredproduct_product` AS
+CREATE VIEW `featuredproduct_sales_rating` AS
     SELECT 
         `featured_product`.`id` AS `id`,
-        `product`.`product_name` AS `product_name`,
+        `product_sales_rating`.`product_name` AS `product_name`,
+        `product_sales_rating`.`vendor_name` AS `vendor_name`,
+        `product_sales_rating`.`owner_name` AS `owner_name`,
+        `product_sales_rating`.`marketplace` AS `marketplace`,
+        `product_sales_rating`.`marketplace_type` AS `marketplace_type`,
+        `product_sales_rating`.`price` AS `price`,
+        `product_sales_rating`.`moq` AS `moq`,
+        `product_sales_rating`.`url` AS `url`,
+        `product_sales_rating`.`origin` AS `origin`,
+        `product_sales_rating`.`category` AS `category`,
+        `product_sales_rating`.`sub_category` AS `sub_category`,
+        `product_sales_rating`.`publish_date` AS `publish_date`,
+        `product_sales_rating`.`sku` AS `sku`,
+        `product_sales_rating`.`quantity_available` AS `quantity_available`,
+        `product_sales_rating`.`description` AS `description`,
+        `product_sales_rating`.`city` AS `city`,
+        `product_sales_rating`.`sales_count` AS `sales_count`,
+        `product_sales_rating`.`rating` AS `rating`,
         `featured_product`.`position` AS `position`,
         `featured_product`.`start_date` AS `start_date`,
         `featured_product`.`end_date` AS `end_date`,
-        `product_media`.`url` AS `url`,
-        `product`.`price` AS `price`,
-        `country`.`name` AS `origin`,
-        `category`.`name` AS `category`,
-        `sub_category`.`name` AS `sub_category`,
-        `vendor`.`vendor_name` AS `vendor_name`,
-        `marketplace`.`name` AS `marketplace`,
-        `marketplace_type`.`name` AS `marketplace_type`,
-        `product`.`publish_date` AS `publish_date`,
-        `product`.`moq` AS `moq`,
-        `product`.`quantity_available` AS `quantity_available`,
-        `product`.`description` AS `description`,
-        `product`.`city` AS `city`,
         `featured_product`.`status` AS `status`,
         `featured_product`.`impression` AS `impression`,
         `featured_product`.`clicks` AS `clicks`,
@@ -126,44 +129,41 @@ CREATE VIEW `featuredproduct_product` AS
         `featured_product`.`last_updated_by` AS `last_updated_by`,
         `featured_product`.`last_updated_on` AS `last_updated_on`,
         `featured_product`.`deleted_at` AS `deleted_at`
+            
     FROM
         `featured_product`
-        LEFT JOIN `product` 
-              INNER JOIN `product_media` ON `product_media`.`id` = `product`.`product_media_id`
-              INNER JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
-              INNER JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`   
-              INNER JOIN `country` ON `country`.`id` = `product`.`product_location`
-              INNER JOIN `vendor` ON `vendor`.`id` = `product`.`vendor_id` 
-              INNER JOIN `marketplace` ON `marketplace`.`id` = `product`.`marketplace_id`
-              INNER JOIN `marketplace_type` ON `marketplace_type`.`id` = `product`.`marketplace_type_id`
-        ON `featured_product`.`product_id` =`product`.`id`
+        LEFT JOIN `product_sales_rating` ON `featured_product`.`product_id` =`product_sales_rating`.`id`
 
     GROUP BY
        `featured_product`.`id` , 
-       `product`.`product_name` ,
-       `featured_product`.`position` ,
+       `product_sales_rating`.`product_name`,
+       `product_sales_rating`.`vendor_name`,
+       `product_sales_rating`.`owner_name`,
+       `product_sales_rating`.`marketplace`,
+       `product_sales_rating`.`marketplace_type`,
+       `product_sales_rating`.`price`,
+       `product_sales_rating`.`moq`,
+       `product_sales_rating`.`url`,
+       `product_sales_rating`.`origin`,
+       `product_sales_rating`.`category`,
+       `product_sales_rating`.`sub_category`,
+       `product_sales_rating`.`publish_date`,
+       `product_sales_rating`.`sku`,
+       `product_sales_rating`.`quantity_available`,
+       `product_sales_rating`.`description`,  
+       `product_sales_rating`.`city`,
+       `product_sales_rating`.`sales_count`, 
+       `product_sales_rating`.`rating`,
+       `featured_product`.`position`,
        `featured_product`.`start_date`,
        `featured_product`.`end_date`,
-       `product_media`.`url`,
-       `product`.`price`,
-       `country`.`name`,
-       `category`.`name`,
-       `sub_category`.`name`,
-       `vendor`.`vendor_name`,
-       `marketplace`.`name`,
-       `marketplace_type`.`name`,
-       `product`.`publish_date`,
-       `product`.`moq`,
-       `product`.`quantity_available`,
-       `product`.`description`,
-       `product`.`city`,
-       `featured_product`.`status` ,
+       `featured_product`.`status`,
        `featured_product`.`impression`,
        `featured_product`.`clicks`,
-       `featured_product`.`created_by` ,
-       `featured_product`.`created_on` ,
-       `featured_product`.`last_updated_by` ,
-       `featured_product`.`last_updated_on` ,
+       `featured_product`.`created_by`,
+       `featured_product`.`created_on`,
+       `featured_product`.`last_updated_by`,
+       `featured_product`.`last_updated_on`,
        `featured_product`.`deleted_at`;
 
 

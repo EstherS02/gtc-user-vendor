@@ -78,6 +78,21 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: true
         },
+        quantity_available: {
+            type: DataTypes.INTEGER,
+            field: 'quantity_available',
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        description: {
+            type: DataTypes.TEXT,
+            field: 'description',
+            allowNull: true
+        },
         sales_count: {
             type: DataTypes.BIGINT,
             field: 'sales_count',

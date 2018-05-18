@@ -21,7 +21,7 @@ module.exports = {
 	"discussion-board-details": "DiscussionBoardDetail",
 	"email-templates": "EmailTemplate",
 	"featured-products": "FeaturedProduct",
-	"featuredproduct-products": "FeaturedproductProduct",
+	"featuredproduct-sales-rating": "FeaturedproductSalesRating",
 	"global-settings": "GlobalSetting",
 	"marketplaces": "Marketplace",
 	"marketplace-types": "MarketplaceType",

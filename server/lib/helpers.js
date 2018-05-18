@@ -3,6 +3,8 @@ import Handlebars from 'handlebars';
 
 Handlebars.registerHelper('starCount', function (rating) {
 
+    var rating = Math.trunc(rating);
+    
     var colored = "";
     var colorless = "";
     var tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';

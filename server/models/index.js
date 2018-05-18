@@ -33,7 +33,7 @@ function init(sequelize) {
     model.DiscussionBoardDetail = sequelize.import('./definition/discussion-board-details.js');
     model.EmailTemplate = sequelize.import('./definition/email-template.js');
     model.FeaturedProduct = sequelize.import('./definition/featured-product.js');
-    model.FeaturedproductProduct = sequelize.import('./definition/featuredproduct-product.js');
+    model.FeaturedproductSalesRating = sequelize.import('./definition/featuredproduct-sales-rating.js');
     model.GlobalSetting = sequelize.import('./definition/global-setting.js');
     model.Marketplace = sequelize.import('./definition/marketplace.js');
     model.MarketplaceType = sequelize.import('./definition/marketplace-type.js');
@@ -100,7 +100,7 @@ function init(sequelize) {
     require('./definition/discussion-board-details.js').initRelations();
     require('./definition/email-template.js').initRelations();
     require('./definition/featured-product.js').initRelations();
-    require('./definition/featuredproduct-product.js').initRelations();
+    require('./definition/featuredproduct-sales-rating.js').initRelations();
     require('./definition/global-setting.js').initRelations();
     require('./definition/marketplace.js').initRelations();
     require('./definition/marketplace-type.js').initRelations();
