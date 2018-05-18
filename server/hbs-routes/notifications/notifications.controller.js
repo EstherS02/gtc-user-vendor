@@ -21,6 +21,7 @@ export function notifications(req, res) {
 			service.findRows('Announcement', {}, offset, limit, field, order)
 				.then(function(Announcements) {
 					// console.log('Announcements', Announcements);
+
 					return callback(null, Announcements.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
