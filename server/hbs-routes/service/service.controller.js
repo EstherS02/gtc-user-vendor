@@ -5,7 +5,8 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-var async = require('async');
+
+const async = require('async');
 import series from 'async/series';
 
 export function Service(req, res) {
@@ -27,7 +28,7 @@ export function Service(req, res) {
 		},
 		featuredService: function (callback) {
 
-			service.findRows('FeaturedproductProduct', { marketplace: 'Service Marketplace' }, 0, 4, field, order)
+			service.findRows('FeaturedproductSalesRating', { marketplace: 'Service Marketplace' }, 0, 4, field, order)
 				.then(function (featuredService) {
 					return callback(null, featuredService.rows);
 
@@ -38,7 +39,7 @@ export function Service(req, res) {
 		},
 		serviceProduct: function (callback) {
 
-			service.findRows('ProductSales', { marketplace: 'Service Marketplace' }, 0, 20, field, order)
+			service.findRows('ProductSalesRating', { marketplace: 'Service Marketplace' }, 0, 20, field, order)
 				.then(function (serviceProduct) {
 					return callback(null, serviceProduct.rows);
 

@@ -41,7 +41,7 @@
 <section class="box4" style="margin-bottom:30px">
     <div class="container clearfix">
         <div class="row">
-            {{#each vendors}}
+            {{!-- {{#each vendors}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-2">
@@ -54,7 +54,7 @@
                         <div class="row common_padding">
                             <div class="col-md-12">
                                 <p class="wts_header">
-                                    <a href="#">{{vendor_name}} </a>
+                                    <a href="#">{{Titlecase vendor_name}} </a>
                                 </p>
                             </div>
 
@@ -92,20 +92,15 @@
                                 <p>Seller Rating</p>
                             </div>
                             <div class="col-md-7">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                </p>
+                                <p>  {{ starCount 3}} </p> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {{/each}}
+            {{/each}} --}}
 
-            {{!-- {{#each featuredService}}
+            {{#each featuredService}}
 
             <div class="col-md-3 common_top">
                 <div class="row">
@@ -116,7 +111,7 @@
                         <div class="row common_padding">
                             <div class="col-md-8">
                                 <p class="wts_header">
-                                    <a href="#">{{product_name}}</a>
+                                    <a href="#">{{ Titlecase product_name}}</a>
                                 </p>
                             </div>
                             <div class="col-md-4">
@@ -154,26 +149,15 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                </p>
+                               <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-             {{/each}} --}}
+             {{/each}}
         </div>
-
-
-
-        
-
-
-    </div>
+ </div>
 </section>
 <section class="box5" style="margin-bottom:0">
     <div class="container clearfix">
@@ -213,7 +197,7 @@
                         <div class="row common_padding">
                             <div class="col-md-8">
                                 <p class="wts_header">
-                                    <a href="#">{{product_name}}</a>
+                                    <a href="#">{{ Titlecase product_name }}</a>
                                 </p>
                             </div>
                             <div class="col-md-4">
@@ -251,12 +235,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                </p>
+                                <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>

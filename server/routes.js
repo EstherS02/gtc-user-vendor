@@ -27,10 +27,11 @@ export default function(app) {
 
 
   /* Handlerbars routes */
-  app.use('/', require('./hbs-routes/home'));
+  app.use('/', require('./hbs-routes/homePage'));
   app.use('/checkout', require('./hbs-routes/checkout'));
   app.use('/service', require('./hbs-routes/service'));
   app.use('/vendor', require('./hbs-routes/vendor'));
+  app.use('/edit-listings', require('./hbs-routes/edit-listings'));
 
 
   //All other routes 404 page

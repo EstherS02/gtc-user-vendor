@@ -1,12 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductSales', {
-        sales_count: {
-            type: DataTypes.BIGINT,
-            field: 'sales_count',
-            allowNull: true
-        },
+    return sequelize.define('FeaturedproductSalesRating', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -83,6 +78,51 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: true
         },
+        quantity_available: {
+            type: DataTypes.INTEGER,
+            field: 'quantity_available',
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        description: {
+            type: DataTypes.TEXT,
+            field: 'description',
+            allowNull: true
+        },
+        position: {
+            type: DataTypes.STRING(45),
+            field: 'position',
+            allowNull: true
+        },
+        start_date: {
+            type: DataTypes.DATEONLY,
+            field: 'start_date',
+            allowNull: false
+        },
+        impression: {
+            type: DataTypes.INTEGER,
+            field: 'impression',
+            allowNull: true
+        },
+        clicks: {
+            type: DataTypes.INTEGER,
+            field: 'clicks',
+            allowNull: true
+        },  
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
+        rating: {
+            type: DataTypes.INTEGER,
+            field: 'rating',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -108,8 +148,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'deleted_at',
             allowNull: true
         }
+       
     }, {
-        tableName: 'product_sales',
+        tableName: 'featuredproduct_sales_rating',
         timestamps: false
     });
 };

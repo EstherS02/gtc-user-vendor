@@ -33,7 +33,7 @@ function init(sequelize) {
     model.DiscussionBoardDetail = sequelize.import('./definition/discussion-board-details.js');
     model.EmailTemplate = sequelize.import('./definition/email-template.js');
     model.FeaturedProduct = sequelize.import('./definition/featured-product.js');
-    model.FeaturedproductProduct = sequelize.import('./definition/featuredproduct-product.js');
+    model.FeaturedproductSalesRating = sequelize.import('./definition/featuredproduct-sales-rating.js');
     model.GlobalSetting = sequelize.import('./definition/global-setting.js');
     model.Marketplace = sequelize.import('./definition/marketplace.js');
     model.MarketplaceType = sequelize.import('./definition/marketplace-type.js');
@@ -50,7 +50,7 @@ function init(sequelize) {
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedium = sequelize.import('./definition/product-media.js');
     model.ProductReview = sequelize.import('./definition/product-review.js');
-    model.ProductSales = sequelize.import('./definition/product-sales.js');
+    model.ProductSalesRating = sequelize.import('./definition/product-sales-rating.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
@@ -100,7 +100,7 @@ function init(sequelize) {
     require('./definition/discussion-board-details.js').initRelations();
     require('./definition/email-template.js').initRelations();
     require('./definition/featured-product.js').initRelations();
-    require('./definition/featuredproduct-product.js').initRelations();
+    require('./definition/featuredproduct-sales-rating.js').initRelations();
     require('./definition/global-setting.js').initRelations();
     require('./definition/marketplace.js').initRelations();
     require('./definition/marketplace-type.js').initRelations();
@@ -117,7 +117,7 @@ function init(sequelize) {
     require('./definition/product-attribute.js').initRelations();
     require('./definition/product-media.js').initRelations();
     require('./definition/product-review.js').initRelations();
-    require('./definition/product-sales.js').initRelations();
+    require('./definition/product-sales-rating.js').initRelations();
     require('./definition/region.js').initRelations();
     require('./definition/shipping.js').initRelations();
     require('./definition/state.js').initRelations();

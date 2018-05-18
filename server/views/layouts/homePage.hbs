@@ -267,7 +267,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>MOQ: {{moq}}</p>
@@ -276,90 +276,8 @@
                         <div class="row common_padding">
                             <div class="col-md-3">
                                 <p>Origin</p>
-                            </div>en="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{/each}}
-
-        </div>
-    </div>
-</section>
-
-
-<section class="box5" style="margin-bottom:0">
-    <div class="container clearfix">
-        <div class="row">
-            <div class="col-md-4 pmp1">
-                <h6 class="float-left">PUBLIC MARKETPLACE</h6>
-                <p class="float-right see_all">SEE ALL
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-            <div class="col-md-4 pmp2">
-                <h6 class="float-left">SERVICES MARKETPLACE</h6>
-                <p class="float-right see_all">SEE ALL
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-            <div class="col-md-4 pmp3">
-                <h6 class="float-left">LIFESTYLE MARKETPLACE</h6>
-                <p class="float-right see_all">SEE ALL
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<section class="box6" style="margin-bottom: 20px;">
-    <div class="container clearfix">
-        <div class="row">
-            <div class="col-md-4 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="{{url}}" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">Dr. Dre Headphones Beats by Dre with Bluetooth Capability</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="doller_value">$79.99</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Canada</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>Electronic - Phones</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            <div class="col-md-5">
+                           <div class="col-md-5">
                                 <p>{{origin}}</p>
                             </div>
                             <div class="col-md-4">
@@ -386,19 +304,16 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                                <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{/each}} --}} {{!-- {{#each wantToBuy}}
+            {{/each}} --}} 
+
+            {{!-- {{#each wantToBuy}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -407,7 +322,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>MOQ: {{moq}}</p>
@@ -444,12 +359,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                                <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -465,7 +375,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>MOQ: {{moq}}</p>
@@ -502,12 +412,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                               <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -524,7 +429,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>MOQ: {{moq}}</p>
@@ -561,12 +466,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                               <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -617,7 +517,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p class="doller_value">${{price}}</p>
@@ -654,12 +554,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                               <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -676,7 +571,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p class="doller_value">${{price}}</p>
@@ -713,12 +608,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                                <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -736,7 +626,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p class="doller_value">${{price}}</p>
@@ -773,12 +663,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                                <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -911,12 +796,7 @@
                                 <p>Seller Rating</p>
                             </div>
                             <div class="col-md-7">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                               <p>  {{ starCount 3}} </p> 
                             </div>
                         </div>
                     </div>
@@ -932,7 +812,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{product_name}}</p>
+                                <p class="wts_header">{{Titlecase product_name}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>{{price}}</p>
@@ -969,12 +849,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                </p>
+                               <p>  {{ starCount rating}} </p> 
                             </div>
                         </div>
                     </div>

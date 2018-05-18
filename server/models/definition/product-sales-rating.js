@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('FeaturedproductProduct', {
+    return sequelize.define('ProductSalesRating', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -11,25 +11,35 @@ module.exports = (sequelize, DataTypes) => {
         product_name: {
             type: DataTypes.STRING(128),
             field: 'product_name',
-            allowNull: false
-        },
-        position: {
-            type: DataTypes.STRING(45),
-            field: 'position',
             allowNull: true
         },
-        start_date: {
-            type: DataTypes.DATEONLY,
-            field: 'start_date',
+        vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
             allowNull: false
         },
-        end_date: {
-            type: DataTypes.DATEONLY,
-            field: 'end_date',
-            allowNull: true
+        owner_name: {
+            type: DataTypes.STRING(64),
+            field: 'owner_name',
+            allowNull: false
+        },
+        marketplace: {
+            type: DataTypes.STRING(64),
+            field: 'marketplace',
+            allowNull: false
+        },
+        marketplace_type: {
+            type: DataTypes.STRING(64),
+            field: 'marketplace_type',
+            allowNull: false
+        },
+        moq: {
+            type: DataTypes.INTEGER,
+            field: 'moq',
+            allowNull: false
         },
         price: {
-            type: DataTypes.DECIMAL(10, 1),
+            type: DataTypes.DECIMAL(10,1),
             field: 'price',
             allowNull: false
         },
@@ -53,34 +63,29 @@ module.exports = (sequelize, DataTypes) => {
             field: 'sub_category',
             allowNull: false
         },
-        vendor_name: {
-            type: DataTypes.STRING(64),
-            field: 'vendor_name',
-            allowNull: false
-        },
-        marketplace: {
-            type: DataTypes.STRING(64),
-            field: 'marketplace',
-            allowNull: false
-        },
-        marketplace_type: {
-            type: DataTypes.STRING(64),
-            field: 'marketplace_type',
-            allowNull: false
-        },
         publish_date: {
             type: DataTypes.DATEONLY,
             field: 'publish_date',
-            allowNull: false
+            allowNull: true
         },
-        moq: {
+        sku: {
             type: DataTypes.INTEGER,
-            field: 'moq',
-            allowNull: false
+            field: 'sku',
+            allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: true
         },
         quantity_available: {
             type: DataTypes.INTEGER,
             field: 'quantity_available',
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
             allowNull: false
         },
         description: {
@@ -88,24 +93,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'description',
             allowNull: true
         },
-        city: {
-            type: DataTypes.STRING(128),
-            field: 'city',
-            allowNull: false
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
-            allowNull: false
-        },
-        impression: {
-            type: DataTypes.INTEGER,
-            field: 'impression',
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
             allowNull: true
         },
-        clicks: {
+        rating: {
             type: DataTypes.INTEGER,
-            field: 'clicks',
+            field: 'rating',
             allowNull: true
         },
         created_by: {
@@ -134,7 +129,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'featuredproduct_product',
+        tableName: 'product_sales_rating',
         timestamps: false
     });
 };
