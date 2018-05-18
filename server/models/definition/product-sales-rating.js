@@ -1,12 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductSales', {
-        sales_count: {
-            type: DataTypes.BIGINT,
-            field: 'sales_count',
-            allowNull: true
-        },
+    return sequelize.define('ProductSalesRating', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -83,6 +78,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: true
         },
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
+        rating: {
+            type: DataTypes.INTEGER,
+            field: 'rating',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -109,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'product_sales',
+        tableName: 'product_sales_rating',
         timestamps: false
     });
 };

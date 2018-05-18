@@ -50,7 +50,7 @@ function init(sequelize) {
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedium = sequelize.import('./definition/product-media.js');
     model.ProductReview = sequelize.import('./definition/product-review.js');
-    model.ProductSales = sequelize.import('./definition/product-sales.js');
+    model.ProductSalesRating = sequelize.import('./definition/product-sales-rating.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
@@ -117,7 +117,7 @@ function init(sequelize) {
     require('./definition/product-attribute.js').initRelations();
     require('./definition/product-media.js').initRelations();
     require('./definition/product-review.js').initRelations();
-    require('./definition/product-sales.js').initRelations();
+    require('./definition/product-sales-rating.js').initRelations();
     require('./definition/region.js').initRelations();
     require('./definition/shipping.js').initRelations();
     require('./definition/state.js').initRelations();

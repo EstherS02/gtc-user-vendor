@@ -1,7 +1,5 @@
-CREATE VIEW `product_sales` AS
-    SELECT 
-        COALESCE(COUNT(`order_items`.`product_id`),
-                0) AS `sales_count`,
+CREATE VIEW `product_sales_rating` AS
+SELECT 
         `product`.`id` AS `id`,
         `product`.`product_name` AS `product_name`,
         `vendor`.`vendor_name` AS `vendor_name`,
@@ -17,6 +15,16 @@ CREATE VIEW `product_sales` AS
         `product`.`publish_date` AS `publish_date`,
         `product`.`sku` AS `sku`,
         `product`.`status` AS `status`,
+        (
+       SELECT  COUNT(`order_items`.`product_id`)
+       FROM    `order_items`
+       WHERE   `order_items`.`product_id` = `product`.`id`
+       ) AS `sales_count`,
+       (
+       SELECT  AVG(`product_review`.`rating`)
+       FROM    `product_review`
+       WHERE   `product_review`.`product_id` = `product`.`id`
+       ) AS `rating`,
         `product`.`created_by` AS `created_by`,
         `product`.`created_on` AS `created_on`,
         `product`.`last_updated_by` AS `last_updated_by`,
@@ -25,7 +33,6 @@ CREATE VIEW `product_sales` AS
     FROM
         `product`
         LEFT JOIN `product_media` ON `product_media`.`id` =`product`.`product_media_id`
-        LEFT JOIN `order_items` ON `product`.`id` =`order_items`.`product_id`
         LEFT JOIN `vendor`
             INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
         ON `product`.`vendor_id` =`vendor`.`id`
@@ -34,30 +41,6 @@ CREATE VIEW `product_sales` AS
         LEFT JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
         LEFT JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`
         LEFT JOIN `country` ON `country`.`id` = `product`.`product_location`
-
-    GROUP BY 
-        `order_items`.`product_id` , 
-        `product`.`id` ,
-        `product`.`product_name` ,
-        `vendor`.`vendor_name`,
-        `users`.`first_name`,
-        `marketplace`.`name`,
-        `marketplace_type`.`name`,
-        `product`.`moq`
-        `product`.`price`,
-        `product_media`.`url`,
-        `country`.`name`,
-        `category`.`name`,
-        `sub_category`.`name`,
-        `product`.`publish_date`, 
-        `product`.`sku` ,
-        `product`.`status` ,
-        `product`.`created_by`,
-        `product`.`created_on` ,
-        `product`.`last_updated_by`,
-        `product`.`last_updated_on`,
-        `product`.`deleted_at`;
-
 
 
 
