@@ -6,6 +6,7 @@
 
 import path from 'path';
 import errors from './components/errors';
+var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
   
@@ -25,6 +26,10 @@ export default function(app) {
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api', require('./api/gtc'));
+  app.post('/auth/google', controller.googleLogin);
+  app.post('/auth/fb', controller.facebookLogin);
+  app.post('/auth/linkedin', controller.linkedInLogin);
+  app.post('/auth/twitter', controller.twitterLogin);
 
 
   /* Handlerbars routes */

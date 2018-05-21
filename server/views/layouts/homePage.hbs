@@ -1,3 +1,4 @@
+<script type="text/javascript" src="auth.service.js"></script>
 <script type="text/javascript" src="//platform.linkedin.com/in.js">
     api_key: 81q1ljfijajynj
     authorize: false
@@ -58,9 +59,7 @@
             fb_login();
         });
 
-
         //Login with Twitter
-
         var twitterWin;
         var checkConnect;
 
@@ -69,7 +68,6 @@
             twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
         });
 
-
         checkConnect = setInterval(function () {
             if (!twitterWin || !twitterWin.closed) return;
             clearInterval(checkConnect);
@@ -77,14 +75,10 @@
             //window.location.reload();
         }, 100);
 
-
         window.onTwitterAuthClose = function (data) {
             console.log('Twitter Authenticated', JSON.parse(decodeURIComponent(data)));
         };
-
     });
-
-
 
     // Login with Google   
     var googleUser = {};
@@ -99,14 +93,56 @@
         });
     };
 
+    /*function googleSignIn() {
+        auth2.grantOfflineAccess().then(signInCallback);
+    };*/
+
+    /*function signInCallback(authResult) {
+        if (authResult['code']) {
+            var googleUser = {};
+            googleUser.code = authResult['code'];
+            googleUser.clientId = '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com';
+            googleUser.redirectUri = window.location.origin + '/';
+            $.ajax({
+                type: 'POST',
+                url: '/auth/google',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                contentType: 'application/octet-stream; charset=utf-8',
+                success: function(result) {
+                    console.log("result", result);
+                },
+                processData: false,
+                data: googleUser
+            });
+        }
+    }*/
+
     function googleAttachSignin(element) {
         auth2.attachClickHandler(element, {},
-            function (googleUser) {
+            function(googleUser) {
+                var newGoogleUser = {};
+                var profileId = googleUser.getBasicProfile().getId();
                 var id_token = googleUser.getAuthResponse().id_token;
-                console.log("ID Token: ", id_token);
-                console.log("UserInfo: ", decodeJwt(id_token))
-                alert("Signed In");
-            }, function (error) {
+                var profile = decodeJwt(id_token);
+                newGoogleUser.first_name = profile.given_name;
+                if (profile.family_name) {
+                    newGoogleUser.last_name = profile.family_name;
+                }
+                newGoogleUser.email = profile.email;
+                newGoogleUser.role = 3;
+                newGoogleUser.google_id = profileId;
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/google",
+                    data: newGoogleUser,
+                    success: function(result) {
+                        console.log('result', result);
+                    }
+                });
+            },
+            function(error) {
                 alert(JSON.stringify(error, undefined, 2));
             });
     }
@@ -126,22 +162,36 @@
         return JSON.parse(window.atob(base64));
     };
 
-
     //Login with LinkedIn
-
-    function callLinkedInUserProfile() {
+    function getProfileData() {
         IN.API.Profile("me")
             .fields("id", "email-address", "first-name", "last-name", "formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections", "picture-url")
-            .result(function (profile) {
-                console.log(profile)
+            .result(function (data) {
+                var profileData = data.values[0];
+                var linkedInUser = {};
+                linkedInUser.first_name = profileData.firstName;
+                if (profileData.lastName) {
+                    linkedInUser.last_name = profileData.lastName;
+                }
+                linkedInUser.email = profileData.emailAddress;
+                linkedInUser.role = 3;
+                linkedInUser.linkedin_id = profileData.id;
+                $.ajax({
+                    type: "POST",
+                    url: "/auth/linkedin",
+                    data: linkedInUser,
+                    success: function(result) {
+                        console.log('result', result);
+                    }
+                });
             });
     }
 
-    function linkedinAuth() {
+    function linkedInSignIn() {
         console.log("LinkedIN User LoggedIn : " + IN.User.isAuthorized());
         if (!IN.User.isAuthorized()) {
             IN.User.authorize(function () {
-                callLinkedInUserProfile();
+                getProfileData();
             });
         } else {
             alert("Already Login In with LinkedIn");
@@ -155,7 +205,34 @@
             alert("Linkedin User Logout successful");
         });
     }
+</script>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#signUpForm').submit(function(e) {
+            e.preventDefault();
+
+            if ($('#inputEmail').val() && $('#inputFirstname').val() && $('#inputPassword').val()) {
+                var newUser = {};
+                newUser.email = $('#inputEmail').val();
+                newUser.first_name = $('#inputFirstname').val();
+                newUser.password = $('#inputPassword').val();
+                newUser.provider = 1;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/users',
+                    data: newUser,
+                    success: function (data, text) {
+                        console.log('data', data, text);
+                    },
+                    error: function (request, status, error) {
+                        console.log('request', request.responseText);
+                    }
+                });
+            }
+        });
+    });
 </script>
 
 <section class="box1" style="margin-bottom:0">
@@ -193,20 +270,23 @@
                         <a id="gtc-google-login">
                             <img src="img/login-google.png" alt="facebook" style="margin-bottom: 5px;" />
                         </a>
-                        <a onclick="linkedinAuth();">
+                        <a onclick="linkedInSignIn();">
                             <img src="img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;" />
                         </a>
                         <a id="gtc-twitter-login">
                             <img src="img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;" />
                         </a>
+                        {{!-- <button onclick="googleSignIn()">Sign in with Google</button> --}}
                     </div>
                     <div class="col-md-6">
-                        <input type="text" placeholder="Create a Username" class="acc_textbox" />
-                        <input type="text" placeholder="Create a Password" class="acc_textbox" />
-                        <input type="text" placeholder="Confirm Password" class="acc_textbox" />
-                        <br/>
-                        <input type="checkbox"> Accept terms and conditions
-                        <input type="submit" value="CREATE ACCOUNT" class="acc_button" />
+                        <form id="signUpForm" method="post">
+                            <input type="text" placeholder="Email" id="inputEmail" name="email" class="acc_textbox" />
+                            <input type="text" placeholder="First name" id="inputFirstname" name="firstname" class="acc_textbox" />
+                            <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox" />
+                            <br/>
+                            <input type="checkbox"> Accept terms and conditions
+                            <button type="submit" id="btnSignup" class="acc_button">CREATE ACCOUNT</button>
+                        </form>
                     </div>
                 </div>
             </div>
