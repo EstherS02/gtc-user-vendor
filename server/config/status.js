@@ -7,6 +7,8 @@ module.exports = {
 	"CLOSED": 6,
 	"NEWORDER":7,
 	"CANCELLEDORDER":8,
-	"FAILEDORDER":9
+	"FAILEDORDER":9,
+	"SUSPENDED":10,
+	"SOLD OUT":11
 
 };

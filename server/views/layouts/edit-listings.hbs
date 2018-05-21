@@ -1,18 +1,68 @@
-{{> vendor/header}} 
+
+<script>
+	function selectAll(ele) {
+     var checkboxes = document.getElementsByTagName('input');
+     if (ele.checked) {
+         for (var i = 0; i < checkboxes.length; i++) {
+             if (checkboxes[i].type == 'checkbox') {
+                 checkboxes[i].checked = true;
+             }
+         }
+     } else {
+         for (var i = 0; i < checkboxes.length; i++) {
+             console.log(i)
+             if (checkboxes[i].type == 'checkbox') {
+                 checkboxes[i].checked = false;
+             }
+         }
+     }
+ }
+</script>
+<script type="text/javascript">
+   
+        function changeStatus(e) {
+                var queryParam = {};
+                queryParam.status =e.value;
+				queryParam.vendor_name = 'devan vendor';
+                
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/product-sales-rating',
+                    data: queryParam,
+                    success: function (data, text) {
+                        console.log('data', data, text);
+						
+                    },
+                    error: function (request, status, error) {
+                        console.log('request', request.responseText);
+                    }
+                });
+            }
+        
+   
+</script>
+
+{{> vendor/header}}
 <section class="showing_categ">
-	<div class="" >
+	<div class="">
 		<div class="container">
 			<div class="row">
-				{{> vendor/navbar}} 
+				{{> vendor/navbar}}
 				<div class="col-md-8" style="background-color: #fff;">
-					<p class="vend_edit_lists_pstyle">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature products, or import and syncronize them with an outside source. To administer specific details of products, click on the product name or SKU to go to the full edit details page for that specific products.</p>
+					<p class="vend_edit_lists_pstyle">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature
+						products, or import and syncronize them with an outside source. To administer specific details of products, click on
+						the product name or SKU to go to the full edit details page for that specific products.</p>
 					<div class="row">
 						<div class="col-md-2">
 							<input type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2 common_padding1">
-							<select class="vend_edit_lists_buttonstyle">
-								<option>CHANGE STATUS</option>
+							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+								<option disabled selected >CHANGE STATUS</option>
+								<option value="1">Active</option>
+								<option value="2">InActive</option>
+								<option value="10">Suspended</option>
+								<option value="11">Sold Out</option>
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
@@ -42,7 +92,9 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th><input type="checkbox"></th>
+									<th>
+										<input type="checkbox" onclick="selectAll(this);">
+									</th>
 									<th>Product Name</th>
 									<th>Publish Date</th>
 									<th>Sales</th>
@@ -52,106 +104,28 @@
 								</tr>
 							</thead>
 							<tbody>
+								{{#each products}}
 								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
+									<td>
+										<input type="checkbox" name="selected">
+									</td>
+									<td class="text_blue_color">
+										<img src="{{this.url}}" style="width: 15px;" /> {{this.product_name}}</td>
+									<td>{{ prettifyDate this.publish_date }}</td>
+									<td class="text_blue_color">{{this.sales_count}}</td>
+									<td>${{this.price}} CAD</td>
+									{{#ifCond this.status 1}}
 									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
+									{{else ifCond this.status 2}}
+									<td class="text_green_color">InActive</td>
+									{{else ifCond this.status 10}}
+									<td class="text_green_color">Suspended</td>
+									{{else ifCond this.status 11}}
+									<td class="text_green_color">Sold Out</td>
+									{{/ifCond}}
+									<td class="text_blue_color">{{this.sku}}</td>
 								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_orange_color">Suspended</td>
-									<td class="text_blue_color">12341234</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_red_color">Sold Out</td>
-									<td class="text_blue_color">12341234</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td class="text_blue_color">3</td>
-									<td>$150.00 CAD</td>
-									<td class="text_green_color">Active</td>
-									<td class="text_blue_color">12341234</td>
-								</tr>
+								{{/each}}
 							</tbody>
 						</table>
 					</div>
@@ -165,8 +139,8 @@
 					</div>
 				</div>
 				<div class="col-md-2">
-					
-				</div>				
+
+				</div>
 			</div>
 		</div>
 	</div>
