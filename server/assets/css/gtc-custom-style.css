@@ -2,6 +2,9 @@ a {
     cursor: pointer;
     /* text-decoration: underline; */
 }
+.no-padding {
+  padding: 0 !important;
+}
 .p-xxs {
   padding: 5px;
 }
@@ -272,13 +275,18 @@ a {
 
 .marketplace-category-header-box {
 	background: #4177b1;
+	height: 48px;
+}
+
+.m-t-n-xyz {
+	margin-top: -48px;
 }
 
 .marketplace-category-header-box h5 {
 	color: #ffffff;
     display: inline-block;
     font-size: 16px;
-    padding: 15px 15px 7px;
+    padding: 15px 0px 7px;
     text-overflow: ellipsis;
     float: left;
 }
@@ -291,7 +299,7 @@ a {
 	color: #ffffff;
     display: inline-block;
     font-size: 25px;
-    padding: 25px 15px 7px;
+    padding: 25px 0px 7px;
     text-overflow: ellipsis;
     float: left;
 }
@@ -341,4 +349,59 @@ a {
 
 .rfq-bg {
 	background: #88abd5;
+}
+
+.gtc-box {
+    clear: both;
+    /*margin-bottom: 25px;*/
+    margin-top: 0;
+    padding: 0;
+}
+
+.gtc-box-title {
+    color: #ffffff;
+    margin-bottom: 0;
+    padding: 15px 15px 7px;
+    min-height: 48px;
+}
+
+.gtc-box-title h5 {
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 0 7px;
+    padding: 0;
+    text-overflow: ellipsis;
+    float: left;
+}
+
+.ibox-content {
+    clear: both;
+}
+
+.gtc-box-content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+}
+
+.product-image {
+    width: 120px;
+    float: left;
+}
+
+.product-image img {
+    width: 96px;
+    height: 96px;
+}
+
+img {
+    vertical-align: middle;
+}
+
+img {
+    border: 0;
+}
+
+.product-info {
+    margin-left: 120px;
 }
