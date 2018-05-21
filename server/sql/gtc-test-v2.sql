@@ -1,5 +1,5 @@
 CREATE VIEW `product_sales_rating` AS
-SELECT 
+    SELECT 
         `product`.`id` AS `id`,
         `product`.`product_name` AS `product_name`,
         `vendor`.`vendor_name` AS `vendor_name`,
@@ -15,33 +15,37 @@ SELECT
         `product`.`publish_date` AS `publish_date`,
         `product`.`sku` AS `sku`,
         `product`.`status` AS `status`,
-        (
-       SELECT  COUNT(`order_items`.`product_id`)
-       FROM    `order_items`
-       WHERE   `order_items`.`product_id` = `product`.`id`
-       ) AS `sales_count`,
-       (
-       SELECT  AVG(`product_review`.`rating`)
-       FROM    `product_review`
-       WHERE   `product_review`.`product_id` = `product`.`id`
-       ) AS `rating`,
+        `product`.`quantity_available` AS `quantity_available`,
+        `product`.`description` AS `description`,
+        `product`.`city` AS `city`,
+        `product`.`product_slug` AS `product_slug`,
+        (SELECT 
+                COUNT(`order_items`.`product_id`)
+            FROM
+                `order_items`
+            WHERE
+                (`order_items`.`product_id` = `product`.`id`)) AS `sales_count`,
+        (SELECT 
+                AVG(`product_review`.`rating`)
+            FROM
+                `product_review`
+            WHERE
+                (`product_review`.`product_id` = `product`.`id`)) AS `rating`,
         `product`.`created_by` AS `created_by`,
         `product`.`created_on` AS `created_on`,
         `product`.`last_updated_by` AS `last_updated_by`,
         `product`.`last_updated_on` AS `last_updated_on`,
         `product`.`deleted_at` AS `deleted_at`
     FROM
-        `product`
-        LEFT JOIN `product_media` ON `product_media`.`id` =`product`.`product_media_id`
-        LEFT JOIN `vendor`
-            INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
-        ON `product`.`vendor_id` =`vendor`.`id`
-        LEFT JOIN `marketplace` ON `product`.`marketplace_id` =`marketplace`.`id`
-        LEFT JOIN `marketplace_type` ON `product`.`marketplace_type_id` =`marketplace_type`.`id`
-        LEFT JOIN `category` ON `category`.`id` = `product`.`product_category_id` 
-        LEFT JOIN `sub_category` ON `sub_category`.`id` = `product`.`sub_category_id`
-        LEFT JOIN `country` ON `country`.`id` = `product`.`product_location`
-
+        (((((((`product`
+        LEFT JOIN `product_media` ON ((`product_media`.`id` = `product`.`product_media_id`)))
+        LEFT JOIN (`vendor`
+        JOIN `users` ON ((`users`.`id` = `vendor`.`user_id`))) ON ((`product`.`vendor_id` = `vendor`.`id`)))
+        LEFT JOIN `marketplace` ON ((`product`.`marketplace_id` = `marketplace`.`id`)))
+        LEFT JOIN `marketplace_type` ON ((`product`.`marketplace_type_id` = `marketplace_type`.`id`)))
+        LEFT JOIN `category` ON ((`category`.`id` = `product`.`product_category_id`)))
+        LEFT JOIN `sub_category` ON ((`sub_category`.`id` = `product`.`sub_category_id`)))
+        LEFT JOIN `country` ON ((`country`.`id` = `product`.`product_location`)))
 
 
 
@@ -100,6 +104,7 @@ ADD UNIQUE INDEX `product_id_UNIQUE` (`product_id` ASC);
 CREATE VIEW `featuredproduct_sales_rating` AS
     SELECT 
         `featured_product`.`id` AS `id`,
+        `featured_product`.`product_id` AS `product_id`,
         `product_sales_rating`.`product_name` AS `product_name`,
         `product_sales_rating`.`vendor_name` AS `vendor_name`,
         `product_sales_rating`.`owner_name` AS `owner_name`,
@@ -266,7 +271,8 @@ CREATE VIEW `vendor_sales` AS
 
 
 
-
+ALTER TABLE `gtc-test`.product
+ADD COLUMN product_slug VARCHAR(128) NOT NULL;
 
 
 

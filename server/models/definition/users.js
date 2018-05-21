@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         hashed_pwd: {
             type: DataTypes.STRING(128),
             field: 'hashed_pwd',
-            allowNull: false
+            allowNull: true
         },
         first_name: {
             type: DataTypes.STRING(64),
@@ -47,7 +47,17 @@ module.exports = (sequelize, DataTypes) => {
         salt: {
             type: DataTypes.STRING(128),
             field: 'salt',
-            allowNull: false
+            allowNull: true
+        },
+        google_id: {
+            type: DataTypes.STRING(32),
+            field: 'google_id',
+            allowNull: true
+        },
+        linkedin_id: {
+            type: DataTypes.STRING(32),
+            field: 'linkedin_id',
+            allowNull: true
         },
         email_verified: {
             type: DataTypes.INTEGER,

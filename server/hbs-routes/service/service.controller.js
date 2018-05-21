@@ -17,7 +17,7 @@ export function Service(req, res) {
 	async.series({
 		vendors: function (callback) {
 
-			service.findRows('VendorSales', {}, 0, 4, field, order)
+			service.findRows('VendorSales', { status:1 }, 0, 4, field, order)
 				.then(function (vendors) {
 					return callback(null, vendors.rows);
 
@@ -28,7 +28,7 @@ export function Service(req, res) {
 		},
 		featuredService: function (callback) {
 
-			service.findRows('FeaturedproductSalesRating', { marketplace: 'Service Marketplace' }, 0, 4, field, order)
+			service.findRows('FeaturedproductSalesRating', { status:1, marketplace: 'Service Marketplace' }, 0, 4, field, order)
 				.then(function (featuredService) {
 					return callback(null, featuredService.rows);
 
@@ -39,7 +39,7 @@ export function Service(req, res) {
 		},
 		serviceProduct: function (callback) {
 
-			service.findRows('ProductSalesRating', { marketplace: 'Service Marketplace' }, 0, 20, field, order)
+			service.findRows('ProductSalesRating', { status:1, marketplace: 'Service Marketplace' }, 0, 20, field, order)
 				.then(function (serviceProduct) {
 					return callback(null, serviceProduct.rows);
 

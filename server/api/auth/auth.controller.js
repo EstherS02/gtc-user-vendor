@@ -2,8 +2,13 @@
 
 const url = require("url");
 const request = require('request');
+const service = require('../service');
 const cryptography = require('../../auth/encrypt-decrypt');
 const config = require('../../config/environment');
+const generateAccessToken = require('../../auth/token');
+const generateRefreshToken = require('../../auth/token');
+const providers = require('../../config/providers');
+const status = require('../../config/status');
 const path = require('path');
 const model = require('../../sqldb/model-connect');
 
@@ -24,7 +29,7 @@ var oauth = new OAuth(
 
 export function twitterAuth(req, res) {
 
-	oauth.getOAuthRequestToken(function (error, oAuthToken, oAuthTokenSecret, results) {
+	oauth.getOAuthRequestToken(function(error, oAuthToken, oAuthTokenSecret, results) {
 
 		if (error === null && results && results.oauth_callback_confirmed) {
 
@@ -42,20 +47,21 @@ export function twitterAuth(req, res) {
 export function twitterCallbackAuth(req, res) {
 
 	oauth.getOAuthAccessToken(req.query.oauth_token, oauth.token_secret, req.query.oauth_verifier,
-		function (error, oauth_access_token, oauth_access_token_secret, results) {
+		function(error, oauth_access_token, oauth_access_token_secret, results) {
 			if (error === null) {
 
 				console.log(oauth_access_token, oauth_access_token_secret, results);
 
 				oauth.get('https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
 					oauth_access_token,
-					oauth_access_token_secret, function (error, twitterResponseData, result) {
+					oauth_access_token_secret,
+					function(error, twitterResponseData, result) {
 						if (error === null) {
 							console.log(JSON.parse(twitterResponseData));
 							console.log(typeof JSON.parse(twitterResponseData))
 
 							var responseData = JSON.parse(twitterResponseData);
-							
+
 							res.render('twitterCallbackClose', {
 								layout: false,
 								twitterResponseData: encodeURIComponent(twitterResponseData)
@@ -189,6 +195,294 @@ exports.refreshToken = function(req, res, next) {
 	});
 }
 
+export function googleLogin(req, res, next) {
+	var queryObj = {};
+
+	req.checkBody('first_name', 'Missing Query Param').notEmpty();
+	req.checkBody('google_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Please enter a valid email address').isEmail();
+	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	var bodyParams = req.body;
+	bodyParams['created_on'] = new Date();
+	bodyParams['provider'] = providers["GOOGLE"];
+	bodyParams['email_verified'] = 1;
+	bodyParams["status"] = status["ACTIVE"];
+
+	queryObj['email'] = req.body.email;
+	queryObj['provider'] = providers["GOOGLE"];
+	queryObj['google_id'] = req.body.google_id;
+
+	service.findOneRow("User", queryObj)
+		.then(function(user) {
+			if (user) {
+				const newUserRsp = plainTextResponse(user);
+				service.findOneRow('Appclient', {
+					id: config.auth.clientId
+				}).then(function(appClient) {
+					if (appClient) {
+						var rspTokens = {};
+						const appClientRsp = plainTextResponse(appClient);
+						rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+						service.findOneRow("UserToken", {
+							user_id: newUserRsp.id,
+							client_id: appClientRsp.id
+						}).then(function(userToken) {
+							if (userToken) {
+								const userTokenRsp = plainTextResponse(userToken);
+								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
+								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.status(200).send(rspTokens);
+								return;
+							} else {
+								var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+								var encryptedRefToken = cryptography.encrypt(refreshToken);
+
+								var token = {
+									client_id: appClientRsp.id,
+									refresh_token: refreshToken,
+									status: status["ACTIVE"],
+									user_id: newUserRsp.id
+								};
+
+								service.createRow("UserToken", token)
+									.then(function(newToken) {
+										if (newToken) {
+											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.status(200).send(rspTokens);
+											return;
+										}
+									}).catch(function(error) {
+										console.log('Error :::', error);
+										res.status(500).send("Internal server error");
+										return
+									});
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return
+						});
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return
+				});
+			} else {
+				service.createRow("User", bodyParams)
+					.then(function(newUser) {
+						if (newUser) {
+							const newUserRsp = plainTextResponse(newUser);
+							service.findOneRow('Appclient', {
+								id: config.auth.clientId
+							}).then(function(appClient) {
+								if (appClient) {
+									var rspTokens = {};
+									const appClientRsp = plainTextResponse(appClient);
+									var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+									var encryptedRefToken = cryptography.encrypt(refreshToken);
+									rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+									var token = {
+										client_id: appClientRsp.id,
+										refresh_token: refreshToken,
+										status: status["ACTIVE"],
+										user_id: newUserRsp.id
+									};
+
+									service.createRow("UserToken", token)
+										.then(function(newToken) {
+											if (newToken) {
+												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.status(200).send(rspTokens);
+												return;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											res.status(500).send("Internal server error");
+											return
+										});
+								} else {
+									return res.status(404).send("App Client does not exists.");
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
+								return
+							});
+						}
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+			}
+		})
+		.catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+};
+
+export function facebookLogin(req, res, next) {
+	console.log('req.body', req.body);
+};
+
+export function linkedInLogin(req, res, next) {
+	var queryObj = {};
+
+	req.checkBody('first_name', 'Missing Query Param').notEmpty();
+	req.checkBody('linkedin_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Please enter a valid email address').isEmail();
+	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	var bodyParams = req.body;
+	bodyParams['created_on'] = new Date();
+	bodyParams['provider'] = providers["LINKEDIN"];
+	bodyParams['email_verified'] = 1;
+	bodyParams["status"] = status["ACTIVE"];
+
+	queryObj['email'] = req.body.email;
+	queryObj['provider'] = providers["LINKEDIN"];
+	queryObj['linkedin_id'] = req.body.linkedin_id;
+
+	service.findOneRow("User", queryObj)
+		.then(function(user) {
+			if (user) {
+				const newUserRsp = plainTextResponse(user);
+				service.findOneRow('Appclient', {
+					id: config.auth.clientId
+				}).then(function(appClient) {
+					if (appClient) {
+						var rspTokens = {};
+						const appClientRsp = plainTextResponse(appClient);
+						rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+						service.findOneRow("UserToken", {
+							user_id: newUserRsp.id,
+							client_id: appClientRsp.id
+						}).then(function(userToken) {
+							if (userToken) {
+								const userTokenRsp = plainTextResponse(userToken);
+								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
+								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.status(200).send(rspTokens);
+								return;
+							} else {
+								var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+								var encryptedRefToken = cryptography.encrypt(refreshToken);
+
+								var token = {
+									client_id: appClientRsp.id,
+									refresh_token: refreshToken,
+									status: status["ACTIVE"],
+									user_id: newUserRsp.id
+								};
+
+								service.createRow("UserToken", token)
+									.then(function(newToken) {
+										if (newToken) {
+											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.status(200).send(rspTokens);
+											return;
+										}
+									}).catch(function(error) {
+										console.log('Error :::', error);
+										res.status(500).send("Internal server error");
+										return
+									});
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return
+						});
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return
+				});
+			} else {
+				service.createRow("User", bodyParams)
+					.then(function(newUser) {
+						if (newUser) {
+							const newUserRsp = plainTextResponse(newUser);
+							service.findOneRow('Appclient', {
+								id: config.auth.clientId
+							}).then(function(appClient) {
+								if (appClient) {
+									var rspTokens = {};
+									const appClientRsp = plainTextResponse(appClient);
+									var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+									var encryptedRefToken = cryptography.encrypt(refreshToken);
+									rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+									var token = {
+										client_id: appClientRsp.id,
+										refresh_token: refreshToken,
+										status: status["ACTIVE"],
+										user_id: newUserRsp.id
+									};
+
+									service.createRow("UserToken", token)
+										.then(function(newToken) {
+											if (newToken) {
+												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.status(200).send(rspTokens);
+												return;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											res.status(500).send("Internal server error");
+											return
+										});
+								} else {
+									return res.status(404).send("App Client does not exists.");
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
+								return
+							});
+						}
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+			}
+		})
+		.catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+};
+
+export function twitterLogin(req, res, next) {
+	console.log('req.body', req.body);
+};
+
 export function logout(req, res, next) {
 	var refreshToken = cryptography.decrypt(req.cookies.gtc_refresh_token);
 	res.clearCookie('gtc_refresh_token');
@@ -208,5 +502,11 @@ export function logout(req, res, next) {
 			res.status(500).send("Internal server error");
 			return;
 		}
+	});
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
 	});
 }

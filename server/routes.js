@@ -6,6 +6,7 @@
 
 import path from 'path';
 import errors from './components/errors';
+var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
   
@@ -16,6 +17,7 @@ export default function(app) {
   app.use('/api/admin-auth', require('./api/admin-auth'));
   app.use('/api/auth', require('./api/auth'));
 
+  app.use('/api/cart', require('./api/cart'));
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
   app.use('/api/product', require('./api/product'));
@@ -24,16 +26,23 @@ export default function(app) {
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api', require('./api/gtc'));
+  app.post('/auth/google', controller.googleLogin);
+  app.post('/auth/fb', controller.facebookLogin);
+  app.post('/auth/linkedin', controller.linkedInLogin);
+  app.post('/auth/twitter', controller.twitterLogin);
 
 
   /* Handlerbars routes */
   app.use('/', require('./hbs-routes/homePage'));
-  app.use('/checkout', require('./hbs-routes/checkout'));
+  app.use('/product', require('./hbs-routes/product-view'));
+  app.use('/cart', require('./hbs-routes/cart'));
   app.use('/service', require('./hbs-routes/service'));
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/edit-listings', require('./hbs-routes/edit-listings'));
   app.use('/reviews', require('./hbs-routes/reviews'));
   app.use('/notifications', require('./hbs-routes/notifications'));
+  app.use('/listings', require('./hbs-routes/listings'));
+  app.use('/coupons', require('./hbs-routes/coupons'));
 
 
   //All other routes 404 page

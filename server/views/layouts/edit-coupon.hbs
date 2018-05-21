@@ -1,0 +1,79 @@
+ {{> vendor/header}} 
+ <section class="showing_categ">
+	<div class="" >
+		<div class="container">
+			<div class="row">
+				{{> vendor/navbar}} 
+				<div class="col-md-8" style="background-color: #fff;">
+					<h5 style="padding-top: 20px;">Edit Coupon</h5>
+					<div class="row">
+						<div class="col-md-12">
+							<input type="text" placeholder="Coupon Name" class="vend_edit_lists_textstyle" />
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_dropdownstyle">
+								<option>Discount Type</option>
+							</select>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" />
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_dropdownstyle">
+								<option>Expiry Date</option>
+							</select>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
+						</div>
+						<div class="col-md-12">
+							<input type="checkbox"><span class="vend_edit_list_spanstyle"><b>Individual use only.</b> Check this box if the coupon cannot be used in conjunction with other coupons</span>
+						</div>
+						<div class="col-md-12">
+							<input type="checkbox"><span class="vend_edit_list_spanstyle"><b>Excluse sale Item.</b> Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Search for a product.." class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Exclude products.." class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Product Categories" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Exclude Categories" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Usage Limit" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="Limit usage to X items" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">The maximum items this coupon can be applied to when using product discount (default is all)</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="usage limit per user" class="vend_edit_lists_textstyle1" /><span class="vend_edit_list_spanstyle">How many times this coupons can be used by an individual (default is unlimited)</span>
+						</div>
+					</div>
+					<hr/>
+					<div class="row">
+						<div class="col-md-12">
+							<input class="list_butt_1" type="submit" value="UPDATE" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-12">
+							<p class="vend_edit_lists_pstyle"></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					
+				</div>				
+			</div>
+		</div>
+	</div>
+</section>
