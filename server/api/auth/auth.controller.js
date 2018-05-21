@@ -336,7 +336,143 @@ export function googleLogin(req, res, next) {
 };
 
 export function facebookLogin(req, res, next) {
-	console.log('req.body', req.body);
+	var queryObj = {};
+
+	req.checkBody('first_name', 'Missing Query Param').notEmpty();
+	req.checkBody('fb_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Please enter a valid email address').isEmail();
+	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	var bodyParams = req.body;
+	bodyParams['created_on'] = new Date();
+	bodyParams['provider'] = providers["FB"];
+	bodyParams['email_verified'] = 1;
+	bodyParams["status"] = status["ACTIVE"];
+
+	queryObj['email'] = req.body.email;
+	queryObj['provider'] = providers["FB"];
+	queryObj['fb_id'] = req.body.fb_id;
+
+	service.findOneRow("User", queryObj)
+		.then(function(user) {
+			if (user) {
+				const newUserRsp = plainTextResponse(user);
+				service.findOneRow('Appclient', {
+					id: config.auth.clientId
+				}).then(function(appClient) {
+					if (appClient) {
+						var rspTokens = {};
+						const appClientRsp = plainTextResponse(appClient);
+						rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+						service.findOneRow("UserToken", {
+							user_id: newUserRsp.id,
+							client_id: appClientRsp.id
+						}).then(function(userToken) {
+							if (userToken) {
+								const userTokenRsp = plainTextResponse(userToken);
+								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
+								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.status(200).send(rspTokens);
+								return;
+							} else {
+								var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+								var encryptedRefToken = cryptography.encrypt(refreshToken);
+
+								var token = {
+									client_id: appClientRsp.id,
+									refresh_token: refreshToken,
+									status: status["ACTIVE"],
+									user_id: newUserRsp.id
+								};
+
+								service.createRow("UserToken", token)
+									.then(function(newToken) {
+										if (newToken) {
+											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.status(200).send(rspTokens);
+											return;
+										}
+									}).catch(function(error) {
+										console.log('Error :::', error);
+										res.status(500).send("Internal server error");
+										return
+									});
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return
+						});
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return
+				});
+			} else {
+				service.createRow("User", bodyParams)
+					.then(function(newUser) {
+						if (newUser) {
+							const newUserRsp = plainTextResponse(newUser);
+							service.findOneRow('Appclient', {
+								id: config.auth.clientId
+							}).then(function(appClient) {
+								if (appClient) {
+									var rspTokens = {};
+									const appClientRsp = plainTextResponse(appClient);
+									var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+									var encryptedRefToken = cryptography.encrypt(refreshToken);
+									rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+									var token = {
+										client_id: appClientRsp.id,
+										refresh_token: refreshToken,
+										status: status["ACTIVE"],
+										user_id: newUserRsp.id
+									};
+
+									service.createRow("UserToken", token)
+										.then(function(newToken) {
+											if (newToken) {
+												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.status(200).send(rspTokens);
+												return;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											res.status(500).send("Internal server error");
+											return
+										});
+								} else {
+									return res.status(404).send("App Client does not exists.");
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
+								return
+							});
+						}
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+			}
+		})
+		.catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
 };
 
 export function linkedInLogin(req, res, next) {
@@ -480,7 +616,144 @@ export function linkedInLogin(req, res, next) {
 };
 
 export function twitterLogin(req, res, next) {
-	console.log('req.body', req.body);
+	
+	var queryObj = {};
+
+	req.checkBody('first_name', 'Missing Query Param').notEmpty();
+	req.checkBody('twitter_id', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Missing Query Param').notEmpty();
+	req.checkBody('email', 'Please enter a valid email address').isEmail();
+	req.checkBody('email', 'Email Address lowercase letters only').isLowercase();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	var bodyParams = req.body;
+	bodyParams['created_on'] = new Date();
+	bodyParams['provider'] = providers["TWITTER"];
+	bodyParams['email_verified'] = 1;
+	bodyParams["status"] = status["ACTIVE"];
+
+	queryObj['email'] = req.body.email;
+	queryObj['provider'] = providers["TWITTER"];
+	queryObj['twitter_id'] = req.body.twitter_id;
+
+	service.findOneRow("User", queryObj)
+		.then(function(user) {
+			if (user) {
+				const newUserRsp = plainTextResponse(user);
+				service.findOneRow('Appclient', {
+					id: config.auth.clientId
+				}).then(function(appClient) {
+					if (appClient) {
+						var rspTokens = {};
+						const appClientRsp = plainTextResponse(appClient);
+						rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+						service.findOneRow("UserToken", {
+							user_id: newUserRsp.id,
+							client_id: appClientRsp.id
+						}).then(function(userToken) {
+							if (userToken) {
+								const userTokenRsp = plainTextResponse(userToken);
+								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
+								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.status(200).send(rspTokens);
+								return;
+							} else {
+								var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+								var encryptedRefToken = cryptography.encrypt(refreshToken);
+
+								var token = {
+									client_id: appClientRsp.id,
+									refresh_token: refreshToken,
+									status: status["ACTIVE"],
+									user_id: newUserRsp.id
+								};
+
+								service.createRow("UserToken", token)
+									.then(function(newToken) {
+										if (newToken) {
+											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.status(200).send(rspTokens);
+											return;
+										}
+									}).catch(function(error) {
+										console.log('Error :::', error);
+										res.status(500).send("Internal server error");
+										return
+									});
+							}
+						}).catch(function(error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return
+						});
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					res.status(500).send("Internal server error");
+					return
+				});
+			} else {
+				service.createRow("User", bodyParams)
+					.then(function(newUser) {
+						if (newUser) {
+							const newUserRsp = plainTextResponse(newUser);
+							service.findOneRow('Appclient', {
+								id: config.auth.clientId
+							}).then(function(appClient) {
+								if (appClient) {
+									var rspTokens = {};
+									const appClientRsp = plainTextResponse(appClient);
+									var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
+									var encryptedRefToken = cryptography.encrypt(refreshToken);
+									rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
+
+									var token = {
+										client_id: appClientRsp.id,
+										refresh_token: refreshToken,
+										status: status["ACTIVE"],
+										user_id: newUserRsp.id
+									};
+
+									service.createRow("UserToken", token)
+										.then(function(newToken) {
+											if (newToken) {
+												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.status(200).send(rspTokens);
+												return;
+											}
+										}).catch(function(error) {
+											console.log('Error :::', error);
+											res.status(500).send("Internal server error");
+											return
+										});
+								} else {
+									return res.status(404).send("App Client does not exists.");
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
+								return
+							});
+						}
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						res.status(500).send("Internal server error");
+						return
+					});
+			}
+		})
+		.catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
 };
 
 export function logout(req, res, next) {
