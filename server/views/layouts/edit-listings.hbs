@@ -1,3 +1,47 @@
+
+<script>
+	function selectAll(ele) {
+     var checkboxes = document.getElementsByTagName('input');
+     if (ele.checked) {
+         for (var i = 0; i < checkboxes.length; i++) {
+             if (checkboxes[i].type == 'checkbox') {
+                 checkboxes[i].checked = true;
+             }
+         }
+     } else {
+         for (var i = 0; i < checkboxes.length; i++) {
+             console.log(i)
+             if (checkboxes[i].type == 'checkbox') {
+                 checkboxes[i].checked = false;
+             }
+         }
+     }
+ }
+</script>
+<script type="text/javascript">
+   
+        function changeStatus(e) {
+                var queryParam = {};
+                queryParam.status =e.value;
+				queryParam.vendor_name = 'devan vendor';
+                
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/product-sales-rating',
+                    data: queryParam,
+                    success: function (data, text) {
+                        console.log('data', data, text);
+						
+                    },
+                    error: function (request, status, error) {
+                        console.log('request', request.responseText);
+                    }
+                });
+            }
+        
+   
+</script>
+
 {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
@@ -13,12 +57,12 @@
 							<input type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2 common_padding1">
-							<select class="vend_edit_lists_buttonstyle">
+							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected >CHANGE STATUS</option>
-								<option>Active</option>
-								<option>InActive</option>
-								<option>Suspended</option>
-								<option>Sold Out</option>
+								<option value="1">Active</option>
+								<option value="2">InActive</option>
+								<option value="10">Suspended</option>
+								<option value="11">Sold Out</option>
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
@@ -49,7 +93,7 @@
 							<thead>
 								<tr>
 									<th>
-										<input type="checkbox">
+										<input type="checkbox" onclick="selectAll(this);">
 									</th>
 									<th>Product Name</th>
 									<th>Publish Date</th>
@@ -63,23 +107,23 @@
 								{{#each products}}
 								<tr>
 									<td>
-										<input type="checkbox">
+										<input type="checkbox" name="selected">
 									</td>
 									<td class="text_blue_color">
-										<img src="{{url}}" style="width: 15px;" /> {{product_name}}</td>
-									<td>{{ prettifyDate publish_date }}</td>
-									<td class="text_blue_color">{{sales_count}}</td>
-									<td>${{price}} CAD</td>
-									{{#ifCond status 1}}
+										<img src="{{this.url}}" style="width: 15px;" /> {{this.product_name}}</td>
+									<td>{{ prettifyDate this.publish_date }}</td>
+									<td class="text_blue_color">{{this.sales_count}}</td>
+									<td>${{this.price}} CAD</td>
+									{{#ifCond this.status 1}}
 									<td class="text_green_color">Active</td>
-									{{else ifCond status 2}}
+									{{else ifCond this.status 2}}
 									<td class="text_green_color">InActive</td>
-									{{else ifCond status 10}}
+									{{else ifCond this.status 10}}
 									<td class="text_green_color">Suspended</td>
-									{{else ifCond status 11}}
+									{{else ifCond this.status 11}}
 									<td class="text_green_color">Sold Out</td>
 									{{/ifCond}}
-									<td class="text_blue_color">{{sku}}</td>
+									<td class="text_blue_color">{{this.sku}}</td>
 								</tr>
 								{{/each}}
 							</tbody>

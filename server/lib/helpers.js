@@ -60,12 +60,12 @@ Handlebars.registerHelper("prettifyDate", function (timestamp) {
     return curr_month + ' ' + curr_date + ', ' + curr_year;
 });
 
-Handlebars.registerHelper('ifCond', function(v1, v2, options) {
-    if(v1 === v2) {
-      return options.fn(this);
+Handlebars.registerHelper('ifCond', function (v1, v2, options) {
+    if (v1 === v2) {
+        return options.fn(this);
     }
     return options.inverse(this);
-  });
+});
 
 
 
