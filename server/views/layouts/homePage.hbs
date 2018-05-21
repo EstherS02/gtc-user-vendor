@@ -40,7 +40,11 @@
                         success: function(result) {
                             localStorage.setItem("access_token", result.access_token);
                             auth.getCurrentUser().then(function(data) {
-                                console.log('data', data);
+                                if (data) {
+                                    $('#loginBanner').hide();
+                                } else {
+                                    $('#loginBanner').show();
+                                }
                             });
                         }
                     });
@@ -84,7 +88,11 @@
                         success: function(result) {
                             localStorage.setItem("access_token", result.access_token);
                             auth.getCurrentUser().then(function(data) {
-                                console.log('data', data);
+                                if (data) {
+                                    $('#loginBanner').hide();
+                                } else {
+                                    $('#loginBanner').show();
+                                }
                             });
                         }
                     });
@@ -162,7 +170,11 @@
                             success: function(result) {
                                 localStorage.setItem("access_token", result.access_token);
                                 auth.getCurrentUser().then(function(data) {
-                                    console.log('data', data);
+                                    if (data) {
+                                        $('#loginBanner').hide();
+                                    } else {
+                                        $('#loginBanner').show();
+                                    }
                                 });
                             }
                         });
@@ -211,7 +223,11 @@
                 success: function(result) {
                     localStorage.setItem("access_token", result.access_token);
                     auth.getCurrentUser().then(function(data) {
-                        console.log('data', data);
+                        if (data) {
+                            $('#loginBanner').hide();
+                        } else {
+                            $('#loginBanner').show();
+                        }
                     });
                 }
             });
@@ -321,17 +337,66 @@
     </div>
 </section>
 
-<section class="box2" style="margin-bottom:0">
-    <div class="container">
+<section class="custom-section header-box">
+    <div class="container my-custom-container">
         <div class="row">
-            <div class="col-md-12 box2_align">
+            <div class="col-md-12">
                 <h1>PRIVATE WHOLESALE MARKETPLACE</h1>
             </div>
         </div>
     </div>
 </section>
+<section class="custom-section marketplace-category-header-box">
+    <div class="container my-custom-container">
+        <div class="row">
+            <div class="col-md-3 wts-bg">
+                <h5>WTS - Want To Sell</h5>
+                <div class="box-right">
+                    <span class="label">SEE ALL<i class="m-l-sm fa fa-caret-right"></i></span>
+                </div>
+            </div>
+            <div class="col-md-3 wtb-bg">
+                <h5>WTB - Want To Buy</h5>
+                <div class="box-right">
+                    <span class="label">SEE ALL<i class="m-l-sm fa fa-caret-right"></i></span>
+                </div>
+            </div>
+            <div class="col-md-3 wtt-bg">
+                <h5>WTB - Want To Trade</h5>
+                <div class="box-right">
+                    <span class="label">SEE ALL<i class="m-l-sm fa fa-caret-right"></i></span>
+                </div>
+            </div>
+            <div class="col-md-3 rfq-bg">
+                <h5>RFQ - Request For Quote</h5>
+                <div class="box-right">
+                    <span class="label">SEE ALL<i class="m-l-sm fa fa-caret-right"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br/>
+<section class="custom-section marketplace-header-box">
+    <div class="container my-custom-container">
+        <div class="row">
+            <div class="col-md-4 public-bg">
+                <h5>PUBLIC MARKETPLACE</h5>
+                <div class="box-right">
+                    <span class="label">SEE ALL<i class="m-l-sm fa fa-caret-right"></i></span>
+                </div>
+            </div>
+            <div class="col-md-4 service-bg">
+                <h5>SERVICE MARKETPLACE</h5>
+            </div>
+            <div class="col-md-4 lifestyle-bg">
+                <h5>LIFESTYLE MARKETPLACE</h5>
+            </div>
+        </div>
+    </div>
+</section>
 
-<section class="box3" style="margin-bottom:0">
+<!-- <section class="box3" style="margin-bottom:0">
     <div class="container clearfix">
         <div class="row">
             <div class="col-md-3 wts1">
@@ -360,7 +425,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <section class="box4" style="margin-bottom:20px;">
     <div class="container clearfix">
