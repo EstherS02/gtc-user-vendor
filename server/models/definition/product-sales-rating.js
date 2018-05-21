@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         product_name: {
             type: DataTypes.STRING(128),
             field: 'product_name',
-            allowNull: true
+            allowNull: false
+        },
+        product_slug: {
+            type: DataTypes.STRING(128),
+            field: 'product_slug',
+            allowNull: false
         },
         vendor_name: {
             type: DataTypes.STRING(64),

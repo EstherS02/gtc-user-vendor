@@ -57,7 +57,7 @@ export function findOneRow(modelName, queryObj) {
 			where: queryObj
 		}).then(function(row) {
 			if (row) {
-				resolve(row);
+				resolve(plainTextResponse(row));
 			} else {
 				resolve(null);
 			}
@@ -141,5 +141,12 @@ export function destroyRow(modelName, id) {
 		}).catch(function(error) {
 			reject(error);
 		});
+	});
+}
+
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
 	});
 }

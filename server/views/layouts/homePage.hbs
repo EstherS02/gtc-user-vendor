@@ -588,19 +588,19 @@
 <section class="box6" style="margin-bottom: 20px;">
     <div class="container clearfix">
         <div class="row">
-            {{!-- {{#each publicMarketplace}}
+            {{#each publicMarketplace}}
             <div class="col-md-4 common_top">
                 <div class="row">
                     <div class="col-md-3">
-                        <img src="{{url}}" style="width: 30px; height: 70px;">
+                        <img src="{{this.url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{Titlecase product_name}}</p>
+                                <p class="wts_header"><a href="/product/{{this.product_slug}}/{{this.id}}">{{Titlecase this.product_name}}</a></p>
                             </div>
                             <div class="col-md-4">
-                                <p class="doller_value">${{price}}</p>
+                                <p class="doller_value">${{this.price}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -608,7 +608,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{origin}}</p>
+                                <p>{{this.origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -619,7 +619,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{category}} > {{sub_category}}</p>
+                                <p>{{this.category}} > {{this.sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -634,13 +634,13 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                               <p>  {{ starCount rating}} </p> 
+                               <p>  {{starCount this.rating}} </p> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-             {{/each}} --}}
+             {{/each}}
 {{!-- 
              {{#each serviceMarketplace}}
             <div class="col-md-4 common_top">
@@ -697,7 +697,7 @@
              {{/each}} --}}
 
 
-             {{#each lifestyleMarketplace}}
+           {{!--   {{#each lifestyleMarketplace}}
             <div class="col-md-4 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -749,7 +749,7 @@
                     </div>
                 </div>
             </div>
-             {{/each}}
+             {{/each}} --}}
         </div>
 
 
@@ -892,7 +892,7 @@
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
-                                <p class="wts_header">{{Titlecase product_name}}</p>
+                                <p class="wts_header"><a href="">{{Titlecase product_name}}</a></p>
                             </div>
                             <div class="col-md-4">
                                 <p>{{price}}</p>
