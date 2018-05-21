@@ -87,6 +87,7 @@ export function create(req, res) {
 	if (req.body.email) {
 		queryObj['email'] = req.body.email;
 	}
+	queryObj['provider'] = req.body.provider;
 
 	model['User'].findOne({
 		where: queryObj
