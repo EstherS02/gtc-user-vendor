@@ -53,8 +53,9 @@ export function findRow(modelName, id) {
 
 export function findOneRow(modelName, queryObj) {
 	return new Promise((resolve, reject) => {
-		model[modelName].findfindOne({
-			where: queryObj
+		model[modelName].findOne({
+			where: queryObj,
+			raw: true
 		}).then(function(row) {
 			if (row) {
 				resolve(row);
