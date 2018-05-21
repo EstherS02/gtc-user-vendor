@@ -30,7 +30,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 		where: {
 			email: email,
 			status: status["ACTIVE"]
-		}
+		},
+		raw: true
 	}).then(function(user) {
 		if (!user) {
 			return done(null, false);
@@ -38,11 +39,13 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 		if (!uservalidate.authenticate(password, user)) {
 			return done(null, false);
 		}
+
 		var tokenPayload = {
 			userId: user.id,
 			email: user.email,
 			client: client
 		};
+
 		var accessToken = jwt.sign(tokenPayload, config.secrets.accessToken, {
 			expiresIn: config.token.expiresInMinutes * 60
 		});
@@ -51,7 +54,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 			where: {
 				user_id: user.id,
 				client_id: client.id
-			}
+			},
+			raw: true
 		}).then(function(token) {
 			if (token) {
 				return done(null, accessToken, token.refresh_token, {
@@ -75,7 +79,8 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 				model['UserToken'].update(token, {
 					where: {
 						user_id: user.id,
-						client_id: client.id
+						client_id: client.id,
+						status: status["ACTIVE"]
 					},
 					returning: true
 				}).then(function(row) {
@@ -91,26 +96,22 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
 								});
 							}
 						}).catch(function(error) {
-							if (error) {
-								return done(error);
-							}
+							console.log("Error:::", error);
+							return done(error);
 						});
 					}
 				}).catch(function(error) {
-					if (error) {
-						return done(error);
-					}
-				});
+					console.log("Error:::", error);
+					return done(error);
+				})
 			}
 		}).catch(function(error) {
-			if (error) {
-				return done(error);
-			}
+			console.log("Error:::", error);
+			return done(error);
 		});
 	}).catch(function(error) {
-		if (error) {
-			return done(error);
-		}
+		console.log("Error:::", error);
+		return done(error);
 	});
 }));
 
@@ -149,13 +150,12 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 					config.secrets.accessToken, {
 						expiresIn: config.token.expiresInMinutes * 60
 					});
-
 				var token = {
 					client_id: client.id,
 					user_id: user.id,
 					status: status["ACTIVE"],
 					refresh_token: refreshToken
-				};
+				}
 
 				model['UserToken'].findOne({
 					where: {
@@ -188,13 +188,10 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
 				});
 			}
 		}).catch(function(error) {
-			if (error) {
-				return done(error);
-			}
+			return done(error);
 		});
 	});
 }));
-
 /**
  * Token endpoint
  * 
