@@ -19,28 +19,18 @@
 							{{#each Announcements}}
 								<tr>
 									<td><input type="checkbox"></td>
-									{{#if status }}
-									<td><i class="fas fa-check-circle text_green_color"></i>{{status}}</td>
-									{{/if}}
-									<td>{{notification}}</td>
+									{{#equal status "7" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color"></i>New Order</td>
+									{{/equal}}
+									{{#equal status "8" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Cancelled Order</td>
+									{{/equal}}
+									{{#equal status "9" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Failed Order</td>
+									{{/equal}}
+									<td>{{this.notification}}</td>
 								</tr>
 							{{/each}}
-								{{!-- <tr>
-									<td><input type="checkbox"></td>
-									<td><i class="fas fa-check-circle text_green_color"></i> New Order</td>
-									<td>Email is sent when a new order is received</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td><i class="fas fa-check-circle text_green_color"></i> Cancelled Order</td>
-									<td>Email is sent when a customer cance is their order</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td><i class="fas fa-check-circle text_green_color"></i> Failed Order</td>
-									<td>Email is sent when an order fails to change the customers selected payment method</td>
-								</tr> --}}
-								
 							</tbody>
 						</table>
 					</div>
