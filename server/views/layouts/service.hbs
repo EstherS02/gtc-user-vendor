@@ -48,13 +48,13 @@
                         <p class="hash_num">#1</p>
                     </div>
                     <div class="col-md-3">
-                        <img src="{{cover_pic_url}}" style="width: 30px; height: 70px;">
+                        <img src="{{this.cover_pic_url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-7">
                         <div class="row common_padding">
                             <div class="col-md-12">
                                 <p class="wts_header">
-                                    <a href="#">{{Titlecase vendor_name}} </a>
+                                    <a href="#">{{Titlecase this.vendor_name}} </a>
                                 </p>
                             </div>
 
@@ -64,7 +64,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-7">
-                                <p>{{origin}}</p>
+                                <p>{{this.origin}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-7">
                                 <p>
-                                    <b>{{vendor_product_count}} Products</b> Listed
+                                    <b>{{this.vendor_product_count}} Products</b> Listed
                                     <span class="wts_header_red">6 on Sale</span>
                                 </p>
                             </div>
@@ -105,17 +105,17 @@
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
-                        <img src="{{url}}" style="width: 30px; height: 70px;">
+                        <img src="{{this.url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
                                 <p class="wts_header">
-                                    <a href="#">{{ Titlecase product_name}}</a>
+                                    <a href="#">{{ Titlecase this.product_name}}</a>
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p>$ {{price}}</p>
+                                <p>$ {{this.price}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -123,7 +123,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{origin}}</p>
+                                <p>{{this.origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -134,7 +134,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{category}} > {{sub_category}}</p>
+                                <p>{{this.category}} > {{this.sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -149,7 +149,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                               <p>  {{ starCount rating}} </p> 
+                               <p>  {{ starCount this.rating}} </p> 
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
     <div class="container clearfix">
         <div class="row">
             <div class="col-md-6 ">
-                <p class="see_all" style="margin: 10px;">Showing most recent 20 product of {{count}} products listed.</p>
+                <p class="see_all" style="margin: 10px;">Showing most recent 20 product of {{this.count}} products listed.</p>
             </div>
             <div class="col-md-6">
                 <p class="see_all float-right" style="margin: 10px;">
@@ -191,17 +191,17 @@
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
-                        <img src="{{url}}" style="width: 30px; height: 70px;">
+                        <img src="{{this.url}}" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-9">
                         <div class="row common_padding">
                             <div class="col-md-8">
                                 <p class="wts_header">
-                                    <a href="#">{{ Titlecase product_name }}</a>
+                                    <a href="#">{{ Titlecase this.product_name }}</a>
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p>${{price}}</p>
+                                <p>${{this.price}}</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -209,7 +209,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{origin}}</p>
+                                <p>{{this.origin}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>&nbsp;</p>
@@ -220,7 +220,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{category}} > {{sub_category}}</p>
+                                <p>{{this.category}} > {{this.sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -235,7 +235,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>  {{ starCount rating}} </p> 
+                                <p>  {{ starCount this.rating}} </p> 
                             </div>
                         </div>
                     </div>

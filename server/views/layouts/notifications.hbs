@@ -1,0 +1,52 @@
+{{> vendor/header}} 
+<section class="showing_categ">
+	<div class="" >
+		<div class="container">
+			<div class="row">
+				{{> vendor/navbar}} 
+				<div class="col-md-8" style="background-color: #fff;">
+					<h5 style="padding-top: 20px;">Notification Settings</h5>
+					<div class="row">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th><input type="checkbox"></th>
+									<th>Event</th>
+									<th>Description</th>
+								</tr>
+							</thead>
+							<tbody>
+							{{#each Announcements}}
+								<tr>
+									<td><input type="checkbox"></td>
+									{{#equal status "7" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color"></i>New Order</td>
+									{{/equal}}
+									{{#equal status "8" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Cancelled Order</td>
+									{{/equal}}
+									{{#equal status "9" operator="=="}}
+									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Failed Order</td>
+									{{/equal}}
+									<td>{{this.notification}}</td>
+								</tr>
+							{{/each}}
+							</tbody>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle"></p>
+						</div>
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle float-right"></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					
+				</div>				
+			</div>
+		</div>
+	</div>
+</section>

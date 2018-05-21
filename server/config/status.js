@@ -4,5 +4,11 @@ module.exports = {
 	"DELETED": 3,
 	"OPEN": 4,
 	"HOLD": 5,
-	"CLOSED": 6
+	"CLOSED": 6,
+	"NEWORDER":7,
+	"CANCELLEDORDER":8,
+	"FAILEDORDER":9,
+	"SUSPENDED":10,
+	"SOLD OUT":11
+
 };

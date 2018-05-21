@@ -24,7 +24,8 @@ export function findRows(modelName, queryObj, offset, limit, field, order) {
 			limit: limit,
 			order: [
 				[field, order]
-			]
+			],
+			raw: true
 		}).then(function(rows) {
 			resolve(rows);
 		}).catch(function(error) {
