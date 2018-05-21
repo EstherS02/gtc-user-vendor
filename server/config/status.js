@@ -5,6 +5,10 @@ module.exports = {
 	"OPEN": 4,
 	"HOLD": 5,
 	"CLOSED": 6,
-	"SUSPENDED":7,
-	"SOLD OUT":8
+	"NEWORDER":7,
+	"CANCELLEDORDER":8,
+	"FAILEDORDER":9,
+	"SUSPENDED":10,
+	"SOLD OUT":11
+
 };

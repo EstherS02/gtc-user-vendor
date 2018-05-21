@@ -38,6 +38,9 @@ export default function(app) {
   app.use('/cart', require('./hbs-routes/cart'));
   app.use('/service', require('./hbs-routes/service'));
   app.use('/vendor', require('./hbs-routes/vendor'));
+  app.use('/edit-listings', require('./hbs-routes/edit-listings'));
+  app.use('/reviews', require('./hbs-routes/reviews'));
+  app.use('/notifications', require('./hbs-routes/notifications'));
   app.use('/listings', require('./hbs-routes/listings'));
   app.use('/coupons', require('./hbs-routes/coupons'));
 
