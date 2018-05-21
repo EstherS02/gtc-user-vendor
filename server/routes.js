@@ -36,7 +36,8 @@ export default function(app) {
   app.use('/checkout', require('./hbs-routes/checkout'));
   app.use('/service', require('./hbs-routes/service'));
   app.use('/vendor', require('./hbs-routes/vendor'));
-  app.use('/edit-listings', require('./hbs-routes/edit-listings'));
+  app.use('/listings', require('./hbs-routes/listings'));
+  app.use('/coupons', require('./hbs-routes/coupons'));
 
 
   //All other routes 404 page

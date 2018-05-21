@@ -13,11 +13,13 @@ export function homePage(req, res) {
 
     var field = "id";
     var order = "asc";
+   
+   
 
     async.series({
         wantToSell: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace_type: 'Want To Sell' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1 ,marketplace_type: 'Want To Sell' }, 0, 5, field, order)
                 .then(function (wantToSell) {
                     return callback(null, wantToSell.rows);
 
@@ -28,7 +30,7 @@ export function homePage(req, res) {
         },
         wantToBuy: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace_type: 'Want To Buy' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Buy' }, 0, 5, field, order)
                 .then(function (wantToBuy) {
                     return callback(null, wantToBuy.rows);
 
@@ -39,7 +41,7 @@ export function homePage(req, res) {
         },
         wantToTrade: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace_type: 'Want To Trade' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Trade' }, 0, 5, field, order)
                 .then(function (wantToTrade) {
                     return callback(null, wantToTrade.rows);
 
@@ -50,7 +52,7 @@ export function homePage(req, res) {
         },
         requestForQuote: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace_type: 'Request For Quote' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Request For Quote' }, 0, 5, field, order)
                 .then(function (requestForQuote) {
                     return callback(null, requestForQuote.rows);
 
@@ -61,7 +63,7 @@ export function homePage(req, res) {
         },
         publicMarketplace: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace: 'Public Marketplace' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1,marketplace: 'Public Marketplace' }, 0, 5, field, order)
                 .then(function (publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
 
@@ -72,7 +74,7 @@ export function homePage(req, res) {
         },
         serviceMarketplace: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace: 'Service Marketplace' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1,marketplace: 'Service Marketplace' }, 0, 5, field, order)
                 .then(function (serviceMarketplace) {
                     return callback(null, serviceMarketplace.rows);
 
@@ -83,7 +85,7 @@ export function homePage(req, res) {
         },
         lifestyleMarketplace: function (callback) {
 
-            service.findRows('ProductSalesRating', { marketplace: 'Lifestyle Marketplace' }, 0, 5, field, order)
+            service.findRows('ProductSalesRating', { status:1, marketplace: 'Lifestyle Marketplace' }, 0, 5, field, order)
                 .then(function (lifestyleMarketplace) {
                     return callback(null, lifestyleMarketplace.rows);
 
@@ -94,7 +96,7 @@ export function homePage(req, res) {
         },
         featuredProducts: function (callback) {
 
-            service.findRows('FeaturedproductSalesRating', { }, 0, 5, field, order)
+            service.findRows('FeaturedproductSalesRating', { status:1 }, 0, 5, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
