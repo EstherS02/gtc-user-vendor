@@ -87,6 +87,7 @@ export function create(req, res) {
 	if (req.body.email) {
 		queryObj['email'] = req.body.email;
 	}
+	queryObj['provider'] = req.body.provider;
 
 	model['User'].findOne({
 		where: queryObj
@@ -124,6 +125,7 @@ export function create(req, res) {
 }
 
 export function me(req, res) {
+	console.log('req.user', req.user);
 	if (req.user) {
 		delete req.user.email_verified_token;
 		delete req.user.email_verified_token_generated;

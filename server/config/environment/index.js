@@ -50,6 +50,13 @@ var all = {
     refreshToken: process.env.REFRESH_TOKEN_SECRET
   },
 
+  googleLogin: {
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
+    googleAccessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
+    googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
+  },
+
   mysql: {
     host: process.env.MYSQL_HOST,
     database: process.env.MYSQL_DATABASE,

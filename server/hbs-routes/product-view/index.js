@@ -7,9 +7,9 @@ var permission = require('../../config/permission');
 
 
 /* Handlebars routes */
-var controller = require('./checkout.controller');
+var controller = require('./product-view.controller');
 
-router.get('/', controller.checkout);
+router.get('/:product_slug/:product_id', controller.productView);
 
 
 module.exports = router;

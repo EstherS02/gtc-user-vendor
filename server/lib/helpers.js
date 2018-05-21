@@ -31,6 +31,24 @@ Handlebars.registerHelper('Titlecase', function (str) {
 });
 
 
+Handlebars.registerHelper('DisplayJSON', function(context, options) {
+    if(!context)
+        return 'null';
+
+    return JSON.stringify(context);
+});
+
+Handlebars.registerHelper('toURL', function(text, options) {
+    if(!text)
+        return 'null';
+
+    return text.split(' ').join('-');
+});
+
+
+
+
+
 
 
 

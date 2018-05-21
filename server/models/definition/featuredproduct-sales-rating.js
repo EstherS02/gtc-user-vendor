@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             primaryKey: true
         },
+        product_id: {
+            type: DataTypes.BIGINT,
+            field: 'product_id',
+            allowNull: false
+        },
         product_name: {
             type: DataTypes.STRING(128),
             field: 'product_name',

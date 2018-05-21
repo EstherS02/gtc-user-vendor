@@ -5,7 +5,6 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-import series from 'async/series';
 var async = require('async');
 
 
@@ -106,7 +105,17 @@ export function homePage(req, res) {
 
     }, function (err, results) {
         if (!err) {
-            res.render('homePage', results);
+            res.render('homePage', {
+                title : "Global Trade Connect",
+                wantToSell : results.wantToSell,
+                wantToBuy : results.wantToBuy,
+                wantToTrade : results.wantToTrade,
+                requestForQuote : results.requestForQuote,
+                publicMarketplace : results.publicMarketplace,
+                serviceMarketplace : results.serviceMarketplace,
+                lifestyleMarketplace : results.lifestyleMarketplace,
+                featuredProducts : results.featuredProducts
+            });
         }
         else {
             res.render('homePage', err);
