@@ -20,14 +20,14 @@ export function addToCart(req, res){
 
 				if(parseInt(productResult.quantity_available) == 0){
 					
-					res.status(400).json({
+					return res.status(400).json({
 						message : "SOLD_OUT",
 						message_details : "OOPS ! This product sold out, seller has no more left"
 					});
 
 				} else if(order_qty > productResult.quantity_available){
 					
-					res.status(400).json({
+					return res.status(400).json({
 						message : "EXCEEDING_AVAILABLITY",
 						message_details : "This seller have only " + productResult.quantity_available + "Items of this product",
 						available_state: productResult.quantity_available				 
@@ -38,7 +38,7 @@ export function addToCart(req, res){
 					cartSearchObj['user_id'] = user_id;
 					cartSearchObj['product_id'] = productResult.id;
 
-					model["Cart"].findOne({
+					return model["Cart"].findOne({
 							where: cartSearchObj
 						}).then(function(cartResult) {
 							if (cartResult) {
@@ -47,10 +47,17 @@ export function addToCart(req, res){
 								var checkCartUpdateQuantity = productResult.quantity_available - cartResult.quantity;
 
 								if(order_qty > checkCartUpdateQuantity){
+
+									var responseMessage;
 									
-									res.status(400).json({
+									if(parseInt(checkCartUpdateQuantity) == 0)
+										responseMessage = "Already you have " + cartResult.quantity + " Quantities of this Product in your cart, This seller has no remaining product";
+									else
+										responseMessage = "Already you have " + cartResult.quantity + " Quantities of this Product in your cart, This seller only have " + checkCartUpdateQuantity + " Remaining";
+									
+									return res.status(400).json({
 										message : "EXCEEDING_AVAILABLITY",
-										message_details : "Already you have " + cartResult.quantity + " Quantities of this Product in your cart, This seller only have " + checkCartUpdateQuantity + " Remaining",
+										message_details : responseMessage,
 										available_state: checkCartUpdateQuantity
 									});
 
@@ -60,13 +67,13 @@ export function addToCart(req, res){
 									cartUpdateObj['last_updated_by'] = "devan user";
 									cartUpdateObj['last_updated_on'] = new Date();
 
-									model["Cart"].update(cartUpdateObj, {
+									return model["Cart"].update(cartUpdateObj, {
 										where: {
 											id: cartResult.id
 										}
 									}).then(function(updatedCartResult) {
 										if (updatedCartResult) {
-											res.status(200).json({
+											return res.status(200).json({
 												message : "SUCCESS",
 												message_details : "Product already in cart, Product quantity updated to " + cartUpdateObj['quantity']
 											});
@@ -98,7 +105,7 @@ export function addToCart(req, res){
 								model["Cart"].create(createCartObj)
 								.then(function(createdCartResult) {
 									if (createdCartResult) {
-										res.status(200).json({
+										return res.status(200).json({
 											message : "SUCCESS",
 											message_details : "Product successfully added to cart"
 										});
