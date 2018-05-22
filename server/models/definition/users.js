@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'salt',
             allowNull: true
         },
+        fb_id: {
+            type: DataTypes.STRING(32),
+            field: 'fb_id',
+            allowNull: true
+        },
         google_id: {
             type: DataTypes.STRING(32),
             field: 'google_id',
@@ -57,6 +62,11 @@ module.exports = (sequelize, DataTypes) => {
         linkedin_id: {
             type: DataTypes.STRING(32),
             field: 'linkedin_id',
+            allowNull: true
+        },
+        twitter_id: {
+            type: DataTypes.STRING(32),
+            field: 'twitter_id',
             allowNull: true
         },
         email_verified: {

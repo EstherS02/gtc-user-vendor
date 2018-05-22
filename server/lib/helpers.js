@@ -45,9 +45,29 @@ Handlebars.registerHelper('toURL', function (text, options) {
     return text.split(' ').join('-');
 });
 
-// Handlebars.registerHelper("prettifyDate", function(timestamp) {
-//     return new Date(timestamp).toDateString();
-// });
+Handlebars.registerHelper('equal', function(lvalue, rvalue, options) {
+    if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    var operators = {
+        '==':       function(l,r) { return l == r; },
+        '===':      function(l,r) { return l === r; },
+        '!=':       function(l,r) { return l != r; },
+        '<':        function(l,r) { return l < r; },
+        '>':        function(l,r) { return l > r; },
+        '<=':       function(l,r) { return l <= r; },
+        '>=':       function(l,r) { return l >= r; },
+        'typeof':   function(l,r) { return typeof l == r; }
+    }
+    var operator = options.hash.operator;
+    var result = operators[operator](lvalue,rvalue);
+
+    if( result ) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+
+});
 
 Handlebars.registerHelper("prettifyDate", function (timestamp) {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",

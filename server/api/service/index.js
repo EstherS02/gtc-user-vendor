@@ -58,7 +58,7 @@ export function findOneRow(modelName, queryObj) {
 			where: queryObj
 		}).then(function(row) {
 			if (row) {
-				resolve(plainTextResponse(row));
+				resolve(row);
 			} else {
 				resolve(null);
 			}
