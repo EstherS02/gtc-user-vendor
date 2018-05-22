@@ -19,15 +19,13 @@
 							{{#each Announcements}}
 								<tr>
 									<td><input type="checkbox"></td>
-									{{#equal status "7" operator="=="}}
+									{{#ifCond this.status "==" ../statusCode.NEWORDER}}
 									<td><i class="fas fa-check-circle text_green_color"></i>New Order</td>
-									{{/equal}}
-									{{#equal status "8" operator="=="}}
+									{{else ifCond this.status "==" ../statusCode.CANCELLEDORDER}}
 									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Cancelled Order</td>
-									{{/equal}}
-									{{#equal status "9" operator="=="}}
+									{{else ifCond this.status "==" ../statusCode.FAILEDORDER}}
 									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Failed Order</td>
-									{{/equal}}
+									{{/ifCond}}
 									<td>{{this.notification}}</td>
 								</tr>
 							{{/each}}

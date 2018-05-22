@@ -9,6 +9,8 @@ const service = require('../../api/service');
 
 export function productView(req, res) {
 
+    console.log(req['headers'])
+
     let searchObj = {}
 
     if(req.params.product_id)
@@ -21,11 +23,17 @@ export function productView(req, res) {
         .then(function (productDetails) {
             res.render('productView', {
                 title: 'Global Trade Connect',
-                productDetails : productDetails 
+                productDetails : plainTextResponse(productDetails)
             });
         }).catch(function (error) {
             console.log('Error :::', error);
             res.render('productView', error)
         });
 
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }

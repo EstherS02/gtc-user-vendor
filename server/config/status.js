@@ -9,6 +9,6 @@ module.exports = {
 	"CANCELLEDORDER":8,
 	"FAILEDORDER":9,
 	"SUSPENDED":10,
-	"SOLD OUT":11
+	"SOLDOUT":11
 
 };

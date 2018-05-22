@@ -5,59 +5,65 @@ const model = require('../../sqldb/model-connect');
 const service = require('../service');
 
 export function addToCart(req, res){
-    res.status(500).send(error);
 
-}
+	console.log(req.body);
+	let product_id = parseInt(req.params.id);
+	let order_qty = parseInt(req.body.product_quantity);
+	let user_id = 63; //hardcoded devan_user
 
-export function featureMany(req, res) {
-	const ids = req.body.ids;
-	console.log("requestedIds", ids.length);
-	var arr = [];
+	if(order_qty > 0){
+		model["Product"].findById(product_id)
+		.then(function(productResult) {
+			if (productResult) {
+				productResult = plainTextResponse(productResult);
 
-	for (var i = 0; i <= ids.length - 1; i++) {
-		var obj = {};
-		obj['product_id'] = ids[i];
-		obj['status'] = 1;
-		obj['start_date'] = new Date();
-		obj['created_on'] = new Date();
-		arr.push(obj);
-	}
+				if(order_qty > productResult.quantity_available){
+					res.send("You are ordering more");
+				}else{
+					var cartSearchObj = {}
+					cartSearchObj['user_id'] = user_id;
+					cartSearchObj['product_id'] = 16 //productResult.id;
 
-	model["FeaturedProduct"].bulkCreate(arr, {
-			ignoreDuplicates: true
-		})
-		.then(function(row) {
-			res.status(201).send("Created");
-			return;
-		}).catch(function(error) {
-			if (error) {
-				res.status(500).send(error);
-				return;
-			}
-		});
-}
+					console.log(cartSearchObj)
 
-export function featureOne(req, res) {
-	model["Product"].findById(req.params.id)
-		.then(function(row) {
-			if (row) {
-				var obj = {};
-				obj['product_id'] = row.id;
-				obj['status'] = 1;
-				obj['start_date'] = new Date();
-				obj['created_on'] = new Date();
+					model["Cart"].findOne({
+							where: cartSearchObj
+						}).then(function(cartResult) {
+							if (cartResult) {
+								//Item already in cart?
+								cartResult = plainTextResponse(cartResult);
+								console.log(cartResult);
 
-				model["FeaturedProduct"].upsert(obj)
-					.then(function(row) {
-						res.status(201).send("Created");
+								var cartUpdateObj = {};
+								cartUpdateObj['quantity'] = cartResult.quantity + order_qty;
+
+								model["Cart"].update(cartUpdateObj, {
+									where: {
+										id: cartResult.id
+									}
+								}).then(function(updatedCartResult) {
+									if (updatedCartResult) {
+										console.log("successfully updated", updatedCartResult)
+									} else {
+										console.log("unable to add to the cart")
+									}
+								}).catch(function(error) {
+									console.log('Error:::', error);
+									return res.status(500).send("Internal server error");
+								})
+								
+							} else {
+								console.log("New Item to cart")
+								
+							}
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						res.status(500).send("Internal server error");
 						return;
 					})
-					.catch(function(error) {
-						if (error) {
-							res.status(500).send(error);
-							return;
-						}
-					});
+					
+				}
+
 			} else {
 				res.status(404).send("Not found");
 				return;
@@ -67,4 +73,15 @@ export function featureOne(req, res) {
 			res.status(500).send("Internal server error");
 			return;
 		})
+	}else{
+		res.status(500).send("Please Enter the Quantity you want");
+	}
+
+}
+
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }

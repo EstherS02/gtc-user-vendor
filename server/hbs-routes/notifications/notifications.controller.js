@@ -3,9 +3,8 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
-const status = require('../../config/status');
+const statusCode = require('../../config/status');
 const service = require('../../api/service');
-import series from 'async/series';
 var async = require('async');
 
 
@@ -43,7 +42,7 @@ export function notifications(req, res) {
 		where: 29
 	}).then(function(row) {
 		if (row.marketplace_id) {
-			console.log(row);
+
 			if (row.marketplace_id == 1) {
 				var obj = {
 					visible_to_wholesaler: 1
@@ -70,7 +69,9 @@ export function notifications(req, res) {
 			}).then(function(results) {
 				if (results) {
 					res.render('notifications', {
-						Announcements: results.rows
+						title : 'Global Trade Connect',
+						Announcements: results.rows,
+						statusCode: statusCode
 					});
 					return;
 				} else {
