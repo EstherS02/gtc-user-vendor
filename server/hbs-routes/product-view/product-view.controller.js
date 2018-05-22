@@ -21,11 +21,17 @@ export function productView(req, res) {
         .then(function (productDetails) {
             res.render('productView', {
                 title: 'Global Trade Connect',
-                productDetails : productDetails 
+                productDetails : plainTextResponse(productDetails)
             });
         }).catch(function (error) {
             console.log('Error :::', error);
             res.render('productView', error)
         });
 
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }

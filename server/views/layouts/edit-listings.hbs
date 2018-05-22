@@ -114,13 +114,13 @@
 									<td>{{ prettifyDate this.publish_date }}</td>
 									<td class="text_blue_color">{{this.sales_count}}</td>
 									<td>${{this.price}} CAD</td>
-									{{#ifCond this.status 1}}
+									{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 									<td class="text_green_color">Active</td>
-									{{else ifCond this.status 2}}
+									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 									<td class="text_green_color">InActive</td>
-									{{else ifCond this.status 10}}
+									{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
 									<td class="text_green_color">Suspended</td>
-									{{else ifCond this.status 11}}
+									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
 									<td class="text_green_color">Sold Out</td>
 									{{/ifCond}}
 									<td class="text_blue_color">{{this.sku}}</td>

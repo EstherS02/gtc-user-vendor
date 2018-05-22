@@ -45,30 +45,6 @@ Handlebars.registerHelper('toURL', function (text, options) {
     return text.split(' ').join('-');
 });
 
-Handlebars.registerHelper('equal', function(lvalue, rvalue, options) {
-    if (arguments.length < 3)
-        throw new Error("Handlebars Helper equal needs 2 parameters");
-    var operators = {
-        '==':       function(l,r) { return l == r; },
-        '===':      function(l,r) { return l === r; },
-        '!=':       function(l,r) { return l != r; },
-        '<':        function(l,r) { return l < r; },
-        '>':        function(l,r) { return l > r; },
-        '<=':       function(l,r) { return l <= r; },
-        '>=':       function(l,r) { return l >= r; },
-        'typeof':   function(l,r) { return typeof l == r; }
-    }
-    var operator = options.hash.operator;
-    var result = operators[operator](lvalue,rvalue);
-
-    if( result ) {
-        return options.fn(this);
-    } else {
-        return options.inverse(this);
-    }
-
-});
-
 Handlebars.registerHelper("prettifyDate", function (timestamp) {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -80,11 +56,30 @@ Handlebars.registerHelper("prettifyDate", function (timestamp) {
     return curr_month + ' ' + curr_date + ', ' + curr_year;
 });
 
-Handlebars.registerHelper('ifCond', function (v1, v2, options) {
-    if (v1 === v2) {
-        return options.fn(this);
+Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+    switch (operator) {
+        case '!=':
+            return (v1 != v2) ? options.fn(this) : options.inverse(this);
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
     }
-    return options.inverse(this);
 });
 
 
