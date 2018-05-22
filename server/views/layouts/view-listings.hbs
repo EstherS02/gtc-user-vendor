@@ -1,47 +1,42 @@
-
 <script>
 	function selectAll(ele) {
-     var checkboxes = document.getElementsByTagName('input');
-     if (ele.checked) {
-         for (var i = 0; i < checkboxes.length; i++) {
-             if (checkboxes[i].type == 'checkbox') {
-                 checkboxes[i].checked = true;
-             }
-         }
-     } else {
-         for (var i = 0; i < checkboxes.length; i++) {
-             console.log(i)
-             if (checkboxes[i].type == 'checkbox') {
-                 checkboxes[i].checked = false;
-             }
-         }
-     }
- }
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				console.log(i)
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
 </script>
 <script type="text/javascript">
-   
-        function changeStatus(e) {
-                var queryParam = {};
-                queryParam.status =e.value;
-				queryParam.vendor_name = 'devan vendor';
-                
-                $.ajax({
-                    type: 'GET',
-                    url: '/api/product-sales-rating',
-                    data: queryParam,
-                    success: function (data, text) {
-                        console.log('data', data, text);
-						
-                    },
-                    error: function (request, status, error) {
-                        console.log('request', request.responseText);
-                    }
-                });
-            }
-        
-   
-</script>
 
+	function changeStatus(e) {
+		var queryParam = {};
+		queryParam.status = e.value;
+		queryParam.vendor_name = 'devan vendor';
+
+		$.ajax({
+			type: 'GET',
+			url: '/api/product-sales-rating',
+			data: queryParam,
+			success: function (data, text) {
+				console.log(data.rows);
+			},
+			error: function (request, status, error) {
+				console.log('request', request.responseText);
+			}
+		});
+	}
+</script> 	
 {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
@@ -58,7 +53,7 @@
 						</div>
 						<div class="col-md-2 common_padding1">
 							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
-								<option disabled selected >CHANGE STATUS</option>
+								<option disabled selected>CHANGE STATUS</option>
 								<option value="1">Active</option>
 								<option value="2">InActive</option>
 								<option value="10">Suspended</option>
@@ -114,13 +109,13 @@
 									<td>{{ prettifyDate this.publish_date }}</td>
 									<td class="text_blue_color">{{this.sales_count}}</td>
 									<td>${{this.price}} CAD</td>
-									{{#ifCond this.status 1}}
+									{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 									<td class="text_green_color">Active</td>
-									{{else ifCond this.status 2}}
+									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 									<td class="text_green_color">InActive</td>
-									{{else ifCond this.status 10}}
+									{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
 									<td class="text_green_color">Suspended</td>
-									{{else ifCond this.status 11}}
+									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
 									<td class="text_green_color">Sold Out</td>
 									{{/ifCond}}
 									<td class="text_blue_color">{{this.sku}}</td>

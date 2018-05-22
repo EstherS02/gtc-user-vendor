@@ -6,7 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
-import series from 'async/series';
+
 
 
 export function listings(req, res) {
@@ -36,29 +36,15 @@ export function listings(req, res) {
 		},
     }, function (err, results) {
 		if (!err) {
-			res.render('edit-listings', results);
+			res.render('view-listings', {
+				title : "Global Trade Connect",
+				products: results.products,
+				statusCode: status
+			});
 		}
 		else {
-			res.render('edit-listings', err);
+			res.render('view-listings', err);
 		}
 	});
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// res.render('edit-listings', {
-    //     title: 'Global Trade Connect'
-    // });
-
