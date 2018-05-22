@@ -5,11 +5,12 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-var async = require('async');
 
+const async = require('async');
+import series from 'async/series';
 
-export function homePage(req, res) {
-
+export function wholesale(req, res) {
+    
     var field = "id";
     var order = "asc";
    
@@ -58,42 +59,9 @@ export function homePage(req, res) {
                     return callback(null);
                 });
         },
-        publicMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1,marketplace: 'Public Marketplace' }, 0, 5, field, order)
-                .then(function (publicMarketplace) {
-                    return callback(null, publicMarketplace.rows);
-
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        serviceMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1,marketplace: 'Service Marketplace' }, 0, 5, field, order)
-                .then(function (serviceMarketplace) {
-                    return callback(null, serviceMarketplace.rows);
-
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        lifestyleMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace: 'Lifestyle Marketplace' }, 0, 5, field, order)
-                .then(function (lifestyleMarketplace) {
-                    return callback(null, lifestyleMarketplace.rows);
-
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
         featuredProducts: function (callback) {
 
-            service.findRows('FeaturedproductSalesRating', { status:1 }, 0, 5, field, order)
+            service.findRows('FeaturedproductSalesRating', { status:1,marketplace: 'Private Wholesale Marketplace' }, 0, 5, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -105,20 +73,17 @@ export function homePage(req, res) {
 
     }, function (err, results) {
         if (!err) {
-            res.render('homePage', {
+            res.render('wholesale', {
                 title : "Global Trade Connect",
                 wantToSell : results.wantToSell,
                 wantToBuy : results.wantToBuy,
                 wantToTrade : results.wantToTrade,
                 requestForQuote : results.requestForQuote,
-                publicMarketplace : results.publicMarketplace,
-                serviceMarketplace : results.serviceMarketplace,
-                lifestyleMarketplace : results.lifestyleMarketplace,
                 featuredProducts : results.featuredProducts
             });
         }
         else {
-            res.render('homePage', err);
+            res.render('wholesale', err);
         }
     });
 
