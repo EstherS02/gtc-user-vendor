@@ -13,8 +13,6 @@ export function homePage(req, res) {
     var field = "id";
     var order = "asc";
    
-   
-
     async.series({
         wantToSell: function (callback) {
 
