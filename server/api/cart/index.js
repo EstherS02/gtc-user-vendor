@@ -8,6 +8,6 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.post('/add-cart', controller.addToCart);
+router.post('/add-cart/:id', controller.addToCart);
 
 module.exports = router;
