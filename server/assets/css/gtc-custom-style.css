@@ -524,3 +524,15 @@ h5 {
     padding: 3px 8px;
     text-shadow: none;
 }
+
+.banner-signup {
+  background: url(../signup-hero-home.jpg);
+  position: relative;
+  min-height: 360px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.wrapper-content {
+  padding: 10px 10px 10px;
+}
