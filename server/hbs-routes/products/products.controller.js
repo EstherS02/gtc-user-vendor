@@ -7,7 +7,7 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
 
-export function directory(req, res) {
+export function products(req, res) {
     var categoryModel = "Category";
 	var subcategoryModel = "SubCategory";
 	var offset, limit, field, order;
@@ -44,14 +44,14 @@ export function directory(req, res) {
         }
     }, function (err, results) {
         if (!err) {
-             res.render('directory', {
+             res.render('products', {
 				title: "Global Trade Connect",
 				category: results.category,
 				subCategory: results.subCategory
 			});
         }
         else {
-            res.render('directory', err);
+            res.render('products', err);
         }
     });
 }

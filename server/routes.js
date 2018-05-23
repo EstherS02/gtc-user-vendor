@@ -41,6 +41,7 @@ export default function(app) {
   app.use('/shop', require('./hbs-routes/shop'));
   app.use('/services', require('./hbs-routes/services'));
   app.use('/lifestyle', require('./hbs-routes/lifestyle'));
+  app.use('/products', require('./hbs-routes/products'));
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/reviews', require('./hbs-routes/reviews'));
   app.use('/notifications', require('./hbs-routes/notifications'));
