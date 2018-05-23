@@ -5,30 +5,26 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-
 const async = require('async');
-import series from 'async/series';
 
-export function Service(req, res) {
 
-	var field = "id";
-	var order = "desc";
+export function services(req, res) {
+	var productModel = "ProductSalesRating";
+	var featuredProductModel = "FeaturedproductSalesRating";
+	var offset, limit, field, order;
+	var queryObj = {};
+
+	offset = 0;
+	limit = 5;
+	field = "id";
+	order = "asc";
+
+	queryObj['status'] = status["ACTIVE"];
+	queryObj['marketplace'] = 'Services Marketplace';
 
 	async.series({
-		vendors: function (callback) {
-
-			service.findRows('VendorSales', { status:1 }, 0, 4, field, order)
-				.then(function (vendors) {
-					return callback(null, vendors.rows);
-
-				}).catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
 		featuredService: function (callback) {
-
-			service.findRows('FeaturedproductSalesRating', { status:1, marketplace: 'Service Marketplace' }, 0, 4, field, order)
+			service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
 				.then(function (featuredService) {
 					return callback(null, featuredService.rows);
 
@@ -38,8 +34,7 @@ export function Service(req, res) {
 				});
 		},
 		serviceProduct: function (callback) {
-
-			service.findRows('ProductSalesRating', { status:1, marketplace: 'Service Marketplace' }, 0, 20, field, order)
+			service.findRows(productModel, queryObj, offset, 20, field, order)
 				.then(function (serviceProduct) {
 					return callback(null, serviceProduct.rows);
 
@@ -48,13 +43,16 @@ export function Service(req, res) {
 					return callback(null);
 				});
 		}
-
 	}, function (err, results) {
 		if (!err) {
-			res.render('service', results);
+			res.render('services', {
+				title: "Global Trade Connect",
+				featuredService: results.featuredService,
+				serviceProduct: results.serviceProduct
+			});
 		}
 		else {
-			res.render('service', err);
+			res.render('services', err);
 		}
 	});
 

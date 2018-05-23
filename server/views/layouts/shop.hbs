@@ -1,4 +1,4 @@
-<section class="services_banner" style="margin-bottom: 0">
+<section class="shop_banner" style="margin-bottom: 0">
     <div class="container clearfix">
         <div class="row">
             <div class="col-md-6 lstb1">
@@ -22,14 +22,14 @@
     <div class="container clearfix">
         <div class="row">
             <div class="col-md-6 ts1">
-                <h6 class="float-left">TOP SELLING SERVICE PROVIDERS</h6>
+                <h6 class="float-left">TOP SELLERS</h6>
                 <p class="float-right see_all">
                     <a href="#">SEE ALL</a>
                     <i class="fa fa-caret-right"></i>
                 </p>
             </div>
             <div class="col-md-6 ts2">
-                <h6 class="float-left">FEATURED SERVICES</h6>
+                <h6 class="float-left">FEATURED PRODUCTS</h6>
                 <p class="float-right see_all">
                     <a href="#">SEE ALL</a>
                     <i class="fa fa-caret-right"></i>
@@ -41,20 +41,20 @@
 <section class="box4" style="margin-bottom:30px">
     <div class="container clearfix">
         <div class="row">
-            {{!-- {{#each vendors}}
+            {{!--
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-2">
                         <p class="hash_num">#1</p>
                     </div>
                     <div class="col-md-3">
-                        <img src="{{this.cover_pic_url}}" style="width: 30px; height: 70px;">
+                        <img src="../img/iphone.png" style="width: 30px; height: 70px;">
                     </div>
                     <div class="col-md-7">
                         <div class="row common_padding">
                             <div class="col-md-12">
                                 <p class="wts_header">
-                                    <a href="#">{{Titlecase this.vendor_name}} </a>
+                                    <a href="#">Greate Earth Expeditions</a>
                                 </p>
                             </div>
 
@@ -64,7 +64,7 @@
                                 <p>Origin</p>
                             </div>
                             <div class="col-md-7">
-                                <p>{{this.origin}}</p>
+                                <p>Canada</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-7">
                                 <p>
-                                    <b>{{this.vendor_product_count}} Products</b> Listed
+                                    <b>83749 Products</b> Listed
                                     <span class="wts_header_red">6 on Sale</span>
                                 </p>
                             </div>
@@ -92,16 +92,17 @@
                                 <p>Seller Rating</p>
                             </div>
                             <div class="col-md-7">
-                                <p>  {{ starCount 3}} </p> 
+                                <p>
+                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {{/each}} --}}
-
-            {{#each featuredService}}
-
+            </div> --}} {{#each featuredProducts}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -134,7 +135,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{this.category}} > {{this.sub_category}}</p>
+                                <p>{{this.category}} - {{this.sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -149,22 +150,22 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                               <p>  {{ starCount this.rating}} </p> 
+                                <p> {{ starCount this.rating}} </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-             {{/each}}
+            {{/each}}
         </div>
- </div>
+    </div>
 </section>
 <section class="box5" style="margin-bottom:0">
     <div class="container clearfix">
         <div class="row">
 
-            <div class="col-md-12 pmp2">
-                <h6 class="float-left">SERVICES MARKETPLACE</h6>
+            <div class="col-md-12 pmp1">
+                <h6 class="float-left">PUBLIC MARKETPLACE</h6>
                 <p class="float-right see_all">
                     <a href="#">SEE ALL</a>
                     <i class="fa fa-caret-right"></i>
@@ -177,7 +178,7 @@
     <div class="container clearfix">
         <div class="row">
             <div class="col-md-6 ">
-                <p class="see_all" style="margin: 10px;">Showing most recent 20 product of {{this.count}} products listed.</p>
+                <p class="see_all" style="margin: 10px;">Showing most recent 20 product of 60,000 products listed.</p>
             </div>
             <div class="col-md-6">
                 <p class="see_all float-right" style="margin: 10px;">
@@ -187,7 +188,7 @@
             </div>
         </div>
         <div class="row">
-            {{#each serviceProduct}}
+            {{#each publicMarketplace}}
             <div class="col-md-3 common_top">
                 <div class="row">
                     <div class="col-md-3">
@@ -201,7 +202,7 @@
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <p>${{this.price}}</p>
+                                <p>MOQ: 40</p>
                             </div>
                         </div>
                         <div class="row common_padding">
@@ -220,7 +221,7 @@
                                 <p>Category</p>
                             </div>
                             <div class="col-md-5">
-                                <p>{{this.category}} > {{this.sub_category}}</p>
+                                <p>{{this.category}} - {{this.sub_category}}</p>
                             </div>
                             <div class="col-md-4">
                                 <p>Seller Rating</p>
@@ -235,7 +236,7 @@
                                     <b>Login for Seller Info</b>)</p>
                             </div>
                             <div class="col-md-4">
-                                <p>  {{ starCount this.rating}} </p> 
+                                <p> {{ starCount this.rating}} </p>
                             </div>
                         </div>
                     </div>

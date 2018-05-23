@@ -36,7 +36,12 @@ export default function(app) {
   app.use('/', require('./hbs-routes/homePage'));
   app.use('/product', require('./hbs-routes/product-view'));
   app.use('/cart', require('./hbs-routes/cart'));
-  app.use('/service', require('./hbs-routes/service'));
+  app.use('/directory', require('./hbs-routes/directory'));
+  app.use('/wholesale', require('./hbs-routes/wholesale'));
+  app.use('/shop', require('./hbs-routes/shop'));
+  app.use('/services', require('./hbs-routes/services'));
+  app.use('/lifestyle', require('./hbs-routes/lifestyle'));
+  app.use('/products', require('./hbs-routes/products'));
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/reviews', require('./hbs-routes/reviews'));
   app.use('/notifications', require('./hbs-routes/notifications'));
@@ -51,8 +56,6 @@ export default function(app) {
         layout: false
       });
   });
-
-
 
 
 /*   // All undefined asset or api routes should return a 404

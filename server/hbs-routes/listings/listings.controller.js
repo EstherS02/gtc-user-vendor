@@ -36,14 +36,14 @@ export function listings(req, res) {
 		},
     }, function (err, results) {
 		if (!err) {
-			res.render('edit-listings', {
+			res.render('view-listings', {
 				title : "Global Trade Connect",
 				products: results.products,
 				statusCode: status
 			});
 		}
 		else {
-			res.render('edit-listings', err);
+			res.render('view-listings', err);
 		}
 	});
 

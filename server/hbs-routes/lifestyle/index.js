@@ -7,9 +7,9 @@ var permission = require('../../config/permission');
 
 
 /* Handlebars routes */
-var controller = require('./service.controller');
+var controller = require('./lifestyle.controller');
 
-router.get('/', controller.Service);
+router.get('/', controller.lifestyle);
 
 
 module.exports = router;
