@@ -12,6 +12,4 @@ var controller = require('./notifications.controller');
 router.get('/', controller.notifications);
 // var router = express.Router();
 
-router.get('/vendor-user-product', controller.notifications);
-
 module.exports = router;

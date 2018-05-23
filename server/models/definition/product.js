@@ -191,7 +191,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const ProductAdsSetting = model.ProductAdsSetting;
     const ProductAttribute = model.ProductAttribute;
-    const ProductReview = model.ProductReview;
+    const Review = model.Review;
     const Subscription = model.Subscription;
     const WishList = model.WishList;
     const Vendor = model.Vendor;
@@ -261,7 +261,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Product.hasMany(ProductReview, {
+    Product.hasMany(Review, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -450,7 +450,7 @@ module.exports.initRelations = () => {
     });
 
     Product.belongsToMany(User, {
-        through: ProductReview,
+        through: Review,
         foreignKey: 'product_id',
         otherKey: 'user_id',
         onDelete: 'NO ACTION',
