@@ -10,14 +10,22 @@ const async = require('async');
 import series from 'async/series';
 
 export function wholesale(req, res) {
-    
-    var field = "id";
-    var order = "asc";
-   
+    var productModel = "ProductSalesRating";
+    var featuredProductModel = "FeaturedproductSalesRating";
+    var offset, limit, field, order;
+    var queryObj = {};
+
+    offset = 0;
+    limit = 5;
+    field = "id";
+    order = "asc";
+
+    queryObj['status'] = status["ACTIVE"];
+
     async.series({
         wantToSell: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1 ,marketplace_type: 'Want To Sell' }, 0, 5, field, order)
+            queryObj['marketplace_type'] = 'Want To Sell';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (wantToSell) {
                     return callback(null, wantToSell.rows);
 
@@ -27,8 +35,8 @@ export function wholesale(req, res) {
                 });
         },
         wantToBuy: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Buy' }, 0, 5, field, order)
+            queryObj['marketplace_type'] = 'Want To Buy';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (wantToBuy) {
                     return callback(null, wantToBuy.rows);
 
@@ -38,8 +46,8 @@ export function wholesale(req, res) {
                 });
         },
         wantToTrade: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Trade' }, 0, 5, field, order)
+            queryObj['marketplace_type'] = 'Want To Trade';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (wantToTrade) {
                     return callback(null, wantToTrade.rows);
 
@@ -49,8 +57,8 @@ export function wholesale(req, res) {
                 });
         },
         requestForQuote: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Request For Quote' }, 0, 5, field, order)
+            queryObj['marketplace_type'] = 'Request For Quote';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (requestForQuote) {
                     return callback(null, requestForQuote.rows);
 
@@ -60,8 +68,8 @@ export function wholesale(req, res) {
                 });
         },
         featuredProducts: function (callback) {
-
-            service.findRows('FeaturedproductSalesRating', { status:1,marketplace: 'Private Wholesale Marketplace' }, 0, 5, field, order)
+            queryObj['marketplace'] = 'Private Wholesale Marketplace';
+            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -74,12 +82,12 @@ export function wholesale(req, res) {
     }, function (err, results) {
         if (!err) {
             res.render('wholesale', {
-                title : "Global Trade Connect",
-                wantToSell : results.wantToSell,
-                wantToBuy : results.wantToBuy,
-                wantToTrade : results.wantToTrade,
-                requestForQuote : results.requestForQuote,
-                featuredProducts : results.featuredProducts
+                title: "Global Trade Connect",
+                wantToSell: results.wantToSell,
+                wantToBuy: results.wantToBuy,
+                wantToTrade: results.wantToTrade,
+                requestForQuote: results.requestForQuote,
+                featuredProducts: results.featuredProducts
             });
         }
         else {

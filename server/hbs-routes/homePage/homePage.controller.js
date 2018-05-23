@@ -79,7 +79,7 @@ export function homePage(req, res) {
                 });
         },
         serviceMarketplace: function(callback) {
-            queryObj['marketplace'] = 'Service Marketplace';
+            queryObj['marketplace'] = 'Services Marketplace';
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(serviceMarketplace) {
                     return callback(null, serviceMarketplace.rows);
