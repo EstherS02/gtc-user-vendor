@@ -8,7 +8,7 @@ const service = require('../../api/service');
 const async = require('async');
 
 
-export function Service(req, res) {
+export function services(req, res) {
 	var productModel = "ProductSalesRating";
 	var featuredProductModel = "FeaturedproductSalesRating";
 	var offset, limit, field, order;
@@ -45,14 +45,14 @@ export function Service(req, res) {
 		}
 	}, function (err, results) {
 		if (!err) {
-			res.render('service', {
+			res.render('services', {
 				title: "Global Trade Connect",
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct
 			});
 		}
 		else {
-			res.render('service', err);
+			res.render('services', err);
 		}
 	});
 

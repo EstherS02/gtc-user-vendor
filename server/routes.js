@@ -39,7 +39,7 @@ export default function(app) {
   app.use('/directory', require('./hbs-routes/directory'));
   app.use('/wholesale', require('./hbs-routes/wholesale'));
   app.use('/shop', require('./hbs-routes/shop'));
-  app.use('/service', require('./hbs-routes/service'));
+  app.use('/services', require('./hbs-routes/services'));
   app.use('/lifestyle', require('./hbs-routes/lifestyle'));
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/reviews', require('./hbs-routes/reviews'));
