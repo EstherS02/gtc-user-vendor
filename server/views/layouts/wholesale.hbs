@@ -8,26 +8,32 @@
                 <div class="row">
                     <div class="col-md-12 lstb2 text-center">
                         <p>Our Wholesale Marketplace has over</p>
-                        <p>21,000 Wholesalers, Retails & Service Providers</p>
-                        <p class="adv_search">Advance Search</p>
+                        <p>12,000 Wholesalers & 60,000 Products</p>
+                        <p class="adv_search">Advanced Search</p>
                         <div class="row">
                             <div class="col-md-4 common_padding1">
                                 <select class="geo_textbox">
-                                    <option>Department</option>
+                                    <option>Type</option>
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
                                 <select class="geo_textbox">
-                                    <option>Category</option>
+                                   <option disabled selected>Category</option>
+                                    {{#each category}}
+                                    <option>{{ this.name}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
                                 <select class="geo_textbox">
-                                    <option>Location</option>
+                                     <option disabled selected>Location</option>
+                                    {{#each country}}
+                                    <option>{{ this.name}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
+                        <input type="submit" value="SEARCH WHOLESALE" class="shop_checkout_btn" style="padding: 8px 20px;" />
                     </div>
                 </div>
             </div>
@@ -41,7 +47,7 @@
             <div class="col-md-6 no-padding">
                 <div class="gtc-box">
                     <div class="gtc-box-market-title public-market-bg">
-                        <h5>TOP SELLERS PRODUCTS</h5>
+                        <h5>TOP SELLING PRODUCTS</h5>
                         <small class="pull-right m-t-xs">SEE ALL
                             <i class="fa fa-caret-right"></i>
                         </small>
@@ -107,7 +113,7 @@
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
-                                                    <h5 class="no-margins">{{ Titlecase this.product_name}}</h5>
+                                                    <h5 class="no-margins">{{ this.product_name}}</h5>
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>

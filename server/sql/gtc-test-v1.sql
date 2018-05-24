@@ -46,6 +46,8 @@ CREATE VIEW `product_sales_rating` AS
         LEFT JOIN `sub_category` ON ((`sub_category`.`id` = `product`.`sub_category_id`)))
         LEFT JOIN `country` ON ((`country`.`id` = `product`.`product_location`)))
 
+
+
 CREATE VIEW `subscription_sales` AS
     SELECT 
         COALESCE(COUNT(`order_items`.`product_id`),
@@ -226,53 +228,49 @@ ADD COLUMN `moq` INT(11) NULL AFTER `city`;
 ALTER TABLE `gtc-test`.`order_items` 
 CHANGE COLUMN `quantity` `quantity` INT(11) NOT NULL ;
 
+ALTER TABLE `gtc-test`.product
+ADD COLUMN product_slug VARCHAR(128) NOT NULL;
 
 
-
-CREATE VIEW `vendor_sales` AS
+CREATE VIEW `vendor_user_product` AS
     SELECT 
         `vendor`.`id` AS `id`,
         `vendor`.`vendor_name` AS `vendor_name`,
-        `users`.`first_name` AS `owner_first_name`,
-        `users`.`last_name` AS `owner_last_name`,
-         COALESCE(COUNT(`product`.`vendor_id`),
-                0) AS `vendor_product_count`,
-        `country`.`name` AS `origin`,
-        `vendor`.`vendor_cover_pic_url` AS `cover_pic_url`,
-        `vendor`.`status` AS `status`,
+        `vendor`.`contact_email` AS `contact_email`,
+        `marketplace`.`name` AS `type`,
+        `marketplace`.`id` AS `marketplace_id`,
+        `users`.`id` AS `user_id`,
+        `users`.`email` AS `email`,
+        `users`.`first_name` AS `first_name`,
+        `users`.`last_name` AS `last_name`,
+        `users`.`status` AS `status`,
+        `users`.`role` AS `role`,
+        `users`.`email_verified` AS `email_verified`,
+        (SELECT 
+                COALESCE(COUNT(`product`.`vendor_id`), 0)
+            FROM
+                `product`
+            WHERE
+                (`product`.`vendor_id` = `vendor`.`id`)) AS `product_count`,
+        (SELECT 
+                COALESCE(SUM(`product_sales_rating`.`sales_count`), 0)
+            FROM
+                `product_sales_rating`
+            WHERE
+                (`product_sales_rating`.`vendor_name` = `vendor`.`vendor_name`)) AS `sales_count`,
         `vendor`.`created_by` AS `created_by`,
         `vendor`.`created_on` AS `created_on`,
         `vendor`.`last_updated_by` AS `last_updated_by`,
         `vendor`.`last_updated_on` AS `last_updated_on`,
         `vendor`.`deleted_at` AS `deleted_at`
     FROM
-        `vendor`
-            INNER JOIN `users` ON `users`.`id` = `vendor`.`user_id`
-            INNER JOIN `country` ON `country`.`id` = `vendor`.`base_location`
-            LEFT JOIN `product` ON `product`.`vendor_id`=`vendor`.`id` 
-
-    GROUP BY 
-       `vendor`.`id`,
-       `vendor`.`vendor_name` ,
-       `users`.`first_name`, 
-       `users`.`last_name`, 
-       `product`.`vendor_id`,
-       `country`.`name`,
-       `vendor`.`vendor_cover_pic_url`,
-       `vendor`.`status`,
-       `vendor`.`created_by`,
-       `vendor`.`created_on`,
-       `vendor`.`last_updated_by`,
-       `vendor`.`last_updated_on`,
-       `vendor`.`deleted_at`;
-
-
-
-ALTER TABLE `gtc-test`.product
-ADD COLUMN product_slug VARCHAR(128) NOT NULL;
-
-
-
+        (((`vendor`
+        LEFT JOIN `users` ON ((`vendor`.`user_id` = `users`.`id`)))
+        LEFT JOIN ((`vendor_plan`
+        JOIN `plan_marketplace` ON ((`plan_marketplace`.`plan_id` = `vendor_plan`.`plan_id`)))
+        JOIN `marketplace` ON ((`marketplace`.`id` = `plan_marketplace`.`marketplace_id`))) ON ((`vendor_plan`.`vendor_id` = `vendor`.`id`)))
+        LEFT JOIN `product` ON ((`product`.`vendor_id` = `vendor`.`id`)))
+    GROUP BY `vendor`.`vendor_name`
 
 
 

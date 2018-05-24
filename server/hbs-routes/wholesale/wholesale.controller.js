@@ -12,6 +12,8 @@ import series from 'async/series';
 export function wholesale(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var categoryModel = "Category";
+    var countryModel = "Country";
     var offset, limit, field, order;
     var queryObj = {};
 
@@ -68,10 +70,32 @@ export function wholesale(req, res) {
                 });
         },
         featuredProducts: function (callback) {
+            delete queryObj['marketplace_type'];
             queryObj['marketplace'] = 'Private Wholesale Marketplace';
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        category: function (callback) {
+            delete queryObj['marketplace'];
+            service.findRows(categoryModel, queryObj, offset, 10, field, order)
+                .then(function (category) {
+                    return callback(null, category.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        country: function (callback) {
+            service.findRows(countryModel, queryObj, offset, limit, "id", "asc")
+                .then(function (country) {
+                    return callback(null, country.rows);
 
                 }).catch(function (error) {
                     console.log('Error :::', error);
@@ -87,7 +111,9 @@ export function wholesale(req, res) {
                 wantToBuy: results.wantToBuy,
                 wantToTrade: results.wantToTrade,
                 requestForQuote: results.requestForQuote,
-                featuredProducts: results.featuredProducts
+                featuredProducts: results.featuredProducts,
+                category: results.category,
+                country: results.country
             });
         }
         else {

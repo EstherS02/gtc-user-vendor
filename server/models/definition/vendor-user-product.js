@@ -68,6 +68,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'email_verified',
             allowNull: true
         },
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
