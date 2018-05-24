@@ -148,6 +148,7 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
+    const Review = model.Review;
     const Vendor = model.Vendor;
     const BusinessHour = model.BusinessHour;
     const DiscussionBoard = model.DiscussionBoard;
@@ -189,6 +190,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(TalkSetting, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(Review, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -252,6 +259,15 @@ module.exports.initRelations = () => {
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'marketplace_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.belongsToMany(Vendor, {
+        as: 'Vendor1',
+        through: Review,
+        foreignKey: 'vendor_id',
+        otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

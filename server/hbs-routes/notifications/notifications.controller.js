@@ -7,35 +7,6 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 var async = require('async');
 
-
-// export function notifications(req, res) {
-
-// 	var field = "id";
-// 	var order = "asc";
-// 	var offset = 0;
-// 	var limit = 10;
-// 	async.series({
-// 		Announcements: function(callback) {
-
-// 			service.findRows('Announcement', {}, offset, limit, field, order)
-// 				.then(function(Announcements) {
-// 					console.log('Announcements', Announcements);
-
-// 					return callback(null, Announcements.rows);
-// 				}).catch(function(error) {
-// 					console.log('Error :::', error);
-// 					return callback(null);
-// 				});
-// 		}
-
-// 	}, function(err, results) {
-// 		if (!err) {
-// 			res.render('notifications', results);
-// 		} else {
-// 			res.render('notifications', err);
-// 		}
-// 	});
-// }
 export function notifications(req, res) {
 
 	model["VendorUserProduct"].find({
@@ -69,7 +40,7 @@ export function notifications(req, res) {
 			}).then(function(results) {
 				if (results) {
 					res.render('notifications', {
-						title : 'Global Trade Connect',
+						title: 'Global Trade Connect',
 						Announcements: results.rows,
 						statusCode: statusCode
 					});
