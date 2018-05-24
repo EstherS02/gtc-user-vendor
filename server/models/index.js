@@ -71,7 +71,6 @@ function init(sequelize) {
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
     model.VendorNotificationSetting = sequelize.import('./definition/vendor-notification-setting.js');
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
-    model.VendorSales = sequelize.import('./definition/vendor-sales.js');
     model.VendorShippingLocation = sequelize.import('./definition/vendor-shipping-location.js');
     model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
@@ -138,7 +137,6 @@ function init(sequelize) {
     require('./definition/vendor-follower.js').initRelations();
     require('./definition/vendor-notification-setting.js').initRelations();
     require('./definition/vendor-plan.js').initRelations();
-    require('./definition/vendor-sales.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();
     require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
