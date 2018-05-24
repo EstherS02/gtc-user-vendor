@@ -11,13 +11,24 @@ import series from 'async/series';
 
 export function shop(req, res) {
 
-    var field = "id";
-    var order = "desc";
+    var productModel = "ProductSalesRating";
+	var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
+	var offset, limit, field, order;
+	var queryObj = {};
+
+	offset = 0;
+	limit = 5;
+	field = "id";
+	order = "asc";
+
+    queryObj['status'] = status["ACTIVE"];
+    queryObj['marketplace'] = 'Public Marketplace';
 
     async.series({
         featuredProducts: function (callback) {
 
-            service.findRows('FeaturedproductSalesRating', { status: 1, marketplace: 'Public Marketplace' }, 0, 4, field, order)
+            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -28,9 +39,23 @@ export function shop(req, res) {
         },
         publicMarketplace: function (callback) {
 
-            service.findRows('ProductSalesRating', { status: 1, marketplace: 'Public Marketplace' }, 0, 20, field, order)
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        retailers: function (callback) {
+            delete queryObj['marketplace'];
+            queryObj['type'] = 'Public Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (retailers) {
+                    return callback(null, retailers.rows);
 
                 }).catch(function (error) {
                     console.log('Error :::', error);

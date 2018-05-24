@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'contact_email',
             allowNull: true
         },
+        url: {
+            type: DataTypes.TEXT,
+            field: 'url',
+            allowNull: true
+        },
         type: {
             type: DataTypes.STRING(64),
             field: 'type',
@@ -63,6 +68,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'role',
             allowNull: true
         },
+        origin: {
+            type: DataTypes.STRING(128),
+            field: 'name',
+            allowNull: false
+        },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',
@@ -71,6 +81,11 @@ module.exports = (sequelize, DataTypes) => {
         sales_count: {
             type: DataTypes.BIGINT,
             field: 'sales_count',
+            allowNull: true
+        },
+        rating: {
+            type: DataTypes.INTEGER,
+            field: 'rating',
             allowNull: true
         },
         created_by: {

@@ -237,6 +237,8 @@ CREATE VIEW `vendor_user_product` AS
         `vendor`.`id` AS `id`,
         `vendor`.`vendor_name` AS `vendor_name`,
         `vendor`.`contact_email` AS `contact_email`,
+        `vendor`.`vendor_profile_pic_url` AS `url`,
+        `country`.`name` AS `origin`,
         `marketplace`.`name` AS `type`,
         `marketplace`.`id` AS `marketplace_id`,
         `users`.`id` AS `user_id`,
@@ -253,25 +255,32 @@ CREATE VIEW `vendor_user_product` AS
             WHERE
                 (`product`.`vendor_id` = `vendor`.`id`)) AS `product_count`,
         (SELECT 
-                COALESCE(SUM(`product_sales_rating`.`sales_count`), 0)
+                COALESCE(SUM(`product_sales_rating`.`sales_count`),
+                            0)
             FROM
                 `product_sales_rating`
             WHERE
                 (`product_sales_rating`.`vendor_name` = `vendor`.`vendor_name`)) AS `sales_count`,
+        (SELECT 
+                COALESCE(AVG(`reviews`.`rating`), 0)
+            FROM
+                `reviews`
+            WHERE
+                (`reviews`.`vendor_id` = `vendor`.`id`)) AS `rating`,
         `vendor`.`created_by` AS `created_by`,
         `vendor`.`created_on` AS `created_on`,
         `vendor`.`last_updated_by` AS `last_updated_by`,
         `vendor`.`last_updated_on` AS `last_updated_on`,
         `vendor`.`deleted_at` AS `deleted_at`
     FROM
-        (((`vendor`
+        ((((`vendor`
         LEFT JOIN `users` ON ((`vendor`.`user_id` = `users`.`id`)))
         LEFT JOIN ((`vendor_plan`
         JOIN `plan_marketplace` ON ((`plan_marketplace`.`plan_id` = `vendor_plan`.`plan_id`)))
         JOIN `marketplace` ON ((`marketplace`.`id` = `plan_marketplace`.`marketplace_id`))) ON ((`vendor_plan`.`vendor_id` = `vendor`.`id`)))
         LEFT JOIN `product` ON ((`product`.`vendor_id` = `vendor`.`id`)))
+        LEFT JOIN `country` ON ((`country`.`id` = `vendor`.`base_location`)))
     GROUP BY `vendor`.`vendor_name`
-
 
 
 

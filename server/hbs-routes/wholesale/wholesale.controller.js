@@ -81,8 +81,22 @@ export function wholesale(req, res) {
                     return callback(null);
                 });
         },
-        category: function (callback) {
+        wholesalers: function (callback) {
             delete queryObj['marketplace'];
+            queryObj['type'] = 'Private Wholesale Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (wholesalers) {
+                    return callback(null, wholesalers.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        category: function (callback) {
+            delete queryObj['type'];
             service.findRows(categoryModel, queryObj, offset, 10, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);

@@ -12,6 +12,7 @@ import series from 'async/series';
 export function lifestyle(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
 
@@ -38,6 +39,20 @@ export function lifestyle(req, res) {
             service.findRows(productModel, queryObj, offset, 20, field, order)
                 .then(function (lifestyle) {
                     return callback(null, lifestyle.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        subscriptionProviders: function (callback) {
+            delete queryObj['marketplace'];
+            queryObj['type'] = 'Lifestyle Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (subscriptionProviders) {
+                    return callback(null, subscriptionProviders.rows);
 
                 }).catch(function (error) {
                     console.log('Error :::', error);
