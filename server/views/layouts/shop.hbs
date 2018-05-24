@@ -7,7 +7,7 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-8 lstb2">
-                        <p>Trying to sell your subscription? Our network</p>
+                        <p>Trying to sell your product? Our wholesale network</p>
                         <p>has over 25,900 monthly users/buyers.</p>
                     </div>
                     <div class="col-md-4">
@@ -18,231 +18,178 @@
         </div>
     </div>
 </section>
-<section class="box8" style="margin-bottom:0">
-    <div class="container clearfix">
-        <div class="row">
-            <div class="col-md-6 ts1">
-                <h6 class="float-left">TOP SELLERS</h6>
-                <p class="float-right see_all">
-                    <a href="#">SEE ALL</a>
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-            <div class="col-md-6 ts2">
-                <h6 class="float-left">FEATURED PRODUCTS</h6>
-                <p class="float-right see_all">
-                    <a href="#">SEE ALL</a>
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="box4" style="margin-bottom:30px">
-    <div class="container clearfix">
-        <div class="row">
-            {{!--
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-2">
-                        <p class="hash_num">#1</p>
-                    </div>
-                    <div class="col-md-3">
-                        <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-7">
-                        <div class="row common_padding">
-                            <div class="col-md-12">
-                                <p class="wts_header">
-                                    <a href="#">Greate Earth Expeditions</a>
-                                </p>
-                            </div>
 
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-5">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-7">
-                                <p>Canada</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-5">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-7">
-                                <p>Electronic - Phones</p>
-                            </div>
-
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-5">
-                                <p>Inventory</p>
-                            </div>
-                            <div class="col-md-7">
-                                <p>
-                                    <b>83749 Products</b> Listed
-                                    <span class="wts_header_red">6 on Sale</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-5">
-                                <p>Seller Rating</p>
-                            </div>
-                            <div class="col-md-7">
-                                <p>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                </p>
-                            </div>
-                        </div>
+<section class="custom-section">
+    <div class="marketplace-header-box"></div>
+    <div class="container my-custom-container m-t-n-marketplace">
+        <div class="row">
+            <div class="col-md-6 no-padding">
+                <div class="gtc-box">
+                    <div class="gtc-box-market-title public-market-bg">
+                        <h5>TOP SELLING PRODUCTS</h5>
+                        <small class="pull-right m-t-xs">SEE ALL
+                            <i class="fa fa-caret-right"></i>
+                        </small>
                     </div>
-                </div>
-            </div> --}} {{#each featuredProducts}}
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="{{this.url}}" style="width: 30px; height: 70px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">
-                                    <a href="#">{{ Titlecase this.product_name}}</a>
-                                </p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>$ {{this.price}}</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>{{this.origin}}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>{{this.category}} - {{this.sub_category}}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p> {{ starCount this.rating}} </p>
+                    <div class="gtc-box-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="feed-element">
+                                    <div class="feed-product">
+                                        <img src="shopping.jpeg">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="row m-l-none m-r-none">
+                                            <div class="col-md-9 no-padding">
+                                                <div class="product-title">
+                                                    <h5 class="no-margins">WTS - iPhone Pallets</h5>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-4 no-padding">
+                                                            <div class="sm-text">Origin</div>
+                                                            <div class="sm-text">Category</div>
+                                                            <div class="sm-text">Seller</div>
+                                                        </div>
+                                                        <div class="col-md-8 no-padding">
+                                                            <div class="sm-text">Canada</div>
+                                                            <div class="sm-text">Electronics > Phones</div>
+                                                            <div class="sm-text">
+                                                                <a href="#">(Login for Seller Info)</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 no-padding">
+                                                <div class="sm-text pull-right">MOQ: 45</div>
+                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount 4}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {{/each}}
-        </div>
-    </div>
-</section>
-<section class="box5" style="margin-bottom:0">
-    <div class="container clearfix">
-        <div class="row">
-
-            <div class="col-md-12 pmp1">
-                <h6 class="float-left">PUBLIC MARKETPLACE</h6>
-                <p class="float-right see_all">
-                    <a href="#">SEE ALL</a>
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="box4" style="margin-bottom:20px;">
-    <div class="container clearfix">
-        <div class="row">
-            <div class="col-md-6 ">
-                <p class="see_all" style="margin: 10px;">Showing most recent 20 product of 60,000 products listed.</p>
-            </div>
-            <div class="col-md-6">
-                <p class="see_all float-right" style="margin: 10px;">
-                    <i class="fas fa-star" style="color: #C80527;"></i> POST AN AD IN THIS CATEGORY
-                    <i class="fa fa-caret-right"></i>
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            {{#each publicMarketplace}}
-            <div class="col-md-3 common_top">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="{{this.url}}" style="width: 30px; height: 70px;">
+            <div class="col-md-6 no-padding">
+                <div class="gtc-box">
+                    <div class="gtc-box-market-title featured-product-bg">
+                        <h5>FEATURED PRODUCTS</h5>
+                        <small class="pull-right m-t-xs">SEE ALL
+                            <i class="fa fa-caret-right"></i>
+                        </small>
                     </div>
-                    <div class="col-md-9">
-                        <div class="row common_padding">
-                            <div class="col-md-8">
-                                <p class="wts_header">
-                                    <a href="#">{{ Titlecase this.product_name }}</a>
-                                </p>
+                    <div class="gtc-box-content">
+                        <div class="row">
+                            {{#each featuredProducts}}
+                            <div class="col-md-6">
+                                <div class="feed-element">
+                                    <div class="feed-product">
+                                        <img src="{{this.url}}">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="row m-l-none m-r-none">
+                                            <div class="col-md-9 no-padding">
+                                                <div class="product-title">
+                                                    <h5 class="no-margins">{{ this.product_name}}</h5>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-4 no-padding">
+                                                            <div class="sm-text">Origin</div>
+                                                            <div class="sm-text">Category</div>
+                                                        </div>
+                                                        <div class="col-md-8 no-padding">
+                                                            <div class="sm-text">{{this.origin}}</div>
+                                                            <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 no-padding">
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{price}}</p>
+                                                </div>
+                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <p>MOQ: 40</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Origin</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>{{this.origin}}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>&nbsp;</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Category</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>{{this.category}} - {{this.sub_category}}</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p>Seller Rating</p>
-                            </div>
-                        </div>
-                        <div class="row common_padding">
-                            <div class="col-md-3">
-                                <p>Seller</p>
-                            </div>
-                            <div class="col-md-5">
-                                <p>(
-                                    <b>Login for Seller Info</b>)</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p> {{ starCount this.rating}} </p>
-                            </div>
+                            {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
-            {{/each}}
+        </div>
+    </div>
+</section>
+<section class="custom-section">
+    <div class="marketplace-header-box"></div>
+    <div class="container my-custom-container m-t-n-marketplace">
+        <div class="row">
+            <div class="col-md-12 no-padding">
+                <div class="gtc-box">
+                    <div class="gtc-box-market-title public-market-bg">
+                        <h5>PUBLIC MARKETPLACE</h5>
+                        <small class="pull-right m-t-xs">SEE ALL
+                            <i class="fa fa-caret-right"></i>
+                        </small>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 ">
+                            <p class="see_all" style="margin: 10px;">Showing most recent 20 product of 60,000 products listed.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="see_all float-right" style="margin: 10px;">
+                                <i class="fas fa-star" style="color: #C80527;"></i> POST AN AD IN THIS CATEGORY
+                                <i class="fa fa-caret-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="gtc-box-content">
+                        <div class="row">
+                            {{#each publicMarketplace}}
+                            <div class="col-md-3">
+                                <div class="feed-element">
+                                    <div class="feed-product">
+                                        <img src="{{this.url}}">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="row m-l-none m-r-none">
+                                            <div class="col-md-9 no-padding">
+                                                <div class="product-title">
+                                                    <h5 class="no-margins">{{ this.product_name }}</h5>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-4 no-padding">
+                                                            <div class="sm-text">Origin</div>
+                                                            <div class="sm-text">Category</div>
+                                                            <div class="sm-text">Seller</div>
+                                                        </div>
+                                                        <div class="col-md-8 no-padding">
+                                                            <div class="sm-text">{{this.origin}}</div>
+                                                            <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                            <div class="sm-text">
+                                                                <a href="#">(Login for Seller Info)</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 no-padding">
+                                                <div class="pull-right">${{price}}</div>
+                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
