@@ -574,17 +574,6 @@ h5 {
   text-shadow: none;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-  font-size: 13px;
-  color: #676a6c;
-  overflow-x: hidden;
-}
-html,
-body {
-  height: 100%;
-}
-
 .header {
   background: url(../bg-footer.jpg);
   position: relative;

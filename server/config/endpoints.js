@@ -25,6 +25,7 @@ module.exports = {
 	"global-settings": "GlobalSetting",
 	"marketplaces": "Marketplace",
 	"marketplace-types": "MarketplaceType",
+	"marketplace-products": "MarketplaceProduct",
 	"order-items": "OrderItem",
 	"order-payments": "OrderPayment",
 	"order-payment-escrows": "OrderPaymentEscrow",
