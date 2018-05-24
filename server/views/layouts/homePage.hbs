@@ -277,21 +277,59 @@
         });
     });
 </script>
-<section class="banner-signup p-lg">
+<!-- <section class="header">
     <div class="container my-custom-container row">
-        <div class="wrapper-content col-md-12">
+        <div class="col-md-6">
+
+        </div>
+        <div class="col-md-6">
+            yes
+        </div>
+    </div>
+</section> -->
+<section class="banner-signup p-lg">
+    <div class="container gtc-custom-container">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-3">
+                        <h3>What is Geo-Locate?</h3>
+                        <p>Find products close to home, or nearby your target market with Lorom ipsum dolor sholt.</p>
+                        <h3 class="text-primary">GIVE IT A TRY!:</h3>
+                        <input type="text" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
+                        <select class="geo_textbox">
+                            <option>Category</option>
+                            <option>Category Category Cate</option>
+                        </select>
+                        <input type="text" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
+                        <button type="button" class="btn btn-block btn-sm btn-primary">SEARCH!</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <h1 class="text-pink">CREATE A FREE ACCOUNT!</h1>
+            </div>
+        </div>
+        {{!-- <div class="wrapper-content col-md-12">
             <div class="row">
                 <div class="col-md-7">
-                    <h1>Hello</h1>
+                    <div class="row">
+                        <div class="col-md-6">
+                            hello
+                        </div>
+                        <div class="col-md-6">
+                            hi
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-5">
                     <h1 class="text-pink">CREATE A FREE ACCOUNT!</h1>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </section>
-
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
@@ -379,7 +417,7 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTS - {{this.product_name}}</h5>
+                                            <h5 class="no-margins">WTS - <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -424,7 +462,7 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTB - {{this.product_name}}</h5>
+                                            <h5 class="no-margins">WTB - <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -469,7 +507,7 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTT - {{this.product_name}}</h5>
+                                            <h5 class="no-margins">WTT - <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -514,7 +552,7 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">RFQ - {{this.product_name}}</h5>
+                                            <h5 class="no-margins">RFQ - <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -566,7 +604,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">{{this.product_name}}</h5>
+                                            <h5 class="no-margins">
+                                                <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -610,7 +650,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">{{this.product_name}}</h5>
+                                            <h5 class="no-margins">
+                                                <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -654,7 +696,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">{{this.product_name}}</h5>
+                                            <h5 class="no-margins">
+                                                <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -795,7 +839,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">{{this.product_name}}</h5>
+                                            <h5 class="no-margins">
+                                                <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
