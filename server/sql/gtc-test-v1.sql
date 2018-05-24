@@ -128,6 +128,7 @@ CREATE VIEW `featuredproduct_sales_rating` AS
         `featured_product`.`status` AS `status`,
         `featured_product`.`impression` AS `impression`,
         `featured_product`.`clicks` AS `clicks`,
+        `product_sales_rating`.`product_slug` AS `product_slug`,
         `featured_product`.`created_by` AS `created_by`,
         `featured_product`.`created_on` AS `created_on`,
         `featured_product`.`last_updated_by` AS `last_updated_by`,
