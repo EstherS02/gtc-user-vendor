@@ -12,6 +12,7 @@ import series from 'async/series';
 export function lifestyle(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
 
@@ -43,13 +44,28 @@ export function lifestyle(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        subscriptionProviders: function (callback) {
+            delete queryObj['marketplace'];
+            queryObj['type'] = 'Lifestyle Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (subscriptionProviders) {
+                    return callback(null, subscriptionProviders.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
         }
     }, function (err, results) {
         if (!err) {
             res.render('lifestyle', {
                 title: "Global Trade Connect",
                 featuredProducts: results.featuredProducts,
-                lifestyle: results.lifestyle
+                lifestyle: results.lifestyle,
+                subscriptionProviders: results.subscriptionProviders
             });
         }
         else {

@@ -12,6 +12,7 @@ import series from 'async/series';
 export function wholesale(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
     var categoryModel = "Category";
     var countryModel = "Country";
     var offset, limit, field, order;
@@ -81,8 +82,22 @@ export function wholesale(req, res) {
                     return callback(null);
                 });
         },
-        category: function (callback) {
+        wholesalers: function (callback) {
             delete queryObj['marketplace'];
+            queryObj['type'] = 'Private Wholesale Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (wholesalers) {
+                    return callback(null, wholesalers.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        category: function (callback) {
+            delete queryObj['type'];
             service.findRows(categoryModel, queryObj, offset, 10, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
@@ -112,6 +127,7 @@ export function wholesale(req, res) {
                 wantToTrade: results.wantToTrade,
                 requestForQuote: results.requestForQuote,
                 featuredProducts: results.featuredProducts,
+                wholesalers: results.wholesalers,
                 category: results.category,
                 country: results.country
             });

@@ -39,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'provider',
             allowNull: false
         },
+        user_pic_url: {
+            type: DataTypes.TEXT,
+            field: 'user_pic_url',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -140,7 +145,7 @@ module.exports.initRelations = () => {
     const Cart = model.Cart;
     const Order = model.Order;
     const PaymentSetting = model.PaymentSetting;
-    const ProductReview = model.ProductReview;
+    const Review = model.Review;
     const Subscription = model.Subscription;
     const Talk = model.Talk;
     const TalkThread = model.TalkThread;
@@ -189,7 +194,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.hasMany(ProductReview, {
+    User.hasMany(Review, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -304,7 +309,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(Product, {
-        through: ProductReview,
+        through: Review,
         foreignKey: 'user_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',

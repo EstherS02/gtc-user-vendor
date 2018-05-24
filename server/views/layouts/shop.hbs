@@ -33,41 +33,47 @@
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
+                            {{#each retailers}}
                             <div class="col-md-6">
                                 <div class="feed-element">
                                     <div class="feed-product">
-                                        <img src="shopping.jpeg">
+                                        <p class="hash_num">#1</p>
+                                    </div>
+                                    <div class="feed-product">
+                                        <img src="{{this.url}}">
                                     </div>
                                     <div class="product-info">
                                         <div class="row m-l-none m-r-none">
-                                            <div class="col-md-9 no-padding">
+                                            <div class="col-md-12 no-padding">
                                                 <div class="product-title">
-                                                    <h5 class="no-margins">WTS - iPhone Pallets</h5>
+                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>
-                                                            <div class="sm-text">Category</div>
-                                                            <div class="sm-text">Seller</div>
+                                                            {{!-- <div class="sm-text">Category</div> --}}
+                                                            <div class="sm-text">Inventory</div>
+                                                            <div class="sm-text">Seller Rating</div>
                                                         </div>
                                                         <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">Canada</div>
-                                                            <div class="sm-text">Electronics > Phones</div>
+                                                            <div class="sm-text">{{this.origin}}</div>
+                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
-                                                            </div>
+                                                                <b>{{this.product_count}} Products</b> Listed</div>
+                                                            <div class="sm-text">{{ starCount rating}}</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            {{!--
                                             <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right">MOQ: 45</div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount 4}}</div>
-                                            </div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            {{/each}}
                         </div>
                     </div>
                 </div>
@@ -92,7 +98,9 @@
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
-                                                    <h5 class="no-margins">{{ this.product_name}}</h5>
+                                                    <h5 class="no-margins">
+                                                        <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                                    </h5>
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>
@@ -159,7 +167,9 @@
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
-                                                    <h5 class="no-margins">{{ this.product_name }}</h5>
+                                                    <h5 class="no-margins">
+                                                        <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                                    </h5>
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>

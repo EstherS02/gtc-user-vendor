@@ -25,6 +25,7 @@ export default function(app) {
   app.use('/api/tickets', require('./api/ticket'));
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
   app.use('/api/vendor', require('./api/vendor'));
+  app.use('/api/review',require('./api/review'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);

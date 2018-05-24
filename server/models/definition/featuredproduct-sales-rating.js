@@ -128,6 +128,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'rating',
             allowNull: true
         },
+        product_slug: {
+            type: DataTypes.STRING(128),
+            field: 'product_slug',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
