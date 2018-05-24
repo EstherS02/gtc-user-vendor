@@ -11,5 +11,6 @@ var controller = require('./reviews.controller');
 
 router.get('/', controller.reviews);
 
+router.get('/star-rating', controller.reviews);
 
 module.exports = router;
