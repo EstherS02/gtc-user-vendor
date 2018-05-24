@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         origin: {
             type: DataTypes.STRING(128),
-            field: 'name',
+            field: 'origin',
             allowNull: false
         },
         email_verified: {

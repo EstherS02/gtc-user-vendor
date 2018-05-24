@@ -64,7 +64,8 @@ export function lifestyle(req, res) {
             res.render('lifestyle', {
                 title: "Global Trade Connect",
                 featuredProducts: results.featuredProducts,
-                lifestyle: results.lifestyle
+                lifestyle: results.lifestyle,
+                subscriptionProviders: results.subscriptionProviders
             });
         }
         else {

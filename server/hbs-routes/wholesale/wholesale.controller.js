@@ -12,6 +12,7 @@ import series from 'async/series';
 export function wholesale(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
     var categoryModel = "Category";
     var countryModel = "Country";
     var offset, limit, field, order;
@@ -126,6 +127,7 @@ export function wholesale(req, res) {
                 wantToTrade: results.wantToTrade,
                 requestForQuote: results.requestForQuote,
                 featuredProducts: results.featuredProducts,
+                wholesalers: results.wholesalers,
                 category: results.category,
                 country: results.country
             });

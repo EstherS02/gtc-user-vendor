@@ -63,7 +63,8 @@ export function services(req, res) {
 			res.render('services', {
 				title: "Global Trade Connect",
 				featuredService: results.featuredService,
-				serviceProduct: results.serviceProduct
+				serviceProduct: results.serviceProduct,
+				servicesProviders: results.servicesProviders
 			});
 		}
 		else {

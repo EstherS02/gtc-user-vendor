@@ -64,7 +64,12 @@ export function shop(req, res) {
         }
     }, function (err, results) {
         if (!err) {
-            res.render('shop', results);
+            res.render('shop', {
+				title: "Global Trade Connect",
+				featuredProducts: results.featuredProducts,
+				publicMarketplace: results.publicMarketplace,
+				retailers: results.retailers
+			});
         }
         else {
             res.render('shop', err);

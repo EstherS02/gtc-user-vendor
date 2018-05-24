@@ -183,7 +183,7 @@ CREATE VIEW `ad_featuredproduct` AS
     SELECT 
         `product_ads_setting`.`id` AS `id`,
         `product_ads_setting`.`name` AS `product_name`,
-         1 AS `type`,
+        1 AS `type`,
         `product_ads_setting`.`position` AS `position`,
         `product_ads_setting`.`start_date` AS `start_date`,
         `product_ads_setting`.`end_date` AS `end_date`,
@@ -196,25 +196,24 @@ CREATE VIEW `ad_featuredproduct` AS
         `product_ads_setting`.`last_updated_on` AS `last_updated_on`,
         `product_ads_setting`.`deleted_at` AS `deleted_at`
     FROM
-        `product_ads_setting`
-    Union
-      SELECT
-        `featuredproduct_product`.`id` AS `id`,
-        `featuredproduct_product`.`name` AS `product_name`,
-         2 AS `type`,
-        `featuredproduct_product`.`position` AS `position`,
-        `featuredproduct_product`.`start_date` AS `start_date`,
-        `featuredproduct_product`.`end_date` AS `end_date`,
-        `featuredproduct_product`.`impression` AS `impression`,
-        `featuredproduct_product`.`clicks` AS `clicks`,
-        `featuredproduct_product`.`status` AS `status`,
-        `featuredproduct_product`.`created_by` AS `created_by`,
-        `featuredproduct_product`.`created_on` AS `created_on`,
-        `featuredproduct_product`.`last_updated_by` AS `last_updated_by`,
-        `featuredproduct_product`.`last_updated_on` AS `last_updated_on`,
-        `featuredproduct_product`.`deleted_at` AS `deleted_at`
+        `product_ads_setting` 
+    UNION SELECT 
+        `featuredproduct_sales_rating`.`id` AS `id`,
+        `featuredproduct_sales_rating`.`product_name` AS `product_name`,
+        2 AS `type`,
+        `featuredproduct_sales_rating`.`position` AS `position`,
+        `featuredproduct_sales_rating`.`start_date` AS `start_date`,
+        `featuredproduct_sales_rating`.`end_date` AS `end_date`,
+        `featuredproduct_sales_rating`.`impression` AS `impression`,
+        `featuredproduct_sales_rating`.`clicks` AS `clicks`,
+        `featuredproduct_sales_rating`.`status` AS `status`,
+        `featuredproduct_sales_rating`.`created_by` AS `created_by`,
+        `featuredproduct_sales_rating`.`created_on` AS `created_on`,
+        `featuredproduct_sales_rating`.`last_updated_by` AS `last_updated_by`,
+        `featuredproduct_sales_rating`.`last_updated_on` AS `last_updated_on`,
+        `featuredproduct_sales_rating`.`deleted_at` AS `deleted_at`
     FROM
-        `featuredproduct_product`;
+        `featuredproduct_sales_rating`
 
 
 
