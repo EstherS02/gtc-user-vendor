@@ -128,6 +128,7 @@ CREATE VIEW `featuredproduct_sales_rating` AS
         `featured_product`.`status` AS `status`,
         `featured_product`.`impression` AS `impression`,
         `featured_product`.`clicks` AS `clicks`,
+        `product_sales_rating`.`product_slug` AS `product_slug`,
         `featured_product`.`created_by` AS `created_by`,
         `featured_product`.`created_on` AS `created_on`,
         `featured_product`.`last_updated_by` AS `last_updated_by`,
@@ -183,7 +184,7 @@ CREATE VIEW `ad_featuredproduct` AS
     SELECT 
         `product_ads_setting`.`id` AS `id`,
         `product_ads_setting`.`name` AS `product_name`,
-         1 AS `type`,
+        1 AS `type`,
         `product_ads_setting`.`position` AS `position`,
         `product_ads_setting`.`start_date` AS `start_date`,
         `product_ads_setting`.`end_date` AS `end_date`,
@@ -196,25 +197,24 @@ CREATE VIEW `ad_featuredproduct` AS
         `product_ads_setting`.`last_updated_on` AS `last_updated_on`,
         `product_ads_setting`.`deleted_at` AS `deleted_at`
     FROM
-        `product_ads_setting`
-    Union
-      SELECT
-        `featuredproduct_product`.`id` AS `id`,
-        `featuredproduct_product`.`name` AS `product_name`,
-         2 AS `type`,
-        `featuredproduct_product`.`position` AS `position`,
-        `featuredproduct_product`.`start_date` AS `start_date`,
-        `featuredproduct_product`.`end_date` AS `end_date`,
-        `featuredproduct_product`.`impression` AS `impression`,
-        `featuredproduct_product`.`clicks` AS `clicks`,
-        `featuredproduct_product`.`status` AS `status`,
-        `featuredproduct_product`.`created_by` AS `created_by`,
-        `featuredproduct_product`.`created_on` AS `created_on`,
-        `featuredproduct_product`.`last_updated_by` AS `last_updated_by`,
-        `featuredproduct_product`.`last_updated_on` AS `last_updated_on`,
-        `featuredproduct_product`.`deleted_at` AS `deleted_at`
+        `product_ads_setting` 
+    UNION SELECT 
+        `featuredproduct_sales_rating`.`id` AS `id`,
+        `featuredproduct_sales_rating`.`product_name` AS `product_name`,
+        2 AS `type`,
+        `featuredproduct_sales_rating`.`position` AS `position`,
+        `featuredproduct_sales_rating`.`start_date` AS `start_date`,
+        `featuredproduct_sales_rating`.`end_date` AS `end_date`,
+        `featuredproduct_sales_rating`.`impression` AS `impression`,
+        `featuredproduct_sales_rating`.`clicks` AS `clicks`,
+        `featuredproduct_sales_rating`.`status` AS `status`,
+        `featuredproduct_sales_rating`.`created_by` AS `created_by`,
+        `featuredproduct_sales_rating`.`created_on` AS `created_on`,
+        `featuredproduct_sales_rating`.`last_updated_by` AS `last_updated_by`,
+        `featuredproduct_sales_rating`.`last_updated_on` AS `last_updated_on`,
+        `featuredproduct_sales_rating`.`deleted_at` AS `deleted_at`
     FROM
-        `featuredproduct_product`;
+        `featuredproduct_sales_rating`
 
 
 
@@ -237,6 +237,8 @@ CREATE VIEW `vendor_user_product` AS
         `vendor`.`id` AS `id`,
         `vendor`.`vendor_name` AS `vendor_name`,
         `vendor`.`contact_email` AS `contact_email`,
+        `vendor`.`vendor_profile_pic_url` AS `url`,
+        `country`.`name` AS `origin`,
         `marketplace`.`name` AS `type`,
         `marketplace`.`id` AS `marketplace_id`,
         `users`.`id` AS `user_id`,
@@ -253,25 +255,32 @@ CREATE VIEW `vendor_user_product` AS
             WHERE
                 (`product`.`vendor_id` = `vendor`.`id`)) AS `product_count`,
         (SELECT 
-                COALESCE(SUM(`product_sales_rating`.`sales_count`), 0)
+                COALESCE(SUM(`product_sales_rating`.`sales_count`),
+                            0)
             FROM
                 `product_sales_rating`
             WHERE
                 (`product_sales_rating`.`vendor_name` = `vendor`.`vendor_name`)) AS `sales_count`,
+        (SELECT 
+                COALESCE(AVG(`reviews`.`rating`), 0)
+            FROM
+                `reviews`
+            WHERE
+                (`reviews`.`vendor_id` = `vendor`.`id`)) AS `rating`,
         `vendor`.`created_by` AS `created_by`,
         `vendor`.`created_on` AS `created_on`,
         `vendor`.`last_updated_by` AS `last_updated_by`,
         `vendor`.`last_updated_on` AS `last_updated_on`,
         `vendor`.`deleted_at` AS `deleted_at`
     FROM
-        (((`vendor`
+        ((((`vendor`
         LEFT JOIN `users` ON ((`vendor`.`user_id` = `users`.`id`)))
         LEFT JOIN ((`vendor_plan`
         JOIN `plan_marketplace` ON ((`plan_marketplace`.`plan_id` = `vendor_plan`.`plan_id`)))
         JOIN `marketplace` ON ((`marketplace`.`id` = `plan_marketplace`.`marketplace_id`))) ON ((`vendor_plan`.`vendor_id` = `vendor`.`id`)))
         LEFT JOIN `product` ON ((`product`.`vendor_id` = `vendor`.`id`)))
+        LEFT JOIN `country` ON ((`country`.`id` = `vendor`.`base_location`)))
     GROUP BY `vendor`.`vendor_name`
-
 
 
 
