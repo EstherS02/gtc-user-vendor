@@ -7,7 +7,7 @@
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-12 lstb2 text-center">
-                        <p>Search Our Global Directory of over</p>
+                        <p>Our Wholesale Marketplace has over</p>
                         <p>21,000 Wholesalers, Retails & Service Providers</p>
                         <p class="adv_search">Advance Search</p>
                         <div class="row">
@@ -96,40 +96,43 @@
                         </small>
                     </div>
                     <div class="gtc-box-content">
-                        {{#each featuredProducts}}
-                        <div class="feed-element">
-                            <div class="feed-product">
-                                <img src="{{this.url}}">
-                            </div>
-                            <div class="product-info">
-                                <div class="row m-l-none m-r-none">
-                                    <div class="col-md-9 no-padding">
-                                        <div class="product-title">
-                                            <h5 class="no-margins">{{ Titlecase this.product_name}}</h5>
-                                            <div class="row no-margins">
-                                                <div class="col-md-4 no-padding">
-                                                    <div class="sm-text">Origin</div>
-                                                    <div class="sm-text">Category</div>
-                                                    <div class="sm-text">Seller</div>
-                                                </div>
-                                                <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
-                                                    <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                        <div class="row">
+                            {{#each featuredProducts}}
+                            <div class="col-md-6">
+                                <div class="feed-element">
+                                    <div class="feed-product">
+                                        <img src="{{this.url}}">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="row m-l-none m-r-none">
+                                            <div class="col-md-9 no-padding">
+                                                <div class="product-title">
+                                                    <h5 class="no-margins">{{ Titlecase this.product_name}}</h5>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-4 no-padding">
+                                                            <div class="sm-text">Origin</div>
+                                                            <div class="sm-text">Category</div>
+                                                        </div>
+                                                        <div class="col-md-8 no-padding">
+                                                            <div class="sm-text">{{this.origin}}</div>
+                                                            <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-3 no-padding">
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{price}}</p>
+                                                </div>
+                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3 no-padding">
-                                        <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
                                     </div>
                                 </div>
                             </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
                 </div>
             </div>

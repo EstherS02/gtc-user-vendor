@@ -19,14 +19,13 @@ CREATE VIEW `product_sales_rating` AS
         `product`.`description` AS `description`,
         `product`.`city` AS `city`,
         `product`.`product_slug` AS `product_slug`,
-        (SELECT 
-                COUNT(`order_items`.`product_id`)
-            FROM
-                `order_items`
-            WHERE
+        (SELECT
+               COALESCE(SUM(`order_items`.`quantity`),0)
+            FROM `order_items`
+            WHERE 
                 (`order_items`.`product_id` = `product`.`id`)) AS `sales_count`,
         (SELECT 
-                AVG(`reviews`.`rating`)
+                COALESCE(AVG(`reviews`.`rating`),0)
             FROM
                 `reviews`
             WHERE
@@ -46,8 +45,6 @@ CREATE VIEW `product_sales_rating` AS
         LEFT JOIN `category` ON ((`category`.`id` = `product`.`product_category_id`)))
         LEFT JOIN `sub_category` ON ((`sub_category`.`id` = `product`.`sub_category_id`)))
         LEFT JOIN `country` ON ((`country`.`id` = `product`.`product_location`)))
-
-
 
 CREATE VIEW `subscription_sales` AS
     SELECT 
