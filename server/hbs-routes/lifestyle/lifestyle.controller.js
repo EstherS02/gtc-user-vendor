@@ -10,13 +10,22 @@ const async = require('async');
 import series from 'async/series';
 
 export function lifestyle(req, res) {
-    var field = "id";
-    var order = "desc";
+    var productModel = "ProductSalesRating";
+    var featuredProductModel = "FeaturedproductSalesRating";
+    var offset, limit, field, order;
+    var queryObj = {};
+
+    offset = 0;
+    limit = 5;
+    field = "id";
+    order = "asc";
+
+    queryObj['status'] = status["ACTIVE"];
+    queryObj['marketplace'] = 'Lifestyle Marketplace';
 
     async.series({
         featuredProducts: function (callback) {
-
-            service.findRows('FeaturedproductSalesRating', { status: 1, marketplace: 'Lifestyle Marketplace' }, 0, 4, field, order)
+            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -26,8 +35,7 @@ export function lifestyle(req, res) {
                 });
         },
         lifestyle: function (callback) {
-
-            service.findRows('ProductSalesRating', { status: 1, marketplace: 'Lifestyle Marketplace' }, 0, 20, field, order)
+            service.findRows(productModel, queryObj, offset, 20, field, order)
                 .then(function (lifestyle) {
                     return callback(null, lifestyle.rows);
 
@@ -36,16 +44,18 @@ export function lifestyle(req, res) {
                     return callback(null);
                 });
         }
-
     }, function (err, results) {
         if (!err) {
-            res.render('lifestyle', results);
+            res.render('lifestyle', {
+                title: "Global Trade Connect",
+                featuredProducts: results.featuredProducts,
+                lifestyle: results.lifestyle
+            });
         }
         else {
             res.render('lifestyle', err);
         }
     });
-
 }
 
 

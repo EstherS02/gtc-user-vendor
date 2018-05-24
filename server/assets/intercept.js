@@ -10,9 +10,9 @@
             },
             statusCode: {
                 401: function() {
-                    auth.refreshToken().then(function(data) {
+                    /*auth.refreshToken().then(function(data) {
                         localStorage.setItem("access_token", data.access_token);
-                    });
+                    });*/
                 }
             }
         });

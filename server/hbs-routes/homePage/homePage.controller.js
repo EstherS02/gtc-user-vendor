@@ -9,117 +9,123 @@ var async = require('async');
 
 
 export function homePage(req, res) {
+    var productModel = "ProductSalesRating";
+    var featuredProductModel = "FeaturedproductSalesRating";
+    var offset, limit, field, order;
+    var queryObj = {};
 
-    var field = "id";
-    var order = "asc";
-   
+    offset = 0;
+    limit = 5;
+    field = "id";
+    order = "asc";
+
+    queryObj['status'] = status["ACTIVE"];
+
     async.series({
-        wantToSell: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1 ,marketplace_type: 'Want To Sell' }, 0, 5, field, order)
-                .then(function (wantToSell) {
+        wantToSell: function(callback) {
+            queryObj['marketplace_type'] = 'Want To Sell';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(wantToSell) {
                     return callback(null, wantToSell.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        wantToBuy: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Buy' }, 0, 5, field, order)
-                .then(function (wantToBuy) {
+        wantToBuy: function(callback) {
+            queryObj['marketplace_type'] = 'Want To Buy';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(wantToBuy) {
                     return callback(null, wantToBuy.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        wantToTrade: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Want To Trade' }, 0, 5, field, order)
-                .then(function (wantToTrade) {
+        wantToTrade: function(callback) {
+            queryObj['marketplace_type'] = 'Want To Trade';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(wantToTrade) {
                     return callback(null, wantToTrade.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        requestForQuote: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace_type: 'Request For Quote' }, 0, 5, field, order)
-                .then(function (requestForQuote) {
+        requestForQuote: function(callback) {
+            queryObj['marketplace_type'] = 'Request For Quote';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(requestForQuote) {
                     return callback(null, requestForQuote.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        publicMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1,marketplace: 'Public Marketplace' }, 0, 5, field, order)
-                .then(function (publicMarketplace) {
+        publicMarketplace: function(callback) {
+            delete queryObj['marketplace_type'];
+            queryObj['marketplace'] = 'Public Marketplace';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        serviceMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1,marketplace: 'Service Marketplace' }, 0, 5, field, order)
-                .then(function (serviceMarketplace) {
+        serviceMarketplace: function(callback) {
+            queryObj['marketplace'] = 'Services Marketplace';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(serviceMarketplace) {
                     return callback(null, serviceMarketplace.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        lifestyleMarketplace: function (callback) {
-
-            service.findRows('ProductSalesRating', { status:1, marketplace: 'Lifestyle Marketplace' }, 0, 5, field, order)
-                .then(function (lifestyleMarketplace) {
+        lifestyleMarketplace: function(callback) {
+            queryObj['marketplace'] = 'Lifestyle Marketplace';
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(lifestyleMarketplace) {
                     return callback(null, lifestyleMarketplace.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        featuredProducts: function (callback) {
-
-            service.findRows('FeaturedproductSalesRating', { status:1 }, 0, 5, field, order)
-                .then(function (featuredProducts) {
+        featuredProducts: function(callback) {
+            delete queryObj['marketplace'];
+            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+                .then(function(featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         }
-
-    }, function (err, results) {
+    }, function(err, results) {
         if (!err) {
             res.render('homePage', {
-                title : "Global Trade Connect",
-                wantToSell : results.wantToSell,
-                wantToBuy : results.wantToBuy,
-                wantToTrade : results.wantToTrade,
-                requestForQuote : results.requestForQuote,
-                publicMarketplace : results.publicMarketplace,
-                serviceMarketplace : results.serviceMarketplace,
-                lifestyleMarketplace : results.lifestyleMarketplace,
-                featuredProducts : results.featuredProducts
+                title: "Global Trade Connect",
+                wantToSell: results.wantToSell,
+                wantToBuy: results.wantToBuy,
+                wantToTrade: results.wantToTrade,
+                requestForQuote: results.requestForQuote,
+                publicMarketplace: results.publicMarketplace,
+                serviceMarketplace: results.serviceMarketplace,
+                lifestyleMarketplace: results.lifestyleMarketplace,
+                featuredProducts: results.featuredProducts
             });
-        }
-        else {
+        } else {
             res.render('homePage', err);
         }
     });
-
 }
