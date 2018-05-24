@@ -39,6 +39,7 @@ module.exports = {
 	"product-medias": "ProductMedium",
 	// "product-reviews": "ProductReview",
 	"reviews":"Reviews",
+	"star-rating":"Review",
 	"product-sales-rating": "ProductSalesRating",
 	"regions": "Region",
 	"shippings": "Shipping",

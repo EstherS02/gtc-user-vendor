@@ -109,3 +109,46 @@ export function reviews(req, res) {
 	});
 
 }
+
+export function starRating(res, req){
+	var field = "rating";
+	var order = "desc"; //"asc"
+	var offset = 0;
+	var limit = 10;
+	var vendor_id = 29;
+	async.series({
+		Reviews: function(callback) {
+			model['Review'].findAll({
+				where: {
+					vendor_id: vendor_id,
+					review_type: 2 // 1 for product review and 2 for vendor review
+				},
+				offset: offset,
+				limit: limit,
+				order: [
+					[field, order]
+				],
+				include: [{
+					model: model['User']
+				}]
+			}).then(function(Reviews) {
+				return callback(null, Reviews);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		}
+
+	}, function(err, results) {
+		if (!err) {
+			res.render('reviews', {
+				title: "Global Trade Connect",
+				Reviews: results.Reviews,
+				Rating: results.Rating
+			});
+		} else {
+			res.render('reviews', err);
+		}
+	});
+
+}

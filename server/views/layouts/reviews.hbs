@@ -1,21 +1,22 @@
 <script>
-	function selectAll(ele) {
-     var checkboxes = document.getElementsByTagName('input');
-     if (ele.checked) {
-         for (var i = 0; i < checkboxes.length; i++) {
-             if (checkboxes[i].type == 'checkbox') {
-                 checkboxes[i].checked = true;
-             }
-         }
-     } else {
-         for (var i = 0; i < checkboxes.length; i++) {
-             console.log(i)
-             if (checkboxes[i].type == 'checkbox') {
-                 checkboxes[i].checked = false;
-             }
-         }
-     }
- }
+	function starRating(e) {
+		$.ajax({
+			type: 'GET',
+			url: '/api/review/star-rating',
+			success: function (data, text) {
+				// $(render_list).empty();
+				// $(".project_images").append();
+				// console.log(data);
+				// Reviews:data;
+				Reviews = data;
+            template = Handlebars.compile(Reviews);
+            if (callback) callback(template);
+			},
+			error: function (request, status, error) {
+				console.log('request', request.responseText);
+			}
+		});
+	}
 </script>
 {{> vendor/header}} 
 <section class="showing_categ">
@@ -26,7 +27,8 @@
 
 				<div class="col-md-8" style="background-color: #fff;">
 					<div class="row">
-						<div class="col-md-9">
+					{{!-- Review list Section Start --}}
+						<div class="col-md-9" id="render_list" >
 							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
 							<p>Sort by&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span onclick="selectAll(this);"><b>Most Recent</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text_blue_color" onclick="starRating(this);">Star Rating</span></p>
 							<hr/>
@@ -50,6 +52,7 @@
 							<hr/>
 							{{/each}}
 						</div>
+						 {{!-- Review list Section End --}}
 						<div class="col-md-3" style="padding-top: 20px;">
 							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.Rating.avg}} {{starCount this.Rating.avg}}</p>
 							<div style="border: 1px solid #E6E6E6; padding: 10px;">
