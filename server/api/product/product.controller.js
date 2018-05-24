@@ -129,3 +129,9 @@ export function featureOne(req, res) {
 			return;
 		})
 }
+
+export function vendorSalesCount(req, res){
+       
+
+	
+}

@@ -11,7 +11,10 @@ const async = require('async');
 
 export function listings(req, res) {
 
-    var queryParams = {};
+	var queryParams = {};
+	
+	if(req.query.status)
+		queryParams
 
     var field = "id";
 	var order = "desc";
