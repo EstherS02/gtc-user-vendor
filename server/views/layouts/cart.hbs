@@ -56,12 +56,11 @@
 						{{#each ../cartItems as |cartItem|}}
 
 							{{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
-
 								<tr>
 									<td>
 										<div class="row">
 											<div class="col-md-3">
-												<img src="{{cartItem.Product.ProductMedium.url}}" style="width: 30px; height: 70px;">
+												<img src="{{cartItem.Product.ProductMedium.url}}" style="width: 60px; height: 70px;">
 											</div>
 											<div class="col-md-9">
 												<div class="row common_padding">
@@ -110,7 +109,7 @@
 									<td>
 										<div class="row">
 											<div class="col-md-6">
-												<input type="number" min="1" max="1000" value={{cartItem.quantity}} class="shop_qty_num">
+												<input type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
 												<p class="shop_price_handling">Update</p>
@@ -120,7 +119,7 @@
 									<td>
 										<div class="row">
 											<div class="col-md-12">
-												<p class="shop_price_doller">${{SUMFloat cartItem.Product.price 50}}</p>
+												<p class="shop_price_doller">${{quantityPrice cartItem.quantity cartItem.Product.price}}</p>
 												<p class="shop_total_remove text-center">REMOVE</p>
 											</div>
 										</div>
@@ -174,7 +173,7 @@
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">${{SUMFloat totalPrice.price totalPrice.shipping}}</p>
+								<p class="shop_subtotal float-right">${{totalPrice.total}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
@@ -183,7 +182,7 @@
 								<p class="shop_subtotal"><b>{{marketplace.name}} TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>${{SUMFloat totalPrice.price totalPrice.shipping}}</b></p>
+								<p class="shop_subtotal float-right"><b>${{totalPrice.total}}</b></p>
 							</div>
 						</div>
 						{{/ifCond}}
@@ -193,10 +192,10 @@
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
-								<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$19,077.52</b></p>
+									<p class="shop_subtotal float-right"><b>${{totalPriceList.grandTotal}}</b></p>
 							</div>
 						</div>
 						<hr class="common_margin" />

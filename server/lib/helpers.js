@@ -95,3 +95,7 @@ Handlebars.registerHelper('progressBar', function(value, total) {
 Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
     return parseFloat(v1) + parseFloat(v2);
 });
+
+Handlebars.registerHelper('quantityPrice', function(quantity, price, options) {
+    return parseInt(quantity) * parseFloat(price);
+});
