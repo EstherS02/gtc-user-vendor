@@ -13,3 +13,41 @@ body {
 .gtc-box-title a {
    color: #fff;
 }
+
+.gtc-box-market-title a {
+	color: #fff;
+}
+
+.btn-primary {
+  background-color: #c28006;
+  border-color: #c28006;
+  color: #FFFFFF;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:active:focus,
+.btn-primary:active:hover,
+.btn-primary.active:hover,
+.btn-primary.active:focus {
+  background-color: #c28006;
+  border-color: #c28006;
+  color: #FFFFFF;
+}
+.label-primary,
+.badge-primary {
+  background-color: #c28006;
+  color: #FFFFFF;
+}
+.bg-primary {
+  background-color: #c28006;
+  color: #ffffff;
+}
+.panel-primary {
+  border-color: #c28006;
+}
+.panel-primary > .panel-heading {
+  background-color: #c28006;
+  border-color: #c28006;
+}

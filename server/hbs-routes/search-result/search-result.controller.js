@@ -10,6 +10,8 @@ const service = require('../../api/service');
 
 export function index(req, res) {
 	var queryObj = {};
+	var currentPage;
+	var limit = 5;
 	var endPointName = "MarketplaceProduct";
 	var offset, limit, field, order;
 
@@ -22,17 +24,25 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
 
+	currentPage = req.query.page ? req.query.page : 1;
+	delete req.query.page;
+
+	this.offset = (this.page - 1) * this.limit;
+
 	queryObj['status'] = {
 		'$eq': status["ACTIVE"]
 	}
 
-	console.log('queryObj', queryObj);
+	console.log('queryObj', queryObj, currentPage);
 
 	service.findRows(endPointName, queryObj, offset, limit, field, order)
 		.then(function(results) {
 			res.render('search', {
 				title: "Global Trade Connect",
-				productResults: results.rows
+				productResults: results.rows,
+				currentPage: currentPage,
+				pageCount: results.count,
+				size: 5
 			});
 		})
 		.catch(function(error) {
