@@ -450,7 +450,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wtb-bg">
                         <h5>WTB - Want To Buy</h5>
-                        <small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each wantToBuy}}
@@ -495,7 +495,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wtt-bg">
                         <h5>WTT - Want To Trade</h5>
-                        <small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each wantToTrade}}
@@ -540,7 +540,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title rfq-bg">
                         <h5>RFQ - Request For Quote</h5>
-                        <small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each requestForQuote}}
@@ -592,7 +592,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title public-market-bg">
                         <h5>PUBLIC MARKETPLACE</h5>
-                        <small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each publicMarketplace}}
@@ -638,7 +638,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title service-market-bg">
                         <h5>SERVICES MARKETPLACE</h5>
-                        <small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each serviceMarketplace}}
@@ -684,7 +684,7 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title lifestyle-market-bg">
                         <h5>LIFESTYLE MARKETPLACE</h5>
-                        <small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small>
+                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each lifestyleMarketplace}}
@@ -784,9 +784,9 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title public-market-bg">
                         <h5>TOP SELLERS</h5>
-                        <small class="pull-right m-t-xs">SEE ALL
+                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL
                             <i class="fa fa-caret-right"></i>
-                        </small>
+                        </small></a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -794,7 +794,7 @@
                             <div class="col-md-6">
                                 <div class="feed-element">
                                     <div class="feed-product">
-                                        <p class="hash_num">#1</p>
+                                        <p class="hash_num"># {{SUMFloat @index 1}}</p>
                                     </div>
                                     <div class="feed-product">
                                         <img src="{{this.url}}">
@@ -841,9 +841,9 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title featured-product-bg">
                         <h5>FEATURED SERVICES</h5>
-                        <small class="pull-right m-t-xs">SEE ALL
+                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL
                             <i class="fa fa-caret-right"></i>
-                        </small>
+                        </small></a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">

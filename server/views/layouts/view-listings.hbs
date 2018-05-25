@@ -18,25 +18,10 @@
 	}
 </script>
 <script type="text/javascript">
-
 	function changeStatus(e) {
-		var queryParam = {};
-		queryParam.status = e.value;
-		queryParam.vendor_name = 'devan vendor';
-
-		$.ajax({
-			type: 'GET',
-			url: '/api/product-sales-rating',
-			data: queryParam,
-			success: function (data, text) {
-				console.log(data.rows);
-			},
-			error: function (request, status, error) {
-				console.log('request', request.responseText);
-			}
-		});
+		window.location.href = '/listings?status='+ e.value;
 	}
-</script> 	
+</script>
 {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
@@ -54,10 +39,10 @@
 						<div class="col-md-2 common_padding1">
 							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
-								<option value="1">Active</option>
-								<option value="2">InActive</option>
-								<option value="10">Suspended</option>
-								<option value="11">Sold Out</option>
+								<option value="active">Active</option>
+								<option value="inactive">InActive</option>
+								<option value="suspended">Suspended</option>
+								<option value="soldout">Sold Out</option>
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
@@ -134,7 +119,6 @@
 					</div>
 				</div>
 				<div class="col-md-2">
-
 				</div>
 			</div>
 		</div>

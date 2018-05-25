@@ -106,6 +106,11 @@ module.exports = (sequelize, DataTypes) => {
         start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',
+            allowNull: true
+        },
+        end_date: {
+            type: DataTypes.DATEONLY,
+            field: 'end_date',
             allowNull: false
         },
         impression: {

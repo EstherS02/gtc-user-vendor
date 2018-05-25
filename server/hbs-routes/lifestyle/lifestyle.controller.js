@@ -17,7 +17,6 @@ export function lifestyle(req, res) {
     var queryObj = {};
 
     offset = 0;
-    limit = 5;
     field = "id";
     order = "asc";
 
@@ -26,6 +25,7 @@ export function lifestyle(req, res) {
 
     async.series({
         featuredProducts: function (callback) {
+            limit = null;
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
@@ -36,7 +36,8 @@ export function lifestyle(req, res) {
                 });
         },
         lifestyle: function (callback) {
-            service.findRows(productModel, queryObj, offset, 20, field, order)
+            limit = 20;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (lifestyle) {
                     return callback(null, lifestyle.rows);
 
@@ -50,6 +51,7 @@ export function lifestyle(req, res) {
             queryObj['type'] = 'Lifestyle Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (subscriptionProviders) {
                     return callback(null, subscriptionProviders.rows);

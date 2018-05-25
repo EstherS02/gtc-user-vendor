@@ -103,6 +103,7 @@ export function homePage(req, res) {
         },
         featuredProducts: function(callback) {
             delete queryObj['marketplace'];
+            limit = null;
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function(featuredProducts) {
                     return callback(null, featuredProducts.rows);
@@ -115,6 +116,7 @@ export function homePage(req, res) {
         topSellers: function (callback) {
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (servicesProviders) {
                     return callback(null, servicesProviders.rows);

@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductMedium', {
+    return sequelize.define('ProductMedia', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -59,7 +59,7 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const ProductMedium = model.ProductMedium;
+    const ProductMedia = model.ProductMedia;
     const Product = model.Product;
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
@@ -69,13 +69,13 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const State = model.State;
 
-    ProductMedium.hasMany(Product, {
+    ProductMedia.hasMany(Product, {
         foreignKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(Vendor, {
+    ProductMedia.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'vendor_id',
@@ -83,7 +83,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(Marketplace, {
+    ProductMedia.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'marketplace_id',
@@ -91,7 +91,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(MarketplaceType, {
+    ProductMedia.belongsToMany(MarketplaceType, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'marketplace_type_id',
@@ -99,7 +99,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(Category, {
+    ProductMedia.belongsToMany(Category, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'product_category_id',
@@ -107,7 +107,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(SubCategory, {
+    ProductMedia.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'sub_category_id',
@@ -115,7 +115,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(Country, {
+    ProductMedia.belongsToMany(Country, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'product_location',
@@ -123,7 +123,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    ProductMedium.belongsToMany(State, {
+    ProductMedia.belongsToMany(State, {
         through: Product,
         foreignKey: 'product_media_id',
         otherKey: 'state_id',
