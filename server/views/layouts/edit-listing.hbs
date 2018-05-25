@@ -5,12 +5,12 @@
 			<div class="row">
 				{{> vendor/navbar}} 
 				<div class="col-md-8 list_bg">
-					<h5 class="list_manage">Manage Product - iPhone Pallets of Interest</h5>
+					<h5 class="list_manage">{{product.product_name}}</h5>
 					<section class="box2 list_sec" >
 					  <div class="container">
 						  <div class="row">
 							  <div class="col-md-12 box2_align">
-								  <h5>PRIVATE WHOLESALE MARKETPLACE</h1>
+								  <h5>{{product.marketplace}}</h1>
 							  </div>
 						  </div>
 					  </div>
@@ -53,7 +53,7 @@
 									<p>Category</p>
 								</div>
 								<div class="col-md-10">
-									<p>Electronics > Phones</p>
+									<p>{{product.category}} > {{product.sub_category}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -61,7 +61,7 @@
 									<p>SKU</p>
 								</div>
 								<div class="col-md-10">
-									<p>1234987</p>
+									<p>{{product.sku}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -69,7 +69,7 @@
 									<p>MOQ</p>
 								</div>
 								<div class="col-md-10">
-									<p>40</p>
+									<p>{{product.moq}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -77,7 +77,7 @@
 									<p>Availability</p>
 								</div>
 								<div class="col-md-10">
-									<p>100 in stock</p>
+									<p>{{quantity_available}} in stock</p>
 								</div>
 							</div>
 							<div class="row">
@@ -93,7 +93,7 @@
 									<p>Name</p>
 								</div>
 								<div class="col-md-10">
-									<p class="list_iphone">iPhone Pallets of Interest</p>
+									<p class="list_iphone">{{product.product_name}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -101,7 +101,7 @@
 									<p>Price</p>
 								</div>
 								<div class="col-md-10">
-									<p class="list_doll">$500.<sup>00/10</sup></p>
+									<p class="list_doll">${{product.price}}.<sup>00/10</sup></p>
 								</div>
 							</div>
 							<div class="row">

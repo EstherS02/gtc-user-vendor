@@ -4,12 +4,11 @@
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}} 
-
 				<div class="col-md-8" style="background-color: #fff;">
 					<div class="row">
 						<div class="col-md-9" id="render_list" >
 							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
-							<p>Sort by&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span onclick="selectAll(this);"><b><a href="/reviews?sort=mostRecent">Most Recent</a></b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text_blue_color" onclick="starRating(this);"><a href="/reviews?sort=rating">Star Rating</a></span></p>
+							<p>Sort by&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><b><a href="/reviews?sort=mostRecent">Most Recent</a></b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text_blue_color"><a href="/reviews?sort=rating">Star Rating</a></span></p>
 							<div id="Recent" class="tabcontent">
 							<hr>
 							{{#each Reviews}}
