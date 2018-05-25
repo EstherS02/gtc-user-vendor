@@ -18,7 +18,6 @@ export function shop(req, res) {
 	var queryObj = {};
 
 	offset = 0;
-	limit = 5;
 	field = "id";
 	order = "asc";
 
@@ -27,7 +26,7 @@ export function shop(req, res) {
 
     async.series({
         featuredProducts: function (callback) {
-
+            limit = null;
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
@@ -38,7 +37,7 @@ export function shop(req, res) {
                 });
         },
         publicMarketplace: function (callback) {
-
+            limit = 20;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
@@ -53,6 +52,7 @@ export function shop(req, res) {
             queryObj['type'] = 'Public Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (retailers) {
                     return callback(null, retailers.rows);

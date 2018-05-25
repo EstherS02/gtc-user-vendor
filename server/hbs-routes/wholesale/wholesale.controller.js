@@ -19,7 +19,7 @@ export function wholesale(req, res) {
     var queryObj = {};
 
     offset = 0;
-    limit = 5;
+    limit = 20;
     field = "id";
     order = "asc";
 
@@ -71,6 +71,7 @@ export function wholesale(req, res) {
                 });
         },
         featuredProducts: function (callback) {
+            limit = null;
             delete queryObj['marketplace_type'];
             queryObj['marketplace'] = 'Private Wholesale Marketplace';
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
@@ -82,23 +83,10 @@ export function wholesale(req, res) {
                     return callback(null);
                 });
         },
-        wholesalers: function (callback) {
-            delete queryObj['marketplace'];
-            queryObj['type'] = 'Private Wholesale Marketplace';
-            field = 'sales_count';
-            order = 'desc';
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
-                .then(function (wholesalers) {
-                    return callback(null, wholesalers.rows);
-
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
         category: function (callback) {
-            delete queryObj['type'];
-            service.findRows(categoryModel, queryObj, offset, 10, field, order)
+            limit = null;
+            delete queryObj['marketplace'];
+            service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
 
@@ -108,7 +96,8 @@ export function wholesale(req, res) {
                 });
         },
         country: function (callback) {
-            service.findRows(countryModel, queryObj, offset, limit, "id", "asc")
+            limit = null;
+            service.findRows(countryModel, queryObj, offset, limit, field, order)
                 .then(function (country) {
                     return callback(null, country.rows);
 
@@ -116,8 +105,22 @@ export function wholesale(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        }
+        },
+         wholesalers: function (callback) {
+            delete queryObj['marketplace'];
+            queryObj['type'] = 'Private Wholesale Marketplace';
+            field = 'sales_count';
+            order = 'desc';
+            limit = 6;
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (wholesalers) {
+                    return callback(null, wholesalers.rows);
 
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
     }, function (err, results) {
         if (!err) {
             res.render('wholesale', {

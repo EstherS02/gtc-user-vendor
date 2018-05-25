@@ -16,7 +16,7 @@ export function products(req, res) {
 	var queryObj = {};
 
 	offset = 0;
-	limit = null;
+	limit = 4;
 	field = 'sales_count';
 	order = 'desc';
 
@@ -69,7 +69,10 @@ export function products(req, res) {
         },  
         category: function (callback) {
             delete queryObj['marketplace'];
-            service.findRows(categoryModel, queryObj, offset, 10, "id", "asc")
+            limit = null;
+            order = 'asc';
+            field = 'id';
+            service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
 
@@ -79,7 +82,8 @@ export function products(req, res) {
                 });
         },
         subCategory: function (callback) {
-            service.findRows(subcategoryModel, queryObj, offset, limit, "id", "asc")
+            limit = null;
+            service.findRows(subcategoryModel, queryObj, offset, limit, field, order)
                 .then(function (subCategory) {
                     return callback(null, subCategory.rows);
 
@@ -89,7 +93,7 @@ export function products(req, res) {
                 });
         },
         country: function (callback) {
-            service.findRows(countryModel, queryObj, offset, limit, "id", "asc")
+            service.findRows(countryModel, queryObj, offset, limit, field, order)
                 .then(function (country) {
                     return callback(null, country.rows);
 

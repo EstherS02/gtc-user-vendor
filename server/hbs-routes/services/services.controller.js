@@ -16,7 +16,6 @@ export function services(req, res) {
 	var queryObj = {};
 
 	offset = 0;
-	limit = 5;
 	field = "id";
 	order = "asc";
 
@@ -25,6 +24,7 @@ export function services(req, res) {
 
 	async.series({
 		featuredService: function (callback) {
+			limit = null;
 			service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
 				.then(function (featuredService) {
 					return callback(null, featuredService.rows);
@@ -35,7 +35,8 @@ export function services(req, res) {
 				});
 		},
 		serviceProduct: function (callback) {
-			service.findRows(productModel, queryObj, offset, 20, field, order)
+			limit = 20;
+			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function (serviceProduct) {
 					return callback(null, serviceProduct.rows);
 
@@ -48,7 +49,8 @@ export function services(req, res) {
 			delete queryObj['marketplace'];
             queryObj['type'] = 'Services Marketplace';
             field = 'sales_count';
-            order = 'desc';
+			order = 'desc';
+			limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (servicesProviders) {
                     return callback(null, servicesProviders.rows);

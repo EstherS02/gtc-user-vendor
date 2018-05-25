@@ -24,7 +24,7 @@ export function directory(req, res) {
 
     async.series({
         category: function (callback) {
-            service.findRows(categoryModel, queryObj, offset, 10, field, order)
+            service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
 
@@ -57,6 +57,7 @@ export function directory(req, res) {
             queryObj['type'] = 'Private Wholesale Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (wholesalers) {
                     return callback(null, wholesalers.rows);
@@ -70,6 +71,7 @@ export function directory(req, res) {
             queryObj['type'] = 'Public Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (retailers) {
                     return callback(null, retailers.rows);
@@ -83,6 +85,7 @@ export function directory(req, res) {
             queryObj['type'] = 'Services Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (servicesProviders) {
                     return callback(null, servicesProviders.rows);
@@ -96,6 +99,7 @@ export function directory(req, res) {
             queryObj['type'] = 'Lifestyle Marketplace';
             field = 'sales_count';
             order = 'desc';
+            limit = 6;
             service.findRows(vendorModel, queryObj, offset, limit, field, order)
                 .then(function (subscriptionProviders) {
                     return callback(null, subscriptionProviders.rows);
