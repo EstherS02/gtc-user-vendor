@@ -1,3 +1,22 @@
+<script>
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				console.log(i)
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+</script>
 {{> vendor/header}} 
   <section class="showing_categ">
 	<div class="" >
@@ -8,9 +27,14 @@
 					<p class="vend_edit_lists_pstyle"></p>
 					<div class="row">
 						<div class="col-md-10">
-							<input type="submit" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle">
-								<option>CHANGE STATUS</option>
-							</select> <input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
+							<input type="submit" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+								<option disabled selected>CHANGE STATUS</option>
+								<option value="1">Active</option>
+								<option value="2">InActive</option>
+								<option value="10">Suspended</option>
+								<option value="11">Sold Out</option>
+							</select>
+							 <input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
 							<input type="text" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" />
@@ -18,7 +42,7 @@
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">333,333 items total</p>
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
@@ -28,7 +52,7 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th><input type="checkbox"></th>
+									<th><input type="checkbox" onclick="selectAll(this);"></th>
 									<th>Coupon Name</th>
 									<th>Publish Date</th>
 									<th>Type</th>
@@ -38,15 +62,35 @@
 								</tr>
 							</thead>
 							<tbody>
+							{{#each Coupons}}
 								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
+									<td><input type="checkbox" ></td>
+									<td class="text_blue_color">{{this.coupon_name}}</td>
+									<td>{{formatTime this.publish_date "MMM D YY"}}</td>
+									{{!-- DiscountType --}}
+									{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+									<td>Percentage</td> 
+									{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
+									<td>Fixed Price</td>
+									{{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
+									<td>Fixed Price Discount</td> 
+									{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
+									<td>Fixed Cart Discount</td> 
+									{{/ifCond}}
+										{{!--End DiscountType --}}
+									<td class="text_blue_color">{{this.sales_count}}</td>
+									<td>{{this.discount_value}}</td>
+									{{!-- satusCode --}}
+									{{#ifCond this.status "==" ../statusCode.ACTIVE}}
 									<td class="text_green_color">Active</td>
+									{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
+									<td class="text_orange_color">Suspended</td>
+									{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
+									<td class="text_red_color">Sold Out</td>
+									{{/ifCond}}
+									{{!-- End status Code--}}
 								</tr>
+								{{/each}}
 								<tr>
 									<td><input type="checkbox"></td>
 									<td class="text_blue_color">iPhone Pallets of Interest</td>
@@ -65,85 +109,12 @@
 									<td>$15.00 CAD</td>
 									<td class="text_red_color">Sold Out</td>
 								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr><tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Percentage</td>
-									<td class="text_blue_color">3</td>
-									<td>10%</td>
-									<td class="text_green_color">Active</td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">333,333 items total</p>
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
@@ -151,7 +122,6 @@
 					</div>
 				</div>
 				<div class="col-md-2">
-					
 				</div>				
 			</div>
 		</div>

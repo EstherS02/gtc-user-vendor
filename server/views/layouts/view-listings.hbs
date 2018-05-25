@@ -114,9 +114,9 @@
 									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 									<td class="text_green_color">InActive</td>
 									{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-									<td class="text_green_color">Suspended</td>
+									<td class="text_orange_color">Suspended</td>
 									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-									<td class="text_green_color">Sold Out</td>
+									<td class="text_red_color">Sold Out</td>
 									{{/ifCond}}
 									<td class="text_blue_color">{{this.sku}}</td>
 								</tr>

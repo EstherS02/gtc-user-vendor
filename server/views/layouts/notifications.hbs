@@ -41,9 +41,9 @@
 									{{#ifCond this.status "==" ../statusCode.NEWORDER}}
 									<td><i class="fas fa-check-circle text_green_color"></i>New Order</td>
 									{{else ifCond this.status "==" ../statusCode.CANCELLEDORDER}}
-									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Cancelled Order</td>
+									<td><i class="fas fa-check-circle text_green_color">}</i>Cancelled Order</td>
 									{{else ifCond this.status "==" ../statusCode.FAILEDORDER}}
-									<td><i class="fas fa-check-circle text_green_color">{{!-- <i class="fas fa fa-times-circle text_red_color"> --}}</i>Failed Order</td>
+									<td><i class="fas fa-check-circle text_green_color"></i>Failed Order</td>
 									{{/ifCond}}
 									<td>{{this.notification}}</td>
 								</tr>
