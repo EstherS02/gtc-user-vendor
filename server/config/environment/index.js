@@ -33,6 +33,8 @@ var all = {
   // Should we populate the DB with sample data?
   seedDB: false,
 
+  paginationLimit: 10,
+
   clientURL: process.env.CLIENT_BASE_URL,
 
   upload_products_path: process.env.BASE_URL_LOCAL_UPLOAD + '/products',
