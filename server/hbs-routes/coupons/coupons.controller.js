@@ -14,14 +14,24 @@ var async = require('async');
 
 export function coupons(req, res) {
 	
+
 	var field = 'id';
 	var order = "desc"; //"asc"
 	var offset = 0;
-	var limit = 10;
 	var created_by = 29;
-	var queryObj = {
-		created_by: created_by
+	var	limit = 10;//;
+	var queryObj =  {};
+	if(typeof req.query.limit !== 'undefined'){
+		limit = req.query.limit;
+		limit = parseInt(limit);
 	}
+	if(typeof req.query.status !== 'undefined'){
+		var status= '';
+		 if( status = statusCode[req.query.status])
+		 queryObj['status'] = parseInt(status);
+	}
+
+	queryObj['created_by']= created_by;
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findAndCountAll({
@@ -33,6 +43,7 @@ export function coupons(req, res) {
 					],
 					raw:true
 				}).then(function(Coupons) {
+
 					return callback(null, Coupons);
 				}).catch(function(error) {
 					console.log('Error :::', error);

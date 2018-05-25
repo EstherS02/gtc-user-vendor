@@ -17,6 +17,28 @@
 		}
 	}
 </script>
+<script type="text/javascript">
+	function changeStatus(e) {
+			window.location.href = '/coupons?status='+ e.value;
+		}
+	function changeLimit(e) {
+		window.location.href = '/coupons?limit='+ e.value;
+	}
+	// function edit() {
+	// 	var chkArray = [];
+	// 	$(':checkbox:checked').each(function (i) {
+	// 	chkArray.push($(this).val());
+	// 	});
+	// 	var selected;
+	// 	selected = chkArray.join(',');
+	// 	if (selected.length > 0) {
+	// 	window.location.href = '/edit-coupons?id='+selected;
+	// 	} else {
+	// 	alert("Please at least check one of the checkbox");
+	// 	}
+	// 	}
+
+</script> 
 {{> vendor/header}} 
   <section class="showing_categ">
 	<div class="" >
@@ -29,10 +51,10 @@
 						<div class="col-md-10">
 							<input type="submit" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
-								<option value="1">Active</option>
-								<option value="2">InActive</option>
-								<option value="10">Suspended</option>
-								<option value="11">Sold Out</option>
+								<option value="ACTIVE">Active</option>
+								<option value="INACTIVE">InActive</option>
+								<option value="SUSPENDED">Suspended</option>
+								<option value="SOLDOUT">Sold Out</option>
 							</select>
 							 <input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
 						</div>
@@ -45,7 +67,11 @@
 							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
 						</div>
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+							<a href="/coupons?limit=10"> 10</a>
+							<a href="/coupons?limit=25"> 25</a>
+							<a href="/coupons?limit=100"> 100</a>
+							<a href="/coupons?limit=10"> All </a>
 						</div>
 					</div>
 					<div class="row">
@@ -95,7 +121,7 @@
 									<td><input type="checkbox"></td>
 									<td class="text_blue_color">iPhone Pallets of Interest</td>
 									<td>April 21, 2017</td>
-									<td>Percentage</td>
+									<td>Fixed Price</td>
 									<td class="text_blue_color">3</td>
 									<td>$15.00 CAD</td>
 									<td class="text_orange_color">Suspended</td>
@@ -104,7 +130,7 @@
 									<td><input type="checkbox"></td>
 									<td class="text_blue_color">iPhone Pallets of Interest</td>
 									<td>April 21, 2017</td>
-									<td>Percentage</td>
+									<td>Fixed Cart Discount</td>
 									<td class="text_blue_color">3</td>
 									<td>$15.00 CAD</td>
 									<td class="text_red_color">Sold Out</td>
