@@ -2,10 +2,10 @@
 
 import Handlebars from 'handlebars';
 
-Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, options) {
+Handlebars.registerHelper('pagination', function(currentPage, collectionSize, size, options) {
 	var startPage, endPage, context;
 
-	var pageCount = Math.ceil(parseInt(totalPage) / parseInt(size));
+	var pageCount = Math.ceil(parseInt(collectionSize) / parseInt(size));
 
 	if (arguments.length === 3) {
 		options = parseInt(size);

@@ -40,7 +40,7 @@ export function index(req, res) {
 				title: "Global Trade Connect",
 				productResults: results.rows,
 				currentPage: currentPage,
-				pageCount: results.count,
+				collectionSize: results.count,
 				size: 5,
 				pageLimit: limit
 			});
