@@ -1,0 +1,50 @@
+'use strict';
+
+import Handlebars from 'handlebars';
+
+Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, options) {
+	var startPage, endPage, context;
+	console.log('currentPage', currentPage, totalPage, size);
+
+	if (arguments.length === 3) {
+		options = parseInt(size);
+		size = 5;
+	}
+
+	startPage = parseInt(currentPage) - Math.floor(parseInt(size) / 2);
+	endPage = parseInt(currentPage) + Math.floor(parseInt(size) / 2);
+
+	if (startPage <= 0) {
+		endPage -= (startPage - 1);
+		startPage = 1;
+	}
+
+	if (endPage > parseInt(totalPage)) {
+		endPage = parseInt(totalPage);
+		if (endPage - parseInt(size) + 1 > 0) {
+			startPage = endPage - parseInt(size) + 1;
+		} else {
+			startPage = 1;
+		}
+	}
+
+	context = {
+		startFromFirstPage: false,
+		pages: [],
+		endAtLastPage: false,
+	};
+	if (startPage === 1) {
+		context.startFromFirstPage = true;
+	}
+	for (var i = startPage; i <= endPage; i++) {
+		context.pages.push({
+			page: i,
+			isCurrent: i === parseInt(currentPage),
+		});
+	}
+	if (endPage === parseInt(totalPage)) {
+		context.endAtLastPage = true;
+	}
+
+	return options.fn(context);
+});
