@@ -91,3 +91,7 @@ Handlebars.registerHelper('progressBar', function(value, total) {
     var rating = (value / total) * 60;
     return rating;
 });
+
+Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
+    return parseFloat(v1) + parseFloat(v2);
+});
