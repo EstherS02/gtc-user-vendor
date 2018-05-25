@@ -70,7 +70,7 @@ module.exports.initRelations = () => {
     const Product = model.Product;
     const Plan = model.Plan;
     const Vendor = model.Vendor;
-    const ProductMedium = model.ProductMedium;
+    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const Country = model.Country;
@@ -118,7 +118,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Marketplace.belongsToMany(ProductMedium, {
+    Marketplace.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'marketplace_id',
         otherKey: 'product_media_id',
