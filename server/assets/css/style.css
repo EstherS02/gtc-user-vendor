@@ -1,5 +1,5 @@
 body {
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #ffffff;
   font-size: 13px;
   color: #676a6c;
@@ -8,4 +8,8 @@ body {
 html,
 body {
   height: 100%;
+}
+
+.gtc-box-title a {
+   color: #fff;
 }

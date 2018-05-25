@@ -1,5 +1,4 @@
-
- <section>
+<section>
 	<div class="" >
 		<div class="container">
 			<div class="row">
@@ -15,198 +14,59 @@
 			</div>
 			<div class="row checkout_bg_color ">
                 <div class="col-md-9 checkout_title_color">
-                	<h4>MY SHOPPING CART <span class="checkout_title_color_span">(8 Item Totals)</span></h4>
+                	<h4>MY SHOPPING CART <span class="checkout_title_color_span">({{cartItemsCount}} Item Totals)</span></h4>
             	</div>
                 <div class="col-md-3 checkout_title_color_1">
 					<h4>YOUR ORDER</h4>
             	</div>
             	
             </div>
-			
-			
+
 			
 			<div class="row">
 				<div class="col-md-9">
-					<div class="row">
-						<div class="col-md-12 common_padding1">
-							<p class="shop_wholesale_items">WHOLE SALE ITEMS (2)</p>
-						</div>
-					</div>
-					<div class="container">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="shop_list_title">Product</th>
-									<th class="shop_list_title">Price</th>
-									<th class="shop_list_title">Qty</th>
-									<th class="shop_list_title">Total Price</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
 					
+					{{#each marketPlaces as |marketPlace|}}
 					<div class="row">
 						<div class="col-md-12 common_padding1">
-							<p class="shop_shop_items">SHOP ITEMS (2)</p>
+							{{#each ../seperatedItemsList}}
+								{{#ifCond marketPlace.code '==' @key}}
+									<p class="shop_wholesale_items">{{marketPlace.name}} ({{this.length}})</p>
+								{{/ifCond}}
+							{{/each}}
 						</div>
 					</div>
 					<div class="container">
 						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="shop_list_title">Product</th>
-									<th class="shop_list_title">Price</th>
-									<th class="shop_list_title">Qty</th>
-									<th class="shop_list_title">Total Price</th>
-								</tr>
-							</thead>
+							{{#each ../seperatedItemsList}}
+								{{#ifCond marketPlace.code '==' @key}}
+									{{#ifCond @key.length '>' 0}}
+									<thead>
+										<tr>
+											<th class="shop_list_title">Product</th>
+											<th class="shop_list_title">Price</th>
+											<th class="shop_list_title">Qty</th>
+											<th class="shop_list_title">Total Price</th>
+										</tr>
+									</thead>
+									{{/ifCond}}
+								{{/ifCond}}
+							{{/each}}
 							<tbody>
+						{{#each ../cartItems as |cartItem|}}
+
+							{{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
+
 								<tr>
 									<td>
 										<div class="row">
 											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
+												<img src="{{cartItem.Product.ProductMedium.url}}" style="width: 30px; height: 70px;">
 											</div>
 											<div class="col-md-9">
 												<div class="row common_padding">
 													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
+														<p class="shop_product_title"><a href="/product/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}">{{cartItem.Product.product_name}}</a></p>
 													</div>
 												</div>
 												<div class="row common_padding">
@@ -214,7 +74,7 @@
 														<p>Origin</p>
 													</div>
 													<div class="col-md-9">
-														<p>Canada</p>
+														<p>{{cartItem.Product.State.name}}</p>
 													</div>
 												</div>
 												<div class="row common_padding">
@@ -222,7 +82,7 @@
 														<p>Category</p>
 													</div>
 													<div class="col-md-9">
-														<p>Electronic - Phones</p>
+														<p>{{cartItem.Product.Category.name}}</p>
 													</div>
 												</div>
 												<div class="row common_padding">
@@ -230,7 +90,7 @@
 														<p>Seller</p>
 													</div>
 													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
+														<p>(<span class="shop_price_handling">{{cartItem.Product.Vendor.vendor_name}}</span>)</p>
 													</div>
 												</div>
 											</div>
@@ -239,16 +99,18 @@
 									<td>
 										<div class="row">
 											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
+												<p class="shop_price_doller">${{cartItem.Product.price}}</p>
+												<p class="shop_price_handling">Handling +$50.00</p>
+												{{#if cartItem.Product.moq}}
+												<p class="shop_price_min">Minimum Order Quantity: {{cartItem.Product.moq}}</p>
+												{{/if}}
 											</div>
 										</div>
 									</td>
 									<td>
 										<div class="row">
 											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
+												<input type="number" min="1" max="1000" value={{cartItem.quantity}} class="shop_qty_num">
 											</div>
 											<div class="col-md-6">
 												<p class="shop_price_handling">Update</p>
@@ -258,390 +120,20 @@
 									<td>
 										<div class="row">
 											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
+												<p class="shop_price_doller">${{SUMFloat cartItem.Product.price 50}}</p>
 												<p class="shop_total_remove text-center">REMOVE</p>
 											</div>
 										</div>
 									</td>
 								</tr>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
+								{{/ifCond}}
+								{{/each}}
 							</tbody>
 						</table>
 					</div>
-					
-					<div class="row">
-						<div class="col-md-12 common_padding1">
-							<p class="shop_service_items">SERVICE ITEMS (2)</p>
-						</div>
-					</div>
-					<div class="container">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="shop_list_title">Product</th>
-									<th class="shop_list_title">Price</th>
-									<th class="shop_list_title">Qty</th>
-									<th class="shop_list_title">Total Price</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="row">
-						<div class="col-md-12 common_padding1">
-							<p class="shop_subscription_items">SUBSCRIPTION ITEMS (2)</p>
-						</div>
-					</div>
-					<div class="container">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="shop_list_title">Product</th>
-									<th class="shop_list_title">Price</th>
-									<th class="shop_list_title">Qty</th>
-									<th class="shop_list_title">Total Price</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title">iPhone Pallets of Interest</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>Canada</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p>Electronic - Phones</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">Login for Seller Info</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_price_handling">Handling +$900.00</p>
-												<p class="shop_price_min">Minimum Order Quantity: 40</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input type="number" min="1" max="5" class="shop_qty_num">
-											</div>
-											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">$2,595.00</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+
+					{{/each}}
+
 					<div class="row">
 						<div class="col-md-6">
 							<input type="submit" value="CONTINUE SHOPPING" class="cont_shopping"/>
@@ -653,14 +145,20 @@
 				</div>
 				<div class="col-md-3 your_order_bg">
 					<div class="container">
-						<h6 class="yourorder_wholesalesum_head">Wholesale Summary</h6>
+
+						{{#each marketPlaces as |marketplace|}}
+						
+						{{#each ../totalPriceList as |totalPrice|}}
+
+						{{#ifCond marketplace.code '==' @key}}
+						<h6 class="yourorder_wholesalesum_head">{{marketplace.name}}</h6>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$8,763.00</p>
+								<p class="shop_subtotal float-right">${{totalPrice.price}}</p>
 							</div>
 						</div>
 						<div class="row">
@@ -668,7 +166,7 @@
 								<p class="shop_shipping">Shipping Ground</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_shipping float-right">$314.52</p>
+								<p class="shop_shipping float-right">${{totalPrice.shipping}}</p>
 							</div>
 						</div>
 						<div class="row">
@@ -676,115 +174,26 @@
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$9,283.00</p>
+								<p class="shop_subtotal float-right">${{SUMFloat totalPrice.price totalPrice.shipping}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
-								<p class="shop_subtotal"><b>WHOLESALE TOTAL</b></p>
+								<p class="shop_subtotal"><b>{{marketplace.name}} TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$9,077.52</b></p>
+								<p class="shop_subtotal float-right"><b>${{SUMFloat totalPrice.price totalPrice.shipping}}</b></p>
 							</div>
 						</div>
-						
-						<h6 class="yourorder_shopsum_head">Shop Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$8,763.00</p>
-							</div>
-						</div>
+						{{/ifCond}}
+						{{/each}}
+						{{/each}}
 						
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
-								<p class="shop_subtotal"><b>WHOLESALE TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$9,077.52</b></p>
-							</div>
-						</div>
-						
-						<h6 class="yourorder_servicesum_head">Service Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$8,763.00</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_shipping">Shipping Ground</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_shipping float-right">$314.52</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$9,283.00</p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>WHOLESALE TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$9,077.52</b></p>
-							</div>
-						</div>
-						
-						<h6 class="yourorder_subscriptionsum_head">Subscription Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$8,763.00</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_shipping">Shipping Ground</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_shipping float-right">$314.52</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">$9,283.00</p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>WHOLESALE TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$9,077.52</b></p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>GRAND TOTAL1</b></p>
+								<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
 								<p class="shop_subtotal float-right"><b>$19,077.52</b></p>
@@ -801,5 +210,3 @@
     	</div>
 	</div>
 </section>
-
- 

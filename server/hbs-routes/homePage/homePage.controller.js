@@ -11,6 +11,7 @@ var async = require('async');
 export function homePage(req, res) {
     var productModel = "ProductSalesRating";
     var featuredProductModel = "FeaturedproductSalesRating";
+    var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
 
@@ -110,6 +111,18 @@ export function homePage(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        topSellers: function (callback) {
+            field = 'sales_count';
+            order = 'desc';
+            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+                .then(function (servicesProviders) {
+                    return callback(null, servicesProviders.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
         }
     }, function(err, results) {
         if (!err) {
@@ -122,7 +135,8 @@ export function homePage(req, res) {
                 publicMarketplace: results.publicMarketplace,
                 serviceMarketplace: results.serviceMarketplace,
                 lifestyleMarketplace: results.lifestyleMarketplace,
-                featuredProducts: results.featuredProducts
+                featuredProducts: results.featuredProducts,
+                topSellers:results.topSellers
             });
         } else {
             res.render('homePage', err);
