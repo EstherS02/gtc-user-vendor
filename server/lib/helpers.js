@@ -5,7 +5,7 @@ const moment = require('moment');
 
 Handlebars.registerHelper('starCount', function(rating) {
 
-    var rating = Math.trunc(rating);
+    var rating = Math.ceil(rating);
 
     var colored = "";
     var colorless = "";
