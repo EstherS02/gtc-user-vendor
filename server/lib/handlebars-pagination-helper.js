@@ -4,7 +4,8 @@ import Handlebars from 'handlebars';
 
 Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, options) {
 	var startPage, endPage, context;
-	console.log('currentPage', currentPage, totalPage, size);
+
+	var pageCount = Math.ceil(parseInt(totalPage) / parseInt(size));
 
 	if (arguments.length === 3) {
 		options = parseInt(size);
@@ -19,8 +20,8 @@ Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, o
 		startPage = 1;
 	}
 
-	if (endPage > parseInt(totalPage)) {
-		endPage = parseInt(totalPage);
+	if (endPage > pageCount) {
+		endPage = pageCount;
 		if (endPage - parseInt(size) + 1 > 0) {
 			startPage = endPage - parseInt(size) + 1;
 		} else {
@@ -42,7 +43,7 @@ Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, o
 			isCurrent: i === parseInt(currentPage),
 		});
 	}
-	if (endPage === parseInt(totalPage)) {
+	if (endPage === pageCount) {
 		context.endAtLastPage = true;
 	}
 

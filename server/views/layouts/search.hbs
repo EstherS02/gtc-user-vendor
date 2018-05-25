@@ -315,27 +315,19 @@
 						<nav aria-label="Page navigation example">
 							<ul class="pagination justify-content-center">
 								{{#unless startFromFirstPage}}
-								<li class="page-item disabled">
-									<a class="page-link" href="search?page={{page}}" tabindex="-1">Previous</a>
+								<li class="page-item">
+									<a class="page-link" href="search?page={{DiffFloat ../currentPage 1}}&limit={{../pageLimit}}">Previous</a>
 								</li>
 								{{/unless}}
 								{{#each pages}}
-									{{#if isCurrent}}
-										<li class="page-item active">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/if}}
-									{{#unless isCurrent}}
-										<li class="page-item">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/unless}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="search?page={{page}}&limit={{../../pageLimit}}">{{page}}</a>
+									</li>
 								{{/each}}
-
 								{{#unless endAtLastPage}}
-								<li class="page-item">
-									<a class="page-link" href="search?page={{page}}">Next</a>
-								</li>
+									<li class="page-item">
+										<a class="page-link" href="search?page={{SUMFloat ../currentPage 1}}&limit={{../pageLimit}}">Next</a>
+									</li>
 								{{/unless}}
 							</ul>
 						</nav>
