@@ -311,31 +311,23 @@
 				<div class="col-md-3">
 				</div>
 				<div class="col-md-7">
-					{{#pagination currentPage pageCount size}}
+					{{#pagination collectionSize page pageSize maxSize}}
 						<nav aria-label="Page navigation example">
 							<ul class="pagination justify-content-center">
 								{{#unless startFromFirstPage}}
-								<li class="page-item disabled">
-									<a class="page-link" href="search?page={{page}}" tabindex="-1">Previous</a>
+								<li class="page-item">
+									<a class="page-link" href="search?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
 								</li>
 								{{/unless}}
 								{{#each pages}}
-									{{#if isCurrent}}
-										<li class="page-item active">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/if}}
-									{{#unless isCurrent}}
-										<li class="page-item">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/unless}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="search?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+									</li>
 								{{/each}}
-
 								{{#unless endAtLastPage}}
-								<li class="page-item">
-									<a class="page-link" href="search?page={{page}}">Next</a>
-								</li>
+									<li class="page-item">
+										<a class="page-link" href="search?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+									</li>
 								{{/unless}}
 							</ul>
 						</nav>
