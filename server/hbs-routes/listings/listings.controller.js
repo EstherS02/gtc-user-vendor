@@ -12,7 +12,6 @@ export function listings(req, res) {
 	var offset, limit, field, order;
 	var queryParams = {};
 	var productModel = "ProductSalesRating";
-	queryParams["vendor_name"] = 'devan vendor';
 	field = "id";
 	order = "asc";
 	offset = 0;
@@ -63,4 +62,31 @@ export function listings(req, res) {
 		}
 	});
 
+}
+
+export function editListings(req, res) {
+
+	let searchObj = {}
+	var productModel = "ProductSalesRating";
+
+    if(req.params.product_slug)
+        searchObj["product_slug"] = req.params.product_slug;    
+
+    service.findOneRow(productModel, searchObj)
+        .then(function (product) {
+            res.render('edit-listing', {
+				title: 'Global Trade Connect',
+				statusCode: status,
+                product : plainTextResponse(product)
+            });
+        }).catch(function (error) {
+            console.log('Error :::', error);
+            res.render('edit-listing', error)
+        });
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }
