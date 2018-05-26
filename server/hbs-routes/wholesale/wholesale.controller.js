@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 
 const async = require('async');
@@ -73,6 +74,7 @@ export function wholesale(req, res) {
         featuredProducts: function (callback) {
             limit = null;
             delete queryObj['marketplace_type'];
+            queryObj['position'] = position.WholesaleLanding;
             queryObj['marketplace'] = 'Private Wholesale Marketplace';
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
@@ -86,6 +88,7 @@ export function wholesale(req, res) {
         category: function (callback) {
             limit = null;
             delete queryObj['marketplace'];
+            delete queryObj['position'];
             service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);

@@ -12,6 +12,7 @@ export function listings(req, res) {
 	var offset, limit, field, order;
 	var queryParams = {};
 	var productModel = "ProductSalesRating";
+	queryParams["vendor_name"] ='chandru Ismera';
 	field = "id";
 	order = "asc";
 	offset = 0;
@@ -83,6 +84,7 @@ export function editListings(req, res) {
             console.log('Error :::', error);
             res.render('edit-listing', error)
         });
+
 }
 
 function plainTextResponse(response) {

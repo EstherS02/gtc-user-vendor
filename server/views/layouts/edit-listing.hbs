@@ -1,4 +1,9 @@
-{{> vendor/header}}
+<script>
+	$(function () {
+		console.log("comming....");
+		$("#from, #to").datepicker();
+	});
+</script> {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -129,12 +134,12 @@
 										</div>
 										<div class="col-md-4 common_padding1">
 											<p>
-												<input type="radio" />Total Percent Discount</p>
+												<input type="radio" name="discount"/>Total Percent Discount</p>
 											<p>
-												<input type="radio" />Total Value Discount</p>
+												<input type="radio" name="discount"/>Total Value Discount</p>
 										</div>
 										<div class="col-md-2 common_padding1">
-											<input class="list_place_2" type="text" placeholder="20%" />%
+											<input class="list_place_2" type="text" placeholder="20%" />
 										</div>
 										<div class="col-md-1 common_padding1">
 											<p class="list_edit">
@@ -202,14 +207,7 @@
 							<p>Sellar Rating:</p>
 						</div>
 						<div class="col-md-7 ">
-							<p>
-								<i class="fas fa-star product_rating_star"></i>
-								<i class="fas fa-star product_rating_star"></i>
-								<i class="fas fa-star product_rating_star"></i>
-								<i class="fas fa-star product_rating_star"></i>
-								<i class="fas fa-star product_rating_star"></i>
-								<i class="fas fa-star product_rating_star"></i>
-							</p>
+							<p>{{ starCount product.rating}}</p>
 						</div>
 						<hr/>
 
@@ -218,20 +216,24 @@
 						<span> Live </span>
 					</p>
 					<select class="vend_edit_lists_buttonstyle">
-						<option>Change</option>
+						<option disabled selected>Change</option>
+						<option value="active">Active</option>
+						<option value="inactive">InActive</option>
+						<option value="suspended">Suspended</option>
+						<option value="soldout">Sold Out</option>
 					</select>
 					<p>Duration:</p>
 					<div class="row" style="margin-bottom: 10px;">
 						<div class="col-md-12">
-							<input style="width: 80px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" placeholder="01/01/2017"
-							/> to
-							<input style="width: 80px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" placeholder="12/12/2017"
-							/>
+							<input style="width: 80px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" id="from"
+							 placeholder="01/01/2017"> to
+							<input style="width: 80px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" id="to"
+							 placeholder="12/12/2017">
 						</div>
 					</div>
 					<div class="row" style="margin-bottom: 10px;">
 						<div class="col-md-12">
-							<input type="checkbox" />Feature this product indefinitely.
+							<input type="checkbox"/>Feature this product indefinitely.
 						</div>
 					</div>
 					<p>Feature this product:</p>
