@@ -156,6 +156,32 @@ export function addToCart(req, res){
 
 }
 
+export function removeCart(req, res){
+	
+	service.destroyRow('Cart', req.params.id)
+	.then(function(result) {
+		console.log(result)
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		return res.status(500).send("Internal server error");
+	});
+}
+
+export function updateCart(req, res){
+
+
+/* 	service.updateRow('Cart', {},req.params.id)
+	.then(function(result) {
+		console.log(result)
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		return res.status(500).send("Internal server error");
+	}); */
+}
+
+
 
 function plainTextResponse(response) {
 	return response.get({

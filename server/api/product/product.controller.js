@@ -56,7 +56,7 @@ export function getMediaId(req, res) {
 
 	console.log("url.......", bodyParams);
 
-	service.createRow('ProductMedium', bodyParams)
+	service.createRow('ProductMedia', bodyParams)
 		.then(function(result) {
 			if (result) {
 				return res.status(201).send(result);

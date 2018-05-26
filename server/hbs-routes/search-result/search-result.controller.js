@@ -1,22 +1,21 @@
 'use strict';
 
 const async = require('async');
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
 
 const service = require('../../api/service');
+const status = require('../../config/status');
+const config = require('../../config/environment');
 
 export function index(req, res) {
 	var queryObj = {};
+	var topQueryObj = {};
 	var page;
 	var endPointName = "MarketplaceProduct";
 	var offset, limit, field, order;
 
-	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
@@ -31,22 +30,53 @@ export function index(req, res) {
 	queryObj['status'] = {
 		'$eq': status["ACTIVE"]
 	}
+	topQueryObj['status'] = {
+		'$eq': status["ACTIVE"]
+	}
 
-	console.log('queryObj', queryObj, limit);
+	async.series({
+		topProducts: function(callback) {
+			var topLimit, topField, topOrder;
+			topQueryObj['is_featured_product'] = 1;
+			topLimit = 3;
+			topField = 'created_on';
+			topOrder = 'desc';
 
-	service.findRows(endPointName, queryObj, offset, limit, field, order)
-		.then(function(results) {
+			service.findRows(endPointName, topQueryObj, 0, topLimit, topField, topOrder)
+				.then(function(results) {
+					return callback(null, results.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				});
+		},
+		products: function(callback) {
+			console.log('queryObj', queryObj);
+			service.findRows(endPointName, queryObj, offset, limit, field, order)
+				.then(function(results) {
+					return callback(null, results);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				});
+		}
+	}, function(error, results) {
+		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
-				productResults: results.rows,
-				collectionSize: results.count,
+				topProductResults: results.topProducts,
+				productResults: results.products.rows,
+				collectionSize: results.products.count,
 				page: page,
 				pageSize: limit,
+				offset: offset,
 				maxSize: 5
 			});
-		})
-		.catch(function(error) {
+		} else {
 			console.log('Error:::', error);
 			res.render('services', error);
-		});
+		}
+	});
 }

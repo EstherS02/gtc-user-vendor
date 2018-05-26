@@ -51,3 +51,131 @@ body {
   background-color: #c28006;
   border-color: #c28006;
 }
+
+.gtc-header {
+  background: url('../img/bg-footer.jpg') no-repeat;
+}
+
+.top-header {
+  background-color: #154a80;
+  border-bottom-left-radius: 10px;
+}
+
+@media only screen and (min-width: 64.063em) and (max-width: 90em) { 
+  .gtc-container {
+    max-width: 1292px;
+  }
+  .gtc-logo {
+    width: 184px;
+  }
+}
+
+@media only screen and (min-width : 1200px) {
+  .gtc-container {
+    max-width: 1220px;
+  }
+  .gtc-logo {
+    width: 172px;
+  }
+  .gtc-header {
+    min-height: 84px;
+  }
+  .gtc-logo {
+    min-height: 72px;
+  }
+  .top-header {
+    margin-right: -84px;
+    min-height: 36px;
+  }
+  .inner-top-header {
+    margin-right: 84px;
+  }
+}
+
+.img-reponsive {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  vertical-align: middle;
+}
+
+.gtc-logo {
+  position: relative;
+  background-color: #fff;
+  margin-top: 12px;
+  border-color: #f9a025;
+  border-style: solid;
+  border-bottom: none;
+  border-width: 2px;
+}
+
+.gtc-logo img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 14px;
+}
+
+.inner-top-header {
+  float: right;
+  display: table;
+  width: auto;
+  position: relative;
+  height: 36px;
+}
+
+.top-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.top-menu > li {
+    display: inline-block;
+    position: relative;
+}
+
+.top-menu > li > a {
+  height: 36px;
+  text-align: center;
+  border: none;
+  display: table-cell;
+    vertical-align: middle;
+    text-decoration: none;
+      padding: 0 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.top-menu-link {
+    white-space: nowrap;
+    position: relative;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.gtc-geo-locate {
+  font-size: 12px;
+}
+
+.gtc-geo-locate > a {
+  color: #eec995;
+}

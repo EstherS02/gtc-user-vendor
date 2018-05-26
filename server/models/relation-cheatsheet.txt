@@ -299,7 +299,7 @@ has many          wish_list                                as FkWishList2s
 belongs to        vendor                                   as Vendor 
 belongs to        marketplace                              as Marketplace 
 belongs to        marketplace_type                         as MarketplaceType 
-belongs to        product_media                            as ProductMedium 
+belongs to        product_media                            as ProductMedia 
 belongs to        category                                 as ProductCategory 
 belongs to        sub_category                             as SubCategory 
 belongs to        country                                  as RelatedProductLocation 
@@ -337,7 +337,7 @@ belongs to        attribute                                as Attribute
 belongs to        product                                  as Product 
 
 
-ProductMedium
+ProductMedia
 -------------
 has many          product                                  as FkProduct4s 
 belongs to many   vendor                                   as ProductVendors 

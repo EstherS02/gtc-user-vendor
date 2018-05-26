@@ -19,6 +19,10 @@ export function cart(req, res) {
             var queryObj = {};
             queryObj['user_id'] = user_id;
 
+            queryObj['status'] = {
+                '$eq': status["ACTIVE"]
+            }
+
             model['Cart'].findAndCountAll({
                 where: queryObj,
                 include: [
@@ -30,7 +34,7 @@ export function cart(req, res) {
                                { model : model['SubCategory']},
                                { model: model['Marketplace']},
                                { model : model['MarketplaceType']},
-                               { model : model['ProductMedium']},
+                               { model : model['ProductMedia']},
                                { model : model ['Country']},
                                { model : model ['State']}
                             ]
@@ -48,6 +52,12 @@ export function cart(req, res) {
             
         },
         marketPlace: function(cb) {
+
+            var searchObj = {};
+
+            searchObj['status'] = {
+                '$eq': status["ACTIVE"]
+            }
 
             model['Marketplace'].findAndCountAll({
                 where: {},
@@ -69,8 +79,10 @@ export function cart(req, res) {
 
             var totalItems = results.cartItems.rows; 
             var allMarketPlaces = results.marketPlace.rows;
-            var totalPrice = {}
+            var totalPrice = {};
             var defaultShipping = 50;
+
+            totalPrice['grandTotal'] = 0;
          
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
 
@@ -79,27 +91,34 @@ export function cart(req, res) {
                 totalPrice[itemsKey] = {};
                 totalPrice[itemsKey]['price'] = 0;
                 totalPrice[itemsKey]['shipping'] = 0;
+                totalPrice[itemsKey]['total'] = 0;
+
                 for(var i=0; i<itemsValue.length; i++){
+
                     if((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price){
-                        totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + (itemsValue[i].quantity * itemsValue[i].Product.price);
+
+                        var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
+
+                        totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
                         totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                        totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
                     }
                 }
-            });
 
+                totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
+            });
             
             console.log(totalPrice)
-            
 
-               return res.status(200).render('cart', {
+            return res.status(200).render('cart', {
                 title : "Global Trade Connect",
                 cartItems: results.cartItems.rows,
                 cartItemsCount: results.cartItems.count,
                 marketPlaces: results.marketPlace.rows,
                 seperatedItemsList : seperatedItems,
                 totalPriceList: totalPrice
-            });   
-             /* return res.status(200).send({
+            });    
+       /*       return res.status(200).send({
                 title : "Global Trade Connect",
                 seperatedItemsList : seperatedItems,
                 cartItems: results.cartItems.rows,

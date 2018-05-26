@@ -33,12 +33,14 @@ var all = {
   // Should we populate the DB with sample data?
   seedDB: false,
 
+  paginationLimit: 10,
+
   clientURL: process.env.CLIENT_BASE_URL,
 
-  upload_products_path: process.env.BASE_URL_LOCAL_UPLOAD + '/products',
+  images_base_path: process.env.BASE_URL_LOCAL_UPLOAD,
 
   imageUrlRewritePath: {
-    products: "/images/products/",
+    base: "/images"
   },
 
   // Secret for session, you will want to change this and make it an environment variable

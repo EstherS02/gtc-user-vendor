@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 
 const async = require('async');
@@ -26,6 +27,7 @@ export function lifestyle(req, res) {
     async.series({
         featuredProducts: function (callback) {
             limit = null;
+            queryObj['position'] = position.LifestyleLanding;
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
@@ -37,6 +39,7 @@ export function lifestyle(req, res) {
         },
         lifestyle: function (callback) {
             limit = 20;
+            delete queryObj['position'];
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (lifestyle) {
                     return callback(null, lifestyle.rows);

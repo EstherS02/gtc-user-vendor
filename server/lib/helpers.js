@@ -96,6 +96,43 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
     return parseFloat(v1) + parseFloat(v2);
 });
 
+Handlebars.registerHelper('quantityPrice', function(quantity, price, options) {
+    return parseInt(quantity) * parseFloat(price);
+});
+
+Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, options) {
+    var displayClassLeft = "";
+    var displayClassRight = "";
+    var displayLabel = "";
+    
+        if(marketPlace.code === 'PWM'){
+            displayClassLeft = 'shop_wholesale_items';
+            displayClassRight = 'yourorder_wholesalesum_head';
+            displayLabel = 'Wholesale';
+        } else if(marketPlace.code === 'PM'){
+            displayClassLeft = 'shop_shop_items';
+            displayClassRight = 'yourorder_shopsum_head';
+            displayLabel = 'Shop';
+        } else if(marketPlace.code === 'SM'){
+            displayClassLeft = 'shop_service_items';
+            displayClassRight = 'yourorder_servicesum_head';
+            displayLabel = 'Service';
+        } else if(marketPlace.code === 'LM'){
+            displayClassLeft = 'shop_subscription_items';
+            displayClassRight = 'yourorder_subscriptionsum_head'
+            displayLabel = 'Subscription';
+        }
+            
+    if(classType === 'CART-LEFT')
+        return displayClassLeft;
+    else if (classType === 'CART-RIGHT')
+        return displayClassRight;
+    else if(classType === 'LABEL')
+        return displayLabel;
+    else
+        return '';
+
+});
 Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
     return parseFloat(v1) - parseFloat(v2);
 });
@@ -105,3 +142,4 @@ Handlebars.registerHelper('select', function( selected, options){
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
     });
+

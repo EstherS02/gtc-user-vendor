@@ -1,3 +1,40 @@
+<script>
+
+function removeGtcCart(item){
+
+	$('#remove-cart-'+ item).removeAttr('href');
+	$.ajax({
+		url: '/api/cart/remove-cart/'+ item,
+		type: 'DELETE',
+		success: function(result) {
+			if(result)
+				location.reload();
+		},
+		error: function(error){
+			console.log("Error occured while deleting", error);
+		}
+	}); 
+}
+
+function UpdateGtcCart(item){
+	var cartInfo = {};
+        cartInfo.quantity = $('#quantity-cart-'+ item).val();
+
+	$.ajax({
+		url: '/api/cart/update-cart/'+ item,
+		type: 'PUT',
+		data: cartInfo,
+		success: function(updateData) {
+			console.log(updateData)
+		},
+		error: function(error){
+			console.log("Error occured while updating", error);
+		}
+	});
+}
+
+</script>
+
 <section>
 	<div class="" >
 		<div class="container">
@@ -18,11 +55,9 @@
             	</div>
                 <div class="col-md-3 checkout_title_color_1">
 					<h4>YOUR ORDER</h4>
-            	</div>
-            	
+            	</div>	
             </div>
 
-			
 			<div class="row">
 				<div class="col-md-9">
 					
@@ -31,7 +66,7 @@
 						<div class="col-md-12 common_padding1">
 							{{#each ../seperatedItemsList}}
 								{{#ifCond marketPlace.code '==' @key}}
-									<p class="shop_wholesale_items">{{marketPlace.name}} ({{this.length}})</p>
+									<p class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</p>
 								{{/ifCond}}
 							{{/each}}
 						</div>
@@ -56,12 +91,11 @@
 						{{#each ../cartItems as |cartItem|}}
 
 							{{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
-
 								<tr>
 									<td>
 										<div class="row">
 											<div class="col-md-3">
-												<img src="{{cartItem.Product.ProductMedium.url}}" style="width: 30px; height: 70px;">
+												<img src="{{cartItem.Product.ProductMedium.url}}" style="width: 60px; height: 70px;">
 											</div>
 											<div class="col-md-9">
 												<div class="row common_padding">
@@ -110,18 +144,20 @@
 									<td>
 										<div class="row">
 											<div class="col-md-6">
-												<input type="number" min="1" max="1000" value={{cartItem.quantity}} class="shop_qty_num">
+												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
-												<p class="shop_price_handling">Update</p>
+												<a id="update-cart-{{cartItem.id}}" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
 											</div>
 										</div>
 									</td>
 									<td>
 										<div class="row">
 											<div class="col-md-12">
-												<p class="shop_price_doller">${{SUMFloat cartItem.Product.price 50}}</p>
-												<p class="shop_total_remove text-center">REMOVE</p>
+												<p class="shop_price_doller">${{quantityPrice cartItem.quantity cartItem.Product.price}}</p>
+												<a id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem}}`)" href="javascript:;">
+													<p class="shop_total_remove text-center">REMOVE</p>
+												</a>
 											</div>
 										</div>
 									</td>
@@ -151,7 +187,7 @@
 						{{#each ../totalPriceList as |totalPrice|}}
 
 						{{#ifCond marketplace.code '==' @key}}
-						<h6 class="yourorder_wholesalesum_head">{{marketplace.name}}</h6>
+						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
@@ -174,16 +210,16 @@
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">${{SUMFloat totalPrice.price totalPrice.shipping}}</p>
+								<p class="shop_subtotal float-right">${{totalPrice.total}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
-								<p class="shop_subtotal"><b>{{marketplace.name}} TOTAL</b></p>
+								<p class="shop_subtotal"><b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>${{SUMFloat totalPrice.price totalPrice.shipping}}</b></p>
+								<p class="shop_subtotal float-right"><b>${{totalPrice.total}}</b></p>
 							</div>
 						</div>
 						{{/ifCond}}
@@ -193,10 +229,10 @@
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
-								<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>$19,077.52</b></p>
+									<p class="shop_subtotal float-right"><b>${{totalPriceList.grandTotal}}</b></p>
 							</div>
 						</div>
 						<hr class="common_margin" />

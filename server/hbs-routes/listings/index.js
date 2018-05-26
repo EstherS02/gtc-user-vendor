@@ -10,6 +10,7 @@ var permission = require('../../config/permission');
 var controller = require('./listings.controller');
 
 router.get('/', controller.listings);
+router.get('/:product_slug', controller.editListings);
 
 
 module.exports = router;
