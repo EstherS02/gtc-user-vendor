@@ -8,6 +8,7 @@ const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+
 import series from 'async/series';
 var async = require('async');
 
@@ -62,19 +63,49 @@ export function coupons(req, res) {
 			}
 		});
 }
+
+export function addCoupon(req, res){
+	res.render('edit-coupon', {
+					title: "Global Trade Connect",
+				});
+}
 export function editCoupons(req, res) {
 	var  chkArray = req.query.id;
 	var selected = chkArray.split(',');
 	var queryObj ={};
 	var created_by = 29;
 	queryObj['created_by'] = created_by;
-	queryObj['id'] = chkArray;
+	queryObj['id'] = selected;
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findOne({
 					where: queryObj,
+					include:[{
+						 // model: model['CouponCategory'],
+						 // model: model['CouponExcludedCategory'],
+						 model: model['CouponExcludedProduct'],
+						 include: [{
+						 	model:model['Product']
+						 }]
+					}, {
+						model: model['CouponProduct'],
+						include:[{
+							model:model['Product']
+						}]
+					},{
+							model:model['CouponCategory'],
+							include:[{
+								model:model['Category']
+							}]
+						},{
+							model:model['CouponExcludedCategory'],
+							include:[{
+								model:model['Category']
+							}]
+						}],
 					raw: true
 				}).then(function(Coupons) {
+					console.log(Coupons);
 					return callback(null, Coupons);
 				}).catch(function(error) {
 					console.log('Error :::', error);

@@ -25,7 +25,7 @@
 		window.location.href = '/coupons?limit=' + e.value;
 	}
 
-	function edit() {
+	function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function(i) {
 			chkArray.push($(this).val());
@@ -37,6 +37,9 @@
 		} else {
 			alert("Please at least check one of the checkbox");
 		}
+	}
+	function create(e){
+		window.location.href = '/coupons/add-coupon';
 	}
 
 </script> 
@@ -50,7 +53,7 @@
 					<p class="vend_edit_lists_pstyle"></p>
 					<div class="row">
 						<div class="col-md-10">
-							<input type="submit" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+							<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
 								<option value="ACTIVE">Active</option>
 								<option value="INACTIVE">InActive</option>
