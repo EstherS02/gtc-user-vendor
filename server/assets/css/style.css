@@ -54,25 +54,41 @@ body {
 
 .gtc-header {
   background: url('../img/bg-footer.jpg') no-repeat;
-  min-height: 90px;
 }
 
 .top-header {
-  min-height: 38px;
-  background-color: #154a7f;
-  margin-right: -89px;
+  background-color: #154a80;
   border-bottom-left-radius: 10px;
-}
-
-@media only screen and (min-width : 1200px) {
-  .gtc-container {
-    max-width: 129px;
-  }
 }
 
 @media only screen and (min-width: 64.063em) and (max-width: 90em) { 
   .gtc-container {
     max-width: 1292px;
+  }
+  .gtc-logo {
+    width: 184px;
+  }
+}
+
+@media only screen and (min-width : 1200px) {
+  .gtc-container {
+    max-width: 1220px;
+  }
+  .gtc-logo {
+    width: 172px;
+  }
+  .gtc-header {
+    min-height: 84px;
+  }
+  .gtc-logo {
+    min-height: 72px;
+  }
+  .top-header {
+    margin-right: -84px;
+    min-height: 36px;
+  }
+  .inner-top-header {
+    margin-right: 84px;
   }
 }
 
@@ -89,13 +105,11 @@ img {
 .gtc-logo {
   position: relative;
   background-color: #fff;
-  min-height: 78px;
   margin-top: 12px;
-  width: 184px;
-  border-color: #cc8033;
+  border-color: #f9a025;
   border-style: solid;
   border-bottom: none;
-  border-width: 3px;
+  border-width: 2px;
 }
 
 .gtc-logo img {
@@ -109,9 +123,59 @@ img {
   left: 0;
   right: 0;
   margin: auto;
-  padding: 15px;
+  padding: 14px;
+}
+
+.inner-top-header {
+  float: right;
+  display: table;
+  width: auto;
+  position: relative;
+  height: 36px;
+}
+
+.top-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.top-menu > li {
+    display: inline-block;
+    position: relative;
+}
+
+.top-menu > li > a {
+  height: 36px;
+  text-align: center;
+  border: none;
+  display: table-cell;
+    vertical-align: middle;
+    text-decoration: none;
+      padding: 0 6px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.top-menu-link {
+    white-space: nowrap;
+    position: relative;
 }
 
 .text-white {
   color: #fff;
+}
+
+.gtc-geo-locate {
+  font-size: 12px;
+}
+
+.gtc-geo-locate > a {
+  color: #eec995;
 }

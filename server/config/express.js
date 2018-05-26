@@ -23,10 +23,10 @@ import config from './environment';
 
 export default function(app) {
   var env = app.get('env');
-
+  app.use(config.imageUrlRewritePath.base, express.static(config.images_base_path));
   if (env === 'development' || env === 'test') {
     //app.use(express.static(path.join(config.root, 'public')));
-    app.use(config.imageUrlRewritePath.products, express.static(config.upload_products_path));
+    //app.use(config.imageUrlRewritePath.products, express.static(config.upload_products_path));
     //app.use(express.static(path.join(config.root, '.tmp')));
   }
 
