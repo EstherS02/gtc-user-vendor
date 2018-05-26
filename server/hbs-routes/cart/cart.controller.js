@@ -19,6 +19,10 @@ export function cart(req, res) {
             var queryObj = {};
             queryObj['user_id'] = user_id;
 
+            queryObj['status'] = {
+                '$eq': status["ACTIVE"]
+            }
+
             model['Cart'].findAndCountAll({
                 where: queryObj,
                 include: [
@@ -48,6 +52,12 @@ export function cart(req, res) {
             
         },
         marketPlace: function(cb) {
+
+            var searchObj = {};
+
+            searchObj['status'] = {
+                '$eq': status["ACTIVE"]
+            }
 
             model['Marketplace'].findAndCountAll({
                 where: {},
