@@ -34,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'publish_date',
             allowNull: false
         },
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -63,50 +68,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'excluse_sale_item',
             allowNull: true
-        },
-        product_id: {
-            type: DataTypes.BIGINT,
-            field: 'product_id',
-            allowNull: true,
-            references: {
-                model: 'product',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        exclude_product_id: {
-            type: DataTypes.BIGINT,
-            field: 'exclude_product_id',
-            allowNull: true,
-            references: {
-                model: 'product',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        category_id: {
-            type: DataTypes.BIGINT,
-            field: 'category_id',
-            allowNull: true,
-            references: {
-                model: 'category',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        exclude_category_id: {
-            type: DataTypes.BIGINT,
-            field: 'exclude_category_id',
-            allowNull: true,
-            references: {
-                model: 'category',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
         },
         usage_limit: {
             type: DataTypes.INTEGER,

@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const position = require('../../config/position');
 const service = require('../../api/service');
 var async = require('async');
 
@@ -103,6 +104,7 @@ export function homePage(req, res) {
         },
         featuredProducts: function(callback) {
             delete queryObj['marketplace'];
+            queryObj['position'] = position.SignUp;
             limit = null;
             service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
                 .then(function(featuredProducts) {
@@ -114,6 +116,7 @@ export function homePage(req, res) {
                 });
         },
         topSellers: function (callback) {
+            delete queryObj['position'];
             field = 'sales_count';
             order = 'desc';
             limit = 6;

@@ -16,7 +16,7 @@
 
 			<div class="row">
 				<div class="col-md-7">
-					<p class="showing_res1">Showing <b>1-20</b> of <b>1660</b> Products matching <b>"automotive"</b> in the <span class="showing_global_col">Global Private Wholesale Market</span></p>
+					<p class="showing_res1">Showing <b>{{SUMFloat offset 1}}-{{SUMFloat pageSize offset}}</b> of <b>{{collectionSize}}</b> Products matching <b>"automotive"</b> in the <span class="showing_global_col">Global Private Wholesale Market</span></p>
 				</div>
 				<div class="col-md-5">
 					<div class="row">
@@ -96,6 +96,7 @@
 						</div>
 					</div>
 					<div class="row">
+						{{#each topProductResults}}
 						<div class="col-md-4 common_top">
 							<div class="row">
 								<div class="col-md-3">
@@ -104,7 +105,7 @@
 								<div class="col-md-9">
 									<div class="row common_padding">
 										<div class="col-md-8">
-											<p class="wts_header"><a href="#">WTS - iphone Pallets</a></p>
+											<p class="wts_header"><a href="/product/{{this.product_slug}}/{{this.id}}">WTS - {{this.product_name}}</a></p>
 										</div>
 										<div class="col-md-4">
 											<p>MOQ: 40</p>
@@ -115,7 +116,7 @@
 											<p>Origin</p>
 										</div>
 										<div class="col-md-5">
-											<p>Canada</p>
+											<p>{{this.country_name}}</p>
 										</div>
 										<div class="col-md-4">
 											<p>&nbsp;</p>
@@ -126,7 +127,7 @@
 											<p>Category</p>
 										</div>
 										<div class="col-md-5">
-											<p>Electronic - Phones</p>
+											<p>{{this.category_name}} - {{this.sub_category_name}}</p>
 										</div>
 										<div class="col-md-4">
 											<p>Seller Rating</p>
@@ -140,112 +141,13 @@
 											<p>(<b>Login for Seller Info</b>)</p>
 										</div>
 										<div class="col-md-4">
-											<p><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i></p>
+											<p>{{ starCount this.product_rating}}</p>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4 common_top">
-							<div class="row">
-								<div class="col-md-3">
-									<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9">
-									<div class="row common_padding">
-										<div class="col-md-8">
-											<p class="wts_header"><a href="#">WTS - iphone Pallets</a></p>
-										</div>
-										<div class="col-md-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5">
-											<p>(<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4">
-											<p><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 common_top">
-							<div class="row">
-								<div class="col-md-3">
-									<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9">
-									<div class="row common_padding">
-										<div class="col-md-8">
-											<p class="wts_header"><a href="#">WTS - iphone Pallets</a></p>
-										</div>
-										<div class="col-md-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5">
-											<p>(<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4">
-											<p><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						{{/each}}
 					</div>
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
@@ -311,31 +213,23 @@
 				<div class="col-md-3">
 				</div>
 				<div class="col-md-7">
-					{{#pagination currentPage pageCount size}}
+					{{#pagination collectionSize page pageSize maxSize}}
 						<nav aria-label="Page navigation example">
 							<ul class="pagination justify-content-center">
 								{{#unless startFromFirstPage}}
-								<li class="page-item disabled">
-									<a class="page-link" href="search?page={{page}}" tabindex="-1">Previous</a>
+								<li class="page-item">
+									<a class="page-link" href="search?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
 								</li>
 								{{/unless}}
 								{{#each pages}}
-									{{#if isCurrent}}
-										<li class="page-item active">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/if}}
-									{{#unless isCurrent}}
-										<li class="page-item">
-											<a class="page-link" href="search?page={{page}}">{{page}}</a>
-										</li>
-									{{/unless}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="search?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+									</li>
 								{{/each}}
-
 								{{#unless endAtLastPage}}
-								<li class="page-item">
-									<a class="page-link" href="search?page={{page}}">Next</a>
-								</li>
+									<li class="page-item">
+										<a class="page-link" href="search?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+									</li>
 								{{/unless}}
 							</ul>
 						</nav>

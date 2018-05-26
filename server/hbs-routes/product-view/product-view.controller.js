@@ -29,7 +29,6 @@ export function productView(req, res) {
             console.log('Error :::', error);
             res.render('productView', error)
         });
-
 }
 
 function plainTextResponse(response) {

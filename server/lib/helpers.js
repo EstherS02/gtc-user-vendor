@@ -133,3 +133,6 @@ Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, opti
         return '';
 
 });
+Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
+    return parseFloat(v1) - parseFloat(v2);
+});

@@ -19,10 +19,24 @@
 </script>
 <script type="text/javascript">
 	function changeStatus(e) {
-		window.location.href = '/listings?status='+ e.value;
+		window.location.href = '/listings?status=' + e.value;
 	}
-</script>
-{{> vendor/header}}
+
+	function edit() {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+		var selected;
+		selected = chkArray.join(',');
+		if (selected.length > 0) {
+			window.location.href = '/listings/'+selected;
+		} else {
+			alert("Please at least check one of the checkbox");
+		}
+	}
+
+</script> {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -51,7 +65,7 @@
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
-							<input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
+							<input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" onclick="edit();" />
 						</div>
 						<div class="col-md-1 common_padding1">
 							<input type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
@@ -87,7 +101,7 @@
 								{{#each products}}
 								<tr>
 									<td>
-										<input type="checkbox" name="selected">
+										<input type="checkbox" name="selected" value={{this.product_slug}}>
 									</td>
 									<td class="text_blue_color">
 										<img src="{{this.url}}" style="width: 15px;" /> {{this.product_name}}</td>
@@ -99,9 +113,9 @@
 									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 									<td class="text_green_color">InActive</td>
 									{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-									<td class="text_green_color">Suspended</td>
+									<td class="text_orange_color">Suspended</td>
 									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-									<td class="text_green_color">Sold Out</td>
+									<td class="text_red_color">Sold Out</td>
 									{{/ifCond}}
 									<td class="text_blue_color">{{this.sku}}</td>
 								</tr>

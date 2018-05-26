@@ -2,27 +2,28 @@
 
 import Handlebars from 'handlebars';
 
-Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, options) {
+Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize, maxSize, options) {
 	var startPage, endPage, context;
-	console.log('currentPage', currentPage, totalPage, size);
+
+	var pageCount = Math.ceil(parseInt(collectionSize) / parseInt(pageSize));
 
 	if (arguments.length === 3) {
-		options = parseInt(size);
+		options = parseInt(maxSize);
 		size = 5;
 	}
 
-	startPage = parseInt(currentPage) - Math.floor(parseInt(size) / 2);
-	endPage = parseInt(currentPage) + Math.floor(parseInt(size) / 2);
+	startPage = parseInt(page) - Math.floor(parseInt(maxSize) / 2);
+	endPage = parseInt(page) + Math.floor(parseInt(maxSize) / 2);
 
 	if (startPage <= 0) {
 		endPage -= (startPage - 1);
 		startPage = 1;
 	}
 
-	if (endPage > parseInt(totalPage)) {
-		endPage = parseInt(totalPage);
-		if (endPage - parseInt(size) + 1 > 0) {
-			startPage = endPage - parseInt(size) + 1;
+	if (endPage > pageCount) {
+		endPage = pageCount;
+		if (endPage - parseInt(maxSize) + 1 > 0) {
+			startPage = endPage - parseInt(maxSize) + 1;
 		} else {
 			startPage = 1;
 		}
@@ -39,10 +40,10 @@ Handlebars.registerHelper('pagination', function(currentPage, totalPage, size, o
 	for (var i = startPage; i <= endPage; i++) {
 		context.pages.push({
 			page: i,
-			isCurrent: i === parseInt(currentPage),
+			isCurrent: i === parseInt(page),
 		});
 	}
-	if (endPage === parseInt(totalPage)) {
+	if (endPage === pageCount) {
 		context.endAtLastPage = true;
 	}
 
