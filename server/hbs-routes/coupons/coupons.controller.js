@@ -64,48 +64,58 @@ export function coupons(req, res) {
 		});
 }
 
-export function addCoupon(req, res){
+export function addCoupon(req, res) {
 	res.render('edit-coupon', {
-					title: "Global Trade Connect",
-				});
+		title: "Global Trade Connect",
+	});
 }
 export function editCoupons(req, res) {
-	var  chkArray = req.query.id;
+	var chkArray = req.query.id;
 	var selected = chkArray.split(',');
-	var queryObj ={};
+	var queryObj = {};
 	var created_by = 29;
 	queryObj['created_by'] = created_by;
 	queryObj['id'] = selected;
+
+	console.log('queryObj', queryObj);
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findOne({
 					where: queryObj,
-					include:[{
-						 // model: model['CouponCategory'],
-						 // model: model['CouponExcludedCategory'],
-						 model: model['CouponExcludedProduct'],
-						 include: [{
-						 	model:model['Product']
-						 }]
-					}, {
-						model: model['CouponProduct'],
-						include:[{
-							model:model['Product']
-						}]
-					},{
-							model:model['CouponCategory'],
-							include:[{
-								model:model['Category']
-							}]
-						},{
-							model:model['CouponExcludedCategory'],
-							include:[{
-								model:model['Category']
-							}]
+					include: [{
+						// model: model['CouponCategory'],
+						// model: model['CouponExcludedCategory'],
+						model: model['CouponExcludedProduct'],
+						include: [{
+							model: model['Product'],
+							attributes: ['id', 'product_name']
 						}],
+						attributes: ['id', 'product_id', 'coupon_id']
+					}/*, {
+						model: model['CouponProduct'],
+						include: [{
+							model: model['Product'],
+							attributes: ['id', 'product_name']
+						}],
+						attributes: ['id', 'product_id', 'coupon_id']
+					}, {
+						model: model['CouponCategory'],
+						include: [{
+							model: model['Category'],
+							attributes: ['id', 'name']
+						}],
+						attributes: ['id', 'category_id', 'coupon_id']
+					}, {
+						model: model['CouponExcludedCategory'],
+						include: [{
+							model: model['Category'],
+							attributes: ['id', 'name']
+						}],
+						attributes: ['id', 'category_id', 'coupon_id']
+					}*/],
 					raw: true
 				}).then(function(Coupons) {
-					console.log(Coupons);
+					console.log('Coupons', Coupons);
 					return callback(null, Coupons);
 				}).catch(function(error) {
 					console.log('Error :::', error);
