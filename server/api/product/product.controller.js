@@ -18,7 +18,6 @@ export function vendorMarketplace(req, res) {
 					})
 					.then(function(row) {
 						if (row) {
-
 							res.status(200).send(row);
 							return;
 						} else {
@@ -130,8 +129,3 @@ export function featureOne(req, res) {
 		})
 }
 
-export function vendorSalesCount(req, res){
-       
-
-	
-}
