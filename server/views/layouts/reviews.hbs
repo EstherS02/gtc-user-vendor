@@ -10,27 +10,26 @@
 							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
 							<p>Sort by&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><b><a href="/reviews?sort=mostRecent">Most Recent</a></b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text_blue_color"><a href="/reviews?sort=rating">Star Rating</a></span></p>
 							<div id="Recent" class="tabcontent">
-							<hr>
-							{{#each Reviews}}
-							<div class="row">
-								<div class="col-md-2 text-center">
-									<img src="{{this.User.user_pic_url}}" alt="img" style="width: 60%;border-radius:50%"/> {{!-- "../../img/signup-feature-1.png" --}}
+								<hr>
+								{{#each Reviews}}
+								<div class="row">
+									<div class="col-md-2 text-center">
+										<img src="{{this.User.user_pic_url}}" alt="img" style="width: 60%;border-radius:50%"/> {{!-- "../../img/signup-feature-1.png" --}}
+									</div>
+									<div class="col-md-6 common_padding1">
+										<p style="font-size: 11px;"><span class="text_blue_color">{{this.created_by}}</span> reviewed Hayden Auto - 5star</p>
+										<p>{{formatTime this.created_on "MMM D YY"}}
+										</p>
+									</div>
+									<div class="col-md-3">
+										<p style="font-size: 11px;">{{starCount this.rating}}</p>
+									</div>
 								</div>
-								<div class="col-md-6 common_padding1">
-									<p style="font-size: 11px;"><span class="text_blue_color">{{this.created_by}}</span> reviewed Hayden Auto - 5star</p>
-									<p>{{formatTime this.created_on "MMM D YY"}}
-									</p>
-								</div>
-								<div class="col-md-3">
-									<p style="font-size: 11px;">{{starCount this.rating}}</p>
-								</div>
+								<p style="font-size: 11px;padding-top: 15px;">{{this.title}}</p>
+								<p style="font-size: 11px;">{{this.comment}}</p>
+								<hr/>
+								{{/each}}
 							</div>
-							<p style="font-size: 11px;padding-top: 15px;">{{this.title}}
-							</p>
-							<p style="font-size: 11px;">{{this.comment}}</p>
-							<hr/>
-							{{/each}}
-						</div>
 						</div>
 						<div class="col-md-3" style="padding-top: 20px;">
 							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.Rating.avg}} {{starCount this.Rating.avg}}</p>
