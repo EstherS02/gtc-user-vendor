@@ -1,4 +1,4 @@
-<script>
+<script  type="text/javascript">
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -16,27 +16,31 @@
 			}
 		}
 	}
-</script>
-<script type="text/javascript">
+
 	function changeStatus(e) {
-			window.location.href = '/coupons?status='+ e.value;
-		}
-	function changeLimit(e) {
-		window.location.href = '/coupons?limit='+ e.value;
+		window.location.href = '/coupons?status=' + e.value;
 	}
-	// function edit() {
-	// 	var chkArray = [];
-	// 	$(':checkbox:checked').each(function (i) {
-	// 	chkArray.push($(this).val());
-	// 	});
-	// 	var selected;
-	// 	selected = chkArray.join(',');
-	// 	if (selected.length > 0) {
-	// 	window.location.href = '/edit-coupons?id='+selected;
-	// 	} else {
-	// 	alert("Please at least check one of the checkbox");
-	// 	}
-	// 	}
+
+	function changeLimit(e) {
+		window.location.href = '/coupons?limit=' + e.value;
+	}
+
+	function edit(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			chkArray.push($(this).val());
+		});
+		var selected;
+		selected = chkArray.join(',');
+		if (selected.length > 0) {
+			window.location.href = '/coupons/edit-coupons?id=' + selected;
+		} else {
+			alert("Please at least check one of the checkbox");
+		}
+	}
+	function create(e){
+		window.location.href = '/coupons/add-coupon';
+	}
 
 </script> 
 {{> vendor/header}} 
@@ -49,14 +53,14 @@
 					<p class="vend_edit_lists_pstyle"></p>
 					<div class="row">
 						<div class="col-md-10">
-							<input type="submit" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+							<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
 								<option value="ACTIVE">Active</option>
 								<option value="INACTIVE">InActive</option>
 								<option value="SUSPENDED">Suspended</option>
 								<option value="SOLDOUT">Sold Out</option>
 							</select>
-							 <input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
+							 <input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
 							<input type="text" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" />
@@ -90,7 +94,7 @@
 							<tbody>
 							{{#each Coupons}}
 								<tr>
-									<td><input type="checkbox" ></td>
+									<td><input type="checkbox" value="{{this.id}}" ></td>
 									<td class="text_blue_color">{{this.coupon_name}}</td>
 									<td>{{formatTime this.publish_date "MMM D YY"}}</td>
 									{{!-- DiscountType --}}

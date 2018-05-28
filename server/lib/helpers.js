@@ -136,3 +136,10 @@ Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, opti
 Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
     return parseFloat(v1) - parseFloat(v2);
 });
+
+Handlebars.registerHelper('select', function( selected, options){
+        return options.fn(this).replace(
+        new RegExp(' value=\"' + selected + '\"'),
+        '$& selected="selected"');
+    });
+

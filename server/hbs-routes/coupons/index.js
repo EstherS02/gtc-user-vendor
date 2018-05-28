@@ -10,6 +10,7 @@ var permission = require('../../config/permission');
 var controller = require('./coupons.controller');
 
 router.get('/', controller.coupons);
-
+router.get('/edit-coupons', controller.editCoupons);
+router.get('/add-coupon', controller.addCoupon);
 
 module.exports = router;
