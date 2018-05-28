@@ -21,6 +21,9 @@
 	function changeStatus(e) {
 		window.location.href = '/listings?status=' + e.value;
 	}
+	function search(e) {
+		window.location.href = '/listings?product_name=' + e.value;
+	}
 
 	function edit() {
 		var chkArray = [];
@@ -36,7 +39,8 @@
 		}
 	}
 
-</script> {{> vendor/header}}
+</script> 
+{{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -71,15 +75,20 @@
 							<input type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
-							<input type="text" placeholder="Search Products" class="vend_edit_lists_searchstyle" />
+							<input type="text" placeholder="Search Products" class="vend_edit_lists_searchstyle" onChange="search(this);" />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">333,333 items total</p>
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
 						</div>
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+								<a href="listings?limit=10">10</a>
+								<a href="listings?limit=25">25</a>
+								<a href="listings?limit=100">100</a>
+								<a href="listings">All</a>
+								</p>
 						</div>
 					</div>
 					<div class="row">
@@ -122,14 +131,6 @@
 								{{/each}}
 							</tbody>
 						</table>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">333,333 items total</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
-						</div>
 					</div>
 				</div>
 				<div class="col-md-2">

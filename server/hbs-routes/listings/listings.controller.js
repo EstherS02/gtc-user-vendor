@@ -16,7 +16,12 @@ export function listings(req, res) {
 	field = "id";
 	order = "asc";
 	offset = 0;
-	limit = null;
+	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
+	delete req.query.limit;
+
+	if (req.query.product_name) {
+           queryParams['product_name'] = req.query.product_name;
+	}
 
 	if (req.query.status) {
 
@@ -43,7 +48,7 @@ export function listings(req, res) {
 
 			service.findRows(productModel, queryParams, offset, limit, field, order)
 				.then(function (products) {
-					return callback(null, products.rows);
+					return callback(null, products);
 
 				}).catch(function (error) {
 					console.log('Error :::', error);
@@ -54,7 +59,8 @@ export function listings(req, res) {
 		if (!err) {
 			res.render('view-listings', {
 				title: "Global Trade Connect",
-				products: results.products,
+				products: results.products.rows,
+				count: results.products.count,
 				statusCode: status
 			});
 		}
@@ -62,7 +68,6 @@ export function listings(req, res) {
 			res.render('view-listings', err);
 		}
 	});
-
 }
 
 export function editListings(req, res) {
@@ -84,7 +89,6 @@ export function editListings(req, res) {
             console.log('Error :::', error);
             res.render('edit-listing', error)
         });
-
 }
 
 function plainTextResponse(response) {
