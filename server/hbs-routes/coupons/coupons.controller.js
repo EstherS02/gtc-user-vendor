@@ -80,14 +80,15 @@ export function editCoupons(req, res) {
 	console.log('queryObj', queryObj);
 	async.series({
 			Coupons: function(callback) {
-				model['Coupon'].findOne({
+				model['Coupon'].findAll({
+					as : 'coupons',
 					where: queryObj,
 					include: [{
-						// model: model['CouponCategory'],
-						// model: model['CouponExcludedCategory'],
 						model: model['CouponExcludedProduct'],
+						as: 'excludeProducts',
 						include: [{
 							model: model['Product'],
+							as: 'products',
 							attributes: ['id', 'product_name']
 						}],
 						attributes: ['id', 'product_id', 'coupon_id']
@@ -114,13 +115,43 @@ export function editCoupons(req, res) {
 						attributes: ['id', 'category_id', 'coupon_id']
 					}*/],
 					raw: true
-				}).then(function(Coupons) {
-					console.log('Coupons', Coupons);
-					return callback(null, Coupons);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
+				}).then(coupons =>{
+					const resObj = coupons.map(coupon => {
+						return Object.assign(
+          {},
+          {
+          	coupon_id:coupon.id,
+          	coupon_name:coupon.coupon_name,
+          	 CouponExcludedProduct: coupons.excludeProducts.map(excludeProduct => {
+          	 	return Object.assign(
+                {},
+                {
+                	excludeProduct_id:excludeProduct.id,
+                	product_id :excludeProduct.product_id,
+                	products: excludeProduct.products.map(product => {
+
+                    //tidy up the comment data
+                    return Object.assign(
+                      {},
+                      {
+                      	product_name:product.product_name,
+                      	product_id:product.id
+                      })
+                  })
+                })
+            })
+          	})
+					})
+
+
 				});
+				// function(Coupons) {
+				// 	console.log('Coupons', Coupons);
+				// 	return callback(null, Coupons);
+				// }).catch(function(error) {
+				// 	console.log('Error :::', error);
+				// 	return callback(null);
+				// });
 			}
 		},
 		function(err, results) {
