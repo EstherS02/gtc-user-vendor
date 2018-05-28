@@ -76,7 +76,7 @@ export function index(req, res) {
 			});
 		} else {
 			console.log('Error:::', error);
-			res.render('services', error);
+			res.render('search', error);
 		}
 	});
 }

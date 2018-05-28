@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         product_slug: {
             type: DataTypes.STRING(128),
             field: 'product_slug',
-            allowNull: false
+            allowNull: true
         },
         vendor_id: {
             type: DataTypes.BIGINT,
@@ -145,7 +145,7 @@ module.exports = (sequelize, DataTypes) => {
         moq: {
             type: DataTypes.INTEGER,
             field: 'moq',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
