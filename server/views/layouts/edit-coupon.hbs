@@ -11,20 +11,19 @@
 	});
 </script>
 <script>
-$("#form_submit").click(function() {
-	$.ajax({ 
-		url: '/api/cart/remove-cart/'+ item,
-		type: 'POST',
-		success: function(result) {
-			if(result)
-				location.reload();
-		},
-		error: function(error){
-			console.log("Error occured while deleting", error);
-		}
-
+	$("#form_submit").click(function() {
+		$.ajax({ 
+			url: '/api/add-coupon',
+			type: 'POST',
+			success: function(result) {
+				if(result)
+					window.location.href = '/coupons';
+			},
+			error: function(error){
+				console.log("Unvalid Input", error);
+			}
+		});
 	});
-});
 </script>
 {{> vendor/header}} 
 <section class="showing_categ">
@@ -125,9 +124,9 @@ $("#form_submit").click(function() {
 						<div class="row">
 							<div class="col-md-12">
 								{{#ifCond Coupons.id "==" undefined}}
-								<input class="list_butt_1" type="submit" value="Save" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+								<input class="list_butt_1" type="submit"  name="save" value="Save" /> <input class="list_butt_2" type="submit" value="CANCEL" />
 								{{else}}
-								<input class="list_butt_1" type="submit" value="UPDATE" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+								<input class="list_butt_1" type="submit" name="save" value="UPDATE" /> <input class="list_butt_2" type="submit" value="CANCEL" />
 								{{/ifCond}}
 								
 							</div>
