@@ -77,84 +77,72 @@
 								<a href="/coupons?limit=25"> 25</a>
 								<a href="/coupons?limit=100"> 100</a>
 								<a href="/coupons?limit=10"> All </a>
-							</div>
-						</div>
-						<div class="row">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th><input type="checkbox" onclick="selectAll(this);"></th>
-										<th>Coupon Name</th>
-										<th>Publish Date</th>
-										<th>Type</th>
-										<th>Sales</th>
-										<th>Discount</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									{{#each Coupons}}
-									<tr>
-										<td><input type="checkbox" value="{{this.id}}" ></td>
-										<td class="text_blue_color">{{this.coupon_name}}</td>
-										<td>{{formatTime this.publish_date "MMM D YY"}}</td>
-										{{!-- DiscountType --}}
-										{{#ifCond this.discount_type "==" ../discountType.Percentage}}
-										<td>Percentage</td> 
-										{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
-										<td>Fixed Price</td>
-										{{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
-										<td>Fixed Price Discount</td> 
-										{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
-										<td>Fixed Cart Discount</td> 
-										{{/ifCond}}
-										{{!--End DiscountType --}}
-										<td class="text_blue_color">{{this.sales_count}}</td>
-										<td>{{this.discount_value}}</td>
-										{{!-- satusCode --}}
-										{{#ifCond this.status "==" ../statusCode.ACTIVE}}
-										<td class="text_green_color">Active</td>
-										{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
-										<td class="text_orange_color">Suspended</td>
-										{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
-										<td class="text_red_color">Sold Out</td>
-										{{/ifCond}}
-										{{!-- End status Code--}}
-									</tr>
-									{{/each}}
-									<tr>
-										<td><input type="checkbox"></td>
-										<td class="text_blue_color">iPhone Pallets of Interest</td>
-										<td>April 21, 2017</td>
-										<td>Fixed Price</td>
-										<td class="text_blue_color">3</td>
-										<td>$15.00 CAD</td>
-										<td class="text_orange_color">Suspended</td>
-									</tr>
-									<tr>
-										<td><input type="checkbox"></td>
-										<td class="text_blue_color">iPhone Pallets of Interest</td>
-										<td>April 21, 2017</td>
-										<td>Fixed Cart Discount</td>
-										<td class="text_blue_color">3</td>
-										<td>$15.00 CAD</td>
-										<td class="text_red_color">Sold Out</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
-							</div>
-							<div class="col-md-6">
-								<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
-							</div>
+							</p>
 						</div>
 					</div>
-					<div class="col-md-2">
-					</div>				
+					<div class="row">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th><input type="checkbox" onclick="selectAll(this);"></th>
+									<th>Coupon Name</th>
+									<th>Publish Date</th>
+									<th>Type</th>
+									<th>Sales</th>
+									<th>Discount</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each Coupons}}
+								<tr>
+									<td><input type="checkbox" value="{{this.id}}" ></td>
+									<td class="text_blue_color">{{this.coupon_name}}</td>
+									<td>{{formatTime this.publish_date "MMM D YY"}}</td>
+									{{!-- DiscountType --}}
+									{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+									<td>Percentage</td> 
+									{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
+									<td>Fixed Price</td>
+									{{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
+									<td>Fixed Price Discount</td> 
+									{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
+									<td>Fixed Cart Discount</td> 
+									{{/ifCond}}
+									{{!--End DiscountType --}}
+									<td class="text_blue_color">{{this.sales_count}}</td>
+									<td>{{this.discount_value}}</td>
+									{{!-- satusCode --}}
+									{{#ifCond this.status "==" ../statusCode.ACTIVE}}
+									<td class="text_green_color">Active</td>
+									{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
+									<td class="text_orange_color">Suspended</td>
+									{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
+									<td class="text_red_color">Sold Out</td>
+									{{/ifCond}}
+									{{!-- End status Code--}}
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+						</div>
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+								<a href="/coupons?limit=10"> 10</a>
+								<a href="/coupons?limit=25"> 25</a>
+								<a href="/coupons?limit=100"> 100</a>
+								<a href="/coupons?limit=10"> All </a>
+							</p>
+						</div>
+					</div>
 				</div>
+				<div class="col-md-2">
+				</div>				
 			</div>
 		</div>
-	</section>
+	</div>
+</section>

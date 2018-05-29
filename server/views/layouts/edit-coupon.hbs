@@ -11,17 +11,60 @@
 	});
 </script>
 <script>
-	$("#form_submit").click(function() {
-		$.ajax({ 
-			url: '/api/add-coupon',
-			type: 'POST',
-			success: function(result) {
-				if(result)
+	$(document).ready(function() {
+		$("#couponSubmitBtn").click(function(e){
+			e.preventDefault();
+			var newCoupon = {};
+			newCoupon.coupon_name = "XYZ Coupon";
+			newCoupon.code = "XYZ0010";
+			newCoupon.discount_type = 1;
+			newCoupon.discount_value = 20;
+			newCoupon.publish_date = "2018-05-29";
+			newCoupon.status = 1;
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/coupons',
+				data: newCoupon,
+				success: function(data, text) {
+					console.log('data', data);
+					console.log('text', text);
 					window.location.href = '/coupons';
-			},
-			error: function(error){
-				console.log("Unvalid Input", error);
-			}
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+		});
+
+		$("#couponUpdateBtn").click(function(e){
+			e.preventDefault();
+			var id = $('input[name=id]').val();
+				var newCoupon = {};
+			newCoupon.coupon_name = "ABC Coupon";
+			newCoupon.code = "ABC0010";
+			newCoupon.discount_type = 1;
+			newCoupon.discount_value = 10;
+			newCoupon.publish_date = "2018-05-29";
+			newCoupon.status = 1;
+			newCoupon.vendor_id = 29;
+			console.log(e);
+
+			$.ajax({
+				type: 'PUT',
+				url: '/api/coupons/'+id,
+				data: newCoupon,
+				success: function(data, text) {
+					console.log('data', data);
+					console.log('text', text);
+					window.location.href = '/coupons';
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
 		});
 	});
 </script>
@@ -32,17 +75,18 @@
 			<div class="row">
 				{{> vendor/navbar}} 
 				<div class="col-md-8" style="background-color: #fff;">
-					<form id="form_submit" method="post">
+					<form id="couponForm">
 						<h5 style="padding-top: 20px;"> 
 							{{#ifCond Coupons.id "==" undefined}}
 							Add Coupon
 							{{else}}
 							Edit Coupon
+							<input type="hidden"  name="id" value="{{Coupons.id}}" />
 							{{/ifCond}}
 						</h5>
 						<div class="row">
 							<div class="col-md-12">
-								<input type="text" name="coupon_name" value="{{Coupons.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle" />
+								<input type="text" name="coupon_name" required value="{{Coupons.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle"  />
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_dropdownstyle" name="discount_type" value="">
@@ -59,7 +103,7 @@
 								<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" />
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1"   id="datepicker" value="{{Coupons.expiry_date}}"/>
+								<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="datepicker" value="{{Coupons.expiry_date}}"/>
 								<span class="vend_edit_list_spanstyle"> Expiry Date</span>
 							</div>
 							<div class="col-md-12">
@@ -124,11 +168,11 @@
 						<div class="row">
 							<div class="col-md-12">
 								{{#ifCond Coupons.id "==" undefined}}
-								<input class="list_butt_1" type="submit"  name="save" value="Save" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+								<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
 								{{else}}
-								<input class="list_butt_1" type="submit" name="save" value="UPDATE" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+								<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
 								{{/ifCond}}
-								
+								<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>								
 							</div>
 						</div>
 						
