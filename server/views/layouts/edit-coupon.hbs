@@ -8,6 +8,9 @@
 
 		$("#couponSubmitBtn").click(function(e) {
 			var newCouponProducts = [];
+			var newCouponExcludeProducts = [];
+			var newCouponCategories = [];
+			var newCouponExcludeCategories = [];
 
 			e.preventDefault();
 
@@ -23,7 +26,7 @@
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
 			newCoupon.vendor_id = 29;
-			newCoupon.publish_date = new Date();
+			newCoupon.publish_date = new Date().toISOString().split("T")[0];
 			newCoupon.usage_limit = $('#inputUsageLimit').val();
 			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
 			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
@@ -33,46 +36,144 @@
 			var couponCategories = $('#inputCategories').val();
 			var couponExcludeCategories = $('#inputExcludeCategories').val();
 
-			/*if (couponProducts.length > 0) {
-				for (var i = 0; i < couponProducts.length; i++) {
-					newCouponProducts.push({
-						product_id: couponProducts[i]
+			var data = {};
+			data.id = 15;
+
+			applyCoupon(data, function() {
+				if (newCouponProducts.length > 0) {
+					console.log('newCouponProducts', newCouponProducts, typeof(newCouponProducts));
+					var dataObj = {};
+					dataObj.dataArray = newCouponProducts;
+					$.ajax({
+						type: 'POST',
+						url: '/api/coupon-products/bulk-create',
+						data: JSON.stringify(dataObj)
+					}).done(function(data) {
+						console.log('data', data);
 					});
 				}
-				console.log('newCouponProducts', newCouponProducts);
-			}*/
+			});
 
 			/*$.ajax({
 				type: 'POST',
 				url: '/api/coupons',
 				data: newCoupon,
 				success: function(data, text) {
-					console.log('data', data);
-					console.log('text', text);
+					applyCoupon(data, function() {
+						if (newCouponProducts.length > 0) {
+							$.ajax({
+								type: 'POST',
+								url: '/api/coupon-products/bulk-create',
+								data: {
+									dataArray: newCouponProducts
+								}
+							}).done(function(data) {
+								console.log('data', data);
+							});
+						}
+						if (newCouponExcludeProducts.length) {
+
+						}
+						if (newCouponCategories.length) {
+
+						}
+						if (newCouponExcludeCategories.length) {
+
+						}
+					});
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});*/
+
+			function applyCoupon(data, callback) {
+				products(data, function() {
+					excludeProducts(data, function() {
+						categories(data, function() {
+							excludeCategories(data, function() {
+								callback();
+							})
+						})
+					});
+				});
+			}
+
+			function products(data, callback) {
+				if (couponProducts.length > 0) {
+					for (var i = 0; i < couponProducts.length; i++) {
+						newCouponProducts.push({
+							product_id: parseInt(couponProducts[i]),
+							coupon_id: data.id
+						});
+					}
+					callback();
+				} else {
+					callback();
+				}
+			}
+
+			function excludeProducts(data, callback) {
+				if (couponExcludeProducts.length > 0) {
+					for (var i = 0; i < couponExcludeProducts.length; i++) {
+						newCouponExcludeProducts.push({
+							product_id: couponExcludeProducts[i],
+							coupon_id: data.id
+						});
+					}
+					callback();
+				} else {
+					callback();
+				}
+			}
+
+			function categories(data, callback) {
+				if (couponCategories.length > 0) {
+					for (var i = 0; i < couponCategories.length; i++) {
+						newCouponCategories.push({
+							category_id: couponCategories[i],
+							coupon_id: data.id
+						});
+					}
+					callback();
+				} else {
+					callback();
+				}
+			}
+
+			function excludeCategories(data, callback) {
+				if (couponExcludeCategories.length > 0) {
+					for (var i = 0; i < couponExcludeCategories.length; i++) {
+						newCouponExcludeCategories.push({
+							category_id: couponExcludeCategories[i],
+							coupon_id: data.id
+						});
+					}
+					callback();
+				} else {
+					callback();
+				}
+			}
+
 		});
 
-		$("#couponUpdateBtn").click(function(e){
+		$("#couponUpdateBtn").click(function(e) {
 			e.preventDefault();
+
 			var id = $('input[name=id]').val();
-				var newCoupon = {};
-			newCoupon.coupon_name = $('input[name=coupon_name]').val(),
-			newCoupon.code = "ABC0010",
-			newCoupon.discount_type = $('input[name=discount_type]').val(),
-			newCoupon.discount_value = $('input[name=discount_value]').val(),
-			newCoupon.publish_date = $('input[name=publish_date]').val(),
+			var newCoupon = {};
+			newCoupon.coupon_name = $('input[name=coupon_name]').val();
+			newCoupon.code = "ABC0010";
+			newCoupon.discount_type = $('input[name=discount_type]').val();
+			newCoupon.discount_value = $('input[name=discount_value]').val();
+			newCoupon.publish_date = $('input[name=publish_date]').val();
 			newCoupon.status = 1;
 			newCoupon.vendor_id = 29;
-			console.log(e);
 
 			$.ajax({
 				type: 'PUT',
-				url: '/api/coupons/'+id,
+				url: '/api/coupons/' + id,
 				data: newCoupon,
 				success: function(data, text) {
 					console.log('data', data);

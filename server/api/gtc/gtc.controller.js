@@ -114,9 +114,17 @@ export function findById(req, res) {
 }
 
 export function createBulk(req, res) {
-	var bodyParams = req.body;
+	var bodyParams = req.body.dataArray;
+	console.log('bodyParams', req.body);
+	var newBodyParamsArray = [];
 
-	service.createBulkRow(req.endpoint, bodyParams)
+	for (var i = 0; i < bodyParams.length; i++) {
+		bodyParams[i].status = status["ACTIVE"];
+		bodyParams[i].created_on = new Date();
+		newBodyParamsArray.push(bodyParams[i]);
+	}
+
+	service.createBulkRow(req.endpoint, newBodyParamsArray)
 		.then(function(result) {
 			if (result) {
 				return res.status(201).send(result);

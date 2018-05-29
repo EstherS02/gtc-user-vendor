@@ -85,7 +85,9 @@ export function createRow(modelName, bodyParams) {
 
 export function createBulkRow(modelName, bodyParams) {
 	return new Promise((resolve, reject) => {
-		model[modelName].create(bodyParams)
+		model[modelName].bulkCreate(bodyParams, {
+				individualHooks: true
+			})
 			.then(function(row) {
 				if (row) {
 					resolve(row);
