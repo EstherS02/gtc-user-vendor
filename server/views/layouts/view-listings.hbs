@@ -22,7 +22,7 @@
 		window.location.href = '/listings?status=' + e.value;
 	}
 	function search(e) {
-		window.location.href = '/listings?product_name=' + e.value;
+		window.location.href = '/listings?product_name='+ e.value;
 	}
 
 	function edit() {
@@ -39,6 +39,10 @@
 		}
 	}
 
+	function add(){
+		window.location.href = '/add-product';
+	}
+
 </script> 
 {{> vendor/header}}
 <section class="showing_categ">
@@ -52,7 +56,7 @@
 						the product name or SKU to go to the full edit details page for that specific products.</p>
 					<div class="row">
 						<div class="col-md-2">
-							<input type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" />
+							<input type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add();" />
 						</div>
 						<div class="col-md-2 common_padding1">
 							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
