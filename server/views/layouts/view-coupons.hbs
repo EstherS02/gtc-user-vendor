@@ -44,7 +44,7 @@
 
 </script> 
 {{> vendor/header}} 
-  <section class="showing_categ">
+<section class="showing_categ">
 	<div class="" >
 		<div class="container">
 			<div class="row">
@@ -53,14 +53,15 @@
 					<p class="vend_edit_lists_pstyle"></p>
 					<div class="row">
 						<div class="col-md-10">
-							<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" /> <select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+							<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" />
+							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
 								<option value="ACTIVE">Active</option>
 								<option value="INACTIVE">InActive</option>
 								<option value="SUSPENDED">Suspended</option>
 								<option value="SOLDOUT">Sold Out</option>
 							</select>
-							 <input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
+							<input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
 							<input type="text" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" />
@@ -72,10 +73,11 @@
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
-							<a href="/coupons?limit=10"> 10</a>
-							<a href="/coupons?limit=25"> 25</a>
-							<a href="/coupons?limit=100"> 100</a>
-							<a href="/coupons?limit=10"> All </a>
+								<a href="/coupons?limit=10"> 10</a>
+								<a href="/coupons?limit=25"> 25</a>
+								<a href="/coupons?limit=100"> 100</a>
+								<a href="/coupons?limit=10"> All </a>
+							</p>
 						</div>
 					</div>
 					<div class="row">
@@ -92,7 +94,7 @@
 								</tr>
 							</thead>
 							<tbody>
-							{{#each Coupons}}
+								{{#each Coupons}}
 								<tr>
 									<td><input type="checkbox" value="{{this.id}}" ></td>
 									<td class="text_blue_color">{{this.coupon_name}}</td>
@@ -107,7 +109,7 @@
 									{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
 									<td>Fixed Cart Discount</td> 
 									{{/ifCond}}
-										{{!--End DiscountType --}}
+									{{!--End DiscountType --}}
 									<td class="text_blue_color">{{this.sales_count}}</td>
 									<td>{{this.discount_value}}</td>
 									{{!-- satusCode --}}
@@ -121,24 +123,6 @@
 									{{!-- End status Code--}}
 								</tr>
 								{{/each}}
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Fixed Price</td>
-									<td class="text_blue_color">3</td>
-									<td>$15.00 CAD</td>
-									<td class="text_orange_color">Suspended</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color">iPhone Pallets of Interest</td>
-									<td>April 21, 2017</td>
-									<td>Fixed Cart Discount</td>
-									<td class="text_blue_color">3</td>
-									<td>$15.00 CAD</td>
-									<td class="text_red_color">Sold Out</td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -147,7 +131,12 @@
 							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
 						</div>
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+								<a href="/coupons?limit=10"> 10</a>
+								<a href="/coupons?limit=25"> 25</a>
+								<a href="/coupons?limit=100"> 100</a>
+								<a href="/coupons?limit=10"> All </a>
+							</p>
 						</div>
 					</div>
 				</div>
