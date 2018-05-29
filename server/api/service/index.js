@@ -83,6 +83,21 @@ export function createRow(modelName, bodyParams) {
 	})
 }
 
+export function createBulkRow(modelName, bodyParams) {
+	return new Promise((resolve, reject) => {
+		model[modelName].create(bodyParams)
+			.then(function(row) {
+				if (row) {
+					resolve(row);
+				} else {
+					resolve(null);
+				}
+			}).catch(function(error) {
+				reject(error);
+			});
+	})
+}
+
 export function updateRow(modelName, bodyParams, id) {
 	return new Promise((resolve, reject) => {
 		model[modelName].update(bodyParams, {

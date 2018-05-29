@@ -17,6 +17,7 @@ router.post('/:endpoint/upload', multipartMiddleware, controller.upload);
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
+router.post('/:endpoint/bulk-create', middleware.validateEndpoint(), controller.createBulk);
 router.post('/:endpoint', middleware.validateEndpoint(), controller.create);
 router.put('/:endpoint/delete', middleware.validateEndpoint(), controller.destroyMany);
 router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.update);

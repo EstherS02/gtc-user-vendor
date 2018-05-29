@@ -113,6 +113,23 @@ export function findById(req, res) {
 		});
 }
 
+export function createBulk(req, res) {
+	var bodyParams = req.body;
+
+	service.createBulkRow(req.endpoint, bodyParams)
+		.then(function(result) {
+			if (result) {
+				return res.status(201).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}
+
 export function create(req, res) {
 	var bodyParams = req.body;
 
