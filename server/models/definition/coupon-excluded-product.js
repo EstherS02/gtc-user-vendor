@@ -75,8 +75,7 @@ module.exports.initRelations = () => {
     const Coupon = model.Coupon;
     const Product = model.Product;
 
-    CouponExcludedProduct.belongsToMany(Coupon, {
-        through: Product,
+    CouponExcludedProduct.belongsTo(Coupon, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

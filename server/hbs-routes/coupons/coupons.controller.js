@@ -64,94 +64,55 @@ export function coupons(req, res) {
 		});
 }
 
-export function addCoupon(req, res) {
+export function addCoupon(req, res){
 	res.render('edit-coupon', {
-		title: "Global Trade Connect",
-	});
+					title: "Global Trade Connect",
+				});
 }
 export function editCoupons(req, res) {
-	var chkArray = req.query.id;
+	var  chkArray = req.query.id;
 	var selected = chkArray.split(',');
-	var queryObj = {};
+	var queryObj ={};
 	var created_by = 29;
 	queryObj['created_by'] = created_by;
 	queryObj['id'] = selected;
-
-	console.log('queryObj', queryObj);
 	async.series({
 			Coupons: function(callback) {
-				model['Coupon'].findAll({
-					as : 'coupons',
+				model['Coupon'].findOne({
 					where: queryObj,
-					include: [{
-						model: model['CouponExcludedProduct'],
-						as: 'excludeProducts',
-						include: [{
-							model: model['Product'],
-							as: 'products',
-							attributes: ['id', 'product_name']
-						}],
-						attributes: ['id', 'product_id', 'coupon_id']
-					}/*, {
+					include:[{
+						 
+						 model: model['CouponExcludedProduct'],
+						 attributes: ['id', 'coupon_id', 'product_id'],
+						 include: [{
+						 	model:model['Product'],
+						 	attributes: ['id', 'product_name']
+						 }]
+					}, {
 						model: model['CouponProduct'],
-						include: [{
-							model: model['Product'],
-							attributes: ['id', 'product_name']
+						attributes: ['id', 'coupon_id', 'product_id'],
+					},{
+							model:model['CouponCategory'],
+							attributes: ['id', 'coupon_id', 'category_id'],
+							include:[{
+								model:model['Category'],
+								attributes: ['id', 'name']
+							}]
+						},{
+							model:model['CouponExcludedCategory'],
+							attributes: ['id', 'coupon_id', 'category_id'],
+							include:[{
+								model:model['Category'],
+								attributes: ['id', 'name']
+							}]
 						}],
-						attributes: ['id', 'product_id', 'coupon_id']
-					}, {
-						model: model['CouponCategory'],
-						include: [{
-							model: model['Category'],
-							attributes: ['id', 'name']
-						}],
-						attributes: ['id', 'category_id', 'coupon_id']
-					}, {
-						model: model['CouponExcludedCategory'],
-						include: [{
-							model: model['Category'],
-							attributes: ['id', 'name']
-						}],
-						attributes: ['id', 'category_id', 'coupon_id']
-					}*/],
-					raw: true
-				}).then(coupons =>{
-					const resObj = coupons.map(coupon => {
-						return Object.assign(
-          {},
-          {
-          	coupon_id:coupon.id,
-          	coupon_name:coupon.coupon_name,
-          	 CouponExcludedProduct: coupons.excludeProducts.map(excludeProduct => {
-          	 	return Object.assign(
-                {},
-                {
-                	excludeProduct_id:excludeProduct.id,
-                	product_id :excludeProduct.product_id,
-                	products: excludeProduct.products.map(product => {
-
-                    //tidy up the comment data
-                    return Object.assign(
-                      {},
-                      {
-                      	product_name:product.product_name,
-                      	product_id:product.id
-                      })
-                  })
-                })
-            })
-          	})
-					})
-
-
+				}).then(function(Coupons) {
+					// console.log('Coupons',plainTextResponse(Coupons));
+					return callback(null, Coupons);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
-				// function(Coupons) {
-				// 	console.log('Coupons', Coupons);
-				// 	return callback(null, Coupons);
-				// }).catch(function(error) {
-				// 	console.log('Error :::', error);
-				// 	return callback(null);
-				// });
 			}
 		},
 		function(err, results) {
@@ -166,4 +127,10 @@ export function editCoupons(req, res) {
 				res.render('edit-coupon', err);
 			}
 		});
+}
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
 }
