@@ -15,12 +15,13 @@
 		$("#couponSubmitBtn").click(function(e){
 			e.preventDefault();
 			var newCoupon = {};
-			newCoupon.coupon_name = "XYZ Coupon";
-			newCoupon.code = "XYZ0010";
-			newCoupon.discount_type = 1;
-			newCoupon.discount_value = 20;
-			newCoupon.publish_date = "2018-05-29";
+			newCoupon.coupon_name = $('input[name=coupon_name]').val(),
+			newCoupon.code = "ABC0010",//$('input[name=name]').val(),
+			newCoupon.discount_type = $('input[name=discount_type]').val(),
+			newCoupon.discount_value = $('input[name=discount_value]').val(),
+			newCoupon.publish_date = $('input[name=publish_date]').val(),
 			newCoupon.status = 1;
+			newCoupon.vendor_id = 29;
 
 			$.ajax({
 				type: 'POST',
@@ -42,11 +43,11 @@
 			e.preventDefault();
 			var id = $('input[name=id]').val();
 				var newCoupon = {};
-			newCoupon.coupon_name = "ABC Coupon";
-			newCoupon.code = "ABC0010";
-			newCoupon.discount_type = 1;
-			newCoupon.discount_value = 10;
-			newCoupon.publish_date = "2018-05-29";
+			newCoupon.coupon_name = $('input[name=coupon_name]').val(),
+			newCoupon.code = "ABC0010",//$('input[name=name]').val(),
+			newCoupon.discount_type = $('input[name=discount_type]').val(),
+			newCoupon.discount_value = $('input[name=discount_value]').val(),
+			newCoupon.publish_date = $('input[name=publish_date]').val(),
 			newCoupon.status = 1;
 			newCoupon.vendor_id = 29;
 			console.log(e);
@@ -77,12 +78,12 @@
 				<div class="col-md-8" style="background-color: #fff;">
 					<form id="couponForm">
 						<h5 style="padding-top: 20px;"> 
-							{{#ifCond Coupons.id "==" undefined}}
+							{{#if Coupons.id }}
 							Add Coupon
 							{{else}}
 							Edit Coupon
 							<input type="hidden"  name="id" value="{{Coupons.id}}" />
-							{{/ifCond}}
+							{{/if}}
 						</h5>
 						<div class="row">
 							<div class="col-md-12">
@@ -167,11 +168,11 @@
 						<hr/>
 						<div class="row">
 							<div class="col-md-12">
-								{{#ifCond Coupons.id "==" undefined}}
+								{{#if Coupons.id}}
 								<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
 								{{else}}
 								<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
-								{{/ifCond}}
+								{{/if}}
 								<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>								
 							</div>
 						</div>
