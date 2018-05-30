@@ -1,25 +1,25 @@
 'use strict';
 
+const async = require('async');
+
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
+const status = require('../../config/status');
 const statusCode = require('../../config/status');
 const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 
-import series from 'async/series';
-var async = require('async');
-
 
 export function coupons(req, res) {
 	var field = 'id';
-	var order = "desc"; //"asc"
+	var order = "desc";
 	var offset = 0;
-	var created_by = 29;
-	var limit = 10; //;
+	var limit = 10;
 	var queryObj = {};
+
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
@@ -30,7 +30,10 @@ export function coupons(req, res) {
 			queryObj['status'] = parseInt(status);
 	}
 
-	queryObj['created_by'] = created_by;
+	queryObj['vendor_id'] = 28;
+
+	console.log('queryObj', queryObj);
+
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findAndCountAll({
@@ -64,15 +67,59 @@ export function coupons(req, res) {
 		});
 }
 
-export function addCoupon(req, res){
-	res.render('edit-coupon', {
-					title: "Global Trade Connect",
+export function addCoupon(req, res) {
+
+	var productModel = "Product";
+	var categoryModel = "Category";
+
+	var offset, limit, field, order;
+	var productQueryObj = {};
+	var categoryQueryObj = {};
+
+	field = "id";
+	order = "asc";
+
+	productQueryObj['status'] = status["ACTIVE"];
+	categoryQueryObj['status'] = status["ACTIVE"];
+
+	productQueryObj['vendor_id'] = 28;
+
+	async.series({
+		products: function(callback) {
+			service.findRows(productModel, productQueryObj, offset, limit, field, order)
+				.then(function(products) {
+					return callback(null, products.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
+		},
+		categories: function(callback) {
+			service.findRows(categoryModel, categoryQueryObj, offset, limit, field, order)
+				.then(function(categories) {
+					return callback(null, categories.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
+	}, function(err, results) {
+		if (!err) {
+			res.render('edit-coupon', {
+				title: "Global Trade Connect",
+				products: results.products,
+				categories: results.categories
+			});
+		} else {
+			res.render('services', err);
+		}
+	});
 }
+
 export function editCoupons(req, res) {
-	var  chkArray = req.query.id;
+	var chkArray = req.query.id;
 	var selected = chkArray.split(',');
-	var queryObj ={};
+	var queryObj = {};
 	var created_by = 29;
 	queryObj['created_by'] = created_by;
 	queryObj['id'] = selected;
@@ -80,34 +127,33 @@ export function editCoupons(req, res) {
 			Coupons: function(callback) {
 				model['Coupon'].findOne({
 					where: queryObj,
-					include:[{
-						 
-						 model: model['CouponExcludedProduct'],
-						 attributes: ['id', 'coupon_id', 'product_id'],
-						 include: [{
-						 	model:model['Product'],
-						 	attributes: ['id', 'product_name']
-						 }]
+					include: [{
+
+						model: model['CouponExcludedProduct'],
+						attributes: ['id', 'coupon_id', 'product_id'],
+						include: [{
+							model: model['Product'],
+							attributes: ['id', 'product_name']
+						}]
 					}, {
 						model: model['CouponProduct'],
 						attributes: ['id', 'coupon_id', 'product_id'],
-					},{
-							model:model['CouponCategory'],
-							attributes: ['id', 'coupon_id', 'category_id'],
-							include:[{
-								model:model['Category'],
-								attributes: ['id', 'name']
-							}]
-						},{
-							model:model['CouponExcludedCategory'],
-							attributes: ['id', 'coupon_id', 'category_id'],
-							include:[{
-								model:model['Category'],
-								attributes: ['id', 'name']
-							}]
-						}],
+					}, {
+						model: model['CouponCategory'],
+						attributes: ['id', 'coupon_id', 'category_id'],
+						include: [{
+							model: model['Category'],
+							attributes: ['id', 'name']
+						}]
+					}, {
+						model: model['CouponExcludedCategory'],
+						attributes: ['id', 'coupon_id', 'category_id'],
+						include: [{
+							model: model['Category'],
+							attributes: ['id', 'name']
+						}]
+					}],
 				}).then(function(Coupons) {
-					// console.log('Coupons',plainTextResponse(Coupons));
 					return callback(null, Coupons);
 				}).catch(function(error) {
 					console.log('Error :::', error);

@@ -34,6 +34,17 @@ module.exports = (sequelize, DataTypes) => {
             field: 'publish_date',
             allowNull: false
         },
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: false,
+            references: {
+                model: 'vendor',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         sales_count: {
             type: DataTypes.BIGINT,
             field: 'sales_count',
@@ -120,6 +131,7 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Coupon = model.Coupon;
+    const Vendor = model.Vendor;
     const CouponCategory = model.CouponCategory;
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const CouponExcludedProduct = model.CouponExcludedProduct;
@@ -148,6 +160,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Coupon.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Coupon.hasMany(CouponProduct, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
@@ -160,29 +178,29 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsTo(Product, {
+    /*Coupon.belongsTo(Product, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Coupon.belongsTo(Product, {
+    /*Coupon.belongsTo(Product, {
         foreignKey: 'exclude_product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Coupon.belongsTo(Category, {
+    /*Coupon.belongsTo(Category, {
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Coupon.belongsTo(Category, {
+    /*Coupon.belongsTo(Category, {
         foreignKey: 'exclude_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Coupon.belongsToMany(Category, {
         through: CouponCategory,

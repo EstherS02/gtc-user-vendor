@@ -85,17 +85,17 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Category.hasMany(Coupon, {
+    /*Category.hasMany(Coupon, {
         foreignKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Category.hasMany(Coupon, {
+    /*Category.hasMany(Coupon, {
         foreignKey: 'exclude_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Category.hasMany(CouponCategory, {
         foreignKey: 'category_id',
@@ -129,7 +129,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Category.belongsToMany(Product, {
+    /*Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'product_id',
@@ -143,41 +143,41 @@ module.exports.initRelations = () => {
         otherKey: 'exclude_product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Category.belongsToMany(Category, {
+    /*Category.belongsToMany(Category, {
         as: "Category1",
         through: Coupon,
         foreignKey: 'category_id',
         otherKey: 'exclude_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Category.belongsToMany(Product, {
+    /*Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Category.belongsToMany(Product, {
+    /*Category.belongsToMany(Product, {
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'exclude_product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
-    Category.belongsToMany(Category, {
+    /*Category.belongsToMany(Category, {
         as: "Category2",
         through: Coupon,
         foreignKey: 'exclude_category_id',
         otherKey: 'category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Category.belongsToMany(Coupon, {
         through: CouponCategory,

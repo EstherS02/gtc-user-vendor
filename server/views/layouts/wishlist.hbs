@@ -1,0 +1,123 @@
+<script  type="text/javascript">
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				console.log(i)
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+</script>
+{{> vendor/header}} 
+<section class="showing_categ">
+	<div class="" >
+		<div class="container">
+			<div class="row">
+				{{> vendor/navbar}} 
+				<div class="col-md-10" style="background-color: #fff;">
+					<h5 style="padding-top: 20px;">My Wishlist</h5>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="submit" value="REMOVE" class="vend_edit_lists_buttonstyle" />
+						</div>
+						<div class="col-md-6">
+							<input type="submit" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+						</div>
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+								<a href="/wishlist?limit=10"> 10</a>
+								<a href="/wishlist?limit=25"> 25</a>
+								<a href="/wishlist?limit=100"> 100</a>
+								<a href="/wishlist?limit=10"> All </a>
+							</p>
+						</div>
+					</div>
+					<div class="row">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th><input type="checkbox" onclick="selectAll(this);"></th>
+									<th>Product Name</th>
+									<th>Store Name</th>
+									<th>Available</th>
+									<th>Type</th>
+									<th>price</th>
+									<th>Add to Cart</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+							{{#each wishlist}}
+								<tr>
+									<td><input type="checkbox"></td>
+									<td class="text_blue_color"><img src="{{wishlist.Product.ProductMedia.url}}" style="width: 15px;" /> {{wishlist.product_id}}</td>
+									<td class="text_blue_color">Great Earth Expeditions</td>
+									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									<td>Wholesale</td>
+									<td class="text_blue_color">$130.07</td>
+									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
+									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
+								</tr>
+								{{/each}}
+								<tr>
+									<td><input type="checkbox"></td>
+									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
+									<td class="text_blue_color">Great Earth Expeditions</td>
+									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									<td>Wholesale</td>
+									<td class="text_blue_color">$130.07</td>
+									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
+									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox"></td>
+									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
+									<td class="text_blue_color">Great Earth Expeditions</td>
+									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-exclamation-circle"></i></td>
+									<td>Wholesale</td>
+									<td class="text_blue_color">$130.07</td>
+									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
+									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+						</div>
+						<div class="col-md-6">
+							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+								<a href="/wishlist?limit=10"> 10</a>
+								<a href="/wishlist?limit=25"> 25</a>
+								<a href="/wishlist?limit=100"> 100</a>
+								<a href="/wishlist?limit=10"> All </a>
+							</p>
+						</div>
+					</div>
+				</div>		
+			</div>
+		</div>
+	</div>
+</section>
+<!-- <script>
+	$(window).scroll(function(){
+		$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
+	});
+</script> -->
+</body>
+</html>
