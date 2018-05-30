@@ -68,9 +68,10 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 	});
 }
 
-export function findRow(modelName, id) {
+export function findRow(modelName, id, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].find({
+			include: includeArr,
 			where: {
 				id: id
 			}
