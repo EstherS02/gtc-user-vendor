@@ -64,8 +64,8 @@
 							{{#each wishlist}}
 								<tr>
 									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="{{wishlist.Product.ProductMedia.url}}" style="width: 15px;" /> {{wishlist.product_id}}</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
+									<td class="text_blue_color"><img src="{{wishlist.Product.ProductMedium.url}}" style="width: 15px;" /> {{wishlist.product_id}}</td>
+									<td class="text_blue_color">{{wishlist.User.first_name}}</td>
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
 									<td>Wholesale</td>
 									<td class="text_blue_color">$130.07</td>
@@ -105,7 +105,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=10"> All </a>
+								<a href="/wishlist?limit=500"> All </a>
 							</p>
 						</div>
 					</div>

@@ -11,16 +11,15 @@ import series from 'async/series';
 var async = require('async');
 
 export function wishlist(req, res){
-if (req.query.sort == 'rating') {
-		var field = req.query.sort;
-	} else {
-		var field = 'id';
-	}
+	var field ='id';
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 10;
 	var vendor_id = 29;
-	var rating_limit = 120;
+	if (typeof req.query.limit !== 'undefined') {
+		limit = req.query.limit;
+		limit = parseInt(limit);
+	}
 	var queryObj = {};
 	queryObj={
 				// vendor_id: 29,
@@ -48,12 +47,8 @@ if (req.query.sort == 'rating') {
 						model:model['User'],
 						attributes:['id','first_name','last_name']
 					}]
-					// ,
-					// plain: true
-				}).then(function(wishlist) {
-					console.log('wishlist',wishlist.rows);
-					// console.log('Wishlist',plainTextRsponse(wishlist))
-					return callback(null, wishlist);
+				}).then(function(wishlists) {
+					return callback(null, wishlists);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -74,8 +69,10 @@ if (req.query.sort == 'rating') {
 
 	 // res.render('wishlist', {
   //               title: "Global Trade Connect",
-  //           });
+  //           }); 	                                        	
 }
+
+
 
 function plainTextResponse(response) {
 	return response.get({
