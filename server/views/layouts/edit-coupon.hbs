@@ -160,7 +160,21 @@
 
 		});
 
+		$("#inputIndividualUseOnly[value=1]").prop("checked","true");
+		$("#inputExcluseSaleItem[value=1]").prop("checked","true");
+
+		$('#inputProducts').select2().val([1, 2]).trigger("change")
+
 		$("#couponUpdateBtn").click(function(e) {
+			e.preventDefault();
+
+			const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
+			const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
+			console.log('inputIndividualUseOnly', inputIndividualUseOnly);
+			console.log('inputExcluseSaleItem', inputExcluseSaleItem);
+		});
+
+		/*$("#couponUpdateBtn").click(function(e) {
 			e.preventDefault();
 
 			var id = $('input[name=id]').val();
@@ -187,7 +201,7 @@
 					console.log('error', error);
 				}
 			});
-		});
+		});*/
 	});
 </script>
 
@@ -233,21 +247,18 @@
 								<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend" value="{{coupon.minimum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allwoed to use the coupon</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{coupon.individual_use_only}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
+								<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{coupon.maximum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
 							</div>
 							<div class="col-md-12">
-								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only">
+								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only" value="{{coupon.individual_use_only}}">
+								<b>Individual use only.</b> 
 								<span class="vend_edit_list_spanstyle">
-									<b>Individual use only.</b> Check this box if the coupon cannot be used in conjunction with other coupons	
+									Check this box if the coupon cannot be used in conjunction with other coupons	
 								</span>
 							</div>
 							<div class="col-md-12">
-								{{#ifCond Coupons.excluse_sale_item "==" 1}}
-								<input type="checkbox" name = "excluse_sale_item" checked=""><span class="vend_edit_list_spanstyle">
-								{{ else}}
-								<input type="checkbox" name = "excluse_sale_item" ><span class="vend_edit_list_spanstyle">
-								{{/ifCond}}
-								<b>Excluse sale Item.</b> Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
+								<input type="checkbox" id="inputExcluseSaleItem" name="excluse_sale_item" value="{{coupon.excluse_sale_item}}">
+								<b>Excluse sale Item.</b> <span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">

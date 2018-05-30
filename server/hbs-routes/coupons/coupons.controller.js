@@ -118,87 +118,143 @@ export function addCoupon(req, res) {
 }
 
 export function editCoupons(req, res) {
-	
+
 	var queryObj = {};
 	var includeArr = [];
+	var offset, limit, field, order;
+
 	var modelName = "Coupon";
 
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = 28;
+	queryObj['status'] = status["ACTIVE"];
 
-	includeArr = populate.populateData("");
+	field = "id";
+	order = "asc";
 
-	service.findOneRow(modelName, queryObj, includeArr)
-		.then(function(row) {
-			console.log('row', row);
-			res.render('edit-coupon', {
-				title: "Global Trade Connect",
-				coupon: row
-			});
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			res.render('edit-coupon', error);
-		});
-
-	//includeArr = populate.populateData("CouponExcludedProduct,CouponExcludedProduct.Product,CouponProduct,");
-	//console.log('includeArr', includeArr);
-	
-	/*var chkArray = req.query.id;
-	var selected = chkArray.split(',');
-	var queryObj = {};
-	var created_by = 29;
-	queryObj['created_by'] = created_by;
-	queryObj['id'] = selected;
 	async.series({
-			Coupons: function(callback) {
-				model['Coupon'].findOne({
-					where: queryObj,
-					include: [{
+		coupon: function(callback) {
+			service.findOneRow(modelName, queryObj, includeArr)
+				.then(function(coupon) {
+					return callback(null, coupon);
+				}).catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		},
+		products: function(callback) {
+			var productQueryObj = {};
+			var productModel = "Product";
 
-						model: model['CouponExcludedProduct'],
-						attributes: ['id', 'coupon_id', 'product_id'],
-						include: [{
-							model: model['Product'],
-							attributes: ['id', 'product_name']
-						}]
-					}, {
-						model: model['CouponProduct'],
-						attributes: ['id', 'coupon_id', 'product_id'],
-					}, {
-						model: model['CouponCategory'],
-						attributes: ['id', 'coupon_id', 'category_id'],
-						include: [{
-							model: model['Category'],
-							attributes: ['id', 'name']
-						}]
-					}, {
-						model: model['CouponExcludedCategory'],
-						attributes: ['id', 'coupon_id', 'category_id'],
-						include: [{
-							model: model['Category'],
-							attributes: ['id', 'name']
-						}]
-					}],
-				}).then(function(Coupons) {
-					return callback(null, Coupons);
+			productQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(productModel, includeArr, productQueryObj, offset, limit, field, order)
+				.then(function(products) {
+					return callback(null, products.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-			}
 		},
-		function(err, results) {
-			if (!err) {
-				res.render('edit-coupon', {
-					title: "Global Trade Connect",
-					Coupons: results.Coupons,
-					statusCode: statusCode,
-					discountType: discountType
+		categories: function(callback) {
+			var categoryQueryObj = {};
+			var categoryModel = "Category";
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, offset, limit, field, order)
+				.then(function(categories) {
+					return callback(null, categories.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
-			} else {
-				res.render('edit-coupon', err);
-			}
-		});*/
+		},
+		couponProducts: function(callback) {
+			var couponProductsQueryObj = {};
+			var couponProductsModel = "CouponProduct";
+
+			couponProductsQueryObj['status'] = status["ACTIVE"];
+			couponProductsQueryObj['coupon_id'] = req.query.id;
+
+			service.findAllRows(couponProductsModel, includeArr, couponProductsQueryObj, offset, limit, field, order)
+				.then(function(couponProducts) {
+					var couponProductsID = [];
+					if (couponProducts.rows.length > 0) {
+						for (var i = 0; i < couponProducts.rows.length; i++) {
+							couponProductsID.push(couponProducts.rows[i].product_id);
+						}
+						return callback(null, couponProductsID);
+					} else {
+						return callback(null, couponProductsID);
+					}
+				}).catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		},
+		couponExcludeProducts: function(callback) {
+			var couponExcludeProductsQueryObj = {};
+			var couponExcludeProductsModel = "CouponExcludedProduct";
+
+			couponExcludeProductsQueryObj['status'] = status["ACTIVE"];
+			couponExcludeProductsQueryObj['coupon_id'] = req.query.id;
+
+			service.findAllRows(couponExcludeProductsModel, includeArr, couponExcludeProductsQueryObj, offset, limit, field, order)
+				.then(function(couponExcludeProducts) {
+					return callback(null, couponExcludeProducts.rows);
+				}).catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		},
+		couponCategories: function(callback) {
+			var couponCategoriesQueryObj = {};
+			var couponCategoryModel = "CouponCategory";
+
+			couponCategoriesQueryObj['status'] = status["ACTIVE"];
+			couponCategoriesQueryObj['coupon_id'] = req.query.id;
+
+			service.findAllRows(couponCategoryModel, includeArr, couponCategoriesQueryObj, offset, limit, field, order)
+				.then(function(couponCategories) {
+					return callback(null, couponCategories.rows);
+				}).catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		},
+		couponExcludeCategories: function(callback) {
+			var couponExcludeCategoriesQueryObj = {};
+			var couponExcludeCategoryModel = "CouponExcludedCategory";
+
+			couponExcludeCategoriesQueryObj['status'] = status["ACTIVE"];
+			couponExcludeCategoriesQueryObj['coupon_id'] = req.query.id;
+
+			service.findAllRows(couponExcludeCategoryModel, includeArr, couponExcludeCategoriesQueryObj, offset, limit, field, order)
+				.then(function(couponExcludeCategories) {
+					return callback(null, couponExcludeCategories.rows);
+				}).catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		}
+	}, function(error, results) {
+		if (!error) {
+			console.log('results.couponProducts', results.couponProducts);
+			res.render('edit-coupon', {
+				title: "Global Trade Connect",
+				coupon: results.coupon,
+				products: results.products,
+				categories: results.categories,
+				existingCouponProducts: results.couponProducts,
+				existingCouponExcludeProducts: results.couponExcludeProducts,
+				existingCouponCategories: results.couponCategories,
+				existingCouponExcludeCategories: results.couponExcludeCategories
+			});
+		} else {
+			res.render('services', error);
+		}
+	});
 }
 
 function plainTextResponse(response) {
