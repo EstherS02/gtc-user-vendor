@@ -10,7 +10,7 @@ const async = require('async');
 export function AddProduct(req, res) {
 
     var categoryModel = "Category";
-    var subcategoryModel = "SubCategory";
+    var countryModel = "Country";
 
     var offset, limit, field, order;
     var queryObj = {};
@@ -33,11 +33,22 @@ export function AddProduct(req, res) {
                     return callback(null);
                 });
         },
+        country: function (callback) {
+            service.findRows(countryModel, queryObj, offset, limit, field, order)
+                .then(function (country) {
+                    return callback(null, country.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
     }, function (err, results) {
         if (!err) {
             res.render('add-product', {
                 title: "Global Trade Connect",
-                category: results.category
+                category: results.category,
+                country: results.country
             });
         }
         else {
