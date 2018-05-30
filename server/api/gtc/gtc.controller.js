@@ -8,6 +8,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 
+const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
 	var offset, limit, field, order;
@@ -79,6 +80,82 @@ export function index(req, res) {
 		});
 }
 
+export function getAll(req, res) {
+	var offset, limit, field, order;
+	var queryObj = {};
+	var searchObj = {};
+	var searchArray = [];
+	var includeArray = [];
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+	if (req.query.fields && req.query.text) {
+		var searchText = req.query.text;
+		var searchFields = req.query.fields;
+		searchFields = searchFields.split(",");
+		for (var i = 0; i < searchFields.length; i++) {
+			var obj = {}
+			obj[searchFields[i]] = {
+				like: '%' + searchText + '%'
+			}
+			searchArray.push(obj);
+		}
+		searchObj['$or'] = searchArray;
+		delete req.query.text;
+		delete req.query.fields;
+	}
+
+	queryObj = Object.assign(searchObj, req.query);
+
+	if (queryObj.startDate && queryObj.endDate) {
+		if (queryObj.columnName) {
+			queryObj[queryObj.columnName] = {
+				'$gte': new Date(parseInt(queryObj.startDate)),
+				'$lte': new Date(parseInt(queryObj.endDate))
+			}
+			delete queryObj.columnName;
+		}
+		delete queryObj.startDate;
+		delete queryObj.endDate;
+	}
+
+	if (!queryObj.status) {
+		queryObj['status'] = {
+			'$ne': status["DELETED"]
+		}
+	} else {
+		if (queryObj.status == status["DELETED"]) {
+			queryObj['status'] = {
+				'$eq': status["DELETED"]
+			}
+		}
+	}
+
+	includeArray.push({
+		model: model['Product'],
+		include: [{
+			model: model['Vendor']
+		}]
+	})
+
+	service.findAllRows(req.endpoint, includeArray, queryObj, offset, limit, field, order)
+		.then(function(rows) {
+			res.status(200).send(rows);
+			return;
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}
+
 export function show(req, res) {
 	var queryObj = req.query;
 
@@ -103,6 +180,30 @@ export function findById(req, res) {
 		.then(function(result) {
 			if (result) {
 				return res.status(200).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}
+
+export function createBulk(req, res) {
+
+	var bodyParamsArray = [];
+
+	for (var i = 0; i < req.body.length; i++) {
+		req.body[i].status = status["ACTIVE"];
+		req.body[i].created_on = new Date();
+		bodyParamsArray.push(req.body[i]);
+	}
+
+	service.createBulkRow(req.endpoint, bodyParamsArray)
+		.then(function(result) {
+			if (result) {
+				return res.status(201).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
@@ -227,3 +328,9 @@ exports.upload = function(req, res) {
 		}
 	});
 };
+
+function plainTextResponse(response) {
+	return response.get({
+		plain: true
+	});
+}

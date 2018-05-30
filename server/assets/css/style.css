@@ -88,7 +88,7 @@ body {
     min-height: 36px;
   }
   .inner-top-header {
-    margin-right: 84px;
+    /*margin-right: 84px;*/
   }
 }
 
@@ -127,11 +127,12 @@ img {
 }
 
 .inner-top-header {
-  float: right;
+  float: left;
   display: table;
   width: auto;
   position: relative;
   height: 36px;
+  padding-left: 10px;
 }
 
 .top-menu {
@@ -151,31 +152,95 @@ img {
     position: relative;
 }
 
+.top-menu > li > a > svg {
+  margin-right: 5px;
+}
+
 .top-menu > li > a {
   height: 36px;
   text-align: center;
   border: none;
-  display: table-cell;
-    vertical-align: middle;
-    text-decoration: none;
-      padding: 0 6px;
-    transition: background-color 0.2s;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  text-decoration: none;
+  padding: 0 11px;
+  transition: background-color 0.2s;
+  cursor: pointer;
 }
 
 .top-menu-link {
     white-space: nowrap;
     position: relative;
+    font-size: 9px;
 }
 
 .text-white {
   color: #fff;
 }
 
-.gtc-geo-locate {
-  font-size: 12px;
-}
-
 .gtc-geo-locate > a {
   color: #eec995;
+}
+.gtc-track-your-order > a {
+  color: #5587bb;
+}
+.gtc-login > a {
+  color: #5587bb;
+}
+.gtc-join-now > a {
+  color: #b6607e;
+}
+.gtc-compare > a {
+  color: #5587bb;
+}
+.gtc-wishlist > a {
+  color: #5587bb;
+}
+
+.search-input-group {
+  height: 32px;
+}
+
+.m-t-s {
+  margin: 6px 0px;
+}
+
+.search-input-group .form-control {
+  border-right: 0;
+  box-shadow: 0 0 0;
+  border-color: #ccc;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-left: 3px solid #fea022;
+  border-bottom: 3px solid #fea022;
+  border-top: 3px solid #fea022;
+}
+
+.search-input-group .input-group-addon {
+  background: white !important;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-right: 3px solid #fea022;
+  border-bottom: 3px solid #fea022;
+  border-top: 3px solid #fea022;
+  line-height: 0;
+}
+
+.p-r-none {
+  padding-right: 0px;
+}
+
+.search-input-group button {
+  border: 0;
+  background: transparent;
+}
+
+.mr-auto li.nav-item {
+  margin-right: 0px;
+}
+
+.navbar-expand-sm .navbar-nav .nav-link {
+  padding-right: 0;
 }

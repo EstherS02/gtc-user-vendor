@@ -24,46 +24,43 @@ export function services(req, res) {
 	queryObj['marketplace'] = 'Services Marketplace';
 
 	async.series({
-		featuredService: function (callback) {
+		featuredService: function(callback) {
 			limit = null;
-            queryObj['position'] = position.ServiceLanding;
+			queryObj['position'] = position.ServiceLanding;
 			service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
-				.then(function (featuredService) {
+				.then(function(featuredService) {
 					return callback(null, featuredService.rows);
-
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		serviceProduct: function (callback) {
+		serviceProduct: function(callback) {
 			delete queryObj['position'];
 			limit = 20;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function (serviceProduct) {
+				.then(function(serviceProduct) {
 					return callback(null, serviceProduct.rows);
-
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		servicesProviders: function (callback) {
+		servicesProviders: function(callback) {
 			delete queryObj['marketplace'];
-            queryObj['type'] = 'Services Marketplace';
-            field = 'sales_count';
+			queryObj['type'] = 'Services Marketplace';
+			field = 'sales_count';
 			order = 'desc';
 			limit = 6;
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
-                .then(function (servicesProviders) {
-                    return callback(null, servicesProviders.rows);
-
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        }
-	}, function (err, results) {
+			service.findRows(vendorModel, queryObj, offset, limit, field, order)
+				.then(function(servicesProviders) {
+					return callback(null, servicesProviders.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
+	}, function(err, results) {
 		if (!err) {
 			res.render('services', {
 				title: "Global Trade Connect",
@@ -71,19 +68,8 @@ export function services(req, res) {
 				serviceProduct: results.serviceProduct,
 				servicesProviders: results.servicesProviders
 			});
-		}
-		else {
+		} else {
 			res.render('services', err);
 		}
 	});
-
 }
-
-
-
-
-
-
-
-
-
