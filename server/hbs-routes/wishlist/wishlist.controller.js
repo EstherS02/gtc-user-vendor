@@ -12,37 +12,33 @@ var async = require('async');
 
 export function wishlist(req, res) {
 	var field = 'id';
-	var order = "desc"; //"asc"
+	var order = "desc";
 	var offset = 0;
 	var limit = 10;
 	var vendor_id = 29;
+	var queryObj = {};
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
 	}
-	var queryObj = {};
 	queryObj = {
-		// vendor_id: 29,
 		user_id: 62
 	};
 	var wishModel = 'WishList';
 	var includeArr = [{
 		model: model['Product'],
-		attributes: ['id', 'product_name', 'quantity_available', 'price'],
 		include: [{
 			model: model['ProductMedia'],
-			attributes: ['url']
 		}]
 	}, {
-		model: model['User'],
-		attributes: ['id', 'first_name', 'last_name']
+		model: model['User']
 	}];
 	async.series({
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
+						// console.log(category)
 						return callback(null, category);
-
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -61,8 +57,6 @@ export function wishlist(req, res) {
 			}
 		});
 }
-
-
 
 function plainTextResponse(response) {
 	return response.get({
