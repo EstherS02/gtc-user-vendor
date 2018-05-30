@@ -18,66 +18,55 @@
     }
 </script>
 <script>
-    var files;
-    $('input[type=file]').on('change', prepareUpload);
-    function prepareUpload(event) {
-        files = event.target.files;
-        console.log("event occuring",files)
-    }
     $(document).ready(function () {
         $("#productSubmitBtn").click(function (e) {
-                e.preventDefault();
-                var newProduct = {};
-                newProduct.product_name = $('input[name=product_name]').val(),
-                newProduct.product_category_id = $('#category').val(),
-                newProduct.sub_category_id = $('#sub_category').val(),
-                newProduct.sku = $('input[name=sku]').val(),
-                newProduct.price = $('input[name=price]').val(),
-                newProduct.quantity_available = $('input[name=quantity_available]').val(),
-                newProduct.moq = $('input[name=moq]').val(),
-                newProduct.status = 1;
+            e.preventDefault();
+            var obj = {};
+            /* var newProduct = {};
+            newProduct.product_name = $('input[name=product_name]').val(),
+            newProduct.product_category_id = $('#category').val(),
+            newProduct.sub_category_id = $('#sub_category').val(),
+            newProduct.sku = $('input[name=sku]').val(),
+            newProduct.price = $('input[name=price]').val(),
+            newProduct.quantity_available = $('input[name=quantity_available]').val(),
+            newProduct.moq = $('input[name=moq]').val(),
+            newProduct.status = 1;
             newProduct.vendor_id = 29;
-            console.log("newProduct", newProduct);
+            console.log("newProduct", newProduct);*/
 
-            var data = new FormData();
-
-            $.each(files, function (key, value) {
-                data.append(key, value);
-            });
+            var form = new FormData();
+            form.append("file", $("#file")[0].files[0]);
+            form.append("filename", "test")
 
             $.ajax({
                 type: 'POST',
                 url: '/api/products/upload',
-                data: data,
+                data: form,
                 cache: false,
                 dataType: 'json',
                 processData: false,
                 contentType: false,
-                success: function (data, text) {
-                    console.log('data', data);
-                    console.log('success');
-
+                success: function (data) {
+                    obj.type = 1;
+                    obj.status = 1;
+                    obj.url = data.imageURL;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/product-medias',
+                        data: obj,
+                        success: function (data) {
+                            console.log("data",data);
+                        },
+                        error: function (error) {
+                            console.log('error', error);
+                        }
+                    });
                 },
-                error: function (request, status, error) {
-                    console.log('status', status);
+                error: function (error) {
                     console.log('error', error);
                 }
             });
-            /*
-                        $.ajax({
-                            type: 'POST',
-                            url: '/api/coupons',
-                            data: newCoupon,
-                            success: function(data, text) {
-                                console.log('data', data);
-                                console.log('text', text);
-                                window.location.href = '/coupons';
-                            },
-                            error: function(request, status, error) {
-                                console.log('status', status);
-                                console.log('error', error);
-                            }
-                        });*/
+
         });
     });
 </script> {{> vendor/header}}
@@ -118,7 +107,7 @@
                             </div>
                             <div class="col-md-12">
                                 <label>
-                                    <h5>Upload Image </h5>
+                                    <h6>Upload Image </h6>
                                 </label>
                                 <input type="file" class="vend_edit_lists_textstyle1" id="file" name="file" />
                             </div>
