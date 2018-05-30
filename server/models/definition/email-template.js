@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         body: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             field: 'body',
             allowNull: true
         },

@@ -45,7 +45,7 @@ module.exports.initRelations = () => {
 
     Appclient.hasMany(UserToken, {
         foreignKey: 'client_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 
@@ -53,7 +53,7 @@ module.exports.initRelations = () => {
         through: UserToken,
         foreignKey: 'client_id',
         otherKey: 'user_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 

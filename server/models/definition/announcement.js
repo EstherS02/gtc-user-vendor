@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         link: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             field: 'link',
             allowNull: true
         },

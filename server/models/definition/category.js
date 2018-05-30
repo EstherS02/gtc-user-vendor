@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         description: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.TEXT,
             field: 'description',
             allowNull: true
         },
@@ -66,12 +66,12 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Category = model.Category;
     const CategoryAttribute = model.CategoryAttribute;
-    const Coupon = model.Coupon;
     const CouponCategory = model.CouponCategory;
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const Product = model.Product;
     const SubCategory = model.SubCategory;
     const Attribute = model.Attribute;
+    const Coupon = model.Coupon;
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
@@ -84,18 +84,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*Category.hasMany(Coupon, {
-        foreignKey: 'category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.hasMany(Coupon, {
-        foreignKey: 'exclude_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Category.hasMany(CouponCategory, {
         foreignKey: 'category_id',
@@ -128,56 +116,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*Category.belongsToMany(Product, {
-        through: Coupon,
-        foreignKey: 'category_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Category.belongsToMany(Product, {
-        through: Coupon,
-        foreignKey: 'category_id',
-        otherKey: 'exclude_product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.belongsToMany(Category, {
-        as: "Category1",
-        through: Coupon,
-        foreignKey: 'category_id',
-        otherKey: 'exclude_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.belongsToMany(Product, {
-        through: Coupon,
-        foreignKey: 'exclude_category_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.belongsToMany(Product, {
-        through: Coupon,
-        foreignKey: 'exclude_category_id',
-        otherKey: 'exclude_product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.belongsToMany(Category, {
-        as: "Category2",
-        through: Coupon,
-        foreignKey: 'exclude_category_id',
-        otherKey: 'category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Category.belongsToMany(Coupon, {
         through: CouponCategory,

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
+            onDelete: 'CASCADE'
         },
         client_id: {
             type: DataTypes.BIGINT,
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
+            onDelete: 'CASCADE'
         },
         refresh_token: {
             type: DataTypes.TEXT,
@@ -57,13 +57,13 @@ module.exports.initRelations = () => {
 
     UserToken.belongsTo(User, {
         foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 
     UserToken.belongsTo(Appclient, {
         foreignKey: 'client_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 
