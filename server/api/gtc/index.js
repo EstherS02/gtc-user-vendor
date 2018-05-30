@@ -14,7 +14,7 @@ var router = express.Router();
 
 
 router.post('/:endpoint/upload', multipartMiddleware, controller.upload);
-router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
+router.get('/:endpoint', middleware.validateEndpoint(), controller.getAll);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
 router.post('/:endpoint/bulk-create', middleware.validateEndpoint(), controller.createBulk);

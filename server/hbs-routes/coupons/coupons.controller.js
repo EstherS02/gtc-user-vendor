@@ -17,9 +17,9 @@ export function coupons(req, res) {
 	var field = 'id';
 	var order = "desc";
 	var offset = 0;
-	var created_by = 29;
 	var limit = 10;
 	var queryObj = {};
+
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
@@ -30,7 +30,10 @@ export function coupons(req, res) {
 			queryObj['status'] = parseInt(status);
 	}
 
-	queryObj['created_by'] = created_by;
+	queryObj['vendor_id'] = 28;
+
+	console.log('queryObj', queryObj);
+
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findAndCountAll({

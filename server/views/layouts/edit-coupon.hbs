@@ -1,12 +1,13 @@
-<script>
+<script type="text/javascript">
 	$(document).ready(function() {
 		$('.multiSelect').select2();
 	});
 </script>
-<script>
+<script type="text/javascript">
 	$(document).ready(function() {
 
 		$("#couponSubmitBtn").click(function(e) {
+
 			var newCouponProducts = [];
 			var newCouponExcludeProducts = [];
 			var newCouponCategories = [];
@@ -25,7 +26,7 @@
 			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
-			newCoupon.vendor_id = 29;
+			newCoupon.vendor_id = 28;
 			newCoupon.publish_date = new Date().toISOString().split("T")[0];
 			newCoupon.usage_limit = $('#inputUsageLimit').val();
 			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
@@ -36,69 +37,26 @@
 			var couponCategories = $('#inputCategories').val();
 			var couponExcludeCategories = $('#inputExcludeCategories').val();
 
-			var data = {};
-			data.id = 15;
-
-			applyCoupon(data, function() {
-				if (newCouponProducts.length > 0) {
-					console.log('newCouponProducts', newCouponProducts, typeof(newCouponProducts));
-					var dataObj = {};
-					dataObj.dataArray = newCouponProducts;
-					$.ajax({
-						type: 'POST',
-						url: '/api/coupon-products/bulk-create',
-						data: JSON.stringify(dataObj)
-					}).done(function(data) {
-						console.log('data', data);
-					});
-				}
-			});
-
-			/*$.ajax({
+			$.ajax({
 				type: 'POST',
 				url: '/api/coupons',
 				data: newCoupon,
 				success: function(data, text) {
-					applyCoupon(data, function() {
-						if (newCouponProducts.length > 0) {
-							$.ajax({
-								type: 'POST',
-								url: '/api/coupon-products/bulk-create',
-								data: {
-									dataArray: newCouponProducts
-								}
-							}).done(function(data) {
-								console.log('data', data);
+					products(data, function() {
+						excludeProducts(data, function() {
+							categories(data, function() {
+								excludeCategories(data, function() {
+									console.log('done');
+								});
 							});
-						}
-						if (newCouponExcludeProducts.length) {
-
-						}
-						if (newCouponCategories.length) {
-
-						}
-						if (newCouponExcludeCategories.length) {
-
-						}
+						});
 					});
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
-			});*/
-
-			function applyCoupon(data, callback) {
-				products(data, function() {
-					excludeProducts(data, function() {
-						categories(data, function() {
-							excludeCategories(data, function() {
-								callback();
-							})
-						})
-					});
-				});
-			}
+			});
 
 			function products(data, callback) {
 				if (couponProducts.length > 0) {
@@ -108,7 +66,18 @@
 							coupon_id: data.id
 						});
 					}
-					callback();
+					$.ajax({
+						type: 'POST',
+						url: '/api/coupon-products/bulk-create',
+						contentType: "application/json",
+						data: JSON.stringify(newCouponProducts),
+						success: function(data, text) {
+							callback();
+						},
+						error: function(request, status, error) {
+							callback();
+						}
+					});
 				} else {
 					callback();
 				}
@@ -122,7 +91,18 @@
 							coupon_id: data.id
 						});
 					}
-					callback();
+					$.ajax({
+						type: 'POST',
+						url: '/api/coupon-excluded-products/bulk-create',
+						contentType: "application/json",
+						data: JSON.stringify(newCouponExcludeProducts),
+						success: function(data, text) {
+							callback();
+						},
+						error: function(request, status, error) {
+							callback();
+						}
+					});
 				} else {
 					callback();
 				}
@@ -136,7 +116,18 @@
 							coupon_id: data.id
 						});
 					}
-					callback();
+					$.ajax({
+						type: 'POST',
+						url: '/api/coupon-categories/bulk-create',
+						contentType: "application/json",
+						data: JSON.stringify(newCouponCategories),
+						success: function(data, text) {
+							callback();
+						},
+						error: function(request, status, error) {
+							callback();
+						}
+					});
 				} else {
 					callback();
 				}
@@ -150,7 +141,18 @@
 							coupon_id: data.id
 						});
 					}
-					callback();
+					$.ajax({
+						type: 'POST',
+						url: '/api/coupon-excluded-categories/bulk-create',
+						contentType: "application/json",
+						data: JSON.stringify(newCouponExcludeCategories),
+						success: function(data, text) {
+							callback();
+						},
+						error: function(request, status, error) {
+							callback();
+						}
+					});
 				} else {
 					callback();
 				}
@@ -188,6 +190,7 @@
 		});
 	});
 </script>
+
 {{> vendor/header}} 
 <section class="showing_categ">
 	<div class="" >

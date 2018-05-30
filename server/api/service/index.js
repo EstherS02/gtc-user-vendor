@@ -34,6 +34,40 @@ export function findRows(modelName, queryObj, offset, limit, field, order) {
 	});
 }
 
+export function findAllRows(modelName, includeArr, queryObj, offset, limit, field, order) {
+	var result = {};
+	return new Promise((resolve, reject) => {
+		model[modelName].findAll({
+			include: includeArr,
+			where: queryObj,
+			offset: offset,
+			limit: limit,
+			order: [
+				[field, order]
+			]
+		}).then(function(rows) {
+			if (rows.length > 0) {
+				var convertRowsJSON = rows.map(function(row) {
+					return row.toJSON()
+				});
+				model[modelName].count({
+					where: queryObj
+				}).then(function(count) {
+					result.total = count;
+					result.rows = convertRowsJSON;
+					resolve(result);
+				}).catch(function(error) {
+					reject(error);
+				});
+			} else {
+				resolve(rows);
+			}
+		}).catch(function(error) {
+			reject(error);
+		});
+	});
+}
+
 export function findRow(modelName, id) {
 	return new Promise((resolve, reject) => {
 		model[modelName].find({
