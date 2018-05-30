@@ -1,4 +1,4 @@
-<script  type="text/javascript">
+<script type="text/javascript">
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -17,7 +17,7 @@
 		}
 	}
 </script>
-{{> vendor/header}} 
+{{> vendor/header}}
 <section class="showing_categ">
 	<div class="" >
 		<div class="container">
@@ -42,7 +42,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=10"> All </a>
+								<a href="/wishlist?limit=500"> All </a>
 							</p>
 						</div>
 					</div>
@@ -64,35 +64,19 @@
 							{{#each wishlist}}
 								<tr>
 									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="{{wishlist.Product.ProductMedium.url}}" style="width: 15px;" /> {{wishlist.product_id}}</td>
-									<td class="text_blue_color">{{wishlist.User.first_name}}</td>
+									<td class="text_blue_color"><img src="{{this.Product.ProductMedium.url}}" style="width: 15px;" /> {{this.Product.product_name}}</td>
+									<td class="text_blue_color">{{this.User.first_name}} {{this.User.last_name}}</td>
+									{{#if this.Product.quantity_available}}
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									{{else}}
+									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									{{/if}}
 									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
+									<td class="text_blue_color">{{this.Product.price}}</td>
 									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
 									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
 								</tr>
 								{{/each}}
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
-									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
-									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
-									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
-									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-exclamation-circle"></i></td>
-									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
-									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -114,10 +98,3 @@
 		</div>
 	</div>
 </section>
-<!-- <script>
-	$(window).scroll(function(){
-		$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-	});
-</script> -->
-</body>
-</html>

@@ -10,8 +10,8 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function wishlist(req, res){
-	var field ='id';
+export function wishlist(req, res) {
+	var field = 'id';
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 10;
@@ -21,39 +21,33 @@ export function wishlist(req, res){
 		limit = parseInt(limit);
 	}
 	var queryObj = {};
-	queryObj={
-				// vendor_id: 29,
-				user_id : 62
-			};
-
+	queryObj = {
+		// vendor_id: 29,
+		user_id: 62
+	};
+	var wishModel = 'WishList';
+	var includeArr = [{
+		model: model['Product'],
+		attributes: ['id', 'product_name', 'quantity_available', 'price'],
+		include: [{
+			model: model['ProductMedia'],
+			attributes: ['url']
+		}]
+	}, {
+		model: model['User'],
+		attributes: ['id', 'first_name', 'last_name']
+	}];
 	async.series({
 			wishlist: function(callback) {
-				model['WishList'].findAndCountAll({
-					where: queryObj,
-					offset: offset,
-					limit: limit,
-					attributes: ['id','product_id','user_id','status'],
-					order: [
-						[field, order]
-					],
-					include: [{
-						model: model['Product'],
-						attributes:['id','product_name'],
-						include:[{
-							model:model['ProductMedia'],
-							attributes:['url']
-						}]
-					},{
-						model:model['User'],
-						attributes:['id','first_name','last_name']
-					}]
-				}).then(function(wishlists) {
-					return callback(null, wishlists);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			}
+				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
+					.then(function(category) {
+						return callback(null, category);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 		},
 		function(err, results) {
 			if (!err) {
@@ -66,10 +60,6 @@ export function wishlist(req, res){
 				res.render('wishlist', err);
 			}
 		});
-
-	 // res.render('wishlist', {
-  //               title: "Global Trade Connect",
-  //           }); 	                                        	
 }
 
 
