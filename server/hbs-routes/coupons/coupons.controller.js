@@ -2,6 +2,7 @@
 
 const async = require('async');
 
+const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
@@ -117,7 +118,32 @@ export function addCoupon(req, res) {
 }
 
 export function editCoupons(req, res) {
-	var chkArray = req.query.id;
+	
+	var queryObj = {};
+	var includeArr = [];
+	var modelName = "Coupon";
+
+	queryObj['id'] = req.query.id;
+	queryObj['vendor_id'] = 28;
+
+	includeArr = populate.populateData("");
+
+	service.findOneRow(modelName, queryObj, includeArr)
+		.then(function(row) {
+			console.log('row', row);
+			res.render('edit-coupon', {
+				title: "Global Trade Connect",
+				coupon: row
+			});
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			res.render('edit-coupon', error);
+		});
+
+	//includeArr = populate.populateData("CouponExcludedProduct,CouponExcludedProduct.Product,CouponProduct,");
+	//console.log('includeArr', includeArr);
+	
+	/*var chkArray = req.query.id;
 	var selected = chkArray.split(',');
 	var queryObj = {};
 	var created_by = 29;
@@ -172,7 +198,7 @@ export function editCoupons(req, res) {
 			} else {
 				res.render('edit-coupon', err);
 			}
-		});
+		});*/
 }
 
 function plainTextResponse(response) {
