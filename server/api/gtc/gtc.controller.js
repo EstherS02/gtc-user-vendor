@@ -7,7 +7,8 @@ const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
-
+const _ = require('lodash');
+const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function index(req, res) {
@@ -174,21 +175,30 @@ export function show(req, res) {
 }
 
 export function findById(req, res) {
-	var paramsID = req.params.id;
+  var paramsID = req.params.id;
+  let includeArr;
 
-	service.findRow(req.endpoint, paramsID)
-		.then(function(result) {
-			if (result) {
-				return res.status(200).send(result);
-			} else {
-				return res.status(404).send("Not found");
-			}
-		}).catch(function(error) {
-			console.log('Error :::', error);
-			res.status(500).send("Internal server error");
-			return
-		});
+	if(req.query.populate)
+	  includeArr = populate.populateData(req.query.populate);
+	else
+	  includeArr = [];
+	
+	delete req.query.populate;
+
+  service.findRow(req.endpoint, paramsID, includeArr)
+    .then(function (result) {
+      if (result) {
+        return res.status(200).send(result);
+      } else {
+        return res.status(404).send("Not found");
+      }
+    }).catch(function (error) {
+      console.log('Error :::', error);
+      res.status(500).send("Internal server error");
+      return
+    });
 }
+
 
 export function createBulk(req, res) {
 
@@ -313,7 +323,7 @@ export function destroy(req, res) {
 
 exports.upload = function(req, res) {
 	var file = req.files.file;
-	var uploadPath = config.upload_products_path + "/" + file.originalFilename;
+	var uploadPath = config.images_base_path + "/" + file.originalFilename;
 
 	mv(file.path, uploadPath, {
 		clobber: true,
@@ -323,7 +333,7 @@ exports.upload = function(req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			var image = config.imageUrlRewritePath.products + file.originalFilename;
+			var image = config.imageUrlRewritePath.base + file.originalFilename;
 			return res.status(201).send(image);
 		}
 	});
