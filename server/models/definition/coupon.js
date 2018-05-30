@@ -131,14 +131,14 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Coupon = model.Coupon;
-    const Vendor = model.Vendor;
     const CouponCategory = model.CouponCategory;
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
     const OrderItem = model.OrderItem;
-    const Product = model.Product;
+    const Vendor = model.Vendor;
     const Category = model.Category;
+    const Product = model.Product;
     const Order = model.Order;
     const Tax = model.Tax;
 
@@ -160,12 +160,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     Coupon.hasMany(CouponProduct, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
@@ -178,29 +172,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Coupon.belongsTo(Product, {
-        foreignKey: 'product_id',
+    Coupon.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
-
-    /*Coupon.belongsTo(Product, {
-        foreignKey: 'exclude_product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Coupon.belongsTo(Category, {
-        foreignKey: 'category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Coupon.belongsTo(Category, {
-        foreignKey: 'exclude_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
+    });
 
     Coupon.belongsToMany(Category, {
         through: CouponCategory,

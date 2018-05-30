@@ -1,18 +1,13 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductAdsSetting', {
+    return sequelize.define('Review', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
-        },
-        name: {
-            type: DataTypes.STRING(64),
-            field: 'name',
-            allowNull: false
         },
         product_id: {
             type: DataTypes.BIGINT,
@@ -25,77 +20,46 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        position: {
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: true
+        },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: true,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        review_type: {
             type: DataTypes.INTEGER,
-            field: 'position',
+            field: 'review_type',
             allowNull: true
         },
-        image_url: {
+        rating: {
+            type: DataTypes.INTEGER,
+            field: 'rating',
+            allowNull: true
+        },
+        title: {
+            type: DataTypes.STRING(128),
+            field: 'title',
+            allowNull: true
+        },
+        comment: {
             type: DataTypes.TEXT,
-            field: 'image_url',
+            field: 'comment',
             allowNull: true
-        },
-        target_url: {
-            type: DataTypes.TEXT,
-            field: 'target_url',
-            allowNull: true
-        },
-        country_id: {
-            type: DataTypes.BIGINT,
-            field: 'country_id',
-            allowNull: true,
-            references: {
-                model: 'country',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        state_id: {
-            type: DataTypes.BIGINT,
-            field: 'state_id',
-            allowNull: true,
-            references: {
-                model: 'state',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-        },
-        city: {
-            type: DataTypes.STRING(128),
-            field: 'city',
-            allowNull: true
-        },
-        start_date: {
-            type: DataTypes.DATEONLY,
-            field: 'start_date',
-            allowNull: true
-        },
-        end_date: {
-            type: DataTypes.DATEONLY,
-            field: 'end_date',
-            allowNull: true
-        },
-        impression: {
-            type: DataTypes.INTEGER,
-            field: 'impression',
-            allowNull: true
-        },
-        impression_limit: {
-            type: DataTypes.INTEGER,
-            field: 'impression_limit',
-            allowNull: true
-        },
-        clicks: {
-            type: DataTypes.INTEGER,
-            field: 'clicks',
-            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -123,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'product_ads_setting',
+        tableName: 'reviews',
         timestamps: false
     });
 };
@@ -132,25 +96,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const ProductAdsSetting = model.ProductAdsSetting;
+    const Review = model.Review;
     const Product = model.Product;
-    const Country = model.Country;
-    const State = model.State;
+    const User = model.User;
 
-    ProductAdsSetting.belongsTo(Product, {
+    Review.belongsTo(Product, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    ProductAdsSetting.belongsTo(Country, {
-        foreignKey: 'country_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductAdsSetting.belongsTo(State, {
-        foreignKey: 'state_id',
+    Review.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

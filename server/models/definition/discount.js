@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Announcement', {
+    return sequelize.define('Discount', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,55 +9,30 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        notification: {
-            type: DataTypes.STRING(255),
-            field: 'notification',
+        product_id: {
+            type: DataTypes.BIGINT,
+            field: 'product_id',
             allowNull: true
+        },
+        percent_discount: {
+            type: DataTypes.INTEGER,
+            field: 'percent_discount',
+            allowNull: true
+        },
+        value_discount: {
+            type: DataTypes.INTEGER,
+            field: 'value_discount',
+            allowNull: true
+        },
+        quantity: {
+            type: DataTypes.INTEGER,
+            field: 'quantity_available',
+            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-        },
-        visible_to_user: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_user',
-            allowNull: true
-        },
-        visible_to_wholesaler: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_wholesaler',
-            allowNull: true
-        },
-        visible_to_retailer: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_retailer',
-            allowNull: true
-        },
-        visible_to_lifestyle_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_lifestyle_provider',
-            allowNull: true
-        },
-        visible_to_service_provider: {
-            type: DataTypes.INTEGER,
-            field: 'visible_to_service_provider',
-            allowNull: true
-        },
-        link: {
-            type: DataTypes.TEXT,
-            field: 'link',
-            allowNull: true
-        },
-        start_date: {
-            type: DataTypes.DATEONLY,
-            field: 'start_date',
-            allowNull: false
-        },
-        end_date: {
-            type: DataTypes.DATEONLY,
-            field: 'end_date',
-            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -85,12 +60,22 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'announcement',
+        tableName: 'discount',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
+    const model = require('../index');
+    const Discount = model.Discount;
+    const Product = model.Product;
+
+    Discount.belongsTo(Product, {
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
 };

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         hashed_pwd: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.TEXT,
             field: 'hashed_pwd',
             allowNull: true
         },
@@ -238,7 +238,7 @@ module.exports.initRelations = () => {
 
     User.hasMany(UserToken, {
         foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 
@@ -333,7 +333,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
-        as: "User",
+        as: 'User1',
         through: Talk,
         foreignKey: 'from_id',
         otherKey: 'to_id',
@@ -358,7 +358,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
-        as: "User",
+        as: 'User2',
         through: Talk,
         foreignKey: 'to_id',
         otherKey: 'from_id',
@@ -386,7 +386,7 @@ module.exports.initRelations = () => {
         through: UserToken,
         foreignKey: 'user_id',
         otherKey: 'client_id',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION'
     });
 
