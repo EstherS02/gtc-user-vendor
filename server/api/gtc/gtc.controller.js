@@ -313,7 +313,7 @@ export function destroy(req, res) {
 
 exports.upload = function(req, res) {
 	var file = req.files.file;
-	var uploadPath = config.upload_products_path + "/" + file.originalFilename;
+	var uploadPath = config.images_base_path + "/" + file.originalFilename;
 
 	mv(file.path, uploadPath, {
 		clobber: true,
@@ -323,7 +323,7 @@ exports.upload = function(req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			var image = config.imageUrlRewritePath.products + file.originalFilename;
+			var image = config.imageUrlRewritePath.base + file.originalFilename;
 			return res.status(201).send(image);
 		}
 	});

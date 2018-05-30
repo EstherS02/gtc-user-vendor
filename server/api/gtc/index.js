@@ -2,16 +2,13 @@
 
 var express = require('express');
 var multipart = require('connect-multiparty');
-
+var router = express.Router();
 var multipartMiddleware = multipart();
 
 var auth = require('../../auth/auth.service');
 var controller = require('./gtc.controller');
 var middleware = require('../../middleware');
 var permission = require('../../config/permission');
-
-var router = express.Router();
-
 
 router.post('/:endpoint/upload', multipartMiddleware, controller.upload);
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);

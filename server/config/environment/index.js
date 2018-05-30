@@ -40,7 +40,7 @@ var all = {
   images_base_path: process.env.BASE_URL_LOCAL_UPLOAD,
 
   imageUrlRewritePath: {
-    base: "/images"
+    base: "/images/"
   },
 
   // Secret for session, you will want to change this and make it an environment variable
