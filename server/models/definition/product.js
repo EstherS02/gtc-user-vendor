@@ -184,7 +184,6 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Product = model.Product;
     const Cart = model.Cart;
-    const Coupon = model.Coupon;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
     const FeaturedProduct = model.FeaturedProduct;
@@ -203,6 +202,7 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const State = model.State;
     const User = model.User;
+    const Coupon = model.Coupon;
     const Order = model.Order;
     const Tax = model.Tax;
     const Attribute = model.Attribute;
@@ -212,18 +212,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*Product.hasMany(Coupon, {
-        foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.hasMany(Coupon, {
-        foreignKey: 'exclude_product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Product.hasMany(CouponExcludedProduct, {
         foreignKey: 'product_id',
@@ -335,56 +323,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Product.belongsToMany(Product, {
-        as: "Product1",
-        through: Coupon,
-        foreignKey: 'product_id',
-        otherKey: 'exclude_product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.belongsToMany(Category, {
-        through: Coupon,
-        foreignKey: 'product_id',
-        otherKey: 'category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.belongsToMany(Category, {
-        through: Coupon,
-        foreignKey: 'product_id',
-        otherKey: 'exclude_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.belongsToMany(Product, {
-        as: "Product2",
-        through: Coupon,
-        foreignKey: 'exclude_product_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.belongsToMany(Category, {
-        through: Coupon,
-        foreignKey: 'exclude_product_id',
-        otherKey: 'category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Product.belongsToMany(Category, {
-        through: Coupon,
-        foreignKey: 'exclude_product_id',
-        otherKey: 'exclude_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
     Product.belongsToMany(Coupon, {
         through: CouponExcludedProduct,
         foreignKey: 'product_id',
@@ -393,13 +331,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Product.belongsToMany(Coupon, {
+    Product.belongsToMany(Coupon, {
         through: CouponProduct,
         foreignKey: 'product_id',
         otherKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
     Product.belongsToMany(Order, {
         through: OrderItem,
