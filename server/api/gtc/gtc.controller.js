@@ -180,6 +180,8 @@ export function findById(req, res) {
 
 	if(req.query.populate)
 	  includeArr = populate.populateData(req.query.populate);
+	else
+	  includeArr = [];
 	
 	delete req.query.populate;
 
