@@ -24,16 +24,12 @@ export function listings(req, res) {
 	}
 
 	if (req.query.status) {
-
 		if (req.query.status == 'active')
 			queryParams['status'] = 1;
-
 		if (req.query.status == 'inactive')
 			queryParams['status'] = 2;
-
 		if (req.query.status == 'suspended')
 			queryParams['status'] = 10;
-
 		if (req.query.status == 'soldout')
 			queryParams['status'] = 11;
 	}

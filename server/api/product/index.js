@@ -8,7 +8,6 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.get('/vendor-marketplace', controller.vendorMarketplace);
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
 router.post('/get-media-id', controller.getMediaId);
