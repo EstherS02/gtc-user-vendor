@@ -29,6 +29,7 @@ function init(sequelize) {
     model.CouponExcludedProduct = sequelize.import('./definition/coupon-excluded-product.js');
     model.CouponProduct = sequelize.import('./definition/coupon-product.js');
     model.Currency = sequelize.import('./definition/currency.js');
+    model.Discount = sequelize.import('./definition/discount.js');
     model.DiscussionBoard = sequelize.import('./definition/discussion-board.js');
     model.DiscussionBoardDetail = sequelize.import('./definition/discussion-board-details.js');
     model.EmailTemplate = sequelize.import('./definition/email-template.js');
