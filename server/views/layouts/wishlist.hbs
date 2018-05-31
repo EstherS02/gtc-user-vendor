@@ -1,4 +1,4 @@
-<script  type="text/javascript">
+<script type="text/javascript">
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -17,7 +17,56 @@
 		}
 	}
 </script>
-{{> vendor/header}} 
+<script type="text/javascript">
+	$("#CartUpdate").click(function(e) {
+		e.preventDefault();
+		var newCoupon = {};
+		newCoupon.coupon_name = $('input[name=product_id]').val();
+		newCoupon.discount_value = $('input[name=quantity]').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/api/cart/',
+			data: newCoupon,
+			success: function(data, text) {
+				window.location.href = '/wishlist';
+			},
+			error: function(request, status, error) {
+				console.log('status', status);
+				console.log('error', error);
+			}
+		});
+	});
+
+	function remove(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			chkArray.push($(this).val());
+		});
+		var selected;
+		selected = chkArray.join(',');
+		if (selected.length > 0) {
+			window.location.href = '/wishlist/remove-wishes?id=' + selected;
+		} else {
+			alert("Please at least check one of the checkbox");
+		}
+	}
+	function quantityCheck(val) {	
+		
+		if(val.max == 0){
+			alert("Product Not Available " );		
+		}
+		if(val.value >  val.max)
+		{
+			alert("Available Quantity of the product is :" + val.max);		
+			val.value = 1;
+		}
+
+
+    
+}
+</script>
+{{> vendor/header}}
 <section class="showing_categ">
 	<div class="" >
 		<div class="container">
@@ -27,7 +76,7 @@
 					<h5 style="padding-top: 20px;">My Wishlist</h5>
 					<div class="row">
 						<div class="col-md-6">
-							<input type="submit" value="REMOVE" class="vend_edit_lists_buttonstyle" />
+							<input type="submit" value="REMOVE" onclick="remove(this)"  class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-6">
 							<input type="submit" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
@@ -42,7 +91,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=10"> All </a>
+								<a href="/wishlist?limit=500"> All </a>
 							</p>
 						</div>
 					</div>
@@ -61,38 +110,39 @@
 								</tr>
 							</thead>
 							<tbody>
-							{{#each wishlist}}
+								{{#each wishlist}}
 								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="{{wishlist.Product.ProductMedia.url}}" style="width: 15px;" /> {{wishlist.product_id}}</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
+									<td><input type="checkbox" value="{{this.id}}"></td>
+									<td class="text_blue_color"><img src="{{this.Product.ProductMedium.url}}" style="width: 15px;" /> {{this.Product.product_name}}</td>
+									<td class="text_blue_color">{{this.User.first_name}} {{this.User.last_name}}</td>
+									{{#if this.Product.quantity_available}}
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
-									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
-									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
+									{{else}}
+									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									{{/if}}
+									{{!-- DiscountType --}}
+									{{#ifCond this.Product.marketplace_id "==" 1}}
+									<td>Wholesale</td> 
+									{{else ifCond this.Product.marketplace_id "==" 2}}
+									<td>Retail</td>
+									{{else ifCond this.Product.marketplace_id "==" 3}}
+									<td>Service</td> 
+									{{else ifCond this.Product.marketplace_id "==" 4}}
+									<td>Life style</td> 
+									{{/ifCond}}
+									{{!--End DiscountType --}}
+									<td class="text_blue_color">{{this.Product.price}}</td>
+									<form method="POST" id="WishList">
+										<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}">
+										<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available">
+										<td class="text_blue_color">
+										<input type="number" name="quantity" id="Quantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="" placeholder="1" onchange="quantityCheck(this)">
+										 Update 
+										</td>
+										<td class="text_blue_color "  id="CartUpdate"><i class="fas fa-credit-card"></i> Add to cart</td>
+									</form>
 								</tr>
 								{{/each}}
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
-									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
-									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
-									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td class="text_blue_color"><img src="../../img/iphone.png" style="width: 15px;" /> iPhone Pallets of Interest</td>
-									<td class="text_blue_color">Great Earth Expeditions</td>
-									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-exclamation-circle"></i></td>
-									<td>Wholesale</td>
-									<td class="text_blue_color">$130.07</td>
-									<td class="text_blue_color"><input type="text" placeholder="1" style="border: 1px solid #5C7BA0;width: 15%;  padding: 2px;"> Update</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Add to cart</td>
-								</tr>
 							</tbody>
 						</table>
 					</div>
@@ -105,7 +155,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=10"> All </a>
+								<a href="/wishlist?limit=500"> All </a>
 							</p>
 						</div>
 					</div>
@@ -114,10 +164,3 @@
 		</div>
 	</div>
 </section>
-<!-- <script>
-	$(window).scroll(function(){
-		$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-	});
-</script> -->
-</body>
-</html>

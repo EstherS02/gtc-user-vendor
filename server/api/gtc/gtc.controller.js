@@ -334,7 +334,7 @@ exports.upload = function(req, res) {
 			return res.status(400).send("Failed to upload");
 		} else {
 			var image = config.imageUrlRewritePath.base + file.originalFilename;
-			return res.status(201).send(image);
+			return res.status(201).json({imageURL : image});
 		}
 	});
 };

@@ -10,55 +10,40 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function wishlist(req, res){
-if (req.query.sort == 'rating') {
-		var field = req.query.sort;
-	} else {
-		var field = 'id';
-	}
-	var order = "desc"; //"asc"
+export function wishlist(req, res) {
+	var field = 'id';
+	var order = "desc";
 	var offset = 0;
 	var limit = 10;
 	var vendor_id = 29;
-	var rating_limit = 120;
 	var queryObj = {};
-	queryObj={
-				// vendor_id: 29,
-				user_id : 62
-			};
-
+	if (typeof req.query.limit !== 'undefined') {
+		limit = req.query.limit;
+		limit = parseInt(limit);
+	}
+	queryObj = {
+		user_id: 62
+	};
+	var wishModel = 'WishList';
+	var includeArr = [{
+		model: model['Product'],
+		include: [{
+			model: model['ProductMedia'],
+		}]
+	}, {
+		model: model['User']
+	}];
 	async.series({
 			wishlist: function(callback) {
-				model['WishList'].findAndCountAll({
-					where: queryObj,
-					offset: offset,
-					limit: limit,
-					attributes: ['id','product_id','user_id','status'],
-					order: [
-						[field, order]
-					],
-					include: [{
-						model: model['Product'],
-						attributes:['id','product_name'],
-						include:[{
-							model:model['ProductMedia'],
-							attributes:['url']
-						}]
-					},{
-						model:model['User'],
-						attributes:['id','first_name','last_name']
-					}]
-					// ,
-					// plain: true
-				}).then(function(wishlist) {
-					console.log('wishlist',wishlist.rows);
-					// console.log('Wishlist',plainTextRsponse(wishlist))
-					return callback(null, wishlist);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			}
+				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
+					.then(function(category) {
+						// console.log(category)
+						return callback(null, category);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 		},
 		function(err, results) {
 			if (!err) {
@@ -71,10 +56,6 @@ if (req.query.sort == 'rating') {
 				res.render('wishlist', err);
 			}
 		});
-
-	 // res.render('wishlist', {
-  //               title: "Global Trade Connect",
-  //           });
 }
 
 function plainTextResponse(response) {

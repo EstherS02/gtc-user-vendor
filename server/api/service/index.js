@@ -53,7 +53,7 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 				model[modelName].count({
 					where: queryObj
 				}).then(function(count) {
-					result.total = count;
+					result.count = count;
 					result.rows = convertRowsJSON;
 					resolve(result);
 				}).catch(function(error) {

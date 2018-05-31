@@ -16,7 +16,6 @@ export function directory(req, res) {
     var queryObj = {};
 
     offset = 0;
-    limit = null;
     field = "id";
     order = "asc";
 
@@ -24,6 +23,7 @@ export function directory(req, res) {
 
     async.series({
         category: function (callback) {
+            limit=10;
             service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
@@ -34,6 +34,7 @@ export function directory(req, res) {
                 });
         },
         subCategory: function (callback) {
+            limit = null;
             service.findRows(subcategoryModel, queryObj, offset, limit, field, order)
                 .then(function (subCategory) {
                     return callback(null, subCategory.rows);

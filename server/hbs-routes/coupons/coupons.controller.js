@@ -20,6 +20,7 @@ export function coupons(req, res) {
 	var offset = 0;
 	var limit = 10;
 	var queryObj = {};
+	var couponModel = 'Coupon';
 
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
@@ -36,22 +37,32 @@ export function coupons(req, res) {
 	console.log('queryObj', queryObj);
 
 	async.series({
+			// Coupons: function(callback) {
+			// 	model['Coupon'].findAndCountAll({
+			// 		where: queryObj,
+			// 		offset: offset,
+			// 		limit: limit,
+			// 		order: [
+			// 			[field, order]
+			// 		],
+			// 		raw: true
+			// 	}).then(function(Coupons) {
+			// 		return callback(null, Coupons);
+			// 	}).catch(function(error) {
+			// 		console.log('Error :::', error);
+			// 		return callback(null);
+			// 	});
+			// }
 			Coupons: function(callback) {
-				model['Coupon'].findAndCountAll({
-					where: queryObj,
-					offset: offset,
-					limit: limit,
-					order: [
-						[field, order]
-					],
-					raw: true
-				}).then(function(Coupons) {
-					return callback(null, Coupons);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			}
+				service.findRows(couponModel, queryObj, offset, limit, field, order)
+					.then(function(response) {
+						return callback(null, response);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 		},
 		function(err, results) {
 			if (!err) {
@@ -148,13 +159,12 @@ export function editCoupons(req, res) {
 	var queryObj = {};
 	var created_by = 29;
 	queryObj['created_by'] = created_by;
-	queryObj['id'] = selected;
+	queryObj['id'] = req.query.id;
 	async.series({
 			Coupons: function(callback) {
 				model['Coupon'].findOne({
 					where: queryObj,
 					include: [{
-
 						model: model['CouponExcludedProduct'],
 						attributes: ['id', 'coupon_id', 'product_id'],
 						include: [{
