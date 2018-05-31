@@ -87,13 +87,14 @@ export function findRow(modelName, id, includeArr) {
 	});
 }
 
-export function findOneRow(modelName, queryObj) {
+export function findOneRow(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findOne({
+			include: includeArr,
 			where: queryObj
 		}).then(function(row) {
 			if (row) {
-				resolve(row);
+				resolve(row.toJSON());
 			} else {
 				resolve(null);
 			}

@@ -124,6 +124,7 @@ export function create(req, res) {
 						
 						vendorBodyParams.user_id = rspUser.id;
 						vendorBodyParams['created_on'] = new Date();
+						vendorBodyParams["status"] = status["ACTIVE"];
 
 						model['Vendor'].create(vendorBodyParams)
 							.then(function(vendor) {

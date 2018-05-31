@@ -160,7 +160,21 @@
 
 		});
 
+		$("#inputIndividualUseOnly[value=1]").prop("checked","true");
+		$("#inputExcluseSaleItem[value=1]").prop("checked","true");
+
+		$('#inputProducts').select2().val([1, 2]).trigger("change")
+
 		$("#couponUpdateBtn").click(function(e) {
+			e.preventDefault();
+
+			const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
+			const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
+			console.log('inputIndividualUseOnly', inputIndividualUseOnly);
+			console.log('inputExcluseSaleItem', inputExcluseSaleItem);
+		});
+
+		/*$("#couponUpdateBtn").click(function(e) {
 			e.preventDefault();
 
 			var id = $('input[name=id]').val();
@@ -187,7 +201,7 @@
 					console.log('error', error);
 				}
 			});
-		});
+		});*/
 	});
 </script>
 
@@ -200,20 +214,20 @@
 				<div class="col-md-8" style="background-color: #fff;">
 					<form id="couponForm">
 						<h5 style="padding-top: 20px;"> 
-							{{#if Coupons.id }}
+							{{#if coupon.id }}
 							Edit Coupon
-							<input type="hidden"  name="id" value="{{Coupons.id}}" />
+							<input type="hidden"  name="id" value="{{coupon.id}}" />
 							{{else}}
 							Add Coupon
 							{{/if}}
 						</h5>
 						<div class="row">
 							<div class="col-md-12">
-								<input type="text" name="coupon_name" id="inputCouponName" value="{{Coupons.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle"  />
+								<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle"  />
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_dropdownstyle" id="inputDiscountType" name="discount_type" value="">
-									{{#select Coupons.discount_type}}
+									{{#select coupon.discount_type}}
 									<option >Discount Type</option>
 									<option value="1">Percentage</option>
 									<option value="2">Fixed Price</option>
@@ -223,31 +237,28 @@
 								</select>
 							</div>
 							<div class="col-md-12">
-								<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value">
+								<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}">
 							</div>
 							<div class="col-md-12">
-								<input type="date" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{Coupons.expiry_date}}"/>
+								<input type="date" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"/>
 								<span class="vend_edit_list_spanstyle"> Expiry Date</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend" value="{{Coupons.minimum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allwoed to use the coupon</span>
+								<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend" value="{{coupon.minimum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allwoed to use the coupon</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{Coupons.individual_use_only}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
+								<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{coupon.maximum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
 							</div>
 							<div class="col-md-12">
-								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only">
+								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only" value="{{coupon.individual_use_only}}">
+								<b>Individual use only.</b> 
 								<span class="vend_edit_list_spanstyle">
-									<b>Individual use only.</b> Check this box if the coupon cannot be used in conjunction with other coupons	
+									Check this box if the coupon cannot be used in conjunction with other coupons	
 								</span>
 							</div>
 							<div class="col-md-12">
-								{{#ifCond Coupons.excluse_sale_item "==" 1}}
-								<input type="checkbox" name = "excluse_sale_item" checked=""><span class="vend_edit_list_spanstyle">
-								{{ else}}
-								<input type="checkbox" name = "excluse_sale_item" ><span class="vend_edit_list_spanstyle">
-								{{/ifCond}}
-								<b>Excluse sale Item.</b> Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
+								<input type="checkbox" id="inputExcluseSaleItem" name="excluse_sale_item" value="{{coupon.excluse_sale_item}}">
+								<b>Excluse sale Item.</b> <span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
@@ -282,22 +293,22 @@
 								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" placeholder="Usage Limit"  class="vend_edit_lists_textstyle1" id="inputUsageLimit" name="usage_limit" value="{{Coupons.usage_limit}}">
+								<input type="text" placeholder="Usage Limit"  class="vend_edit_lists_textstyle1" id="inputUsageLimit" name="usage_limit" value="{{coupon.usage_limit}}">
 								<span class="vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" value="{{Coupons.limit_usage_to_x_items}}" placeholder="Limit usage to X items" class="vend_edit_lists_textstyle1">
+								<input type="text" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" value="{{coupon.limit_usage_to_x_items}}" placeholder="Limit usage to X items" class="vend_edit_lists_textstyle1">
 								<span class="vend_edit_list_spanstyle">The maximum items this coupon can be applied to when using product discount (default is all)</span>
 							</div>
 							<div class="col-md-12">
-								<input type="text" name="usage_limit_per_user" id="inputUsageLimitPerUser" value="{{Coupons.usage_limit_per_user}}" placeholder="usage limit per user" class="vend_edit_lists_textstyle1">
+								<input type="text" name="usage_limit_per_user" id="inputUsageLimitPerUser" value="{{coupon.usage_limit_per_user}}" placeholder="usage limit per user" class="vend_edit_lists_textstyle1">
 								<span class="vend_edit_list_spanstyle">How many times this coupons can be used by an individual (default is unlimited)</span>
 							</div>
 						</div>
 						<hr/>
 						<div class="row">
 							<div class="col-md-12">
-								{{#if Coupons.id}}
+								{{#if coupon.id}}
 								<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
 								{{else}}
 								<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
