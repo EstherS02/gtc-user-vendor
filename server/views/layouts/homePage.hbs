@@ -5,6 +5,8 @@
 
 <script type="text/javascript">
     const auth = Auth();
+    auth.isLoggedIn();
+
     $(document).ready(function() {
         var googleUser = {};
 
@@ -237,12 +239,12 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var isLoggedIn = auth.isLoggedIn();
+        /*var isLoggedIn = auth.isLoggedIn();
         if (isLoggedIn) {
             $('#loginBanner').hide();
         } else {
             $('#loginBanner').show();
-        }
+        }*/
         $('#signUpForm').submit(function(e) {
             e.preventDefault();
 

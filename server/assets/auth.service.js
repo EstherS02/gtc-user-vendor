@@ -48,6 +48,7 @@
 		fn.isLoggedIn = function() {
 			fn.getCurrentUser().then(function(data) {
 				if (data) {
+					$('#userAuthentication').text("Welcome back, " + data.first_name);
 					$('#loginBanner').hide();
 				} else {
 					$('#loginBanner').show();
