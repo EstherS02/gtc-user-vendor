@@ -41,7 +41,10 @@
 	function remove(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function(i) {
+			if($(this).val() != 'on'){
+				// alert($(this).val());
 			chkArray.push($(this).val());
+			}
 		});
 		var selected;
 		selected = chkArray.join(',');
@@ -118,9 +121,9 @@
 									{{#if this.Product.quantity_available}}
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
 									{{else}}
-									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
+									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-exclamation-circle"></i></td>
 									{{/if}}
-									{{!-- DiscountType --}}
+									{{!-- Type --}}
 									{{#ifCond this.Product.marketplace_id "==" 1}}
 									<td>Wholesale</td> 
 									{{else ifCond this.Product.marketplace_id "==" 2}}
@@ -130,7 +133,7 @@
 									{{else ifCond this.Product.marketplace_id "==" 4}}
 									<td>Life style</td> 
 									{{/ifCond}}
-									{{!--End DiscountType --}}
+									{{!--End Type --}}
 									<td class="text_blue_color">{{this.Product.price}}</td>
 									<form method="POST" id="WishList">
 										<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}">
