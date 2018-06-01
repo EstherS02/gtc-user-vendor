@@ -29,6 +29,10 @@ h6 {
   color: red;
 }
 
+.btn {
+  cursor: pointer;
+}
+
 .acc_button {
   margin-bottom: 10px;
   margin-top: 10px;

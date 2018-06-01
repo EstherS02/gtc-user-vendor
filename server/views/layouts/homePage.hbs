@@ -52,7 +52,7 @@
                     });
                 },
                 function(error) {
-                    alert(JSON.stringify(error, undefined, 2));
+                    //alert(JSON.stringify(error, undefined, 2));
                 });
         };
 
@@ -108,7 +108,7 @@
                     getProfileData();
                 });
             } else {
-                alert("Already Login In with LinkedIn");
+                //alert("Already Login In with LinkedIn");
                 console.log("Already Login In with LinkedIn");
             }
         });
@@ -119,7 +119,7 @@
                     getProfileData();
                 });
             } else {
-                alert("Already Login In with LinkedIn");
+                //alert("Already Login In with LinkedIn");
                 console.log("Already Login In with LinkedIn");
             }
         };
@@ -127,7 +127,7 @@
         function linkedinLogout() {
             IN.User.logout(function() {
                 console.log("Linkedin User Logout successful");
-                alert("Linkedin User Logout successful");
+                //alert("Linkedin User Logout successful");
             });
         };
 
@@ -182,7 +182,7 @@
                         });
                     });
                 } else {
-                    alert("User cancelled login or did not fully authorize.")
+                    //alert("User cancelled login or did not fully authorize.")
                     console.log('User cancelled login or did not fully authorize.');
 
                 }
@@ -281,7 +281,7 @@
         });
     });
 </script>
- {{> header/defaultHeader}}
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
