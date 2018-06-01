@@ -4,8 +4,8 @@
 </script>
 
 <script type="text/javascript">
-    const auth = Auth();
-    auth.isLoggedIn();
+    /*const auth = Auth();
+    auth.isLoggedIn(); */
 
     $(document).ready(function() {
         var googleUser = {};
@@ -40,14 +40,16 @@
                         url: "/auth/google",
                         data: newGoogleUser,
                         success: function(result) {
-                            localStorage.setItem("access_token", result.access_token);
-                            auth.getCurrentUser().then(function(data) {
+                            alert(JSON.stringify(result));
+                            window.location.reload();
+                            //localStorage.setItem("access_token", result.access_token);
+                           /* auth.getCurrentUser().then(function(data) {
                                 if (data) {
                                     $('#loginBanner').hide();
                                 } else {
                                     $('#loginBanner').show();
                                 }
-                            });
+                            }); */
                         }
                     });
                 },
@@ -89,13 +91,13 @@
                         data: linkedInUser,
                         success: function(result) {
                             localStorage.setItem("access_token", result.access_token);
-                            auth.getCurrentUser().then(function(data) {
+                           /* auth.getCurrentUser().then(function(data) {
                                 if (data) {
                                     $('#loginBanner').hide();
                                 } else {
                                     $('#loginBanner').show();
                                 }
-                            });
+                            }); */
                         }
                     });
                 });
@@ -171,13 +173,13 @@
                             data: fbUser,
                             success: function(result) {
                                 localStorage.setItem("access_token", result.access_token);
-                                auth.getCurrentUser().then(function(data) {
+                                /*auth.getCurrentUser().then(function(data) {
                                     if (data) {
                                         $('#loginBanner').hide();
                                     } else {
                                         $('#loginBanner').show();
                                     }
-                                });
+                                }); */
                             }
                         });
                     });
@@ -224,13 +226,13 @@
                 data: twitterUser,
                 success: function(result) {
                     localStorage.setItem("access_token", result.access_token);
-                    auth.getCurrentUser().then(function(data) {
+                   /* auth.getCurrentUser().then(function(data) {
                         if (data) {
                             $('#loginBanner').hide();
                         } else {
                             $('#loginBanner').show();
                         }
-                    });
+                    }); */
                 }
             });
         };
@@ -261,7 +263,7 @@
                     url: '/api/users',
                     data: newUser,
                     success: function(data, text) {
-                        auth.login({
+                      /*  auth.login({
                             email: data.email,
                             password: $('#inputPassword').val()
                         }).then(function(user) {
@@ -270,11 +272,11 @@
                             } else {
                                 $('#loginBanner').show();
                             }
-                        });
+                        }); */
                     },
                     error: function(request, status, error) {
                         $('#signUpErrorLog').text(request.responseText);
-                        $('#loginBanner').show();
+                        //$('#loginBanner').show();
                     }
                 });
             }
