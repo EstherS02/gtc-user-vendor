@@ -18,56 +18,66 @@
 	}
 </script>
 <script type="text/javascript">
-	$("#CartUpdate").click(function(e) {
-		e.preventDefault();
-		var newCoupon = {};
-		newCoupon.coupon_name = $('input[name=product_id]').val();
-		newCoupon.discount_value = $('input[name=quantity]').val();
-
-		$.ajax({
-			type: 'POST',
-			url: '/api/cart/',
-			data: newCoupon,
-			success: function(data, text) {
-				window.location.href = '/wishlist';
-			},
-			error: function(request, status, error) {
-				console.log('status', status);
-				console.log('error', error);
-			}
-		});
-	});
+	function CartUpdate() {
+		var dataInfo = {};
+		var quantity = 0;
+		dataInfo.product_id = $('input[name=product_id]').val();
+		dataInfo.quantity = quantity = $('input[name=quantity]').val();
+		if (quantity) {
+			$.ajax({
+				type: 'PUT',
+				url: '/api/wishlist/cart',
+				data: dataInfo,
+				success: function(data, text) {
+					window.location.href = '/wishlist';
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+		} else {
+			alert("Please enter the Quantity.")
+		}
+	}
 
 	function remove(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function(i) {
-			if($(this).val() != 'on'){
-				// alert($(this).val());
-			chkArray.push($(this).val());
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
 			}
 		});
-		var selected;
-		selected = chkArray.join(',');
-		if (selected.length > 0) {
-			window.location.href = '/wishlist/remove-wishes?id=' + selected;
+
+		if (chkArray.length) {
+			$.ajax({
+				type: 'PUT',
+				url: '/api/wishlist/remove',
+				contentType: "application/json",
+				data: JSON.stringify(chkArray),
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
 		} else {
-			alert("Please at least check one of the checkbox");
+			alert("Select atleast one wishlist to remove.");
 		}
 	}
-	function quantityCheck(val) {	
-		
-		if(val.max == 0){
-			alert("Product Not Available " );		
-		}
-		if(val.value >  val.max)
-		{
-			alert("Available Quantity of the product is :" + val.max);		
-			val.value = 1;
-		}
 
+	function quantityCheck(val) {
+		var availableProductQuantity = val.max;
 
-    
-}
+		if (availableProductQuantity == 0) {
+			alert("Product Not Available");
+		} else if ($("#inputQuantity").val() > availableProductQuantity) {
+			alert("Available Quantity of the product is" + availableProductQuantity);
+			$("#inputQuantity").val(availableProductQuantity);
+		}
+	}
 </script>
 {{> vendor/header}}
 <section class="showing_categ">
@@ -81,9 +91,6 @@
 						<div class="col-md-6">
 							<input type="submit" value="REMOVE" onclick="remove(this)"  class="vend_edit_lists_buttonstyle" />
 						</div>
-						<div class="col-md-6">
-							<input type="submit" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
-						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
@@ -94,7 +101,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=500"> All </a>
+								<a href="/wishlist?limit=All"> All </a>
 							</p>
 						</div>
 					</div>
@@ -135,15 +142,13 @@
 									{{/ifCond}}
 									{{!--End Type --}}
 									<td class="text_blue_color">{{this.Product.price}}</td>
-									<form method="POST" id="WishList">
 										<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}">
-										<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available">
+										{{!-- <input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
 										<td class="text_blue_color">
-										<input type="number" name="quantity" id="Quantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="" placeholder="1" onchange="quantityCheck(this)">
-										 Update 
+											<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" onchange="quantityCheck(this)">
+											Update 
 										</td>
-										<td class="text_blue_color "  id="CartUpdate"><i class="fas fa-credit-card"></i> Add to cart</td>
-									</form>
+										<td class="text_blue_color "  ><i class="fas fa-credit-card" onclick="CartUpdate()"> Add to cart</i></td>
 								</tr>
 								{{/each}}
 							</tbody>

@@ -18,11 +18,16 @@ export function wishlist(req, res) {
 	var vendor_id = 29;
 	var queryObj = {};
 	if (typeof req.query.limit !== 'undefined') {
+		if(req.query.limit =='All'){
+			limit = 'NULL'; 
+		}else{
 		limit = req.query.limit;
 		limit = parseInt(limit);
+		}
 	}
 	queryObj = {
-		user_id: 62
+		user_id: 62,
+		status :1
 	};
 	var wishModel = 'WishList';
 	var includeArr = [{
