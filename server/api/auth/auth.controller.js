@@ -240,6 +240,7 @@ export function googleLogin(req, res, next) {
 								const userTokenRsp = userToken;
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -257,6 +258,7 @@ export function googleLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -303,6 +305,7 @@ export function googleLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
@@ -779,7 +782,5 @@ export function logout(req, res, next) {
 }
 
 function plainTextResponse(response) {
-	return response.get({
-		plain: true
-	});
+	return response;
 }
