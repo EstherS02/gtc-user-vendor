@@ -51,6 +51,7 @@ export default function(app) {
   app.use('/wishlist', require('./hbs-routes/wishlist'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/add-product', require('./hbs-routes/add-product'));
+  app.use('/login', require('./hbs-routes/login'));
 
 
   //All other routes 404 page
