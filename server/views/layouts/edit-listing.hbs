@@ -1,8 +1,9 @@
-{{!-- <style type="text/css">
-    .percentDiscount,.valueDiscount{
-        display: none;
-    }
-</style> --}}
+<style type="text/css">
+	.percentDiscount,
+	.valueDiscount {
+		display: none;
+	}
+</style>
 <script>
 	$(function () {
 		$("#from, #to").datepicker();
@@ -10,56 +11,26 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function () {
-		$('input[type="radio"]').click(function () {
-			var inputValue = $(this).attr("id");
-			console.log(inputValue);
-			var targetBox = $("." + inputValue);
-            $(targetBox).show();
+		$('#percent_discount').click(function () {
+			if ($(this).is(":checked")) {
+				$(".percentDiscount").show();
+				$(".valueDiscount").hide();
+			}
+		});
+		$('#value_discount').click(function () {
+			if ($(this).is(":checked")) {
+				$(".valueDiscount").show();
+				$(".percentDiscount").hide();
+			}
 		});
 	});
 </script>
 <script>
-	$(document).ready(function () {
-		$("#productUpdateBtn").click(function (e) {
-			e.preventDefault();
-			var updateProduct = {};
-			updateProduct.status = 1;
-			updateProduct.product_id = 5;
-
-			/*$.map($('.discount-quantity-input'), function (el) { 
-				console.log(el.value)
-				return el.value; 
-			});*/
-
-
-				updateProduct.quantity = $('input[name=quantity]').val(),
-					updateProduct.percent_discount = $('#percent_discount').val(),
-					updateProduct.type = $("input[type='radio']:checked").val(),
-					console.log("updateProduct", updateProduct);
-				$.ajax({
-					type: 'POST',
-					url: '/api/discounts',
-					data: updateProduct,
-					success: function (data) {
-						console.log('data', data);
-	
-					},
-					error: function (error) {
-						console.log('error', error);
-					}
-				});
-	    });
-	});
-</script>
-<script>
-
 	$(function () {
 		var count = 1;
 		$("#addDiscount").click(function () {
-
 			if (count < 3) {
-				count = count + 1;
-
+				this.count = count + 1;
 				var domElements = '<div class="row"><div class="col-md-2"><p></p></div><div class="col-md-10"><div class="row">' +
 					'<div class="col-md-1"><p>For</p></div>' +
 					'<div class="col-md-1 common_padding1">' +
@@ -70,18 +41,44 @@
 					'</div>' +
 					'<div class="col-md-4 common_padding1">' +
 					'<p>' +
-					'<input class="discount-percent-input" type="radio" value="1" id="percentDiscount' + count + '" name="discount' + count + '">Total Percent Discount</p>' +
+					'<input class="discount-percent-input" type="radio" value="1" id="percent_discount' + count + '" name="discount' + count + '">Total Percent Discount</p>' +
 					'<p>' +
-					'<input class="discount-total-value" type="radio" value="2" id="valueDiscount' + count + '" name="discount' + count + '">Total Value Discount</p>' +
+					'<input class="discount-total-value" type="radio" value="2" id="value_discount' + count + '" name="discount' + count + '">Total Value Discount</p>' +
 					'</div>' +
 					'<div class="col-md-3 common_padding1">' +
 					'<input class="percent_discount list_place_2" type="text" placeholder="Enter Percentage" name="percent_discount' + count + '">' +
 					'<input class="value_discount list_place_2" type="text" placeholder="Enter Amount" name="value_discount' + count + '">' +
 					'</div>' +
 					'</div></div></div>';
-
 				$('#appendOn').append(domElements)
 			}
+		});
+		$("#productUpdateBtn").click(function (e) {
+			console.log(this.count);
+			e.preventDefault();
+			var updateProduct = {};
+			updateProduct.status = 1;
+			updateProduct.product_id = 5;
+			if ($('#percent').val() != '') {
+				updateProduct.percent_discount = $('#percent').val()
+			}
+			if ($('#amount').val() != '') {
+				updateProduct.value_discount = $('#amount').val()
+			}
+			updateProduct.quantity = $('#quantity').val(),
+				updateProduct.type = $("input[type='radio']:checked").val(),
+				console.log("updateProduct", updateProduct);
+			$.ajax({
+				type: 'POST',
+				url: '/api/discounts',
+				data: updateProduct,
+				success: function (data) {
+					console.log('data', data);
+				},
+				error: function (error) {
+					console.log('error', error);
+				}
+			});
 		});
 	});
 </script> {{> vendor/header}}
@@ -209,29 +206,32 @@
 													<p>For</p>
 												</div>
 												<div class="col-md-1 common_padding1">
-													<input class="discount-quantity-input list_place_1" type="text" placeholder="20" name="quantity" />
+													<input class="discount-quantity-input list_place_1" type="text" placeholder="20" name="quantity" id='quantity' />
 												</div>
 												<div class="col-md-2 common_padding1">
 													<p>User recieves</p>
 												</div>
 												<div class="col-md-4 common_padding1">
 													<p>
-														<input class="discount-percent-input" type="radio" value="1" id="percentDiscount" name="discount" />Total Percent Discount</p>
+														<input class="discount-percent-input" type="radio" value="1" id="percent_discount" name="discount" />Total Percent Discount</p>
 													<p>
-														<input class="discount-total-value" type="radio" value="2" id="valueDiscount" name="discount" />Total Value Discount</p>
+														<input class="discount-total-value" type="radio" value="2" id="value_discount" name="discount" />Total Value Discount</p>
 												</div>
-												<div class="col-md-3 common_padding1 percentDiscount" >
-													<input class="percent_discount list_place_2" type="text" placeholder="Enter Percentage" name="percent_discount" />
-												
-													<input class="percent_discount list_place_2" type="text" placeholder="Enter Amount" name="percent_discount" />
+												<div class="col-md-3 common_padding1 percentDiscount">
+													<input class="percent_discount list_place_2" type="text" id="percent" placeholder="20" name="percent_discount" />
+													<b> %</b>
 												</div>
-												
-												{{!-- <div class="col-md-1 common_padding1">
+												<div class="col-md-3 common_padding1 valueDiscount">
+													<input class="percent_discount list_place_2" type="text" id="amount" placeholder="20" name="value_discount" />
+													<b> $</b>
+												</div>
+												{{!--
+												<div class="col-md-1 common_padding1">
 													<p class="list_edit">
 														<i class="fas fa-pencil-alt"></i> Edit</p>
 													<p class="list_edit">
 														<i class="fas fa-pencil-alt"></i> Edit</p>
-												</div>  --}}
+												</div> --}}
 											</div>
 										</div>
 									</div>
@@ -301,7 +301,6 @@
 							<p>{{ starCount product.rating}}</p>
 						</div>
 						<hr/>
-
 					</div>
 					<p> Status:
 						<span> Live </span>
