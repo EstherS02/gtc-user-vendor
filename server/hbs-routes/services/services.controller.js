@@ -15,6 +15,10 @@ export function services(req, res) {
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
+	var LoggedInUser = {}
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
 	field = "id";
@@ -66,7 +70,8 @@ export function services(req, res) {
 				title: "Global Trade Connect",
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,
-				servicesProviders: results.servicesProviders
+				servicesProviders: results.servicesProviders,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			res.render('services', err);

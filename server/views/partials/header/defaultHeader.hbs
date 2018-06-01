@@ -7,9 +7,16 @@
 				  <div class="social-links">
 					<a href="#" class="active"><i class="fa fa-map-marker"></i> Get Locate</a>
 					<a href="#" class="font_icon"><i class="fa fa-map-marker"></i> Track your Order</a>
-					<a href="/login" class="font_icon"><i class="fa fa-user"></i>
-						<span id="userAuthentication">Login</span>
-					</a>
+				
+					{{#if LoggedInUser.email}}
+						<a href="javascript:;" class="font_icon"><i class="fa fa-user"></i>
+							<span id="userAuthentication">Welcome back, {{LoggedInUser.first_name}}</span>
+						</a>
+					{{else}}
+						<a href="/login" class="font_icon"><i class="fa fa-user"></i>
+							<span id="userAuthentication">Login</span>
+						</a>
+					{{/if}}
 					<a href="#" class="font_icon"><i class="fa fa-compress"></i> Compare</a>
 					<a href="#" class="font_icon"><i class="fa fa-heart"></i> Wishlist</a>
 					<a href="/cart" class="font_icon"><i class="fa fa-shopping-bag"></i> $144.00</a>
@@ -72,7 +79,7 @@
 					  </ul>
 					  <form class="form-inline my-2 my-lg-0">
 						<input class="form-control mr-sm-2" type="text" placeholder="Search">
-						<a href="services_result1.html"><button class="btn btn-success my-2 my-sm-0" type="button">Search</button></a>
+						<a href=""><button class="btn btn-success my-2 my-sm-0" type="button">Search</button></a>
 					  </form>
 					</div>
 				</nav>

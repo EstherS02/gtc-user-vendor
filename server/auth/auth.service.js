@@ -11,15 +11,14 @@ var validateJwt = expressJwt({
 	secret: config.secrets.accessToken,
 	getToken: function (req) {
 		if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-			console.log("block 1")
 			return req.headers.authorization.split(' ')[1];
 		} else if(req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']){
-			console.log("block 2")
 			return req.cookies['gtc_access_token']; 
 		}
 		return null;
 	  }
 });
+
 
 var globalValidateJwt = expressJwt({
 	secret: config.secrets.globalAccessToken
@@ -44,7 +43,7 @@ function isAuthenticated() {
 						message: err.message
 					});
 				}else{
-					return res.redirect('/');
+					return res.redirect('/login');
 				}
 			}
 

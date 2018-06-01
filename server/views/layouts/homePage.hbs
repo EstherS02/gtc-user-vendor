@@ -7,6 +7,7 @@
     /*const auth = Auth();
     auth.isLoggedIn(); */
 
+
     $(document).ready(function() {
         var googleUser = {};
 
@@ -40,7 +41,6 @@
                         url: "/auth/google",
                         data: newGoogleUser,
                         success: function(result) {
-                            alert(JSON.stringify(result));
                             window.location.reload();
                             //localStorage.setItem("access_token", result.access_token);
                            /* auth.getCurrentUser().then(function(data) {
@@ -54,7 +54,8 @@
                     });
                 },
                 function(error) {
-                    alert(JSON.stringify(error, undefined, 2));
+                    //alert(JSON.stringify(error, undefined, 2));
+                    console.log(JSON.stringify(error, undefined, 2))
                 });
         };
 
@@ -110,7 +111,7 @@
                     getProfileData();
                 });
             } else {
-                alert("Already Login In with LinkedIn");
+                //alert("Already Login In with LinkedIn");
                 console.log("Already Login In with LinkedIn");
             }
         });
@@ -121,15 +122,15 @@
                     getProfileData();
                 });
             } else {
-                alert("Already Login In with LinkedIn");
+                //alert("Already Login In with LinkedIn");
                 console.log("Already Login In with LinkedIn");
             }
         };
 
         function linkedinLogout() {
             IN.User.logout(function() {
-                console.log("Linkedin User Logout successful");
-                alert("Linkedin User Logout successful");
+                //console.log("Linkedin User Logout successful");
+                //alert("Linkedin User Logout successful");
             });
         };
 
@@ -184,7 +185,7 @@
                         });
                     });
                 } else {
-                    alert("User cancelled login or did not fully authorize.")
+                    //alert("User cancelled login or did not fully authorize.")
                     console.log('User cancelled login or did not fully authorize.');
 
                 }
@@ -283,7 +284,7 @@
         });
     });
 </script>
- {{> header/defaultHeader}}
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
@@ -306,7 +307,8 @@
                     </div>
                 </div>
             </div>
-            <div id="loginBanner" class="col-md-6">
+
+            <div id="loginBanner" class="col-md-6" {{#if LoggedInUser.email}} style="display:none;" {{else}} style="display:block;"{{/if}}> 
                 <div class="row geo_bgimg1">
                     <h1>CREATE A FREE ACCOUNT!</h1>
                     <p>Start searching the globe for the best bulk discount, wholesale pricing, subsriptions, services everywhere!
@@ -327,15 +329,15 @@
                         </a>
                     </div>
                     <div class="col-md-6">
-<form id="signUpForm" method="post">
-    <input type="email" id="inputEmail" name="email" class="acc_textbox" placeholder="Email" required>
-    <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
-    <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
-    <br/>
-    <input type="checkbox"> Accept terms and conditions
-    <button type="submit" id="btnSignup" class="acc_button">CREATE ACCOUNT</button>
-</form>
-<small id="signUpErrorLog" class="error"></small>
+                        <form id="signUpForm" method="post">
+                            <input type="email" id="inputEmail" name="email" class="acc_textbox" placeholder="Email" required>
+                            <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
+                            <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
+                            <br/>
+                            <input type="checkbox"> Accept terms and conditions
+                            <button type="submit" id="btnSignup" class="acc_button">CREATE ACCOUNT</button>
+                        </form>
+                        <small id="signUpErrorLog" class="error"></small>
                     </div>
                 </div>
             </div>

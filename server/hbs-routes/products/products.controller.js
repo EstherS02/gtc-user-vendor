@@ -13,7 +13,11 @@ export function products(req, res) {
     var subcategoryModel = "SubCategory";
     var countryModel = "Country";
 	var offset, limit, field, order;
-	var queryObj = {};
+    var queryObj = {};
+    var LoggedInUser = {}
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
 	limit = 4;
@@ -112,7 +116,8 @@ export function products(req, res) {
                 subscriptions: results.subscriptions,
 				category: results.category,
                 subCategory: results.subCategory,
-                country: results.country
+                country: results.country,
+                LoggedInUser: LoggedInUser
 			});
         }
         else {

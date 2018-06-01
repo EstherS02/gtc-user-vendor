@@ -10,8 +10,12 @@ const _ = require('lodash');
 
 
 export function cart(req, res) {
+    var LoggedInUser = {};
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
     
-    let user_id = 63;
+    let user_id = LoggedInUser.userId || 63;
 
     async.series({
         cartItems: function(cb) {
@@ -116,7 +120,8 @@ export function cart(req, res) {
                 cartItemsCount: results.cartItems.count,
                 marketPlaces: results.marketPlace.rows,
                 seperatedItemsList : seperatedItems,
-                totalPriceList: totalPrice
+                totalPriceList: totalPrice,
+                LoggedInUser: LoggedInUser
             });    
        /*       return res.status(200).send({
                 title : "Global Trade Connect",

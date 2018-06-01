@@ -16,6 +16,8 @@ import expressValidator from 'express-validator';
 import path from 'path';
 import lusca from 'lusca';
 import config from './environment';
+import globalUser from '../auth/global-user-obj';
+import expressJwt from 'express-jwt'
 //import session from 'express-session';
 //import sequelizeDB from '../sqldb';
 //import expressSequelizeSession from 'express-sequelize-session';
@@ -112,9 +114,14 @@ export default function(app) {
     });
   }
 
+
+
+
   if (env === 'development' || env === 'test') {
     app.use(errorHandler()); // Error handler - has to be last
   }
+
+
 
 
 }

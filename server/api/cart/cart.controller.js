@@ -10,7 +10,12 @@ export function addToCart(req, res){
 	console.log(req.body);
 	let product_id = parseInt(req.params.id);
 	let order_qty = parseInt(req.body.product_quantity);
-	let user_id = 63; //hardcoded devan_user
+	var LoggedInUser = {};
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+
+	let user_id = LoggedInUser.userId || 63; //hardcoded devan_user
 
 	if(order_qty > 0){
 		model["Product"].findById(product_id)

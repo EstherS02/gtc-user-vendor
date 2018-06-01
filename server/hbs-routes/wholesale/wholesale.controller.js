@@ -18,6 +18,10 @@ export function wholesale(req, res) {
     var countryModel = "Country";
     var offset, limit, field, order;
     var queryObj = {};
+    var LoggedInUser = {}
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
     offset = 0;
     limit = 20;
@@ -135,7 +139,8 @@ export function wholesale(req, res) {
                 featuredProducts: results.featuredProducts,
                 wholesalers: results.wholesalers,
                 category: results.category,
-                country: results.country
+                country: results.country,
+                LoggedInUser: LoggedInUser
             });
         }
         else {

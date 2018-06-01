@@ -20,6 +20,12 @@ export function AddProduct(req, res) {
     field = "id";
     order = "asc";
 
+    var LoggedInUser = {};
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+
+
     queryObj['status'] = status["ACTIVE"];
 
     async.series({
@@ -48,7 +54,8 @@ export function AddProduct(req, res) {
             res.render('add-product', {
                 title: "Global Trade Connect",
                 category: results.category,
-                country: results.country
+                country: results.country,
+                LoggedInUser: LoggedInUser
             });
         }
         else {
