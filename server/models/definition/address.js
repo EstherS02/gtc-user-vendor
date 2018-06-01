@@ -1,5 +1,4 @@
 /* eslint new-cap: "off", global-require: "off" */
-
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Address', {
         id: {
@@ -19,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        address_type: {
+            type: DataTypes.INTEGER,
+            field: 'address_type',
+            allowNull: false
         },
         company_name: {
             type: DataTypes.STRING(128),
