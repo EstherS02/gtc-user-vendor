@@ -4,8 +4,8 @@
 </script>
 
 <script type="text/javascript">
-    /*const auth = Auth();
-    auth.isLoggedIn(); */
+    const auth = Auth(); 
+    /* auth.isLoggedIn(); */
 
 
     $(document).ready(function() {
@@ -92,6 +92,7 @@
                         data: linkedInUser,
                         success: function(result) {
                             localStorage.setItem("access_token", result.access_token);
+                            window.location.reload();
                            /* auth.getCurrentUser().then(function(data) {
                                 if (data) {
                                     $('#loginBanner').hide();
@@ -174,6 +175,7 @@
                             data: fbUser,
                             success: function(result) {
                                 localStorage.setItem("access_token", result.access_token);
+                                window.location.reload();
                                 /*auth.getCurrentUser().then(function(data) {
                                     if (data) {
                                         $('#loginBanner').hide();
@@ -227,6 +229,7 @@
                 data: twitterUser,
                 success: function(result) {
                     localStorage.setItem("access_token", result.access_token);
+                    window.location.reload();
                    /* auth.getCurrentUser().then(function(data) {
                         if (data) {
                             $('#loginBanner').hide();
@@ -264,16 +267,18 @@
                     url: '/api/users',
                     data: newUser,
                     success: function(data, text) {
-                      /*  auth.login({
+                        console.log(data)
+                        auth.login({
                             email: data.email,
                             password: $('#inputPassword').val()
                         }).then(function(user) {
                             if (user) {
-                                $('#loginBanner').hide();
+                                window.location.reload();
+                                //$('#loginBanner').hide();
                             } else {
-                                $('#loginBanner').show();
+                                //$('#loginBanner').show();
                             }
-                        }); */
+                        }); 
                     },
                     error: function(request, status, error) {
                         $('#signUpErrorLog').text(request.responseText);
