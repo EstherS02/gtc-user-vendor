@@ -8,8 +8,19 @@ const _ = require('lodash');
 const model = require('../sqldb/model-connect');
 
 var validateJwt = expressJwt({
-	secret: config.secrets.accessToken
+	secret: config.secrets.accessToken,
+	getToken: function (req) {
+		if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+			console.log("block 1")
+			return req.headers.authorization.split(' ')[1];
+		} else if(req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']){
+			console.log("block 2")
+			return req.cookies['gtc_access_token']; 
+		}
+		return null;
+	  }
 });
+
 var globalValidateJwt = expressJwt({
 	secret: config.secrets.globalAccessToken
 });
@@ -22,7 +33,24 @@ function isAuthenticated() {
 			}
 			validateJwt(req, res, next);
 		})
-		.use(function(req, res, next) {
+		.use(function(err, req, res, next){
+			//Manually handling errors from express jwt
+			console.log("errrrrrrr", err)
+			if(err.name === 'UnauthorizedError') {
+				console.log("Error From - express Jwt", err.inner);
+
+				if(new RegExp("api").test(req.originalUrl) || new RegExp("auth").test(req.originalUrl)){
+					return res.status(err.status).send({ 
+						message: err.message
+					});
+				}else{
+					return res.redirect('/');
+				}
+			}
+
+			next();
+		})
+	 	.use(function(req, res, next) {
 			model['User'].findById(req.user.userId)
 				.then(function(user) {
 					if (user) {
