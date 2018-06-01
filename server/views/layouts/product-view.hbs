@@ -1,0 +1,94 @@
+<style type="text/css">
+	.header-text {
+		font-family: 'Oswald', sans-serif !important;
+	}
+	.header-text h1 {
+		font-size: 34px;
+	}
+
+	.bg-primary {
+		background: #c28031 !important;
+	}
+	.text-primary {
+		color: #c28031 !important;
+	}
+
+	.marketplace-header {
+		max-height: 73px;
+		padding: 26px 0px 10px 25px;
+		color: #fff;
+	}
+	.text-muted {
+	    color: #888888;
+	}
+	small {
+		font-size: 11.05px;
+		text-align: left;
+		display: block;
+	}
+
+	@media (min-width: 768px) {
+		.dl-horizontal dt {
+		    float: left;
+		    color: #888888;
+		    width: 60px;
+		    overflow: hidden;
+		    clear: left;
+		    font-size: 11.05px;
+		    text-align: left;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    font-weight: normal;
+		}
+	}
+	@media (min-width: 768px) {
+		.dl-horizontal dd {
+		    margin-left: 70px;
+		    margin-bottom: 0;
+		    font-size: 11.05px;
+		    color: #888888;
+		}
+	}
+</style>
+
+{{> header/defaultHeader}}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-10">
+			<div class="marketplace-header bg-primary header-text">
+				<h1>PRIVATE WHOLESALE MARKETPLACE</h1>
+			</div>
+			<div class="row p-md">
+				<div class="col-md-4">
+					<img src="../../img/hayden.png" alt="logo"  style="width: 100%; margin-bottom: 10px;" />
+					<div class="row">
+						<div class="col-md-4">
+							<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
+						</div>
+						<div class="col-md-4">
+							<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
+						</div>
+						<div class="col-md-4">
+							<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<dl class="dl-horizontal">
+                        <dt>Created by</dt> <dd>Alex Smith</dd>
+                        <dt>Messages</dt> <dd>  162</dd>
+                        <dt>Client</dt> <dd><a href="#" class="text-navy"> Zender Company</a> </dd>
+                        <dt>Version</dt> <dd> 	v1.4.2 </dd>
+                    </dl>
+                    <h3 class="text-primary">WTS - Want To Sell</h3>
+                    <h1>iPhone Pallets of Interest</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br/>
+</div>
+
+{{> footer/footer}}
