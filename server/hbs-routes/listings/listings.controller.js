@@ -79,7 +79,7 @@ export function editListings(req, res) {
             res.render('edit-listing', {
 				title: 'Global Trade Connect',
 				statusCode: status,
-                product : plainTextResponse(product)
+                product : product
             });
         }).catch(function (error) {
             console.log('Error :::', error);
@@ -87,8 +87,4 @@ export function editListings(req, res) {
         });
 }
 
-function plainTextResponse(response) {
-	return response.get({
-		plain: true
-	});
-}
+
