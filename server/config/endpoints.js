@@ -17,6 +17,7 @@ module.exports = {
 	"coupon-excluded-products": "CouponExcludedProduct",
 	"coupon-products": "CouponProduct",
 	"currencies": "Currency",
+	"discounts": "Discount",
 	"discussion-boards": "DiscussionBoard",
 	"discussion-board-details": "DiscussionBoardDetail",
 	"email-templates": "EmailTemplate",
