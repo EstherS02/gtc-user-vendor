@@ -219,17 +219,17 @@ export function googleLogin(req, res, next) {
 	queryObj['email'] = req.body.email;
 	queryObj['provider'] = providers["GOOGLE"];
 	queryObj['google_id'] = req.body.google_id;
-
+	console.log('queryObj', queryObj);
 	service.findOneRow("User", queryObj)
 		.then(function(user) {
 			if (user) {
-				const newUserRsp = plainTextResponse(user);
+				const newUserRsp = user;
 				service.findOneRow('Appclient', {
 					id: config.auth.clientId
 				}).then(function(appClient) {
 					if (appClient) {
 						var rspTokens = {};
-						const appClientRsp = plainTextResponse(appClient);
+						const appClientRsp = appClient;
 						rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
 
 						service.findOneRow("UserToken", {
@@ -237,7 +237,7 @@ export function googleLogin(req, res, next) {
 							client_id: appClientRsp.id
 						}).then(function(userToken) {
 							if (userToken) {
-								const userTokenRsp = plainTextResponse(userToken);
+								const userTokenRsp = userToken;
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
 								res.status(200).send(rspTokens);
@@ -281,13 +281,13 @@ export function googleLogin(req, res, next) {
 				service.createRow("User", bodyParams)
 					.then(function(newUser) {
 						if (newUser) {
-							const newUserRsp = plainTextResponse(newUser);
+							const newUserRsp = newUser;
 							service.findOneRow('Appclient', {
 								id: config.auth.clientId
 							}).then(function(appClient) {
 								if (appClient) {
 									var rspTokens = {};
-									const appClientRsp = plainTextResponse(appClient);
+									const appClientRsp = appClient;
 									var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
 									var encryptedRefToken = cryptography.encrypt(refreshToken);
 									rspTokens.access_token = generateAccessToken(newUserRsp, appClientRsp, config.secrets.accessToken, config.token.expiresInMinutes);
