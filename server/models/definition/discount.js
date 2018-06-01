@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'product_id',
             allowNull: true
         },
+        type: {
+            type: DataTypes.INTEGER,
+            field: 'type',
+            allowNull: false
+        },
         percent_discount: {
             type: DataTypes.INTEGER,
             field: 'percent_discount',
@@ -26,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         quantity: {
             type: DataTypes.INTEGER,
-            field: 'quantity_available',
+            field: 'quantity',
             allowNull: false
         },
         status: {
