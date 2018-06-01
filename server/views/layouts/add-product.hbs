@@ -40,16 +40,16 @@
             e.preventDefault();
             var obj = {};
             var newProduct = {};
-            newProduct.product_name = $('input[name=product_name]').val(),
+            newProduct.product_name = $('#product_name').val(),
             newProduct.product_category_id = $('#category').val(),
             newProduct.sub_category_id = $('#sub_category').val(),
-            newProduct.sku = $('input[name=sku]').val(),
-            newProduct.price = $('input[name=price]').val(),
-            newProduct.quantity_available = $('input[name=quantity_available]').val(),
-            newProduct.moq = $('input[name=moq]').val(),
+            newProduct.sku = $('#sku').val(),
+            newProduct.price = $('#price').val(),
+            newProduct.quantity_available = $('#quantity_available').val(),
+            newProduct.moq = $('#moq').val(),
             newProduct.product_location = $('#country').val(),
             newProduct.state_id = $('#state').val(),
-            newProduct.city = $('input[name=city]').val(),
+            newProduct.city = $('#city').val(),
             newProduct.status = 1;
             newProduct.vendor_id = 29;
             newProduct.marketplace_id = 3;
@@ -116,7 +116,7 @@
                         <h5 style="padding-top: 20px;">Add Product</h5>
                         <div class="row">
                             <div class="col-md-12">
-                                <input type="text" name="product_name" placeholder="Product Name" class="vend_edit_lists_textstyle" required />
+                                <input type="text" name="product_name" id="product_name" placeholder="Product Name" class="vend_edit_lists_textstyle" required />
                             </div>
                             <div class="col-md-12">
                                 <select class="vend_edit_lists_dropdownstyle" id="category" name="category" onChange="changeCategory(this);">
@@ -139,25 +139,31 @@
                                 <select class="vend_edit_lists_dropdownstyle" name="state" id="state" value="">
                                     <option disabled selected>State</option>
                                 </select>
-                                <input type="text" name="city" placeholder="City" class="vend_edit_lists_textstyle1" />
+                                <input type="text" name="city" id="city" placeholder="City" class="vend_edit_lists_textstyle1" />
                             </div>
                             <div class="col-md-12">
-                                <input type="text" name="sku" placeholder="SKU" class="vend_edit_lists_textstyle1" />
+                                <input type="text" name="sku" id="sku" placeholder="SKU" class="vend_edit_lists_textstyle1" />
                             </div>
                             <div class="col-md-12">
-                                <input type="text" name="price" placeholder="Price" class="vend_edit_lists_textstyle1" />
+                                <input type="text" name="price" id="price" placeholder="Price" class="vend_edit_lists_textstyle1" />
                             </div>
                             <div class="col-md-12">
-                                <input type="text" name="quantity_available" placeholder="Quantity Available" class="vend_edit_lists_textstyle1" />
+                                <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="vend_edit_lists_textstyle1" />
                             </div>
                             <div class="col-md-12">
-                                <input type="text" name="moq" placeholder="Maximum Order Quantity" class="vend_edit_lists_textstyle1" />
+                                <input type="text" name="moq" id="moq" placeholder="Maximum Order Quantity" class="vend_edit_lists_textstyle1" />
                             </div>
                             <div class="col-md-12">
                                 <label>
                                     <h6>Upload Image </h6>
                                 </label>
                                 <input type="file" class="vend_edit_lists_textstyle1" id="file" name="file" />
+                            </div>
+                            <div class="col-md-12">
+                                 <label>
+                                    <h6>Description</h6>
+                                </label>
+                            <textarea id="description" name="" class="vend_edit_lists_textstyle1" ></textarea>
                             </div>
                         </div>
                         <hr/>
