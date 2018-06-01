@@ -239,16 +239,17 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        /*var isLoggedIn = auth.isLoggedIn();
-        if (isLoggedIn) {
-            $('#loginBanner').hide();
-        } else {
-            $('#loginBanner').show();
-        }*/
-        $('#signUpForm').submit(function(e) {
-            e.preventDefault();
-
-            if ($('#inputEmail').val() && $('#inputFirstname').val() && $('#inputPassword').val()) {
+        $('#signUpForm').validate({
+            rules: {
+                first_name: {
+                    required: true
+                },
+                password: {
+                    required: true,
+                    minlength: 8
+                }
+            },
+            submitHandler: function(form) {
                 var newUser = {};
                 newUser.email = $('#inputEmail').val();
                 newUser.first_name = $('#inputFirstname').val();
@@ -272,6 +273,7 @@
                         });
                     },
                     error: function(request, status, error) {
+                        $('#signUpErrorLog').text(request.responseText);
                         $('#loginBanner').show();
                     }
                 });
@@ -279,59 +281,6 @@
         });
     });
 </script>
-<!-- <section class="header">
-    <div class="container my-custom-container row">
-        <div class="col-md-6">
-
-        </div>
-        <div class="col-md-6">
-            yes
-        </div>
-    </div>
-</section> -->
-{{!-- <section class="banner-signup p-lg" >
-    <div class="container gtc-custom-container">
-        <div class="row">
-            <div class="col-md-7">
-                <div class="row">
-                    <div class="col-md-7"></div>
-                    <div class="col-md-3">
-                        <h3>What is Geo-Locate?</h3>
-                        <p>Find products close to home, or nearby your target market with Lorom ipsum dolor sholt.</p>
-                        <h3 class="text-primary">GIVE IT A TRY!:</h3>
-                        <input type="text" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
-                        <select class="geo_textbox">
-                            <option>Category</option>
-                            <option>Category Category Cate</option>
-                        </select>
-                        <input type="text" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
-                        <button type="button" class="btn btn-block btn-sm btn-primary">SEARCH!</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <h1 class="text-pink">CREATE A FREE ACCOUNT!</h1>
-            </div>
-        </div>
-        <div class="wrapper-content col-md-12">
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="row">
-                        <div class="col-md-6">
-                            hello
-                        </div>
-                        <div class="col-md-6">
-                            hi
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5">
-                    <h1 class="text-pink">CREATE A FREE ACCOUNT!</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>  --}}
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
@@ -375,14 +324,15 @@
                         </a>
                     </div>
                     <div class="col-md-6">
-                        <form id="signUpForm" method="post">
-                            <input type="text" placeholder="Email" id="inputEmail" name="email" class="acc_textbox" />
-                            <input type="text" placeholder="First name" id="inputFirstname" name="firstname" class="acc_textbox" />
-                            <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox" />
-                            <br/>
-                            <input type="checkbox"> Accept terms and conditions
-                            <button type="submit" id="btnSignup" class="acc_button">CREATE ACCOUNT</button>
-                        </form>
+<form id="signUpForm" method="post">
+    <input type="email" id="inputEmail" name="email" class="acc_textbox" placeholder="Email" required>
+    <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
+    <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
+    <br/>
+    <input type="checkbox"> Accept terms and conditions
+    <button type="submit" id="btnSignup" class="acc_button">CREATE ACCOUNT</button>
+</form>
+<small id="signUpErrorLog" class="error"></small>
                     </div>
                 </div>
             </div>
