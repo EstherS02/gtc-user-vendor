@@ -119,6 +119,7 @@ export function login(req, res) {
 		}).then(function(user) {
 			if (user) {
 				res.cookie("gtc_refresh_token", encryptedRefToken);
+				res.cookie("gtc_access_token", rspTokens.access_token);
 				res.status(200).send(rspTokens);
 				return;
 			} else {
@@ -395,6 +396,7 @@ export function facebookLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -412,6 +414,7 @@ export function facebookLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -458,6 +461,7 @@ export function facebookLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
@@ -535,6 +539,7 @@ export function linkedInLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -552,6 +557,7 @@ export function linkedInLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -598,6 +604,7 @@ export function linkedInLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
@@ -676,6 +683,7 @@ export function twitterLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -693,6 +701,7 @@ export function twitterLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -739,6 +748,7 @@ export function twitterLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
