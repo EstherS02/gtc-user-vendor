@@ -52,6 +52,8 @@ export default function(app) {
   app.use('/talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/add-product', require('./hbs-routes/add-product'));
+  app.use('/login', require('./hbs-routes/login'));
+  app.use('/user-profile', require('./hbs-routes/user-profile'));
 
 
   //All other routes 404 page

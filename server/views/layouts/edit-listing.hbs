@@ -3,7 +3,82 @@
 		console.log("comming....");
 		$("#from, #to").datepicker();
 	});
-</script> {{> vendor/header}}
+</script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#percent_discount').click(function () {
+			if ($(this).is(":checked")) {
+				$(".percentDiscount").show();
+				$(".valueDiscount").hide();
+			}
+		});
+		$('#value_discount').click(function () {
+			if ($(this).is(":checked")) {
+				$(".valueDiscount").show();
+				$(".percentDiscount").hide();
+			}
+		});
+	});
+</script>
+<script>
+	$(function () {
+		var count = 1;
+		$("#addDiscount").click(function () {
+			if (count < 3) {
+				this.count = count + 1;
+				var domElements = '<div class="row"><div class="col-md-2"><p></p></div><div class="col-md-10"><div class="row">' +
+					'<div class="col-md-1"><p>For</p></div>' +
+					'<div class="col-md-1 common_padding1">' +
+					'<input class="discount-quantity-input list_place_1" type="text" placeholder="20" id="quantity' + count + '" name="quantity' + count + '">' +
+					'</div>' +
+					'<div class="col-md-2 common_padding1">' +
+					'<p>User recieves</p>' +
+					'</div>' +
+					'<div class="col-md-4 common_padding1">' +
+					'<p>' +
+					'<input class="discount-percent-input" type="radio" value="1" id="percent_discount' + count + '" name="discount' + count + '">Total Percent Discount</p>' +
+					'<p>' +
+					'<input class="discount-total-value" type="radio" value="2" id="value_discount' + count + '" name="discount' + count + '">Total Value Discount</p>' +
+					'</div>' +
+					'<div class="col-md-3 common_padding1">' +
+					'<input class="percent_discount list_place_2" type="text" placeholder="Enter Percentage" name="percent_discount' + count + '">' +
+					'<input class="value_discount list_place_2" type="text" placeholder="Enter Amount" name="value_discount' + count + '">' +
+					'</div>' +
+					'</div></div></div>';
+				$('#appendOn').append(domElements)
+			}
+		});
+		$("#productUpdateBtn").click(function (e) {
+			console.log(this.count);
+			e.preventDefault();
+			var updateProduct = {};
+			updateProduct.status = 1;
+			updateProduct.product_id = 5;
+			if ($('#percent').val() != '') {
+				updateProduct.percent_discount = $('#percent').val()
+			}
+			if ($('#amount').val() != '') {
+				updateProduct.value_discount = $('#amount').val()
+			}
+			updateProduct.quantity = $('#quantity').val(),
+				updateProduct.type = $("input[type='radio']:checked").val(),
+				console.log("updateProduct", updateProduct);
+			$.ajax({
+				type: 'POST',
+				url: '/api/discounts',
+				data: updateProduct,
+				success: function (data) {
+					console.log('data', data);
+				},
+				error: function (error) {
+					console.log('error', error);
+				}
+			});
+		});
+	});
+</script>
+{{> header/defaultHeader}}
+{{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -290,3 +365,4 @@
 	</div>
 	</div>
 </section>
+{{> footer/footer}}
