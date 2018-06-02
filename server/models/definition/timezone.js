@@ -75,8 +75,14 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const User = model.User;
     const Currency = model.Currency;
+    const BusinessHour = model.BusinessHour;
 
     Timezone.hasMany(Vendor, {
+        foreignKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    Timezone.hasMany(BusinessHour, {
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

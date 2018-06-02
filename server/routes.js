@@ -26,6 +26,7 @@ export default function(app) {
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api/wishlist', require('./api/wishlist'));
+  app.use('/api/gtc-talk', require('./api/gtc-talk'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
@@ -49,7 +50,7 @@ export default function(app) {
   app.use('/listings', require('./hbs-routes/listings'));
   app.use('/coupons', require('./hbs-routes/coupons'));
   app.use('/wishlist', require('./hbs-routes/wishlist'));
-  app.use('/talk', require('./hbs-routes/talk'));
+  app.use('/gtc-talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/add-product', require('./hbs-routes/add-product'));
   app.use('/login', require('./hbs-routes/login'));
