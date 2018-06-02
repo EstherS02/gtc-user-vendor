@@ -1,230 +1,295 @@
-{{> header/defaultHeader}}
-{{> vendor/header}}
+<style>
+	#imageUpload {
+		display: none;
+	}
+
+	#profileImage {
+		cursor: pointer;
+	}
+</style>
+<script>
+	$(document).ready(function () {
+		$("#profileImage").click(function (e) {
+			$("#imageUpload").click();
+		});
+		function fasterPreview(uploader) {
+			if (uploader.files && uploader.files[0]) {
+				$('#UploadedImage').attr('src',
+					window.URL.createObjectURL(uploader.files[0]));
+			}
+		}
+		$("#imageUpload").change(function () {
+			fasterPreview(this);
+		});
+		 $("#userUpdateBtn").click(function (e) {
+			   e.preventDefault();
+               var userUpdate = {};
+			   var vendorUpdate = {};
+			   var billingUpdate = {};
+			   var shippingingUpdate = {};
+			   userUpdate.first_name= $('#first_name').val(),
+			   userUpdate.last_name= $('#last_name').val(),
+			   vendorUpdate.contact_email= $('#contact_email').val(),
+			   vendorUpdate.UploadedImage= $('#UploadedImage').val(),
+			   billingUpdate.company_name= $('#b_company_name').val(),
+               billingUpdate.address_line1= $('#b_address1').val(),
+			   billingUpdate.address_line2= $('#b_address2').val(),
+			   billingUpdate.b_country= $('#b_country').val(),
+			   billingUpdate.b_state= $('#b_state').val(),
+			   billingUpdate.b_city= $('#b_city').val(),
+			   billingUpdate.b_postal_code= $('#b_postal_code').val(),
+		 });
+
+	});
+
+</script> {{> header/defaultHeader}} {{> vendor/header}}
 <section class="showing_categ">
-	<div class="" >
+	<div class="">
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}}
-				<div class="col-md-8" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="row">
-								<div class="col-md-6">
-									<img src="../../img/login-facebook.png" style="width: 100%;margin-bottom: 5px;" alt="fb"/>
-									<img src="../../img/login-google.png" style="width: 100%;margin-bottom: 5px;" alt="fb"/>
-									<img src="../../img/login-twitter.png" style="width: 100%;margin-bottom: 5px;" alt="fb"/>
-									<img src="../../img/login-linkedin.png" style="width: 100%;margin-bottom: 30px;" alt="fb"/>
+                  <div class="col-md-8" style="background-color: #fff;">
+					<form id="userForm">
+						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-6">
+										<img src="../../img/login-facebook.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
+										<img src="../../img/login-google.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
+										<img src="../../img/login-twitter.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
+										<img src="../../img/login-linkedin.png" style="width: 100%;margin-bottom: 30px;" alt="fb" />
+									</div>
+									<div class="col-md-6 text-center">
+										<img id="UploadedImage" src="{{vendor.vendor_profile_pic_url}}" style="width: 70%; " alt="avt" />
+										<p id="profileImage" class="text_blue_color">Change Avatar</p>
+										<input id="imageUpload" type="file" name="profile_photo" placeholder="Photo" required="" capture>
+									</div>
 								</div>
-								<div class="col-md-6 text-center">
-									<img src="../../img/avatar.png" style="width: 70%; " alt="avt"  />
-									<p class="text_blue_color">Change Avatar</p>
+								<div class="row">
+									<div class="col-md-4">
+										<p>Account Settings</p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id="first_name" placeholder="First Name" value="{{vendor.User.first_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id="last_name" placeholder="Last Name" value="{{vendor.User.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input readonly type="text" id="email" placeholder="Email" value="{{vendor.User.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id="password" placeholder="Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p>Account Settings</p>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-4">
+										<p>Billing Address</p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="First Name" value="{{vendor.User.first_name}}" class="vend_edit_lists_textstyle1" style="width: 80%" />
-									
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_address1' value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_address2' value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Last Name" value="{{vendor.User.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%" />
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<select class="vend_edit_lists_dropdownstyle" id="country" name="country">
+                                    <option disabled selected>Country</option>
+                                    {{#each country}}
+                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                    {{/each}}
+                                </select>
+									{{!-- <div class="col-md-8 common_padding1">
+										<input type="text" id='b_country' value="{{billingAddress.Country.name}}" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div> --}}
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_state' value="{{billingAddress.State.name}}" placeholder="Province/State" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Email" value="{{vendor.User.email}}" class="vend_edit_lists_textstyle1" style="width: 80%" />
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+								<div class="row" style="margin-bottom: 20px;">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="checkbox"> My Shipping Address is the same as my billing address
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
+								<div class="row">
+									<div class="col-md-4">
+										<p>Shipping Address</p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1" style="width: 80%"
+										 disabled />
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" disabled />
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_address2' value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" disabled />
+									</div>
 								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1" style="width: 80%" />
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<select class="vend_edit_lists_dropdownstyle" id="country" name="country">
+                                    <option disabled selected>Country</option>
+                                    {{#each country}}
+                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                    {{/each}}
+                                </select>
+									{{!-- <div class="col-md-8 common_padding1">
+										<input type="text" id='s_country' value="{{shippingAddress.Country.name}}" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%"
+										 disabled />
+									</div> --}}
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_state' value="{{shippingAddress.State.name}}" placeholder="Province/State" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" disabled />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+										 disabled />
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%"
+										 disabled />
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="row">
-								<div class="col-md-4">
-									<p>Billing Address</p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Company" value="{{shippingAddress.company_name}}" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Province/State" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%" />
-								</div>
-							</div>
-		                     <div class="row" style="margin-bottom: 20px;">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="checkbox"> My Shipping Address is the same as my billing address
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p>Shipping Address</p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Company" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Address Line 1" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Address Line 2" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Province/State" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<p></p>
-								</div>
-								<div class="col-md-8 common_padding1">
-									<input type="text" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%" disabled />
-								</div>
+
+						<hr/>
+						<div class="row">
+							<div class="col-md-12">
+								<button class="list_butt_1" type="button" id="userUpdateBtn">UPDATE</button>
+                                <button class="list_butt_2" type="reset" id="userCancelBtn">CANCEL</button>
 							</div>
 						</div>
-					</div>
-					
-					<hr/>
-					<div class="row">
-						<div class="col-md-12">
-							<input class="list_butt_1" type="submit" value="UPDATE" /> <input class="list_butt_2" type="submit" value="CANCEL" />
+						<div class="row">
+							<div class="col-md-12">
+								<p class="vend_edit_lists_pstyle"></p>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<p class="vend_edit_lists_pstyle"></p>
-						</div>
-					</div>
-				</div>		
+					</form>
+				</div>
+
 			</div>
 		</div>
 	</div>
 </section>
+</body>
 
-<script>
-$(window).scroll(function(){
-$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-});
-$('#datepicker').datepicker({
-        weekStart: 1,
-        daysOfWeekHighlighted: "6,0",
-        autoclose: true,
-        todayHighlight: true,
-    });
-    $('#datepicker').datepicker("setDate", new Date());
-</script>
-  
-  </body>
-  </html>
-  {{> footer/footer}}
+</html>
+{{> footer/footer}}
