@@ -14,6 +14,10 @@ export function directory(req, res) {
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
+    var LoggedInUser = {};
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
 
     offset = 0;
     field = "id";
@@ -120,7 +124,8 @@ export function directory(req, res) {
                 wholesalers: results.wholesalers,
                 retailers: results.retailers,
                 servicesProviders: results.servicesProviders,
-                subscriptionProviders: results.subscriptionProviders
+                subscriptionProviders: results.subscriptionProviders,
+                LoggedInUser: LoggedInUser
             });
         }
         else {

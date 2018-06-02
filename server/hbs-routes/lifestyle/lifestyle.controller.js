@@ -16,6 +16,10 @@ export function lifestyle(req, res) {
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
+    var  LoggedInUser = {};
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
     offset = 0;
     field = "id";
@@ -70,7 +74,8 @@ export function lifestyle(req, res) {
                 title: "Global Trade Connect",
                 featuredProducts: results.featuredProducts,
                 lifestyle: results.lifestyle,
-                subscriptionProviders: results.subscriptionProviders
+                subscriptionProviders: results.subscriptionProviders,
+                LoggedInUser: LoggedInUser
             });
         }
         else {

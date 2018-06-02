@@ -119,6 +119,7 @@ export function login(req, res) {
 		}).then(function(user) {
 			if (user) {
 				res.cookie("gtc_refresh_token", encryptedRefToken);
+				res.cookie("gtc_access_token", rspTokens.access_token);
 				res.status(200).send(rspTokens);
 				return;
 			} else {
@@ -241,7 +242,11 @@ export function googleLogin(req, res, next) {
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
 								res.cookie("gtc_access_token", rspTokens.access_token);
-								res.status(200).send(rspTokens);
+								res.status(200).json({
+									'status' : 200,
+									'message': 'ok',
+									'messageDetails': 'successful'
+								});
 								return;
 							} else {
 								var refreshToken = generateRefreshToken(newUserRsp, appClientRsp, config.secrets.refreshToken);
@@ -259,7 +264,11 @@ export function googleLogin(req, res, next) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
 											res.cookie("gtc_access_token", rspTokens.access_token);
-											res.status(200).send(rspTokens);
+											res.status(200).json({
+												'status' : 200,
+												'message': 'ok',
+												'messageDetails': 'successful'
+											});
 											return;
 										}
 									}).catch(function(error) {
@@ -306,7 +315,11 @@ export function googleLogin(req, res, next) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
 												res.cookie("gtc_access_token", rspTokens.access_token);
-												res.status(200).send(rspTokens);
+												res.status(200).json({
+													'status' : 200,
+													'message': 'ok',
+													'messageDetails': 'successful'
+												});
 												return;
 											}
 										}).catch(function(error) {
@@ -383,6 +396,7 @@ export function facebookLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -400,6 +414,7 @@ export function facebookLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -446,6 +461,7 @@ export function facebookLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
@@ -523,6 +539,7 @@ export function linkedInLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -540,6 +557,7 @@ export function linkedInLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -586,6 +604,7 @@ export function linkedInLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}
@@ -664,6 +683,7 @@ export function twitterLogin(req, res, next) {
 								const userTokenRsp = plainTextResponse(userToken);
 								var encryptedRefToken = cryptography.encrypt(userTokenRsp.refresh_token);
 								res.cookie("gtc_refresh_token", encryptedRefToken);
+								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).send(rspTokens);
 								return;
 							} else {
@@ -681,6 +701,7 @@ export function twitterLogin(req, res, next) {
 									.then(function(newToken) {
 										if (newToken) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
+											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).send(rspTokens);
 											return;
 										}
@@ -727,6 +748,7 @@ export function twitterLogin(req, res, next) {
 										.then(function(newToken) {
 											if (newToken) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
+												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).send(rspTokens);
 												return;
 											}

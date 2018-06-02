@@ -16,7 +16,11 @@ export function shop(req, res) {
 	var featuredProductModel = "FeaturedproductSalesRating";
     var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
-	var queryObj = {};
+    var queryObj = {};
+    var LoggedInUser = {}
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
 	field = "id";
@@ -71,7 +75,8 @@ export function shop(req, res) {
 				title: "Global Trade Connect",
 				featuredProducts: results.featuredProducts,
 				publicMarketplace: results.publicMarketplace,
-				retailers: results.retailers
+                retailers: results.retailers,
+                LoggedInUser: LoggedInUser
 			});
         }
         else {

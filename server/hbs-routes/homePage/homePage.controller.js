@@ -14,7 +14,7 @@ export function homePage(req, res) {
     var featuredProductModel = "FeaturedproductSalesRating";
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
-    var queryObj = {};
+    var queryObj = {}, LoggedInUser = {};
 
     offset = 0;
     limit = 5;
@@ -22,6 +22,9 @@ export function homePage(req, res) {
     order = "asc";
 
     queryObj['status'] = status["ACTIVE"];
+
+    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
     async.series({
         wantToSell: function(callback) {
@@ -141,7 +144,8 @@ export function homePage(req, res) {
                 serviceMarketplace: results.serviceMarketplace,
                 lifestyleMarketplace: results.lifestyleMarketplace,
                 featuredProducts: results.featuredProducts,
-                topSellers:results.topSellers
+                topSellers:results.topSellers,
+                LoggedInUser: LoggedInUser
             });
         } else {
             res.render('homePage', err);

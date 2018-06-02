@@ -44,7 +44,7 @@
 	}
 
 </script> 
-{{> header/defaultHeader}}
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
 {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
@@ -62,10 +62,10 @@
 						<div class="col-md-2 common_padding1">
 							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
-								<option value="active">Active</option>
-								<option value="inactive">InActive</option>
-								<option value="suspended">Suspended</option>
-								<option value="soldout">Sold Out</option>
+								<option value="ACTIVE">Active</option>
+								<option value="INACTIVE">InActive</option>
+								<option value="SUSPENDED">Suspended</option>
+								<option value="SOLDOUT">Sold Out</option>
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
