@@ -10,7 +10,7 @@ const async = require('async');
 export function listings(req, res) {
 
 	var offset, limit, field, order,page;
-	var queryParams = {};
+	var queryParams = {}, LoggedInUser = {};
 	var productModel = "ProductSalesRating";
 	queryParams["vendor_name"] ='chandru Ismera';
 	field = "id";
@@ -26,6 +26,11 @@ export function listings(req, res) {
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+	LoggedInUser = req.gtcGlobalUserObj;
+	
+	let user_id = LoggedInUser.id;
 
 
 	if (req.query.product_name) {
@@ -70,7 +75,8 @@ export function listings(req, res) {
 				pageSize: limit,
 				offset: offset,
 				maxSize: 5,
-				statusCode: status
+				statusCode: status,
+				LoggedInUser: LoggedInUser
 			});
 		}
 		else {

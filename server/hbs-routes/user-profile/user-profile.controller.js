@@ -13,25 +13,33 @@ export function userProfile(req, res) {
 	var vendorModel = "Vendor";
 	var addressModel= "Address";
 	var countryModel = "Country";
-	var vendorId = 28;
-	var userId = 30;
 	var vendorIncludeArr= [
 		{ model: model['User'] }
 	];
 	var addressIncludeArr= [
-		{ model: model['Country'] },
+		{ model: model['Country']},
 		{ model: model['State'] }
 	];
 	var offset, limit, field, order;
-    var queryObj = {};
+	var queryObj = {}, LoggedInUser = {};
+
+	
 	offset = 0;
     limit = null;
     field = "id";
-    order = "asc";
+	order = "asc";
+	
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+
+		console.log("LoggedInUser",LoggedInUser);
+		
+	    let user_id = LoggedInUser.id;
+
 
 	async.series({
 		vendor: function (callback) {
-			service.findRow(vendorModel, vendorId, vendorIncludeArr)
+			service.findOneRow(vendorModel, { user_id:user_id }, vendorIncludeArr)
 				.then(function (vendor) {
 					return callback(null, vendor);
 				}).catch(function (error) {
@@ -39,7 +47,7 @@ export function userProfile(req, res) {
 				});
 		},
 		shippingAddress: function (callback) {
-			service.findOneRow(addressModel, {user_id:userId, address_type: addressCode['SHIPPINGADDRESS'] }, addressIncludeArr)
+			service.findOneRow(addressModel, {user_id:user_id, address_type: addressCode['SHIPPINGADDRESS']}, addressIncludeArr)
 				.then(function (shippingAddress) {
 					return callback(null, shippingAddress);
 				}).catch(function (error) {
@@ -47,7 +55,7 @@ export function userProfile(req, res) {
 				});
 		},
 		billingAddress: function (callback) {
-			service.findOneRow(addressModel, {user_id:userId, address_type: addressCode['BILLINGADDRESS']},addressIncludeArr) 
+			service.findOneRow(addressModel, {user_id:user_id, address_type: addressCode['BILLINGADDRESS']},addressIncludeArr) 
 				.then(function (billingAddress) {
 					return callback(null,billingAddress);
 				}).catch(function (error) {
@@ -71,7 +79,8 @@ export function userProfile(req, res) {
 				vendor:results.vendor,
 				shippingAddress:results.shippingAddress,
 				billingAddress:results.billingAddress,
-				country: results.country
+				country: results.country,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			res.render('user-profile', err);
