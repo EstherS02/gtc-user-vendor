@@ -35,7 +35,6 @@ export default function(app) {
 
   /* Handlerbars routes */
   app.use('/', require('./hbs-routes/homePage'));
-  app.use('/product', require('./hbs-routes/product-view'));
   app.use('/cart', require('./hbs-routes/cart'));
   app.use('/directory', require('./hbs-routes/directory'));
   app.use('/wholesale', require('./hbs-routes/wholesale'));
@@ -53,6 +52,7 @@ export default function(app) {
   app.use('/add-product', require('./hbs-routes/add-product'));
   app.use('/login', require('./hbs-routes/login'));
   app.use('/user-profile', require('./hbs-routes/user-profile'));
+  app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
 
 
   //All other routes 404 page

@@ -6,11 +6,9 @@ var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 var globalUser = require('../../auth/global-user-obj');
 
-
-/* Handlebars routes */
 var controller = require('./wholesale.controller');
 
+//router.get('/:marketPlaceType/:productSlugName', controller.wholeSaleProductView)
 router.get('/', globalUser.isGlobalObj(), controller.wholesale);
-
 
 module.exports = router;
