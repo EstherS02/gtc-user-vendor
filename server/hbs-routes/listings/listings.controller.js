@@ -12,7 +12,7 @@ export function listings(req, res) {
 	var offset, limit, field, order,page;
 	var queryParams = {};
 	var productModel = "ProductSalesRating";
-	// queryParams["vendor_name"] ='chandru Ismera';
+	queryParams["vendor_name"] ='chandru Ismera';
 	field = "id";
 	order = "asc";
 	offset = 0;
