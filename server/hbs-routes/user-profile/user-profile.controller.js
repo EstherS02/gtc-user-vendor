@@ -7,19 +7,20 @@ const status = require('../../config/status');
 const addressCode = require('../../config/address');
 const service = require('../../api/service');
 const async = require('async');
+const populate = require('../../utilities/populate');
 
 
 export function userProfile(req, res) {
 	var vendorModel = "Vendor";
 	var addressModel= "Address";
 	var countryModel = "Country";
-	var vendorIncludeArr= [
-		{ model: model['User'] }
-	];
-	var addressIncludeArr= [
-		{ model: model['Country']},
-		{ model: model['State'] }
-	];
+	var vendorIncludeArr= [];
+	var addressIncludeArr= [];
+
+
+	vendorIncludeArr = populate.populateData('User');
+	addressIncludeArr = populate.populateData('Country,State');
+
 	var offset, limit, field, order;
 	var queryObj = {}, LoggedInUser = {};
 
@@ -28,11 +29,11 @@ export function userProfile(req, res) {
     limit = null;
     field = "id";
 	order = "asc";
-	
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
 
-		console.log("LoggedInUser",LoggedInUser);
+
+	
+	if(req.user)
+		LoggedInUser = req.user;
 		
 	    let user_id = LoggedInUser.id;
 

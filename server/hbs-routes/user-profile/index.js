@@ -10,7 +10,7 @@ var globalUser = require('../../auth/global-user-obj');
 /* Handlebars routes */
 var controller = require('./user-profile.controller');
 
-router.get('/', globalUser.isGlobalObj(), auth.isAuthenticated(), controller.userProfile);
+router.get('/', auth.isAuthenticated(), controller.userProfile);
 
 
 module.exports = router;
