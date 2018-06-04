@@ -1,5 +1,6 @@
 'use strict';
 
+const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
@@ -11,11 +12,26 @@ const async = require('async');
 import series from 'async/series';
 
 export function wholeSaleProductView(req, res) {
-    console.log('productSlugName', req.params.productSlugName);
-    console.log('marketPlaceType', req.params.marketPlaceType);
-    res.render('product-view', {
-        title: "Global Trade Connect"
-    });
+    var modeName = "Product";
+    var queryObj = {};
+    var includeArr = [];
+
+    queryObj['product_slug'] = req.params.productSlugName;
+    queryObj['status'] = status["ACTIVE"];
+
+    includeArr = populate.populateData("Marketplace,MarketplaceType,Category,SubCategory,Country,State")
+
+    service.findOneRow(modeName, queryObj, includeArr)
+        .then(function(product) {
+            console.log('product', product);
+            res.render('product-view', {
+                title: "Global Trade Connect"
+            });
+        })
+        .catch(function(error) {
+            console.log('Error:::', error);
+            res.render('product-view', err);
+        })
 }
 
 export function wholesale(req, res) {
