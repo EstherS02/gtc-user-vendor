@@ -22,7 +22,7 @@
 		window.location.href = '/listings?status=' + e.value;
 	}
 	function search(e) {
-		window.location.href = '/listings?product_name='+ e.value;
+		window.location.href = '/listings?product_name=' + e.value;
 	}
 
 	function edit() {
@@ -33,19 +33,17 @@
 		var selected;
 		selected = chkArray.join(',');
 		if (selected.length > 0) {
-			window.location.href = '/listings/'+selected;
+			window.location.href = '/listings/' + selected;
 		} else {
 			alert("Please at least check one of the checkbox");
 		}
 	}
 
-	function add(){
+	function add() {
 		window.location.href = '/add-product';
 	}
 
-</script> 
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
-{{> vendor/header}}
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -57,10 +55,10 @@
 						the product name or SKU to go to the full edit details page for that specific products.</p>
 					<div class="row">
 						<div class="col-md-2">
-							<input type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add();" />
+							<input style="width: 100%;" type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add();" />
 						</div>
 						<div class="col-md-2 common_padding1">
-							<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+							<select style="width: 90%;" class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
 								<option value="ACTIVE">Active</option>
 								<option value="INACTIVE">InActive</option>
@@ -69,15 +67,15 @@
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
-							<select class="vend_edit_lists_buttonstyle">
+							<select style="width: 90%;" class="vend_edit_lists_buttonstyle">
 								<option>CHANGE TYPE</option>
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
-							<input type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" onclick="edit();" />
+							<input style="width: 90%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" onclick="edit();" />
 						</div>
 						<div class="col-md-1 common_padding1">
-							<input type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
+							<input style="width: 100%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
 							<input type="text" placeholder="Search Products" class="vend_edit_lists_searchstyle" onChange="search(this);" />
@@ -85,15 +83,15 @@
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+							<p class="vend_edit_lists_pstyle">{{this.collectionSize}} items total</p>
 						</div>
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
+							<p class="vend_edit_lists_pstyle float-right">Entries per page:
 								<a href="listings?limit=10">10</a>
 								<a href="listings?limit=25">25</a>
 								<a href="listings?limit=100">100</a>
 								<a href="listings">All</a>
-								</p>
+							</p>
 						</div>
 					</div>
 					<div class="row">
@@ -136,6 +134,31 @@
 								{{/each}}
 							</tbody>
 						</table>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+						</div>
+						<div class="col-md-7">
+							{{#pagination collectionSize page pageSize maxSize}}
+							<nav aria-label="Page navigation example">
+								<ul class="pagination justify-content-center">
+									{{#unless startFromFirstPage}}
+									<li class="page-item">
+										<a class="page-link" href="listings?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+									</li>
+									{{/unless}} {{#each pages}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="listings?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+									</li>
+									{{/each}} {{#unless endAtLastPage}}
+									<li class="page-item">
+										<a class="page-link" href="listings?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+									</li>
+									{{/unless}}
+								</ul>
+							</nav>
+							{{/pagination}}
+						</div>
 					</div>
 				</div>
 				<div class="col-md-2">

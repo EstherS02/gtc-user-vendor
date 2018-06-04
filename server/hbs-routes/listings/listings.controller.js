@@ -9,15 +9,24 @@ const async = require('async');
 
 export function listings(req, res) {
 
-	var offset, limit, field, order;
+	var offset, limit, field, order,page;
 	var queryParams = {};
 	var productModel = "ProductSalesRating";
-	queryParams["vendor_name"] ='chandru Ismera';
+	// queryParams["vendor_name"] ='chandru Ismera';
 	field = "id";
 	order = "asc";
 	offset = 0;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
 	delete req.query.limit;
+
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+
 
 	if (req.query.product_name) {
            queryParams['product_name'] = req.query.product_name;
@@ -56,7 +65,11 @@ export function listings(req, res) {
 			res.render('view-listings', {
 				title: "Global Trade Connect",
 				products: results.products.rows,
-				count: results.products.count,
+				collectionSize: results.products.count,
+				page: page,
+				pageSize: limit,
+				offset: offset,
+				maxSize: 5,
 				statusCode: status
 			});
 		}
