@@ -10,8 +10,7 @@ const async = require('async');
 
 
 export function services(req, res) {
-	var productModel = "ProductSalesRating";
-	var featuredProductModel = "FeaturedproductSalesRating";
+	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
@@ -25,13 +24,14 @@ export function services(req, res) {
 	order = "asc";
 
 	queryObj['status'] = status["ACTIVE"];
-	queryObj['marketplace'] = 'Services Marketplace';
+	queryObj['marketplace_id'] = 3;
 
 	async.series({
 		featuredService: function(callback) {
 			limit = null;
-			queryObj['position'] = position.ServiceLanding;
-			service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+			queryObj['featured_position'] = position.ServiceLanding;
+			queryObj['is_featured_product'] = 1;
+			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(featuredService) {
 					return callback(null, featuredService.rows);
 				}).catch(function(error) {
@@ -40,7 +40,8 @@ export function services(req, res) {
 				});
 		},
 		serviceProduct: function(callback) {
-			delete queryObj['position'];
+			delete queryObj['featured_position'];
+            delete queryObj['is_featured_product'];
 			limit = 20;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(serviceProduct) {
@@ -51,7 +52,7 @@ export function services(req, res) {
 				});
 		},
 		servicesProviders: function(callback) {
-			delete queryObj['marketplace'];
+			delete queryObj['marketplace_id'];
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
 			order = 'desc';

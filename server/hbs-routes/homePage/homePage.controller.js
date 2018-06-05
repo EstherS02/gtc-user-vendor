@@ -10,8 +10,7 @@ var async = require('async');
 
 
 export function homePage(req, res) {
-    var productModel = "ProductSalesRating";
-    var featuredProductModel = "FeaturedproductSalesRating";
+    var productModel = "MarketplaceProduct";
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {}, LoggedInUser = {};
@@ -28,7 +27,7 @@ export function homePage(req, res) {
 
     async.series({
         wantToSell: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Sell';
+            queryObj['marketplace_type_id'] = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToSell) {
                     return callback(null, wantToSell.rows);
@@ -39,7 +38,7 @@ export function homePage(req, res) {
                 });
         },
         wantToBuy: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Buy';
+            queryObj['marketplace_type_id'] = 2;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToBuy) {
                     return callback(null, wantToBuy.rows);
@@ -50,7 +49,7 @@ export function homePage(req, res) {
                 });
         },
         wantToTrade: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Trade';
+            queryObj['marketplace_type_id'] = 3;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToTrade) {
                     return callback(null, wantToTrade.rows);
@@ -61,7 +60,7 @@ export function homePage(req, res) {
                 });
         },
         requestForQuote: function(callback) {
-            queryObj['marketplace_type'] = 'Request For Quote';
+            queryObj['marketplace_type_id'] = 4;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(requestForQuote) {
                     return callback(null, requestForQuote.rows);
@@ -72,8 +71,8 @@ export function homePage(req, res) {
                 });
         },
         publicMarketplace: function(callback) {
-            delete queryObj['marketplace_type'];
-            queryObj['marketplace'] = 'Public Marketplace';
+            delete queryObj['marketplace_type_id'];
+            queryObj['marketplace_id'] = 2;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
@@ -84,7 +83,7 @@ export function homePage(req, res) {
                 });
         },
         serviceMarketplace: function(callback) {
-            queryObj['marketplace'] = 'Services Marketplace';
+            queryObj['marketplace_id'] = 3;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(serviceMarketplace) {
                     return callback(null, serviceMarketplace.rows);
@@ -95,7 +94,7 @@ export function homePage(req, res) {
                 });
         },
         lifestyleMarketplace: function(callback) {
-            queryObj['marketplace'] = 'Lifestyle Marketplace';
+            queryObj['marketplace_id'] = 4;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(lifestyleMarketplace) {
                     return callback(null, lifestyleMarketplace.rows);
@@ -106,10 +105,11 @@ export function homePage(req, res) {
                 });
         },
         featuredProducts: function(callback) {
-            delete queryObj['marketplace'];
-            queryObj['position'] = position.SignUp;
+            delete queryObj['marketplace_id'];
+            queryObj['featured_position'] = position.SignUp;
+            queryObj['is_featured_product'] = 1;
             limit = null;
-            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -119,7 +119,8 @@ export function homePage(req, res) {
                 });
         },
         topSellers: function (callback) {
-            delete queryObj['position'];
+            delete queryObj['featured_position'];
+            delete queryObj['is_featured_product'];
             field = 'sales_count';
             order = 'desc';
             limit = 6;
