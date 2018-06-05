@@ -62,7 +62,11 @@ export default function(app) {
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
   app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
   app.use('/order-history', require('./hbs-routes/order-history'));
-  app.use('/performance', require('./hbs-routes/performance'));
+  app.use('/reporting', require('./hbs-routes/reporting'));
+  app.use('/shipping-settings', require('./hbs-routes/shipping-settings'));
+  app.use('/verification', require('./hbs-routes/verification'));
+  app.use('/social-profile', require('./hbs-routes/social-profile'));
+  app.use('/payment-settings', require('./hbs-routes/payment-settings'));
 
   //All other routes 404 page
   

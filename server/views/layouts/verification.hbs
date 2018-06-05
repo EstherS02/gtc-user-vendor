@@ -1,0 +1,78 @@
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+<section class="showing_categ">
+  <div class="" >
+      <div class="container">
+          <div class="row">
+              {{> vendor/navbar}}
+              <div class="col-md-10" style="background-color: #fff;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">GTC Store verification</h5>
+                <p class="verification-incomplete"><span class="exclamation"><i class="fas fa-exclamation-circle"></i></span>You still have incomplete items to address below</p>
+                <p style="font-size: 13px;">Global Trade Connects requires all vendar to go through a several step process of documentation submission in order to verify their ownership of the business they are representing. please submit the following 4 peices of documentation to verify your ownership of this business.</p>
+                  <hr style="margin-top: 25px;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">Personal ID Verification</h5>
+                  <p class="verification-incomplete"><span class="id-verified"><i class="fas fa-check-circle"></i></span>Your Id verification request is approved</p><br>
+                  <p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">Choose 1 of the 3 following type of ID to upload to verify your personal identity</p>
+                  <div class="col-md-8">
+                    <input type="radio" />
+                    <label for="passport" class="upload-id-card">Passport</label><br>
+                    <input type="radio" />
+                    <label for="passport" class="upload-id-card">National Id card</label><br>
+                    <input type="radio" checked />
+                    <label for="passport" class="upload-id-card">Driving license</label>
+                    <select class="file-uploade">
+                        <option value="Browse..." selected="">Browse...</option>
+                        </select>
+                        <input class="upload-btn1" type="button" value="SUBMIT" onclick="document.getElementById('selectedFile').click();" style="padding: 6px 15px;"/><br>
+                        <img class="verification-id" src="../../img/verification-id.png" />
+                  </div>
+                  <hr style="margin-top: 25px;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">Upload bill with address</h5>
+                  <p class="verification-incomplete"><span class="exclamation"><i class="fas fa-exclamation-circle"></i></span>Your Id verification request is awaiding approved</p><br>
+                  <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+                  <div class="col-md-8">
+                    <select class="file-uploade">
+                        <option value="Browse..." selected="">Browse...</option>
+                        </select>
+                        <input class="upload-btn1" type="button" value="SUBMIT" onclick="document.getElementById('selectedFile').click();" style="padding: 6px 15px;"/><br>
+                        <img class="verification-id" src="../../img/dashboard-vendor-verification.jpg" />
+                  </div>
+                  <hr style="margin-top: 25px;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">Business License / Articles Of Incorporation</h5>
+                  <p class="verification-incomplete"><span class="exclamation"><i class="fas fa-exclamation-circle"></i></span>You haven't submitted this yet.</p><br>
+                  <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+                  <div class="col-md-8">
+                    <select class="file-uploade">
+                        <option value="Browse..." selected="">Browse...</option>
+                        </select>
+                        <input class="upload-btn1" type="button" value="SUBMIT" onclick="document.getElementById('selectedFile').click();" style="padding: 6px 15px;"/><br>
+                  </div>
+                  <hr style="margin-top: 25px;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">Upload bill with address</h5>
+                  <p class="verification-incomplete"><span class="exclamation"><i class="fas fa-exclamation-circle"></i></span>You haven't submitted this yet.</p><br>
+                  <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+                  <div class="col-md-8">
+                    <select class="file-uploade">
+                        <option value="Browse..." selected="">Browse...</option>
+                        </select>
+                        <input class="upload-btn1" type="button" value="SUBMIT" onclick="document.getElementById('selectedFile').click();" style="padding: 6px 15px;"/><br>
+                  </div>
+                  <hr style="margin-top: 25px;">
+                  <h5 class="gtc-title"style="padding-top: 20px; float: left;">Connect a Social Account</h5>
+                  <p class="verification-incomplete"><span class="exclamation"><i class="fas fa-exclamation-circle"></i></span>You haven't submitted this yet.</p><br>
+                  <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+                  <div class="col-md-8">
+                    <button class="connect-with-social-medias" type="button"><i class="fab fa-facebook-f" style="padding-right: 10px;"></i>CONNECT WITH FACEBOOK</button>
+                    <button class="connect-with-social-medias" type="button"><i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>CONNECT WITH LINKEDIN</button>
+                    <button class="connect-with-social-medias" type="button"><i class="fab fa-twitter" style="padding-right: 10px;"></i>CONNECT WITH TWITTER</button>
+                  </div>
+                  <hr style="margin-top: 25px;">
+                  <div class="col-md-4" style="padding-bottom: 30px;">
+					<button class="update-btn" type="submit">Update</button>
+					<button class="cancel-btn" type="submit">Cancel</button>
+				</div>
+              </div>		
+          </div>
+      </div>
+  </div>
+</section>
+{{> footer/footer}}

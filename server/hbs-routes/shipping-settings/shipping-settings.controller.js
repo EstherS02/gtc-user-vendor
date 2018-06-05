@@ -10,7 +10,7 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function performance(req, res) {
+export function shippingSettings(req, res) {
     var LoggedInUser = {};
 
     if(req.user)
@@ -18,7 +18,7 @@ export function performance(req, res) {
     
     let user_id = LoggedInUser.id;
 
-    res.render('performance', {
+    res.render('shipping-settings', {
         title: "Global Trade Connect",
         LoggedInUser: LoggedInUser
     });

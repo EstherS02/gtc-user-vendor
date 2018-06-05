@@ -8,9 +8,9 @@ var auth = require('../../auth/auth.service');
 
 
 /* Handlebars routes */
-var controller = require('./performance.controller');
+var controller = require('./verification.controller');
 
-router.get('/',auth.isAuthenticated(), controller.performance);
+router.get('/',auth.isAuthenticated(), controller.verification);
 
 
 module.exports = router;
