@@ -67,6 +67,8 @@ export default function(app) {
   app.use('/verification', require('./hbs-routes/verification'));
   app.use('/social-profile', require('./hbs-routes/social-profile'));
   app.use('/payment-settings', require('./hbs-routes/payment-settings'));
+  app.use('/gtc-mail', require('./hbs-routes/gtc-mail'));
+  app.use('/billing-settings', require('./hbs-routes/billing-settings'));
 
   //All other routes 404 page
   
