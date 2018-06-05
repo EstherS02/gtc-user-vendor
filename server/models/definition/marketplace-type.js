@@ -108,13 +108,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    MarketplaceType.belongsToMany(ProductMedia, {
+    /*MarketplaceType.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'marketplace_type_id',
         otherKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     MarketplaceType.belongsToMany(Category, {
         through: Product,

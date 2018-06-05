@@ -157,13 +157,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Category.belongsToMany(ProductMedia, {
+    /*Category.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Category.belongsToMany(SubCategory, {
         through: Product,
