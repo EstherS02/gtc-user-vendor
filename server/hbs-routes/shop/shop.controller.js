@@ -12,8 +12,7 @@ import series from 'async/series';
 
 export function shop(req, res) {
 
-    var productModel = "ProductSalesRating";
-	var featuredProductModel = "FeaturedproductSalesRating";
+    var productModel = "MarketplaceProduct";
     var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
     var queryObj = {};
@@ -27,14 +26,19 @@ export function shop(req, res) {
 	order = "asc";
 
     queryObj['status'] = status["ACTIVE"];
-    queryObj['marketplace'] = 'Public Marketplace';
+    queryObj['marketplace_id'] = 2;
 
     async.series({
         featuredProducts: function (callback) {
             limit = null;
-            queryObj['position'] = position.ShopLanding;
-            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+            queryObj['featured_position'] = position.ShopLanding;
+            queryObj['is_featured_product'] = 1;
+
+            console.log("queryObj",queryObj);
+
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
+                    console.log("featuredProducts",featuredProducts);
                     return callback(null, featuredProducts.rows);
 
                 }).catch(function (error) {
@@ -44,7 +48,8 @@ export function shop(req, res) {
         },
         publicMarketplace: function (callback) {
             limit = 20;
-            delete queryObj['position'];
+            delete queryObj['featured_position'];
+            delete queryObj['is_featured_product'];
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (publicMarketplace) {
                     return callback(null, publicMarketplace.rows);
@@ -55,7 +60,7 @@ export function shop(req, res) {
                 });
         },
         retailers: function (callback) {
-            delete queryObj['marketplace'];
+            delete queryObj['marketplace_id'];
             queryObj['type'] = 'Public Marketplace';
             field = 'sales_count';
             order = 'desc';
