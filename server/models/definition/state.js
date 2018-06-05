@@ -147,13 +147,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    State.belongsToMany(ProductMedia, {
+    /*State.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'state_id',
         otherKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     State.belongsToMany(Category, {
         through: Product,

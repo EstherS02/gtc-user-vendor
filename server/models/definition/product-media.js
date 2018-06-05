@@ -69,7 +69,7 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const State = model.State;
 
-    ProductMedia.hasMany(Product, {
+    /*ProductMedia.hasMany(Product, {
         foreignKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -130,5 +130,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
+*/
 };

@@ -199,13 +199,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Country.belongsToMany(ProductMedia, {
+    /*Country.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'product_location',
         otherKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Country.belongsToMany(Category, {
         through: Product,
