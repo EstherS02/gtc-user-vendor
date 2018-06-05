@@ -5,7 +5,6 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const dayCode = require('../../config/days');
-const timeNow = require('../../config/time');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const async = require('async');
@@ -51,66 +50,17 @@ export function talk(req, res) {
 				})
 		}
 	}, function(error, results) {
-		console.log('error', error);
-		console.log('results', results);
 		if (!error) {
 			console.log('results', results);
 			res.render('talk', {
 				title: "Global Trade Connect",
 				talk: results.talk,
-				// busiHours: busiHours,
+				busiHours: results.busiHours,
 				timeZone: results.timeZone,
-				dayCode: dayCode,
-				timeNow: timeNow
+				dayCode: dayCode
 			});
 		} else {
 			res.render('services', error);
 		}
 	});
-
-	/*async.series({
-		talk: function(callback) {
-			service.findOneRow(modelName, queryObj, includeArr)
-				.then(function(talk) {
-					return callback(null, talk);
-				}).catch(function(error) {
-					console.log('Error:::', error);
-					return callback(null);
-				});
-		},
-		busiHours: function(callback) {
-			model['BusinessHour'].findAll({
-				where: queryObj
-			}).then(function(rows) {
-				return callback(null, rows);
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(null);
-			});
-		},
-		timeZone: function(callback) {
-			model[timeModel].findAll({
-				raw: true
-			}).then(function(rows) {
-				return callback(null, rows);
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(null);
-			});
-		}
-	}, function(error, results) {
-		if (!error) {
-			console.log('results', results);
-			res.render('talk', {
-				title: "Global Trade Connect",
-				talk: results.talk,
-				timeZone: results.timeZone,
-				dayCode: dayCode,
-				timeNow: timeNow,
-				busiHours: busiHours
-			});
-		} else {
-			res.render('services', error);
-		}
-	});*/
 }

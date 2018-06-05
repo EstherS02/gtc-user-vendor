@@ -42,3 +42,35 @@ export function workingHours(req,res){
 			return;
 		});
 }
+
+export function storeData(req,res){
+	const data = {}
+	data.gtc_talk_enabled = req.body.gtc_talk_enabled;
+	data.default_msg = req.body.default_msg;
+	data.status = 1;
+	data.last_updated_on = new Date();
+	const modelName = 'TalkSetting';
+	console.log(req.body);
+	const includeArr = [];
+	var queryObj = {
+		vendor_id :29,
+	};
+	service.findOneRow(modelName, queryObj, includeArr)
+		.then(function(results) {
+			console.log("talk", results);
+			if (results) {
+				var id = results.id;
+				res.status(200).send(results);
+				service.updateRow(modelName,data,id).then(function(response){
+					console.log("Update",response)
+				});
+			} else {
+			// 	service.createRow(modelName,data).then(function(response){
+			// });
+		}
+	}).catch(function(error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
+		});
+}
