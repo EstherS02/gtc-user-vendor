@@ -63,11 +63,6 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'product_quantity',
 			allowNull: false
 		},
-		product_media_id: {
-			type: DataTypes.BIGINT,
-			field: 'product_media_id',
-			allowNull: false
-		},
 		category_id: {
 			type: DataTypes.BIGINT,
 			field: 'category_id',
