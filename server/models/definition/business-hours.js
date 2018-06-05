@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'end_time',
             allowNull: true
         },
-        time_zone: {
+        timezone_id: {
             type: DataTypes.TIME,
             field: 'timezone_id',
             allowNull: true

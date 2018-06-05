@@ -10,27 +10,28 @@ const service = require('../service');
 
 export function workingHours(req,res){
 	const data = req.body;
+	console.log(data);
 	const modelName = 'BusinessHour';
 	var includeArr = [];
 	var queryObj = {
 		vendor_id :29,
 		from_day:1,
 		to_day:5,
-		start_time:9,
-		end_time:18,
+		start_time:"09:00:00",
+		end_time:"18:00:00",
 		timezone_id:1,
 		status:1
 	};
 
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
-			console.log("WishList", results);
+			console.log("talk", results);
 			if (results) {
-				res.status(200).send(results);
-				return;
+				// res.status(200).send(results);
+				// return;
 			} else {
-				res.status(404).send("Unable to delete");
-				return;
+				// res.status(404).send("Unable to delete");
+				// return;
 			}
 		}).catch(function(error) {
 			console.log('Error:::', error);

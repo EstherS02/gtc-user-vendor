@@ -24,8 +24,8 @@
 			var op_hours = {};
 			op_hours.from_day = $('#from_day').val();
 			op_hours.to_day = $('#to_day').val();
-			op_hours.from_time = $('#from_time').val();
-			op_hours.to_time = $('#to_time').val();
+			op_hours.start_time = $('#start_time').val();
+			op_hours.end_time = $('#end_time').val();
 			op_hours.timezone_id = $('#time_zone').val();
 			alert("hai");
 			$.ajax({
@@ -84,7 +84,7 @@
 										{{/each}}
 									</select>
 								</div>
-								<div class="col-md-6 hop-container"style="float: left;">
+								<div class="col-md-6 hop-container" style="float: left;">
 									<label class="hop"> To </label>
 									<select class="classic" name="to_day" id="to_day">
 										<option value = "">to-day</option>
@@ -94,20 +94,23 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-md-4 hop-container1" style="float:  left;">
-								<select class="classic" name="from_time" id="from_time" style="float:  left;">
+							<div class="col-md-4 hop-container" style="float:  left;">
+							<label class="hop" style="float:  left;"> Time </label>
+							{{!-- 	<select class="classic" name="from_time" id="from_time" style="float:  left;">
 									<option value = "">Start Time</option>
 									{{#each timeNow}}
 									<option value = "{{this}}">{{@key}}</option>
 									{{/each}}
-								</select>
+								</select> --}}
+								<input type="time" name="start_time" class="classic" id="start_time" style="float:  left;">
 								<p class="hop-time" style="float:  left;">-</p>
-								<select class="classic" id="to_time" name="to_time" style="float:  left;" onchange="timeCheck(this)">
+								{{!-- <select class="classic" id="to_time" name="to_time" style="float:  left;" onchange="timeCheck(this)">
 									<option value = "">End Time</option>
 									{{#each timeNow}}
 										<option value = "{{this}}" >{{@key}}</option>
 									{{/each}}
-								</select>
+								</select> --}}
+								<input type="time" name="end_time" class="classic" id="end_time" style="float:  left;" onchange="timeCheck(this)">
 							</div>
 							<div class="col-md-4 hop-container" style="float:  left;">
 								<select class="classic" id="time_zone">
