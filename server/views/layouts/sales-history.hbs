@@ -1,0 +1,210 @@
+{{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+<section class="showing_categ">
+  <div class="" >
+      <div class="container">
+          <div class="row">
+             {{> vendor/navbar}}
+              <div class="col-md-10" style="background-color: #fff;">
+                  <h5 style="padding-top: 20px;">Sales History</h5>
+                  <div class="row">
+                      <div class="col-md-10">
+                          Date Range <input data-date-format="dd/mm/yyyy" class="vend_edit_lists_buttonstyle" id="datepicker"> to <input data-date-format="dd/mm/yyyy" class="vend_edit_lists_buttonstyle" id="datepicker"> <select class="vend_edit_lists_buttonstyle">
+                              <option>LAST 30 DAY</option>
+                          </select> <select class="vend_edit_lists_buttonstyle">
+                              <option>TYPE</option>
+                          </select> <select class="vend_edit_lists_buttonstyle">
+                              <option>STATUS</option>
+                          </select> <input type="submit" value="UPDATE" class="vend_edit_lists_update_buttonstyle" style="padding: 6px 0px;" />
+                          <input type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" style="width: 10%;"/>
+                      </div>
+                      
+                  
+                  
+                      <div class="col-md-2">
+                            <select class="vend_edit_lists_buttonstyle float-right" style="width: 100%;">
+                                    <option>EXPORT TO</option>
+                                </select>
+                      </div>
+                    </div>
+                      <div class="col-md-12" style="    padding-top: 20px;">
+                          <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" style="float: right;" />
+                          <br><br>
+                          <p class="vend_edit_lists_pstyle float-right" style="float: right;">Entries per page: 10 25 100 All</p> 
+                      </div>
+                  
+                  <div class="row">
+                      <div class="col-md-6">
+                          <p class="vend_edit_lists_pstyle">333,333 items total from May 01, 2017 to June 30, 2017</p>
+                      </div>
+                      <div class="col-md-6">
+                          
+                      </div>
+                  </div>
+                  <div class="row">
+                      <table class="table table-hover">
+                          <thead>
+                              <tr>
+                                  <th><input type="checkbox"></th>
+                                  <th>Invoice #</th>
+                                  <th>Vendor</th>
+                                  <th>Type</th>
+                                  <th>Date</th>
+                                  <th>Method</th>
+                                  <th>Status</th>
+                                  <th></th>
+                                  <th>Amount</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr>
+                              <tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_orange_color">In Escrow</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr><tr>
+                                  <td><input type="checkbox"></td>
+                                  <td>1700014</td>
+                                  <td class="text_blue_color">Great Earth Expeditions</td>
+                                  <td>Wholesale</td>
+                                  <td>April 21, 2017</td>
+                                  <td>PayPal</td>
+                                  <td class="text_green_color">Complete</td>
+                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                                  <td>$150.00 CAD</td>
+                              </tr>
+                              <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td class="text_blue_color">Total Transaction</td>
+                                  <td>$11,227.32 CAD</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-6">
+                          <p class="vend_edit_lists_pstyle">333,333 items total from May 01, 2017 to June 30, 2017</p>
+                      </div>
+                      <div class="col-md-6">
+                          <p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
+                      </div>
+                  </div>
+              </div>		
+          </div>
+      </div>
+  </div>
+</section>
+{{> footer/footer}}
