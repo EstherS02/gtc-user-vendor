@@ -6,6 +6,7 @@ const expressJwt = require('express-jwt');
 const compose = require('composable-middleware');
 const _ = require('lodash');
 const model = require('../sqldb/model-connect');
+const status = require('../config/status');
 
 var validateJwt = expressJwt({
 	secret: config.secrets.accessToken,
@@ -31,9 +32,19 @@ function isGlobalObj() {
 		})
 	 	.use(function(req, res, next) {
 			if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.userId){
+
+				let queryObj = {};
+
+				queryObj['status'] = {
+					'$eq': status["ACTIVE"]
+				}
+				
+				queryObj['id'] = req.gtcGlobalUserObj.userId;
+
 				model['User'].findOne({
-					where: {
-						id: req.gtcGlobalUserObj.userId
+					where: queryObj,
+					attributes: {
+						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 					}
 				}).then(function(userObj) {
 					if (userObj) {

@@ -21,9 +21,10 @@ export function productView(req, res) {
 
     service.findOneRow('Product', searchObj)
         .then(function (productDetails) {
+            console.log(productDetails)
             res.render('productView', {
                 title: 'Global Trade Connect',
-                productDetails : plainTextResponse(productDetails)
+                productDetails : productDetails
             });
         }).catch(function (error) {
             console.log('Error :::', error);
@@ -31,8 +32,3 @@ export function productView(req, res) {
         });
 }
 
-function plainTextResponse(response) {
-	return response.get({
-		plain: true
-	});
-}

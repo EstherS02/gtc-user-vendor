@@ -1,82 +1,65 @@
 'use strict';
 
+const async = require('async');
+const _ = require('lodash');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-const async = require('async');
-const _ = require('lodash');
+const populate = require('../../utilities/populate');
+
 
 
 export function cart(req, res) {
     var LoggedInUser = {};
 
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
+	if(req.user)
+		LoggedInUser = req.user;
     
-    let user_id = LoggedInUser.userId || 63;
+    let user_id = LoggedInUser.id;
 
     async.series({
         cartItems: function(cb) {
             
             var queryObj = {};
+            let includeArr = [];
+            let includeExpand = 'User,Product,Product.Vendor,Product.Category,Product.SubCategory,Product.Marketplace,Product.MarketplaceType,Product.ProductMedia,Product.Country,Product.State';
+
             queryObj['user_id'] = user_id;
 
             queryObj['status'] = {
                 '$eq': status["ACTIVE"]
             }
 
-            model['Cart'].findAndCountAll({
-                where: queryObj,
-                include: [
-                    { model: model["User"] }, 
-                    { model: model["Product"],
-                    include : [
-                               { model : model['Vendor']},
-                               { model : model['Category']},
-                               { model : model['SubCategory']},
-                               { model: model['Marketplace']},
-                               { model : model['MarketplaceType']},
-                               { model : model['ProductMedia']},
-                               { model : model ['Country']},
-                               { model : model ['State']}
-                            ]
-                        }],
-                offset: null,
-                limit: null,
-                order: [
-                    ["created_on", "asc"]
-                ]
-            }).then(function(data) {
-                return cb(null, data)
-            }).catch(function(error) {
-                return cb(error);
-            });
-            
+            includeArr = populate.populateData(includeExpand);
+        
+            return service.findRows('Cart', queryObj, null, null, 'created_on', "asc", includeArr)
+                .then(function(data) {
+                    data = JSON.parse(JSON.stringify(data));
+                    return cb(null, data)
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return cb(error);
+                });  
         },
         marketPlace: function(cb) {
 
             var searchObj = {};
+            let includeArr = [];
 
             searchObj['status'] = {
                 '$eq': status["ACTIVE"]
             }
 
-            model['Marketplace'].findAndCountAll({
-                where: {},
-                offset: null,
-                limit: null,
-                order: [
-                    ["created_on", "asc"]
-                ]
-            }).then(function(marketPlaceData) {
-                return cb(null, marketPlaceData)
-            }).catch(function(error) {
-                console.log(error)
-                //return cb(error);
-            });
-            
+            return service.findRows('Marketplace', searchObj, null, null, 'created_on', "asc", includeArr)
+                .then(function(marketPlaceData) {
+                    marketPlaceData = JSON.parse(JSON.stringify(marketPlaceData));
+                    return cb(null, marketPlaceData)
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return cb(error);
+                });
         }        
     }, function(err, results) {
         if(!err){

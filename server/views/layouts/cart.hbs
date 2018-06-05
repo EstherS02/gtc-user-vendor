@@ -46,7 +46,7 @@ function UpdateGtcCart(item){
 					</ul>
 				</div>
 				<div class="col-md-6">
-					<p class="log_sunnysarpel">You're logged in as <span class="span_sunnysarpel">SunnySarpel</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
+					<p class="log_sunnysarpel">You're logged in as <span class="span_sunnysarpel text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
 				</div>
 			</div>
 			<div class="row checkout_bg_color ">
@@ -147,7 +147,7 @@ function UpdateGtcCart(item){
 												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
-												<a id="update-cart-{{cartItem.id}}" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
+												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
 											</div>
 										</div>
 									</td>
@@ -155,7 +155,7 @@ function UpdateGtcCart(item){
 										<div class="row">
 											<div class="col-md-12">
 												<p class="shop_price_doller">${{quantityPrice cartItem.quantity cartItem.Product.price}}</p>
-												<a id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem}}`)" href="javascript:;">
+												<a id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;">
 													<p class="shop_total_remove text-center">REMOVE</p>
 												</a>
 											</div>
