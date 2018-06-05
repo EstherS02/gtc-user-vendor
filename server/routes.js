@@ -61,6 +61,8 @@ export default function(app) {
   app.use('/vendor-shop', require('./hbs-routes/vendor-shop'));
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
   app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
+  app.use('/order-history', require('./hbs-routes/order-history'));
+  app.use('/performance', require('./hbs-routes/performance'));
 
   //All other routes 404 page
   
