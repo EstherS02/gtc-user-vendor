@@ -2,7 +2,6 @@
 	#imageUpload {
 		display: none;
 	}
-
 	#profileImage {
 		cursor: pointer;
 	}
@@ -21,34 +20,136 @@
 		$("#imageUpload").change(function () {
 			fasterPreview(this);
 		});
-		 $("#userUpdateBtn").click(function (e) {
-			   e.preventDefault();
-               var userUpdate = {};
-			   var vendorUpdate = {};
-			   var billingUpdate = {};
-			   var shippingingUpdate = {};
-			   userUpdate.first_name= $('#first_name').val(),
-			   userUpdate.last_name= $('#last_name').val(),
-			   vendorUpdate.contact_email= $('#contact_email').val(),
-			   vendorUpdate.UploadedImage= $('#UploadedImage').val(),
-			   billingUpdate.company_name= $('#b_company_name').val(),
-               billingUpdate.address_line1= $('#b_address1').val(),
-			   billingUpdate.address_line2= $('#b_address2').val(),
-			   billingUpdate.b_country= $('#b_country').val(),
-			   billingUpdate.b_state= $('#b_state').val(),
-			   billingUpdate.b_city= $('#b_city').val(),
-			   billingUpdate.b_postal_code= $('#b_postal_code').val(),
-		 });
+		$("#userUpdateBtn").click(function (e) {
 
+			e.preventDefault();
+			var userUpdate = {};
+			var vendorUpdate = {};
+			var billingUpdate = {};
+			var shippingUpdate = {};
+			userUpdate.first_name = $('#first_name').val(),
+				userUpdate.last_name = $('#last_name').val(),
+				vendorUpdate.contact_email = $('#contact_email').val(),
+				billingUpdate.address_type = 1,
+				billingUpdate.company_name = $('#b_company_name').val(),
+				billingUpdate.address_line1 = $('#b_address1').val(),
+				billingUpdate.address_line2 = $('#b_address2').val(),
+				billingUpdate.country_id = $('#b_country').val(),
+				billingUpdate.province_id = $('#b_state').val(),
+				billingUpdate.city = $('#b_city').val(),
+				billingUpdate.postal_code = $('#b_postal_code').val(),
+				shippingUpdate.address_type = 2,
+				shippingUpdate.company_name = $('#s_company_name').val(),
+				shippingUpdate.address_line1 = $('#s_address1').val(),
+				shippingUpdate.address_line2 = $('#s_address2').val(),
+				shippingUpdate.country_id = $('#s_country').val(),
+				shippingUpdate.province_id = $('#s_state').val(),
+				shippingUpdate.city = $('#s_city').val(),
+				shippingUpdate.postal_code = $('#s_postal_code').val();
+
+			var form = new FormData();
+			form.append("file", $("#imageUpload")[0].files[0]);
+			form.append("filename", "test")
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/vendors/upload',
+				data: form,
+				cache: false,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: function (data) {
+					vendorUpdate.vendor_profile_pic_url = data.imageURL;
+					$.ajax({
+						url: '/api/vendor/' + {{ vendor.id }},
+				type: 'PUT',
+				data: vendorUpdate,
+				success: function (updateData) {
+					$.ajax({
+						url: '/api/users/' + {{ vendor.User.id }},
+				type: 'PUT',
+				data: userUpdate,
+				success: function (updateData) {
+					$.ajax({
+						url: '/api/address/' + {{ billingAddress.id }},
+				type: 'PUT',
+				data: billingUpdate,
+				success: function (updateData) {
+					$.ajax({
+						url: '/api/address/' + {{ shippingAddress.id }},
+				type: 'PUT',
+				data: shippingUpdate,
+				success: function (updateData) {
+					console.log("Updated Successfully..");
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		},
+			error: function (error) {
+				console.log("Error", error);
+			}
+		});
+				},
+	error: function (error) {
+		console.log("Error", error);
+	}
+			});
+		},
+	error: function (error) {
+		console.log("Error", error);
+	}
+		});
+			},
+	error: function (error) {
+		console.log("Error", error);
+	}
+		});
+	 }); 
 	});
-
-</script> {{> header/defaultHeader}} {{> vendor/header}}
+	function change_b_Country(e) {
+		$.ajax({
+			url: '/api/states?country_id=' + e.value,
+			type: 'GET',
+			success: function (result) {
+				$("#b_state").empty();
+				for (var i = 0; i < result.rows.length; i++) {
+					var options;
+					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+					$("#b_state").append(options)
+				}
+			},
+			error: function (error) {
+				console.log("Error", error);
+			}
+		});
+	}
+	function change_s_Country(e) {
+		$.ajax({
+			url: '/api/states?country_id=' + e.value,
+			type: 'GET',
+			success: function (result) {
+				$("#s_state").empty();
+				for (var i = 0; i < result.rows.length; i++) {
+					var options;
+					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+					$("#s_state").append(options)
+				}
+			},
+			error: function (error) {
+				console.log("Error", error);
+			}
+		});
+	}		
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}}
-                  <div class="col-md-8" style="background-color: #fff;">
+				<div class="col-md-8" style="background-color: #fff;">
 					<form id="userForm">
 						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
 						<div class="row">
@@ -63,7 +164,7 @@
 									<div class="col-md-6 text-center">
 										<img id="UploadedImage" src="{{vendor.vendor_profile_pic_url}}" style="width: 70%; " alt="avt" />
 										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="profile_photo" placeholder="Photo" required="" capture>
+										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture>
 									</div>
 								</div>
 								<div class="row">
@@ -71,8 +172,8 @@
 										<p>Account Settings</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="first_name" placeholder="First Name" value="{{vendor.User.first_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id="first_name" placeholder="First Name" value="{{vendor.User.first_name}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 
 									</div>
 								</div>
@@ -81,8 +182,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="last_name" placeholder="Last Name" value="{{vendor.User.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id="last_name" placeholder="Last Name" value="{{vendor.User.last_name}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -90,8 +191,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input readonly type="text" id="email" placeholder="Email" value="{{vendor.User.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input readonly type="text" id="email" placeholder="Email" value="{{vendor.User.email}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -115,8 +216,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 							</div>
@@ -126,8 +227,8 @@
 										<p>Billing Address</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -152,25 +253,20 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="country" name="country">
-                                    <option disabled selected>Country</option>
-                                    {{#each country}}
-                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-									{{!-- <div class="col-md-8 common_padding1">
-										<input type="text" id='b_country' value="{{billingAddress.Country.name}}" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
-									</div> --}}
+									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="country" onChange="change_b_Country(this);">
+										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+										{{#each country}}
+										<option value="{{this.id}}">{{ this.name}}</option>
+										{{/each}}
+									</select>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_state' value="{{billingAddress.State.name}}" placeholder="Province/State" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
+									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" value="">
+										<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+									</select>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
@@ -186,8 +282,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row" style="margin-bottom: 20px;">
@@ -203,8 +299,8 @@
 										<p>Shipping Address</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 disabled />
+										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -213,7 +309,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" disabled />
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -222,32 +318,27 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_address2' value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" disabled />
+										 style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="country" name="country">
-                                    <option disabled selected>Country</option>
-                                    {{#each country}}
-                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-									{{!-- <div class="col-md-8 common_padding1">
-										<input type="text" id='s_country' value="{{shippingAddress.Country.name}}" placeholder="Country" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 disabled />
-									</div> --}}
+									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);">
+										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+										{{#each country}}
+										<option value="{{this.id}}">{{ this.name}}</option>
+										{{/each}}
+									</select>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_state' value="{{shippingAddress.State.name}}" placeholder="Province/State" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" disabled />
-									</div>
+									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state">
+										<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+									</select>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
@@ -255,7 +346,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 disabled />
+										/>
 									</div>
 								</div>
 								<div class="row">
@@ -263,18 +354,17 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 disabled />
+										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
 							</div>
 						</div>
-
 						<hr/>
 						<div class="row">
 							<div class="col-md-12">
 								<button class="list_butt_1" type="button" id="userUpdateBtn">UPDATE</button>
-                                <button class="list_butt_2" type="reset" id="userCancelBtn">CANCEL</button>
+								<button class="list_butt_2" type="reset" id="userCancelBtn">CANCEL</button>
 							</div>
 						</div>
 						<div class="row">

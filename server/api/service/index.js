@@ -187,10 +187,3 @@ export function destroyRow(modelName, id) {
 		});
 	});
 }
-
-
-function plainTextResponse(response) {
-	return response.get({
-		plain: true
-	});
-}
