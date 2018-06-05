@@ -11,7 +11,7 @@ var globalUser = require('../../auth/global-user-obj');
 /* Handlebars routes */
 var controller = require('./cart.controller');
 
-router.get('/', globalUser.isGlobalObj(), auth.isAuthenticated(), controller.cart);
+router.get('/', auth.isAuthenticated(), controller.cart);
 
 
 module.exports = router;

@@ -6,6 +6,7 @@ const expressJwt = require('express-jwt');
 const compose = require('composable-middleware');
 const _ = require('lodash');
 const model = require('../sqldb/model-connect');
+const status = require('../config/status');
 
 var validateJwt = expressJwt({
 	secret: config.secrets.accessToken,
@@ -34,7 +35,6 @@ function isAuthenticated() {
 		})
 		.use(function(err, req, res, next){
 			//Manually handling errors from express jwt
-			console.log("errrrrrrr", err)
 			if(err.name === 'UnauthorizedError') {
 				console.log("Error From - express Jwt", err.inner);
 
@@ -50,8 +50,20 @@ function isAuthenticated() {
 			next();
 		})
 	 	.use(function(req, res, next) {
-			model['User'].findById(req.user.userId)
-				.then(function(user) {
+			let queryObj = {};
+
+			queryObj['status'] = {
+                '$eq': status["ACTIVE"]
+			}
+			
+			queryObj['id'] = req.user.userId;
+
+			model['User'].findOne({
+				where: queryObj,
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				}
+			}).then(function(user) {
 					if (user) {
 						req.user = plainTextResponse(user);
 						next();
