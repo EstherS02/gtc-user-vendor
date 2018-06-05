@@ -142,4 +142,10 @@ Handlebars.registerHelper('select', function( selected, options){
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
     });
-
+Handlebars.registerHelper ("setChecked", function (value, currentValue) {
+    if ( value == currentValue ) {
+       return "checked";
+    } else {
+       return "";
+    }
+ });

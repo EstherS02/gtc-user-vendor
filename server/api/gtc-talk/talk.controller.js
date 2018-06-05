@@ -15,11 +15,11 @@ export function workingHours(req,res){
 	var includeArr = [];
 	var queryObj = {
 		vendor_id :29,
-		from_day:1,
-		to_day:5,
-		start_time:"09:00:00",
-		end_time:"18:00:00",
-		timezone_id:1,
+		from_day:req.body.from_day,
+		to_day:req.body.to_day,
+		// start_time:req.body.start_time,
+		// end_time:req.body.end_time,
+		timezone_id:req.body.timezone_id,
 		status:1
 	};
 
@@ -27,13 +27,16 @@ export function workingHours(req,res){
 		.then(function(results) {
 			console.log("talk", results);
 			if (results) {
-				// res.status(200).send(results);
-				// return;
+				var id = results.id;
+				res.status(200).send(results);
+				service.updateRow(modelName,data,id).then(function(response){
+					console.log("Update",response)
+				});
 			} else {
-				// res.status(404).send("Unable to delete");
-				// return;
-			}
-		}).catch(function(error) {
+				service.createRow(modelName,data).then(function(response){
+			});
+		}
+	}).catch(function(error) {
 			console.log('Error:::', error);
 			res.status(500).send("Internal server error");
 			return;
