@@ -11,8 +11,6 @@ const service = require('../../api/service');
 
 export function productView(req, res) {
 
-    console.log(req['headers'])
-
     let searchObj = {}
 
     if (req.params.product_id)

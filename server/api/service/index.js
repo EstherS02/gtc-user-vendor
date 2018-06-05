@@ -5,17 +5,8 @@ const position = require('../../config/position');
 
 const model = require('../../sqldb/model-connect');
 
-export function findRows(modelName, queryObj, offset, limit, field, order) {
-	var includeArr = [];
-	if (queryObj.populate) {
-		var models = queryObj.populate.split(',');
-		for (var i = 0; i < models.length; i++) {
-			includeArr.push({
-				model: model[models[i]]
-			})
-		}
-		delete queryObj.populate;
-	}
+export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
+
 	return new Promise((resolve, reject) => {
 		model[modelName].findAndCountAll({
 			where: queryObj,
@@ -24,8 +15,7 @@ export function findRows(modelName, queryObj, offset, limit, field, order) {
 			limit: limit,
 			order: [
 				[field, order]
-			],
-			raw: true
+			]
 		}).then(function(rows) {
 			resolve(rows);
 		}).catch(function(error) {
