@@ -6,9 +6,11 @@ var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
-/* Handlebars routes */
-var controller = require('./user-profile.controller');
 
-router.get('/', auth.isAuthenticated(), controller.userProfile);
+/* Handlebars routes */
+var controller = require('./promote-store.controller');
+
+router.get('/',auth.isAuthenticated(), controller.promoteStore);
+
 
 module.exports = router;

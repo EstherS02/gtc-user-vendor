@@ -18,7 +18,6 @@ var validateJwt = expressJwt({
 	  }
 });
 
-
 function isGlobalObj() {
 	return compose()
 		.use(function(req, res, next) {
