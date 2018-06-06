@@ -10,7 +10,7 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function performance(req, res) {
+export function reporting(req, res) {
     var LoggedInUser = {};
 
     if(req.user)
@@ -23,3 +23,61 @@ export function performance(req, res) {
         LoggedInUser: LoggedInUser
     });
 }
+
+export function performance(req, res) {
+    var LoggedInUser = {};
+
+    if(req.user)
+    LoggedInUser = req.user;
+    
+    let user_id = LoggedInUser.id;
+
+    res.render('performance', {
+        title: "Global Trade Connect",
+        LoggedInUser: LoggedInUser
+    });
+}
+
+export function salesHistory(req, res) {
+    var LoggedInUser = {};
+
+    if(req.user)
+    LoggedInUser = req.user;
+    
+    let user_id = LoggedInUser.id;
+
+    res.render('sales-history', {
+        title: "Global Trade Connect",
+        LoggedInUser: LoggedInUser
+    });
+}
+
+export function accounting(req, res) {
+    var LoggedInUser = {};
+
+    if(req.user)
+    LoggedInUser = req.user;
+    
+    let user_id = LoggedInUser.id;
+
+    res.render('accounting', {
+        title: "Global Trade Connect",
+        LoggedInUser: LoggedInUser
+    });
+}
+
+export function tax(req, res) {
+    var LoggedInUser = {};
+
+    if(req.user)
+    LoggedInUser = req.user;
+    
+    let user_id = LoggedInUser.id;
+
+    res.render('tax', {
+        title: "Global Trade Connect",
+        LoggedInUser: LoggedInUser
+    });
+}
+
+

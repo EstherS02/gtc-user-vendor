@@ -97,16 +97,16 @@
 					</section>
 					<div class="row">
 						<div class="col-md-4">
-							<img src="{{product.url}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
+							<img src="{{product.product_base_image}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
 							<div class="row">
 								<div class="col-md-4">
-									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
 								</div>
 								<div class="col-md-4">
-									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
 								</div>
 								<div class="col-md-4">
-									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
 								</div>
 							</div>
 
@@ -141,7 +141,7 @@
 									<p>Category</p>
 								</div>
 								<div class="col-md-10">
-									<p>{{product.category}} > {{product.sub_category}}</p>
+									<p>{{product.category_name}} > {{product.sub_category_name}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -149,7 +149,7 @@
 									<p>SKU</p>
 								</div>
 								<div class="col-md-10">
-									<p>{{product.sku}}</p>
+									<p>{{product.stock_keep_unit}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -157,7 +157,7 @@
 									<p>MOQ</p>
 								</div>
 								<div class="col-md-10">
-									<p>{{product.moq}}</p>
+									<p>{{product.minimum_order_quantity}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -165,7 +165,7 @@
 									<p>Availability</p>
 								</div>
 								<div class="col-md-10">
-									<p>{{product.quantity_available}} in stock</p>
+									<p>{{product.product_quantity}} in stock</p>
 								</div>
 							</div>
 							<div class="row">
@@ -189,7 +189,7 @@
 									<p>Price</p>
 								</div>
 								<div class="col-md-10">
-									<p class="list_doll">${{product.price}}</p>
+									<p class="list_doll">${{product.product_price}}</p>
 								</div>
 							</div>
 							<div class="row">
@@ -237,7 +237,7 @@
 									<p>Description</p>
 								</div>
 								<div class="col-md-10">
-									<p>{{product.description}}</p>
+									<p>{{product.product_description}}</p>
 								</div>
 							</div>
 							<hr/>

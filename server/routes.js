@@ -46,7 +46,8 @@ export default function(app) {
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/reviews', require('./hbs-routes/reviews'));
   app.use('/notifications', require('./hbs-routes/notifications'));
-  app.use('/listings', require('./hbs-routes/listings'));
+
+  app.use('/reporting', require('./hbs-routes/reporting'));
   app.use('/coupons', require('./hbs-routes/coupons'));
   app.use('/wishlist', require('./hbs-routes/wishlist'));
   app.use('/gtc-talk', require('./hbs-routes/talk'));
@@ -62,13 +63,14 @@ export default function(app) {
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
   app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
   app.use('/order-history', require('./hbs-routes/order-history'));
-  app.use('/reporting', require('./hbs-routes/reporting'));
+  app.use('/listings', require('./hbs-routes/listings'));
   app.use('/shipping-settings', require('./hbs-routes/shipping-settings'));
   app.use('/verification', require('./hbs-routes/verification'));
   app.use('/social-profile', require('./hbs-routes/social-profile'));
   app.use('/payment-settings', require('./hbs-routes/payment-settings'));
   app.use('/gtc-mail', require('./hbs-routes/gtc-mail'));
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
+
 
   //All other routes 404 page
   
