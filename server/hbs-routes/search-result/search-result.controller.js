@@ -15,7 +15,7 @@ export function index(req, res) {
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
+	limit = req.query.limit ? parseInt(req.query.limit) : 12;//config.paginationLimit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
