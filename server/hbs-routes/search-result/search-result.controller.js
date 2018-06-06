@@ -9,29 +9,31 @@ const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
 
 export function index(req, res) {
+
 	var selectedMarketPlace = 0;
 	var selectedMarketPlaceType = 0;
 	var queryObj = {};
+	var LoggedInUser = {};
 	var topQueryObj = {};
 	var page;
 	var endPointName = "MarketplaceProduct";
 	var offset, limit, field, order;
 
 	if (req.query.marketplace) {
-		selectedMarketPlace = req.query.marketplace; 
+		selectedMarketPlace = req.query.marketplace;
 	}
 
 	if (req.query.marketplace_type) {
-		selectedMarketPlaceType = req.query.marketplace_type; 
+		selectedMarketPlaceType = req.query.marketplace_type;
 	}
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
-		
-		console.log("LoggedInUser......",LoggedInUser);
+	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 12;//config.paginationLimit;
+	limit = req.query.limit ? parseInt(req.query.limit) : 12; //config.paginationLimit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
@@ -78,9 +80,9 @@ export function index(req, res) {
 			res.render('search', {
 				title: "Global Trade Connect",
 				marketPlace: marketplace,
-                marketPlaceType: marketplace_type,
-                selectedMarketPlace: selectedMarketPlace,
-                selectedMarketPlaceType: selectedMarketPlaceType,
+				marketPlaceType: marketplace_type,
+				selectedMarketPlace: selectedMarketPlace,
+				selectedMarketPlaceType: selectedMarketPlaceType,
 				topProductResults: results.topProducts,
 				productResults: results.products.rows,
 				collectionSize: results.products.count,
