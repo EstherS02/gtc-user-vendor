@@ -12,7 +12,6 @@ export function listings(req, res) {
 	var offset, limit, field, order,page;
 	var queryParams = {}, LoggedInUser = {};
 	var productModel = "MarketplaceProduct";
-	queryParams["vendor_id"] =28;
 	field = "id";
 	order = "asc";
 	offset = 0;
@@ -27,11 +26,23 @@ export function listings(req, res) {
 
 	offset = (page - 1) * limit;
 
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-	LoggedInUser = req.gtcGlobalUserObj;
-	
-	let user_id = LoggedInUser.id;
+	if(req.user)
+    LoggedInUser = req.user;
+    
+    queryParams['user_id'] = LoggedInUser.id;
 
+
+	if(req.params.type=='wholesale')
+		 queryParams["marketplace_id"] = 1;    
+		 
+	if(req.params.type=='shop')
+		 queryParams["marketplace_id"] = 2; 
+		 
+	if(req.params.type=='services')
+		 queryParams["marketplace_id"] = 3; 
+		 
+	if(req.params.type=='subscription')
+	     queryParams["marketplace_id"] = 4; 
 
 	if (req.query.product_name) {
            queryParams['product_name'] = req.query.product_name;

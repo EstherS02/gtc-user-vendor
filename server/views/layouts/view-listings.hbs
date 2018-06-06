@@ -19,7 +19,7 @@
 </script>
 <script type="text/javascript">
 	function changeStatus(e) {
-		window.location.href = '/listings?status=' + e.value;
+		window.location.href = '/listings/wholesale?status=' + e.value;
 	}
 	function search(e) {
 		window.location.href = '/listings?product_name=' + e.value;
@@ -32,8 +32,9 @@
 		});
 		var selected;
 		selected = chkArray.join(',');
+		console.log("selected...."+selected);
 		if (selected.length > 0) {
-			window.location.href = '/listings/' + selected;
+			window.location.href = '/listings/edit/' + selected;
 		} else {
 			alert("Please at least check one of the checkbox");
 		}
