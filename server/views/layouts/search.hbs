@@ -1,3 +1,17 @@
+<script type="text/javascript">
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		} else {
+			return uri + separator + key + "=" + value;
+		}
+	}
+
+
+</script>
+
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
 	<div>
@@ -58,37 +72,31 @@
 
 			<div class="row">
 				<div class="col-md-3 showing_categ">
-					<p>
-						<b>FILTER BY CATEGORY</b>
+					<p><b>FILTER BY CATEGORY</b></p>
+					<p class="cat_bg_title">
+						<a href="javascript:;">
+							<span>ALL CATEGORIES (293)</span>
+						</a>
 					</p>
-					<p class="cat_bg_title">ALL CATEGORIES (293)</p>
-					<div class="list-group panel ">
-						<a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false">
-							<i class="fas fa-caret-down"></i>
-							<span class="hidden-sm-down">AGRICULTURE(293)</span>
-						</a>
-						<div class="collapse" id="menu1">
-							<a href="#menu1sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false">Animals(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Aquaculture(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Building Construction(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Fram Machines &amp; Tools(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Flowers &amp; Plants(93)</a>
-						</div>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-							<i class="fas fa-caret-right"></i>
-							<span class="hidden-sm-down">APPAREL &amp; FASHION(293)</span>
-						</a>
-						<a href="#menu3" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false">
-							<i class="fas fa-caret-right"></i>
-							<span class="hidden-sm-down">ELECTRONICS &amp; ELECTRICAL(293) </span>
-						</a>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-							<i class="fas fa-caret-right"></i>
-							<span class="hidden-sm-down">FOOD &amp; BEVERAGE(293)</span>
-						</a>
-						<a href="#">More ... (10 Categories)</a>
+					<div class="list-group panel category-fixed">
+						<ul class="list-group">
+							{{#each categories}}
+							<li class="list-group-item">
+								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="false" aria-controls="collapseCategory{{this.id}}">
+									<span>{{this.name}} (293)</span>
+								</a>
+								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
+									<li class="list-group-item">
+										<a href="./search?category={{this.id}}">
+											<span>DEF</span>
+										</a>
+										<ul></ul>
+									</li>
+								</ul>
+							</li>
+							{{/each}}
+						</ul>
 					</div>
-
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
 					<p class="cat_bg_title">
 						<a href="./search?marketplace={{marketPlace.WHOLESALE}}">
@@ -97,33 +105,32 @@
 					</p>
 					<div class="list-group panel">
 						<ul class="list-group">
-							{{!-- <li class="list-group-item gtc-active">
-								<a href="./search?marketplace={{marketPlace.WHOLESALE}}">
-									<span>ALL TYPES (293)</span>
-								</a>
-							</li> --}}
+							{{#each marketPlaceTypes}}
 							<li class="list-group-item">
-								<a class="{{#ifCond selectedMarketPlaceType "==" marketPlaceType.WTS}} text-black {{/ifCond}}" href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
-									<span>WTS - Want to Sell (293)</span>
+								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">
+									<span>{{this.code}} - {{this.name}} (293)</span>
 								</a>
 							</li>
-							<li class="list-group-item">
-								<a href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">
-									<span>WTB - Want to Buy (293)</span>
-								</a>
-							</li>
-							<li class="list-group-item">
-								<a href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">
-									<span>WTT - Want to Trade (293)</span>
-								</a>
-							</li>
-							<li class="list-group-item">
-								<a href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">
-									<span>RFQ - Request for Quote (293)</span>
-								</a>
-							</li>
+							{{/each}}
 						</ul>
 					</div>
+					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
+					<p class="cat_bg_title">
+						<a href="javascript:;">
+							<span>GLOBAL (293)</span>
+						</a>
+					</p>
+					<div class="list-group panel category-fixed">
+						<ul class="list-group">
+							{{#each locations}}
+							<li class="list-group-item">
+								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
+									<span>{{this.name}} (293)</span>
+								</a>
+							</li>
+							{{/each}}
+						</ul>
+					</div>{{!-- 
 					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
 					<p class="cat_bg_title">GLOBAL (293)</p>
 					<div class="list-group panel ">
@@ -146,7 +153,7 @@
 							<i class="fas fa-caret-right"></i>
 							<span class="hidden-sm-down">EUROPE</span>
 						</a>
-					</div>
+					</div> --}}
 
 
 				</div>

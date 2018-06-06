@@ -10,21 +10,26 @@ const config = require('../../config/environment');
 
 export function index(req, res) {
 
-	var selectedMarketPlace = 0;
 	var selectedMarketPlaceType = 0;
+	var selectedCategory = 0;
+	var selectedLocation = 0;
 	var queryObj = {};
 	var LoggedInUser = {};
 	var topQueryObj = {};
 	var page;
-	var endPointName = "MarketplaceProduct";
+	var productEndPoint = "MarketplaceProduct";
 	var offset, limit, field, order;
-
-	if (req.query.marketplace) {
-		selectedMarketPlace = req.query.marketplace;
-	}
 
 	if (req.query.marketplace_type) {
 		selectedMarketPlaceType = req.query.marketplace_type;
+	}
+
+	if (req.query.category) {
+		selectedCategory = req.query.category;
+	}
+
+	if (req.query.location) {
+		selectedLocation = req.query.location;
 	}
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
@@ -49,6 +54,67 @@ export function index(req, res) {
 	topQueryObj['status'] = status["ACTIVE"];
 
 	async.series({
+		locations: function(callback) {
+			var countryQueryObj = {};
+			var countryIncludeArr = [];
+			var countryOffset = 0;
+			var countryLimit = null;
+			var countryOrderBy = "id";
+			var countryOrderType = "ASC";
+			var countryEndPoint = "Country";
+
+			countryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(countryEndPoint, countryIncludeArr, countryQueryObj, countryOffset, countryLimit, countryOrderBy, countryOrderType)
+				.then(function(results) {
+					return callback(null, results.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				})
+		},
+		categories: function(callback) {
+			var categoryQueryObj = {};
+			var categoryIncludeArr = [];
+			var categoryOffset = 0;
+			var categoryLimit = null;
+			var categoryOrderBy = "id";
+			var categoryOrderType = "ASC";
+			var categoryEndPoint = "Category";
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryEndPoint, categoryIncludeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryOrderBy, categoryOrderType)
+				.then(function(results) {
+					return callback(null, results.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				})
+		},
+		marketPlaceTypes: function(callback) {
+			var marketplaceTypeQueryObj = {};
+			var marketplaceTypeIncludeArr = [];
+			var marketplaceTypeOffset = 0;
+			var marketplaceTypeLimit = null;
+			var marketplaceTypeOrderBy = "id";
+			var marketplaceTypeOrderType = "ASC";
+			var marketplaceTypeEndPoint = "MarketplaceType";
+
+			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
+
+			service.findAllRows(marketplaceTypeEndPoint, marketplaceTypeIncludeArr, marketplaceTypeQueryObj, marketplaceTypeOffset, marketplaceTypeLimit, marketplaceTypeOrderBy, marketplaceTypeOrderType)
+				.then(function(results) {
+					return callback(null, results.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				})
+		},
 		topProducts: function(callback) {
 			var topLimit, topField, topOrder;
 			topQueryObj['is_featured_product'] = 1;
@@ -56,7 +122,7 @@ export function index(req, res) {
 			topField = 'created_on';
 			topOrder = 'desc';
 
-			service.findRows(endPointName, topQueryObj, 0, topLimit, topField, topOrder)
+			service.findRows(productEndPoint, topQueryObj, 0, topLimit, topField, topOrder)
 				.then(function(results) {
 					return callback(null, results.rows);
 				})
@@ -66,7 +132,7 @@ export function index(req, res) {
 				});
 		},
 		products: function(callback) {
-			service.findRows(endPointName, queryObj, offset, limit, field, order)
+			service.findRows(productEndPoint, queryObj, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
 				})
@@ -80,9 +146,12 @@ export function index(req, res) {
 			res.render('search', {
 				title: "Global Trade Connect",
 				marketPlace: marketplace,
-				marketPlaceType: marketplace_type,
-				selectedMarketPlace: selectedMarketPlace,
+				marketPlaceTypes: results.marketPlaceTypes,
 				selectedMarketPlaceType: selectedMarketPlaceType,
+				categories: results.categories,
+				selectedCategory: selectedCategory,
+				locations: results.locations,
+				selectedLocation: selectedLocation,
 				topProductResults: results.topProducts,
 				productResults: results.products.rows,
 				collectionSize: results.products.count,
