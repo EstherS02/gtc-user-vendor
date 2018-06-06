@@ -174,3 +174,39 @@ Handlebars.registerHelper("days", function(value) {
             break;
     }
 });
+
+Handlebars.registerHelper('optionsSelected', function(context, test) {
+    var ret = '';
+    // console.log("context",context);
+    // console.log("test",test)
+    for (var i = 0, len = context.length; i < len; i++) {
+        var option = '<option value="' + context[i].id+'"';
+        if (test.indexOf(context[i].id) >=0) { //test.id == context[i]
+            // console.log(ret,"=>",context[i].id);
+
+            option += ' selected="selected"';
+        }
+        option += '>'+ context[i].product_name + '</option>';
+        ret += option;
+    }
+
+    return new Handlebars.SafeString(ret);
+});
+
+Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
+    var ret = '';
+    // console.log("context",context);
+    // console.log("test",test)
+    for (var i = 0, len = context.length; i < len; i++) {
+        var option = '<option value="' + context[i].id+'"';
+        if (test.indexOf(context[i].id) >=0) { //test.id == context[i]
+            // console.log(ret,"=>",context[i].id);
+
+            option += ' selected="selected"';
+        }
+        option += '>'+ context[i].name + '</option>';
+        ret += option;
+    }
+
+    return new Handlebars.SafeString(ret);
+});

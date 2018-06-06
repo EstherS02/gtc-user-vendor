@@ -48,25 +48,29 @@ export function storeData(req,res){
 	data.gtc_talk_enabled = req.body.gtc_talk_enabled;
 	data.default_msg = req.body.default_msg;
 	data.status = 1;
-	data.last_updated_on = new Date();
+	
+	data.vendor_id = 28;
 	const modelName = 'TalkSetting';
 	console.log(req.body);
 	const includeArr = [];
 	var queryObj = {
-		vendor_id :29,
+		vendor_id :28,
 	};
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
 			console.log("talk", results);
 			if (results) {
 				var id = results.id;
+				data.last_updated_on = new Date();
 				res.status(200).send(results);
 				service.updateRow(modelName,data,id).then(function(response){
 					console.log("Update",response)
 				});
 			} else {
-			// 	service.createRow(modelName,data).then(function(response){
-			// });
+				data.created_on = new Date();
+				service.createRow(modelName,data).then(function(response){
+					console.log("News",response)
+			});
 		}
 	}).catch(function(error) {
 			console.log('Error:::', error);

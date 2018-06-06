@@ -262,33 +262,42 @@
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
-									{{#each products}}
+									{{!-- {{#each products}}
 									<option value="{{this.id}}">{{this.product_name}}</option>
-									{{/each}}
+									{{/each}} --}}
+									{{{optionsSelected  products existingCouponProducts}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
+								{{!-- {{#select couponExcludeProducts.product_id }} 	
 									{{#each products}}
 										<option value="{{this.id}}">{{this.product_name}}</option>
 									{{/each}}
+								{{/select}}
+ --}}
+ 								{{!-- <select name="state"> --}}
+							    {{{optionsSelected  products existingCouponExcludeProducts}}}
+							    {{!-- </select> --}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
-									{{#each categories}}
+									{{!-- {{#each categories}}
 										<option value="{{this.id}}">{{this.name}}</option>
-									{{/each}}
+									{{/each}} --}}
+									{{{optionsSelectedCategory  categories existingCouponCategories}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple" placeholder="Product Exclude Categories">
-									{{#each categories}}
+									{{!-- {{#each categories}}
 										<option value="{{this.id}}">{{this.name}}</option>
-									{{/each}}
+									{{/each}} --}}
+									{{{optionsSelectedCategory  categories existingCouponExcludeCategories}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 							</div>
