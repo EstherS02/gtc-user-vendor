@@ -9,6 +9,17 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
+        product_id: {
+            type: DataTypes.BIGINT,
+            field: 'product_id',
+            allowNull: false,
+            references: {
+                model: 'product',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         type: {
             type: DataTypes.INTEGER,
             field: 'type',
@@ -17,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.TEXT,
             field: 'url',
+            allowNull: false
+        },
+        base_image: {
+            type: DataTypes.INTEGER,
+            field: 'base_image',
             allowNull: false
         },
         status: {
@@ -68,6 +84,12 @@ module.exports.initRelations = () => {
     const SubCategory = model.SubCategory;
     const Country = model.Country;
     const State = model.State;
+
+    ProductMedia.belongsTo(Product, {
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     /*ProductMedia.hasMany(Product, {
         foreignKey: 'product_media_id',

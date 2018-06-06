@@ -226,6 +226,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Product.hasMany(ProductMedia, {
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Product.hasMany(Discount, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
