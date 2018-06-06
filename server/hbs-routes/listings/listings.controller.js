@@ -87,6 +87,8 @@ export function listings(req, res) {
 
 export function editListings(req, res) {
 
+	console.log("comming");
+
 	let searchObj = {}
 	var productModel = "MarketplaceProduct";
 
