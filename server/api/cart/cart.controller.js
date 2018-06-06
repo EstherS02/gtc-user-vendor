@@ -12,10 +12,10 @@ export function addToCart(req, res){
 	let order_qty = parseInt(req.body.product_quantity);
 	var LoggedInUser = {};
 
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
+	if(req.user)
+		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.userId || 63; //hardcoded devan_user
+	let user_id = LoggedInUser.id;
 
 	if(order_qty > 0){
 		model["Product"].findById(product_id)
@@ -104,7 +104,7 @@ export function addToCart(req, res){
 								createCartObj["product_id"] = productResult.id;
 								createCartObj["quantity"] = order_qty;
 								createCartObj["status"] = status.ACTIVE;
-								createCartObj["created_by"] = "devan user";
+								createCartObj["created_by"] = LoggedInUser.first_name + LoggedInUser.last_name;
 								createCartObj["created_on"] = new Date();
 
 								model["Cart"].create(createCartObj)

@@ -292,6 +292,10 @@
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
+        
+        {{#if LoggedInUser.email}}
+
+        {{else}}
             <div class="col-md-6">
                 <div class="row geo_bgimg">
                     <div class="col-md-7">
@@ -313,7 +317,7 @@
                     </div>
                 </div>
             </div>
-            <div id="loginBanner" class="col-md-6" {{#if LoggedInUser.email}} style="display:none;" {{else}} style="display:block;" {{/if}}>
+            <div id="loginBanner" class="col-md-6">
                 <div class="row geo_bgimg1">
                     <h1>CREATE A FREE ACCOUNT!</h1>
                     <p>Start searching the globe for the best bulk discount, wholesale pricing, subsriptions, services everywhere!
@@ -346,6 +350,7 @@
                     </div>
                 </div>
             </div>
+            {{/if}}
         </div>
     </div>
 </section>

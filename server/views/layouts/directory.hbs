@@ -1,3 +1,19 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#searchDirectory").click(function(e) {
+            var depart = $('#depart').val();
+            var category = $('#category').val();
+            var location = $('#location').val();
+            if((depart != null) && (category != null) &&(location != null)){
+                window.location.href = '/search?depart_id='+depart+'&category_id='+category+'&location_id='+location;
+            }
+            else{
+                alert("Select  all three options");
+            }
+        });
+    });
+
+</script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="directory_banner" style="margin-bottom: 0">
     <div class="container clearfix">
@@ -13,28 +29,31 @@
                         <p class="adv_search">Advanced Search</p>
                         <div class="row">
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option>Department</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option disabled selected>Category</option>
-                                    {{#each category}}
-                                    <option>{{ this.name}}</option>
+                                <select class="geo_textbox" id="depart">
+                                    <option disabled selected>Department</option>
+                                    {{#each depart}}
+                                    <option value={{this.id}}>{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
+                                <select class="geo_textbox" id="category">
+                                    <option disabled selected>Category</option>
+                                    {{#each category}}
+                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="col-md-4 common_padding1">
+                                <select class="geo_textbox" id="location">
                                     <option disabled selected>Location</option>
                                     {{#each country}}
-                                    <option>{{ this.name}}</option>
+                                    <option value={{this.id}}>{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
+                        <input type="submit" value="SEARCH DIRECTORY" id ="searchDirectory" class="shop_checkout_btn" style="padding: 8px 20px;" />
                     </div>
                 </div>
             </div>
@@ -280,12 +299,17 @@
     <div class="container ">
         <div class="row  ">
             {{#each category}}
-            <div class="col-md-3" style="max-width:20%">
-                <p class="global_para_head">{{convertUpperCase this.name}}</p>
-                {{#each ../subCategory}} {{#ifCond this.category_id '==' ../this.id}}
-                <p class="global_para">{{ this.name}}</p>
-                {{/ifCond}} {{/each}}
-            </div>
+                <div class="col-md-3" style="max-width:20%">
+                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+                    {{#each_upto ../subCategory 10 this.id}} 
+                            <p class="global_para ">
+                               
+                                    <a href="search/subCategory_id={{this.id}}" style="color:white">{{ this.name}}
+                                    </a>
+                                
+                            </p>
+                    {{/each_upto}}
+                </div>
             {{/each}}
         </div>
     </div>

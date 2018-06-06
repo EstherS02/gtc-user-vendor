@@ -37,24 +37,41 @@ export function updateCoupon(req,res){
 	var newCouponExcludeCategory = req.body.couponExcludeCategories;
 
 
-	console.log('id',id);
+ 	// console.log('id',id);
 
-	// service.updateRow(modelName,newCoupon,id).then(function(results) {
-	// 		console.log("talk", results);
-	// 		if (results) {
-	// 			// var id = results.id;
-	// 			res.status(200).send(results);
-	// 			// service.updateRow(modelName,data,id).then(function(response){
-	// 			// 	console.log("Update",response)
-	// 			// });
-	// 		} else {
-	// 			// service.createRow(modelName,data).then(function(response){
-	// 		// });
-	// 		res.status(200).send(results);
-	// 	}
-	// }).catch(function(error) {
-	// 		console.log('Error:::', error);
-	// 		res.status(500).send("Internal server error");
-	// 		return;
-	// 	});
+	service.updateRow(modelName,newCoupon,id).then(function(results) {
+			console.log("talk", results);
+			if (results) {
+				// // res.status(200).send(results);
+				// var data = {};
+				// data.coupon_id = id;
+				// update_id = newCouponProducts 
+				// service.updateRow(modelName,data,update_id).then(function(response){
+				// 	console.log("Update",response)
+				// });
+
+				//newCouponProducts
+				model[modelName].update({status : 0}, {
+						where: {
+							coupon_id: id
+						}
+					}).then(function(row) {
+						if (row) {
+							resolve(row);
+						} else {
+							resolve(null);
+						}
+					}).catch(function(error) {
+						reject(error);
+					})
+			} else {
+				// service.createRow(modelName,data).then(function(response){
+			// });
+			res.status(200).send(results);
+		}
+	}).catch(function(error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
+		});
 }

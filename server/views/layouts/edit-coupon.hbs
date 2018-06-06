@@ -178,7 +178,7 @@
 			// alert("hai");
 			e.preventDefault();
 
-			var id = $('input[name=id]').val();
+			var id = $('input[name=coupon_id]').val();
 			var newCoupon = {};
 			var newCouponProducts = [];
 			var newCouponExcludeProducts = [];
@@ -189,7 +189,7 @@
 
 			var newCoupon = {};
 			newCoupon.coupon_name = $('#inputCouponName').val();
-			// newCoupon.code = Math.floor(100000 + Math.random() * 900000);
+			newCoupon.id = id;
 			newCoupon.discount_type = $('#inputDiscountType').val();
 			newCoupon.discount_value = $('#inputDiscountValue').val();
 			newCoupon.expiry_date = $('#inputExpiryDate').val();
@@ -237,7 +237,7 @@
 						<h5 style="padding-top: 20px;"> 
 							{{#if coupon.id }}
 							Edit Coupon
-							<input type="hidden"  name="id" value="{{coupon.id}}" />
+							<input type="hidden"  name="coupon_id" value="{{coupon.id}}" />
 							{{else}}
 							Add Coupon
 							{{/if}}

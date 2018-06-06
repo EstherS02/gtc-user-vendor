@@ -24,10 +24,14 @@ export function index(req, res) {
 	if (req.query.marketplace_type) {
 		selectedMarketPlaceType = req.query.marketplace_type; 
 	}
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+		
+		console.log("LoggedInUser......",LoggedInUser);
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
+	limit = req.query.limit ? parseInt(req.query.limit) : 12;//config.paginationLimit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
@@ -83,7 +87,8 @@ export function index(req, res) {
 				page: page,
 				pageSize: limit,
 				offset: offset,
-				maxSize: 5
+				maxSize: 5,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			console.log('Error:::', error);
