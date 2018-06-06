@@ -62,14 +62,40 @@
 					</div>
 
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
-					<p class="cat_bg_title">ALL TYPES (293)</p>
-					<div class="list-group panel ">
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar"> <span class="hidden-sm-down">WTB - Want to Buy (293)</span></a>
-						<a href="#" class="list-group-item collapsed" data-toggle="#sidebar"> <span class="hidden-sm-down">WTS - Want to Sell (293)</span></a>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar"> <span class="hidden-sm-down">WTS - Want to Sell (293)</span></a>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar"> <span class="hidden-sm-down">WTS - Want to Sell (293)</span></a>
+					<p class="cat_bg_title">
+						<a href="./search?marketplace={{marketPlace.WHOLESALE}}">
+							<span>ALL TYPES (293)</span>
+						</a>
+					</p>
+					<div class="list-group panel">
+						<ul class="list-group">
+							{{!-- <li class="list-group-item gtc-active">
+								<a href="./search?marketplace={{marketPlace.WHOLESALE}}">
+									<span>ALL TYPES (293)</span>
+								</a>
+							</li> --}}
+							<li class="list-group-item">
+								<a class="{{#ifCond selectedMarketPlaceType "==" marketPlaceType.WTS}} text-black {{/ifCond}}" href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
+									<span>WTS - Want to Sell (293)</span>
+								</a>
+							</li>
+							<li class="list-group-item">
+								<a class="{{#ifCond selectedMarketPlaceType "==" marketPlaceType.WTS}} text-black {{/ifCond}}" href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">
+									<span>WTB - Want to Buy (293)</span>
+								</a>
+							</li>
+							<li class="list-group-item">
+								<a href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">
+									<span>WTT - Want to Trade (293)</span>
+								</a>
+							</li>
+							<li class="list-group-item">
+								<a href="./search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">
+									<span>RFQ - Request for Quote (293)</span>
+								</a>
+							</li>
+						</ul>
 					</div>
-
 					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
 					<p class="cat_bg_title">GLOBAL (293)</p>
 					<div class="list-group panel ">
