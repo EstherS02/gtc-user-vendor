@@ -19,7 +19,7 @@
 </script>
 <script type="text/javascript">
 	function changeStatus(e) {
-		window.location.href = '/listings?status=' + e.value;
+		window.location.href = '/listings/wholesale?status=' + e.value;
 	}
 	function search(e) {
 		window.location.href = '/listings?product_name=' + e.value;
@@ -32,8 +32,9 @@
 		});
 		var selected;
 		selected = chkArray.join(',');
+		console.log("selected...."+selected);
 		if (selected.length > 0) {
-			window.location.href = '/listings/' + selected;
+			window.location.href = '/listings/edit/' + selected;
 		} else {
 			alert("Please at least check one of the checkbox");
 		}
@@ -119,8 +120,8 @@
 									<td class="text_blue_color">
 										<img src="{{this.url}}" style="width: 15px;" /> {{this.product_name}}</td>
 									<td>{{ prettifyDate this.publish_date }}</td>
-									<td class="text_blue_color">{{this.sales_count}}</td>
-									<td>${{this.price}} CAD</td>
+									<td class="text_blue_color">{{this.product_selling_count}}</td>
+									<td>${{this.product_price}} CAD</td>
 									{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 									<td class="text_green_color">Active</td>
 									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
@@ -130,7 +131,7 @@
 									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
 									<td class="text_red_color">Sold Out</td>
 									{{/ifCond}}
-									<td class="text_blue_color">{{this.sku}}</td>
+									<td class="text_blue_color">{{this.stock_keep_unit}}</td>
 								</tr>
 								{{/each}}
 							</tbody>

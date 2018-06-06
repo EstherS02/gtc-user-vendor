@@ -10,6 +10,10 @@ var auth = require('../../auth/auth.service');
 /* Handlebars routes */
 var controller = require('./reporting.controller');
 
-router.get('/',auth.isAuthenticated(), controller.performance);
+router.get('/',auth.isAuthenticated(), controller.reporting);
+router.get('/performance',auth.isAuthenticated(), controller.performance);
+router.get('/sales-history',auth.isAuthenticated(), controller.salesHistory);
+router.get('/accounting',auth.isAuthenticated(), controller.accounting);
+router.get('/tax',auth.isAuthenticated(), controller.tax);
 
 module.exports = router;

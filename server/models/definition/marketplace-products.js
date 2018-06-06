@@ -92,6 +92,26 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(45),
             field: 'featured_position',
             allowNull: true
+		},
+		feature_start_date: {
+            type: DataTypes.DATEONLY,
+            field: 'feature_start_date',
+            allowNull: false
+        },
+        feature_end_date: {
+            type: DataTypes.DATEONLY,
+            field: 'feature_end_date',
+            allowNull: true
+        },
+		feature_impression: {
+            type: DataTypes.INTEGER,
+            field: 'feature_impression',
+            allowNull: true
+		},
+		feature_clicks: {
+            type: DataTypes.INTEGER,
+            field: 'feature_clicks',
+            allowNull: true
         },
 		product_base_image: {
 			type: DataTypes.TEXT,
@@ -123,6 +143,11 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'vendor_id',
 			allowNull: false
 		},
+		vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
+            allowNull: false
+        },
 		user_id: {
 			type: DataTypes.BIGINT,
 			field: 'user_id',
