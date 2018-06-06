@@ -7,11 +7,16 @@ const status = require('../../config/status');
 const config = require('../../config/environment');
 
 export function index(req, res) {
-	var queryObj = {};
+	var queryObj = {}, LoggedInUser = {};
 	var topQueryObj = {};
 	var page;
 	var endPointName = "MarketplaceProduct";
 	var offset, limit, field, order;
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+		
+		console.log("LoggedInUser......",LoggedInUser);
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -72,7 +77,8 @@ export function index(req, res) {
 				page: page,
 				pageSize: limit,
 				offset: offset,
-				maxSize: 5
+				maxSize: 5,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			console.log('Error:::', error);
