@@ -4,15 +4,26 @@ const async = require('async');
 
 const service = require('../../api/service');
 const status = require('../../config/status');
+const marketplace = require('../../config/marketplace');
+const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
 
 export function index(req, res) {
-	var queryObj = {}, LoggedInUser = {};
+	var selectedMarketPlace = 0;
+	var selectedMarketPlaceType = 0;
+	var queryObj = {};
 	var topQueryObj = {};
 	var page;
 	var endPointName = "MarketplaceProduct";
 	var offset, limit, field, order;
 
+	if (req.query.marketplace) {
+		selectedMarketPlace = req.query.marketplace; 
+	}
+
+	if (req.query.marketplace_type) {
+		selectedMarketPlaceType = req.query.marketplace_type; 
+	}
 	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
 		
@@ -32,12 +43,8 @@ export function index(req, res) {
 
 	offset = (page - 1) * limit;
 
-	queryObj['status'] = {
-		'$eq': status["ACTIVE"]
-	}
-	topQueryObj['status'] = {
-		'$eq': status["ACTIVE"]
-	}
+	queryObj['status'] = status["ACTIVE"];
+	topQueryObj['status'] = status["ACTIVE"];
 
 	async.series({
 		topProducts: function(callback) {
@@ -57,7 +64,6 @@ export function index(req, res) {
 				});
 		},
 		products: function(callback) {
-			console.log('queryObj', queryObj);
 			service.findRows(endPointName, queryObj, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
@@ -71,6 +77,10 @@ export function index(req, res) {
 		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
+				marketPlace: marketplace,
+                marketPlaceType: marketplace_type,
+                selectedMarketPlace: selectedMarketPlace,
+                selectedMarketPlaceType: selectedMarketPlaceType,
 				topProductResults: results.topProducts,
 				productResults: results.products.rows,
 				collectionSize: results.products.count,
