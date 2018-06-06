@@ -11,8 +11,8 @@ export function listings(req, res) {
 
 	var offset, limit, field, order,page;
 	var queryParams = {}, LoggedInUser = {};
-	var productModel = "ProductSalesRating";
-	queryParams["vendor_name"] ='chandru Ismera';
+	var productModel = "MarketplaceProduct";
+	queryParams["vendor_id"] =28;
 	field = "id";
 	order = "asc";
 	offset = 0;
@@ -88,7 +88,7 @@ export function listings(req, res) {
 export function editListings(req, res) {
 
 	let searchObj = {}
-	var productModel = "ProductSalesRating";
+	var productModel = "MarketplaceProduct";
 
     if(req.params.product_slug)
         searchObj["product_slug"] = req.params.product_slug;    
