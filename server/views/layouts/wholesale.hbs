@@ -19,7 +19,7 @@
                             </div>
                             <div class="col-md-4 common_padding1">
                                 <select class="geo_textbox">
-                                   <option disabled selected>Category</option>
+                                    <option disabled selected>Category</option>
                                     {{#each category}}
                                     <option>{{ this.name}}</option>
                                     {{/each}}
@@ -27,7 +27,7 @@
                             </div>
                             <div class="col-md-4 common_padding1">
                                 <select class="geo_textbox">
-                                     <option disabled selected>Location</option>
+                                    <option disabled selected>Location</option>
                                     {{#each country}}
                                     <option>{{ this.name}}</option>
                                     {{/each}}
@@ -72,13 +72,15 @@
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>
-                                                            {{!-- <div class="sm-text">Category</div> --}}
+                                                            {{!--
+                                                            <div class="sm-text">Category</div> --}}
                                                             <div class="sm-text">Inventory</div>
                                                             <div class="sm-text">Seller Rating</div>
                                                         </div>
                                                         <div class="col-md-8 no-padding">
                                                             <div class="sm-text">{{this.origin}}</div>
-                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
+                                                            {{!--
+                                                            <div class="sm-text">Electronics > Phones</div> --}}
                                                             <div class="sm-text">
                                                                 <b>{{this.product_count}} Products</b> Listed</div>
                                                             <div class="sm-text">{{ starCount rating}}</div>
@@ -200,7 +202,11 @@
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
+                                                                {{#if ../LoggedInUser.email}}
+                                                                <a>{{this.vendor_name}}</a>
+                                                                {{else}}
+                                                                <a href="/login">(Login for Seller Info)</a>
+                                                                {{/if}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -248,7 +254,8 @@
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
                                                     <h5 class="no-margins">
-                                                        {{!-- <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
+                                                        {{!--
+                                                        <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
                                                         <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
                                                     </h5>
                                                     <div class="row no-margins">
@@ -261,7 +268,11 @@
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
+                                                                {{#if ../LoggedInUser.email}}
+                                                                <a>{{this.vendor_name}}</a>
+                                                                {{else}}
+                                                                <a href="/login">(Login for Seller Info)</a>
+                                                                {{/if}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -308,8 +319,9 @@
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
-                                                   <h5 class="no-margins">
-                                                        {{!-- <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
+                                                    <h5 class="no-margins">
+                                                        {{!--
+                                                        <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
                                                         <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
                                                     </h5>
                                                     <div class="row no-margins">
@@ -322,7 +334,11 @@
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
+                                                                {{#if ../LoggedInUser.email}}
+                                                                <a>{{this.vendor_name}}</a>
+                                                                {{else}}
+                                                                <a href="/login">(Login for Seller Info)</a>
+                                                                {{/if}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -370,7 +386,8 @@
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
                                                     <h5 class="no-margins">
-                                                        {{!-- <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
+                                                        {{!--
+                                                        <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a> --}}
                                                         <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
                                                     </h5>
                                                     <div class="row no-margins">
@@ -383,7 +400,11 @@
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
+                                                                {{#if ../LoggedInUser.email}}
+                                                                <a>{{this.vendor_name}}</a>
+                                                                {{else}}
+                                                                <a href="/login">(Login for Seller Info)</a>
+                                                                {{/if}}
                                                             </div>
                                                         </div>
                                                     </div>
