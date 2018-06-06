@@ -26,6 +26,7 @@ export default function(app) {
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
   app.use('/api/vendor', require('./api/vendor'));
   app.use('/api/wishlist', require('./api/wishlist'));
+  app.use('/api/gtc-talk', require('./api/gtc-talk'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
@@ -48,12 +49,26 @@ export default function(app) {
   app.use('/listings', require('./hbs-routes/listings'));
   app.use('/coupons', require('./hbs-routes/coupons'));
   app.use('/wishlist', require('./hbs-routes/wishlist'));
+  app.use('/gtc-talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/add-product', require('./hbs-routes/add-product'));
   app.use('/login', require('./hbs-routes/login'));
   app.use('/user-profile', require('./hbs-routes/user-profile'));
   app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
-
+  app.use('/promote-store', require('./hbs-routes/promote-store'));
+  app.use('/vendor-about', require('./hbs-routes/vendor-about'));
+  app.use('/vendor-support', require('./hbs-routes/vendor-support'));
+  app.use('/vendor-shop', require('./hbs-routes/vendor-shop'));
+  app.use('/vendor-services', require('./hbs-routes/vendor-services'));
+  app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
+  app.use('/order-history', require('./hbs-routes/order-history'));
+  app.use('/reporting', require('./hbs-routes/reporting'));
+  app.use('/shipping-settings', require('./hbs-routes/shipping-settings'));
+  app.use('/verification', require('./hbs-routes/verification'));
+  app.use('/social-profile', require('./hbs-routes/social-profile'));
+  app.use('/payment-settings', require('./hbs-routes/payment-settings'));
+  app.use('/gtc-mail', require('./hbs-routes/gtc-mail'));
+  app.use('/billing-settings', require('./hbs-routes/billing-settings'));
 
   //All other routes 404 page
   

@@ -8,7 +8,7 @@ const service = require('../../api/service');
 const async = require('async');
 
 export function products(req, res) {
-    var productModel = "ProductSalesRating";
+    var productModel = "MarketplaceProduct";
     var categoryModel = "Category";
     var subcategoryModel = "SubCategory";
     var countryModel = "Country";
@@ -21,14 +21,14 @@ export function products(req, res) {
 
 	offset = 0;
 	limit = 4;
-	field = 'sales_count';
+	field = 'product_selling_count';
 	order = 'desc';
 
 	queryObj['status'] = status["ACTIVE"];
 	
     async.series({
         wholesalerProducts: function(callback) {
-            queryObj['marketplace'] = 'Private Wholesale Marketplace';
+            queryObj['marketplace_id'] = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wholesalerProducts) {
                     return callback(null, wholesalerProducts.rows);
@@ -39,7 +39,7 @@ export function products(req, res) {
                 });
         },
         retailProducts: function(callback) {
-            queryObj['marketplace'] = 'Public Marketplace';
+            queryObj['marketplace_id'] = 2;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(retailProducts) {
                     return callback(null, retailProducts.rows);
@@ -50,7 +50,7 @@ export function products(req, res) {
                 });
         },
         services: function(callback) {
-            queryObj['marketplace'] = 'Services Marketplace';
+            queryObj['marketplace_id'] = 3;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(services) {
                     return callback(null, services.rows);
@@ -61,7 +61,7 @@ export function products(req, res) {
                 });
         },
         subscriptions: function(callback) {
-            queryObj['marketplace'] = 'Lifestyle Marketplace';
+            queryObj['marketplace_id'] = 4;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(subscriptions) {
                     return callback(null, subscriptions.rows);
@@ -72,7 +72,7 @@ export function products(req, res) {
                 });
         },  
         category: function (callback) {
-            delete queryObj['marketplace'];
+            delete queryObj['marketplace_id'];
             limit = 10;
             order = 'asc';
             field = 'id';

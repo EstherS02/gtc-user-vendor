@@ -373,7 +373,7 @@
                         {{#each wantToSell}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -387,8 +387,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -397,9 +397,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 no-padding">
-                                        <div class="sm-text pull-right">MOQ: {{this.moq}}</div>
+                                        <div class="sm-text pull-right">MOQ: {{this.minimum_order_quantity}}</div>
                                         <div class="sm-text pull-right" style="position: absolute; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -418,7 +418,7 @@
                         {{#each wantToBuy}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -432,8 +432,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -442,9 +442,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 no-padding">
-                                        <div class="sm-text pull-right">MOQ: {{this.moq}}</div>
+                                        <div class="sm-text pull-right">MOQ: {{this.minimum_order_quantity}}</div>
                                         <div class="sm-text pull-right" style="position: absolute; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -463,7 +463,7 @@
                         {{#each wantToTrade}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -477,8 +477,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -487,9 +487,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 no-padding">
-                                        <div class="sm-text pull-right">MOQ: {{this.moq}}</div>
+                                        <div class="sm-text pull-right">MOQ: {{this.minimum_order_quantity}}</div>
                                         <div class="sm-text pull-right" style="position: absolute; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -508,7 +508,7 @@
                         {{#each requestForQuote}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -522,8 +522,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -532,9 +532,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 no-padding">
-                                        <div class="sm-text pull-right">MOQ: {{this.moq}}</div>
+                                        <div class="sm-text pull-right">MOQ: {{this.minimum_order_quantity}}</div>
                                         <div class="sm-text pull-right" style="position: absolute; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -560,7 +560,7 @@
                         {{#each publicMarketplace}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -576,8 +576,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -587,7 +587,7 @@
                                     </div>
                                     <div class="col-md-3 no-padding">
                                         <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -606,7 +606,7 @@
                         {{#each serviceMarketplace}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -622,8 +622,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -633,7 +633,7 @@
                                     </div>
                                     <div class="col-md-3 no-padding">
                                         <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -652,7 +652,7 @@
                         {{#each lifestyleMarketplace}}
                         <div class="feed-element">
                             <div class="feed-product">
-                                <img src="{{this.url}}">
+                                <img src="{{this.product_base_image}}">
                             </div>
                             <div class="product-info">
                                 <div class="row m-l-none m-r-none">
@@ -668,8 +668,8 @@
                                                     <div class="sm-text">Seller</div>
                                                 </div>
                                                 <div class="col-md-8 no-padding">
-                                                    <div class="sm-text">{{this.origin}}</div>
-                                                    <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                    <div class="sm-text">{{this.country_name}}</div>
+                                                    <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
                                                         <a href="#">(Login for Seller Info)</a>
                                                     </div>
@@ -679,7 +679,7 @@
                                     </div>
                                     <div class="col-md-3 no-padding">
                                         <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                        <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                        <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -775,12 +775,12 @@
                                                             <div class="sm-text">Seller Rating</div>
                                                         </div>
                                                         <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
+                                                            <div class="sm-text">{{this.country_name}}</div>
                                                             {{!--
                                                             <div class="sm-text">Electronics > Phones</div> --}}
                                                             <div class="sm-text">
                                                                 <b>{{this.product_count}} Products</b> Listed</div>
-                                                            <div class="sm-text">{{ starCount rating}}</div>
+                                                            <div class="sm-text">{{ starCount product_rating}}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -788,7 +788,7 @@
                                             {{!--
                                             <div class="col-md-3 no-padding">
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div> --}}
                                         </div>
                                     </div>
@@ -813,7 +813,7 @@
                             <div class="col-md-6">
                                 <div class="feed-element">
                                     <div class="feed-product">
-                                        <img src="{{this.url}}">
+                                        <img src="{{this.product_base_image}}">
                                     </div>
                                     <div class="product-info">
                                         <div class="row m-l-none m-r-none">
@@ -828,18 +828,18 @@
                                                             <div class="sm-text">Category</div>
                                                         </div>
                                                         <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
-                                                            <div class="sm-text">{{this.category}} > {{this.sub_category}}</div>
+                                                            <div class="sm-text">{{this.country_name}}</div>
+                                                            <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3 no-padding">
                                                 <div class="sm-text pull-right">
-                                                    <p class="doller_value_red">${{price}}</p>
+                                                    <p class="doller_value_red">${{product_price}}</p>
                                                 </div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
+                                                <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div>
                                         </div>
                                     </div>

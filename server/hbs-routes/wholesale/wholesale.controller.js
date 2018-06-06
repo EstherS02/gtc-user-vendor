@@ -35,8 +35,7 @@ export function wholeSaleProductView(req, res) {
 }
 
 export function wholesale(req, res) {
-    var productModel = "ProductSalesRating";
-    var featuredProductModel = "FeaturedproductSalesRating";
+    var productModel = "MarketplaceProduct";
     var vendorModel = "VendorUserProduct";
     var categoryModel = "Category";
     var countryModel = "Country";
@@ -56,7 +55,7 @@ export function wholesale(req, res) {
 
     async.series({
         wantToSell: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Sell';
+            queryObj['marketplace_type_id'] = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToSell) {
                     return callback(null, wantToSell.rows);
@@ -67,7 +66,7 @@ export function wholesale(req, res) {
                 });
         },
         wantToBuy: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Buy';
+            queryObj['marketplace_type_id'] = 2;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToBuy) {
                     return callback(null, wantToBuy.rows);
@@ -78,7 +77,7 @@ export function wholesale(req, res) {
                 });
         },
         wantToTrade: function(callback) {
-            queryObj['marketplace_type'] = 'Want To Trade';
+            queryObj['marketplace_type_id'] = 3;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(wantToTrade) {
                     return callback(null, wantToTrade.rows);
@@ -89,7 +88,7 @@ export function wholesale(req, res) {
                 });
         },
         requestForQuote: function(callback) {
-            queryObj['marketplace_type'] = 'Request For Quote';
+            queryObj['marketplace_type_id'] = 4;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(requestForQuote) {
                     return callback(null, requestForQuote.rows);
@@ -101,10 +100,11 @@ export function wholesale(req, res) {
         },
         featuredProducts: function(callback) {
             limit = null;
-            delete queryObj['marketplace_type'];
-            queryObj['position'] = position.WholesaleLanding;
-            queryObj['marketplace'] = 'Private Wholesale Marketplace';
-            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+            delete queryObj['marketplace_type_id'];
+            queryObj['featured_position'] = position.WholesaleLanding;
+            queryObj['marketplace_id'] = 1;
+            queryObj['is_featured_product'] = 1;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -115,8 +115,9 @@ export function wholesale(req, res) {
         },
         category: function(callback) {
             limit = null;
-            delete queryObj['marketplace'];
-            delete queryObj['position'];
+            delete queryObj['marketplace_id'];
+            delete queryObj['featured_position'];
+            delete queryObj['is_featured_product'];
             service.findRows(categoryModel, queryObj, offset, limit, field, order)
                 .then(function(category) {
                     return callback(null, category.rows);
@@ -138,7 +139,6 @@ export function wholesale(req, res) {
                 });
         },
         wholesalers: function(callback) {
-            delete queryObj['marketplace'];
             queryObj['type'] = 'Private Wholesale Marketplace';
             field = 'sales_count';
             order = 'desc';

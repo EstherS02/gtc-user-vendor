@@ -17,7 +17,6 @@ export function userProfile(req, res) {
 	var vendorIncludeArr= [];
 	var addressIncludeArr= [];
 
-
 	vendorIncludeArr = populate.populateData('User');
 	addressIncludeArr = populate.populateData('Country,State');
 

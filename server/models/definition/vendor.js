@@ -271,13 +271,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.belongsToMany(ProductMedia, {
+    /*Vendor.belongsToMany(ProductMedia, {
         through: Product,
         foreignKey: 'vendor_id',
         otherKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Vendor.belongsToMany(Category, {
         through: Product,

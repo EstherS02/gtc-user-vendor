@@ -11,8 +11,7 @@ const async = require('async');
 import series from 'async/series';
 
 export function lifestyle(req, res) {
-    var productModel = "ProductSalesRating";
-    var featuredProductModel = "FeaturedproductSalesRating";
+    var productModel = "MarketplaceProduct";
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
@@ -26,13 +25,14 @@ export function lifestyle(req, res) {
     order = "asc";
 
     queryObj['status'] = status["ACTIVE"];
-    queryObj['marketplace'] = 'Lifestyle Marketplace';
+    queryObj['marketplace_id'] = 4;
 
     async.series({
         featuredProducts: function (callback) {
             limit = null;
-            queryObj['position'] = position.LifestyleLanding;
-            service.findRows(featuredProductModel, queryObj, offset, limit, field, order)
+            queryObj['featured_position'] = position.LifestyleLanding;
+            queryObj['is_featured_product'] = 1;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (featuredProducts) {
                     return callback(null, featuredProducts.rows);
 
@@ -43,7 +43,8 @@ export function lifestyle(req, res) {
         },
         lifestyle: function (callback) {
             limit = 20;
-            delete queryObj['position'];
+            delete queryObj['featured_position'];
+            delete queryObj['is_featured_product'];
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function (lifestyle) {
                     return callback(null, lifestyle.rows);

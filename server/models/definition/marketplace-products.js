@@ -63,11 +63,6 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'product_quantity',
 			allowNull: false
 		},
-		product_media_id: {
-			type: DataTypes.BIGINT,
-			field: 'product_media_id',
-			allowNull: false
-		},
 		category_id: {
 			type: DataTypes.BIGINT,
 			field: 'category_id',
@@ -93,6 +88,11 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'is_featured_product',
 			allowNull: false
 		},
+		featured_position: {
+            type: DataTypes.STRING(45),
+            field: 'featured_position',
+            allowNull: true
+        },
 		product_base_image: {
 			type: DataTypes.TEXT,
 			field: 'product_base_image',

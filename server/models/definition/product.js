@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'publish_date',
             allowNull: false
         },
-        product_media_id: {
+        /*product_media_id: {
             type: DataTypes.BIGINT,
             field: 'product_media_id',
             allowNull: false,
@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
+        },*/
         product_category_id: {
             type: DataTypes.BIGINT,
             field: 'product_category_id',
@@ -288,12 +288,6 @@ module.exports.initRelations = () => {
 
     Product.belongsTo(MarketplaceType, {
         foreignKey: 'marketplace_type_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.belongsTo(ProductMedia, {
-        foreignKey: 'product_media_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

@@ -20,9 +20,14 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        day: {
-            type: DataTypes.INTEGER,
-            field: 'day',
+        from_day: {
+            type: DataTypes.SMALLINT,
+            field: 'from_day',
+            allowNull: false
+        },
+        to_day: {
+            type: DataTypes.SMALLINT,
+            field: 'to_day',
             allowNull: false
         },
         start_time: {
@@ -33,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
         end_time: {
             type: DataTypes.TIME,
             field: 'end_time',
+            allowNull: true
+        },
+        timezone_id: {
+            type: DataTypes.TIME,
+            field: 'timezone_id',
             allowNull: true
         },
         status: {
@@ -77,9 +87,15 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const BusinessHour = model.BusinessHour;
     const Vendor = model.Vendor;
+    const Timezone = model.Timezone;
 
     BusinessHour.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    BusinessHour.belongsTo(Timezone, {
+        foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

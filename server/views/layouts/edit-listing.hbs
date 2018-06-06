@@ -1,11 +1,6 @@
-<style type="text/css">
-	.percentDiscount,
-	.valueDiscount {
-		display: none;
-	}
-</style>
 <script>
 	$(function () {
+		console.log("comming....");
 		$("#from, #to").datepicker();
 	});
 </script>
@@ -90,185 +85,172 @@
 			<div class="row">
 				{{> vendor/navbar}}
 				<div class="col-md-8 list_bg">
-					<form id="productEditForm">
-						<h5 class="list_manage">Manage Product - {{product.product_name}}</h5>
-						<section class="box2 list_sec">
-							<div class="container">
-								<div class="row">
-									<div class="col-md-12 box2_align">
-										<h5>{{product.marketplace}}</h5>
-									</div>
-								</div>
-							</div>
-						</section>
-						<div class="row">
-							<div class="col-md-4">
-								<img src="{{product.url}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
-								<div class="row">
-									<div class="col-md-4">
-										<img src="{{product.url}}" alt="logo" style="width: 100%" />
-									</div>
-									<div class="col-md-4">
-										<img src="{{product.url}}" alt="logo" style="width: 100%" />
-									</div>
-									<div class="col-md-4">
-										<img src="{{product.url}}" alt="logo" style="width: 100%" />
-									</div>
-								</div>
-							</div>
-							<div class="col-md-8">
-								<div class="row">
-									<div class="col-md-2">
-										<p>Status</p>
-									</div>
-									<div class="col-md-10">
-										{{#ifCond product.status '==' statusCode.ACTIVE}}
-										<td class="text_green_color">Active</td>
-										{{else ifCond product.status '==' statusCode.INACTIVE}}
-										<td class="text_green_color">InActive</td>
-										{{else ifCond product.status '==' statusCode.SUSPENDED}}
-										<td class="text_orange_color">Suspended</td>
-										{{else ifCond product.status '==' statusCode.SOLDOUT}}
-										<td class="text_red_color">Sold Out</td>
-										{{/ifCond}}
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Type</p>
-									</div>
-									<div class="col-md-10">
-										<p>Wholesale</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Category</p>
-									</div>
-									<div class="col-md-10">
-										<p>{{product.category}} > {{product.sub_category}}</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>SKU</p>
-									</div>
-									<div class="col-md-10">
-										<p>{{product.sku}}</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>MOQ</p>
-									</div>
-									<div class="col-md-10">
-										<p>{{product.moq}}</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Availability</p>
-									</div>
-									<div class="col-md-10">
-										<p>{{product.quantity_available}} in stock</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Category</p>
-									</div>
-									<div class="col-md-10">
-										<p class="list_wts">{{product.marketplace_type}}</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Name</p>
-									</div>
-									<div class="col-md-10">
-										<p class="list_iphone">{{product.product_name}}</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Price</p>
-									</div>
-									<div class="col-md-10">
-										<p class="list_doll">${{product.price}}</p>
-									</div>
-								</div>
-								<div id="appendOn">
-									<div class="row" id="appendRow">
-										<div class="col-md-2">
-											<p></p>
-										</div>
-										<div class="col-md-10" id="discount">
-											<div class="row">
-												<div class="col-md-1">
-													<p>For</p>
-												</div>
-												<div class="col-md-1 common_padding1">
-													<input class="discount-quantity-input list_place_1" type="text" placeholder="20" name="quantity" id='quantity' />
-												</div>
-												<div class="col-md-2 common_padding1">
-													<p>User recieves</p>
-												</div>
-												<div class="col-md-4 common_padding1">
-													<p>
-														<input class="discount-percent-input" type="radio" value="1" id="percent_discount" name="discount" />Total Percent Discount</p>
-													<p>
-														<input class="discount-total-value" type="radio" value="2" id="value_discount" name="discount" />Total Value Discount</p>
-												</div>
-												<div class="col-md-3 common_padding1 percentDiscount">
-													<input class="percent_discount list_place_2" type="text" id="percent" placeholder="20" name="percent_discount" />
-													<b> %</b>
-												</div>
-												<div class="col-md-3 common_padding1 valueDiscount">
-													<input class="percent_discount list_place_2" type="text" id="amount" placeholder="20" name="value_discount" />
-													<b> $</b>
-												</div>
-												{{!--
-												<div class="col-md-1 common_padding1">
-													<p class="list_edit">
-														<i class="fas fa-pencil-alt"></i> Edit</p>
-													<p class="list_edit">
-														<i class="fas fa-pencil-alt"></i> Edit</p>
-												</div> --}}
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p></p>
-									</div>
-									<div class="col-md-10">
-										<p class="list_add">
-											<a id="addDiscount" href="javascript:;">
-												<i class="fas fa-plus list_plus"></i>
-											</a> add bulk order discount tier.</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-2">
-										<p>Description</p>
-									</div>
-									<div class="col-md-10">
-										<p>{{product.description}}</p>
-									</div>
-								</div>
-								<hr/>
-								<div class="row">
-									<div class="col-md-2">
-										<button class="list_butt_1" type="button" id="productUpdateBtn">UPDATE</button>
-									</div>
-									<div class="col-md-10">
-										<button class="list_butt_2" type="reset" id="productCancelBtn">CANCEL</button>
-									</div>
+					<h5 class="list_manage">Manage Product - {{product.product_name}}</h5>
+					<section class="box2 list_sec">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-12 box2_align">
+									<h5>{{product.marketplace}}</h5>
 								</div>
 							</div>
 						</div>
-					</form>
+					</section>
+					<div class="row">
+						<div class="col-md-4">
+							<img src="{{product.url}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
+							<div class="row">
+								<div class="col-md-4">
+									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+								</div>
+								<div class="col-md-4">
+									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+								</div>
+								<div class="col-md-4">
+									<img src="{{product.url}}" alt="logo" style="width: 100%" />
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-8">
+							<div class="row">
+								<div class="col-md-2">
+									<p>Status</p>
+								</div>
+								<div class="col-md-10">
+									{{#ifCond product.status '==' statusCode.ACTIVE}}
+									<td class="text_green_color">Active</td>
+									{{else ifCond product.status '==' statusCode.INACTIVE}}
+									<td class="text_green_color">InActive</td>
+									{{else ifCond product.status '==' statusCode.SUSPENDED}}
+									<td class="text_orange_color">Suspended</td>
+									{{else ifCond product.status '==' statusCode.SOLDOUT}}
+									<td class="text_red_color">Sold Out</td>
+									{{/ifCond}}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Type</p>
+								</div>
+								<div class="col-md-10">
+									<p>Wholesale</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Category</p>
+								</div>
+								<div class="col-md-10">
+									<p>{{product.category}} > {{product.sub_category}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>SKU</p>
+								</div>
+								<div class="col-md-10">
+									<p>{{product.sku}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>MOQ</p>
+								</div>
+								<div class="col-md-10">
+									<p>{{product.moq}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Availability</p>
+								</div>
+								<div class="col-md-10">
+									<p>{{product.quantity_available}} in stock</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Category</p>
+								</div>
+								<div class="col-md-10">
+									<p class="list_wts">{{product.marketplace_type}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Name</p>
+								</div>
+								<div class="col-md-10">
+									<p class="list_iphone">{{product.product_name}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Price</p>
+								</div>
+								<div class="col-md-10">
+									<p class="list_doll">${{product.price}}</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p></p>
+								</div>
+								<div class="col-md-10">
+									<div class="row">
+										<div class="col-md-1">
+											<p>For</p>
+										</div>
+										<div class="col-md-1 common_padding1">
+											<input class="list_place_1" type="text" placeholder="20" />
+										</div>
+										<div class="col-md-2 common_padding1">
+											<p>User recieves</p>
+										</div>
+										<div class="col-md-4 common_padding1">
+											<p>
+												<input type="radio" name="discount" />Total Percent Discount</p>
+											<p>
+												<input type="radio" name="discount" />Total Value Discount</p>
+										</div>
+										<div class="col-md-2 common_padding1">
+											<input class="list_place_2" type="text" placeholder="20%" />
+										</div>
+										<div class="col-md-1 common_padding1">
+											<p class="list_edit">
+												<i class="fas fa-pencil-alt"></i> Edit</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p></p>
+								</div>
+								<div class="col-md-10">
+									<p class="list_add">
+										<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<p>Description</p>
+								</div>
+								<div class="col-md-10">
+									<p>{{product.description}}</p>
+								</div>
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-md-2">
+									<input class="list_butt_1" type="submit" value="UPDATE" />
+								</div>
+								<div class="col-md-10">
+									<input class="list_butt_2" type="submit" value="CANCEL" />
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="col-md-2 list_bg common_padding1">
 					<p class="list_fe">FEATURE THIS PRODUCT!</p>
@@ -303,6 +285,7 @@
 							<p>{{ starCount product.rating}}</p>
 						</div>
 						<hr/>
+
 					</div>
 					<p> Status:
 						<span> Live </span>
