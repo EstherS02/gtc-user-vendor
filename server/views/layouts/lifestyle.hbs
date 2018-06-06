@@ -169,7 +169,7 @@
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-9 no-padding">
                                                 <div class="product-title">
-                                                   <h5 class="no-margins">
+                                                    <h5 class="no-margins">
                                                         <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                                     </h5>
                                                     <div class="row no-margins">
@@ -182,7 +182,11 @@
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                             <div class="sm-text">
-                                                                <a href="#">(Login for Seller Info)</a>
+                                                                {{#if ../LoggedInUser.email}}
+                                                                <a>{{this.vendor_name}}</a>
+                                                                {{else}}
+                                                                <a href="/login">(Login for Seller Info)</a>
+                                                                {{/if}}
                                                             </div>
                                                         </div>
                                                     </div>

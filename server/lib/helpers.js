@@ -104,30 +104,30 @@ Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, opti
     var displayClassLeft = "";
     var displayClassRight = "";
     var displayLabel = "";
-    
-        if(marketPlace.code === 'PWM'){
-            displayClassLeft = 'shop_wholesale_items';
-            displayClassRight = 'yourorder_wholesalesum_head';
-            displayLabel = 'Wholesale';
-        } else if(marketPlace.code === 'PM'){
-            displayClassLeft = 'shop_shop_items';
-            displayClassRight = 'yourorder_shopsum_head';
-            displayLabel = 'Shop';
-        } else if(marketPlace.code === 'SM'){
-            displayClassLeft = 'shop_service_items';
-            displayClassRight = 'yourorder_servicesum_head';
-            displayLabel = 'Service';
-        } else if(marketPlace.code === 'LM'){
-            displayClassLeft = 'shop_subscription_items';
-            displayClassRight = 'yourorder_subscriptionsum_head'
-            displayLabel = 'Subscription';
-        }
-            
-    if(classType === 'CART-LEFT')
+
+    if (marketPlace.code === 'PWM') {
+        displayClassLeft = 'shop_wholesale_items';
+        displayClassRight = 'yourorder_wholesalesum_head';
+        displayLabel = 'Wholesale';
+    } else if (marketPlace.code === 'PM') {
+        displayClassLeft = 'shop_shop_items';
+        displayClassRight = 'yourorder_shopsum_head';
+        displayLabel = 'Shop';
+    } else if (marketPlace.code === 'SM') {
+        displayClassLeft = 'shop_service_items';
+        displayClassRight = 'yourorder_servicesum_head';
+        displayLabel = 'Service';
+    } else if (marketPlace.code === 'LM') {
+        displayClassLeft = 'shop_subscription_items';
+        displayClassRight = 'yourorder_subscriptionsum_head'
+        displayLabel = 'Subscription';
+    }
+
+    if (classType === 'CART-LEFT')
         return displayClassLeft;
     else if (classType === 'CART-RIGHT')
         return displayClassRight;
-    else if(classType === 'LABEL')
+    else if (classType === 'LABEL')
         return displayLabel;
     else
         return '';
@@ -137,18 +137,66 @@ Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
     return parseFloat(v1) - parseFloat(v2);
 });
 
-Handlebars.registerHelper('select', function( selected, options){
-        return options.fn(this).replace(
+Handlebars.registerHelper('select', function(selected, options) {
+    return options.fn(this).replace(
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
-    });
+});
+Handlebars.registerHelper("setChecked", function(value, currentValue) {
+    if (value == currentValue) {
+        return "checked";
+    } else {
+        return "";
+    }
+});
+Handlebars.registerHelper("days", function(value) {
+    switch (value) {
+        case 0:
+            return 'Sunday';
+            break;
+        case 1:
+            return 'Monday';
+            break;
+        case 2:
+            return 'Tuesday';
+            break;
+        case 3:
+            return 'Wednesday';
+            break;
+        case 4:
+            return 'Thursday';
+            break;
+        case 5:
+            return 'Friday';
+            break;
+        case 6:
+            return 'Saturday';
+            break;
+    }
+});
 
-Handlebars.registerHelper('each_upto', function(ary, max, options) {
-    if (!ary || ary.length == 0)
-        return options.inverse(this);
+Handlebars.registerHelper('optionsSelected', function(context, test) {
+    var ret = '';
+    for (var i = 0, len = context.length; i < len; i++) {
+        var option = '<option value="' + context[i].id+'"';
+        if (test.indexOf(context[i].id) >=0) { 
+            option += ' selected="selected"';
+        }
+        option += '>'+ context[i].product_name + '</option>';
+        ret += option;
+    }
+    return new Handlebars.SafeString(ret);
+});
 
-    var result = [];
-    for (var i = 0; i < max && i < ary.length; ++i)
-        result.push(options.fn(ary[i]));
-    return result.join('');
+Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
+    var ret = '';
+    for (var i = 0, len = context.length; i < len; i++) {
+        var option = '<option value="' + context[i].id+'"';
+        if (test.indexOf(context[i].id) >=0) {  // you may also use some  test.some(context[i].id)
+            option += ' selected="selected"';
+        }
+        option += '>'+ context[i].name + '</option>';
+        ret += option;
+    }
+    return new Handlebars.SafeString(ret);
 });

@@ -4,15 +4,15 @@
 </script>
 
 <script type="text/javascript">
-    const auth = Auth(); 
+    const auth = Auth();
     /* auth.isLoggedIn(); */
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         var googleUser = {};
 
-        var startGoogleLoginProcess = function() {
-            gapi.load('auth2', function() {
+        var startGoogleLoginProcess = function () {
+            gapi.load('auth2', function () {
                 // Retrieve the singleton for the GoogleAuth library and set up the client.
                 auth2 = gapi.auth2.init({
                     client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
@@ -24,7 +24,7 @@
 
         function googleAttachSignin(element) {
             auth2.attachClickHandler(element, {},
-                function(googleUser) {
+                function (googleUser) {
                     var newGoogleUser = {};
                     var profileId = googleUser.getBasicProfile().getId();
                     var id_token = googleUser.getAuthResponse().id_token;
@@ -40,20 +40,20 @@
                         type: "POST",
                         url: "/auth/google",
                         data: newGoogleUser,
-                        success: function(result) {
+                        success: function (result) {
                             window.location.reload();
                             //localStorage.setItem("access_token", result.access_token);
-                           /* auth.getCurrentUser().then(function(data) {
-                                if (data) {
-                                    $('#loginBanner').hide();
-                                } else {
-                                    $('#loginBanner').show();
-                                }
-                            }); */
+                            /* auth.getCurrentUser().then(function(data) {
+                                 if (data) {
+                                     $('#loginBanner').hide();
+                                 } else {
+                                     $('#loginBanner').show();
+                                 }
+                             }); */
                         }
                     });
                 },
-                function(error) {
+                function (error) {
                     //alert(JSON.stringify(error, undefined, 2));
                     console.log(JSON.stringify(error, undefined, 2))
                 });
@@ -68,7 +68,7 @@
         };
 
         function googleSignOut() {
-            auth2.signOut().then(function() {
+            auth2.signOut().then(function () {
                 console.log('User signed out.');
             });
         };
@@ -76,7 +76,7 @@
         function getProfileData() {
             IN.API.Profile("me")
                 .fields("id", "email-address", "first-name", "last-name", "formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections", "picture-url")
-                .result(function(data) {
+                .result(function (data) {
                     var profileData = data.values[0];
                     var linkedInUser = {};
                     linkedInUser.first_name = profileData.firstName;
@@ -90,25 +90,25 @@
                         type: "POST",
                         url: "/auth/linkedin",
                         data: linkedInUser,
-                        success: function(result) {
+                        success: function (result) {
                             localStorage.setItem("access_token", result.access_token);
                             window.location.reload();
-                           /* auth.getCurrentUser().then(function(data) {
-                                if (data) {
-                                    $('#loginBanner').hide();
-                                } else {
-                                    $('#loginBanner').show();
-                                }
-                            }); */
+                            /* auth.getCurrentUser().then(function(data) {
+                                 if (data) {
+                                     $('#loginBanner').hide();
+                                 } else {
+                                     $('#loginBanner').show();
+                                 }
+                             }); */
                         }
                     });
                 });
         };
 
 
-        $('#gtc-linkedin-login').click(function(e) {
+        $('#gtc-linkedin-login').click(function (e) {
             if (!IN.User.isAuthorized()) {
-                IN.User.authorize(function() {
+                IN.User.authorize(function () {
                     getProfileData();
                 });
             } else {
@@ -119,7 +119,7 @@
 
         function linkedInSignIn() {
             if (!IN.User.isAuthorized()) {
-                IN.User.authorize(function() {
+                IN.User.authorize(function () {
                     getProfileData();
                 });
             } else {
@@ -129,13 +129,13 @@
         };
 
         function linkedinLogout() {
-            IN.User.logout(function() {
+            IN.User.logout(function () {
                 console.log("Linkedin User Logout successful");
                 //alert("Linkedin User Logout successful");
             });
         };
 
-        window.fbAsyncInit = function() {
+        window.fbAsyncInit = function () {
             FB.init({
                 appId: '393416147793353',
                 cookie: true,
@@ -143,12 +143,12 @@
                 version: 'v3.0'
             });
 
-            FB.getLoginStatus(function(loginStatus) {
+            FB.getLoginStatus(function (loginStatus) {
                 console.log(loginStatus);
             });
         };
 
-        (function(d, s, id) {
+        (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
             js = d.createElement(s);
@@ -158,9 +158,9 @@
         }(document, 'script', 'facebook-jssdk'));
 
         function fb_login() {
-            FB.login(function(response) {
+            FB.login(function (response) {
                 if (response.authResponse) {
-                    FB.api('/me?fields=id,name,email', function(profileInfo) {
+                    FB.api('/me?fields=id,name,email', function (profileInfo) {
                         var fbUser = {};
                         fbUser.first_name = profileInfo.name;
                         if (profileInfo.lastName) {
@@ -173,7 +173,7 @@
                             type: "POST",
                             url: "/auth/fb",
                             data: fbUser,
-                            success: function(result) {
+                            success: function (result) {
                                 localStorage.setItem("access_token", result.access_token);
                                 window.location.reload();
                                 /*auth.getCurrentUser().then(function(data) {
@@ -192,11 +192,11 @@
 
                 }
             }, {
-                scope: 'public_profile,email'
-            });
+                    scope: 'public_profile,email'
+                });
         };
 
-        $("#gtc-fb-login").click(function() {
+        $("#gtc-fb-login").click(function () {
             fb_login();
         });
 
@@ -227,16 +227,16 @@
                 type: "POST",
                 url: "/auth/twitter",
                 data: twitterUser,
-                success: function(result) {
+                success: function (result) {
                     localStorage.setItem("access_token", result.access_token);
                     window.location.reload();
-                   /* auth.getCurrentUser().then(function(data) {
-                        if (data) {
-                            $('#loginBanner').hide();
-                        } else {
-                            $('#loginBanner').show();
-                        }
-                    }); */
+                    /* auth.getCurrentUser().then(function(data) {
+                         if (data) {
+                             $('#loginBanner').hide();
+                         } else {
+                             $('#loginBanner').show();
+                         }
+                     }); */
                 }
             });
         };
@@ -244,7 +244,7 @@
 </script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#signUpForm').validate({
             rules: {
                 first_name: {
@@ -255,7 +255,7 @@
                     minlength: 8
                 }
             },
-            submitHandler: function(form) {
+            submitHandler: function (form) {
                 var newUser = {};
                 newUser.email = $('#inputEmail').val();
                 newUser.first_name = $('#inputFirstname').val();
@@ -266,21 +266,21 @@
                     type: 'POST',
                     url: '/api/users',
                     data: newUser,
-                    success: function(data, text) {
+                    success: function (data, text) {
                         console.log(data)
                         auth.login({
                             email: data.email,
                             password: $('#inputPassword').val()
-                        }).then(function(user) {
+                        }).then(function (user) {
                             if (user) {
                                 window.location.reload();
                                 //$('#loginBanner').hide();
                             } else {
                                 //$('#loginBanner').show();
                             }
-                        }); 
+                        });
                     },
-                    error: function(request, status, error) {
+                    error: function (request, status, error) {
                         $('#signUpErrorLog').text(request.responseText);
                         //$('#loginBanner').show();
                     }
@@ -288,11 +288,14 @@
             }
         });
     });
-</script>
- {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
+        
+        {{#if LoggedInUser.email}}
+
+        {{else}}
             <div class="col-md-6">
                 <div class="row geo_bgimg">
                     <div class="col-md-7">
@@ -304,16 +307,17 @@
                         <h3>GIVE IT A TRY!:</h3>
                         <input type="text" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
                         <select class="geo_textbox">
-                            <option>Category</option>
-                            <option>Category Category Cate</option>
+                            <option disabled selected>Category</option>
+                            {{#each category}}
+                            <option>{{ this.name}}</option>
+                            {{/each}}
                         </select>
                         <input type="text" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
                         <input type="submit" value="SEARCH!" class="geo_button" />
                     </div>
                 </div>
             </div>
-
-            <div id="loginBanner" class="col-md-6" {{#if LoggedInUser.email}} style="display:none;" {{else}} style="display:block;"{{/if}}> 
+            <div id="loginBanner" class="col-md-6">
                 <div class="row geo_bgimg1">
                     <h1>CREATE A FREE ACCOUNT!</h1>
                     <p>Start searching the globe for the best bulk discount, wholesale pricing, subsriptions, services everywhere!
@@ -346,10 +350,10 @@
                     </div>
                 </div>
             </div>
+            {{/if}}
         </div>
     </div>
 </section>
-
 <section class="custom-section header-box">
     <div class="container my-custom-container">
         <div class="row">
@@ -367,7 +371,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wts-bg">
                         <h5>WTS - Want To Sell</h5>
-                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each wantToSell}}
@@ -379,7 +387,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTS - <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a></h5>
+                                            <h5 class="no-margins">WTS -
+                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -390,7 +400,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -412,7 +426,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wtb-bg">
                         <h5>WTB - Want To Buy</h5>
-                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each wantToBuy}}
@@ -424,7 +442,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTB - <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a></h5>
+                                            <h5 class="no-margins">WTB -
+                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -435,7 +455,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -457,7 +481,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wtt-bg">
                         <h5>WTT - Want To Trade</h5>
-                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each wantToTrade}}
@@ -469,7 +497,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">WTT - <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a></h5>
+                                            <h5 class="no-margins">WTT -
+                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -480,7 +510,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -502,7 +536,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title rfq-bg">
                         <h5>RFQ - Request For Quote</h5>
-                        <a href="/search"><small class="pull-right">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each requestForQuote}}
@@ -514,7 +552,9 @@
                                 <div class="row m-l-none m-r-none">
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
-                                            <h5 class="no-margins">RFQ - <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a></h5>
+                                            <h5 class="no-margins">RFQ -
+                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                            </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
                                                     <div class="sm-text">Origin</div>
@@ -525,7 +565,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -554,7 +598,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title public-market-bg">
                         <h5>PUBLIC MARKETPLACE</h5>
-                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right m-t-xs">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each publicMarketplace}}
@@ -579,7 +627,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -600,7 +652,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title service-market-bg">
                         <h5>SERVICES MARKETPLACE</h5>
-                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right m-t-xs">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each serviceMarketplace}}
@@ -625,7 +681,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -646,7 +706,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title lifestyle-market-bg">
                         <h5>LIFESTYLE MARKETPLACE</h5>
-                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL <i class="fa fa-caret-right"></i></small></a>
+                        <a href="/search">
+                            <small class="pull-right m-t-xs">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         {{#each lifestyleMarketplace}}
@@ -671,7 +735,11 @@
                                                     <div class="sm-text">{{this.country_name}}</div>
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category}}</div>
                                                     <div class="sm-text">
-                                                        <a href="#">(Login for Seller Info)</a>
+                                                        {{#if ../LoggedInUser.email}}
+                                                        <a>{{this.vendor_name}}</a>
+                                                        {{else}}
+                                                        <a href="/login">(Login for Seller Info)</a>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -746,9 +814,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title public-market-bg">
                         <h5>TOP SELLERS</h5>
-                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small></a>
+                        <a href="/search">
+                            <small class="pull-right m-t-xs">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -803,9 +873,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title featured-product-bg">
                         <h5>FEATURED PRODUCTS</h5>
-                        <a href="/search"><small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small></a>
+                        <a href="/search">
+                            <small class="pull-right m-t-xs">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -872,8 +944,8 @@
                     <img height="300px" width="100%" src="img/bg-app.jpg">
                 </div>
             </div>
-        <div>
-    </div>
+            <div>
+            </div>
 </section>
 
 <section>
@@ -885,24 +957,37 @@
                 </div>
                 <div class="col-md-6">
                     <p class="box_11_header"> NEW GTC FEATURES SLATED FOR 2017: </p>
-                    <p class="box_11_para"><i class="fa fa-check"></i> Lorem ipsum dolor sit amet </p>
-                    <p class="box_11_para"><i class="fa fa-check"></i> Nulla tellus nisi sodales id orci non </p>
-                    <p class="box_11_para"><i class="fa fa-check"></i> cras dapibus, nuncac vehicula tincidunt, lectus ante vulputate falis </p>
-                    <p class="box_11_para"><i class="fa fa-check"></i> Donec faucibus nisl sapien,necscelerisque nisl dictum vel </p>
-                    <p class="box_11_para"><i class="fa fa-check"></i> Proin laorect quam in tigula finibus sagitis </p>
+                    <p class="box_11_para">
+                        <i class="fa fa-check"></i> Lorem ipsum dolor sit amet </p>
+                    <p class="box_11_para">
+                        <i class="fa fa-check"></i> Nulla tellus nisi sodales id orci non </p>
+                    <p class="box_11_para">
+                        <i class="fa fa-check"></i> cras dapibus, nuncac vehicula tincidunt, lectus ante vulputate falis </p>
+                    <p class="box_11_para">
+                        <i class="fa fa-check"></i> Donec faucibus nisl sapien,necscelerisque nisl dictum vel </p>
+                    <p class="box_11_para">
+                        <i class="fa fa-check"></i> Proin laorect quam in tigula finibus sagitis </p>
                     <button class="box_11_buttion" type="button"> GET NOTIFIED WHEN THESE FEATURES ARE RELEASED</button>
                 </div>
             </div>
-        <div>
+            <div>
+            </div>
+</section>
+
+<section class="get-started">
+    <div class="content">
+        <h2>
+            <span class="small">Get your</span>
+            <span style="font-family: 'Oswald', sans-serif;">Global Trade Connect</span> Profile Page
+            <span class="large">By March 31st 2017</span>
+        </h2>
+        <p>and
+            <strong class="save">SAVE 25%</strong>
+            <strong>OFF
+                <span style="font-family: 'Oswald', sans-serif;font-weight: normal;font-size: 25px;">YOUR</span> FIRST 3 MONTHS!</strong>
+        </p>
+        <a href="" class="button-cta">Get started!</a>
     </div>
 </section>
 
-<section>
-    <div class="jumbotron box_12  " style="margin-bottom:0">
-        <div class="container">
-            <div class="row">
-            </div>
-        <div>
-    </div>
-</section>
- {{> footer/footer}}
+{{> footer/footer}}

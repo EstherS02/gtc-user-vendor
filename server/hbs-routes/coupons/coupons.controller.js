@@ -196,7 +196,16 @@ export function editCoupons(req, res) {
 
 			service.findAllRows(couponExcludeProductsModel, includeArr, couponExcludeProductsQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeProducts) {
-					return callback(null, couponExcludeProducts.rows);
+					var couponExcludeProductsID = [];
+					if (couponExcludeProducts.rows.length > 0) {
+						for (var i = 0; i < couponExcludeProducts.rows.length; i++) {
+							couponExcludeProductsID.push(couponExcludeProducts.rows[i].product_id);
+						}
+						return callback(null, couponExcludeProductsID);
+					} else {
+						return callback(null, couponExcludeProductsID);
+					}
+					// return callback(null, couponExcludeProducts.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -211,7 +220,16 @@ export function editCoupons(req, res) {
 
 			service.findAllRows(couponCategoryModel, includeArr, couponCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponCategories) {
-					return callback(null, couponCategories.rows);
+					var couponCategoriesID = [];
+					if (couponCategories.rows.length > 0) {
+						for (var i = 0; i < couponCategories.rows.length; i++) {
+							couponCategoriesID.push(couponCategories.rows[i].category_id);
+						}
+						return callback(null, couponCategoriesID);
+					} else {
+						return callback(null, couponCategoriesID);
+					}
+					// return callback(null, couponCategories.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -226,7 +244,17 @@ export function editCoupons(req, res) {
 
 			service.findAllRows(couponExcludeCategoryModel, includeArr, couponExcludeCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeCategories) {
-					return callback(null, couponExcludeCategories.rows);
+					var couponExcludeCategoriesID = [];
+					if (couponExcludeCategories.rows.length > 0) {
+						for (var i = 0; i < couponExcludeCategories.rows.length; i++) {
+							couponExcludeCategoriesID.push(couponExcludeCategories.rows[i].category_id);
+						}
+						return callback(null, couponExcludeCategoriesID);
+					} else {
+						return callback(null, couponExcludeCategoriesID);
+					}
+
+					// return callback(null, couponExcludeCategories.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -234,7 +262,7 @@ export function editCoupons(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			console.log('results.couponProducts', results.couponProducts);
+			// console.log('results', results);
 			res.render('edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,
