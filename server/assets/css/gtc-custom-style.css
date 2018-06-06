@@ -595,3 +595,7 @@ a {
 .shop_price_doller{
   padding-left: 20px;
 }
+
+.custom-secondary-header{
+  border-bottom-left-radius: 10px;
+}

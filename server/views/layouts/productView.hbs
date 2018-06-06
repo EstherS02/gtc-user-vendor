@@ -30,6 +30,9 @@
                 error: function (error) {
                     $('#gtc-add-to-cart').prop('disabled', false);
                     if(error){
+                        if(error.status === 401)
+                            return location.href = "/login";
+                            
                         $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
                         $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
                         $("#gtc-cart-alert").fadeTo(3000, 500).slideUp(500, function(){
