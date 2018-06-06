@@ -42,10 +42,28 @@ export function updateCoupon(req,res){
 	service.updateRow(modelName,newCoupon,id).then(function(results) {
 			console.log("talk", results);
 			if (results) {
-				// res.status(200).send(results);
-				service.updateRow(modelName,data,id).then(function(response){
-					console.log("Update",response)
-				});
+				// // res.status(200).send(results);
+				// var data = {};
+				// data.coupon_id = id;
+				// update_id = newCouponProducts 
+				// service.updateRow(modelName,data,update_id).then(function(response){
+				// 	console.log("Update",response)
+				// });
+
+				//newCouponProducts
+				model[modelName].update({status : 0}, {
+						where: {
+							coupon_id: id
+						}
+					}).then(function(row) {
+						if (row) {
+							resolve(row);
+						} else {
+							resolve(null);
+						}
+					}).catch(function(error) {
+						reject(error);
+					})
 			} else {
 				// service.createRow(modelName,data).then(function(response){
 			// });
