@@ -37,24 +37,23 @@ export function updateCoupon(req,res){
 	var newCouponExcludeCategory = req.body.couponExcludeCategories;
 
 
-	console.log('id',id);
+ 	// console.log('id',id);
 
-	// service.updateRow(modelName,newCoupon,id).then(function(results) {
-	// 		console.log("talk", results);
-	// 		if (results) {
-	// 			// var id = results.id;
-	// 			res.status(200).send(results);
-	// 			// service.updateRow(modelName,data,id).then(function(response){
-	// 			// 	console.log("Update",response)
-	// 			// });
-	// 		} else {
-	// 			// service.createRow(modelName,data).then(function(response){
-	// 		// });
-	// 		res.status(200).send(results);
-	// 	}
-	// }).catch(function(error) {
-	// 		console.log('Error:::', error);
-	// 		res.status(500).send("Internal server error");
-	// 		return;
-	// 	});
+	service.updateRow(modelName,newCoupon,id).then(function(results) {
+			console.log("talk", results);
+			if (results) {
+				// res.status(200).send(results);
+				service.updateRow(modelName,data,id).then(function(response){
+					console.log("Update",response)
+				});
+			} else {
+				// service.createRow(modelName,data).then(function(response){
+			// });
+			res.status(200).send(results);
+		}
+	}).catch(function(error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
+		});
 }

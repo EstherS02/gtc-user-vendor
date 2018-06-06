@@ -11,6 +11,7 @@ export function directory(req, res) {
     var categoryModel = "Category";
     var subcategoryModel = "SubCategory";
     var countryModel = "Country";
+    var marketplaceModel ="Marketplace";
     var vendorModel = "VendorUserProduct";
     var offset, limit, field, order;
     var queryObj = {};
@@ -52,8 +53,17 @@ export function directory(req, res) {
             service.findRows(countryModel, queryObj, offset, limit, field, order)
                 .then(function (country) {
                     return callback(null, country.rows);
-
                 }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        depart: function(callback) {
+                limit = null
+            service.findRows(marketplaceModel, queryObj, offset, limit, field, order)
+                .then(function(depart) {
+                    return callback(null, depart.rows);
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
@@ -125,6 +135,7 @@ export function directory(req, res) {
                 retailers: results.retailers,
                 servicesProviders: results.servicesProviders,
                 subscriptionProviders: results.subscriptionProviders,
+                depart:results.depart,
                 LoggedInUser: LoggedInUser
             });
         }
