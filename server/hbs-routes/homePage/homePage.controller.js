@@ -12,6 +12,7 @@ var async = require('async');
 export function homePage(req, res) {
     var productModel = "MarketplaceProduct";
     var vendorModel = "VendorUserProduct";
+    var categoryModel = "Category";
     var offset, limit, field, order;
     var queryObj = {}, LoggedInUser = {};
 
@@ -132,7 +133,20 @@ export function homePage(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        }
+        },
+        category: function (callback) {
+            field = "id";
+            order = "asc";
+            limit=null;
+            service.findRows(categoryModel, queryObj, offset, limit, field, order)
+                .then(function (category) {
+                    return callback(null, category.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
     }, function(err, results) {
         if (!err) {
             res.render('homePage', {
@@ -146,6 +160,7 @@ export function homePage(req, res) {
                 lifestyleMarketplace: results.lifestyleMarketplace,
                 featuredProducts: results.featuredProducts,
                 topSellers:results.topSellers,
+                category: results.category,
                 LoggedInUser: LoggedInUser
             });
         } else {
