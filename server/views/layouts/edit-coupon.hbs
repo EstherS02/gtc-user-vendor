@@ -170,38 +170,59 @@
 
 			const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
-			console.log('inputIndividualUseOnly', inputIndividualUseOnly);
-			console.log('inputExcluseSaleItem', inputExcluseSaleItem);
+			// console.log('inputIndividualUseOnly', inputIndividualUseOnly);
+			// console.log('inputExcluseSaleItem', inputExcluseSaleItem);
 		});
 
-		/*$("#couponUpdateBtn").click(function(e) {
+		$("#couponUpdateBtn").click(function(e) {
+			// alert("hai");
 			e.preventDefault();
 
 			var id = $('input[name=id]').val();
 			var newCoupon = {};
-			newCoupon.coupon_name = $('input[name=coupon_name]').val();
-			newCoupon.code = "ABC0010";
-			newCoupon.discount_type = $('input[name=discount_type]').val();
-			newCoupon.discount_value = $('input[name=discount_value]').val();
-			newCoupon.publish_date = $('input[name=publish_date]').val();
-			newCoupon.status = 1;
-			newCoupon.vendor_id = 29;
+			var newCouponProducts = [];
+			var newCouponExcludeProducts = [];
+			var newCouponCategories = [];
+			var newCouponExcludeCategories = [];
 
+			e.preventDefault();
+
+			var newCoupon = {};
+			newCoupon.coupon_name = $('#inputCouponName').val();
+			// newCoupon.code = Math.floor(100000 + Math.random() * 900000);
+			newCoupon.discount_type = $('#inputDiscountType').val();
+			newCoupon.discount_value = $('#inputDiscountValue').val();
+			newCoupon.expiry_date = $('#inputExpiryDate').val();
+			newCoupon.minimum_spend = $('#inputMinimumSpend').val();
+			newCoupon.maximum_spend = $('#inputMaximumSpend').val();
+			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
+			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
+			// newCoupon.status = 1;
+			// newCoupon.vendor_id = 28;
+			newCoupon.publish_date = new Date().toISOString().split("T")[0];
+			newCoupon.usage_limit = $('#inputUsageLimit').val();
+			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
+			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
+
+			newCoupon.couponProducts = $('#inputProducts').val();
+			newCoupon.couponExcludeProducts = $('#inputExcludeProduct').val();
+			newCoupon.couponCategories = $('#inputCategories').val();
+			newCoupon.couponExcludeCategories = $('#inputExcludeCategories').val();
 			$.ajax({
 				type: 'PUT',
-				url: '/api/coupons/' + id,
+				url: '/api/coupon/update',
 				data: newCoupon,
 				success: function(data, text) {
 					console.log('data', data);
 					console.log('text', text);
-					window.location.href = '/coupons';
+					// window.location.href = '/coupons';
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});
-		});*/
+		});
 	});
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -253,7 +274,6 @@
 								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only" value="{{coupon.individual_use_only}}">
 								<b>Individual use only.</b> 
 								<span class="vend_edit_list_spanstyle">
-									Check this box if the coupon cannot be used in conjunction with other coupons	
 								</span>
 							</div>
 							<div class="col-md-12">
@@ -262,33 +282,25 @@
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
-									{{#each products}}
-									<option value="{{this.id}}">{{this.product_name}}</option>
-									{{/each}}
+									{{{optionsSelected  products existingCouponProducts}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
-									{{#each products}}
-										<option value="{{this.id}}">{{this.product_name}}</option>
-									{{/each}}
+							    {{{optionsSelected  products existingCouponExcludeProducts}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
-									{{#each categories}}
-										<option value="{{this.id}}">{{this.name}}</option>
-									{{/each}}
+									{{{optionsSelectedCategory  categories existingCouponCategories}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple" placeholder="Product Exclude Categories">
-									{{#each categories}}
-										<option value="{{this.id}}">{{this.name}}</option>
-									{{/each}}
+									{{{optionsSelectedCategory  categories existingCouponExcludeCategories}}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 							</div>
