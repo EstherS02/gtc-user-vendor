@@ -288,7 +288,30 @@
             }
         });
     });
-</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+</script>
+<script>
+    $(document).ready(function () {
+        $("#searchSubmitbutton").click(function (e) {
+            e.preventDefault();
+            
+            let formInput = $("#searchForm :input").filter(function (index, element) {
+                    return $(element).val() != '';
+                }).serialize();
+            $.ajax({
+				type: 'GET',
+				url: '/api/search?'+formInput,
+				success: function (data) {
+					console.log('data', data);
+                    window.location.href = '/search?'+formInput;
+				},
+				error: function (error) {
+					console.log('error', error);
+				}
+			});
+         });
+    });
+</script>
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="box1" style="margin-bottom:0">
     <div class="container">
         <div class="row">
@@ -302,18 +325,20 @@
 
                     </div>
                     <div class="col-md-5">
+                        <form id="searchForm">
                         <p class="why_geo">What is Geo-Locate? </p>
                         <p>Find products close to home, or nearby your target market with Lorom ipsum dolor sholt</p>
                         <h3>GIVE IT A TRY!:</h3>
-                        <input type="text" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
-                        <select class="geo_textbox">
+                        <input type="text" id="location" name="location" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
+                        <select class="geo_textbox" name="category" id="category">
                             <option disabled selected>Category</option>
                             {{#each category}}
-                            <option>{{ this.name}}</option>
+                            <option value="{{this.id}}">{{ this.name}}</option>
                             {{/each}}
                         </select>
-                        <input type="text" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
-                        <input type="submit" value="SEARCH!" class="geo_button" />
+                        <input type="text" id="keyword" name="keyword" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
+                        <input type="button" id="searchSubmitbutton" value="SEARCH!" class="geo_button" />
+                    </form>
                     </div>
                 </div>
             </div>
