@@ -8,6 +8,12 @@ const service = require('../../api/service');
 var async = require('async');
 
 export function notifications(req, res) {
+	var LoggedInUser = {};
+
+    if (req.user)
+        LoggedInUser = req.user;
+
+    let user_id = LoggedInUser.id;
 
 	model["VendorUserProduct"].find({
 		where: 29
@@ -42,7 +48,8 @@ export function notifications(req, res) {
 					res.render('notifications', {
 						title: 'Global Trade Connect',
 						Announcements: results.rows,
-						statusCode: statusCode
+						statusCode: statusCode,
+						LoggedInUser: LoggedInUser
 					});
 					return;
 				} else {

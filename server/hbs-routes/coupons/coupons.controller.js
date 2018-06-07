@@ -14,6 +14,13 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 
 export function coupons(req, res) {
+	var LoggedInUser = {};
+
+    if (req.user)
+        LoggedInUser = req.user;
+
+    let user_id = LoggedInUser.id;
+
 	var field = 'id';
 	var order = "desc";
 	var offset = 0;
@@ -54,7 +61,8 @@ export function coupons(req, res) {
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
 					statusCode: statusCode,
-					discountType: discountType
+					discountType: discountType,
+					LoggedInUser: LoggedInUser
 				});
 			} else {
 				res.render('view-coupons', err);
@@ -63,6 +71,11 @@ export function coupons(req, res) {
 }
 
 export function addCoupon(req, res) {
+
+	var LoggedInUser = {};
+    if (req.user)
+        LoggedInUser = req.user;
+    let user_id = LoggedInUser.id;
 
 	var productModel = "Product";
 	var categoryModel = "Category";
@@ -103,7 +116,8 @@ export function addCoupon(req, res) {
 			res.render('edit-coupon', {
 				title: "Global Trade Connect",
 				products: results.products,
-				categories: results.categories
+				categories: results.categories,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			res.render('services', err);
@@ -112,6 +126,11 @@ export function addCoupon(req, res) {
 }
 
 export function editCoupons(req, res) {
+
+	var LoggedInUser = {};
+    if (req.user)
+        LoggedInUser = req.user;
+    let user_id = LoggedInUser.id;
 
 	var queryObj = {};
 	var includeArr = [];
@@ -271,7 +290,8 @@ export function editCoupons(req, res) {
 				existingCouponProducts: results.couponProducts,
 				existingCouponExcludeProducts: results.couponExcludeProducts,
 				existingCouponCategories: results.couponCategories,
-				existingCouponExcludeCategories: results.couponExcludeCategories
+				existingCouponExcludeCategories: results.couponExcludeCategories,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			res.render('services', error);
