@@ -124,7 +124,7 @@
 						<ul class="list-group">
 							{{#each locations}}
 							<li class="list-group-item">
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
+								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{../marketPlaceType.WTS}}&location={{this.id}}">
 									<span>{{this.name}} (293)</span>
 								</a>
 							</li>

@@ -146,6 +146,7 @@ export function index(req, res) {
 			res.render('search', {
 				title: "Global Trade Connect",
 				marketPlace: marketplace,
+				marketPlaceType: marketplace_type,
 				marketPlaceTypes: results.marketPlaceTypes,
 				selectedMarketPlaceType: selectedMarketPlaceType,
 				categories: results.categories,
