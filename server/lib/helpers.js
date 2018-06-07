@@ -200,3 +200,15 @@ Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
     }
     return new Handlebars.SafeString(ret);
 });
+
+Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
+    if(!ary || ary.length == 0)
+        return options.inverse(this);
+   
+    var result = [ ];
+    for(var i = 0; result.length < max && i < ary.length; ++i)
+        if(ary[i].category_id == id){
+        result.push(options.fn(ary[i]));
+    }
+    return result.join('');
+});

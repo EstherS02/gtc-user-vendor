@@ -10,8 +10,6 @@
             else{
                 alert("Select  all three options");
             }
-            
-
         });
     });
 
@@ -301,12 +299,20 @@
     <div class="container ">
         <div class="row  ">
             {{#each category}}
-            <div class="col-md-3" style="max-width:20%">
-                <p class="global_para_head">{{convertUpperCase this.name}}</p>
-                {{#each ../subCategory}} {{#ifCond this.category_id '==' ../this.id}}
-                <p class="global_para">{{ this.name}}</p>
-                {{/ifCond}} {{/each}}
-            </div>
+                <div class="col-md-3" style="max-width:20%">
+                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+                    {{#each_upto ../subCategory 10 this.id}} 
+                            <p class="global_para ">
+                               
+                                    <a href="search/subCategory_id={{this.id}}" style="color:white">{{ this.name}}
+                                    </a>
+                                    
+                            </p>
+                    {{/each_upto}}
+                    <p class = "global_para">
+                        <a href="search?{{this.name}}" style="color:white">...read more</a>
+                    </p>
+                </div>
             {{/each}}
         </div>
     </div>

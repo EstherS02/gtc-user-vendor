@@ -596,6 +596,24 @@ a {
   padding-left: 20px;
 }
 
+.link {
+  color: #fff !important;
+}
+
+.cat_bg_title a {
+  color: #fff !important;
+}
+
+.list-group > li.list-group-item.gtc-active {
+  background: #D88505;
+  border-radius: 0;
+}
+
+.list-group > li.list-group-item > a.text-black {
+  color: #000 !important;
+}
+
+.list-group > li.list-group-item.gtc-active
 .custom-secondary-header{
   border-bottom-left-radius: 10px;
 }
