@@ -6,8 +6,7 @@ $( document ).ready(function() {
         url: '/api/categories',
         success: function(data, text) {
             var Category = '';
-            Category = data.rows
-            console.log('Category',Category);
+            Category = data.rows;
             var len = Category.length;
             var domElements ='';
             var i=0;
