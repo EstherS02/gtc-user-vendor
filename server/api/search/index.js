@@ -5,11 +5,10 @@ var auth = require('../../auth/auth.service');
 var controller = require('./search.controller');
 //var middleware = require('../../middleware');
 var permission = require('../../config/permission');
-var globalUser = require('../../auth/global-user-obj');
 
 var router = express.Router();
 
-router.get('/', globalUser.isGlobalObj(), controller.search);
+router.get('/', controller.search);
 
 
 module.exports = router;
