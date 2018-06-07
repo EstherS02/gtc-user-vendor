@@ -51,18 +51,19 @@ export function updateCoupon(req,res){
 				// });
 
 				//newCouponProducts
-				model[modelName].update({status : 0}, {
+				model[productModel].update({status : 0}, {
 						where: {
 							coupon_id: id
 						}
 					}).then(function(row) {
+						console.log("talk_update", rows);
 						if (row) {
-							resolve(row);
+							// resolve(row);
 						} else {
-							resolve(null);
+							// resolve(null);
 						}
 					}).catch(function(error) {
-						reject(error);
+						// reject(error);
 					})
 			} else {
 				// service.createRow(modelName,data).then(function(response){

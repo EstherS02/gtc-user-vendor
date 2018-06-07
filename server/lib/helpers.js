@@ -177,6 +177,8 @@ Handlebars.registerHelper("days", function(value) {
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
+    console.log('test',test);
+
     for (var i = 0, len = context.length; i < len; i++) {
         var option = '<option value="' + context[i].id+'"';
         if (test.indexOf(context[i].id) >=0) { 
