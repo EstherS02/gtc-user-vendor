@@ -36,10 +36,9 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 				[field, order]
 			]
 		}).then(function(rows) {
+			var convertRowsJSON = [];
 			if (rows.length > 0) {
-				var convertRowsJSON = rows.map(function(row) {
-					return row.toJSON()
-				});
+				convertRowsJSON = JSON.parse(JSON.stringify(rows));
 				model[modelName].count({
 					where: queryObj
 				}).then(function(count) {
@@ -50,7 +49,9 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 					reject(error);
 				});
 			} else {
-				resolve(rows);
+				result.count = 0;
+				result.rows = convertRowsJSON;
+				resolve(result);
 			}
 		}).catch(function(error) {
 			reject(error);
