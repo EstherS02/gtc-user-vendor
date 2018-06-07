@@ -5,7 +5,7 @@
             var category = $('#category').val();
             var location = $('#location').val();
             if((depart != null) && (category != null) &&(location != null)){
-                window.location.href = '/search?depart_id='+depart+'&category_id='+category+'&location_id='+location;
+                window.location.href = '/search?depart='+depart+'&category='+category+'&location='+location;
             }
             else{
                 alert("Select  all three options");
@@ -304,13 +304,13 @@
                     {{#each_upto ../subCategory 10 this.id}} 
                             <p class="global_para ">
                                
-                                    <a href="search/subCategory_id={{this.id}}" style="color:white">{{ this.name}}
+                                    <a href="search/category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
                                     </a>
                                     
                             </p>
                     {{/each_upto}}
                     <p class = "global_para">
-                        <a href="search?{{this.name}}" style="color:white">...read more</a>
+                        <a href="search" style="color:white">...see more</a>
                     </p>
                 </div>
             {{/each}}
