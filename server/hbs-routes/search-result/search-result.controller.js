@@ -10,17 +10,19 @@ const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
 
-/*export function index(req, res) {
-	var page;
-	var LoggedInUser = {};
-	var productQueryObj = {};
-	var offset, limit, field, order;
-
-	var selectedCategory = 0;
+export function index(req, res) {
 	var selectedLocation = 0;
+	var selectedCategory = 0;
+	var selectedSubCategory = 0;
+	var selectedMarketPlace = 0;
 	var selectedMarketPlaceType = 0;
 
-	productQueryObj['status'] = status["ACTIVE"];
+	var page;
+	var includeArr = [];
+	var LoggedInUser = {};
+	var queryParameters = {};
+	var offset, limit, field, order;
+	var productEndPoint = "MarketplaceProduct";
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -36,111 +38,39 @@ const config = require('../../config/environment');
 
 	offset = (page - 1) * limit;
 
+	if (req.query.location) {
+		selectedLocation = req.query.location;
+	}
+	if (req.query.category) {
+		selectedCategory = req.query.category;
+	}
+	if (req.query.sub_category) {
+		selectedSubCategory = req.query.sub_category;
+	}
+	if (req.query.marketplace) {
+		selectedMarketPlace = req.query.marketplace;
+	}
 	if (req.query.marketplace_type) {
 		selectedMarketPlaceType = req.query.marketplace_type;
 	}
 
-	if (req.query.category) {
-		selectedCategory = req.query.category;
+	queryParameters['status'] = status["ACTIVE"];
+
+	if (req.query.marketplace) {
+		queryParameters['marketplace_id'] = req.query.marketplace;
+	}
+
+	if (req.query.marketplace_type) {
+		queryParameters['marketplace_type_id'] = req.query.marketplace_type;
 	}
 
 	if (req.query.location) {
-		selectedLocation = req.query.location;
-	}
-
-	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
-		LoggedInUser = req.gtcGlobalUserObj;
+		queryParameters['product_location_id'] = req.query.location;
 	}
 
 	async.series({
-		locations: function(callback) {
-			var countryQueryObj = {};
-
-			countryQueryObj['status'] = status["ACTIVE"];
-
-			model['Country'].findAll({
-				where: countryQueryObj,
-				include: [{
-					model: model['Product'],
-					where: productQueryObj,
-					attributes: [],
-					required: false
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['Country.id']
-			}).then(function(results) {
-				return callback(null, JSON.parse(JSON.stringify(results)));
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
-		},
-		categories: function(callback) {
-			var categoryQueryObj = {};
-			var categoryIncludeArr = [];
-			var categoryOffset = 0;
-			var categoryLimit = null;
-			var categoryOrderBy = "id";
-			var categoryOrderType = "ASC";
-			var categoryEndPoint = "Category";
-
-			categoryQueryObj['status'] = status["ACTIVE"];
-
-			service.findAllRows(categoryEndPoint, categoryIncludeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryOrderBy, categoryOrderType)
-				.then(function(results) {
-					return callback(null, results.rows);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(error, null);
-				})
-		},
-		marketPlaceTypes: function(callback) {
-			var marketplaceTypeQueryObj = {};
-			var marketplaceTypeIncludeArr = [];
-			var marketplaceTypeOffset = 0;
-			var marketplaceTypeLimit = null;
-			var marketplaceTypeOrderBy = "id";
-			var marketplaceTypeOrderType = "ASC";
-			var marketplaceTypeEndPoint = "MarketplaceType";
-
-			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
-
-			model['MarketplaceType'].findAll({
-				where: marketplaceTypeQueryObj,
-				include: [{
-					model: model['Product'],
-					where: marketplaceTypeQueryObj,
-					attributes: []
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['MarketplaceType.id']
-			}).then(function(results) {
-				return callback(null, JSON.parse(JSON.stringify(results)));
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
-		},
-		topProducts: function(callback) {
-			var topLimit, topField, topOrder;
-			topQueryObj['is_featured_product'] = 1;
-			topLimit = 3;
-			topField = 'created_on';
-			topOrder = 'desc';
-
-			service.findRows(productEndPoint, topQueryObj, 0, topLimit, topField, topOrder)
-				.then(function(results) {
-					return callback(null, results.rows);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(error, null);
-				});
-		},
 		products: function(callback) {
-			service.findRows(productEndPoint, queryObj, offset, limit, field, order)
+			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
 				})
@@ -148,40 +78,124 @@ const config = require('../../config/environment');
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
+		},
+		topProducts: function(callback) {
+			var topOffset = 0;
+			var topLimit = 3;
+			var topOrderField = "created_on";
+			var topOrderType = "DESC";
+
+			queryParameters['is_featured_product'] = 1;
+
+			service.findAllRows(productEndPoint, includeArr, queryParameters, topOffset, topLimit, topOrderField, topOrderType)
+				.then(function(results) {
+					return callback(null, results.rows);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				});
+		},
+		marketPlaceTypes: function(callback) {
+			var marketplaceTypeQueryObj = {};
+			var productCountQueryParames = {};
+
+			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
+
+			productCountQueryParames['status'] = status["ACTIVE"];
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+
+			model['MarketplaceType'].findAll({
+				where: marketplaceTypeQueryObj,
+				include: [{
+					model: model['Product'],
+					where: productCountQueryParames,
+					attributes: [],
+					required: false
+				}],
+				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+				group: ['MarketplaceType.id']
+			}).then(function(results) {
+				var jsonParseResults = JSON.parse(JSON.stringify(results));
+				return callback(null, jsonParseResults);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		},
+		locations: function(callback) {
+			var locationQueryObj = {};
+			var productCountQueryParames = {};
+
+			locationQueryObj['status'] = status["ACTIVE"];
+
+			productCountQueryParames['status'] = status["ACTIVE"];
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+
+			model['Country'].findAll({
+				where: locationQueryObj,
+				include: [{
+					model: model['Product'],
+					where: productCountQueryParames,
+					attributes: [],
+					required: false
+				}],
+				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+				group: ['Country.id']
+			}).then(function(results) {
+				var jsonParseResults = JSON.parse(JSON.stringify(results));
+				console.log('jsonParseResults', jsonParseResults);
+				return callback(null, jsonParseResults);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
 		}
 	}, function(error, results) {
 		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
-				marketPlace: marketplace,
-				marketPlaceTypes: results.marketPlaceTypes,
-				selectedMarketPlaceType: selectedMarketPlaceType,
-				categories: results.categories,
-				selectedCategory: selectedCategory,
-				locations: results.locations,
+				page: page,
+				maxSize: 5,
+				offset: offset,
+				pageSize: limit,
+				LoggedInUser: LoggedInUser,
 				selectedLocation: selectedLocation,
-				topProductResults: results.topProducts,
+				selectedCategory: selectedCategory,
+				selectedSubCategory: selectedSubCategory,
+				selectedMarketPlace: selectedMarketPlace,
+				marketPlace: marketplace,
+				marketPlaceType: marketplace_type,
+				selectedMarketPlaceType: selectedMarketPlaceType,
 				productResults: results.products.rows,
 				collectionSize: results.products.count,
-				page: page,
-				pageSize: limit,
-				offset: offset,
-				maxSize: 5,
-				LoggedInUser: LoggedInUser
+				topProductResults: results.topProducts,
+				marketPlaceTypes: results.marketPlaceTypes,
+				locations: results.locations
 			});
 		} else {
-			console.log('Error:::', error);
 			res.render('search', error);
 		}
 	});
-}*/
+}
 
-export function index(req, res) {
+export function indexA(req, res) {
 
 	var selectedCategory = 0;
 	var selectedLocation = 0;
 	var selectedMarketPlaceType = 0;
-	
+
 	var queryObj = {};
 	var productQueryObj = {};
 	var LoggedInUser = {};
