@@ -617,3 +617,16 @@ a {
 .custom-secondary-header{
   border-bottom-left-radius: 10px;
 }
+
+.category-fixed {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.collapse.show {
+    display: block !important;
+}
+
+.collapse {
+    display: none !important;
+}
