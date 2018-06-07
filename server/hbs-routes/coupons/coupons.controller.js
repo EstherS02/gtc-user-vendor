@@ -120,7 +120,7 @@ export function editCoupons(req, res) {
 	var modelName = "Coupon";
 
 	queryObj['id'] = req.query.id;
-	queryObj['vendor_id'] = 28;
+	// queryObj['vendor_id'] = 29;
 	queryObj['status'] = status["ACTIVE"];
 
 	field = "id";
@@ -262,7 +262,7 @@ export function editCoupons(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			// console.log('results', results);
+			// console.log('results', results.couponProducts);
 			res.render('edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,

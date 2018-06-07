@@ -163,7 +163,7 @@
 		$("#inputIndividualUseOnly[value=1]").prop("checked","true");
 		$("#inputExcluseSaleItem[value=1]").prop("checked","true");
 
-		$('#inputProducts').select2().val([1, 2]).trigger("change")
+		// $('#inputProducts').select2().val([1, 2]).trigger("change")
 
 		$("#couponUpdateBtn").click(function(e) {
 			e.preventDefault();
@@ -282,25 +282,49 @@
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
+								{{#if existingCouponProducts}}
 									{{{optionsSelected  products existingCouponProducts}}}
+								{{else}}
+									{{#each products}}
+										<option value={{this.id}}>{{this.product_name}}</option>
+									{{/each}}
+								{{/if}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
-							    {{{optionsSelected  products existingCouponExcludeProducts}}}
+							    {{#if existingCouponExcludeProducts}}
+									{{{optionsSelected  products existingCouponExcludeProducts}}}
+								{{else}}
+									{{#each products}}
+										<option value={{this.id}}>{{this.product_name}}</option>
+									{{/each}}
+								{{/if}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
+									{{#if existingCouponCategories}}
 									{{{optionsSelectedCategory  categories existingCouponCategories}}}
+								{{else}}
+									{{#each categories}}
+										<option value={{this.id}}>{{this.name}}</option>
+									{{/each}}
+								{{/if}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
 							</div>
 							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple" placeholder="Product Exclude Categories">
+									{{#if existingCouponExcludeCategories}}
 									{{{optionsSelectedCategory  categories existingCouponExcludeCategories}}}
+								{{else}}
+									{{#each categories}}
+										<option value={{this.id}}>{{this.name}}</option>
+									{{/each}}
+								{{/if}}
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 							</div>

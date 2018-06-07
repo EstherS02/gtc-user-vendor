@@ -1,4 +1,33 @@
-<section>
+<script type="text/javascript">
+
+$( document ).ready(function() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/categories',
+        success: function(data, text) {
+            var Category = '';
+            Category = data.rows
+            console.log('Category',Category);
+            var len = Category.length;
+            var domElements ='';
+            var i=0;
+            Category.forEach(function(element) {
+              if(i<8){
+              domElements = domElements+'<p class="footer_help_para"><a href="/search?category='+element['id'] +'">'+element['name']+'</p>';
+              i++;
+          }
+            });
+             
+            $('#appendOn').append(domElements);
+        },
+        error: function(request, status, error) {
+        }
+    });
+});
+
+</script>
+
+<section id = "footerFunction">
     <div class="jumbotron  footer_bg" style="margin-bottom:0">
         <div class="container">
             <div class="row">
@@ -25,40 +54,38 @@
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">ACCOUNT CENTER</p>
-                    <p class="footer_help_para">Singn Up / Singn in</p>
-                    <p class="footer_help_para">My Account</p>
-                    <p class="footer_help_para">Track Your Order</p>
-                    <p class="footer_help_para">Wishlist</p>
-                    <p class="footer_help_para">Shopping Cart</p>
+                    <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
+                    <p class="footer_help_para"><a href="/user-profile">My Account</a></p>
+                    <p class="footer_help_para"><a href="/order-track">Track Your Order</a></p>
+                    <p class="footer_help_para"><a href="/wishlist">Wishlist</a></p>
+                    <p class="footer_help_para"><a href="/cart">Shopping Cart</a></p>
 
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">QUICK JUMP</p>
-                    <p class="footer_help_para">Top Rated Products </p>
-                    <p class="footer_help_para">Sales Products</p>
-                    <p class="footer_help_para">Recent Products</p>
-                    <p class="footer_help_para">Featured Products</p>
-                    <p class="footer_help_para">Best Seling Products</p>
+                    <p class="footer_help_para"><a href="">Top Rated Products </a></p>
+                    <p class="footer_help_para"><a href="">Sales Products</a></p>
+                    <p class="footer_help_para"><a href="">Recent Products</a></p>
+                    <p class="footer_help_para"><a href="">Featured Products</a></p>
+                    <p class="footer_help_para"><a href="">Best Selling Products</a></p>
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">START SHOPPING</p>
-                    <p class="footer_help_para">Shop Online</p>
-                    <p class="footer_help_para">Geo-Locate/Map Search</p>
-                    <p class="footer_help_para">Wholesale Market</p>
-                    <p class="footer_help_para">Service Market</p>
-                    <p class="footer_help_para">Life Style Sub Scriptions</p>
-                    <p class="footer_help_para">Company Directory</p>
-                    <p class="footer_help_para">Product Directory</p>
+                    <p class="footer_help_para"><a href="/shop">Shop Online</a></p>
+                    <p class="footer_help_para"><a href="">Geo-Locate/Map Search</a></p>
+                    <p class="footer_help_para"><a href="/wholesale">Wholesale Market</a></p>
+                    <p class="footer_help_para"><a href="/services">Service Market</a></p>
+                    <p class="footer_help_para"><a href="/lifestyle">Life Style Sub Scriptions</a></p>
+                    <p class="footer_help_para"><a href="/directory">Company Directory</a></p>
+                    <p class="footer_help_para"><a href="/products">Product Directory</a></p>
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">SEARCH BY CATEGORY</p>
-
-                    <p class="footer_help_para">Agriculture</p>
-                    <p class="footer_help_para">Apparel &amp; Fashion</p>
-                    <p class="footer_help_para">Business services</p>
-                    <p class="footer_help_para">Chemicals</p>
-                    <p class="footer_help_para">Computer</p>
-                    <p class="footer_help_para">Electronics &amp; Electrical</p>
+                    {{!-- <p id="appendOn"></p> --}}
+                    <span id="appendOn">
+                        {{!-- <p class="footer_help_para"><a href="">Apparel &amp; Fashion</a></p> --}}
+                    </span>
+                   
 
 
 

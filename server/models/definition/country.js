@@ -111,11 +111,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Country.hasMany(ProductAdsSetting, {
+    /*Country.hasMany(ProductAdsSetting, {
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Country.hasMany(State, {
         foreignKey: 'country_id',
@@ -231,13 +231,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Country.belongsToMany(Product, {
+    /*Country.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Country.belongsToMany(State, {
         through: ProductAdsSetting,
