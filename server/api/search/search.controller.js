@@ -7,21 +7,29 @@ const service = require('../service');
 export function search(req, res) {
     console.log("req.query", req.query);
     var includeArr = [];
+    var whereCondition = {};
     includeArr = [
-        { model: model['Country'],  as: Country },
-        { model: model['State'], as:State }
+        { model: model['Country'], as: 'Country' },
+        { model: model['State'], as: 'State' }
     ]
-   
-    model["Product"].findAll({
+    if (req.query.category) {
+        whereCondition['product_category_id'] = req.query.category;
+    }
+    if (req.query.keyword) {
+        whereCondition['product_name'] = { like: '%' + req.query.keyword + '%' }
+    }
+    if (req.query.location) {
+        whereCondition['$or'] = [
+            { '$Country.name$': req.query.location },
+            { '$State.name$': req.query.location },
+            { city: req.query.location },
+        ]
+    }
+    console.log("whereCondition", whereCondition);
 
+    model["Product"].findAll({
         include: includeArr,
-        where: {
-            product_category_id:req.query.product_category_id,
-            $or: [
-                {'Country.name': req.query.country},
-                {'State.name': req.query.state}
-              ]
-        }
+        where: whereCondition
     })
         .then(function (row) {
             res.status(200).send(row);
