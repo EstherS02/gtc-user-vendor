@@ -1,15 +1,63 @@
 'use strict';
 
-var mv = require('mv');
+const mv = require('mv');
+const _ = require('lodash');
+const sequelize = require('sequelize');
 
 const service = require('../service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
-const _ = require('lodash');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
+
+/*export function index(req, res) {
+	var productQueryObj = {};
+	var marketPlaceTypeQueryObj = {};
+
+	productQueryObj['status'] = status["ACTIVE"];
+	marketPlaceTypeQueryObj['status'] = status["ACTIVE"];
+
+	productQueryObj['product_location'] = 3;
+
+	console.log('productQueryObj', productQueryObj);
+
+	model['MarketplaceType'].findAll({
+		where: marketPlaceTypeQueryObj,
+		include: [{
+			model: model['Product'],
+			where: productQueryObj,
+			required: false
+		}],
+		group: ['MarketplaceType.id']
+	}).then(function(results) {
+		res.status(200).send(JSON.parse(JSON.stringify(results)));
+		return;
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+
+	var marketplaceTypeQueryObj = {};
+	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+
+	model['Category'].findAll({
+		where: marketplaceTypeQueryObj,
+		include: [{
+			model: model['SubCategory'],
+			where: marketplaceTypeQueryObj
+		}]
+	}).then(function(results) {
+		res.status(200).send(JSON.parse(JSON.stringify(results)));
+		return;
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+}*/
 
 export function index(req, res) {
 	var offset, limit, field, order;
@@ -175,28 +223,28 @@ export function show(req, res) {
 }
 
 export function findById(req, res) {
-  var paramsID = req.params.id;
-  let includeArr;
+	var paramsID = req.params.id;
+	let includeArr;
 
-	if(req.query.populate)
-	  includeArr = populate.populateData(req.query.populate);
+	if (req.query.populate)
+		includeArr = populate.populateData(req.query.populate);
 	else
-	  includeArr = [];
-	
+		includeArr = [];
+
 	delete req.query.populate;
 
-  service.findRow(req.endpoint, paramsID, includeArr)
-    .then(function (result) {
-      if (result) {
-        return res.status(200).send(result);
-      } else {
-        return res.status(404).send("Not found");
-      }
-    }).catch(function (error) {
-      console.log('Error :::', error);
-      res.status(500).send("Internal server error");
-      return
-    });
+	service.findRow(req.endpoint, paramsID, includeArr)
+		.then(function(result) {
+			if (result) {
+				return res.status(200).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
 }
 
 
@@ -334,7 +382,9 @@ exports.upload = function(req, res) {
 			return res.status(400).send("Failed to upload");
 		} else {
 			var image = config.imageUrlRewritePath.base + file.originalFilename;
-			return res.status(201).json({imageURL : image});
+			return res.status(201).json({
+				imageURL: image
+			});
 		}
 	});
 };

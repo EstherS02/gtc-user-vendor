@@ -108,7 +108,7 @@
 							{{#each marketPlaceTypes}}
 							<li class="list-group-item">
 								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">
-									<span>{{this.code}} - {{this.name}} (293)</span>
+									<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
 							{{/each}}
@@ -124,8 +124,8 @@
 						<ul class="list-group">
 							{{#each locations}}
 							<li class="list-group-item">
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{../marketPlaceType.WTS}}&location={{this.id}}">
-									<span>{{this.name}} (293)</span>
+								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
+									<span>{{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
 							{{/each}}
