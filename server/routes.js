@@ -66,7 +66,8 @@ export default function(app) {
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
   app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
   app.use('/order-history', require('./hbs-routes/order-history'));
- 
+  app.use('/order-track', require('./hbs-routes/order-track'));
+  app.use('/compare', require('./hbs-routes/compare'));
   app.use('/shipping-settings', require('./hbs-routes/shipping-settings'));
   app.use('/verification', require('./hbs-routes/verification'));
   app.use('/social-profile', require('./hbs-routes/social-profile'));

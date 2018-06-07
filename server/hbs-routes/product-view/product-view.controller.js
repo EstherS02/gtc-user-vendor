@@ -7,9 +7,77 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
+const sequelize = require('sequelize');
+
+
+export function GetProductDetails(req, res) {
+    var queryObj = {};
+    var includeArr = [];
+    var LoggedInUser = {};
+
+
+    if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+        LoggedInUser = req.gtcGlobalUserObj;
+    }
+
+    if(req.params.product_id)
+        queryObj['id'] = req.params.product_id;
+
+    if(req.params.product_slug)
+        queryObj['product_slug'] = req.params.product_slug;
+
+        queryObj['status'] = status["ACTIVE"];
+
+    includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
+
+    return model["Product"].findOne({
+        where: queryObj,
+        include: [
+            { model: model["Vendor"] },
+            { model: model["Marketplace"] },
+            { model: model["MarketplaceType"] },
+            { model: model["Category"] },
+            { model: model["SubCategory"] },
+            { model: model["Country"] },
+            { model: model["State"] },
+            {
+                model: model["ProductMedia"], 
+                where: {
+                    status : {
+                        '$eq': status["ACTIVE"]
+                    }
+                }
+        }],
+        order: [
+            [ model["ProductMedia"], 'base_image', 'DESC']
+        ]
+    }).then(function(product) {
+            if (product) {
+                res.render('product-view', {
+                    title: "Global Trade Connect",
+                    product: product,
+                    LoggedInUser: LoggedInUser
+                });
+                 /* res.send({
+                    title: "Global Trade Connect",
+                    product: product,
+                    LoggedInUser: LoggedInUser
+                });  */
+            } else {
+                res.render('product-view', {
+                    title: "Global Trade Connect"
+                });
+            }
+        })
+        .catch(function(error) {
+            console.log('Error:::', error);
+            res.render('product-view', error);
+        });
+}
 
 
 export function productView(req, res) {
+    //old code
 
     let searchObj = {}
 
@@ -28,34 +96,5 @@ export function productView(req, res) {
         }).catch(function(error) {
             console.log('Error :::', error);
             res.render('productView', error)
-        });
-}
-
-export function GetProductDetails(req, res) {
-    var modeName = "Product";
-    var queryObj = {};
-    var includeArr = [];
-
-    queryObj['product_slug'] = req.params.productSlugName;
-    queryObj['status'] = status["ACTIVE"];
-
-    includeArr = populate.populateData("Marketplace,MarketplaceType,Category,SubCategory,Country,State")
-
-    service.findOneRow(modeName, queryObj, includeArr)
-        .then(function(product) {
-            if (product) {
-                res.render('product-view', {
-                    title: "Global Trade Connect",
-                    product: product
-                });
-            } else {
-                res.render('product-view', {
-                    title: "Global Trade Connect"
-                });
-            }
-        })
-        .catch(function(error) {
-            console.log('Error:::', error);
-            res.render('product-view', err);
         });
 }
