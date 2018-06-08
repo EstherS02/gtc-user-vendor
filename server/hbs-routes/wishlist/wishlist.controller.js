@@ -11,6 +11,13 @@ import series from 'async/series';
 var async = require('async');
 
 export function wishlist(req, res) {
+
+	var LoggedInUser = {};
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+
 	var field = 'id';
 	var order = "desc";
 	var offset = 0;
@@ -18,16 +25,16 @@ export function wishlist(req, res) {
 	var vendor_id = 29;
 	var queryObj = {};
 	if (typeof req.query.limit !== 'undefined') {
-		if(req.query.limit =='All'){
-			limit = 'NULL'; 
-		}else{
-		limit = req.query.limit;
-		limit = parseInt(limit);
+		if (req.query.limit == 'All') {
+			limit = 'NULL';
+		} else {
+			limit = req.query.limit;
+			limit = parseInt(limit);
 		}
 	}
 	queryObj = {
 		user_id: 62,
-		status :1
+		status: 1
 	};
 	var wishModel = 'WishList';
 	var includeArr = [{
@@ -55,7 +62,8 @@ export function wishlist(req, res) {
 				res.render('wishlist', {
 					title: "Global Trade Connect",
 					wishlist: results.wishlist.rows,
-					count: results.wishlist.count
+					count: results.wishlist.count,
+					LoggedInUser: LoggedInUser
 				});
 			} else {
 				res.render('wishlist', err);

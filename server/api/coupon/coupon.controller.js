@@ -31,13 +31,15 @@ export function updateCoupon(req, res) {
 	newCoupon.discount_value = req.body.discount_value;
 	newCoupon.discount_value = req.body.discount_value;
 
-	var newCouponProducts = JSON.parse(req.body.couponProducts); 
+	var newCouponProducts = JSON.parse(req.body.couponProducts);
 	var newCouponExcludeProducts = req.body.couponExcludeProducts;
 	var newCouponCategory = req.body.couponCategories;
 	var newCouponExcludeCategory = req.body.couponExcludeCategories;
+	// var modelName = '';
+	var queryObj = {};
+	var includeArr = [];
 
-
-	console.log('product',newCouponProducts);
+	console.log('product', newCouponProducts);
 
 	service.updateRow(modelName, newCoupon, id).then(function(results) {
 		console.log("talk", results);
@@ -49,59 +51,47 @@ export function updateCoupon(req, res) {
 					coupon_id: id
 				}
 			}).then(function(row) {
-				console.log("talk_update",row);
-				if (row>0) {
+				console.log("talk_update", row);
+				if (row > 0) {
 					console.log("status 0");
-					if(newCouponProducts){
-					newCouponProducts.forEach(function(element) {
-						console.log('new', element);
-						CouponProduct.findOrCreate({
-								where: {
-									coupon_id: id,
-									product_id:element
-								},
-								defaults:{coupon_id:id,product_id:element,status:1}
-							})
-							// necessary to use spread to find out if user was found or created
-							.spread(function(userResult, created) {
-								// this userId was either created or found depending upon whether the argment 'created' is true or false
-								// do something with this user now
-								if (created) {
-									// some logic
-									console.log("created");
-								} else {
-									// some other logic
-									console.log("updated");
-								}
-							}); // end spread
+					if (newCouponProducts) {
+						// modelName = 'CouponProducts';
+						newCouponProducts.forEach(function(element) {
+							console.log('new', element);
+							data = {
+								coupon_id: id,
+								product_id: element.id,
+								status: 1
+							};
+							queryObj = {
+								coupon_id: id,
+								product_id: element.id
+							};
+							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
+						console.log("Update", response)
 					});
-				}
+						});
+					}
 				} else {
 					console.log("status 1");
-					if(newCouponProducts){
-					newCouponProducts.forEach(function(element) {
-						console.log(element);
-						CouponProduct.findOrCreate({
-								where: {
-									coupon_id: id,
-									product_id:element
-								},
-								defaults:{status:1}
-							})
-							// necessary to use spread to find out if user was found or created
-							.spread(function(userResult, created) {
-								// this userId was either created or found depending upon whether the argment 'created' is true or false
-								// do something with this user now
-								if (created) {
-									// some logic
-									console.log("created");
-								} else {
-									// some other logic
-									console.log("updated");
-								}
-							}); // end spread
+						if (newCouponProducts) {
+
+						newCouponProducts.forEach(function(element) {
+							console.log('cc_new', element);
+							data = {
+								coupon_id: id,
+								product_id: element.id,
+								status: 1
+							};
+							queryObj = {
+								coupon_id: id,
+								product_id: element.id
+							};
+							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
+						console.log("Update", response)
 					});
-				}
+						});
+					}
 
 				}
 			}).catch(function(error) {

@@ -13,10 +13,10 @@ var async = require('async');
 export function reviews(req, res) {
 	var LoggedInUser = {};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
 
 
 	if (req.query.sort == 'rating') {
@@ -30,10 +30,10 @@ export function reviews(req, res) {
 	var vendor_id = 29;
 	var rating_limit = 120;
 	var queryObj = {};
-	queryObj={
-				vendor_id: 29,
-				review_type: 2 // 1 for product review and 2 for vendor review
-			};
+	queryObj = {
+		vendor_id: 29,
+		review_type: 2 // 1 for product review and 2 for vendor review
+	};
 
 	async.series({
 			Reviews: function(callback) {
