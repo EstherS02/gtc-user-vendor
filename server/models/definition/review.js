@@ -12,20 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'product',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        vendor_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_id',
-            allowNull: true,
-            references: {
-                model: 'vendor',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -34,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'users',
                 key: 'id'
@@ -42,11 +31,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        review_type: {
-            type: DataTypes.INTEGER(20),
-            field: 'review_type',
-            allowNull: true,
-        }, 
         rating: {
             type: DataTypes.INTEGER,
             field: 'rating',
@@ -104,7 +88,6 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Review = model.Review;
     const Product = model.Product;
-    const Vendor = model.Vendor;
     const User = model.User;
 
     Review.belongsTo(Product, {
@@ -112,11 +95,7 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-    Review.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+
     Review.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',

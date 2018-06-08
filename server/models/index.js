@@ -136,6 +136,7 @@ function init(sequelize) {
     require('./definition/vendor-follower.js').initRelations();
     require('./definition/vendor-notification-setting.js').initRelations();
     require('./definition/vendor-plan.js').initRelations();
+    require('./definition/vendor-rating.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();
     require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();

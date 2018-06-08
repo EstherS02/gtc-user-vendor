@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Review', {
+    return sequelize.define('VendorRating', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,37 +9,27 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        product_id: {
+        vendor_id: {
             type: DataTypes.BIGINT,
-            field: 'product_id',
-            allowNull: true,
+            field: 'vendor_id',
+            allowNull: false,
             references: {
-                model: 'product',
+                model: 'vendor',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_id',
-            allowNull: true
-        },
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'users',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
-        review_type: {
-            type: DataTypes.INTEGER,
-            field: 'review_type',
-            allowNull: true
         },
         rating: {
             type: DataTypes.INTEGER,
@@ -97,11 +87,11 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Review = model.Review;
-    const Product = model.Product;
+    const Vendor = model.Vendor;
     const User = model.User;
 
-    Review.belongsTo(Product, {
-        foreignKey: 'product_id',
+    Review.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
