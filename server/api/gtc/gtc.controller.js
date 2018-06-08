@@ -12,7 +12,7 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function indexA(req, res) {
+export function index(req, res) {
 	var queryObj = {};
 	var productCountQueryParames = {};
 
@@ -20,8 +20,7 @@ export function indexA(req, res) {
 
 	productCountQueryParames['status'] = status["ACTIVE"];
 	productCountQueryParames['marketplace_id'] = 1;
-	productCountQueryParames['marketplace_type_id'] = 4;
-	productCountQueryParames['product_location'] = 10;
+	productCountQueryParames['marketplace_type_id'] = 1;
 
 	model['Category'].findAll({
 		where: queryObj,
@@ -31,14 +30,13 @@ export function indexA(req, res) {
 			include: [{
 				model: model['Product'],
 				where: productCountQueryParames,
-				attributes: [],
+				attributes: ['id', 'product_name', 'marketplace_id', 'marketplace_type_id', 'product_category_id', 'sub_category_id'],
 				required: false,
 			}],
 			required: false,
 			attributes: ['id', 'name', 'code']
 		}],
-		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'product_count']],
-		group: ['Category.id']
+		attributes: ['id', 'name', 'code']
 		/*include: [{
 			model: model['Product'],
 			where: productCountQueryParames,
@@ -57,7 +55,7 @@ export function indexA(req, res) {
 	});
 }
 
-export function index(req, res) {
+export function indexA(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var searchObj = {};

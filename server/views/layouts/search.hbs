@@ -78,21 +78,23 @@
 					</p>
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
-							{{!-- {{#each categories}}
+							{{#each categories}}
 							<li class="list-group-item">
 								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="false" aria-controls="collapseCategory{{this.id}}">
-									<span>{{this.name}} (293)</span>
+									<span>{{this.name}} (263)</span>
 								</a>
 								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
+									{{#each this.SubCategories}}
 									<li class="list-group-item">
-										<a href="./search?category={{this.id}}">
-											<span>DEF</span>
+										<a href="./search?category={{this.id}}&sub_category={{this.id}}">
+											<span>{{this.name}}</span>
 										</a>
 										<ul></ul>
 									</li>
+									{{/each}}
 								</ul>
 							</li>
-							{{/each}} --}}
+							{{/each}}
 						</ul>
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>

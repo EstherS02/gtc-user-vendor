@@ -40,33 +40,26 @@ export function index(req, res) {
 
 	if (req.query.location) {
 		selectedLocation = req.query.location;
+		queryParameters['product_location_id'] = req.query.location;
 	}
 	if (req.query.category) {
 		selectedCategory = req.query.category;
+		queryParameters['category_id'] = req.query.category;
 	}
 	if (req.query.sub_category) {
 		selectedSubCategory = req.query.sub_category;
+		queryParameters['sub_category_id'] = req.query.sub_category;
 	}
 	if (req.query.marketplace) {
 		selectedMarketPlace = req.query.marketplace;
+		queryParameters['marketplace_id'] = req.query.marketplace;
 	}
 	if (req.query.marketplace_type) {
 		selectedMarketPlaceType = req.query.marketplace_type;
-	}
-
-	queryParameters['status'] = status["ACTIVE"];
-
-	if (req.query.marketplace) {
-		queryParameters['marketplace_id'] = req.query.marketplace;
-	}
-
-	if (req.query.marketplace_type) {
 		queryParameters['marketplace_type_id'] = req.query.marketplace_type;
 	}
 
-	if (req.query.location) {
-		queryParameters['product_location_id'] = req.query.location;
-	}
+	queryParameters['status'] = status["ACTIVE"];
 
 	async.series({
 		products: function(callback) {
@@ -155,6 +148,42 @@ export function index(req, res) {
 				group: ['Country.id']
 			}).then(function(results) {
 				var jsonParseResults = JSON.parse(JSON.stringify(results));
+				return callback(null, jsonParseResults);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		},
+		categories: function(callback) {
+			var categoryQueryObj = {};
+			var productCountQueryParames = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			productCountQueryParames['status'] = status["ACTIVE"];
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.category) {
+				productCountQueryParames['category_id'] = req.query.category;
+			}
+
+			model['Category'].findAll({
+				where: categoryQueryObj,
+				include: [{
+					model: model['SubCategory'],
+					where: categoryQueryObj,
+					required: false,
+					attributes: ['id', 'name', 'code']
+				}]
+			}).then(function(results) {
+				var jsonParseResults = JSON.parse(JSON.stringify(results));
 				console.log('jsonParseResults', jsonParseResults);
 				return callback(null, jsonParseResults);
 			}).catch(function(error) {
@@ -182,7 +211,8 @@ export function index(req, res) {
 				collectionSize: results.products.count,
 				topProductResults: results.topProducts,
 				marketPlaceTypes: results.marketPlaceTypes,
-				locations: results.locations
+				locations: results.locations,
+				categories: results.categories
 			});
 		} else {
 			res.render('search', error);
