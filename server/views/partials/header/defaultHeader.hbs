@@ -11,11 +11,24 @@
 						<img src="img/Icons/icon-4-01.png" style="width: 2%;" alt="geo" /> Track your Order</a>
 
 					{{#if LoggedInUser.email}}
-					<a href="javascript:;" class="font_icon" style="color: #D36988;">
+					<span  class="dropdown">
+					<a  class="font_icon dropdown-toggle"   data-toggle="dropdown" style="color: #D36988;">
 						<img src="img/Icons/icons-02.png" style="width: 2%;" alt="geo" />
-						<span id="userAuthentication">Welcome back, {{LoggedInUser.first_name}}</span>
-					</a>
+						<span id="userAuthentication">Welcome back, {{LoggedInUser.first_name}}</span></a>
+						<div class="dropdown-menu">
+					    <a class="dropdown-item" href="#">Order History</a>
+					    <a class="dropdown-item" href="#">My Downloads</a>
+					    <a class="dropdown-item" href="#" style="border-bottom:1px solid gray">Wishlist</a>
 
+					    <a class="dropdown-item" href="#">Bill Settings</a>
+					    <a class="dropdown-item" href="#">Profile Settings</a>
+					    <a class="dropdown-item" href="#" style="border-bottom:1px solid gray">GTC Mail</a>
+
+					    <a class="dropdown-item" href="#">Contact</a>
+					    <a class="dropdown-item" href="#">Feed</a>
+					    <a class="dropdown-item" href="#">Support</a>
+					  </div>
+					</span>
 					{{else}}
 					<a href="/login" class="font_icon" style="color: #D36988;">
 						<img src="img/Icons/icons-02.png" style="width: 2%;" alt="geo" />

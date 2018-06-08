@@ -12,42 +12,45 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function index(req, res) {
-	var queryObj = {};
-	var productCountQueryParames = {};
+export function indexA(req, res) {
+	var productQueryObj = {};
+	var marketPlaceTypeQueryObj = {};
 
-	queryObj['status'] = status["ACTIVE"];
+	productQueryObj['status'] = status["ACTIVE"];
+	marketPlaceTypeQueryObj['status'] = status["ACTIVE"];
 
-	productCountQueryParames['status'] = status["ACTIVE"];
-	productCountQueryParames['marketplace_id'] = 1;
-	productCountQueryParames['marketplace_type_id'] = 4;
-	productCountQueryParames['product_location'] = 10;
+	productQueryObj['product_location'] = 3;
+
+	console.log('productQueryObj', productQueryObj);
+
+	model['MarketplaceType'].findAll({
+		where: marketPlaceTypeQueryObj,
+		include: [{
+			model: model['Product'],
+			where: productQueryObj,
+			required: false
+		}],
+		group: ['MarketplaceType.id']
+	}).then(function(results) {
+		res.status(200).send(JSON.parse(JSON.stringify(results)));
+		return;
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+
+	var marketplaceTypeQueryObj = {};
+	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
 
 	model['Category'].findAll({
-		where: queryObj,
+		where: marketplaceTypeQueryObj,
 		include: [{
 			model: model['SubCategory'],
-			where: queryObj,
-			include: [{
-				model: model['Product'],
-				where: productCountQueryParames,
-				attributes: ['id','product_category_id','sub_category_id'],
-				required: false,
-			}],
-			required: false,
-			attributes: ['id', 'name', 'code',[sequelize.fn('count', sequelize.col('Products.sub_category_id')), 'sub_cat_count']]
-		},
-		{
-			model: model['Product'],
-				// where: productCountQueryParames,
-				attributes: ['id','product_category_id','sub_category_id'],
-				// required: false,
-		}
-		],
-		attributes: ['id', 'name', 'code',[sequelize.fn('count', sequelize.col('Products.product_category_id')), 'product_count']],
-		group: ['Category.id']
+			where: marketplaceTypeQueryObj
+		}]
 	}).then(function(results) {
-		res.status(200).send((results));
+		res.status(200).send(JSON.parse(JSON.stringify(results)));
 		return;
 	}).catch(function(error) {
 		console.log('Error :::', error);
@@ -56,7 +59,7 @@ export function index(req, res) {
 	});
 }
 
-export function indexA(req, res) {
+export function index(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var searchObj = {};
