@@ -9,8 +9,13 @@
 		}
 	}
 
+
 	function appendLocation(location) {
-		var newQuery = window.location.search + "&location=" + location;
+		//console.log("window.location.search", window.location.search);
+		var url = window.location.search;
+		var arr = url.split("&location")[0];
+		console.log("arr", arr);
+		var newQuery = arr + "&location=" + location;
 		window.location.href = window.location.origin+"/search" + newQuery;
 	}
 
