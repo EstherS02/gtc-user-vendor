@@ -295,7 +295,7 @@
         $('#keyword').keyup(function () {
             $('#searchSubmit').prop('disabled', this.value == "" ? true : false);
         })
-        $('#location').keyup(function () {
+        $('#origin').keyup(function () {
             $('#searchSubmit').prop('disabled', this.value == "" ? true : false);
         })
         $('#category').on('change', function () {
@@ -335,7 +335,7 @@
                             <p class="why_geo">What is Geo-Locate? </p>
                             <p>Find products close to home, or nearby your target market with Lorom ipsum dolor sholt</p>
                             <h3>GIVE IT A TRY!:</h3>
-                            <input type="text" id="location" name="location" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
+                            <input type="text" id="origin" name="origin" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
                             <select class="geo_textbox" name="category" id="category">
                                 <option disabled selected>Category</option>
                                 {{#each category}}
@@ -419,7 +419,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">WTS -
-                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -474,7 +474,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">WTB -
-                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -529,7 +529,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">WTT -
-                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -584,7 +584,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">RFQ -
-                                                <a href="wholesale/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -646,7 +646,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">
-                                                <a href="/products/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="/shop/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -700,7 +700,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">
-                                                <a href="/services/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="services/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
@@ -754,7 +754,7 @@
                                     <div class="col-md-9 no-padding">
                                         <div class="product-title">
                                             <h5 class="no-margins">
-                                                <a href="/lifestyle/{{this.product_slug}}">{{this.product_name}}</a>
+                                                <a href="lifestyle/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                             </h5>
                                             <div class="row no-margins">
                                                 <div class="col-md-4 no-padding">
