@@ -1,3 +1,22 @@
+<script type="text/javascript">
+	$(document).ready(function () {
+		$.ajax({
+			type: 'GET',
+			url: '/api/categories',
+			success: function (data, text) {
+				var Category = '';
+				Category = data.rows;
+				var len = Category.length;
+				var domElements = '';
+				Category.forEach(function (element) {
+					domElements = domElements + '<option value="' + element['id'] + '">' + element['name'] + '</option>';
+				});
+				$('#category').append(domElements);
+			},
+			error: function (request, status, error) { }
+		});
+	});
+</script>
 <div class="sticky-top topbar">
 	<div class="container-fluid">
 		<div class="row">
@@ -88,18 +107,11 @@
 							</a>
 						</li>
 					</ul>
-					{{!--
-					<form class="form-inline my-2 my-lg-0">
-						<input class="form-control mr-sm-2" type="text" placeholder="Search">
-						<a href="">
-							<button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
-						</a>
-					</form> --}}
 					<div class="field-search form-inline my-2 my-lg-0">
 						<input type="search" placeholder="Search My store">
 						<div class="right">
-							<select>
-								<option>Category</option>
+							<select id="category">
+								<option disabled selected>Category</option>
 							</select>
 							<button>
 								<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
