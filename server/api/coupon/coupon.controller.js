@@ -68,13 +68,13 @@ export function updateCoupon(req, res) {
 								product_id: element.id
 							};
 							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
-						console.log("Update", response)
-					});
+								console.log("Update", response)
+							});
 						});
 					}
 				} else {
 					console.log("status 1");
-						if (newCouponProducts) {
+					if (newCouponProducts) {
 
 						newCouponProducts.forEach(function(element) {
 							console.log('cc_new', element);
@@ -88,8 +88,8 @@ export function updateCoupon(req, res) {
 								product_id: element.id
 							};
 							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
-						console.log("Update", response)
-					});
+								console.log("Update", response)
+							});
 						});
 					}
 

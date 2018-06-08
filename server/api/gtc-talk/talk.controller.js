@@ -58,23 +58,21 @@ export function storeData(req,res){
 	};
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
-			console.log("talk", results);
 			if (results) {
 				var id = results.id;
 				data.last_updated_on = new Date();
 				res.status(200).send(results);
 				service.updateRow(modelName,data,id).then(function(response){
-					console.log("Update",response)
+					return;
 				});
 			} else {
 				data.created_on = new Date();
 				service.createRow(modelName,data).then(function(response){
-					console.log("News",response)
+					return;
 			});
 		}
 	}).catch(function(error) {
-			console.log('Error:::', error);
-			res.status(500).send("Internal server error");
+			res.status(500).send("Internal server error",error);
 			return;
 		});
 }
