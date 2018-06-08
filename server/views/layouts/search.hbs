@@ -16,7 +16,15 @@
 		var newQuery = arr + "&location=" + location;
 		window.location.href = window.location.origin+"/search" + newQuery;
 	}
-
+	function global(){
+		var url = window.location.search;
+		var arr =url.split("&location")[0];
+		var newQuery = arr;
+		window.location.href = window.location.origin+"/search" + newQuery;
+	}
+	function globalSearch(){
+		window.location.href = window.location.origin+"/search";			
+	}
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -81,7 +89,7 @@
 				<div class="col-md-3 showing_categ">
 					<p><b>FILTER BY CATEGORY</b></p>
 					<p class="cat_bg_title">
-						<a href="javascript:;">
+						<a href="javascript:;" onclick = globalSearch()>
 							<span>ALL CATEGORIES (293)</span>
 						</a>
 					</p>
@@ -108,7 +116,7 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
 					<p class="cat_bg_title">
-						<a href="./search?marketplace={{marketPlace.WHOLESALE}}">
+						<a href="javascript:;" onclick=globalSearch()>
 							<span>ALL TYPES (293)</span>
 						</a>
 					</p>
@@ -125,18 +133,18 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
 					<p class="cat_bg_title">
-						<a href="javascript:;">
+						<a href="javascript:;" onclick=global()>
 							<span>GLOBAL (293)</span>
 						</a>
 					</p>
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
 							{{#each locations}}
-							<li class="list-group-item">
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
-									<span>{{this.name}} ({{this.product_count}})</span>
-								</a>
-							</li>
+								<li class="list-group-item">
+									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
+										<span>{{this.name}} ({{this.product_count}})</span>
+									</a>
+								</li>
 							{{/each}}
 						</ul>
 					</div>
