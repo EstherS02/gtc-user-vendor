@@ -8,12 +8,6 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
-
-	function appendLocation(location) {
-		var newQuery = window.location.search + "&location=" + location;
-		window.location.href = window.location.origin+"/search" + newQuery;
-	}
-
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -126,13 +120,12 @@
 							<span>GLOBAL (293)</span>
 						</a>
 					</p>
-					
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
-							{{#each locations}}							
+							{{#each locations}}
 							<li class="list-group-item">
-
-								<a  {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
+								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
+									<span>{{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
 							{{/each}}
