@@ -45,7 +45,7 @@
                                 <select class="geo_textbox" id="category" name="category">
                                     <option disabled selected>Category</option>
                                     {{#each category}}
-                                    <option>{{ this.name}}</option>
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
@@ -53,7 +53,7 @@
                                 <select class="geo_textbox" id="location" name="location">
                                     <option disabled selected>Location</option>
                                     {{#each country}}
-                                    <option>{{ this.name}}</option>
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
