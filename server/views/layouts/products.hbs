@@ -1,4 +1,24 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<script>
+    $(document).ready(function () {
+        $('#depart').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#category').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#location').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $("#searchForm").submit(function (e) {
+            e.preventDefault();
+            let formInput = $("#searchForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            window.location.href = '/search?' + formInput;
+        });
+    });
+</script>
 <section class="shop_banner" style="margin-bottom: 0">
     <div class="container clearfix">
         <div class="row">
@@ -7,18 +27,22 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
+                    <form id="searchForm">
                     <div class="col-md-12 lstb2 text-center">
                         <p>Search Our Global Inventory of an incredible</p>
                         <p>21,000,00 Products, Services & Subscriptions!</p>
                         <p class="adv_search">Advanced Search</p>
                         <div class="row">
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option>Department</option>
+                                <select class="geo_textbox" id="depart" name="depart">
+                                    <option disabled selected>Department</option>
+                                    {{#each depart}}
+                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    {{/each}}
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
+                                <select class="geo_textbox" id="category" name="category">
                                     <option disabled selected>Category</option>
                                     {{#each category}}
                                     <option>{{ this.name}}</option>
@@ -26,7 +50,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
+                                <select class="geo_textbox" id="location" name="location">
                                     <option disabled selected>Location</option>
                                     {{#each country}}
                                     <option>{{ this.name}}</option>
@@ -34,8 +58,9 @@
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
+                        <input type="submit" id="searchSubmit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
                     </div>
+                  </form>
                 </div>
             </div>
         </div>
@@ -68,7 +93,7 @@
                                                     <h5 class="no-margins">
                                                         <a href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
                                                     </h5>
-                                                     <div class="row no-margins">
+                                                    <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>
                                                             <div class="sm-text">Category</div>
@@ -81,7 +106,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right"><p class="doller_value_red">${{product_price}}</p></div>
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{product_price}}</p>
+                                                </div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
                                                 <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div>
@@ -125,12 +152,14 @@
                                                         <div class="col-md-8 no-padding">
                                                             <div class="sm-text">{{this.country_name}}</div>
                                                             <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
-                                                           </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right"><p class="doller_value_red">${{product_price}}</p></div>
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{product_price}}</p>
+                                                </div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
                                                 <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div>
@@ -186,7 +215,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right"><p class="doller_value_red">${{product_price}}</p></div>
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{product_price}}</p>
+                                                </div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
                                                 <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div>
@@ -235,7 +266,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right"><p class="doller_value_red">${{product_price}}</p></div>
+                                                <div class="sm-text pull-right">
+                                                    <p class="doller_value_red">${{product_price}}</p>
+                                                </div>
                                                 <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
                                                 <div class="sm-text pull-right absolute-b">{{ starCount product_rating}}</div>
                                             </div>
@@ -253,18 +286,25 @@
 </section>
 
 <section class=" jumbotron product_global">
-<h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
-<div class="container">
-	<div class="row">
+    <h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
+    <div class="container">
+        <div class="row">
             {{#each category}}
-            <div class="col-md-3" style="max-width:20%">
-                <p class="product_global_para_head">{{ convertUpperCase this.name}}</p>
-                {{#each ../subCategory}} {{#ifCond this.category_id '==' ../this.id}}
-                <p class="product_global_para">{{ this.name}}</p>
-                {{/ifCond}} {{/each}}
-            </div>
+                <div class="col-md-3" style="max-width:20%">
+                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+                    {{#each_upto ../subCategory 10 this.id}} 
+                            <p class="global_para ">
+                               
+                                    <a href="search/category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
+                                    </a>
+                                 </p>
+                    {{/each_upto}}
+                    <p class = "global_para">
+                        <a href="search" style="color:white">...see more</a>
+                    </p>
+                </div>
             {{/each}}
         </div>
-        </div>
+    </div>
 </section>
 {{> footer/footer}}

@@ -18,19 +18,19 @@
 	});
 </script>
 <script>
-    $(document).ready(function () {
-        $('#headerSearchSubmit').prop('disabled', true);
-        $('#searchKey').keyup(function () {
-            $('#headerSearchSubmit').prop('disabled', this.value == "" ? true : false);
-        })
-        $("#headerSearchForm").submit(function (e) {
-            e.preventDefault();
-            let formInput = $("#headerSearchForm :input").filter(function (index, element) {
-                return $(element).val() != '';
-            }).serialize();
-            window.location.href = '/search?' + formInput;
-        });
-    });
+	$(document).ready(function () {
+		$('#headerSearchSubmit').prop('disabled', true);
+		$('#searchKey').keyup(function () {
+			$('#headerSearchSubmit').prop('disabled', this.value == "" ? true : false);
+		})
+		$("#headerSearchForm").submit(function (e) {
+			e.preventDefault();
+			let formInput = $("#headerSearchForm :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			window.location.href = '/search?' + formInput;
+		});
+	});
 </script>
 <div class="sticky-top topbar">
 	<div class="container-fluid">
@@ -67,6 +67,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="container">
 		<div class="row">
 			<nav class="navbar navbar-expand-sm menu_style navbar-dark">
@@ -76,14 +77,14 @@
 				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-
+				<p class="tagline">A global approach to shopping.</p>
 				<div class="collapse navbar-collapse" id="navb">
 					<!-- Links -->
 					<ul class="navbar-nav mr-auto">
 						<!-- Dropdown -->
-						<li class="nav-item">
+						<li class="nav-item dropdown">
 							<a class="nav-link" href="/directory" id="navbardrop">
-								DIRECTORY {{!-- dropdown-toggle // data toggle and --}}
+								DIRECTORY{{!-- dropdown-toggle // data toggle and --}}
 							</a>
 						</li>
 
