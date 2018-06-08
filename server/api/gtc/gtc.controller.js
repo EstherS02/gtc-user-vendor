@@ -31,24 +31,23 @@ export function index(req, res) {
 			include: [{
 				model: model['Product'],
 				where: productCountQueryParames,
-				attributes: [],
+				attributes: ['id','product_category_id','sub_category_id'],
 				required: false,
 			}],
 			required: false,
-			attributes: ['id', 'name', 'code']
-		}],
-		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'product_count']],
-		group: ['Category.id']
-		/*include: [{
+			attributes: ['id', 'name', 'code',[sequelize.fn('count', sequelize.col('Products.sub_category_id')), 'sub_cat_count']]
+		},
+		{
 			model: model['Product'],
-			where: productCountQueryParames,
-			attributes: [],
-			required: false
-		}],
-		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-		group: ['Country.id']*/
+				// where: productCountQueryParames,
+				attributes: ['id','product_category_id','sub_category_id'],
+				// required: false,
+		}
+		],
+		attributes: ['id', 'name', 'code',[sequelize.fn('count', sequelize.col('Products.product_category_id')), 'product_count']],
+		group: ['Category.id']
 	}).then(function(results) {
-		res.status(200).send(JSON.parse(JSON.stringify(results)));
+		res.status(200).send((results));
 		return;
 	}).catch(function(error) {
 		console.log('Error :::', error);
