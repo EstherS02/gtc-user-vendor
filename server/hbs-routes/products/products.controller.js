@@ -9,6 +9,7 @@ const async = require('async');
 
 export function products(req, res) {
     var productModel = "MarketplaceProduct";
+    var marketplaceModel ="Marketplace";
     var categoryModel = "Category";
     var subcategoryModel = "SubCategory";
     var countryModel = "Country";
@@ -105,7 +106,17 @@ export function products(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        }
+        },
+        depart: function(callback) {
+            limit = null
+        service.findRows(marketplaceModel, queryObj, offset, limit, field, order)
+            .then(function(depart) {
+                return callback(null, depart.rows);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+    }
     }, function (err, results) {
         if (!err) {
              res.render('products', {
@@ -117,6 +128,7 @@ export function products(req, res) {
 				category: results.category,
                 subCategory: results.subCategory,
                 country: results.country,
+                depart:results.depart,
                 LoggedInUser: LoggedInUser
 			});
         }
