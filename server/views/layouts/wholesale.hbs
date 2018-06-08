@@ -1,41 +1,67 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
-<section class="lifestyle_banner" style="margin-bottom: 0">
+<script>
+    $(document).ready(function () {
+        $('#marketplace_type').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#category').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#location').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $("#searchForm").submit(function (e) {
+            e.preventDefault();
+            let formInput = $("#searchForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            window.location.href = '/search?' + formInput;
+        });
+    });
+</script>
+</div>
+<section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">
     <div class="container clearfix">
         <div class="row">
-            <div class="col-md-6 lstb1">
+            <div class="col-md-6 col-12 lstb1">
                 <img src="../img/direc_banner.png" alt="banner" />
             </div>
             <div class="col-md-6">
                 <div class="row">
-                    <div class="col-md-12 lstb2 text-center">
-                        <p>Our Wholesale Marketplace has over</p>
-                        <p>12,000 Wholesalers & 60,000 Products</p>
-                        <p class="adv_search">Advanced Search</p>
-                        <div class="row">
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option>Type</option>
-                                </select>
+                    <form id="searchForm">
+                        <div class="col-md-12 lstb2 text-center">
+                            <p>Our Wholesale Marketplace has over</p>
+                            <p>12,000 Wholesalers & 60,000 Products</p>
+                            <p class="adv_search">Advanced Search</p>
+                            <div class="row">
+                                <div class="col-md-4 common_padding1">
+                                    <select class="geo_textbox" name="marketplace_type" id="marketplace_type">
+                                        <option disabled selected>Type</option>
+                                        {{#each type}}
+                                        <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 common_padding1">
+                                    <select class="geo_textbox" name="category" id="category">
+                                        <option disabled selected>Category</option>
+                                        {{#each category}}
+                                        <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 common_padding1">
+                                    <select class="geo_textbox" name="location" id="location">
+                                        <option disabled selected>Location</option>
+                                        {{#each country}}
+                                        <option value="{{this.id}}">{{ this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option disabled selected>Category</option>
-                                    {{#each category}}
-                                    <option>{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox">
-                                    <option disabled selected>Location</option>
-                                    {{#each country}}
-                                    <option>{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-                            </div>
+                            <input type="submit" id="searchSubmit" value="SEARCH WHOLESALE" class="shop_checkout_btn" style="padding: 8px 20px;" />
                         </div>
-                        <input type="submit" value="SEARCH WHOLESALE" class="shop_checkout_btn" style="padding: 8px 20px;" />
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

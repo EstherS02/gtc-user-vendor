@@ -39,6 +39,7 @@ export function wholesale(req, res) {
     var vendorModel = "VendorUserProduct";
     var categoryModel = "Category";
     var countryModel = "Country";
+    var typeModel = "MarketplaceType";
     var offset, limit, field, order;
     var queryObj = {};
     var LoggedInUser = {}
@@ -138,6 +139,16 @@ export function wholesale(req, res) {
                     return callback(null);
                 });
         },
+        type: function(callback) {
+            service.findRows(typeModel, queryObj, offset, limit, field, order)
+                .then(function(type) {
+                    return callback(null, type.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
         wholesalers: function(callback) {
             queryObj['type'] = 'Private Wholesale Marketplace';
             field = 'sales_count';
@@ -164,6 +175,7 @@ export function wholesale(req, res) {
                 wholesalers: results.wholesalers,
                 category: results.category,
                 country: results.country,
+                type: results.type,
                 LoggedInUser: LoggedInUser
             });
         } else {
