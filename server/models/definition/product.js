@@ -322,7 +322,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Product.belongsToMany(User, {
+    /*Product.belongsToMany(User, {
         through: Cart,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -416,6 +416,6 @@ module.exports.initRelations = () => {
         otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
 };

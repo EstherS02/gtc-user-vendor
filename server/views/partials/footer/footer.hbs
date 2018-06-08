@@ -1,27 +1,24 @@
 <script type="text/javascript">
-
-$( document ).ready(function() {
+$(document).ready(function() {
     $.ajax({
         type: 'GET',
         url: '/api/categories',
         success: function(data, text) {
             var Category = '';
-            Category = data.rows
-            console.log('Category',Category);
+            Category = data.rows;
             var len = Category.length;
-            var domElements ='';
-            var i=0;
+            var domElements = '';
+            var i = 0;
             Category.forEach(function(element) {
-              if(i<8){
-              domElements = domElements+'<p class="footer_help_para"><a href="/search?category='+element['id'] +'">'+element['name']+'</p>';
-              i++;
-          }
+                if (i <= 7) {
+                    domElements = domElements + '<p class="footer_help_para"><a href="/search?category=' + element['id'] + '">' + element['name'] + '</a></p>';
+                    i++;
+                }
             });
-             
+
             $('#appendOn').append(domElements);
         },
-        error: function(request, status, error) {
-        }
+        error: function(request, status, error) {}
     });
 });
 
@@ -55,9 +52,9 @@ $( document ).ready(function() {
                 <div class="col-md-2 help_f">
                     <p class="footer_help">ACCOUNT CENTER</p>
                     <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
-                    <p class="footer_help_para"><a href="">My Account</a></p>
-                    <p class="footer_help_para"><a href="">Track Your Order</a></p>
-                    <p class="footer_help_para"><a href="">Wishlist</a></p>
+                    <p class="footer_help_para"><a href="/user-profile">My Account</a></p>
+                    <p class="footer_help_para"><a href="/order-track">Track Your Order</a></p>
+                    <p class="footer_help_para"><a href="/wishlist">Wishlist</a></p>
                     <p class="footer_help_para"><a href="/cart">Shopping Cart</a></p>
 
                 </div>
@@ -81,10 +78,7 @@ $( document ).ready(function() {
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">SEARCH BY CATEGORY</p>
-                    {{!-- <p id="appendOn"></p> --}}
-                    <span id="appendOn">
-                        {{!-- <p class="footer_help_para"><a href="">Apparel &amp; Fashion</a></p> --}}
-                    </span>
+                    <span id="appendOn"></span>
                    
 
 

@@ -11,6 +11,14 @@ import series from 'async/series';
 var async = require('async');
 
 export function reviews(req, res) {
+	var LoggedInUser = {};
+
+    if (req.user)
+        LoggedInUser = req.user;
+
+    let user_id = LoggedInUser.id;
+
+
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
 	} else {
@@ -104,7 +112,8 @@ export function reviews(req, res) {
 				res.render('reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews,
-					Rating: results.Rating
+					Rating: results.Rating,
+					LoggedInUser: LoggedInUser
 				});
 			} else {
 				res.render('reviews', err);

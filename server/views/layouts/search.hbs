@@ -8,6 +8,7 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
+<<<<<<< HEAD
 
 	function appendLocation(location) {
 		var newQuery = window.location.search + "&location=" + location;
@@ -15,6 +16,8 @@
 	}
 
 
+=======
+>>>>>>> 3e5797caae452b75f6a093612f746bd9cb0e7250
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -88,15 +91,17 @@
 							{{#each categories}}
 							<li class="list-group-item">
 								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="false" aria-controls="collapseCategory{{this.id}}">
-									<span>{{this.name}} (293)</span>
+									<span>{{this.name}} (263)</span>
 								</a>
 								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
+									{{#each this.SubCategories}}
 									<li class="list-group-item">
-										<a href="./search?category={{this.id}}">
-											<span>DEF</span>
+										<a href="./search?category={{this.id}}&sub_category={{this.id}}">
+											<span>{{this.name}}</span>
 										</a>
 										<ul></ul>
 									</li>
+									{{/each}}
 								</ul>
 							</li>
 							{{/each}}
@@ -113,7 +118,7 @@
 							{{#each marketPlaceTypes}}
 							<li class="list-group-item">
 								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">
-									<span>{{this.code}} - {{this.name}} (293)</span>
+									<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
 							{{/each}}
@@ -130,38 +135,18 @@
 						<ul class="list-group">
 							{{#each locations}}							
 							<li class="list-group-item">
+<<<<<<< HEAD
 								<a  {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
 									<span>{{this.name}} (293)</span>
+=======
+								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
+									<span>{{this.name}} ({{this.product_count}})</span>
+>>>>>>> 3e5797caae452b75f6a093612f746bd9cb0e7250
 								</a>
 							</li>
 							{{/each}}
 						</ul>
-					</div>{{!-- 
-					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
-					<p class="cat_bg_title">GLOBAL (293)</p>
-					<div class="list-group panel ">
-						<a href="#menu2" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false">
-							<i class="fas fa-caret-down"></i>
-							<span class="hidden-sm-down">NORTH AMERICA(293)</span>
-						</a>
-						<div class="collapse" id="menu2">
-							<a href="#menu1sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false">Canada(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">United States(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Mexico(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Hondures(93)</a>
-							<a href="#" class="list-group-item" data-parent="#menu1">Ecuador(93)</a>
-						</div>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-							<i class="fas fa-caret-right"></i>
-							<span class="hidden-sm-down">SOUTH AMERICA</span>
-						</a>
-						<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-							<i class="fas fa-caret-right"></i>
-							<span class="hidden-sm-down">EUROPE</span>
-						</a>
-					</div> --}}
-
-
+					</div>
 				</div>
 				<div class="col-md-9">
 					<div class="row col-md-12 showing_categ" style="padding: 6px;">
@@ -228,7 +213,7 @@
 												<a>{{this.vendor_name}}</a>
 												{{else}}
 												<a href="/login">(Login for Seller Info)</a>
-												{{/if}}</p>
+											{{/if}}</p>
 										</div>
 										<div class="col-md-4">
 											<p>{{ starCount this.product_rating}}</p>
@@ -332,5 +317,5 @@
 				</div>
 			</div>
 		</div>
-</section>
-{{> footer/footer}}
+	</section>
+	{{> footer/footer}}
