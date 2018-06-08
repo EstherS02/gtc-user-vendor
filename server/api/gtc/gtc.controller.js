@@ -13,40 +13,42 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexA(req, res) {
-	var queryObj = {};
-	var productCountQueryParames = {};
+	var productQueryObj = {};
+	var marketPlaceTypeQueryObj = {};
 
-	queryObj['status'] = status["ACTIVE"];
+	productQueryObj['status'] = status["ACTIVE"];
+	marketPlaceTypeQueryObj['status'] = status["ACTIVE"];
 
-	productCountQueryParames['status'] = status["ACTIVE"];
-	productCountQueryParames['marketplace_id'] = 1;
-	productCountQueryParames['marketplace_type_id'] = 4;
-	productCountQueryParames['product_location'] = 10;
+	productQueryObj['product_location'] = 3;
 
-	model['Category'].findAll({
-		where: queryObj,
+	console.log('productQueryObj', productQueryObj);
+
+	model['MarketplaceType'].findAll({
+		where: marketPlaceTypeQueryObj,
 		include: [{
-			model: model['SubCategory'],
-			where: queryObj,
-			include: [{
-				model: model['Product'],
-				where: productCountQueryParames,
-				attributes: [],
-				required: false,
-			}],
-			required: false,
-			attributes: ['id', 'name', 'code']
-		}],
-		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'product_count']],
-		group: ['Category.id']
-		/*include: [{
 			model: model['Product'],
-			where: productCountQueryParames,
-			attributes: [],
+			where: productQueryObj,
 			required: false
 		}],
-		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-		group: ['Country.id']*/
+		group: ['MarketplaceType.id']
+	}).then(function(results) {
+		res.status(200).send(JSON.parse(JSON.stringify(results)));
+		return;
+	}).catch(function(error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+
+	var marketplaceTypeQueryObj = {};
+	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+
+	model['Category'].findAll({
+		where: marketplaceTypeQueryObj,
+		include: [{
+			model: model['SubCategory'],
+			where: marketplaceTypeQueryObj
+		}]
 	}).then(function(results) {
 		res.status(200).send(JSON.parse(JSON.stringify(results)));
 		return;
