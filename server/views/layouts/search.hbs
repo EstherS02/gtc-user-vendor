@@ -8,6 +8,15 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
+	function appendLocation(location) {
+		//console.log("window.location.search", window.location.search);
+		var url = window.location.search;
+		var arr = url.split("&location")[0];
+		console.log("arr", arr);
+		var newQuery = arr + "&location=" + location;
+		window.location.href = window.location.origin+"/search" + newQuery;
+	}
+
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -122,10 +131,10 @@
 					</p>
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
-							{{#each locations}}
+							{{#each locations}}							
 							<li class="list-group-item">
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
-									<span>{{this.name}} ({{this.product_count}})</span>
+								<a  {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
+									<span>{{this.name}} (293)</span>
 								</a>
 							</li>
 							{{/each}}
