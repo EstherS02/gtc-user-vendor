@@ -40,6 +40,7 @@ export function GetProductDetails(req, res) {
             { model: model["SubCategory"] },
             { model: model["Country"] },
             { model: model["State"] },
+            { model: model["Review"]},
             {
                 model: model["ProductMedia"], 
                 where: {
