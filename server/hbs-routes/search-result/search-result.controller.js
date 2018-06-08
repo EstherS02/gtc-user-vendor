@@ -220,7 +220,7 @@ export function index(req, res) {
 	});
 }
 
-export function indexA(req, res) {
+/*export function indexA(req, res) {
 
 	var selectedCategory = 0;
 	var selectedLocation = 0;
@@ -396,4 +396,4 @@ export function indexA(req, res) {
 			res.render('search', error);
 		}
 	});
-}
+}*/
