@@ -11,11 +11,26 @@
 				Category.forEach(function (element) {
 					domElements = domElements + '<option value="' + element['id'] + '">' + element['name'] + '</option>';
 				});
-				$('#category').append(domElements);
+				$('#headercategory').append(domElements);
 			},
 			error: function (request, status, error) { }
 		});
 	});
+</script>
+<script>
+    $(document).ready(function () {
+        $('#headerSearchSubmit').prop('disabled', true);
+        $('#searchKey').keyup(function () {
+            $('#headerSearchSubmit').prop('disabled', this.value == "" ? true : false);
+        })
+        $("#headerSearchForm").submit(function (e) {
+            e.preventDefault();
+            let formInput = $("#headerSearchForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            window.location.href = '/search?' + formInput;
+        });
+    });
 </script>
 <div class="sticky-top topbar">
 	<div class="container-fluid">
@@ -108,20 +123,22 @@
 						</li>
 					</ul>
 					<div class="field-search form-inline my-2 my-lg-0">
-						<input type="search" placeholder="Search My store">
-						<div class="right">
-							<select id="category">
-								<option disabled selected>Category</option>
-							</select>
-							<button>
-								<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
-									<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
-										<circle cx="9.3" cy="9.3" r="7.3"></circle>
-										<path d="M14.2 14.6l6.9 7.6"></path>
-									</g>
-								</svg>
-							</button>
-						</div>
+						<form id="headerSearchForm">
+							<input type="search" id="searchKey" name="keyword" placeholder="Search My store">
+							<div class="right">
+								<select id="headercategory" name="category">
+									<option disabled selected>Category</option>
+								</select>
+								<button id="headerSearchSubmit" name="headerSearchSubmit">
+									<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
+										<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
+											<circle cx="9.3" cy="9.3" r="7.3"></circle>
+											<path d="M14.2 14.6l6.9 7.6"></path>
+										</g>
+									</svg>
+								</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</nav>
