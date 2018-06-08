@@ -8,16 +8,12 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
-<<<<<<< HEAD
 
 	function appendLocation(location) {
 		var newQuery = window.location.search + "&location=" + location;
 		window.location.href = window.location.origin+"/search" + newQuery;
 	}
 
-
-=======
->>>>>>> 3e5797caae452b75f6a093612f746bd9cb0e7250
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -135,13 +131,8 @@
 						<ul class="list-group">
 							{{#each locations}}							
 							<li class="list-group-item">
-<<<<<<< HEAD
+
 								<a  {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
-									<span>{{this.name}} (293)</span>
-=======
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="./search?location={{this.id}}">
-									<span>{{this.name}} ({{this.product_count}})</span>
->>>>>>> 3e5797caae452b75f6a093612f746bd9cb0e7250
 								</a>
 							</li>
 							{{/each}}
