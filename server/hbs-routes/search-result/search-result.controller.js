@@ -38,6 +38,16 @@ export function index(req, res) {
 
 	offset = (page - 1) * limit;
 
+	if (req.query.keyword) {
+		queryParameters['product_name'] = { like: '%' + req.query.keyword + '%' };
+	}
+	if (req.query.origin) {
+		queryParameters['$or'] = [
+			{ country_name: req.query.origin },
+			{ state_name : req.query.origin },
+			{ city: req.query.origin },
+		];
+	}
 	if (req.query.location) {
 		selectedLocation = req.query.location;
 		queryParameters['product_location_id'] = req.query.location;
@@ -62,17 +72,17 @@ export function index(req, res) {
 	queryParameters['status'] = status["ACTIVE"];
 
 	async.series({
-		products: function(callback) {
+		products: function (callback) {
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
-				.then(function(results) {
+				.then(function (results) {
 					return callback(null, results);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		topProducts: function(callback) {
+		topProducts: function (callback) {
 			var topOffset = 0;
 			var topLimit = 3;
 			var topOrderField = "created_on";
@@ -81,15 +91,15 @@ export function index(req, res) {
 			queryParameters['is_featured_product'] = 1;
 
 			service.findAllRows(productEndPoint, includeArr, queryParameters, topOffset, topLimit, topOrderField, topOrderType)
-				.then(function(results) {
+				.then(function (results) {
 					return callback(null, results.rows);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypes: function(callback) {
+		marketPlaceTypes: function (callback) {
 			var marketplaceTypeQueryObj = {};
 			var productCountQueryParames = {};
 
@@ -114,15 +124,15 @@ export function index(req, res) {
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['MarketplaceType.id']
-			}).then(function(results) {
+			}).then(function (results) {
 				var jsonParseResults = JSON.parse(JSON.stringify(results));
 				return callback(null, jsonParseResults);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
 		},
-		locations: function(callback) {
+		locations: function (callback) {
 			var locationQueryObj = {};
 			var productCountQueryParames = {};
 
@@ -146,15 +156,15 @@ export function index(req, res) {
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['Country.id']
-			}).then(function(results) {
+			}).then(function (results) {
 				var jsonParseResults = JSON.parse(JSON.stringify(results));
 				return callback(null, jsonParseResults);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
 		},
-		categories: function(callback) {
+		categories: function (callback) {
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
@@ -182,16 +192,16 @@ export function index(req, res) {
 					required: false,
 					attributes: ['id', 'name', 'code']
 				}]
-			}).then(function(results) {
+			}).then(function (results) {
 				var jsonParseResults = JSON.parse(JSON.stringify(results));
 				console.log('jsonParseResults', jsonParseResults);
 				return callback(null, jsonParseResults);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
 		}
-	}, function(error, results) {
+	}, function (error, results) {
 		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
@@ -262,7 +272,6 @@ export function index(req, res) {
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
 
 	page = req.query.page ? parseInt(req.query.page) : 1;
