@@ -203,11 +203,11 @@
 			newCoupon.usage_limit = $('#inputUsageLimit').val();
 			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
 			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
-
-			newCoupon.couponProducts = $('#inputProducts').val();
-			newCoupon.couponExcludeProducts = $('#inputExcludeProduct').val();
-			newCoupon.couponCategories = $('#inputCategories').val();
-			newCoupon.couponExcludeCategories = $('#inputExcludeCategories').val();
+			// alert($('#inputProducts').val());
+			newCoupon.couponProducts = JSON.stringify($('#inputProducts').val());
+			newCoupon.couponExcludeProducts = JSON.stringify($('#inputExcludeProduct').val());
+			newCoupon.couponCategories = JSON.stringify($('#inputCategories').val());
+			newCoupon.couponExcludeCategories = JSON.stringify($('#inputExcludeCategories').val());
 			$.ajax({
 				type: 'PUT',
 				url: '/api/coupon/update',

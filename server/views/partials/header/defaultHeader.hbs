@@ -1,89 +1,118 @@
-   <div class="sticky-top topbar">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-6">
-				</div>
-				<div class="col-md-6" style="padding: 0px;">
-				  <div class="social-links custom-secondary-header">
-					<a href="#" class="active"><i class="fa fa-map-marker"></i> Get Locate</a>
-					<a href="/order-track" class="font_icon"><i class="fa fa-map-marker"></i> Track your Order</a>
-				
-					{{#if LoggedInUser.email}}
-						<a href="javascript:;" class="font_icon"><i class="fa fa-user"></i>
-							<span id="userAuthentication">Welcome back, {{LoggedInUser.first_name}}</span>
-						</a>
-					{{else}}
-						<a href="/login" class="font_icon"><i class="fa fa-user"></i>
-							<span id="userAuthentication">Login</span>
-						</a>
-					{{/if}}
-					<a href="/compare" class="font_icon"><i class="fa fa-compress"></i> Compare</a>
-					<a href="/wishlist" class="font_icon"><i class="fa fa-heart"></i> Wishlist</a>
-					<a href="/cart" class="font_icon"><i class="fa fa-shopping-bag"></i> Cart</a>
-				  </div>
-				</div>
+<div class="sticky-top topbar">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
 			</div>
-		</div>
-		<div class="container">
-			<div class="row">
-				<nav class="navbar navbar-expand-sm menu_style navbar-dark">
-					<a class="navbar-brand" href="/"><img src="img/logo/header.png"/></a>
-					<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
-					  <span class="navbar-toggler-icon"></span>
-					</button>
-				  
-					<div class="collapse navbar-collapse" id="navb">
-					  <!-- Links -->
-					  <ul class="navbar-nav mr-auto">
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/directory" id="navbardrop">
-							DIRECTORY {{!-- dropdown-toggle // data toggle and --}}
-						  </a>
-						</li>
-						
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/wholesale" id="navbardrop">
-							WHOLESALE
-						  </a>
-						</li>
-						
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/shop" id="navbardrop">
-							SHOP
-						  </a>
-						</li>
-						
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/services" id="navbardrop">
-							SERVICES
-						  </a>
-						</li>
-						
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/lifestyle" id="navbardrop">
-							LIFESTYLE
-						  </a>
-						</li>
-						
-						<!-- Dropdown -->
-						<li class="nav-item">
-						  <a class="nav-link" href="/products" id="navbardrop">
-							PRODUCTS
-						  </a>
-						</li>
-					  </ul>
-					  <form class="form-inline my-2 my-lg-0">
-						<input class="form-control mr-sm-2" type="text" placeholder="Search">
-						<a href=""><button class="btn btn-success my-2 my-sm-0" type="button">Search</button></a>
-					  </form>
-					</div>
-				</nav>
+			<div class="col-md-6" style="padding: 0px;">
+				<div class="social-links custom-secondary-header">
+					<a href="#" class="active1">
+						<img src="img/Icons/icons-03.png" style="width: 2%;" alt="geo" />Geo Locate</a>
+					<a href="/order-track" class="font_icon">
+						<img src="img/Icons/icon-4-01.png" style="width: 2%;" alt="geo" /> Track your Order</a>
+
+					{{#if LoggedInUser.email}}
+					<a href="javascript:;" class="font_icon" style="color: #D36988;">
+						<img src="img/Icons/icons-02.png" style="width: 2%;" alt="geo" />
+						<span id="userAuthentication">Welcome back, {{LoggedInUser.first_name}}</span>
+					</a>
+
+					{{else}}
+					<a href="/login" class="font_icon" style="color: #D36988;">
+						<img src="img/Icons/icons-02.png" style="width: 2%;" alt="geo" />
+						<span id="userAuthentication">Login</span>
+					</a>
+					{{/if}}
+					<a href="/compare" class="font_icon">
+						<img src="img/Icons/icon-2-01.png" style="width: 2%;" alt="geo" /> Compare</a>
+					<a href="/wishlist" class="font_icon">
+						<img src="img/Icons/icon-6-01.png" style="width: 2%;" alt="geo" /> Wishlist</a>
+					<a href="/cart" class="font_icon" tyle="color: #fff;">
+						<span class="badge">0</span>
+						<img src="img/Icons/icons-01.png" style="width: 2%;" alt="geo" /> Cart</a>
+				</div>
 			</div>
 		</div>
 	</div>
-  </div>
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-expand-sm menu_style navbar-dark">
+				<a class="navbar-brand" href="/">
+					<img src="img/logo/header.png" />
+				</a>
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navb">
+					<!-- Links -->
+					<ul class="navbar-nav mr-auto">
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/directory" id="navbardrop">
+								DIRECTORY {{!-- dropdown-toggle // data toggle and --}}
+							</a>
+						</li>
+
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/wholesale" id="navbardrop">
+								WHOLESALE
+							</a>
+						</li>
+
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/shop" id="navbardrop">
+								SHOP
+							</a>
+						</li>
+
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/services" id="navbardrop">
+								SERVICES
+							</a>
+						</li>
+
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/lifestyle" id="navbardrop">
+								LIFESTYLE
+							</a>
+						</li>
+
+						<!-- Dropdown -->
+						<li class="nav-item">
+							<a class="nav-link" href="/products" id="navbardrop">
+								PRODUCTS
+							</a>
+						</li>
+					</ul>
+					{{!--
+					<form class="form-inline my-2 my-lg-0">
+						<input class="form-control mr-sm-2" type="text" placeholder="Search">
+						<a href="">
+							<button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
+						</a>
+					</form> --}}
+					<div class="field-search form-inline my-2 my-lg-0">
+						<input type="search" placeholder="Search My store">
+						<div class="right">
+							<select>
+								<option>Category</option>
+							</select>
+							<button>
+								<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
+									<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
+										<circle cx="9.3" cy="9.3" r="7.3"></circle>
+										<path d="M14.2 14.6l6.9 7.6"></path>
+									</g>
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+</div>

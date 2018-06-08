@@ -1,6 +1,5 @@
 <script type="text/javascript">
-
-$( document ).ready(function() {
+$(document).ready(function() {
     $.ajax({
         type: 'GET',
         url: '/api/categories',
@@ -8,19 +7,18 @@ $( document ).ready(function() {
             var Category = '';
             Category = data.rows;
             var len = Category.length;
-            var domElements ='';
-            var i=0;
+            var domElements = '';
+            var i = 0;
             Category.forEach(function(element) {
-              if(i<8){
-              domElements = domElements+'<p class="footer_help_para"><a href="/search?category='+element['id'] +'">'+element['name']+'</p>';
-              i++;
-          }
+                if (i <= 7) {
+                    domElements = domElements + '<p class="footer_help_para"><a href="/search?category=' + element['id'] + '">' + element['name'] + '</a></p>';
+                    i++;
+                }
             });
-             
+
             $('#appendOn').append(domElements);
         },
-        error: function(request, status, error) {
-        }
+        error: function(request, status, error) {}
     });
 });
 
@@ -80,10 +78,7 @@ $( document ).ready(function() {
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">SEARCH BY CATEGORY</p>
-                    {{!-- <p id="appendOn"></p> --}}
-                    <span id="appendOn">
-                        {{!-- <p class="footer_help_para"><a href="">Apparel &amp; Fashion</a></p> --}}
-                    </span>
+                    <span id="appendOn"></span>
                    
 
 

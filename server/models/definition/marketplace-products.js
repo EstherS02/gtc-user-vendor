@@ -138,6 +138,16 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'country_name',
 			allowNull: true
 		},
+		state_name: {
+			type: DataTypes.STRING(128),
+			field: 'state_name',
+			allowNull: true
+		},
+		city: {
+			type: DataTypes.STRING(128),
+			field: 'city',
+			allowNull: true
+		},
 		vendor_id: {
 			type: DataTypes.BIGINT,
 			field: 'vendor_id',
