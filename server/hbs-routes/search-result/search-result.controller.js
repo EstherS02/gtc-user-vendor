@@ -48,6 +48,9 @@ export function index(req, res) {
 			{ city: req.query.origin },
 		];
 	}
+	if (req.query.is_featured_product) {
+		queryParameters['is_featured_product'] = req.query.is_featured_product;
+	}
 	if (req.query.location) {
 		selectedLocation = req.query.location;
 		queryParameters['product_location_id'] = req.query.location;
@@ -68,7 +71,7 @@ export function index(req, res) {
 		selectedMarketPlaceType = req.query.marketplace_type;
 		queryParameters['marketplace_type_id'] = req.query.marketplace_type;
 	}
-
+	
 	queryParameters['status'] = status["ACTIVE"];
 
 	async.series({
