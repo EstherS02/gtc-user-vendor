@@ -31,13 +31,12 @@ export function reviews(req, res) {
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {
-		vendor_id: 29,
-		review_type: 2 // 1 for product review and 2 for vendor review
+		vendor_id: vendor_id,
 	};
 
 	async.series({
 			Reviews: function(callback) {
-				model['Review'].findAll({
+				model['VendorRating'].findAll({
 					where: queryObj,
 					offset: offset,
 					limit: limit,
@@ -61,7 +60,7 @@ export function reviews(req, res) {
 				var star3 = 0;
 				var star2 = 0
 				var star1 = 0;
-				model['Review'].findAndCountAll({
+				model['VendorRating'].findAndCountAll({
 					where: queryObj,
 					limit: rating_limit,
 					order: [
