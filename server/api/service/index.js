@@ -188,3 +188,27 @@ export function destroyRow(modelName, id) {
 		});
 	});
 }
+
+export function upsert(modelName, queryObj, includeArr, data) {
+	console.log('data',data);
+	// service.findOneRow(modelName, queryObj, includeArr)
+	// 	.then(function(results) {
+	// 			if (results) {
+	// 				console.log('new',results)
+	// 				var id = results;
+	// 				data.last_updated_on = new Date();
+
+	// 				// res.status(200).send(results);
+	// 				service.updateRow(modelName, data, id).then(function(response) {
+	// 					console.log("Update", response)
+	// 					return;
+	// 				});
+	// 			} else {
+	// 				data.created_on = new Date();
+	// 				service.createRow(modelName, data).then(function(response) {
+	// 					console.log("News", response)
+	// 					return;
+	// 				});
+	// 			}
+	// 		});
+		}

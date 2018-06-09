@@ -63,6 +63,7 @@
         	var form = new FormData();
         	form.append("file", $("#selectedFile")[0].files[0]);
             formData.file = form;
+
         }
 
         // console.log(formData);
@@ -71,6 +72,8 @@
                 type: 'POST',
                 url: '/api/gtc-talk/store',
                 data: formData,
+                dataType: 'json',
+            	processData: false,
                 success: function(data, text) {
 					console.log('status', status);
 					console.log('error', text);

@@ -253,18 +253,26 @@
 </section>
 
 <section class=" jumbotron product_global">
-<h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
-<div class="container">
-	<div class="row">
+    <h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
+    <div class="container ">
+        <div class="row  ">
             {{#each category}}
-            <div class="col-md-3" style="max-width:20%">
-                <p class="product_global_para_head">{{ convertUpperCase this.name}}</p>
-                {{#each ../subCategory}} {{#ifCond this.category_id '==' ../this.id}}
-                <p class="product_global_para">{{ this.name}}</p>
-                {{/ifCond}} {{/each}}
-            </div>
+                <div class="col-md-3" style="max-width:20%">
+                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+                    {{#each_upto ../subCategory 10 this.id}} 
+                            <p class="global_para ">
+                               
+                                    <a href="search/category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
+                                    </a>
+                                    
+                            </p>
+                    {{/each_upto}}
+                    <p class = "global_para">
+                        <a href="search/category={{this.id}}" style="color:white">...see more</a>
+                    </p>
+                </div>
             {{/each}}
         </div>
-        </div>
+    </div>
 </section>
 {{> footer/footer}}
