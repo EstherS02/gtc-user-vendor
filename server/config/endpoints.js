@@ -38,7 +38,7 @@ module.exports = {
 	"product-ads-settings": "ProductAdsSetting",
 	"product-attributes": "ProductAttribute",
 	"product-medias": "ProductMedia",
-	"reviews":"Reviews",
+	"reviews":"Review",
 	"star-rating":"Review",
 	"regions": "Region",
 	"shippings": "Shipping",
