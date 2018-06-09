@@ -1,4 +1,5 @@
 /* eslint new-cap: "off", global-require: "off" */
+
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Address', {
         id: {
@@ -165,7 +166,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'Address1',
+        as: 'shippingAddress',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
@@ -190,7 +191,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'Address2',
+        as: 'billingAddress',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',

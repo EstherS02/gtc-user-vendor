@@ -12,7 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
-            allowNull: true
+            allowNull: false,
+            references: {
+                model: 'product',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         type: {
             type: DataTypes.INTEGER,

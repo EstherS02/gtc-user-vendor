@@ -77,13 +77,6 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const ProductMedia = model.ProductMedia;
     const Product = model.Product;
-    const Vendor = model.Vendor;
-    const Marketplace = model.Marketplace;
-    const MarketplaceType = model.MarketplaceType;
-    const Category = model.Category;
-    const SubCategory = model.SubCategory;
-    const Country = model.Country;
-    const State = model.State;
 
     ProductMedia.belongsTo(Product, {
         foreignKey: 'product_id',
@@ -91,66 +84,4 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*ProductMedia.hasMany(Product, {
-        foreignKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(Vendor, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(Marketplace, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'marketplace_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(MarketplaceType, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'marketplace_type_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(Category, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'product_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(SubCategory, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'sub_category_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(Country, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'product_location',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    ProductMedia.belongsToMany(State, {
-        through: Product,
-        foreignKey: 'product_media_id',
-        otherKey: 'state_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-*/
 };

@@ -304,13 +304,13 @@
                     {{#each_upto ../subCategory 10 this.id}} 
                             <p class="global_para ">
                                
-                                    <a href="search/category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
+                                    <a href="search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
                                     </a>
                                     
                             </p>
                     {{/each_upto}}
                     <p class = "global_para">
-                        <a href="search/category={{this.id}}" style="color:white">...see more</a>
+                        <a href="search?category={{this.id}}" style="color:white">...see more</a>
                     </p>
                 </div>
             {{/each}}

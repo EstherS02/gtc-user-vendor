@@ -51,7 +51,7 @@ function init(sequelize) {
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedia = sequelize.import('./definition/product-media.js');
     model.Region = sequelize.import('./definition/region.js');
-    model.Review = sequelize.import('./definition/review.js');
+    model.Review = sequelize.import('./definition/reviews.js');
     model.Shipping = sequelize.import('./definition/shipping.js');
     model.State = sequelize.import('./definition/state.js');
     model.SubCategory = sequelize.import('./definition/sub-category.js');
@@ -71,6 +71,7 @@ function init(sequelize) {
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
     model.VendorNotificationSetting = sequelize.import('./definition/vendor-notification-setting.js');
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
+    model.VendorRating = sequelize.import('./definition/vendor-rating.js');
     model.VendorShippingLocation = sequelize.import('./definition/vendor-shipping-location.js');
     model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
@@ -95,6 +96,7 @@ function init(sequelize) {
     require('./definition/coupon-excluded-product.js').initRelations();
     require('./definition/coupon-product.js').initRelations();
     require('./definition/currency.js').initRelations();
+    require('./definition/discount.js').initRelations();
     require('./definition/discussion-board.js').initRelations();
     require('./definition/discussion-board-details.js').initRelations();
     require('./definition/email-template.js').initRelations();
@@ -116,7 +118,7 @@ function init(sequelize) {
     require('./definition/product-attribute.js').initRelations();
     require('./definition/product-media.js').initRelations();
     require('./definition/region.js').initRelations();
-    require('./definition/review.js').initRelations();
+    require('./definition/reviews.js').initRelations();
     require('./definition/shipping.js').initRelations();
     require('./definition/state.js').initRelations();
     require('./definition/sub-category.js').initRelations();
