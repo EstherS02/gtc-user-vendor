@@ -9,13 +9,13 @@ Handlebars.registerHelper('starCount', function(rating, color) {
 
     var colored = "";
     var colorless = "", tag1, tag2;
-    if(color){
+   /*  if(color){
         tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    }else{
+    }else{ */
         tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    }
+    /* } */
 
     for (var i = 0; i <= rating - 1; i++) {
         colored = tag1 + colored;
