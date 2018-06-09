@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'reviews',
+        tableName: 'vendor_rating',
         timestamps: false
     });
 };
@@ -86,17 +86,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Review = model.Review;
+    const VendorRating = model.VendorRating;
     const Vendor = model.Vendor;
     const User = model.User;
 
-    Review.belongsTo(Vendor, {
+    VendorRating.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Review.belongsTo(User, {
+    VendorRating.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

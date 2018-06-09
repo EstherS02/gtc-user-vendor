@@ -20,10 +20,6 @@ Admin
 belongs to        users                                    as User 
 
 
-AdminUser
----------
-
-
 Announcement
 ------------
 
@@ -45,6 +41,7 @@ belongs to many   product                                  as ProductAttributePr
 BusinessHour
 ------------
 belongs to        vendor                                   as Vendor 
+belongs to        timezone                                 as Timezone 
 
 
 Cart
@@ -56,25 +53,16 @@ belongs to        product                                  as Product
 Category
 --------
 has many          category_attribute                       as FkCategoryAttribute2s 
-has many          coupon                                   as FkCoupon3s 
-has many          coupon                                   as FkCoupon4s 
 has many          coupon_category                          as FkCouponCategory2s 
 has many          coupon_excluded_category                 as FkCouponExcludedCategory2s 
 has many          product                                  as FkProduct5s 
 has many          sub_category                             as FkSubCategory1s 
 belongs to many   attribute                                as CategoryAttributeAttributes 
-belongs to many   product                                  as CouponProducts 
-belongs to many   product                                  as CouponExcludeProducts 
-belongs to many   category                                 as CouponExcludeCategories 
-belongs to many   product                                  as CouponProducts 
-belongs to many   product                                  as CouponExcludeProducts 
-belongs to many   category                                 as CouponCategories 
 belongs to many   coupon                                   as CouponCategoryCoupons 
 belongs to many   coupon                                   as CouponExcludedCategoryCoupons 
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
 belongs to many   state                                    as ProductStates 
@@ -103,7 +91,6 @@ belongs to many   state                                    as AddressProvinces
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   state                                    as ProductStates 
@@ -122,10 +109,7 @@ has many          coupon_excluded_category                 as FkCouponExcludedCa
 has many          coupon_excluded_product                  as FkCouponExcludedProduct1s 
 has many          coupon_product                           as FkCouponProduct1s 
 has many          order_items                              as FkOrderItems3s 
-belongs to        product                                  as Product 
-belongs to        product                                  as ExcludeProduct 
-belongs to        category                                 as Category 
-belongs to        category                                 as ExcludeCategory 
+belongs to        vendor                                   as Vendor 
 belongs to many   category                                 as CouponCategoryCategories 
 belongs to many   category                                 as CouponExcludedCategoryCategories 
 belongs to many   product                                  as CouponExcludedProductProducts 
@@ -169,6 +153,11 @@ belongs to many   country                                  as VendorBaseLocation
 belongs to many   timezone                                 as VendorTimezones 
 
 
+Discount
+--------
+belongs to        product                                  as Product 
+
+
 DiscussionBoard
 ---------------
 has many          discussion_board_details                 as FkDiscussionBoardDetails1s 
@@ -201,7 +190,6 @@ has many          product                                  as FkProduct2s
 belongs to many   plan                                     as PlanMarketplacePlans 
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
@@ -214,7 +202,6 @@ has many          product                                  as FkProduct3s
 belongs to        marketplace                              as Marketplace 
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
@@ -285,32 +272,25 @@ belongs to        marketplace                              as Marketplace
 Product
 -------
 has many          cart                                     as FkCart2s 
-has many          coupon                                   as FkCoupon1s 
-has many          coupon                                   as FkCoupon2s 
 has many          coupon_excluded_product                  as FkCouponExcludedProduct2s 
 has many          coupon_product                           as FkCouponProduct2s 
+has many          discount                                 as FkDiscount1s 
 has many          featured_product                         as FkFeaturedProduct1s 
 has many          order_items                              as FkOrderItems2s 
 has many          product_ads_setting                      as FkProductAdsSetting1s 
 has many          product_attribute                        as FkProductAttribute2s 
-has many          product_review                           as FkProductReview1s 
+has many          product_media                            as FkProductMedia1s 
+has many          reviews                                  as FkProductReview1s 
 has many          subscription                             as FkSubscription2s 
 has many          wish_list                                as FkWishList2s 
 belongs to        vendor                                   as Vendor 
 belongs to        marketplace                              as Marketplace 
 belongs to        marketplace_type                         as MarketplaceType 
-belongs to        product_media                            as ProductMedia 
 belongs to        category                                 as ProductCategory 
 belongs to        sub_category                             as SubCategory 
 belongs to        country                                  as RelatedProductLocation 
 belongs to        state                                    as State 
 belongs to many   users                                    as CartUsers 
-belongs to many   product                                  as CouponExcludeProducts 
-belongs to many   category                                 as CouponCategories 
-belongs to many   category                                 as CouponExcludeCategories 
-belongs to many   product                                  as CouponProducts 
-belongs to many   category                                 as CouponCategories 
-belongs to many   category                                 as CouponExcludeCategories 
 belongs to many   coupon                                   as CouponExcludedProductCoupons 
 belongs to many   coupon                                   as CouponProductCoupons 
 belongs to many   orders                                   as OrderItemOrders 
@@ -319,7 +299,7 @@ belongs to many   tax                                      as OrderItemTaxes
 belongs to many   country                                  as ProductAdsSettingCountries 
 belongs to many   state                                    as ProductAdsSettingStates 
 belongs to many   attribute                                as ProductAttributeAttributes 
-belongs to many   users                                    as ProductReviewUsers 
+belongs to many   users                                    as ReviewUsers 
 belongs to many   users                                    as SubscriptionUsers 
 belongs to many   users                                    as WishListUsers 
 
@@ -339,30 +319,19 @@ belongs to        product                                  as Product
 
 ProductMedia
 -------------
-has many          product                                  as FkProduct4s 
-belongs to many   vendor                                   as ProductVendors 
-belongs to many   marketplace                              as ProductMarketplaces 
-belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   category                                 as ProductProductCategories 
-belongs to many   sub_category                             as ProductSubCategories 
-belongs to many   country                                  as ProductProductLocations 
-belongs to many   state                                    as ProductStates 
-
-
-ProductReview
--------------
 belongs to        product                                  as Product 
-belongs to        users                                    as User 
-
-
-ProductSale
------------
 
 
 Region
 ------
 has many          country                                  as FkCountry1s 
 belongs to many   currency                                 as CountryCurrencies 
+
+
+Review
+------
+belongs to        product                                  as Product 
+belongs to        users                                    as User 
 
 
 Shipping
@@ -384,7 +353,6 @@ belongs to many   country                                  as AddressCountries
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
@@ -399,7 +367,6 @@ belongs to        category                                 as Category
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   country                                  as ProductProductLocations 
 belongs to many   state                                    as ProductStates 
@@ -461,15 +428,13 @@ belongs to        users                                    as User
 
 Timezone
 --------
+has many          business_hours                           as FkBusinessHours2s 
 has many          vendor                                   as FkVendor5s 
 belongs to        country                                  as Country 
+belongs to many   vendor                                   as BusinessHourVendors 
 belongs to many   users                                    as VendorUsers 
 belongs to many   country                                  as VendorBaseLocations 
 belongs to many   currency                                 as VendorCurrencies 
-
-
-UserOrder
----------
 
 
 User
@@ -479,7 +444,7 @@ has many          admin                                    as FkAdmin1s
 has many          cart                                     as FkCart1s 
 has many          orders                                   as FkOrder1s 
 has many          payment_setting                          as FkPaymentSetting1s 
-has many          product_review                           as FkProductReview2s 
+has many          reviews                                  as FkProductReview2s 
 has many          subscription                             as FkSubscription1s 
 has many          talk                                     as FkTalk2s 
 has many          talk                                     as FkTalk3s 
@@ -489,6 +454,7 @@ has many          ticket_thread                            as FkTicketThread2s
 has many          user_token                               as FkUserToken1s 
 has many          vendor                                   as FkVendor1s 
 has many          vendor_follower                          as FkVendorFollower2s 
+has many          vendor_rating                            as FkVendorRating2s 
 has many          wish_list                                as FkWishList1s 
 belongs to many   country                                  as AddressCountries 
 belongs to many   state                                    as AddressProvinces 
@@ -496,7 +462,7 @@ belongs to many   product                                  as CartProducts
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
-belongs to many   product                                  as ProductReviewProducts 
+belongs to many   product                                  as ReviewProducts 
 belongs to many   product                                  as SubscriptionProducts 
 belongs to many   talk_setting                             as TalkTalkSettings 
 belongs to many   users                                    as TalkTos 
@@ -510,6 +476,7 @@ belongs to many   country                                  as VendorBaseLocation
 belongs to many   currency                                 as VendorCurrencies 
 belongs to many   timezone                                 as VendorTimezones 
 belongs to many   vendor                                   as VendorFollowerVendors 
+belongs to many   vendor                                   as VendorRatingVendors 
 belongs to many   product                                  as WishListProducts 
 
 
@@ -522,27 +489,30 @@ belongs to        appclients                               as Client
 Vendor
 ------
 has many          business_hours                           as FkBusinessHours1s 
+has many          coupon                                   as FkCoupon1s 
 has many          discussion_board                         as FkDiscussionBoard1s 
 has many          product                                  as FkProduct1s 
 has many          talk_setting                             as FkTalkSetting1s 
 has many          vendor_follower                          as FkVendorFollower1s 
 has many          vendor_notification_setting              as FkVendorNotificationSetting1s 
 has many          vendor_plan                              as FkVendorPlan1s 
+has many          vendor_rating                            as FkVendorRating1s 
 has many          vendor_shipping_location                 as FkVendorShippingLocation1s 
 has many          vendor_verification                      as FkVendorVerification1s 
 belongs to        users                                    as User 
 belongs to        country                                  as RelatedBaseLocation 
 belongs to        currency                                 as Currency 
 belongs to        timezone                                 as Timezone 
+belongs to many   timezone                                 as BusinessHourTimezones 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
-belongs to many   product_media                            as ProductProductMedia 
 belongs to many   category                                 as ProductProductCategories 
 belongs to many   sub_category                             as ProductSubCategories 
 belongs to many   country                                  as ProductProductLocations 
 belongs to many   state                                    as ProductStates 
 belongs to many   users                                    as VendorFollowerUsers 
 belongs to many   plan                                     as VendorPlanPlans 
+belongs to many   users                                    as VendorRatingUsers 
 belongs to many   country                                  as VendorShippingLocationCountries 
 
 
@@ -563,14 +533,16 @@ belongs to        vendor                                   as Vendor
 belongs to        plan                                     as Plan 
 
 
+VendorRating
+------------
+belongs to        vendor                                   as Vendor 
+belongs to        users                                    as User 
+
+
 VendorShippingLocation
 ----------------------
 belongs to        vendor                                   as Vendor 
 belongs to        country                                  as Country 
-
-
-VendorUserProduct
------------------
 
 
 VendorVerification

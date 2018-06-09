@@ -75,7 +75,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Country = model.Country;
     const State = model.State;
 
@@ -109,7 +108,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Category.belongsToMany(Attribute, {
+    Category.belongsToMany(Attribute, {
         through: CategoryAttribute,
         foreignKey: 'category_id',
         otherKey: 'attribute_id',
@@ -155,17 +154,9 @@ module.exports.initRelations = () => {
         otherKey: 'marketplace_type_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
-    /*Category.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'product_category_id',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
-    /*Category.belongsToMany(SubCategory, {
+    Category.belongsToMany(SubCategory, {
         through: Product,
         foreignKey: 'product_category_id',
         otherKey: 'sub_category_id',
@@ -187,6 +178,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };
