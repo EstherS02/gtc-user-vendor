@@ -16,10 +16,10 @@ const moment = require('moment');
 export function coupons(req, res) {
 	var LoggedInUser = {};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
 
 	var field = 'id';
 	var order = "desc";
@@ -37,7 +37,22 @@ export function coupons(req, res) {
 		if (status = statusCode[req.query.status])
 			queryObj['status'] = parseInt(status);
 	}
+	//pagination 
+	var page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	delete req.query.order;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
 
+	offset = (page - 1) * limit;
+	var maxSize;
+	// End pagination
 	queryObj['vendor_id'] = 28;
 
 	console.log('queryObj', queryObj);
@@ -56,13 +71,20 @@ export function coupons(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
+				maxSize = results.Coupons.count / limit;
 				res.render('view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
 					statusCode: statusCode,
 					discountType: discountType,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					// pagination
+					page: page,
+					maxSize: maxSize,
+					pageSize: limit,
+					collectionSize: results.count
+					// End pagination
 				});
 			} else {
 				res.render('view-coupons', err);
@@ -73,9 +95,9 @@ export function coupons(req, res) {
 export function addCoupon(req, res) {
 
 	var LoggedInUser = {};
-    if (req.user)
-        LoggedInUser = req.user;
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+	let user_id = LoggedInUser.id;
 
 	var productModel = "Product";
 	var categoryModel = "Category";
@@ -128,9 +150,9 @@ export function addCoupon(req, res) {
 export function editCoupons(req, res) {
 
 	var LoggedInUser = {};
-    if (req.user)
-        LoggedInUser = req.user;
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+	let user_id = LoggedInUser.id;
 
 	var queryObj = {};
 	var includeArr = [];

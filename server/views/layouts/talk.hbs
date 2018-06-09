@@ -1,6 +1,9 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		
+		$("#addTimeSlotForm").hide();
+		$("#addNewTimeSlot").click(function() {
+			$("#addTimeSlotForm").show();
+		});
 	});
 
 	function timeCheck(val) {
@@ -30,8 +33,8 @@
 				url: '/api/gtc-talk/working-hours',
 				data: op_hours,
 				success: function(data, text) {
-					$("#addTimeSlot").hide();
-					op_hours = '';
+					$("#addTimeSlotForm").hide();
+					location.reload();
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
@@ -44,47 +47,79 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#addTimeSlot").hide();
-		$("#addNewTimeSlot").click(function() {
-			$("#addTimeSlot").show();
-		});
-
-	 $("#UpdateTalks").click(function(e) {
-        var img = $('input[name=talk_profile_pic_url_radio]:checked').val()
+		$("#UpdateTalks").click(function(e) {
+			var img = $('input[name=talk_profile_pic_url_radio]:checked').val()
         // alert(img);
-
-	 	var formData = {
-            'gtc_talk_enabled'            : $('input[name=gtc_talk_enabled]:checked').val(),
-            'talk_profile_pic_url_radio'  : $('input[name=talk_profile_pic_url_radio]:checked').val(),
-            'default_msg'     : $('textarea[name=default_msg]').val()
+        var formData = {
+        	'gtc_talk_enabled'            : $('input[name=gtc_talk_enabled]:checked').val(),
+        	'talk_profile_pic_url_radio'  : $('input[name=talk_profile_pic_url_radio]:checked').val(),
+        	'default_msg'     : $('textarea[name=default_msg]').val(),
         };
-        	// alert(img);
-        if(img == "new"){
+        if(img == "old"){
+        	formData.talk_profile_pic_url = '';
+        	$.ajax({
+        		type: 'POST',
+        		url: '/api/gtc-talk/store',
+        		data: formData,
+        		success: function(data, text) {
+        			location.reload();
+        		},
+        		error: function(request, status, error) {
+        			console.log('status', status);
+        			console.log('error', error);
+        		}
+        	});
+        }else{
+        	var imgVal = $('input[name=talk_profile_pic_url]').val();
         	var form = new FormData();
         	form.append("file", $("#selectedFile")[0].files[0]);
-            formData.file = form;
-
+            // formData.file = form;
+            if(imgVal){
+            	$.ajax({
+            		type: 'POST',
+            		url: '/api/TalkSetting/upload',
+            		data: form,
+            		cache: false,
+            		dataType: 'json',
+            		processData: false,
+            		contentType: false,
+            		success: function (data) {
+            			formData.talk_profile_pic_url = data.imageURL;
+            			$.ajax({
+            				type: 'POST',
+            				url: '/api/gtc-talk/store',
+            				data: formData,
+            				success: function(data, text) {
+            					location.reload();
+            				},
+            				error: function(request, status, error) {
+            					console.log('status', status);
+            					console.log('error', error);
+            				}
+            			});
+            		},
+            		error: function (error) {
+            			console.log("Error", error);
+            		}
+            	});
+            }else{
+            	$.ajax({
+            		type: 'POST',
+            		url: '/api/gtc-talk/store',
+            		data: formData,
+            		success: function(data, text) {
+            			location.reload();
+            		},
+            		error: function(request, status, error) {
+            			console.log('status', status);
+            			console.log('error', error);
+            		}
+            	});
+            	
+            }
         }
-
-        // console.log(formData);
-
-        $.ajax({
-                type: 'POST',
-                url: '/api/gtc-talk/store',
-                data: formData,
-                dataType: 'json',
-            	processData: false,
-                success: function(data, text) {
-					console.log('status', status);
-					console.log('error', text);
-				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
-				}
-            });
-
-	 });
+        var imgVal = $('input[name=talk_profile_pic_url]').val(); 
+    });
 	});
 
 </script>
@@ -106,10 +141,15 @@
 							<input class="input-padding" type="radio" name="gtc_talk_enabled" value="0" {{setChecked 0 talk.gtc_talk_enabled}} />No </p>
 							<p><h5 class="gtc-title"> GTC Talk Profile Pic</h5> </p>
 							<p class="gtc-talk">
+								{{#if talk.talk_profile_pic_url}}
+								<input type="radio" name="talk_profile_pic_url_radio" value="old" />Store Profile Photo/Logo(default)<br>
+								<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
+								{{else}}
 								<input type="radio" name="talk_profile_pic_url_radio" value="old" checked/>Store Profile Photo/Logo(default)<br>
 								<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new"/> Custom
+								{{/if}}
 								<select class="file-uploade">
-									<option value="Browse..." selected="">Browse...</option>
+									<option value="talk_profile_pic_url" selected="">Browse...</option>
 								</select>
 								<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
 								<input class="upload-btn1" type="button" value="Upload" onclick="document.getElementById('selectedFile').click();" />
@@ -122,10 +162,11 @@
 								{{#each busiHours}}
 								<p><i class="fas fa-check-circle"></i><span class="gtc-talk"> 
 									{{#days this.from_day}}{{/days}}
-									to {{#days this.to_day}}{{/days}}, from {{this.start_time}}am to {{this.end_time}}pm MST</span> </p>
+									to {{#days this.to_day}}{{/days}}, from {{this.start_time}}am to 
+									{{this.end_time}} pm {{this.Timezone.timezone_abbreviation}}</span> </p>
 									{{/each}}
 									<p id="addNewTimeSlot"><i class="fas fa-plus-circle"></i><span class="gtc-talk">Add another time slot </span> </p>
-									<form id="addTimeSlot">
+									<form id="addTimeSlotForm">
 										<div class="col-md-4 hop-container" style="float:  left;">
 											<div class="col-md-5 hop-container" style="float: left;">
 												<label class="hop"> From </label>
@@ -165,7 +206,7 @@
 									</form>
 									<hr>
 									<div class="col-md-4">
-									<button class="update-btn" type="submit" id = "UpdateTalks">Update</button>
+										<button class="update-btn" type="submit" id = "UpdateTalks">Update</button>
 										<button class="cancel-btn" type="reset">Cancel</button>
 									</div>
 								</div>
@@ -176,10 +217,10 @@
 			</div>
 		</div>
 	</section>
- <script>
-	$(window).scroll(function(){
-		$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-	});
-</script>
+	<script>
+		$(window).scroll(function(){
+			$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
+		});
+	</script>
 </body>
 </html>

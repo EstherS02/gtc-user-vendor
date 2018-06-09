@@ -140,6 +140,23 @@
 							</p>
 						</div>
 					</div>
+					{{!-- Pagination starts --}}
+					<div class="row">
+						<div style="margin:0 auto;width:100px;">
+							{{#pagination collectionSize page pageSize maxSize}}
+							<nav aria-label="Page navigation example">
+								<ul class="pagination justify-content-center">
+									{{#each pages}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="notifications?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+									</li>
+									{{/each}}
+								</ul>
+							</nav>
+							{{/pagination}}
+						</div>
+					</div>
+					{{!-- Pagination starts --}}
 				</div>
 				<div class="col-md-2">
 				</div>				
