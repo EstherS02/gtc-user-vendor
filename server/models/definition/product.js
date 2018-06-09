@@ -67,17 +67,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'publish_date',
             allowNull: false
         },
-        /*product_media_id: {
-            type: DataTypes.BIGINT,
-            field: 'product_media_id',
-            allowNull: false,
-            references: {
-                model: 'product_media',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },*/
         product_category_id: {
             type: DataTypes.BIGINT,
             field: 'product_category_id',
@@ -191,13 +180,13 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const ProductAdsSetting = model.ProductAdsSetting;
     const ProductAttribute = model.ProductAttribute;
+    const ProductMedia = model.ProductMedia;
     const Review = model.Review;
     const Subscription = model.Subscription;
     const WishList = model.WishList;
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const Country = model.Country;
@@ -221,12 +210,6 @@ module.exports.initRelations = () => {
     });
 
     Product.hasMany(CouponProduct, {
-        foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.hasMany(ProductMedia, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -257,6 +240,12 @@ module.exports.initRelations = () => {
     });
 
     Product.hasMany(ProductAttribute, {
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Product.hasMany(ProductMedia, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -322,7 +311,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Product.belongsToMany(User, {
+    Product.belongsToMany(User, {
         through: Cart,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -416,6 +405,6 @@ module.exports.initRelations = () => {
         otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

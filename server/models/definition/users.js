@@ -154,6 +154,7 @@ module.exports.initRelations = () => {
     const UserToken = model.UserToken;
     const Vendor = model.Vendor;
     const VendorFollower = model.VendorFollower;
+    const VendorRating = model.VendorRating;
     const WishList = model.WishList;
     const Country = model.Country;
     const State = model.State;
@@ -254,6 +255,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.hasMany(VendorRating, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     User.hasMany(WishList, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -333,7 +340,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
-        as: 'User1',
+        as: 'fromUser',
         through: Talk,
         foreignKey: 'from_id',
         otherKey: 'to_id',
@@ -358,7 +365,7 @@ module.exports.initRelations = () => {
     });
 
     User.belongsToMany(User, {
-        as: 'User2',
+        as: 'toUser',
         through: Talk,
         foreignKey: 'to_id',
         otherKey: 'from_id',
@@ -416,6 +423,14 @@ module.exports.initRelations = () => {
 
     User.belongsToMany(Vendor, {
         through: VendorFollower,
+        foreignKey: 'user_id',
+        otherKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Vendor, {
+        through: VendorRating,
         foreignKey: 'user_id',
         otherKey: 'vendor_id',
         onDelete: 'NO ACTION',

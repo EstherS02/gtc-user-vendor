@@ -76,7 +76,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Country = model.Country;
     const State = model.State;
 
@@ -92,15 +91,15 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*SubCategory.belongsToMany(Vendor, {
+    SubCategory.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'sub_category_id',
         otherKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
-    /*SubCategory.belongsToMany(Marketplace, {
+    SubCategory.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'sub_category_id',
         otherKey: 'marketplace_id',
@@ -114,25 +113,17 @@ module.exports.initRelations = () => {
         otherKey: 'marketplace_type_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
-    /*SubCategory.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'sub_category_id',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION' 
-    });*/
-
-    /*SubCategory.belongsToMany(Category, {
+    SubCategory.belongsToMany(Category, {
         through: Product,
         foreignKey: 'sub_category_id',
         otherKey: 'product_category_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
-    /*SubCategory.belongsToMany(Country, {
+    SubCategory.belongsToMany(Country, {
         through: Product,
         foreignKey: 'sub_category_id',
         otherKey: 'product_location',
@@ -146,6 +137,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

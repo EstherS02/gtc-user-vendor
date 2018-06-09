@@ -157,6 +157,7 @@ module.exports.initRelations = () => {
     const VendorFollower = model.VendorFollower;
     const VendorNotificationSetting = model.VendorNotificationSetting;
     const VendorPlan = model.VendorPlan;
+    const VendorRating = model.VendorRating;
     const VendorShippingLocation = model.VendorShippingLocation;
     const VendorVerification = model.VendorVerification;
     const User = model.User;
@@ -165,7 +166,6 @@ module.exports.initRelations = () => {
     const Timezone = model.Timezone;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const State = model.State;
@@ -219,6 +219,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Vendor.hasMany(VendorRating, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Vendor.hasMany(VendorShippingLocation, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
@@ -255,6 +261,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Vendor.belongsToMany(Timezone, {
+        through: BusinessHour,
+        foreignKey: 'vendor_id',
+        otherKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Vendor.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'vendor_id',
@@ -270,14 +284,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*Vendor.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'vendor_id',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Vendor.belongsToMany(Category, {
         through: Product,
@@ -323,6 +329,14 @@ module.exports.initRelations = () => {
         through: VendorPlan,
         foreignKey: 'vendor_id',
         otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.belongsToMany(User, {
+        through: VendorRating,
+        foreignKey: 'vendor_id',
+        otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

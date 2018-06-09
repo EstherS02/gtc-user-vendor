@@ -79,7 +79,6 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
 
@@ -146,14 +145,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*State.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'state_id',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     State.belongsToMany(Category, {
         through: Product,
