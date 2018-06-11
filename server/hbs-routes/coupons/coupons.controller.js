@@ -315,6 +315,7 @@ export function editCoupons(req, res) {
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				LoggedInUser: LoggedInUser
 			});
+
 		} else {
 			res.render('services', error);
 		}
