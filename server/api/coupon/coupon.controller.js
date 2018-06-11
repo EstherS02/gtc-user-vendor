@@ -10,10 +10,6 @@ const service = require('../service');
 
 export function updateCoupon(req, res) {
 	var modelName = 'Coupon';
-	var productModel = "CouponProduct";
-	var categoryModel = "CouponCategory";
-	var productExcludeModel = "CouponExcludedProduct";
-	var categoryExcludeModel = "CouponExcludedCategory";
 	var newCoupon = {};
 	var id = req.body.id;
 	newCoupon.coupon_name = req.body.coupon_name;
@@ -31,80 +27,119 @@ export function updateCoupon(req, res) {
 	newCoupon.discount_value = req.body.discount_value;
 	newCoupon.discount_value = req.body.discount_value;
 
-	var newCouponProducts = JSON.parse(req.body.couponProducts);
-	var newCouponExcludeProducts = req.body.couponExcludeProducts;
-	var newCouponCategory = req.body.couponCategories;
-	var newCouponExcludeCategory = req.body.couponExcludeCategories;
-	// var modelName = '';
 	var queryObj = {};
 	var includeArr = [];
 
-	console.log('product', newCouponProducts);
-
 	service.updateRow(modelName, newCoupon, id).then(function(results) {
-		console.log("talk", results);
 		if (results) {
-			model[productModel].update({
-				status: 0
-			}, {
-				where: {
-					coupon_id: id
-				}
-			}).then(function(row) {
-				console.log("talk_update", row);
-				if (row > 0) {
-					console.log("status 0");
-					if (newCouponProducts) {
-						// modelName = 'CouponProducts';
-						newCouponProducts.forEach(function(element) {
-							console.log('new', element);
-							data = {
-								coupon_id: id,
-								product_id: element.id,
-								status: 1
-							};
-							queryObj = {
-								coupon_id: id,
-								product_id: element.id
-							};
-							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
-								console.log("Update", response)
-							});
-						});
-					}
-				} else {
-					console.log("status 1");
-					if (newCouponProducts) {
-
-						newCouponProducts.forEach(function(element) {
-							console.log('cc_new', element);
-							data = {
-								coupon_id: id,
-								product_id: element.id,
-								status: 1
-							};
-							queryObj = {
-								coupon_id: id,
-								product_id: element.id
-							};
-							service.upsert(productModel, queryObj, includeArr, data).then(function(response) {
-								console.log("Update", response)
-							});
-						});
-					}
-
-				}
-			}).catch(function(error) {
-				// reject(error);
-			})
+			return res.status(200).send(results);
 		} else {
-			// service.createRow(modelName,data).then(function(response){
-			// });
-			res.status(200).send(results);
+			return res.status(404).send("Not found");
 		}
 	}).catch(function(error) {
 		console.log('Error:::', error);
 		res.status(500).send("Internal server error");
 		return;
 	});
+}
+
+export function updateProductCoupon(req, res) {
+	var id = req.body.id;
+	var newCouponArry = JSON.parse(req.body.couponArray);
+	var modelName = req.body.modelName;
+	console.log(req.body.couponProducts);
+	model[modelName].update({
+		status: 0
+	}, {
+		where: {
+			coupon_id: id
+		}
+	}).then(function(row) {
+		console.log("updateProductCoupon", row);
+		if (newCouponArry) {
+
+			newCouponArry.forEach(function(element) {
+				console.log('new', element);
+				var data = {};
+				var queryObj = {};
+				var includeArr = [];
+				data = {
+					coupon_id: id,
+					product_id: element,
+					status: 1
+				};
+				queryObj = {
+					coupon_id: id,
+					product_id: element
+				};
+				service.findOneRow(modelName, queryObj, includeArr)
+					.then(function(results) {
+						if (results) {
+							var id = results.id;
+							data.last_updated_on = new Date();
+							service.updateRow(modelName, data, id).then(function(response) {
+								return;
+							});
+						} else {
+							data.created_on = new Date();
+							service.createRow(modelName, data).then(function(response) {
+								return;
+							});
+						}
+					});
+			});
+			return;
+		}
+	});
+}
+export function updateCategoryCoupon(req, res) {
+	var id = req.body.id;
+	var newCouponArry = JSON.parse(req.body.couponArray);
+	var modelName = req.body.modelName;
+	console.log(req.body.couponProducts);
+	model[modelName].update({
+		status: 0
+	}, {
+		where: {
+			coupon_id: id
+		}
+	}).then(function(row) {
+		console.log("updateProductCoupon", row);
+		if (newCouponArry) {
+			newCouponArry.forEach(function(element) {
+				console.log('new', element);
+				var data = {};
+				var queryObj = {};
+				var includeArr = [];
+				data = {
+					coupon_id: id,
+					category_id: element,
+					status: 1
+				};
+				queryObj = {
+					coupon_id: id,
+					category_id: element
+				};
+				service.findOneRow(modelName, queryObj, includeArr)
+					.then(function(results) {
+						if (results) {
+							var id = results.id;
+							data.last_updated_on = new Date();
+							service.updateRow(modelName, data, id).then(function(response) {
+								return;
+							});
+						} else {
+							data.created_on = new Date();
+							service.createRow(modelName, data).then(function(response) {
+								return;
+							});
+						}
+					});
+			});
+		}
+	});
+}
+
+export function createCoupon(req, res){
+	
 }
