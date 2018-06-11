@@ -1,20 +1,21 @@
 'use strict';
 import Handlebars from 'handlebars';
 const moment = require('moment');
-
+const jQuery = require('jquery');
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
     var rating = Math.ceil(rating);
 
     var colored = "";
-    var colorless = "", tag1, tag2;
-   /*  if(color){
-        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
-        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    }else{ */
-        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
-        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    var colorless = "",
+        tag1, tag2;
+    /*  if(color){
+         tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
+         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+     }else{ */
+    tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+    tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
     /* } */
 
     for (var i = 0; i <= rating - 1; i++) {
@@ -182,14 +183,14 @@ Handlebars.registerHelper("days", function(value) {
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
-    console.log('test',test);
+    console.log('test', test);
 
     for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id+'"';
-        if (test.indexOf(context[i].id) >=0) { 
+        var option = '<option value="' + context[i].id + '"';
+        if (test.indexOf(context[i].id) >= 0) {
             option += ' selected="selected"';
         }
-        option += '>'+ context[i].product_name + '</option>';
+        option += '>' + context[i].product_name + '</option>';
         ret += option;
     }
     return new Handlebars.SafeString(ret);
@@ -198,47 +199,67 @@ Handlebars.registerHelper('optionsSelected', function(context, test) {
 Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
     var ret = '';
     for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id+'"';
-        if (test.indexOf(context[i].id) >=0) {  // you may also use some  test.some(context[i].id)
+        var option = '<option value="' + context[i].id + '"';
+        if (test.indexOf(context[i].id) >= 0) { // you may also use some  test.some(context[i].id)
             option += ' selected="selected"';
         }
-        option += '>'+ context[i].name + '</option>';
+        option += '>' + context[i].name + '</option>';
         ret += option;
     }
     return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
-    if(!ary || ary.length == 0)
+    if (!ary || ary.length == 0)
         return options.inverse(this);
-   
-    var result = [ ];
-    for(var i = 0; result.length < max && i < ary.length; ++i)
-        if(ary[i].category_id == id){
-        result.push(options.fn(ary[i]));
-    }
+
+    var result = [];
+    for (var i = 0; result.length < max && i < ary.length; ++i)
+        if (ary[i].category_id == id) {
+            result.push(options.fn(ary[i]));
+        }
     return result.join('');
 });
 
 Handlebars.registerHelper('each_limit', function(ary, max, options) {
-    if(!ary || ary.length == 0)
+    if (!ary || ary.length == 0)
         return options.inverse(this);
-   
-    var result = [ ];
-    for(var i = 0; result.length < max && i < ary.length; ++i)
+
+    var result = [];
+    for (var i = 0; result.length < max && i < ary.length; ++i)
         // if(ary[i].category_id == id){
         result.push(options.fn(ary[i]));
     // }
     return result.join('');
 });
 
-
 Handlebars.registerHelper('FormatDate', function(context, options) {
-
     if (context) {
-        let newdate = moment(new Date(context)).fromNow(); 
-        return newdate; 
+        let newdate = moment(new Date(context)).fromNow();
+        return newdate;
     }
 });
 
-module.exports = function(context, options) {  };
+var serialize = function(obj) {
+    var str = [];
+    for (var p in obj)
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+}
+
+Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, deleteKey, options) {
+    var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
+    if (Object.keys(newObj).length > 0) {
+        existingObj = Object.assign(existingObj, newObj);
+    }
+    if (deleteKey != 'null') {
+        delete existingObj[deleteKey];
+    }
+    return serialize(existingObj);
+});
+
+Handlebars.registerHelper('FrameObject', function(options) {
+    return options.hash;
+});

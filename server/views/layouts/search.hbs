@@ -54,10 +54,13 @@
 			<div class="row">
 				<div class="col-md-7">
 					<p class="showing_res1">Showing
-						<b>{{SUMFloat offset 1}}-{{SUMFloat pageSize offset}}</b> of
+						<b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
 						<b>{{collectionSize}}</b> Products matching
-						<b>"automotive"</b> in the
-						<span class="showing_global_col">Global Private Wholesale Market</span>
+						{{#if queryPaginationObj.keyword}}
+						<span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
+						{{#if selectedMarketPlace}}
+						in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
+						{{/if}}
 					</p>
 				</div>
 				<div class="col-md-5">
@@ -103,7 +106,7 @@
 								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
 									{{#each this.SubCategories}}
 									<li class="list-group-item">
-										<a href="./search?category={{this.id}}&sub_category={{this.id}}">
+										<a href="./search?category={{../this.id}}&sub_category={{this.id}}">
 											<span>{{this.name}}</span>
 										</a>
 										<ul></ul>
@@ -116,7 +119,7 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
 					<p class="cat_bg_title">
-						<a href="javascript:;" onclick=globalSearch()>
+						<a href="../search?{{QueryParams queryURI (FrameObject marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
 							<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
 						</a>
 					</p>
@@ -124,7 +127,7 @@
 						<ul class="list-group">
 							{{#each marketPlaceTypes.rows}}
 							<li class="list-group-item">
-								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="./search?marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">
+								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject marketplace=../marketPlace.WHOLESALE marketplace_type=this.id)}}">
 									<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
@@ -133,7 +136,7 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
 					<p class="cat_bg_title">
-						<a href="javascript:;" onclick=global()>
+						<a href="../search?{{QueryParams queryURI (FrameObject) 'location'}}">
 							<span>GLOBAL ({{locations.count}})</span>
 						</a>
 					</p>
@@ -141,7 +144,7 @@
 						<ul class="list-group">
 							{{#each locations.rows}}
 								<li class="list-group-item">
-									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} onclick=appendLocation(`{{this.id}}`); href="javascript:;">
+									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject location=this.id) 'null'}}">
 										<span>{{this.name}} ({{this.product_count}})</span>
 									</a>
 								</li>
@@ -296,20 +299,20 @@
 				<div class="col-md-3">
 				</div>
 				<div class="col-md-7">
-					{{#pagination collectionSize page pageSize maxSize}}
+					{{#pagination collectionSize queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
 					<nav aria-label="Page navigation example">
 						<ul class="pagination justify-content-center">
 							{{#unless startFromFirstPage}}
 							<li class="page-item">
-								<a class="page-link" href="search?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+								<a class="page-link" href="search?page={{DiffFloat ../queryPaginationObj.page 1}}&limit={{../queryPaginationObj.limit}}">Previous</a>
 							</li>
 							{{/unless}} {{#each pages}}
 							<li class="page-item {{#if isCurrent}} active {{/if}}">
-								<a class="page-link" href="search?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+								<a class="page-link" href="search?page={{page}}&limit={{../../queryPaginationObj.limit}}">{{page}}</a>
 							</li>
 							{{/each}} {{#unless endAtLastPage}}
 							<li class="page-item">
-								<a class="page-link" href="search?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+								<a class="page-link" href="search?page={{SUMFloat ../queryPaginationObj.page 1}}&limit={{../queryPaginationObj.limit}}">Next</a>
 							</li>
 							{{/unless}}
 						</ul>
