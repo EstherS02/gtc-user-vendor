@@ -197,7 +197,7 @@ export function index(req, res) {
 				}]
 			}).then(function (results) {
 				var jsonParseResults = JSON.parse(JSON.stringify(results));
-				console.log('jsonParseResults', jsonParseResults);
+				//console.log('jsonParseResults', jsonParseResults);
 				return callback(null, jsonParseResults);
 			}).catch(function (error) {
 				console.log('Error:::', error);
