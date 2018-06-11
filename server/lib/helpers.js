@@ -254,7 +254,10 @@ Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, dele
         existingObj = Object.assign(existingObj, newObj);
     }
     if (deleteKey != 'null') {
-        delete existingObj[deleteKey];
+        var tmpArray = deleteKey.split('&');
+        tmpArray.forEach(function(tmpKey) {
+            delete existingObj[tmpKey];
+        });
     }
     return serialize(existingObj);
 });
