@@ -2,10 +2,30 @@
 	#imageUpload {
 		display: none;
 	}
+
 	#profileImage {
 		cursor: pointer;
 	}
 </style>
+
+<script>
+	function myFunction() {
+		var checkBox = document.getElementById("myCheck");
+		var shipping_address1 = document.getElementById("shipping_address1");
+		var shipping_address2 = document.getElementById("shipping_address2");
+
+		if (checkBox.checked == true) {
+			shipping_address1.style.display = "block";
+			shipping_address2.style.display = "none";
+		}
+		else {
+			shipping_address1.style.display = "none";
+			shipping_address2.style.display = "block";
+
+		}
+	}
+</script>
+
 <script>
 	$(document).ready(function () {
 		$("#profileImage").click(function (e) {
@@ -23,29 +43,34 @@
 		$("#userUpdateBtn").click(function (e) {
 
 			e.preventDefault();
-			var userUpdate = {};
-			var vendorUpdate = {};
-			var billingUpdate = {};
-			var shippingUpdate = {};
-			userUpdate.first_name = $('#first_name').val(),
-				userUpdate.last_name = $('#last_name').val(),
-				vendorUpdate.contact_email = $('#contact_email').val(),
-				billingUpdate.address_type = 1,
-				billingUpdate.company_name = $('#b_company_name').val(),
-				billingUpdate.address_line1 = $('#b_address1').val(),
-				billingUpdate.address_line2 = $('#b_address2').val(),
-				billingUpdate.country_id = $('#b_country').val(),
-				billingUpdate.province_id = $('#b_state').val(),
-				billingUpdate.city = $('#b_city').val(),
-				billingUpdate.postal_code = $('#b_postal_code').val(),
-				shippingUpdate.address_type = 2,
-				shippingUpdate.company_name = $('#s_company_name').val(),
-				shippingUpdate.address_line1 = $('#s_address1').val(),
-				shippingUpdate.address_line2 = $('#s_address2').val(),
-				shippingUpdate.country_id = $('#s_country').val(),
-				shippingUpdate.province_id = $('#s_state').val(),
-				shippingUpdate.city = $('#s_city').val(),
-				shippingUpdate.postal_code = $('#s_postal_code').val();
+
+			var userObj = {
+				first_name: $('#first_name').val(),
+				last_name: $('#last_name').val()
+			};
+			var vendorObj = {
+				contact_email: $('#contact_email').val()
+			};
+			var billingObj = {
+				address_type: 1,
+				company_name: $('#b_company_name').val(),
+				address_line1: $('#b_address1').val(),
+				address_line2: $('#b_address2').val(),
+				country_id: $('#b_country').val(),
+				province_id: $('#b_state').val(),
+				city: $('#b_city').val(),
+				postal_code: $('#b_postal_code').val()
+			};
+			var shippingObj = {
+				address_type: 2,
+				company_name: $('#s_company_name').val(),
+				address_line1: $('#s_address1').val(),
+				address_line2: $('#s_address2').val(),
+				country_id: $('#s_country').val(),
+				province_id: $('#s_state').val(),
+				city: $('#s_city').val(),
+				postal_code: $('#s_postal_code').val()
+			};
 
 			var form = new FormData();
 			form.append("file", $("#imageUpload")[0].files[0]);
@@ -60,54 +85,64 @@
 				processData: false,
 				contentType: false,
 				success: function (data) {
-					vendorUpdate.vendor_profile_pic_url = data.imageURL;
+					vendorObj.vendor_profile_pic_url = data.imageURL;
+
+					var postData = {
+						userObj: userObj,
+						vendorObj: vendorObj,
+						billingObj: billingObj,
+						shippingObj: shippingObj
+					};
+
 					$.ajax({
-						url: '/api/vendor/' + {{ vendor.id }},
-				type: 'PUT',
-				data: vendorUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/users/' + {{ vendor.User.id }},
-				type: 'PUT',
-				data: userUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/address/' + {{ billingAddress.id }},
-				type: 'PUT',
-				data: billingUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/address/' + {{ shippingAddress.id }},
-				type: 'PUT',
-				data: shippingUpdate,
-				success: function (updateData) {
-					console.log("Updated Successfully..");
+						url: '/api/vendor/update-profile',
+						type: 'POST',
+						data: postData,
+						success: function (updateData) {
+							/*	$.ajax({
+									url: '/api/users/' + {{ vendor.User.id }},
+							type: 'PUT',
+							data: userUpdate,
+							success: function (updateData) {
+								$.ajax({
+									url: '/api/address/' + {{ billingAddress.id }},
+							type: 'PUT',
+							data: billingUpdate,
+							success: function (updateData) {
+								$.ajax({
+									url: '/api/address/' + {{ shippingAddress.id }},
+							type: 'PUT',
+							data: shippingUpdate,
+							success: function (updateData) {
+								console.log("Updated Successfully..");
+							},
+							error: function (error) {
+								console.log("Error", error);
+							}
+						});
+					},
+						error: function (error) {
+							console.log("Error", error);
+						}
+					});
+							},
+				error: function (error) {
+					console.log("Error", error);
+				}
+						});*/
+						},
+						error: function (error) {
+							console.log("Error", error);
+						}
+					});
 				},
 				error: function (error) {
 					console.log("Error", error);
 				}
 			});
-		},
-			error: function (error) {
-				console.log("Error", error);
-			}
+
+
 		});
-				},
-	error: function (error) {
-		console.log("Error", error);
-	}
-			});
-		},
-	error: function (error) {
-		console.log("Error", error);
-	}
-		});
-			},
-	error: function (error) {
-		console.log("Error", error);
-	}
-		});
-	 }); 
 	});
 	function change_b_Country(e) {
 		$.ajax({
@@ -222,142 +257,230 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<div class="row">
-									<div class="col-md-4">
-										<p>Billing Address</p>
+								<div id="billing_address">
+									<div class="row">
+										<div class="col-md-4">
+											<p>Billing Address</p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_address1' value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_address2' value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" id="b_country" name="country" onChange="change_b_Country(this);">
+											<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+											{{#each country}}
+											<option value="{{this.id}}">{{ this.name}}</option>
+											{{/each}}
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" value="">
+											<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+											/>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address1' value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address2' value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="country" onChange="change_b_Country(this);">
-										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
-										{{#each country}}
-										<option value="{{this.id}}">{{ this.name}}</option>
-										{{/each}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" value="">
-										<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
-								</div>
+
+
+
+
 								<div class="row" style="margin-bottom: 20px;">
 									<div class="col-md-4">
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="checkbox"> My Shipping Address is the same as my billing address
+										<input type="checkbox" id="myCheck" onclick="myFunction()"> My Shipping Address is the same as my billing address
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p>Shipping Address</p>
+
+
+								<!---If Shipping And Billing Address Are Same -->
+
+								<div id="shipping_address1" style="display:none">
+									<div class="row">
+										<div class="col-md-4">
+											<p>Shipping Address</p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_company_name' value="{{billingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address1' value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address2' value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);">
+											<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+											{{#each country}}
+											<option value="{{this.id}}">{{ this.name}}</option>
+											{{/each}}
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state">
+											<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+											/>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+
+
+
+
+								<!---If Shipping And Billing Address Are Different -->
+
+								<div id="shipping_address2">
+									<div class="row">
+										<div class="col-md-4">
+											<p>Shipping Address</p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address2' value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);">
+											<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+											{{#each country}}
+											<option value="{{this.id}}">{{ this.name}}</option>
+											{{/each}}
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state">
+											<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+											/>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address2' value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);">
-										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
-										{{#each country}}
-										<option value="{{this.id}}">{{ this.name}}</option>
-										{{/each}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state">
-										<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
-									</div>
-								</div>
+
+
+
+
 							</div>
 						</div>
 						<hr/>
