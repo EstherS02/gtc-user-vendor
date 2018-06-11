@@ -31,18 +31,16 @@ export function indexA(req, res) {
 		include: [{
 			model: model['SubCategory'],
 			where: marketplaceTypeQueryObj,
-			attributes: ['id', 'category_id', 'name', 'code'],
-			required: false,
 			include: [{
 				model: model['Product'],
 				where: productCountQueryParames,
 				attributes: ['id', 'product_name'],
 				required: false
 			}],
-			group: ['SubCategory.id']
+			attributes: ['id', 'category_id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'sub_product_count']]
 		}],
 		attributes: ['id', 'name', 'code'],
-		required: false
+		group: ['SubCategories.id']
 	}).then(function(results) {
 		if (results.length > 0) {
 			model['Product'].count({
@@ -64,50 +62,6 @@ export function indexA(req, res) {
 		console.log('Error:::', error);
 		return res.status(500).send(error);
 	});
-	/*var productQueryObj = {};
-	var marketPlaceTypeQueryObj = {};
-
-	productQueryObj['status'] = status["ACTIVE"];
-	marketPlaceTypeQueryObj['status'] = status["ACTIVE"];
-
-	productQueryObj['product_location'] = 3;
-
-	console.log('productQueryObj', productQueryObj);
-
-	model['MarketplaceType'].findAll({
-		where: marketPlaceTypeQueryObj,
-		include: [{
-			model: model['Product'],
-			where: productQueryObj,
-			required: false
-		}],
-		group: ['MarketplaceType.id']
-	}).then(function(results) {
-		res.status(200).send(JSON.parse(JSON.stringify(results)));
-		return;
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	});
-
-	var marketplaceTypeQueryObj = {};
-	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-
-	model['Category'].findAll({
-		where: marketplaceTypeQueryObj,
-		include: [{
-			model: model['SubCategory'],
-			where: marketplaceTypeQueryObj
-		}]
-	}).then(function(results) {
-		res.status(200).send(JSON.parse(JSON.stringify(results)));
-		return;
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	});*/
 }
 
 export function index(req, res) {
