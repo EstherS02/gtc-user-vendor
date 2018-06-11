@@ -1,10 +1,58 @@
 <script>
 
+var userInfo = {{{DisplayJSON LoggedInUser}}}
+
+
 $(function(){                   
-    $('#gtc-submit-review').barrating({
+    $('#review-stars').barrating({
         theme: 'fontawesome-stars'
       });
 });
+
+
+$("#reviewForm").validate({
+	rules: {
+		reviewDetailComment: "required",
+		reviewTitle: "required"
+	},
+	messages: {
+		reviewDetailComment: "Please Enter your review Comment",
+		reviewTitle: "Please enter your Review title"
+	}
+	
+});
+
+
+function reviewSubmit(id){
+
+	let reviewObj = {};
+
+	if(userInfo.email){
+		if($("#reviewForm").valid()){
+		reviewObj['rating'] = $('#review-stars').val();
+		reviewObj['title'] = $('#review-title').val();
+		reviewObj['comment'] = $('#review-detail-comment').val();
+		reviewObj['product_id'] = parseInt(id);
+		reviewObj['user_id'] = parseInt(userInfo.id);
+		reviewObj['status'] = 1;
+
+		console.log(reviewObj);
+
+		$.ajax({
+				type: "POST",
+				url: "/api/reviews",
+				data: reviewObj,
+				success: function (result) {
+					if(result)
+						location.reload();
+				}
+			});
+		} 
+	}else{
+		location.href = "/login"
+	}
+	
+}
 
 </script>
 
@@ -275,7 +323,7 @@ $(function(){
 												<span class="product_rating_star" style="font-size:20px; font-weight: bold;">5.9</span>
 												<span style="font-size: 12px;">Based on</span>
 												<span style="font-size: 12px;" class="text_blue_color">
-													<b>23 Reviews</b>
+													<b>{{product.Reviews.length}} Reviews</b>
 												</span>
 											</p>
 
@@ -345,14 +393,7 @@ $(function(){
 
 													</div>
 													<div class="row">
-															<select id="gtc-submit-review" style="display:none !important;">
-																<option value=""></option>
-																<option value="1">1</option>
-																<option value="2">2</option>
-																<option value="3">3</option>
-																<option value="4">4</option>
-																<option value="5">5</option>
-															</select>
+															
 														<div class="col-md-12">
 															<button class="product_buttion">Submit Your Own Review</button>
 														</div>
@@ -360,28 +401,25 @@ $(function(){
 												</div>
 												<div class="col-md-7">
 													<div class="row">
-														<div class="col-md-2 col-3 product_img common_padding1">
+														{{!-- <div class="col-md-2 col-3 product_img common_padding1" >
 															<img width="100%" src="../../img/coming-soon.png" />
-														</div>
+														</div> --}}
+														{{#each product.Reviews}}
+														{{#ifCond @index '<' 5}}
 														<div class="col-md-10 col-9 product_great_bg">
-															<p class="product_great">"Great place great food, warm hospitality"</p>
+															<p class="product_great">{{this.title}}</p>
 															<p class="product_star">
-																<i class="fas fa-star"></i>
-																<i class="fas fa-star"></i>
-																<i class="fas fa-star"></i>
-																<i class="fas fa-star"></i>
-																<i class="fas fa-star"></i>
-																<span class="product_ago"> 3 days ago </span>
+																{{starCount this.rating '#fab547'}}
+																<span class="product_ago"> {{FormatDate this.created_on}} </span>
 															</p>
-															<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us
-																pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference,
-																most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
+															<p class="product_we">{{this.comment}}</p>
 														</div>
-
+														{{/ifCond}}
+														{{/each}}
 													</div>
 													<div class="row">
 														<div class="col-md-6 col-6">
-															<p class="text_blue_color" style="font-size: 12px;">Scott T</p>
+															{{!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> --}}
 														</div>
 														<div class="col-md-6 col-6">
 															<button class="product_buttion" style="background-color: #154881;">See All Reviews</button>
@@ -402,24 +440,37 @@ $(function(){
 											<i class="fas fa-question-circle review_help_icon"></i>
 										</div>
 										<div class="col-md-11 col-10 product_submit">
+										<form name="reviewForm" id="reviewForm" onsubmit="return false">
 											<p class="review_help_title">Submit A Review Of This Product</p>
 											<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product, please fill out the following it will
 												be sent directly to the vendor.</p>
+											<div>
+												<span class="product_submit_para">Please provide rating for this product</span>
+												<select id="review-stars" style="display:none !important;">
+																<option value=""></option>
+																<option value="1">1</option>
+																<option value="2">2</option>
+																<option value="3">3</option>
+																<option value="4">4</option>
+																<option value="5">5</option>
+													</select>
+											</div>
 											<div class="product_table_bg">
 												<div class="row">
 													<div class="col-md-10">
-														<input class="product_table" type="text" placeholder="Review Title">
+														<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-10">
-														<textarea class="product_table" rows="5" cols="22" placeholder="Tell us about your experiance with this product "></textarea>
+														<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product " required></textarea>
 													</div>
 													<div class="col-md-2">
-														<button class="product_buttion_1" style="background-color: #154881;">Submit</button>
+														<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
 													</div>
 												</div>
 											</div>
+										  </form>
 										</div>
 									</div>
 									<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
@@ -427,7 +478,7 @@ $(function(){
 
 								</div>
 							</div>
-							<section class="box3" style="margin-bottom:0; padding-left: 0px; padding-right: 0px;">
+							<section class="box3" style="margin-bottom:0; padding-left: 0px; padding-right: 0px;display:none;">
 								<div class="container clearfix">
 									<div class="row ">
 										<div class="col-md-12 col-12 wts4 ">
@@ -437,7 +488,7 @@ $(function(){
 									</div>
 								</div>
 							</section>
-							<section class="box4" style="margin-bottom:20px;">
+							<section class="box4" style="margin-bottom:20px;display:none;">
 								<div class="container clearfix">
 									<div class="row">
 										<div class="col-md-4 col-12 common_top">
@@ -1035,144 +1086,5 @@ $(function(){
 		</div>
 </section>
 
-
-
-
-
-
-<!--
-
-<section class="showing_categ">
-	<div class="">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-2 showing_categ">
-
-				</div>
-				<div class="col-md-8 list_bg">
-					<h5 class="list_manage">Manage Product - iPhone Pallets of Interest</h5>
-					<section class="box2 list_sec">
-						<div class="container">
-							<div class="row">
-								<div class="col-md-12 box2_align">
-									<h5>PRIVATE WHOLESALE MARKETPLACE</h1>
-								</div>
-							</div>
-						</div>
-					</section>
-					<div class="row">
-						<div class="col-md-4">
-							<img src="../../img/hayden.png" alt="logo" style="width: 100%; margin-bottom: 10px;" />
-							<div class="row">
-								<div class="col-md-4">
-									<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
-								</div>
-								<div class="col-md-4">
-									<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
-								</div>
-								<div class="col-md-4">
-									<img src="../../img/hayden.png" alt="logo" style="width: 100%" />
-								</div>
-							</div>
-						</div>
-						<div class="col-md-8">
-							<div class="row">
-								<div class="col-md-2">
-									<p>Status</p>
-								</div>
-								<div class="col-md-10">
-									<p>Active</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Type</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.Marketplace.name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Category</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.Category.name}} > {{product.SubCategory.name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>SKU</p>
-								</div>
-								<div class="col-md-10">
-									<p>1234987</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>MOQ</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.moq}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Availability</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.quantity_available}} in stock</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Category</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_wts">{{product.MarketplaceType.code}} - {{product.MarketplaceType.name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Name</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_iphone">{{product.product_name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Price</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_doll">${{product.price}}
-										<sup>00/10</sup>
-									</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Description</p>
-								</div>
-								<div class="col-md-10">
-									<p>The ipad is available with 16, 32 and 64 GB flash drive options. All Varieties come with Wi-Fi Internet access;
-										for a higher price, the consumer can purchase an iPad 3G to get Internet access through AT&T's network</p>
-									<p>The iPad, which uses Apple's mobile operating system (iOS) combines the computing power of a laptop or destop computer
-										with the portability of a smartphone. iPad users can surf the internet with safari, Apple's web browser, receive
-										and send email messages, share photos and slideshows, watch videos on YouTube and listen to music on iTunes. In
-										addition to the standard features, Apple also offers an app stone with thousands of free and paid apps with functions
-										ranging from games and entertainment to business and education.</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-2 list_bg common_padding1"></div>
-			</div>
-		</div>
-	</div>
-</section>
-
--->
 
 {{> footer/footer}}

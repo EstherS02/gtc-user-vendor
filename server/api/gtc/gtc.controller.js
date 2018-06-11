@@ -8,54 +8,59 @@ const service = require('../service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const marketplace = require('../../config/marketplace');
 const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexA(req, res) {
-	var productQueryObj = {};
-	var marketPlaceTypeQueryObj = {};
-
-	productQueryObj['status'] = status["ACTIVE"];
-	marketPlaceTypeQueryObj['status'] = status["ACTIVE"];
-
-	productQueryObj['product_location'] = 3;
-
-	console.log('productQueryObj', productQueryObj);
-
-	model['MarketplaceType'].findAll({
-		where: marketPlaceTypeQueryObj,
-		include: [{
-			model: model['Product'],
-			where: productQueryObj,
-			required: false
-		}],
-		group: ['MarketplaceType.id']
-	}).then(function(results) {
-		res.status(200).send(JSON.parse(JSON.stringify(results)));
-		return;
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
-	});
-
+	var result = {};
 	var marketplaceTypeQueryObj = {};
+	var productCountQueryParames = {};
+
 	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+
+	productCountQueryParames['status'] = status["ACTIVE"];
+	productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+	productCountQueryParames['marketplace_type_id'] = 3;
+
+	console.log('productCountQueryParames', productCountQueryParames);
 
 	model['Category'].findAll({
 		where: marketplaceTypeQueryObj,
 		include: [{
 			model: model['SubCategory'],
-			where: marketplaceTypeQueryObj
-		}]
+			where: marketplaceTypeQueryObj,
+			include: [{
+				model: model['Product'],
+				where: productCountQueryParames,
+				attributes: ['id', 'product_name'],
+				required: false
+			}],
+			attributes: ['id', 'category_id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'sub_product_count']]
+		}],
+		attributes: ['id', 'name', 'code'],
+		group: ['SubCategories.id']
 	}).then(function(results) {
-		res.status(200).send(JSON.parse(JSON.stringify(results)));
-		return;
+		if (results.length > 0) {
+			model['Product'].count({
+				where: productCountQueryParames
+			}).then(function(count) {
+				result.count = count;
+				result.rows = JSON.parse(JSON.stringify(results));
+				return res.status(200).send(result);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return res.status(500).send(error);
+			});
+		} else {
+			result.count = 0;
+			result.rows = [];
+			return res.status(200).send(result);
+		}
 	}).catch(function(error) {
-		console.log('Error :::', error);
-		res.status(500).send("Internal server error");
-		return
+		console.log('Error:::', error);
+		return res.status(500).send(error);
 	});
 }
 

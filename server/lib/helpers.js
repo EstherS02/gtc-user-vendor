@@ -3,14 +3,19 @@ import Handlebars from 'handlebars';
 const moment = require('moment');
 
 
-Handlebars.registerHelper('starCount', function(rating) {
+Handlebars.registerHelper('starCount', function(rating, color) {
 
     var rating = Math.ceil(rating);
 
     var colored = "";
-    var colorless = "";
-    var tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
-    var tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    var colorless = "", tag1, tag2;
+   /*  if(color){
+        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
+        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    }else{ */
+        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    /* } */
 
     for (var i = 0; i <= rating - 1; i++) {
         colored = tag1 + colored;
@@ -226,3 +231,14 @@ Handlebars.registerHelper('each_limit', function(ary, max, options) {
     // }
     return result.join('');
 });
+
+
+Handlebars.registerHelper('FormatDate', function(context, options) {
+
+    if (context) {
+        let newdate = moment(new Date(context)).fromNow(); 
+        return newdate; 
+    }
+});
+
+module.exports = function(context, options) {  };
