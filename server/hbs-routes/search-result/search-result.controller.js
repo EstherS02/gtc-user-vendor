@@ -229,15 +229,6 @@ export function index(req, res) {
 					where: categoryQueryObj,
 					attributes: ['id', 'category_id', 'name', 'code'],
 					required: false,
-<<<<<<< HEAD
-					attributes: ['id', 'name', 'code']
-				}]
-			}).then(function (results) {
-				var jsonParseResults = JSON.parse(JSON.stringify(results));
-				//console.log('jsonParseResults', jsonParseResults);
-				return callback(null, jsonParseResults);
-			}).catch(function (error) {
-=======
 					include: [{
 						model: model['Product'],
 						where: productCountQueryParames,
@@ -266,7 +257,6 @@ export function index(req, res) {
 					return callback(null, result);
 				}
 			}).catch(function(error) {
->>>>>>> ab4860ec07907f357e709a0e04549f588d95da47
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
