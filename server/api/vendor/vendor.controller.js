@@ -197,4 +197,8 @@ function encryptPassword(req) {
 	return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
+export function updateProfile(req,res){
+	console.log("req===========userUpdate============",req.body.userObj);
+}
+
 exports.authenticate = authenticate;
