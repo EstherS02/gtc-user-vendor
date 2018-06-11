@@ -1,7 +1,6 @@
 'use strict';
 import Handlebars from 'handlebars';
 const moment = require('moment');
-const jQuery = require('jquery');
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
