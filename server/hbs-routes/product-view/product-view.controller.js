@@ -8,6 +8,7 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
+const _ = require('lodash');
 
 
 export function GetProductDetails(req, res) {
@@ -50,20 +51,25 @@ export function GetProductDetails(req, res) {
                 }
         }],
         order: [
-            [ model["ProductMedia"], 'base_image', 'DESC']
+            [ model["ProductMedia"], 'base_image', 'DESC'],
+            [ model["Review"], 'created_on', 'DESC']
         ]
     }).then(function(product) {
             if (product) {
+
+
+            var productsList = JSON.parse(JSON.stringify(product));
+
+            let productReviewsList = _.groupBy(productsList.Reviews, "rating");
+            
+
                 res.render('product-view', {
                     title: "Global Trade Connect",
-                    product: product,
+                    product: productsList,
+                    productReviewsList: productReviewsList,
                     LoggedInUser: LoggedInUser
                 });
-                 /* res.send({
-                    title: "Global Trade Connect",
-                    product: product,
-                    LoggedInUser: LoggedInUser
-                });  */
+
             } else {
                 res.render('product-view', {
                     title: "Global Trade Connect"

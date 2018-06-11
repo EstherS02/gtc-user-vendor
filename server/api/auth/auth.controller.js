@@ -784,6 +784,7 @@ export function twitterLogin(req, res, next) {
 export function logout(req, res, next) {
 	var refreshToken = cryptography.decrypt(req.cookies.gtc_refresh_token);
 	res.clearCookie('gtc_refresh_token');
+	res.clearCookie('gtc_access_token');
 	model['UserToken'].destroy({
 		where: {
 			user_id: req.user.id,

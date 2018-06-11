@@ -8,12 +8,63 @@ const service = require('../service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const marketplace = require('../../config/marketplace');
 const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexA(req, res) {
-	var productQueryObj = {};
+	var result = {};
+	var marketplaceTypeQueryObj = {};
+	var productCountQueryParames = {};
+
+	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+
+	productCountQueryParames['status'] = status["ACTIVE"];
+	productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+	productCountQueryParames['marketplace_type_id'] = 3;
+
+	console.log('productCountQueryParames', productCountQueryParames);
+
+	model['Category'].findAll({
+		where: marketplaceTypeQueryObj,
+		include: [{
+			model: model['SubCategory'],
+			where: marketplaceTypeQueryObj,
+			attributes: ['id', 'category_id', 'name', 'code'],
+			required: false,
+			include: [{
+				model: model['Product'],
+				where: productCountQueryParames,
+				attributes: ['id', 'product_name'],
+				required: false
+			}],
+			group: ['SubCategory.id']
+		}],
+		attributes: ['id', 'name', 'code'],
+		required: false
+	}).then(function(results) {
+		if (results.length > 0) {
+			model['Product'].count({
+				where: productCountQueryParames
+			}).then(function(count) {
+				result.count = count;
+				result.rows = JSON.parse(JSON.stringify(results));
+				return res.status(200).send(result);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return res.status(500).send(error);
+			});
+		} else {
+			result.count = 0;
+			result.rows = [];
+			return res.status(200).send(result);
+		}
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(500).send(error);
+	});
+	/*var productQueryObj = {};
 	var marketPlaceTypeQueryObj = {};
 
 	productQueryObj['status'] = status["ACTIVE"];
@@ -56,7 +107,7 @@ export function indexA(req, res) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
 		return
-	});
+	});*/
 }
 
 export function index(req, res) {
