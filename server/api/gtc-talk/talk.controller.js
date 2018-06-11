@@ -11,6 +11,8 @@ const service = require('../service');
 export function workingHours(req,res){
 	const data = req.body;
 	console.log(data);
+	data['vendor_id'] = 29;
+	data['status'] = 1;
 	const modelName = 'BusinessHour';
 	var includeArr = [];
 	var queryObj = {
@@ -47,15 +49,16 @@ export function storeData(req,res){
 	const data = {}
 	data.gtc_talk_enabled = req.body.gtc_talk_enabled;
 	data.default_msg = req.body.default_msg;
+	data.talk_profile_pic_url = req.body.talk_profile_pic_url;
 	data.status = 1;
-	
-	data.vendor_id = 28;
+	data.vendor_id = 29;
 	const modelName = 'TalkSetting';
-	console.log(req.body);
+	console.log( 'data',req.data);
 	const includeArr = [];
 	var queryObj = {
-		vendor_id :28,
+		vendor_id :29,
 	};
+
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
 			if (results) {

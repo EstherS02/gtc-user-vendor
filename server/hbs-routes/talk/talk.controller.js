@@ -30,9 +30,12 @@ export function talk(req, res) {
 				})
 		},
 		busiHours: function(callback) {
-			service.findAllRows("BusinessHour", includeArr, queryObj, 0, null, "id", "asc")
+			var includeArr1 = [{
+				model: model['Timezone']
+			}];
+			service.findAllRows("BusinessHour", includeArr1, queryObj, 0, null, "id", "asc")
 				.then(function(busiHours) {
-					return callback(null, busiHours.rows);	
+					return callback(null, busiHours.rows);
 				})
 				.catch(function(error) {
 					console.log('Error:::', error);
@@ -42,7 +45,7 @@ export function talk(req, res) {
 		timeZone: function(callback) {
 			service.findAllRows(timeModel, includeArr, queryObj1, 0, null, "id", "asc")
 				.then(function(timeZone) {
-					return callback(null, timeZone.rows);	
+					return callback(null, timeZone.rows);
 				})
 				.catch(function(error) {
 					console.log('Error:::', error);

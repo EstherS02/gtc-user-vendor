@@ -12,32 +12,44 @@ var async = require('async');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
-
 	if (req.user)
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
 
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
 	} else {
 		var field = 'id';
 	}
+
 	var order = "desc"; //"asc"
 	var offset = 0;
-	var limit = 10;
+	var limit = 1;
 	var vendor_id = 29;
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {
-		vendor_id: 29,
-		review_type: 2 // 1 for product review and 2 for vendor review
+		vendor_id: vendor_id,
 	};
+	
+	//pagination 
+	var page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
 
+	offset = (page - 1) * limit;
+	var maxSize;
+	// End pagination
 	async.series({
 			Reviews: function(callback) {
-				model['Review'].findAll({
+				model['VendorRating'].findAndCountAll({
 					where: queryObj,
 					offset: offset,
 					limit: limit,
@@ -48,6 +60,8 @@ export function reviews(req, res) {
 						model: model['User']
 					}]
 				}).then(function(Reviews) {
+					maxSize = Reviews.count/limit;
+					console.log('max',maxSize);
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -61,7 +75,7 @@ export function reviews(req, res) {
 				var star3 = 0;
 				var star2 = 0
 				var star1 = 0;
-				model['Review'].findAndCountAll({
+				model['VendorRating'].findAndCountAll({
 					where: queryObj,
 					limit: rating_limit,
 					order: [
@@ -111,9 +125,15 @@ export function reviews(req, res) {
 			if (!err) {
 				res.render('reviews', {
 					title: "Global Trade Connect",
-					Reviews: results.Reviews,
+					Reviews: results.Reviews.rows,
 					Rating: results.Rating,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					// pagination
+					page: page,
+					maxSize:maxSize,
+					pageSize: limit,
+					collectionSize: results.Reviews.count
+					// End pagination
 				});
 			} else {
 				res.render('reviews', err);
