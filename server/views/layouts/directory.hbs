@@ -1,20 +1,24 @@
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#searchDirectory").click(function(e) {
-            var depart = $('#depart').val();
-            var category = $('#category').val();
-            var location = $('#location').val();
-            if((depart != null) && (category != null) &&(location != null)){
-                window.location.href = '/search?depart='+depart+'&category='+category+'&location='+location;
-            }
-            else{
-                alert("Select  all three options");
-            }
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<script>
+    $(document).ready(function () {
+        $('#depart').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#category').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#location').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $("#searchForm").submit(function (e) {
+            e.preventDefault();
+            let formInput = $("#searchForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            window.location.href = '/search?' + formInput;
         });
     });
-
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="directory_banner" style="margin-bottom: 0">
     <div class="container clearfix">
         <div class="row">
@@ -23,13 +27,14 @@
             </div>
             <div class="col-md-6">
                 <div class="row">
+                    <form id="searchForm">
                     <div class="col-md-12 lstb2 text-center">
                         <p>Search Our Global Directory of over</p>
                         <p>21,000 Wholesalers, Retailers & Service Providers</p>
                         <p class="adv_search">Advanced Search</p>
-                        <div class="row">
+                         <div class="row">
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="depart">
+                                <select class="geo_textbox" id="depart" name="depart">
                                     <option disabled selected>Department</option>
                                     {{#each depart}}
                                     <option value={{this.id}}>{{ this.name}}</option>
@@ -37,24 +42,25 @@
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="category">
+                                <select class="geo_textbox" id="category" name="category">
                                     <option disabled selected>Category</option>
                                     {{#each category}}
-                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
                             <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="location">
+                                <select class="geo_textbox" id="location" name="location">
                                     <option disabled selected>Location</option>
                                     {{#each country}}
-                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="SEARCH DIRECTORY" id ="searchDirectory" class="shop_checkout_btn" style="padding: 8px 20px;" />
+                        <input type="submit" id="searchSubmit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
                     </div>
+                  </form>
                 </div>
             </div>
         </div>
