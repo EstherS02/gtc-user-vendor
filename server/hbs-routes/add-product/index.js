@@ -4,13 +4,12 @@ var express = require('express');
 var router = express.Router();
 var middleware = require('../../middleware');
 var permission = require('../../config/permission');
-var globalUser = require('../../auth/global-user-obj');
-
+var auth = require('../../auth/auth.service')
 
 /* Handlebars routes */
 var controller = require('./add-product.controller');
 
-router.get('/', globalUser.isGlobalObj(), controller.AddProduct);
+router.get('/', auth.isAuthenticated(), controller.AddProduct);
 
 
 module.exports = router;

@@ -5,6 +5,7 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
+const marketplace = require('../../config/marketplace');
 const service = require('../../api/service');
 
 const async = require('async');
@@ -78,6 +79,7 @@ export function shop(req, res) {
         if (!err) {
             res.render('shop', {
 				title: "Global Trade Connect",
+                marketPlace: marketplace,
 				featuredProducts: results.featuredProducts,
 				publicMarketplace: results.publicMarketplace,
                 retailers: results.retailers,

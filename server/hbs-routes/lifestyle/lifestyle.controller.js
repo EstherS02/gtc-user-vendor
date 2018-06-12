@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
+const marketplace = require('../../config/marketplace');
 
 const async = require('async');
 import series from 'async/series';
@@ -73,6 +74,7 @@ export function lifestyle(req, res) {
         if (!err) {
             res.render('lifestyle', {
                 title: "Global Trade Connect",
+                marketPlace: marketplace,
                 featuredProducts: results.featuredProducts,
                 lifestyle: results.lifestyle,
                 subscriptionProviders: results.subscriptionProviders,

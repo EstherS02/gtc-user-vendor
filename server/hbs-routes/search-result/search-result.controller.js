@@ -18,11 +18,13 @@ export function index(req, res) {
 	var selectedMarketPlaceType = 0;
 
 	var page;
+	var queryURI = {};
 	var includeArr = [];
 	var LoggedInUser = {};
 	var queryParameters = {};
-	var queryURI = {};
 	var queryPaginationObj = {};
+	var marketPlaceTypeSelected = {};
+
 	var offset, limit, field, order;
 	var productEndPoint = "MarketplaceProduct";
 
@@ -108,6 +110,21 @@ export function index(req, res) {
 					return callback(error, null);
 				});
 		},
+		marketPlaceTypeSelected: function(callback) {
+			var queryObj = {};
+			var marketPlaceTypeModel = "MarketplaceType";
+
+			queryObj['marketplace_id'] = selectedMarketPlace;
+			queryObj['id'] = selectedMarketPlaceType;
+			service.findOneRow(marketPlaceTypeModel, queryObj, includeArr)
+				.then(function(result) {
+					return callback(null, result);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				});
+		},
 		products: function(callback) {
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
 				.then(function(results) {
@@ -128,7 +145,7 @@ export function index(req, res) {
 
 			service.findAllRows(productEndPoint, includeArr, queryParameters, topOffset, topLimit, topOrderField, topOrderType)
 				.then(function(results) {
-					return callback(null, results.rows);
+					return callback(null, results);
 				})
 				.catch(function(error) {
 					console.log('Error:::', error);
@@ -144,11 +161,20 @@ export function index(req, res) {
 			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
+			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
 			if (req.query.location) {
 				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.category) {
+				productCountQueryParames['product_category_id'] = req.query.category;
+			}
+			if (req.query.sub_category) {
+				productCountQueryParames['sub_category_id'] = req.query.sub_category;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
 			}
 
 			model['MarketplaceType'].findAll({
@@ -196,6 +222,17 @@ export function index(req, res) {
 			}
 			if (req.query.marketplace_type) {
 				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+			if (req.query.category) {
+				productCountQueryParames['product_category_id'] = req.query.category;
+			}
+			if (req.query.sub_category) {
+				productCountQueryParames['sub_category_id'] = req.query.sub_category;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
 			}
 
 			model['Country'].findAll({
@@ -247,8 +284,10 @@ export function index(req, res) {
 			if (req.query.location) {
 				productCountQueryParames['product_location'] = req.query.location;
 			}
-			if (req.query.category) {
-				productCountQueryParames['product_category_id'] = req.query.category;
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
 			}
 
 			model['Category'].findAll({
@@ -257,17 +296,15 @@ export function index(req, res) {
 					model: model['SubCategory'],
 					where: categoryQueryObj,
 					attributes: ['id', 'category_id', 'name', 'code'],
-					required: false,
-					include: [{
-						model: model['Product'],
-						where: productCountQueryParames,
-						attributes: ['id', 'product_name'],
-						required: false
-					}],
-					group: ['SubCategory.id']
+					required: false
+				}, {
+					model: model['Product'],
+					where: productCountQueryParames,
+					attributes: [],
+					required: false
 				}],
-				attributes: ['id', 'name', 'code'],
-				required: false
+				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+				group: ['SubCategories.id']
 			}).then(function(results) {
 				if (results.length > 0) {
 					model['Product'].count({
@@ -305,9 +342,9 @@ export function index(req, res) {
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				selectedMarketPlaceType: selectedMarketPlaceType,
-				productResults: results.products.rows,
-				collectionSize: results.products.count,
-				topProductResults: results.topProducts,
+				marketPlaceTypeSelected: results.marketPlaceTypeSelected,
+				productResults: results.products,
+				topFeaturedProducts: results.topProducts,
 				marketPlaceTypes: results.marketPlaceTypes,
 				locations: results.locations,
 				categories: results.categories

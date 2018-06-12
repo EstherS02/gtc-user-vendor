@@ -10,6 +10,6 @@ var router = express.Router();
 
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
-router.post('/get-media-id', controller.getMediaId);
+router.post('/add-product', controller.addProduct);
 
 module.exports = router;

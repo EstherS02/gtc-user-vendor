@@ -114,11 +114,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -199,9 +194,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wts-bg">
                         <h5>WTS - Want To Sell</h5>
-                        <small class="pull-right">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                        <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -263,9 +260,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wts-bg">
                         <h5>WTB - Want To Buy</h5>
-                        <small class="pull-right">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                        <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -327,9 +326,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wts-bg">
                         <h5>WTT - Want To Trade</h5>
-                        <small class="pull-right">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                        <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">
@@ -391,9 +392,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-title wts-bg">
                         <h5>RFQ - Request For Quote</h5>
-                        <small class="pull-right">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                        <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="gtc-box-content">
                         <div class="row">

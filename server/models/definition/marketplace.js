@@ -93,7 +93,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Marketplace.belongsToMany(Plan, {
+    /*Marketplace.belongsToMany(Plan, {
         through: PlanMarketplace,
         foreignKey: 'marketplace_id',
         otherKey: 'plan_id',
@@ -147,6 +147,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
 };
