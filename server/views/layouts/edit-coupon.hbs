@@ -206,7 +206,7 @@
 
 					});
 					excludeCategories(data, function() {
-						// window.location.href = '/coupons';
+						window.location.href = '/coupons';
 					});
 				},
 				error: function(request, status, error) {
@@ -348,30 +348,6 @@
 								<b>Excluse sale Item.</b> <span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
 							</div>
 							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
-								{{#if existingCouponProducts}}
-									{{{optionsSelected  products existingCouponProducts}}}
-								{{else}}
-									{{#each products}}
-										<option value={{this.id}}>{{this.product_name}}</option>
-									{{/each}}
-								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
-							</div>
-							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
-							    {{#if existingCouponExcludeProducts}}
-									{{{optionsSelected  products existingCouponExcludeProducts}}}
-								{{else}}
-									{{#each products}}
-										<option value={{this.id}}>{{this.product_name}}</option>
-									{{/each}}
-								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
-							</div>
-							<div class="col-md-12">
 								<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
 									{{#if existingCouponCategories}}
 									{{{optionsSelectedCategory  categories existingCouponCategories}}}
@@ -395,6 +371,31 @@
 								</select>
 								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 							</div>
+							<div class="col-md-12">
+								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
+								{{#if existingCouponProducts}}
+									{{{optionsSelected  products existingCouponProducts}}}
+								{{else}}
+									{{#each products}}
+										<option value={{this.id}}>{{this.product_name}}</option>
+									{{/each}}
+								{{/if}}
+								</select>
+								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
+							</div>
+							<div class="col-md-12">
+								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
+							    {{#if existingCouponExcludeProducts}}
+									{{{optionsSelected  products existingCouponExcludeProducts}}}
+								{{else}}
+									{{#each products}}
+										<option value={{this.id}}>{{this.product_name}}</option>
+									{{/each}}
+								{{/if}}
+								</select>
+								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
+							</div>
+							
 							<div class="col-md-12">
 								<input type="text" placeholder="Usage Limit"  class="vend_edit_lists_textstyle1" id="inputUsageLimit" name="usage_limit" value="{{coupon.usage_limit}}">
 								<span class="vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</span>
