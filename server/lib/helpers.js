@@ -241,7 +241,7 @@ Handlebars.registerHelper('each_limit', function(ary, max, options) {
 
 Handlebars.registerHelper('FormatDate', function(context, options) {
     if (context) {
-        let newdate = moment(new Date(context)).fromNow();
+        let newdate = moment(new Date(context)).fromNow()
         return newdate;
     }
 });
@@ -271,4 +271,11 @@ Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, dele
 
 Handlebars.registerHelper('FrameObject', function(options) {
     return options.hash;
+});
+
+Handlebars.registerHelper('ProfilePicture', function(context, options) {
+    if(context && context.user_pic_url)
+        return context.user_pic_url;
+    
+    return '/img/avatar.png'
 });
