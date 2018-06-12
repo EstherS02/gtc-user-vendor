@@ -8,25 +8,26 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
+
 	function appendLocation(location) {
-		//console.log("window.location.search", window.location.search);
 		var url = window.location.search;
 		var arr = url.split("&location")[0];
 		console.log("arr", arr);
 		var newQuery = arr + "&location=" + location;
-		window.location.href = window.location.origin+"/search" + newQuery;
+		window.location.href = window.location.origin + "/search" + newQuery;
 	}
-	function global(){
+
+	function global() {
 		var url = window.location.search;
-		var arr =url.split("&location")[0];
+		var arr = url.split("&location")[0];
 		var newQuery = arr;
-		window.location.href = window.location.origin+"/search" + newQuery;
+		window.location.href = window.location.origin + "/search" + newQuery;
 	}
-	function globalSearch(){
-		window.location.href = window.location.origin+"/search";			
+
+	function globalSearch() {
+		window.location.href = window.location.origin + "/search";
 	}
 </script>
-
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
 	<div>
@@ -106,7 +107,7 @@
 								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
 									{{#each this.SubCategories}}
 									<li class="list-group-item">
-<a href="../search?{{QueryParams ../../queryURI (FrameObject category=../this.id sub_category=this.id) 'null'}}">
+										<a href="../search?{{QueryParams ../../queryURI (FrameObject category=../this.id sub_category=this.id) 'null'}}">
 											<span>{{this.name}}</span>
 										</a>
 										<ul></ul>
