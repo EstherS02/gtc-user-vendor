@@ -1,0 +1,73 @@
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<style type="text/css">
+.loader {
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */	
+	animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+</style>
+
+<script type="text/javascript">
+	function getParameterByName(name, url) {
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+
+	$(document).ready(function() {
+		var email = getParameterByName('email');
+		var token = getParameterByName('email_verified_token');
+
+		if (email && token) {
+			var obj = {};
+			obj['email'] = email;
+			obj['email_verified_token'] = token;
+			$.ajax({
+				type: 'PUT',
+				url: '/api/users/user-authenticate',
+				data: obj,
+				success: function(data, text) {
+					console.log('data', data);
+					window.location.href = "/";
+				},
+				error: function(request, status, error) {
+					console.log('request.responseText', request.responseText);
+				}
+			});
+		} else {
+			window.location.href = "/";
+		}
+	});
+</script>
+
+{{!-- <section class="row1" style="margin-bottom:0">
+	<div class="container">
+		<div class="col-md-4">
+		</div>
+		<div class="col-md-4">
+			<div class="loader"></div>
+		</div>
+		<div class="col-md-4">
+		</div>
+	</div>
+</section> --}}
+
+{{> footer/footer}}

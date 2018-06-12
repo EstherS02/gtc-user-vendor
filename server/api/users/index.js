@@ -8,5 +8,6 @@ var controller = require('./users.controller');
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.get('/', auth.isAuthenticated(), controller.index);
 router.post('/', controller.create);
+router.put('/user-authenticate', controller.userAuthenticate);
 
 module.exports = router;
