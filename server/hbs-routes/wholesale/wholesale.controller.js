@@ -7,6 +7,8 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
+const marketplace = require('../../config/marketplace');
+const marketplace_type = require('../../config/marketplace_type');
 
 const async = require('async');
 import series from 'async/series';
@@ -167,6 +169,8 @@ export function wholesale(req, res) {
         if (!err) {
             res.render('wholesale', {
                 title: "Global Trade Connect",
+                marketPlace: marketplace,
+                marketPlaceType: marketplace_type,
                 wantToSell: results.wantToSell,
                 wantToBuy: results.wantToBuy,
                 wantToTrade: results.wantToTrade,
