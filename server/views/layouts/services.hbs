@@ -50,15 +50,11 @@
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>
-                                                            {{!--
-                                                            <div class="sm-text">Category</div> --}}
                                                             <div class="sm-text">Inventory</div>
                                                             <div class="sm-text">Seller Rating</div>
                                                         </div>
                                                         <div class="col-md-8 no-padding">
                                                             <div class="sm-text">{{this.origin}}</div>
-                                                            {{!--
-                                                            <div class="sm-text">Electronics > Phones</div> --}}
                                                             <div class="sm-text">
                                                                 <b>{{this.product_count}} Products</b> Listed</div>
                                                             <div class="sm-text">{{ starCount rating}}</div>
@@ -66,11 +62,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -142,9 +133,11 @@
                 <div class="gtc-box">
                     <div class="gtc-box-market-title service-market-bg">
                         <h5>SERVICES MARKETPLACE</h5>
-                        <small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                        <a class="link" href="/search?marketplace={{marketPlace.SERVICE}}">
+                            <small class="pull-right">SEE ALL
+                                <i class="fa fa-caret-right"></i>
+                            </small>
+                        </a>
                     </div>
                     <div class="row">
                         <div class="col-md-6 ">

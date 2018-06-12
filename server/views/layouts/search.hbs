@@ -8,25 +8,26 @@
 			return uri + separator + key + "=" + value;
 		}
 	}
+
 	function appendLocation(location) {
-		//console.log("window.location.search", window.location.search);
 		var url = window.location.search;
 		var arr = url.split("&location")[0];
 		console.log("arr", arr);
 		var newQuery = arr + "&location=" + location;
-		window.location.href = window.location.origin+"/search" + newQuery;
+		window.location.href = window.location.origin + "/search" + newQuery;
 	}
-	function global(){
+
+	function global() {
 		var url = window.location.search;
-		var arr =url.split("&location")[0];
+		var arr = url.split("&location")[0];
 		var newQuery = arr;
-		window.location.href = window.location.origin+"/search" + newQuery;
+		window.location.href = window.location.origin + "/search" + newQuery;
 	}
-	function globalSearch(){
-		window.location.href = window.location.origin+"/search";			
+
+	function globalSearch() {
+		window.location.href = window.location.origin + "/search";
 	}
 </script>
-
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
 	<div>
@@ -37,9 +38,11 @@
 						<li>
 							<a href="#" class="active">North America</a>
 						</li>
+						{{#if selectedMarketPlace}}
 						<li>
-							<a href="#" class="active">Private Wholesale</a>
+							<a href="#" class="active">{{selectedMarketPlace.name}}</a>
 						</li>
+						{{/if}}
 						<li>Search</li>
 					</ul>
 				</div>
@@ -55,7 +58,7 @@
 				<div class="col-md-7">
 					<p class="showing_res1">Showing
 						<b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
-						<b>{{collectionSize}}</b> Products matching
+						<b>{{productResults.count}}</b> Products matching
 						{{#if queryPaginationObj.keyword}}
 						<span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
 						{{#if selectedMarketPlace}}
@@ -87,12 +90,11 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row">
 				<div class="col-md-3 showing_categ">
 					<p><b>FILTER BY CATEGORY</b></p>
 					<p class="cat_bg_title">
-						<a href="../search?{{QueryParams queryURI (FrameObject) 'category&sub_category'}}">
+						<a href="../search?{{QueryParams queryURI (FrameObject page=1) 'category&sub_category'}}">
 							<span>ALL CATEGORIES ({{categories.count}})</span>
 						</a>
 					</p>
@@ -100,13 +102,13 @@
 						<ul class="list-group">
 							{{#each categories.rows}}
 							<li class="list-group-item">
-								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="false" aria-controls="collapseCategory{{this.id}}">
-									<span>{{this.name}} {{!-- (263) --}}</span>
+								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="true" aria-controls="collapseCategory{{this.id}}">
+									<span>{{this.name}} {{this.product_count}}</span>
 								</a>
-								<ul class="list-group collapse" id="collapseCategory{{this.id}}">
+								<ul class="list-group collapse {{#ifCond ../queryURI.category '==' this.id }} show {{/ifCond}}" id="collapseCategory{{this.id}}">
 									{{#each this.SubCategories}}
 									<li class="list-group-item">
-<a href="../search?{{QueryParams ../../queryURI (FrameObject category=../this.id sub_category=this.id) 'null'}}">
+										<a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../../queryURI (FrameObject page=1 category=../this.id sub_category=this.id) 'null'}}">
 											<span>{{this.name}}</span>
 										</a>
 										<ul></ul>
@@ -119,7 +121,7 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
 					<p class="cat_bg_title">
-						<a href="../search?{{QueryParams queryURI (FrameObject marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
+						<a href="../search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
 							<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
 						</a>
 					</p>
@@ -127,7 +129,7 @@
 						<ul class="list-group">
 							{{#each marketPlaceTypes.rows}}
 							<li class="list-group-item">
-								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
+								<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
 									<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
 								</a>
 							</li>
@@ -136,7 +138,7 @@
 					</div>
 					<p style="margin-top: 20px;"><b>FILTER BY LOCATION</b></p>
 					<p class="cat_bg_title">
-						<a href="../search?{{QueryParams queryURI (FrameObject) 'location'}}">
+						<a href="../search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
 							<span>GLOBAL ({{locations.count}})</span>
 						</a>
 					</p>
@@ -144,7 +146,7 @@
 						<ul class="list-group">
 							{{#each locations.rows}}
 								<li class="list-group-item">
-									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject location=this.id) 'null'}}">
+									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
 										<span>{{this.name}} ({{this.product_count}})</span>
 									</a>
 								</li>
@@ -169,7 +171,7 @@
 						</div>
 					</div>
 					<div class="row">
-						{{#each topProductResults}}
+						{{#each topFeaturedProducts.rows}}
 						<div class="col-md-4 common_top">
 							<div class="row">
 								<div class="col-md-3">
@@ -179,12 +181,14 @@
 									<div class="row common_padding">
 										<div class="col-md-8">
 											<p class="wts_header">
-												<a href="/product/{{this.product_slug}}/{{this.id}}">WTS - {{this.product_name}}</a>
+												<a href="/product/{{this.product_slug}}/{{this.id}}">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 											</p>
 										</div>
+										{{#if this.minimum_order_quantity}}
 										<div class="col-md-4">
-											<p>MOQ: 40</p>
+											<p>MOQ: {{this.minimum_order_quantity}}</p>
 										</div>
+										{{/if}}
 									</div>
 									<div class="row common_padding">
 										<div class="col-md-3">
@@ -231,7 +235,7 @@
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
 					<div class="row">
-						{{#each productResults}}
+						{{#each productResults.rows}}
 						<div class="col-md-4 common_top">
 							<div class="row">
 								<div class="col-md-3">
@@ -241,12 +245,14 @@
 									<div class="row common_padding">
 										<div class="col-md-8">
 											<p class="wts_header">
-												<a href="/product/{{this.product_slug}}/{{this.id}}">WTS - {{this.product_name}}</a>
+												<a href="/product/{{this.product_slug}}/{{this.id}}">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}} {{this.product_name}}</a>
 											</p>
 										</div>
+										{{#if this.minimum_order_quantity}}
 										<div class="col-md-4">
-											<p>MOQ: 40</p>
+											<p>MOQ: {{this.minimum_order_quantity}}</p>
 										</div>
+										{{/if}}
 									</div>
 									<div class="row common_padding">
 										<div class="col-md-3">
@@ -295,11 +301,12 @@
 					</div>
 				</div>
 			</div>
+			{{#ifCond productResults.count '>' queryPaginationObj.limit}}
 			<div class="row">
 				<div class="col-md-3">
 				</div>
 				<div class="col-md-7">
-					{{#pagination collectionSize queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+					{{#pagination productResults.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
 					<nav aria-label="Page navigation example">
 						<ul class="pagination justify-content-center">
 							{{#unless startFromFirstPage}}
@@ -320,6 +327,7 @@
 					{{/pagination}}
 				</div>
 			</div>
+			{{/ifCond}}
 		</div>
 	</section>
 	{{> footer/footer}}

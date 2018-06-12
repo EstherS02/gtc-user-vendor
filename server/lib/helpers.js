@@ -9,13 +9,16 @@ Handlebars.registerHelper('starCount', function(rating, color) {
     var colored = "";
     var colorless = "",
         tag1, tag2;
-    /*  if(color){
-         tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
-         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-     }else{ */
+    /*if (color) {
+        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: ' + color + '"></i>';
+        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    } else {
+        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+        tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
+    }*/
+
     tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
     tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    /* } */
 
     for (var i = 0; i <= rating - 1; i++) {
         colored = tag1 + colored;
@@ -24,7 +27,6 @@ Handlebars.registerHelper('starCount', function(rating, color) {
         colorless = tag2 + colorless;
     }
     return new Handlebars.SafeString(colored + colorless);
-
 });
 
 Handlebars.registerHelper('convertUpperCase', function(msg) {
@@ -88,10 +90,12 @@ Handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
             return options.inverse(this);
     }
 });
+
 Handlebars.registerHelper('formatTime', function(date, format) {
     var mmnt = moment(date);
     return mmnt.format(format);
 });
+
 Handlebars.registerHelper('progressBar', function(value, total) {
     var rating = (value / total) * 60;
     return rating;
@@ -138,6 +142,7 @@ Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, opti
         return '';
 
 });
+
 Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
     return parseFloat(v1) - parseFloat(v2);
 });
@@ -147,6 +152,7 @@ Handlebars.registerHelper('select', function(selected, options) {
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
 });
+
 Handlebars.registerHelper("setChecked", function(value, currentValue) {
     if (value == currentValue) {
         return "checked";
@@ -154,6 +160,7 @@ Handlebars.registerHelper("setChecked", function(value, currentValue) {
         return "";
     }
 });
+
 Handlebars.registerHelper("days", function(value) {
     switch (value) {
         case 0:
