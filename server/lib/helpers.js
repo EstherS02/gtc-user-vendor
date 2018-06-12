@@ -2,20 +2,23 @@
 import Handlebars from 'handlebars';
 const moment = require('moment');
 
-
 Handlebars.registerHelper('starCount', function(rating, color) {
 
     var rating = Math.ceil(rating);
 
     var colored = "";
-    var colorless = "", tag1, tag2;
-   /*  if(color){
-        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: '+ color +'"></i>';
+    var colorless = "",
+        tag1, tag2;
+    /*if (color) {
+        tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: ' + color + '"></i>';
         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    }else{ */
+    } else {
         tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
         tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
-    /* } */
+    }*/
+
+    tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+    tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
 
     for (var i = 0; i <= rating - 1; i++) {
         colored = tag1 + colored;
@@ -24,7 +27,6 @@ Handlebars.registerHelper('starCount', function(rating, color) {
         colorless = tag2 + colorless;
     }
     return new Handlebars.SafeString(colored + colorless);
-
 });
 
 Handlebars.registerHelper('convertUpperCase', function(msg) {
@@ -88,10 +90,12 @@ Handlebars.registerHelper('ifCond', function(v1, operator, v2, options) {
             return options.inverse(this);
     }
 });
+
 Handlebars.registerHelper('formatTime', function(date, format) {
     var mmnt = moment(date);
     return mmnt.format(format);
 });
+
 Handlebars.registerHelper('progressBar', function(value, total) {
     var rating = (value / total) * 60;
     return rating;
@@ -138,6 +142,7 @@ Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, opti
         return '';
 
 });
+
 Handlebars.registerHelper('DiffFloat', function(v1, v2, options) {
     return parseFloat(v1) - parseFloat(v2);
 });
@@ -147,6 +152,7 @@ Handlebars.registerHelper('select', function(selected, options) {
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
 });
+
 Handlebars.registerHelper("setChecked", function(value, currentValue) {
     if (value == currentValue) {
         return "checked";
@@ -154,6 +160,7 @@ Handlebars.registerHelper("setChecked", function(value, currentValue) {
         return "";
     }
 });
+
 Handlebars.registerHelper("days", function(value) {
     switch (value) {
         case 0:
@@ -182,14 +189,14 @@ Handlebars.registerHelper("days", function(value) {
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
-    console.log('test',test);
+    console.log('test', test);
 
     for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id+'"';
-        if (test.indexOf(context[i].id) >=0) { 
+        var option = '<option value="' + context[i].id + '"';
+        if (test.indexOf(context[i].id) >= 0) {
             option += ' selected="selected"';
         }
-        option += '>'+ context[i].product_name + '</option>';
+        option += '>' + context[i].product_name + '</option>';
         ret += option;
     }
     return new Handlebars.SafeString(ret);
@@ -198,47 +205,70 @@ Handlebars.registerHelper('optionsSelected', function(context, test) {
 Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
     var ret = '';
     for (var i = 0, len = context.length; i < len; i++) {
-        var option = '<option value="' + context[i].id+'"';
-        if (test.indexOf(context[i].id) >=0) {  // you may also use some  test.some(context[i].id)
+        var option = '<option value="' + context[i].id + '"';
+        if (test.indexOf(context[i].id) >= 0) { // you may also use some  test.some(context[i].id)
             option += ' selected="selected"';
         }
-        option += '>'+ context[i].name + '</option>';
+        option += '>' + context[i].name + '</option>';
         ret += option;
     }
     return new Handlebars.SafeString(ret);
 });
 
 Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
-    if(!ary || ary.length == 0)
+    if (!ary || ary.length == 0)
         return options.inverse(this);
-   
-    var result = [ ];
-    for(var i = 0; result.length < max && i < ary.length; ++i)
-        if(ary[i].category_id == id){
-        result.push(options.fn(ary[i]));
-    }
+
+    var result = [];
+    for (var i = 0; result.length < max && i < ary.length; ++i)
+        if (ary[i].category_id == id) {
+            result.push(options.fn(ary[i]));
+        }
     return result.join('');
 });
 
 Handlebars.registerHelper('each_limit', function(ary, max, options) {
-    if(!ary || ary.length == 0)
+    if (!ary || ary.length == 0)
         return options.inverse(this);
-   
-    var result = [ ];
-    for(var i = 0; result.length < max && i < ary.length; ++i)
+
+    var result = [];
+    for (var i = 0; result.length < max && i < ary.length; ++i)
         // if(ary[i].category_id == id){
         result.push(options.fn(ary[i]));
     // }
     return result.join('');
 });
 
-
 Handlebars.registerHelper('FormatDate', function(context, options) {
-
     if (context) {
-        let newdate = moment(new Date(context)).fromNow(); 
-        return newdate; 
+        let newdate = moment(new Date(context)).fromNow();
+        return newdate;
     }
 });
 
-module.exports = function(context, options) {  };
+var serialize = function(obj) {
+    var str = [];
+    for (var p in obj)
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+}
+
+Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, deleteKey, options) {
+    var existingObj = JSON.parse(JSON.stringify(existingQueryObj));
+    if (Object.keys(newObj).length > 0) {
+        existingObj = Object.assign(existingObj, newObj);
+    }
+    if (deleteKey != 'null') {
+        var tmpArray = deleteKey.split('&');
+        tmpArray.forEach(function(tmpKey) {
+            delete existingObj[tmpKey];
+        });
+    }
+    return serialize(existingObj);
+});
+
+Handlebars.registerHelper('FrameObject', function(options) {
+    return options.hash;
+});

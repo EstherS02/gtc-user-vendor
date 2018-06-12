@@ -59,6 +59,20 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 	});
 }
 
+export function findIdRow(modelName, id, includeArr) {
+	return new Promise((resolve, reject) => {
+		model[modelName].findById(id).then(function(row) {
+			if (row) {
+				resolve(row.toJSON());
+			} else {
+				resolve(null);
+			}
+		}).catch(function(error) {
+			reject(error);
+		});
+	});
+}
+
 export function findRow(modelName, id, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].find({
@@ -190,25 +204,25 @@ export function destroyRow(modelName, id) {
 }
 
 export function upsert(modelName, queryObj, includeArr, data) {
-	console.log('data',data);
+	console.log('data', data);
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
-				if (results) {
-					console.log('new',results)
-					var id = results;
-					data.last_updated_on = new Date();
+			if (results) {
+				console.log('new', results)
+				var id = results;
+				data.last_updated_on = new Date();
 
-					// res.status(200).send(results);
-					service.updateRow(modelName, data, id).then(function(response) {
-						console.log("Update", response)
-						return;
-					});
-				} else {
-					data.created_on = new Date();
-					service.createRow(modelName, data).then(function(response) {
-						console.log("News", response)
-						return;
-					});
-				}
-			});
-		}
+				// res.status(200).send(results);
+				service.updateRow(modelName, data, id).then(function(response) {
+					console.log("Update", response)
+					return;
+				});
+			} else {
+				data.created_on = new Date();
+				service.createRow(modelName, data).then(function(response) {
+					console.log("News", response)
+					return;
+				});
+			}
+		});
+}
