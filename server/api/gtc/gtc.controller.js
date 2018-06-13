@@ -41,15 +41,15 @@ export function indexA(req, res) {
 		}],
 		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 		group: ['SubCategories.id']
-	}).then(function(results) {
+	}).then(function (results) {
 		if (results.length > 0) {
 			model['Product'].count({
 				where: productCountQueryParames
-			}).then(function(count) {
+			}).then(function (count) {
 				result.count = count;
 				result.rows = JSON.parse(JSON.stringify(results));
 				return res.status(200).send(result);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return res.status(500).send(error);
 			});
@@ -58,17 +58,19 @@ export function indexA(req, res) {
 			result.rows = [];
 			return res.status(200).send(result);
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error:::', error);
 		return res.status(500).send(error);
 	});
 }
 
 export function index(req, res) {
+
 	var offset, limit, field, order;
 	var queryObj = {};
 	var searchObj = {};
 	var searchArray = [];
+	let includeArr;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : null;
 	delete req.query.offset;
@@ -78,6 +80,13 @@ export function index(req, res) {
 	delete req.query.field;
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
+
+	if (req.query.populate)
+		includeArr = populate.populateData(req.query.populate);
+	else
+		includeArr = [];
+
+	delete req.query.populate;
 
 	if (req.query.fields && req.query.text) {
 		var searchText = req.query.text;
@@ -123,11 +132,11 @@ export function index(req, res) {
 
 	console.log('queryObj', queryObj);
 
-	service.findRows(req.endpoint, queryObj, offset, limit, field, order)
-		.then(function(rows) {
+	service.findRows(req.endpoint, queryObj, offset, limit, field, order, includeArr)
+		.then(function (rows) {
 			res.status(200).send(rows);
 			return;
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -200,10 +209,10 @@ export function getAll(req, res) {
 	})
 
 	service.findAllRows(req.endpoint, includeArray, queryObj, offset, limit, field, order)
-		.then(function(rows) {
+		.then(function (rows) {
 			res.status(200).send(rows);
 			return;
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -214,13 +223,13 @@ export function show(req, res) {
 	var queryObj = req.query;
 
 	service.findOneRow(req.endpoint, queryObj)
-		.then(function(result) {
+		.then(function (result) {
 			if (result) {
 				return res.status(200).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -239,13 +248,13 @@ export function findById(req, res) {
 	delete req.query.populate;
 
 	service.findRow(req.endpoint, paramsID, includeArr)
-		.then(function(result) {
+		.then(function (result) {
 			if (result) {
 				return res.status(200).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -264,13 +273,13 @@ export function createBulk(req, res) {
 	}
 
 	service.createBulkRow(req.endpoint, bodyParamsArray)
-		.then(function(result) {
+		.then(function (result) {
 			if (result) {
 				return res.status(201).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -283,13 +292,13 @@ export function create(req, res) {
 	bodyParams["created_on"] = new Date();
 
 	service.createRow(req.endpoint, bodyParams)
-		.then(function(result) {
+		.then(function (result) {
 			if (result) {
 				return res.status(201).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -303,23 +312,23 @@ export function update(req, res) {
 	bodyParams["last_updated_on"] = new Date();
 
 	service.findRow(req.endpoint, paramsID)
-		.then(function(row) {
+		.then(function (row) {
 			if (row) {
 				delete bodyParams["id"];
 				service.updateRow(req.endpoint, bodyParams, paramsID)
-					.then(function(result) {
+					.then(function (result) {
 						if (result) {
 							return res.status(200).send(result);
 						} else {
 							return res.status(404).send("Unable to update");
 						}
-					}).catch(function(error) {
+					}).catch(function (error) {
 						console.log('Error :::', error);
 						res.status(500).send("Internal server error");
 						return
 					})
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return
@@ -330,7 +339,7 @@ export function destroyMany(req, res) {
 	const ids = req.body.ids;
 
 	service.destroyManyRow(req.endpoint, ids)
-		.then(function(results) {
+		.then(function (results) {
 			if (results[0] > 0) {
 				res.status(200).send(results);
 				return;
@@ -338,7 +347,7 @@ export function destroyMany(req, res) {
 				res.status(404).send("Unable to delete");
 				return;
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error:::', error);
 			res.status(500).send("Internal server error");
 			return;
@@ -349,17 +358,17 @@ export function destroy(req, res) {
 	const paramsID = req.params.id;
 
 	service.findRow(req.endpoint, paramsID)
-		.then(function(row) {
+		.then(function (row) {
 			if (row) {
 				service.destroyRow(req.endpoint, paramsID)
-					.then(function(result) {
+					.then(function (result) {
 						if (result) {
 							res.status(200).send(result);
 							return
 						} else {
 							return res.status(404).send("Unable to delete");
 						}
-					}).catch(function(error) {
+					}).catch(function (error) {
 						console.log('Error:::', error);
 						res.status(500).send("Internal server error");
 						return;
@@ -367,27 +376,23 @@ export function destroy(req, res) {
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			console.log('Error:::', error);
 			res.status(500).send("Internal server error");
 			return;
 		});
 }
 
-exports.upload = function(req, res) {
+exports.upload = function (req, res) {
 	var file = req.files.file;
 
-//	console.log("===req.user.id===",req.user.id);
-
-	var fileName= file.originalFilename+'-'+new Date();
-
-
-	var uploadPath = config.images_base_path + "/" + fileName;
+	var fileName = file.originalFilename +'-'+req.user+'-'+ new Date();
+    var uploadPath = config.images_base_path + "/" + fileName;
 
 	mv(file.path, uploadPath, {
 		clobber: true,
 		mkdirp: true
-	}, function(error) {
+	}, function (error) {
 		if (error) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
