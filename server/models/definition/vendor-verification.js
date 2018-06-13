@@ -23,27 +23,52 @@ module.exports = (sequelize, DataTypes) => {
         personal_id_verification_file_type: {
             type: DataTypes.STRING(45),
             field: 'personal_id_verification_file_type',
-            allowNull: false
+            allowNull: true
         },
         personal_id_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'personal_id_verification_file_link',
-            allowNull: false
+            allowNull: true
+        },
+        personal_id_verification_file_status:{
+            type: DataTypes.BIGINT,
+            field: 'personal_id_verification_file_status',
+            allowNull: true
         },
         personal_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'personal_address_verification_file_link',
             allowNull: false
         },
+        personal_address_verification_file_status:{
+            type: DataTypes.BIGINT,
+            field: 'personal_address_verification_file_status',
+            allowNull: true
+        },
         business_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_verification_file_link',
             allowNull: false
         },
+        business_verification_file_status:{
+            type: DataTypes.BIGINT,
+            field: 'business_verification_file_status',
+            allowNull: true
+        },
         business_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_address_verification_file_link',
             allowNull: false
+        },
+        business_address_verification_file_status:{
+            type: DataTypes.BIGINT,
+            field: 'business_address_verification_file_status',
+            allowNull: true
+        },
+        social_links:{
+            type: DataTypes.TEXT,
+            field: 'social_links',
+            allowNull: true
         },
         uploaded_on: {
             type: DataTypes.DATE,
