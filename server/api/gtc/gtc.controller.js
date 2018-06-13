@@ -73,11 +73,11 @@ export function indexA(req, res) {
 		if (results.length > 0) {
 			model['Product'].count({
 				where: productCountQueryParames
-			}).then(function(count) {
+			}).then(function (count) {
 				result.count = count;
 				result.rows = JSON.parse(JSON.stringify(results));
 				return res.status(200).send(result);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return res.status(500).send(error);
 			});
@@ -86,17 +86,19 @@ export function indexA(req, res) {
 			result.rows = [];
 			return res.status(200).send(result);
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error:::', error);
 		return res.status(500).send(error);
 	});*/
 }
 
 export function index(req, res) {
+
 	var offset, limit, field, order;
 	var queryObj = {};
 	var searchObj = {};
 	var searchArray = [];
+	let includeArr;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : null;
 	delete req.query.offset;
@@ -106,6 +108,13 @@ export function index(req, res) {
 	delete req.query.field;
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
+
+	if (req.query.populate)
+		includeArr = populate.populateData(req.query.populate);
+	else
+		includeArr = [];
+
+	delete req.query.populate;
 
 	if (req.query.fields && req.query.text) {
 		var searchText = req.query.text;
@@ -151,7 +160,7 @@ export function index(req, res) {
 
 	console.log('queryObj', queryObj);
 
-	service.findRows(req.endpoint, queryObj, offset, limit, field, order)
+	service.findRows(req.endpoint, queryObj, offset, limit, field, order, includeArr)
 		.then(function(rows) {
 			res.status(200).send(rows);
 			return;
@@ -404,9 +413,8 @@ export function destroy(req, res) {
 
 exports.upload = function(req, res) {
 	var file = req.files.file;
-	//	console.log("===req.user.id===",req.user.id);
 
-	var fileName = file.originalFilename + '-' + new Date();
+	var fileName = file.originalFilename;
 	var uploadPath = config.images_base_path + "/" + fileName;
 
 	mv(file.path, uploadPath, {
