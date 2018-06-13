@@ -18,6 +18,7 @@ var baseUrl = process.env.DOMAIN;
 var all = {
   env: process.env.NODE_ENV,
 
+   baseUrl : process.env.DOMAIN,
   // Root path of server
   root: path.normalize(`${__dirname}/../../..`),
 
@@ -50,6 +51,31 @@ var all = {
     globalAccessToken: process.env.GLOBAL_ACCESS_TOKEN_SECRET,
     accessToken: process.env.ACCESS_TOKEN_SECRET,
     refreshToken: process.env.REFRESH_TOKEN_SECRET
+  },
+
+  //Email
+  email: {
+    templates: {
+      userCreate: 'user Create'
+    },
+    smtp: {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      tls: {
+        rejectUnauthorized: false
+      },
+      auth: {
+        user: process.env.SMTP_AUTH_USER,
+        pass: process.env.SMTP_AUTH_PASS
+      }
+    },
+    ses: {
+      accessKeyId: process.env.SES_ACCESS_KEY_ID,
+      secretAccessKey: process.env.SES_SECRET_ACCESS_KEY
+    },
+    smtpfrom: process.env.SMTP_FROM,
+    sesfrom: process.env.SES_TRANSPORTER_FROM,
+    from: process.env.SMTP_FROM,
   },
 
   googleLogin: {

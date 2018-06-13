@@ -106,7 +106,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    State.belongsToMany(User, {
+    /*State.belongsToMany(User, {
         through: Address,
         foreignKey: 'province_id',
         otherKey: 'user_id',
@@ -184,6 +184,6 @@ module.exports.initRelations = () => {
         otherKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
 };

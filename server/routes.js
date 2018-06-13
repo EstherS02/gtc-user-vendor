@@ -75,8 +75,8 @@ export default function(app) {
   app.use('/payment-settings', require('./hbs-routes/payment-settings'));
   app.use('/gtc-mail', require('./hbs-routes/gtc-mail'));
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
-
-
+  app.use('/user-verify', require('./hbs-routes/user-verify'));
+  
   //All other routes 404 page
   
   app.route('/*').get((req, res) => {

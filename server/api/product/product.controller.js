@@ -3,26 +3,7 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
-
-export function getMediaId(req, res) {
-	var bodyParams = req.body;
-
-	bodyParams["created_on"] = new Date();
-	bodyParams["type"] = 1;
-	bodyParams["status"] = 1;
-	service.createRow('ProductMedia', bodyParams)
-		.then(function (result) {
-			if (result) {
-				return res.status(201).send(result);
-			} else {
-				return res.status(404).send("Not found");
-			}
-		}).catch(function (error) {
-			console.log('Error :::', error);
-			res.status(500).send("Internal server error");
-			return
-		});
-}
+var async = require('async');
 
 export function featureMany(req, res) {
 	const ids = req.body.ids;
@@ -80,4 +61,62 @@ export function featureOne(req, res) {
 			return;
 		})
 }
+
+export function addProduct(req, res) {
+
+	req.query.vendor_id = 36;
+	req.query.status = 1;
+	req.query.publish_date = '2018-06-04';
+
+	console.log("res.body==========", req.body);
+
+	model["Product"].create(req.query)
+		.then(function (row) {
+			req.body.product_id=row.id
+			model["ProductMedia"].create(req.body)
+			
+				.then(function (row) {
+
+					console.log('Created:::', row);
+					res.status(200).send("Created");
+					return;
+
+				}).catch(function (error) {
+					console.log('Error:::', error);
+					res.status(500).send("Internal server error");
+					return;
+				})
+
+		}).catch(function (error) {
+			console.log('Error:::', error);
+			res.status(500).send("Internal server error");
+			return;
+		})
+}
+
+
+	/*service.createRow("Product",req.query)
+	.then(function(row) {
+		req.body.product_id=row.id
+
+		console.log("=========",req.body)
+
+	service.createRow("ProductMedia",req.body)
+	.then(function(row) {
+		console.log("created row+++++++++++",row);
+		res.status(200).send("Created");
+	    return;
+
+	}).catch(function(error) {
+		res.status(404).send("Not Api found");
+	    return;
+		
+	});
+
+
+	}).catch(function(error) {
+		console.log("err",err);
+		
+	});*/
+		
 

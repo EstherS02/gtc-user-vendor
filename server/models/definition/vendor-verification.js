@@ -75,6 +75,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'uploaded_on',
             allowNull: true
         },
+        request_for_vendor_verification: {
+            type: DataTypes.INTEGER,
+            field: 'request_for_vendor_verification',
+            allowNull: true
+        },
+        vendor_verified_status: {
+            type: DataTypes.INTEGER,
+            field: 'vendor_verified_status',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

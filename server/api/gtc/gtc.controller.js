@@ -31,15 +31,15 @@ export function indexA(req, res) {
 		include: [{
 			model: model['SubCategory'],
 			where: marketplaceTypeQueryObj,
-			include: [{
-				model: model['Product'],
-				where: productCountQueryParames,
-				attributes: ['id', 'product_name'],
-				required: false
-			}],
-			attributes: ['id', 'category_id', 'name', 'code', [sequelize.fn('count', sequelize.col('SubCategories->Products.id')), 'sub_product_count']]
+			attributes: ['id', 'category_id', 'name', 'code'],
+			required: false
+		}, {
+			model: model['Product'],
+			where: productCountQueryParames,
+			attributes: [],
+			required: false
 		}],
-		attributes: ['id', 'name', 'code'],
+		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 		group: ['SubCategories.id']
 	}).then(function(results) {
 		if (results.length > 0) {

@@ -11,9 +11,10 @@ export function AddProduct(req, res) {
 
     var categoryModel = "Category";
     var countryModel = "Country";
+    var marketplaceModel = "Marketplace";
 
     var offset, limit, field, order;
-    var queryObj = {};
+    var queryObj = {},  LoggedInUser = {};
 
     offset = 0;
     limit = null;
@@ -22,8 +23,10 @@ export function AddProduct(req, res) {
 
     var LoggedInUser = {};
 
-	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
+    if(req.user)
+    LoggedInUser = req.user;
+    
+    //queryParams['user_id'] = LoggedInUser.id;
 
 
     queryObj['status'] = status["ACTIVE"];
@@ -49,12 +52,23 @@ export function AddProduct(req, res) {
                     return callback(null);
                 });
         },
+        marketplace: function (callback) {
+            service.findRows(marketplaceModel, queryObj, offset, limit, field, order)
+                .then(function (marketplace) {
+                    return callback(null, marketplace.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
     }, function (err, results) {
         if (!err) {
             res.render('add-product', {
                 title: "Global Trade Connect",
                 category: results.category,
                 country: results.country,
+                marketplace:results.marketplace,
                 LoggedInUser: LoggedInUser
             });
         }
