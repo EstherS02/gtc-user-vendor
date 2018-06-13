@@ -385,16 +385,9 @@ export function destroy(req, res) {
 
 exports.upload = function (req, res) {
 	var file = req.files.file;
-<<<<<<< HEAD
 
 	var fileName = file.originalFilename +'-'+req.user+'-'+ new Date();
     var uploadPath = config.images_base_path + "/" + fileName;
-=======
-//	console.log("===req.user.id===",req.user.id);
-
-	var fileName= file.originalFilename+'-'+new Date();
-	var uploadPath = config.images_base_path + "/" + fileName;
->>>>>>> 192c222e3f1db5c6e67e6dca2a6f4a0700dcfa1c
 
 	mv(file.path, uploadPath, {
 		clobber: true,
