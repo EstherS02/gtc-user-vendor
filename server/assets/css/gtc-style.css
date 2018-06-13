@@ -2638,7 +2638,7 @@ font-size: 12px;
 {
 	font-size: 10px;
     margin-bottom: 3px;
-    margin-top: 18px;
+    margin-top: 0px;
 }
 .login-checkbox input:checked + i:before {
     content: "\2713";

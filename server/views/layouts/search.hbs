@@ -155,7 +155,7 @@
 					</div>
 				</div>
 				<div class="col-md-9">
-					<div class="row col-md-12 showing_categ" style="padding: 6px;">
+					<div class="row col-md-12 showing_categ" style="padding: 6px; margin-bottom: 10px;">
 						<div class="col-md-6">
 							<p style="margin-bottom: 0px">
 								<b>TOP PRODUCTS |
@@ -171,11 +171,16 @@
 						</div>
 					</div>
 					<div class="row">
+						{{#ifCond topFeaturedProducts.count '==' 0}}
+						<div class="col-md-12">
+							<p class="text-primary text-center no-margins">No featured products available.</p>
+						</div>
+						{{/ifCond}}
 						{{#each topFeaturedProducts.rows}}
 						<div class="col-md-4 common_top">
 							<div class="row">
 								<div class="col-md-3">
-									<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+									<img class="product-img-sm obj-fit" src="{{this.product_base_image}}">
 								</div>
 								<div class="col-md-9">
 									<div class="row common_padding">
@@ -235,11 +240,16 @@
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
 					<div class="row">
+						{{#ifCond productResults.count '==' 0}}
+						<div class="col-md-12">
+							<p class="text-primary text-center no-margins">No products available.</p>
+						</div>
+						{{/ifCond}}
 						{{#each productResults.rows}}
 						<div class="col-md-4 common_top">
 							<div class="row">
 								<div class="col-md-3">
-									<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+									<img class="product-img-sm obj-fit" src="{{this.product_base_image}}">
 								</div>
 								<div class="col-md-9">
 									<div class="row common_padding">

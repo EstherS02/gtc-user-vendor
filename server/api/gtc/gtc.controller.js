@@ -19,37 +19,65 @@ export function indexA(req, res) {
 	var productCountQueryParames = {};
 
 	marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+	marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 	productCountQueryParames['status'] = status["ACTIVE"];
 	productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
-	productCountQueryParames['marketplace_type_id'] = 3;
+
+	if (req.query.origin) {
+		productCountQueryParames['$or'] = [{
+			city: req.query.origin
+		}];
+	}
 
 	console.log('productCountQueryParames', productCountQueryParames);
 
-	model['Category'].findAll({
+	model['MarketplaceType'].findAll({
 		where: marketplaceTypeQueryObj,
 		include: [{
-			model: model['SubCategory'],
-			where: marketplaceTypeQueryObj,
-			attributes: ['id', 'category_id', 'name', 'code'],
-			required: false
-		}, {
 			model: model['Product'],
 			where: productCountQueryParames,
-			attributes: [],
+			include: [{
+				model: model['Country'],
+				attributes: ['id', 'name']
+			}],
+			attributes: ['id', 'product_name', 'product_location', 'state_id', 'city'],
+			required: false
+		}],
+		attributes: ['id', 'name', 'code']
+	}).then(function(response) {
+		var results = [];
+		if (response.length > 0) {
+			results = JSON.parse(JSON.stringify(response));
+			res.status(200).send(results);
+		} else {
+			res.status(200).send(results);
+		}
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(500).send(error);
+	});
+
+	/*model['MarketplaceType'].findAll({
+		where: marketplaceTypeQueryObj,
+		include: [{
+			model: model['Product'],
+			where: productCountQueryParames,
+			attributes: ['id', 'product_name', 'product_location'],
 			required: false
 		}],
 		attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-		group: ['SubCategories.id']
+		group: ['MarketplaceType.id'],
+		required: false
 	}).then(function(results) {
 		if (results.length > 0) {
 			model['Product'].count({
 				where: productCountQueryParames
-			}).then(function(count) {
+			}).then(function (count) {
 				result.count = count;
 				result.rows = JSON.parse(JSON.stringify(results));
 				return res.status(200).send(result);
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return res.status(500).send(error);
 			});
@@ -58,17 +86,19 @@ export function indexA(req, res) {
 			result.rows = [];
 			return res.status(200).send(result);
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error:::', error);
 		return res.status(500).send(error);
-	});
+	});*/
 }
 
 export function index(req, res) {
+
 	var offset, limit, field, order;
 	var queryObj = {};
 	var searchObj = {};
 	var searchArray = [];
+	let includeArr;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : null;
 	delete req.query.offset;
@@ -78,6 +108,13 @@ export function index(req, res) {
 	delete req.query.field;
 	order = req.query.order ? req.query.order : "asc";
 	delete req.query.order;
+
+	if (req.query.populate)
+		includeArr = populate.populateData(req.query.populate);
+	else
+		includeArr = [];
+
+	delete req.query.populate;
 
 	if (req.query.fields && req.query.text) {
 		var searchText = req.query.text;
@@ -123,7 +160,7 @@ export function index(req, res) {
 
 	console.log('queryObj', queryObj);
 
-	service.findRows(req.endpoint, queryObj, offset, limit, field, order)
+	service.findRows(req.endpoint, queryObj, offset, limit, field, order, includeArr)
 		.then(function(rows) {
 			res.status(200).send(rows);
 			return;
@@ -376,9 +413,8 @@ export function destroy(req, res) {
 
 exports.upload = function(req, res) {
 	var file = req.files.file;
-//	console.log("===req.user.id===",req.user.id);
 
-	var fileName= file.originalFilename+'-'+new Date();
+	var fileName = file.originalFilename;
 	var uploadPath = config.images_base_path + "/" + fileName;
 
 	mv(file.path, uploadPath, {
