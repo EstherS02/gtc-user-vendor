@@ -28,6 +28,7 @@ export default function(app) {
   app.use('/api/wishlist', require('./api/wishlist'));
   app.use('/api/gtc-talk', require('./api/gtc-talk'));
   app.use('/api/coupon', require('./api/coupon'));
+  app.use('/api/verification', require('./api/verification'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
