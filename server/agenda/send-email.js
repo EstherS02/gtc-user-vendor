@@ -9,7 +9,6 @@ var transporter;
 if (config.env === 'development') {
 	transporter = nodemailer.createTransport(smtpTransport(config.email.smtp));
 } else if (config.env === 'production' || config.env === 'test') {
-	log.info("production");
 	transporter = nodemailer.createTransport(sesTransport(config.email.ses));
 }
 
