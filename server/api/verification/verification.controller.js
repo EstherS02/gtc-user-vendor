@@ -9,7 +9,7 @@ const status = require('../../config/status');
 const service = require('../service');
 
 export function storeData(req, res){
-	
+	consol.log(req.user);
 	// var uploadPath = config.images_base_path + "/" + file.originalFilename;
-	console.log(req.body);
+	// console.log(req.body);
 }
