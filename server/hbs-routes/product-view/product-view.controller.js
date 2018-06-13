@@ -29,7 +29,7 @@ export function GetProductDetails(req, res) {
 
         queryObj['status'] = status["ACTIVE"];
 
-    includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
+    //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
 
     return model["Product"].findOne({
         where: queryObj,
@@ -41,7 +41,15 @@ export function GetProductDetails(req, res) {
             { model: model["SubCategory"] },
             { model: model["Country"] },
             { model: model["State"] },
-            { model: model["Review"]},
+            { model: model["Review"], 
+                include : [
+                    { model: model["User"],
+                    attributes: {
+                        exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+                    }
+                }
+                ]
+            },
             {
                 model: model["ProductMedia"], 
                 where: {

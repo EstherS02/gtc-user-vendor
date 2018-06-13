@@ -18,7 +18,12 @@ export function addToCart(req, res){
 	let user_id = LoggedInUser.id;
 
 	if(order_qty > 0){
-		model["Product"].findById(product_id)
+		model["Product"].findOne({
+			where : {
+				id: product_id,
+				status: status["ACTIVE"]
+			}
+		})
 		.then(function(productResult) {
 			if (productResult) {
 				productResult = plainTextResponse(productResult);
@@ -42,6 +47,7 @@ export function addToCart(req, res){
 					var cartSearchObj = {}
 					cartSearchObj['user_id'] = user_id;
 					cartSearchObj['product_id'] = productResult.id;
+					cartSearchObj['status'] = status["ACTIVE"];
 
 					return model["Cart"].findOne({
 							where: cartSearchObj
@@ -69,12 +75,14 @@ export function addToCart(req, res){
 								}else{
 									var cartUpdateObj = {};
 									cartUpdateObj['quantity'] = cartResult.quantity + order_qty;
-									cartUpdateObj['last_updated_by'] = "devan user";
+									cartUpdateObj['last_updated_by'] = LoggedInUser.first_name + " "+ LoggedInUser.last_name;
 									cartUpdateObj['last_updated_on'] = new Date();
+									cartUpdateObj['status'] = status["ACTIVE"];
 
 									return model["Cart"].update(cartUpdateObj, {
 										where: {
-											id: cartResult.id
+											id: cartResult.id,
+											status : status["ACTIVE"]
 										}
 									}).then(function(updatedCartResult) {
 										if (updatedCartResult) {
@@ -104,7 +112,7 @@ export function addToCart(req, res){
 								createCartObj["product_id"] = productResult.id;
 								createCartObj["quantity"] = order_qty;
 								createCartObj["status"] = status.ACTIVE;
-								createCartObj["created_by"] = LoggedInUser.first_name + LoggedInUser.last_name;
+								createCartObj["created_by"] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
 								createCartObj["created_on"] = new Date();
 
 								model["Cart"].create(createCartObj)

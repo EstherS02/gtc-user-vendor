@@ -8,6 +8,9 @@ const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const mail = require('../../agenda/send-email');
+const service = require('../service');
+import moment from 'moment';
 
 export function index(req, res) {
 	var offset, limit, field, order;
@@ -99,16 +102,43 @@ export function create(req, res) {
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams["role"] = roles["USER"];
 
+
 			model['User'].create(bodyParams)
 				.then(function(row) {
 					if (row) {
 						const rspUser = plainTextResponse(row);
+						var email_verified_token = rspUser.email_verified_token;
 						delete rspUser.salt;
 						delete rspUser.hashed_pwd;
 						delete rspUser.email_verified_token;
 						delete rspUser.email_verified_token_generated;
-						res.status(201).send(rspUser);
-						return;
+
+						var includeArr = [];
+						var queryObj = {};
+						var emailTemplateModel = "EmailTemplate";
+
+						queryObj['name'] = config.email.templates.userCreate;
+
+						service.findOneRow(emailTemplateModel, queryObj, includeArr)
+							.then(function(rsp) {
+								var username = rspUser["first_name"];
+								var email = rspUser["email"];
+								var sub = rsp.subject.replace('%USERNAME%', username);
+								var body = rsp.body.replace('%USERNAME%', username);
+								body = rsp.body.replace('%LINK%', config.baseUrl+'/user-verify?email='+email+"&email_verified_token="+email_verified_token);
+								mail.jobNotifications({
+									from: config.email.smtpfrom,
+									to: email,
+									subject: sub,
+									html: body
+								});
+								res.status(201).send(rspUser);
+								return;
+							})
+							.catch(function(error) {
+								res.status(201).send(rspUser);
+								return;
+							});
 					}
 				})
 				.catch(function(error) {
@@ -122,6 +152,44 @@ export function create(req, res) {
 		res.status(500).send("Internal server error");
 		return
 	});
+}
+
+export function userAuthenticate(req, res){	
+	console.log("req.body", req.body);
+	var UserModel = "User";
+	var includeArr = [];
+	var queryObj = {};
+
+	queryObj.email_verified_token = req.body.email_verified_token;
+	queryObj.email = req.body.email;
+	service.findOneRow(UserModel, queryObj, includeArr)
+		.then(function(resp){
+			var expiryTime = moment(resp.email_verified_token_generated).add(24, 'hours').valueOf();
+			var currentTime = moment().valueOf();
+			if(currentTime < expiryTime) {
+				var updateObj = {};
+				updateObj.email_verified = 1;
+				service.updateRow(UserModel, updateObj, resp.id)
+					.then(function(updateRsp){
+						console.log("updateRsp",updateRsp);
+						res.status(200).send(updateRsp);
+						return;
+					})
+					.catch(function(err){
+						res.status(404).send("Unable to update");
+						return;
+					})
+			} else {
+				console.log("You are in");
+				res.status(404).send("Request Time Out");
+				return;
+			}
+		})
+		.catch(function(err){
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return;
+		})
 }
 
 export function me(req, res) {
