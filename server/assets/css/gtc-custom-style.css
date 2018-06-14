@@ -693,16 +693,7 @@ s
 .ts2 h6{
   font-size: 25px;
 }
-.geo_textbox
-{
-  font-size: 11px;
-  border-radius: 28px !important;
-  border: 2px solid #D1D4D8;
-  padding: 7px;
-  margin-bottom: 8px;
-  width: 68%;
-  border-color: #feb14b;
-}
+
 .geo_button
 {
   color: #fff;
