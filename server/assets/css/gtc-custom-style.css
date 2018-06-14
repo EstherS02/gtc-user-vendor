@@ -667,3 +667,7 @@ a {
 .custom-file-control {
   white-space: nowrap;
 }
+
+.custom-header-style .topbar p{
+  margin-top: 0px;
+}
