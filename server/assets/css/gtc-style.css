@@ -130,7 +130,7 @@ a:hover
 .menu_style
 {
 	color: #fff;
-	font-size: 11px;
+	font-size: 13px;
 	padding: 0px!important;
 	margin: 0px !important;
 	width: 100%;
@@ -1764,6 +1764,7 @@ font-size:11px;
     font-size: 11px;
     font-weight: bold;
     padding: 2px 5px;
+	width: 100px;
 }
 .vend_edit_lists_searchstyle
 {
@@ -2050,9 +2051,9 @@ font-size: 12px;
 }
 .imp_text_style
 {
-	font-size: 11px;
-	margin: 10px;
+	font-size: 10px;
 	font-weight: bold;
+	color: #000;
 }
 .vend_edit_lists_update_buttonstyle
 {
@@ -2062,7 +2063,7 @@ font-size: 12px;
     font-weight: bold;
     padding: 2px 5px;
     color: #fff;
-	width: 13%;
+	width: 8%;
 }
 .bg-promote-img{
 	background: url('../img/bg-promote-1.jpg');
@@ -2193,7 +2194,7 @@ font-size: 12px;
 .field-search input {
     display: inline-block;
     vertical-align: middle;
-    width: 450px;
+    width: 490px;
     border: 3px solid #ff9524;
     border-radius: 1em;
     padding: 0.5em 1em;
@@ -2638,7 +2639,7 @@ font-size: 12px;
 {
 	font-size: 10px;
     margin-bottom: 3px;
-    margin-top: 0px;
+    margin-top: 7px;
 }
 .login-checkbox input:checked + i:before {
     content: "\2713";
@@ -2969,6 +2970,14 @@ font-size: 12px;
 	.which_pkg{
 	background-color: #fff;
     padding: 2em 28em;
+}
+.re_return_are {
+    background-color: #F2F2F2;
+    font-size: 12px;
+    width: 225px;
+    height: auto;
+    overflow: overlay;
+    padding: 10px;
 }
 .ven_cnt_h1_title {
     margin: 10px !important;
@@ -3431,6 +3440,109 @@ font-size: 12px;
     max-width: 420px;
     margin: 1.75rem auto;
 }
+/*-------------------------------geolocate----------------------------------*/
+.geo_bg
+{
+	background-image:url(../img/MAP.jpg);
+	
+}
+.geo_row_bg
+{
+	background-color:#FFF;
+}
+.geo_arrow_bg
+{
+	    background-color: #EAC284;
+    color: #fff;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+.geo_sort_bg
+{
+	background-color: #F0F0F0;
+    color: #868686;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 25px;
+}
+#map{
+                width: 100%;
+                height: 100%;
+            }
+			.panel-title > a:before {
+                float: right !important;
+                font-family: FontAwesome;
+                content:"\f056";
+                padding-right: 5px;
+            }
+            .panel-title > a.collapsed:before {
+                float: right !important;
+                content:"\f055";
+            }
+            .panel-title > a:hover, 
+            .panel-title > a:active, 
+            .panel-title > a:focus  {
+                text-decoration:none;
+            }
+.map_dis
+{
+	position: unset!important;
+}
+.geo_login
+{
+	color:#3F6F97;
+}
+.geo_show
+{
+	padding-left:50px;
+	font-size:20px;
+	margin-bottom: 0px;
+	padding-top: 15px;
+}
+.geo_pro
+{
+	font-weight:bold;
+}
+.geo_adv
+{
+	padding-left:70px;
+		color:#3F6F97;
+		font-size:14px;
+}
+/*------------------geo_search----------------*/
+.geo_search_filter
+{
+	font-size:10px;
+}
+.geo_search_from
+{
+	border-radius:10px;
+	width:50px;
+	border:none;
+	background-color:#E3E3E3;
+	font-size:8px;
+	padding:3px;
+}
+.geo_search_to
+{
+	border-radius:10px;
+	width:50px;
+	border:none;
+	background-color:#E3E3E3;
+	font-size:8px;
+	padding:3px;
+}
+.geo_search_update
+{
+	background-color:#d88505;
+	font-size:10px;
+	padding:5px 10px;
+	color:#FFF;
+	border:none;
+	
+}
+
 
 /*Include fonts*/
 
@@ -4625,18 +4737,17 @@ hr {
 }
 /*-- Thangapandi --*/
 
-
 /*------------------------return product--------------------------------------------*/
 .re_return_sect
 {
-		background-color:#EDEDED;
+		background-color:#E7E7E9;
 		padding-bottom:55px;
 		padding-top: 10px;
 
 }
 .return_product_report_bg
 {
-	background-color:#EDEDED;
+	background-color:#E7E7E9;
 	padding-top:5px;
 }
 .re_pr_re_bd_bg
@@ -4648,7 +4759,7 @@ hr {
 {
 	font-size: 20px;
     margin-bottom: 5px;
-	color: #0000008c;
+	color: #000000cf;
 }
 .re_return-fo
 {
@@ -4721,7 +4832,7 @@ hr {
 }
 .return_pr_re_pa
 {
-	background-color:#EDEDED;
+	background-color:#E7E7E9;
 	font-size:9px;
 	padding: 40px 0px 0px 45px;
 }
@@ -4735,7 +4846,7 @@ hr {
 color: #80808094;}
 .return_pr_re_pa2
 {
-	background-color:#EDEDED;
+	background-color:#E7E7E9;
 	font-size:9px;
 padding:2px;
 margin-left:30px;
@@ -4762,7 +4873,7 @@ width: 100%;
 }
 .re_return_last
 {
-	background-color:#EDEDED;
+	background-color:#E7E7E9;
 	font-size:11px;
 	padding-top:5px;
 	padding-left:19px;
@@ -4874,7 +4985,7 @@ a.list-group-item.return_pr_re_pa2 {
 }
 .re_terms_te
 {
-	background-color:#EDEDED;
+	background-color:#E7E7E9;
 	font-size:12px;
 	width: 485px;
     height: 160px;
@@ -4911,6 +5022,10 @@ a.list-group-item.return_pr_re_pa2 {
 	.re_terms_te{
 		width:320px;
 	}
+	.re_return_are {
+    
+    width: 280px;
+}
 }
 
 @media only screen and (max-width: 414px) {
@@ -4918,3 +5033,5 @@ a.list-group-item.return_pr_re_pa2 {
 		width:360px;
 	}
 }
+
+

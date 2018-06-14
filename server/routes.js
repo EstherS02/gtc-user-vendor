@@ -59,7 +59,6 @@ export default function(app) {
   app.use('/add-product', require('./hbs-routes/add-product'));
   app.use('/login', require('./hbs-routes/login'));
   app.use('/user-profile', require('./hbs-routes/user-profile'));
-  app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));
   app.use('/vendor-about', require('./hbs-routes/vendor-about'));
   app.use('/vendor-support', require('./hbs-routes/vendor-support'));
@@ -76,6 +75,15 @@ export default function(app) {
   app.use('/gtc-mail', require('./hbs-routes/gtc-mail'));
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
   app.use('/user-verify', require('./hbs-routes/user-verify'));
+  app.use('/order-checkout', require('./hbs-routes/checkout'));
+
+
+
+
+  //should be last route
+  app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
+  
+  
   
   //All other routes 404 page
   
