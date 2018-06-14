@@ -376,9 +376,9 @@ export function destroy(req, res) {
 
 exports.upload = function(req, res) {
 	var file = req.files.file;
-//	console.log("===req.user.id===",req.user.id);
+	// console.log("===req.user.id===",req.user.id);
 
-	var fileName= file.originalFilename+'-'+new Date();
+	var fileName= file.originalFilename;+'-'+new Date()+'-'+req.user.id;
 	var uploadPath = config.images_base_path + "/" + fileName;
 
 	mv(file.path, uploadPath, {
@@ -389,7 +389,7 @@ exports.upload = function(req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			var image = config.imageUrlRewritePath.base + file.originalFilename;
+			var image = config.imageUrlRewritePath.base + fileName;
 			return res.status(201).json({
 				imageURL: image
 			});

@@ -10,7 +10,7 @@ var controller = require('./gtc.controller');
 var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 
-router.post('/:endpoint/upload', multipartMiddleware, controller.upload);
+router.post('/:endpoint/upload', multipartMiddleware, auth.isAuthenticated(), controller.upload);
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
