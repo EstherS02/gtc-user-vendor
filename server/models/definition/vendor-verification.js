@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'personal_id_verification_file_status',
             allowNull: true
         },
+        personal_id_reason_for_reject:{
+            type: DataTypes.TEXT,
+            field: 'personal_id_reason_for_reject',
+            allowNull: true
+        },
         personal_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'personal_address_verification_file_link',
@@ -43,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         personal_address_verification_file_status:{
             type: DataTypes.BIGINT,
             field: 'personal_address_verification_file_status',
+            allowNull: true
+        },
+        personal_address_reason_for_reject:{
+            type: DataTypes.TEXT,
+            field: 'personal_address_reason_for_reject',
             allowNull: true
         },
         business_verification_file_link: {
@@ -55,6 +65,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'business_verification_file_status',
             allowNull: true
         },
+        business_id_reason_for_reject:{
+            type: DataTypes.TEXT,
+            field: 'business_id_reason_for_reject',
+            allowNull: true
+        },
         business_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_address_verification_file_link',
@@ -63,6 +78,11 @@ module.exports = (sequelize, DataTypes) => {
         business_address_verification_file_status:{
             type: DataTypes.BIGINT,
             field: 'business_address_verification_file_status',
+            allowNull: true
+        },
+        business_address_reason_for_reject:{
+            type: DataTypes.TEXT,
+            field: 'business_address_reason_for_reject',
             allowNull: true
         },
         social_links:{
