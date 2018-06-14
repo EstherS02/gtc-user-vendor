@@ -89,7 +89,7 @@
 					<h5 style="padding-top: 20px;">My Wishlist</h5>
 					<div class="row">
 						<div class="col-md-6">
-							<input type="submit" value="REMOVE" onclick="remove(this)"  class="vend_edit_lists_buttonstyle" />
+							<input type="submit" value="REMOVE" onclick="remove(this)"class="vend_edit_lists_buttonstyle" />
 						</div>
 					</div>
 					<div class="row">
@@ -123,8 +123,8 @@
 								{{#each wishlist}}
 								<tr>
 									<td><input type="checkbox" value="{{this.id}}"></td>
-									<td class="text_blue_color"><img src="{{this.Product.ProductMedia.url}}" style="width: 15px;" /> {{this.Product.product_name}}</td>
-									<td class="text_blue_color">{{this.User.first_name}} {{this.User.last_name}}</td>
+									<td class="text_blue_color"><img src="{{this.Product.ProductMedia.url}}" style="width: 15px;" /> <a href="#">{{this.Product.product_name}}</a></td>
+									<td class="text_blue_color"><a href="#">{{this.User.first_name}} {{this.User.last_name}}</a></td>
 									{{#if this.Product.quantity_available}}
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
 									{{else}}
@@ -141,14 +141,14 @@
 									<td>Life style</td> 
 									{{/ifCond}}
 									{{!--End Type --}}
-									<td class="text_blue_color">{{this.Product.price}}</td>
+									<td class="text_black_color">{{this.Product.price}}</td>
 										<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}">
 										{{!-- <input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
 										<td class="text_blue_color">
-											<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" onchange="quantityCheck(this)">
-											Update 
+											<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" onchange="quantityCheck(this)"><a href="#">
+											Update </a>
 										</td>
-										<td class="text_blue_color "  ><i class="fas fa-credit-card" onclick="CartUpdate()"> Add to cart</i></td>
+										<td class="text_blue_color "  ><i class="fas fa-credit-card" onclick="CartUpdate()"> <a href="#"> Add to cart </a></i></td>
 								</tr>
 								{{/each}}
 							</tbody>
@@ -163,7 +163,7 @@
 								<a href="/wishlist?limit=10"> 10</a>
 								<a href="/wishlist?limit=25"> 25</a>
 								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=500"> All </a>
+								<a href="/wishlist?limit=All"> All </a>
 							</p>
 						</div>
 					</div>
