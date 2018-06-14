@@ -642,6 +642,7 @@ s
 .topbar
 {
   background-color: #4075a2;
+  background-image: none;
 }
  a:hover
 {

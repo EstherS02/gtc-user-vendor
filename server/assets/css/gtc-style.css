@@ -49,7 +49,8 @@ body{
 }
 .topbar
 {
-	background-color: #4075a2;
+	background-image:url(../img/bg-footer.jpg);
+	color: #FFFFFF;
 }
 a:hover
 {
@@ -60,7 +61,6 @@ a:hover
 	background-color: #154980;
 	padding: 10px;
 	font-size: 12px;
-	border-radius: 5px;
 }
 .social-links a
 {
@@ -130,7 +130,7 @@ a:hover
 .menu_style
 {
 	color: #fff;
-	font-size: 13px;
+	font-size: 11px;
 	padding: 0px!important;
 	margin: 0px !important;
 	width: 100%;
@@ -171,7 +171,7 @@ a:hover
 }
 .compare_pg
 {
-	padding: 1rem 6rem;
+	padding: 1rem 9rem;
 }
 .box1
 {
@@ -325,9 +325,9 @@ a:hover
 }
 .ts2
 {
-	background-color: #6a8fbb;
-	padding-top: 0px;
-	font-family: sans-serif;
+	background-color: #8BB0DD;
+	padding-top: 40px;
+	font-family: 'Oswald', sans-serif;
 }
 .ts2 h6{
 	font-size: 25px;
@@ -498,12 +498,11 @@ a:hover
 .geo_textbox
 {
 	font-size: 11px;
-	border-radius: 28px !important;
+	border-radius: 20px !important;
 	border: 2px solid #D1D4D8;
 	padding: 7px;
 	margin-bottom: 8px;
-	width: 68%;
-	border-color: #feb14b;
+	width: 96%;
 }
 .geo_button
 {
@@ -800,7 +799,7 @@ margin-bottom: 0px;
 }
 .scrolled{background-image:url(../img/bg-footer.jpg);}
 ul.breadcrumb {
-    padding: 40px 10px 16px 0px;
+    padding: 40px 10px 16px 20px;
     list-style: none;
     background-color: #fff;
     margin-bottom: 0px;
@@ -842,7 +841,7 @@ ul.breadcrumb li .active1 {
 }
 .span_swichaccount
 {
-	background-color: #D78306; color:#fff;padding: 5px; font-weight: bold; font-size: small;
+	background-color: #D78306; color:#fff;padding: 5px; font-weight: bold;
 }
 .checkout_title_color
 {
@@ -856,7 +855,7 @@ font-family: 'Oswald', sans-serif;
 }
 .checkout_title_color_span
 {
-	font-size: 12px;
+	font-size: 16px;
 	
 }
 .checkout_title_color_1
@@ -1335,8 +1334,8 @@ width: 100%;
 .com_product_stock
 {
 	font-size: 13px;
-	color: #504d4d;
-	font-weight: normal;
+	color: #000;
+	font-weight: bold;
 	line-height: 14px;
 }
 .com_product_desc
@@ -1347,7 +1346,7 @@ width: 100%;
 .com_add_to_cart
 {
 	color: #fff;
-    font-size: small;
+    font-size: 13px;
     background-color: #007bff;
     padding: 10px 20px;
     border-radius: 20px;
@@ -1800,7 +1799,7 @@ font-size:11px;
 	color: #B2B2B2;
 }
 .table td, .table th {
-    padding: 20px 0.75rem;
+    padding: 5px .75rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
 }
@@ -2194,7 +2193,7 @@ font-size: 12px;
 .field-search input {
     display: inline-block;
     vertical-align: middle;
-    width: 490px;
+    width: 450px;
     border: 3px solid #ff9524;
     border-radius: 1em;
     padding: 0.5em 1em;
@@ -2635,13 +2634,11 @@ font-size: 12px;
     text-transform: uppercase;
     display: block;
 }
-
 .topbar p
 {
 	font-size: 10px;
-	margin-bottom: 3px;
-	margin-top: 9px;
-
+    margin-bottom: 3px;
+    margin-top: 0px;
 }
 .login-checkbox input:checked + i:before {
     content: "\2713";
@@ -4833,8 +4830,7 @@ a.return_product_report:hover {
     color: #80808091;
 }
 .progress-bar{
-	background-color: #2668af;
-	border-radius: 8px;
+	background-color: #4178bb;
 }
 
 p.order-details {
