@@ -125,7 +125,7 @@ export function create(req, res) {
 								var email = rspUser["email"];
 								var sub = rsp.subject.replace('%USERNAME%', username);
 								var body = rsp.body.replace('%USERNAME%', username);
-								body = rsp.body.replace('%LINK%', config.baseUrl+'/user-verify?email='+email+"&email_verified_token="+email_verified_token);
+								body = rsp.body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 								mail.jobNotifications({
 									from: config.email.smtpfrom,
 									to: email,
@@ -154,7 +154,7 @@ export function create(req, res) {
 	});
 }
 
-export function userAuthenticate(req, res){	
+export function userAuthenticate(req, res) {
 	console.log("req.body", req.body);
 	var UserModel = "User";
 	var includeArr = [];
@@ -163,29 +163,39 @@ export function userAuthenticate(req, res){
 	queryObj.email_verified_token = req.body.email_verified_token;
 	queryObj.email = req.body.email;
 	service.findOneRow(UserModel, queryObj, includeArr)
-		.then(function(resp){
-			var expiryTime = moment(resp.email_verified_token_generated).add(24, 'hours').valueOf();
-			var currentTime = moment().valueOf();
-			if(currentTime < expiryTime) {
-				var updateObj = {};
-				updateObj.email_verified = 1;
-				service.updateRow(UserModel, updateObj, resp.id)
-					.then(function(updateRsp){
-						console.log("updateRsp",updateRsp);
-						res.status(200).send(updateRsp);
+		.then(function(resp) {
+			if (resp) {
+				var expiryTime = moment(resp.email_verified_token_generated).add(24, 'hours').valueOf();
+				var currentTime = moment().valueOf();
+				if (currentTime < expiryTime) {
+					if (resp.email_verified == 0) {
+						var updateObj = {};
+						updateObj.email_verified = 1;
+						service.updateRow(UserModel, updateObj, resp.id)
+							.then(function(updateRsp) {
+								res.status(200).send("Email has been registered Successfully");
+								return;
+							})
+							.catch(function(err) {
+								res.status(500).send("Unable to update");
+								return;
+							})
+					} else {
+						console.log("You are in");
+						res.status(409).send("Email already verified");
 						return;
-					})
-					.catch(function(err){
-						res.status(404).send("Unable to update");
-						return;
-					})
+					}
+				} else {
+					res.status(400).send("Request Time Out");
+					return;
+				}
 			} else {
-				console.log("You are in");
-				res.status(404).send("Request Time Out");
-				return;
+				res.status(404).send("Not Fouond");
+					return;
 			}
+
 		})
-		.catch(function(err){
+		.catch(function(error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return;

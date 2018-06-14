@@ -25,6 +25,22 @@ h6 {
   font-size: 10px;
 }*/
 
+.obj-fit {
+  object-fit: cover;
+}
+
+.product-img-sm {
+  width: 50px;
+  height: 60px;
+}
+
+img {
+  vertical-align: middle;
+}
+img {
+  border: 0;
+}
+
 .product-title h5 {
   font-size: 12px;
 }
@@ -622,7 +638,6 @@ s
   color: #000 !important;
 }
 
-.list-group > li.list-group-item.gtc-active
 .custom-secondary-header{
   border-bottom-left-radius: 10px;
 }
@@ -639,6 +654,7 @@ s
 .collapse {
     display: none !important;
 }
+
 .topbar
 {
   background-color: #4075a2;
@@ -777,4 +793,31 @@ font-family: 'Oswald', sans-serif;
 p.order-details {
     font-weight: 900;
     font-size: 14px;
+}
+
+.custom-file{
+  width:50%;
+}
+.custom-file .custom-file-control:lang(en)::after {
+  content: "Select file...";
+}
+
+.custom-file .custom-file-control:lang(en)::before {
+  content: "<i class='fa fa-angle-down' aria-hidden=;true'></i>";
+}
+
+/*when a value is selected, this class removes the content */
+.custom-file-control.selected:lang(en)::after {
+  content: "" !important;
+}
+
+.custom-file {
+  overflow: hidden;
+}
+.custom-file-control {
+  white-space: nowrap;
+}
+
+.custom-header-style.topbar p{
+  margin-top: 0px;
 }

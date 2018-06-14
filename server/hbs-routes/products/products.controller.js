@@ -5,6 +5,7 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
+const marketplace = require('../../config/marketplace');
 const async = require('async');
 
 export function products(req, res) {
@@ -27,7 +28,7 @@ export function products(req, res) {
 
 	queryObj['status'] = status["ACTIVE"];
 	
-    async.series({
+    async.series({ 
         wholesalerProducts: function(callback) {
             queryObj['marketplace_id'] = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -121,6 +122,7 @@ export function products(req, res) {
         if (!err) {
              res.render('products', {
                 title: "Global Trade Connect",
+                marketPlace: marketplace,
                 wholesalerProducts: results.wholesalerProducts,
                 retailProducts: results.retailProducts,
                 services: results.services,

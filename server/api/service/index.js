@@ -2,7 +2,6 @@
 
 const status = require('../../config/status');
 const position = require('../../config/position');
-
 const model = require('../../sqldb/model-connect');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
@@ -205,7 +204,7 @@ export function destroyRow(modelName, id) {
 
 export function upsert(modelName, queryObj, includeArr, data) {
 	console.log('data', data);
-	service.findOneRow(modelName, queryObj, includeArr)
+	this.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
 			if (results) {
 				console.log('new', results)
@@ -213,13 +212,13 @@ export function upsert(modelName, queryObj, includeArr, data) {
 				data.last_updated_on = new Date();
 
 				// res.status(200).send(results);
-				service.updateRow(modelName, data, id).then(function(response) {
+				this.updateRow(modelName, data, id).then(function(response) {
 					console.log("Update", response)
 					return;
 				});
 			} else {
 				data.created_on = new Date();
-				service.createRow(modelName, data).then(function(response) {
+				this.createRow(modelName, data).then(function(response) {
 					console.log("News", response)
 					return;
 				});
