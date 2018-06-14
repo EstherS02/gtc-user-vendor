@@ -1,13 +1,17 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <style type="text/css">
 .loader {
-	border: 16px solid #f3f3f3;
+	border: 16px solid #736DE5;
 	border-radius: 50%;
-	border-top: 16px solid #3498db;
-	width: 120px;
-	height: 120px;
+	border-top: 16px solid #E7EEEF;
+	width: 20px;
+	height: 20px;
 	-webkit-animation: spin 2s linear infinite; /* Safari */	
 	animation: spin 2s linear infinite;
+}
+
+.row.min {
+	height: 100vh;
 }
 
 @-webkit-keyframes spin {
@@ -44,12 +48,15 @@
 				type: 'PUT',
 				url: '/api/users/user-authenticate',
 				data: obj,
-				success: function(data, text) {
-					console.log('data', data);
-					window.location.href = "/";
+				success: function(data, text, request) {
+					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'>Your account has been verified successfully !. <a href='" + window.location.origin + "''>redirect to home</a></p>");
+					var timer = setTimeout(function() {
+						window.location.href = "/";
+					}, 10000);
+
 				},
 				error: function(request, status, error) {
-					console.log('request.responseText', request.responseText);
+					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'> " + request.responseText + ". <a href='" + window.location.origin + "'>redirect to home</a></p>");
 				}
 			});
 		} else {
@@ -58,16 +65,16 @@
 	});
 </script>
 
-{{!-- <section class="row1" style="margin-bottom:0">
+<section class="row1">
 	<div class="container">
-		<div class="col-md-4">
-		</div>
-		<div class="col-md-4">
-			<div class="loader"></div>
-		</div>
-		<div class="col-md-4">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="verifyMsg">
+				</div>
+			</div>
 		</div>
 	</div>
-</section> --}}
+</section>
+
 
 {{> footer/footer}}
