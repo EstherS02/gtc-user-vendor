@@ -668,6 +668,6 @@ a {
   white-space: nowrap;
 }
 
-.custom-header-style .topbar p{
+.custom-header-style.topbar p{
   margin-top: 0px;
 }
