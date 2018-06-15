@@ -12,6 +12,7 @@ const populate = require('../../utilities/populate');
 
 export function userProfile(req, res) {
 	var vendorModel = "Vendor";
+	var UserModel = "User"
 	var addressModel= "Address";
 	var countryModel = "Country";
 	var vendorIncludeArr= [];
@@ -42,6 +43,15 @@ export function userProfile(req, res) {
 			service.findOneRow(vendorModel, { user_id:user_id }, vendorIncludeArr)
 				.then(function (vendor) {
 					return callback(null, vendor);
+				}).catch(function (error) {
+					return callback(null);
+				});
+		},
+		user:function (callback) {
+			service.findOneRow(UserModel, { id:user_id })
+				.then(function (user) {
+					console.log("user",user);
+					return callback(null, user);
 				}).catch(function (error) {
 					return callback(null);
 				});
@@ -77,6 +87,7 @@ export function userProfile(req, res) {
 			res.render('user-profile', {
 				title: "Global Trade Connect",
 				vendor:results.vendor,
+				user:results.user,
 				shippingAddress:results.shippingAddress,
 				billingAddress:results.billingAddress,
 				country: results.country,
