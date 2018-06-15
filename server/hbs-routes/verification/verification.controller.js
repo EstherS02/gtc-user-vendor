@@ -46,7 +46,8 @@ export function verification(req, res) {
 				res.render('verification', {
 					title: "Global Trade Connect",
 					verification: results.verification,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					status:statusCode
 				});
 			} else {
 				res.render('verification', err);
