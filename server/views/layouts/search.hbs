@@ -103,7 +103,7 @@
 							{{#each categories.rows}}
 							<li class="list-group-item">
 								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="true" aria-controls="collapseCategory{{this.id}}">
-									<span>{{this.name}} {{this.product_count}}</span>
+									<span>{{this.name}} ({{this.product_count}})</span>
 								</a>
 								<ul class="list-group collapse {{#ifCond ../queryURI.category '==' this.id }} show {{/ifCond}}" id="collapseCategory{{this.id}}">
 									{{#each this.SubCategories}}

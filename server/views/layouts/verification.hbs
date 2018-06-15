@@ -226,7 +226,7 @@
         Your Id verification request is approved
         {{/ifCond}}
         {{#ifCond status.REJECTED '==' verification.personal_address_verification_file_status }}
-        <span class="id-verified">
+        <span class="exclamation">
           <i class="fas fa-check-circle"></i>
         </span>
         {{verification. personal_address_reason_for_reject}}

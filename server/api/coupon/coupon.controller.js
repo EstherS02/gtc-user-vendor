@@ -139,7 +139,3 @@ export function updateCategoryCoupon(req, res) {
 		}
 	});
 }
-
-export function createCoupon(req, res){
-	
-}

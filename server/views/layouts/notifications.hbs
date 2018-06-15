@@ -16,6 +16,18 @@
 			}
 		}
 	}
+
+	// $(document).ready(function() {
+	// 	var checkboxes = document.getElementsByTagName('input');
+	// 	for (var i = 0; i < checkboxes.length; i++) {
+	// 		if (checkboxes[i].type == 'checkbox') {
+	// 			checkboxes[i].checked = true;
+	// 		}
+	// 	}
+	// });
+
+
+
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 {{> vendor/header}} 
@@ -32,21 +44,18 @@
 								<tr>
 									<th><input type="checkbox" onclick="selectAll(this);"></th>
 									<th>Event</th>
+									<th>Code</th>
 									<th>Description</th>
 								</tr>
 							</thead>
 							<tbody>
-								{{#each Announcements}}
+								{{#each notification}}
 								<tr>
-									<td><input type="checkbox"></td>
-									{{#ifCond this.status "==" ../statusCode.NEWORDER}}
-									<td><i class="fas fa-check-circle text_green_color"></i>New Order</td>
-									{{else ifCond this.status "==" ../statusCode.CANCELLEDORDER}}
-									<td><i class="fas fa-check-circle text_green_color"></i>Cancelled Order</td>
-									{{else ifCond this.status "==" ../statusCode.FAILEDORDER}}
-									<td><i class="fas fa-check-circle text_red_color"></i>Failed Order</td>
-									{{/ifCond}}
-									<td>{{this.notification}}</td>
+									{{!-- <td><input type="checkbox" value="{{this.id}}" {{setChecked 0 this.VendorNotificationSettings.enable}}></td> --}}
+									{{!-- {{}} --}}
+									<td><i class="fas fa-check-circle text_green_color"></i>{{this.name}}</td>
+									<td>{{this.code}}</td>
+									<td>{{this.description}}</td>
 								</tr>
 								{{/each}}
 							</tbody>
