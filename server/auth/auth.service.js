@@ -66,7 +66,36 @@ function isAuthenticated() {
 			}).then(function(user) {
 					if (user) {
 						req.user = plainTextResponse(user);
-						next();
+
+						let vendorQueryObj = {};
+
+						vendorQueryObj['status'] = {
+							'$eq': status["ACTIVE"]
+						}
+						
+						vendorQueryObj['user_id'] = req.user.id;
+
+						model['Vendor'].findOne({
+							where: vendorQueryObj,
+							include: [
+								{ model: model['Country'] },
+								{ model: model['Currency'] },
+								{ model: model['Timezone'] }
+							]
+						}).then(function(vendorObj) {
+							if (vendorObj) {
+								req.user['Vendor'] = vendorObj.toJSON();
+								req.user['VendorStatus'] = true;
+								next();
+							} else {
+								req.user['Vendor'] = false;
+								next();
+							}
+						}).catch(function(error) {
+							req.user['Vendor'] = false;
+							next();
+						});
+						//next();
 					} else {
 						res.status(404).send("User not found");
 						return;
