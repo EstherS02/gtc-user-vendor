@@ -1,22 +1,22 @@
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#addTimeSlotForm").hide();
+		$("#addTimeSlotFormNew").hide( );
 		$("#addNewTimeSlot").click(function() {
-			$("#addTimeSlotForm").show();
+			$("#addTimeSlotFormNew").show();
 		});
 	});
 
-	function timeCheck(val) {
-		var endTime = val.value;
-		var startTime = $('select[name=from_time]').val();
-		if (startTime) {
-			if (startTime > endTime) {
-				alert("Start Time is less than End Time");
-			}
-		} else {
-			alert("Please select start time");
-		}
-	}
+	// function timeCheck(val) {
+	// 	var endTime = val.value;
+	// 	var startTime = $('select[name=from_time]').val();
+	// 	if (startTime) {
+	// 		if (startTime > endTime) {
+	// 			alert("Start Time is less than End Time");
+	// 		}
+	// 	} else {
+	// 		alert("Please select start time");
+	// 	}
+	// }
 	$(document).ready(function() {
 		$("#uploadOperationHours").click(function(e) {
 			e.preventDefault();
@@ -27,7 +27,6 @@
 			op_hours.start_time =  $('input[name=start_time]').val();
 			op_hours.end_time = $('input[name=end_time]').val();
 			op_hours.timezone_id = $('#time_zone').val();
-			alert("hai");
 			$.ajax({
 				type: 'POST',
 				url: '/api/gtc-talk/working-hours',
@@ -124,7 +123,7 @@
 
 </script>
 {{> header/defaultHeader}}
-{{> vendor/header}}
+{{> vendor/not-verified-header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -136,91 +135,92 @@
 						<p class="gtc-talk">Chat directly with users who are interacting with your page via the chat module at the bottom right of your profile screen. </p>
 						<p><h5 class="gtc-title">GTC Talk Enabled </h5></p>
 						<p class="gtc-talk">
-
 							<input type="radio" name="gtc_talk_enabled" value="1" {{setChecked 1 talk.gtc_talk_enabled}}>Yes<br>
-							<input class="input-padding" type="radio" name="gtc_talk_enabled" value="0" {{setChecked 0 talk.gtc_talk_enabled}} />No </p>
-							<p><h5 class="gtc-title"> GTC Talk Profile Pic</h5> </p>
-							<p class="gtc-talk">
-								{{#if talk.talk_profile_pic_url}}
-								<input type="radio" name="talk_profile_pic_url_radio" value="old" />Store Profile Photo/Logo(default)<br>
-								<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
-								{{else}}
-								<input type="radio" name="talk_profile_pic_url_radio" value="old" checked/>Store Profile Photo/Logo(default)<br>
-								<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new"/> Custom
-								{{/if}}
-								<select class="file-uploade">
-									<option value="talk_profile_pic_url" selected="">Browse...</option>
-								</select>
-								<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
-								<input class="upload-btn1" type="button" value="Upload" onclick="document.getElementById('selectedFile').click();" />
-							</p>
-							<p><h5 class="gtc-title">Default Message </h5></p>
-							<p class="default-msg"><textarea name="default_msg" rows="5" cols="55"> 
-								{{talk.default_msg}}</textarea> </p> 
-								<p><h5 class="gtc-title">Hours of Operation </h5> </p>
-								<p class="gtc-talk-pic">You can set a predefinted set of hours for someone to contact you each week. </p>
-								{{#each busiHours}}
-								<p><i class="fas fa-check-circle"></i><span class="gtc-talk"> 
-									{{#days this.from_day}}{{/days}}
-									to {{#days this.to_day}}{{/days}}, from {{this.start_time}}am to 
-									{{this.end_time}} pm {{this.Timezone.timezone_abbreviation}}</span> </p>
-									{{/each}}
-									<p id="addNewTimeSlot"><i class="fas fa-plus-circle"></i><span class="gtc-talk">Add another time slot </span> </p>
-									<form id="addTimeSlotForm">
-										<div class="col-md-4 hop-container" style="float:  left;">
-											<div class="col-md-5 hop-container" style="float: left;">
-												<label class="hop"> From </label>
-												<select class="classic" id="from_day" name="from_day">
-													<option value = "">from-day</option>
-													{{#each dayCode}}
-													<option value = "{{this}}">{{@key}}</option>
-													{{/each}}
-												</select>
-											</div>
-											<div class="col-md-6 hop-container" style="float: left;">
-												<label class="hop"> To </label>
-												<select class="classic" name="to_day" id="to_day">
-													<option value = "">to-day</option>
-													{{#each dayCode}}
-													<option value = "{{this}}">{{@key}}</option>
-													{{/each}}
-												</select>
-											</div>
-										</div>
-										<div class="col-md-4 hop-container" style="float:  left;">
-											<label class="hop" style="float:  left;"> Time </label>
-											<input type="time" name="start_time" class="classic required" id="start_time" style="float:  left;">
-											<p class="hop-time" style="float:  left;">-</p>
-
-											<input type="time" name="end_time" class="classic required" id="end_time" style="float:  left;" onchange="timeCheck(this)">
-										</div>
-										<div class="col-md-4 hop-container" style="float:  left;">
-											<select class="classic" id="time_zone">
-												<option value="" selected>Time Zone</option>
-												{{#each this.timeZone}}
-												<option value={{this.id}}>{{this.timezone}}</option>
-												{{/each}}
-											</select>
-											<button type="submit" value="upload" id="uploadOperationHours" Class="upload-btn">Submit</button>
-										</div>
-									</form>
-									<hr>
-									<div class="col-md-4">
-										<button class="update-btn" type="submit" id = "UpdateTalks">Update</button>
-										<button class="cancel-btn" type="reset">Cancel</button>
-									</div>
+							<input class="input-padding" type="radio" name="gtc_talk_enabled" value="0" {{setChecked 0 talk.gtc_talk_enabled}} />No 
+						</p>
+						<p><h5 class="gtc-title"> GTC Talk Profile Pic</h5> </p>
+						<p class="gtc-talk">
+							{{#if talk.talk_profile_pic_url}}
+							<input type="radio" name="talk_profile_pic_url_radio" value="old" />Store Profile Photo/Logo(default)<br>
+							<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new" checked/> Custom
+							{{else}}
+							<input type="radio" name="talk_profile_pic_url_radio" value="old" checked/>Store Profile Photo/Logo(default)<br>
+							<input class="input-padding" type="radio" name="talk_profile_pic_url_radio" value="new"/> Custom
+							{{/if}}
+							<select class="file-uploade">
+								<option value="talk_profile_pic_url" selected="">Browse...</option>
+							</select>
+							<input type="file" id="selectedFile" style="display: none;" name="talk_profile_pic_url" />
+							<input class="upload-btn1" type="button" value="Upload" onclick="document.getElementById('selectedFile').click();" />
+						</p>
+						<p><h5 class="gtc-title">Default Message </h5></p>
+						<p class="default-msg"><textarea name="default_msg" rows="5" cols="55"> 
+							{{talk.default_msg}}</textarea> 
+						</p> 
+						<p><h5 class="gtc-title">Hours of Operation </h5> </p>
+						<p class="gtc-talk-pic">You can set a predefinted set of hours for someone to contact you each week. </p>
+						{{#each busiHours}}
+						<p><i class="fas fa-check-circle"></i>
+							<span class="gtc-talk"> 
+								{{#days this.from_day}}{{/days}}
+								to {{#days this.to_day}}{{/days}}, from {{this.start_time}}am to 
+								{{this.end_time}} pm {{this.Timezone.timezone_abbreviation}}
+							</span>
+						</p>
+						{{/each}}
+						<p id="addNewTimeSlot"><i class="fas fa-plus-circle"></i>
+							<span class="gtc-talk">Add another time slot </span>
+						</p>
+						<div id="addTimeSlotFormNew">
+						<form >
+							<div class="col-md-4 hop-container" style="float:  left;">
+								<div class="col-md-5 hop-container" style="float: left;">
+									<label class="hop"> From </label>
+									<select class="classic" id="from_day" name="from_day">
+										<option value = "">from-day</option>
+										{{#each dayCode}}
+										<option value = "{{this}}">{{@key}}</option>
+										{{/each}}
+									</select>
+								</div>
+								<div class="col-md-6 hop-container" style="float: left;">
+									<label class="hop"> To </label>
+									<select class="classic" name="to_day" id="to_day">
+										<option value = "">to-day</option>
+										{{#each dayCode}}
+										<option value = "{{this}}">{{@key}}</option>
+										{{/each}}
+									</select>
 								</div>
 							</div>
+							<div class="col-md-4 hop-container" style="float:  left;">
+								<label class="hop" style="float:  left;"> Time </label>
+								<input type="time" name="start_time" class="classic required" id="start_time" style="float:  left;">
+								<p class="hop-time" style="float:  left;">-</p>
+								<input type="time" name="end_time" class="classic required" id="end_time" style="float:  left;" >
+								{{!-- onchange="timeCheck(this)" --}}
+							</div>
+							<div class="col-md-4 hop-container" style="float:  left;">
+								<select class="classic" id="time_zone">
+									<option value="" selected>Time Zone</option>
+									{{#each this.timeZone}}
+									<option value={{this.id}}>{{this.timezone}}</option>
+									{{/each}}
+								</select>
+								<button type="submit" value="upload" id="uploadOperationHours" Class="upload-btn">Submit</button>
+							</div>
+						</form>
 						</div>
-					</form>
+						
+						<hr>
+						<div class="col-md-4">
+							<button class="update-btn" type="submit" id = "UpdateTalks">Update</button>
+							<button class="cancel-btn" type="reset">Cancel</button>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<script>
-		$(window).scroll(function(){
-			$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-		});
-	</script>
-</body>
-</html>
+		</form>
+	</div>
+</section>
+{{> footer/footer}}

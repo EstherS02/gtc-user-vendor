@@ -9,9 +9,6 @@ const status = require('../../config/status');
 const service = require('../service');
 
 export function storeData(req, res) {
-	// consol.log(req.user);
-	// // var uploadPath = config.images_base_path + "/" + file.originalFilename;
-	// // console.log(req.body);
 	var bodyParam = {};
 	var modelName = "VendorVerification";
 	if (req.body.personal_id_verification_file_link) {
@@ -33,7 +30,7 @@ export function storeData(req, res) {
 	}
 
 	bodyParam.request_for_vendor_verification = 1;
-	bodyParam.vendor_verified_status = 1;
+	bodyParam.vendor_verified_status = status['WAITING'];
 	bodyParam.vendor_id = 29;
 
 	var queryObj = {
