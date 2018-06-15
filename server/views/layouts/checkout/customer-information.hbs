@@ -1,3 +1,15 @@
+ <script>
+$(document).ready(function(){
+     submitForms = function() {
+            
+            $("#form1").trigger("click");
+			$("#form2").trigger("click");
+
+    }
+});
+
+ </script>
+ 
  {{> header/defaultHeader LoggedInUser = LoggedInUser}}
  <section>
 	<div class="" >
@@ -25,11 +37,71 @@
 										<div class="col-md-3 col-12 checkout_cont">
 											<p><b>Customer Information</b></p>
 										</div>
-										<div class="col-md-9 col-12 checkout_cont">
+										<div class="col-md-9 col-12 checkout_cont" style="">
+											
+											<div>
 											<p><b>Sunny Sarpal</b> <span class="checkout_2_para_span_1">Switch Accouts</span></p>
 											<p class="shop_shipping">833 That Street,</p>
 											<p class="shop_shipping">Calgary, Alberta, Canada</p>
 											<p class="shop_shipping">b2s 4t5</p>
+											</div>
+										
+										<form id="billing-address-submission" name="billing-address-submission">
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="First Name" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="Last Name" class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-9 col-12 common_padding1">
+														<input type="text" placeholder="Address" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="text" placeholder="Apt, Suite," class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" placeholder="City" class="geo_textbox" style="width: 99%" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-5 col-12 common_padding1">
+														<select class="geo_textbox" required="required">
+															<option value="">Country</option>
+															<option value="ddd">Country</option>
+														</select>
+													</div>
+													<div class="col-md-4 col-12 common_padding1">
+														<select class="geo_textbox" required="required">
+															<option value="">Province</option>
+															<option value="ddd">Country</option>
+														</select>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="text" placeholder="Postal" class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="Phone" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														
+													</div>
+												</div>
+												 <button class="btn btn-primary" id="form1" type="submit" style="display:none;">Submit form</button>
+											</form>
+
+
 										</div>
 									</div>
 									<hr/>
@@ -39,57 +111,60 @@
 										</div>
 										<div class="col-md-9 col-12 checkout_cont">
 										<p><label class="login-checkbox1"><input type="checkbox"><i></i> Shipping Address is different then my billing address above</label></p>
-											
-											<div class="row">
-												<div class="col-md-6 col-12 common_padding1">
-													<input type="text" placeholder="First Name" class="geo_textbox" />
+											<form id="shipping-method-submission">
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="First Name" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="Last Name" class="geo_textbox" required/>
+													</div>
 												</div>
-												<div class="col-md-6 col-12 common_padding1">
-													<input type="text" placeholder="Last Name" class="geo_textbox" />
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" required/>
+													</div>
 												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-12 col-12 common_padding1">
-													<input type="text" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" />
+												<div class="row">
+													<div class="col-md-9 col-12 common_padding1">
+														<input type="text" placeholder="Address" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="text" placeholder="Apt, Suite," class="geo_textbox" required/>
+													</div>
 												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-9 col-12 common_padding1">
-													<input type="text" placeholder="Address" class="geo_textbox" />
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" placeholder="City" class="geo_textbox" style="width: 99%" required/>
+													</div>
 												</div>
-												<div class="col-md-3 col-12 common_padding1">
-													<input type="text" placeholder="Apt, Suite," class="geo_textbox" />
+												<div class="row">
+													<div class="col-md-5 col-12 common_padding1">
+														<select class="geo_textbox" required="required">
+															<option value="">Country</option>
+															<option value="ddd">Country</option>
+														</select>
+													</div>
+													<div class="col-md-4 col-12 common_padding1">
+														<select class="geo_textbox" required="required">
+															<option value="">Province</option>
+															<option value="ddd">Country</option>
+														</select>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="text" placeholder="Postal" class="geo_textbox" required/>
+													</div>
 												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-12 col-12 common_padding1">
-													<input type="text" placeholder="City" class="geo_textbox" style="width: 99%" />
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" placeholder="Phone" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														
+													</div>
+													<button class="btn btn-primary" id="form2" type="submit" style="display:none;">Submit form</button>
 												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-5 col-12 common_padding1">
-													<select class="geo_textbox">
-														<option>Country</option>
-													</select>
-												</div>
-												<div class="col-md-4 col-12 common_padding1">
-													<select class="geo_textbox">
-														<option>Province</option>
-													</select>
-												</div>
-												<div class="col-md-3 col-12 common_padding1">
-													<input type="text" placeholder="Postal" class="geo_textbox" />
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6 col-12 common_padding1">
-													<input type="text" placeholder="First Name" class="geo_textbox" />
-												</div>
-												<div class="col-md-6 col-12 common_padding1">
-													
-												</div>
-											</div>
-											
+											</form>
 										</div>
 									</div>
 									<hr/>
@@ -100,7 +175,9 @@
 										<input type="submit" value="RETURN TO CART" class="cont_shopping"/>
 									</div>
 									<div class="col-md-6 col-12">
-										<a href="check_out3.html"><input type="submit" value="CONTINUE TO SHIPPING METHOD" class="update_cart"/></a>
+										<a href="javascript:;">
+											<input type="submit" onclick="submitForms()" value="CONTINUE TO SHIPPING METHOD" class="update_cart"/>
+										</a>
 									</div>
 								</div>
 							</div>

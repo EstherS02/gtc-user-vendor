@@ -25,10 +25,6 @@ export function verification(req, res) {
 	};
 	var includeArr = [];
 
-    // res.render('verification', {
-    //     title: "Global Trade Connect",
-    //     LoggedInUser: LoggedInUser
-    // });
     	async.series({
 			verification: function(callback) {
 				service.findOneRow(modelName, queryObj, includeArr)
