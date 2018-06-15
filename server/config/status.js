@@ -10,8 +10,8 @@ module.exports = {
 	"FAILEDORDER":9,
 	"SUSPENDED":10,
 	"SOLDOUT":11,
-	"APPROVED":12,
-	"WAITING":13,
+	"WAITING":12,
+	"APPROVED":13,
 	"REJECTED":14
 
 };
