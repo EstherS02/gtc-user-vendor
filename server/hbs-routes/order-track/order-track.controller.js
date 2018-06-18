@@ -18,6 +18,8 @@ export function orderTrack(req, res) {
     
     let user_id = LoggedInUser.id;
 
+    console.log("========", LoggedInUser)
+
     res.render('order-track', {
         title: "Global Trade Connect",
         LoggedInUser: LoggedInUser

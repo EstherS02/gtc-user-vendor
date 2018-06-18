@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        vendor_id: {
+        user_id: {
             type: DataTypes.BIGINT,
-            field: 'vendor_id',
+            field: 'user_id',
             allowNull: false,
             references: {
-                model: 'vendor',
+                model: 'user',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -141,10 +141,10 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const VendorVerification = model.VendorVerification;
-    const Vendor = model.Vendor;
+    const User = model.User;
 
-    VendorVerification.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
+    VendorVerification.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
