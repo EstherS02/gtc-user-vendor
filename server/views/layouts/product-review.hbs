@@ -148,44 +148,33 @@
 													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></p>
 												</div>
 												<div class="col-md-5 col-5 common_padding1">
-													<p class="product_rating_1">(7 Rating)</p>
+													<p class="product_rating_1">({{Rating.star5}} Rating)</p>
 												</div>
 												<div class="col-md-7">
 													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
 												</div>
 												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(4 Rating)</p>
+													<p class="product_rating_1">({{Rating.star4}} Rating)</p>
 												</div>
 												<div class="col-md-7">
 													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
 												</div>
 												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(3 Rating)</p>
+													<p class="product_rating_1">({{Rating.star3}} Rating)</p>
 												</div>
 												<div class="col-md-7">
 													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
 												</div>
 												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(0 Rating)</p>
+													<p class="product_rating_1">({{Rating.star2}} Rating)</p>
 												</div>
 												<div class="col-md-7">
 													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
 												</div>
 												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(0 Rating)</p>
+													<p class="product_rating_1">({{Rating.star1}} Rating)</p>
 												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(2 Rating)</p>
-												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">(4 Rating)</p>
-												</div>
+												
 											</div>           
 										</div>             	
 									</div>
@@ -229,6 +218,7 @@
 									<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 									</div>
 									
+									{{#each product.Reviews}}
 									<div class="row">
 										<div class="col-md-2 product_img">
 											<img width="100%" src="../img/coming-soon.png" /> 
@@ -238,76 +228,13 @@
 											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
 											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
 										</div>
-									</div>
-									<div class="row">
 										<div class="col-md-12 product_hr">
 											<hr>
 										</div>
 									</div>
+								{{/each}}
 									
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" src="../img/coming-soon.png" /> 
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">"Great place great food, warm hospitality"</p>
-											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
-											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12 product_hr">
-											<hr>
-										</div>
-									</div>
-									
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" src="../img/coming-soon.png" /> 
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">"Great place great food, warm hospitality"</p>
-											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
-											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12 product_hr">
-											<hr>
-										</div>
-									</div>
-									
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" src="../img/coming-soon.png" /> 
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">"Great place great food, warm hospitality"</p>
-											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
-											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12 product_hr">
-											<hr>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" src="../img/coming-soon.png" /> 
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">"Great place great food, warm hospitality"</p>
-											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
-											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12 product_hr">
-											<hr>
-										</div>
-									</div>
-{{!-- 									<nav aria-label="Page navigation example">
+								{{!-- <nav aria-label="Page navigation example">
 										<ul class="pagination">
 											<li class="page-item"><a class="page-link" href="#">Previous</a></li>
 											<li class="page-item"><a class="page-link" href="#">1</a></li>
