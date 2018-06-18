@@ -139,16 +139,6 @@
       <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-10" style="background-color: #fff;">
-          {{!-- <div class="row">
-            <div class="col-md-3 col-6">
-              <img style="width: 50%" src="../../img/test-user.png" alt="test">
-            </div>
-            <div class="col-md-7 col-6">
-              <h6 style="font-size: 15px; padding-top: 23px;font-family: 'Oswald', sans-serif;">
-                <a style="color:#000000;" href="#"><h3>Hayden Agencies Ltd</h3></a>
-              </h6>
-            </div>
-          </div> --}}
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">GTC Store verification</h5>
           <p class="verification-incomplete">
             {{#ifCond status.APPROVED "==" verification.vendor_verified_status}}
@@ -165,25 +155,14 @@
             to verify your ownership of this business.
           </p>
           <hr style="margin-top: 25px;">
-          {{!-- <div class="row">
-            <div class="col-md-2 col-3">
-              <img style="width: 60%" src="../../img/test-user.png" alt="test">
-            </div>
-            <div class="col-md-10 col-6">
-              <h6 style="font-size: 15px; padding-top: 23px;font-family: 'Oswald', sans-serif;">
-                <a style="color:#000000;" href="#"><h3>Hayden Agencies Ltd</h3></a>
-              </h6>
-            </div>
-          </div> --}}
-          {{!-- <hr style="margin-top: 0px;"> --}}
-
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">
             Personal ID Verification
           </h5>
-          <p class="verification-incomplete">
+          <p class="verificationerification-incomplete">
 
             {{#ifCond status.WAITING '==' verification.personal_id_verification_file_status }}
             <span class="exclamation">
+
               <i class="fas fa-exclamation-circle"></i>
             </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond status.APPROVED '==' verification.personal_id_verification_file_status
             }}
@@ -292,6 +271,7 @@
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}
+{{!-- >>>>>>> 03523e7faec319419d69fe606fb45f4c59ce05b9 --}}
 
           </p>
           <br>

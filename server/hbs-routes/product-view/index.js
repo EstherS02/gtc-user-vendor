@@ -11,6 +11,8 @@ var globalUser = require('../../auth/global-user-obj');
 var controller = require('./product-view.controller');
 
 router.get('/:product_slug/:product_id', globalUser.isGlobalObj(), controller.GetProductDetails);
+
+router.get('/:product_slug/:product_id/AllReviews', globalUser.isGlobalObj(), controller.GetProductReview);
 //router.get('/:product_slug/:product_id', controller.productView);
 
 

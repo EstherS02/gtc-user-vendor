@@ -46,18 +46,17 @@ export function cart(req, res) {
 
 	service.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
-			console.log("WishList", results.id);
 			if (results) {
 				var id = results.id;
-				res.status(200).send(results);
 				service.updateRow(modelName,data,id).then(function(response){
 					// console.log("Update",response)
+					res.status(200).send(results);
 				});
 				return;
 			} else {
-				// res.status(404).send("Unable to delete");
 				service.createRow(modelName,data).then(function(response){
 					// console.log("NEW:", response)
+					res.status(200).send(results);
 				});
 				return;
 			}
@@ -77,4 +76,23 @@ export function cart(req, res) {
 	// 			console.log("hai")
 	// 		}
 	// 	})
+}
+
+export function deleteAll(req, res){
+var user_id = req.user.id;
+	var modelName = "WishList";
+
+	model[modelName].update({
+		status: status["DELETED"]
+	}, {
+		where: {
+			user_id: user_id
+		}
+	}).then(function(rows) {
+			res.status(200).send(rows);
+
+		}).catch(function(error) {
+			res.status(500).send("Internal server error");
+		});
+
 }
