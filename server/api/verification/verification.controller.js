@@ -31,10 +31,10 @@ export function storeData(req, res) {
 
 	bodyParam.request_for_vendor_verification = 1;
 	bodyParam.vendor_verified_status = status['WAITING'];
-	bodyParam.vendor_id = 29;
+	bodyParam.user_id = req.user.id;
 
 	var queryObj = {
-		vendor_id: 29
+		user_id: req.user.id
 	};
 	var includeArr = [];
 
