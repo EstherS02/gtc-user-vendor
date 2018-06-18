@@ -18,6 +18,8 @@ export function socialProfile(req, res) {
     
     let user_id = LoggedInUser.id;
 
+    console.log("================",LoggedInUser)
+
     res.render('social-profile', {
         title: "Global Trade Connect",
         LoggedInUser: LoggedInUser

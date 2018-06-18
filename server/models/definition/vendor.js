@@ -113,6 +113,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        vendor_verification_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_verification_id',
+            allowNull: true,
+            references: {
+                model: 'vendor-verifications',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -231,11 +242,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.hasMany(VendorVerification, {
+   /* Vendor.hasMany(VendorVerification, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Vendor.belongsTo(User, {
         foreignKey: 'user_id',
@@ -257,6 +268,12 @@ module.exports.initRelations = () => {
 
     Vendor.belongsTo(Timezone, {
         foreignKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.belongsTo(VendorVerification, {
+        foreignKey: 'vendor_verification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
