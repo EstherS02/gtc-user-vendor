@@ -22,7 +22,8 @@ export function socialProfile(req, res) {
 
     res.render('social-profile', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        statusCode:statusCode
     });
 
 }
