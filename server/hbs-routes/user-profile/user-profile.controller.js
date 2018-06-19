@@ -35,7 +35,9 @@ export function userProfile(req, res) {
 	if(req.user)
 		LoggedInUser = req.user;
 		
-	    let user_id = LoggedInUser.id;
+		let user_id = LoggedInUser.id;
+		
+		console.log("**************************************",LoggedInUser)
 
 
 	async.series({
