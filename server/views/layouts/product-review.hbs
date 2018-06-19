@@ -292,7 +292,7 @@
 												<div class="col-md-10 product_great_bg common_padding1"  >
 													<p class="product_great">"
 														{{this.title}}"</p>
-														<p class="product_star">{{starCount this.rating}}<span class="product_ago"> 3 days ago </span> </p>
+														<p class="product_star">{{starCount this.rating}}<span class="product_ago"> {{FormatDate this.created_on}}</span> </p>
 														<p class="product_we">{{this.comment}}</p>
 													</div>
 													<div class="col-md-12 product_hr">
@@ -301,15 +301,33 @@
 												</div>
 												{{/each}}
 												
-								{{!-- <nav aria-label="Page navigation example">
-										<ul class="pagination">
-											<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-											<li class="page-item"><a class="page-link" href="#">1</a></li>
-											<li class="page-item"><a class="page-link" href="#">2</a></li>
-											<li class="page-item"><a class="page-link" href="#">3</a></li>
-											<li class="page-item"><a class="page-link" href="#">Next</a></li>
-										</ul>
-									</nav> --}}
+								{{#ifCond productResults.count '>' queryPaginationObj.limit}}
+			<div class="row">
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-7">
+					{{#pagination productResults.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+					<nav aria-label="Page navigation example">
+						<ul class="pagination justify-content-center">
+							{{#unless startFromFirstPage}}
+							<li class="page-item">
+								<a class="page-link" href="../search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+							</li>
+							{{/unless}} {{#each pages}}
+							<li class="page-item {{#if isCurrent}} active {{/if}}">
+								<a class="page-link" href="../search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+							</li>
+							{{/each}} {{#unless endAtLastPage}}
+							<li class="page-item">
+								<a class="page-link" href="../search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+							</li>
+							{{/unless}}
+						</ul>
+					</nav>
+					{{/pagination}}
+				</div>
+			</div>
+			{{/ifCond}}
 									
 								</div>
 							</div>

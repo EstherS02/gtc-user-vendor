@@ -128,7 +128,7 @@ export function GetProductReview(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	limit = req.query.limit ? parseInt(req.query.limit) : 1;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
@@ -154,16 +154,69 @@ export function GetProductReview(req, res){
         queryObj['product_slug'] = req.params.product_slug;
 
         queryObj['status'] = status["ACTIVE"]
-        return model["Product"].findOne({
+
+async.series({ 
+        Product: function(callback) {
+            queryObj['marketplace_id'] = 1;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(wholesalerProducts) {
+                    return callback(null, wholesalerProducts.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        Review: function(callback) {
+            queryObj['marketplace_id'] = 2;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(retailProducts) {
+                    return callback(null, retailProducts.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        RelatedProducts: function(callback) {
+            queryObj['marketplace_id'] = 2;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function(retailProducts) {
+                    return callback(null, retailProducts.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+    }, function (err, results) {
+        if (!err) {
+             res.render('product-review', {
+                    title: "Global Trade Connect",
+                    product: productsList,
+                    productReviewsList: productReviewsList,
+                    LoggedInUser: LoggedInUser,
+                    Rating:productRating,
+                    queryPaginationObj: queryPaginationObj,
+                    ratingCount:rating.length,
+                    // pagination
+					page: page,
+					pageCount:rating.length-(limit*(page-1)),
+					maxSize:maxSize,
+					pageSize: limit,
+					collectionSize: rating.length
+					// End pagination
+                });
+            } else {
+                res.render('product-review', {
+                    title: "Global Trade Connect"
+                });
+            }
+    });
+        /*return model["Product"].findOne({
         where: queryObj,
         include: [
             { model: model["Vendor"] },
-            //{ model: model["Marketplace"] },
-            //{ model: model["MarketplaceType"] },
-            //{ model: model["Category"] },
-            //{ model: model["SubCategory"] },
-            //{ model: model["Country"] },
-            //{ model: model["State"] },
             { model: model["Review"], 
                 include : [
                     { model: model["User"],
@@ -254,5 +307,7 @@ export function GetProductReview(req, res){
             console.log('Error:::', error);
             res.render('product-review', error);
         });
+        */
+
 
 }
