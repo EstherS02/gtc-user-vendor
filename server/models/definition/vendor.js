@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: false
+            allowNull: true
         },
         contact_email: {
             type: DataTypes.STRING(128),
