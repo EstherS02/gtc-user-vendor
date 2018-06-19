@@ -118,6 +118,30 @@ export function GetProductReview(req, res){
 	var queryObj = {};
     var includeArr = [];
     var LoggedInUser = {};
+    var queryPaginationObj = {};
+
+    //pagination 
+	var page;
+	var offset;
+	var order;
+	var limit;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+	var maxSize;
+	// End pagination
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
         LoggedInUser = req.gtcGlobalUserObj;
@@ -134,12 +158,12 @@ export function GetProductReview(req, res){
         where: queryObj,
         include: [
             { model: model["Vendor"] },
-            { model: model["Marketplace"] },
-            { model: model["MarketplaceType"] },
-            { model: model["Category"] },
-            { model: model["SubCategory"] },
-            { model: model["Country"] },
-            { model: model["State"] },
+            //{ model: model["Marketplace"] },
+            //{ model: model["MarketplaceType"] },
+            //{ model: model["Category"] },
+            //{ model: model["SubCategory"] },
+            //{ model: model["Country"] },
+            //{ model: model["State"] },
             { model: model["Review"], 
                 include : [
                     { model: model["User"],
@@ -165,6 +189,7 @@ export function GetProductReview(req, res){
             if (product) {
             var productsList = JSON.parse(JSON.stringify(product));
             let productReviewsList = _.groupBy(productsList.Reviews, "rating");
+            console.log(productsList.Reviews);
             var total = 0;
 				var star5 = 0;
 				var star4 = 0;
@@ -193,7 +218,7 @@ export function GetProductReview(req, res){
 								break;
 						}
 					}
-
+					maxSize = rating.length/limit;
 					var avg = total / rating.length;
 					productRating.avg = avg;
 					productRating.star5 = star5;
@@ -208,7 +233,16 @@ export function GetProductReview(req, res){
                     product: productsList,
                     productReviewsList: productReviewsList,
                     LoggedInUser: LoggedInUser,
-                    Rating:productRating
+                    Rating:productRating,
+                    queryPaginationObj: queryPaginationObj,
+                    ratingCount:rating.length,
+                    // pagination
+					page: page,
+					pageCount:rating.length-(limit*(page-1)),
+					maxSize:maxSize,
+					pageSize: limit,
+					collectionSize: rating.length
+					// End pagination
                 });
             } else {
                 res.render('product-review', {

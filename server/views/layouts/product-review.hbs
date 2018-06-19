@@ -1,3 +1,53 @@
+<script type="text/javascript">
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	$(function(){
+		$('#review-stars').barrating({
+			theme: 'fontawesome-stars'
+		});
+	});
+	$("#reviewForm").validate({
+
+		rules: {
+			reviewDetailComment: "required",
+			reviewTitle: "required"
+		},
+		messages: {
+			reviewDetailComment: "Please Enter your review Comment",
+			reviewTitle: "Please enter your Review title"
+		}
+
+	});
+
+
+	function reviewSubmit(id) {
+		let reviewObj = {};
+
+		if (userInfo.email) {
+			if ($("#reviewForm").valid()) {
+				reviewObj['rating'] = $('#review-stars').val();
+				reviewObj['title'] = $('#review-title').val();
+				reviewObj['comment'] = $('#review-detail-comment').val();
+				reviewObj['product_id'] = parseInt(id);
+				reviewObj['user_id'] = parseInt(userInfo.id);
+				reviewObj['status'] = 1;
+
+				console.log(reviewObj);
+
+				$.ajax({
+					type: "POST",
+					url: "/api/reviews",
+					data: reviewObj,
+					success: function (result) {
+						if (result)
+							location.reload();
+					}
+				});
+			}
+		} else {
+			location.href = "/login"
+		}
+	}
+</script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
 	<div class="banner_bg">
@@ -105,7 +155,7 @@
 							<p class="profile_logged_in_body2_font_1">User Rating:</p>
 						</div>
 						<div class="col-md-7 col-7"  >
-							<p style="margin-bottom: 0px;font-size: 10px;"><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i></p>
+							<p style="margin-bottom: 0px;font-size: 10px;">{{starCount 4}}</p>
 							<p class="profile_logged_in_body2_font_2">(Ratings-See All)</p>
 						</div>
 					</div>
@@ -136,104 +186,121 @@
 								<div class="col-md-4">
 									<div class="row">
 										<div class="col-md-5 col-5 product_iphone_img">
-											<img style="width:100%;" src="../img/signup-feature-2.png">
+											<img style="width:100%;" src="{{product.ProductMedia.[0].url}}">
 										</div>
 										<div class="col-md-7 col-7 product_iphone common_padding1" >
-											<p class="product_iphone_header">iPhone Pallets of Interest</p>
-											<p class="product_rating">Product Rating</p>
-											<p class="product_rating_star"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><span class="product_rating_num"> 5.9</span></p>
-											<p class="product_rating_header" >Based on 23 Reviews </p>
-											<div class="row">
-												<div class="col-md-7 col-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></p>
-												</div>
-												<div class="col-md-5 col-5 common_padding1">
-													<p class="product_rating_1">({{Rating.star5}} Rating)</p>
-												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">({{Rating.star4}} Rating)</p>
-												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">({{Rating.star3}} Rating)</p>
-												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">({{Rating.star2}} Rating)</p>
-												</div>
-												<div class="col-md-7">
-													<p class="product_rating_star1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i><i class="fas fa-star" style="color: #B9B9BB;"></i></p>
-												</div>
-												<div class="col-md-5 common_padding1">
-													<p class="product_rating_1">({{Rating.star1}} Rating)</p>
-												</div>
-												
-											</div>           
-										</div>             	
-									</div>
-								</div>
-								<div class="col-md-8">
-									<div class="row">
-										<div class="col-md-8 product_center">
-											<p>Showing 1-10 of Reviews</p>
-										</div>
-										<div class="col-md-4 product_buttion_bg ">
-											<button class="product_buttion">Submit Your Own Review</button>
-										</div>	
-									</div>
-									<div class="col-md-12 product_hr" >
-										<hr>
-									</div>
-									<div class="row">
-										<div class="col-md-1">
-											<i class="fas fa-question-circle review_help_icon"></i>
-										</div>
-										<div class="col-md-11 product_submit">
-											<p class="review_help_title">Submit A Review Of This Product</p>
-											<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product, please fill out the following it will be sent directly to the vendor.</p>
-											<div class="product_table_bg">
+											<p class="product_iphone_header">
+												{{product.product_name}}</p>
+												<p class="product_rating">Product Rating</p>
+												<p class="product_rating_star">{{starCount Rating.avg}}<span class="product_rating_num"> {{Rating.avg}}</span></p>
+												<p class="product_rating_header" >Based on 23 Reviews </p>
 												<div class="row">
-													<div class="col-md-10">
-														<input class="product_table" type="text" placeholder="Review Title">
+													<div class="col-md-7 col-7">
+														<p class="product_rating_star1">{{starCount 5}}</p>
 													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-10">
-														<textarea class="product_table" rows="5" cols="22" placeholder="Tell us about your experiance with this product "></textarea>
+													<div class="col-md-5 col-5 common_padding1">
+														<p class="product_rating_1">({{Rating.star5}} Rating)</p>
 													</div>
-													<div class="col-md-2">
-														<button class="product_buttion_1">Submit</button>
+													<div class="col-md-7">
+														<p class="product_rating_star1">{{starCount 4}}</p>
 													</div>
-												</div>
+													<div class="col-md-5 common_padding1">
+														<p class="product_rating_1">({{Rating.star4}} Rating)</p>
+													</div>
+													<div class="col-md-7">
+														<p class="product_rating_star1">{{starCount 3}}</p>
+													</div>
+													<div class="col-md-5 common_padding1">
+														<p class="product_rating_1">({{Rating.star3}} Rating)</p>
+													</div>
+													<div class="col-md-7">
+														<p class="product_rating_star1">{{starCount 2}}</p>
+													</div>
+													<div class="col-md-5 common_padding1">
+														<p class="product_rating_1">({{Rating.star2}} Rating)</p>
+													</div>
+													<div class="col-md-7">
+														<p class="product_rating_star1">{{starCount 1}}</p>
+													</div>
+													<div class="col-md-5 common_padding1">
+														<p class="product_rating_1">({{Rating.star1}} Rating)</p>
+													</div>
+													
+												</div>           
+											</div>             	
+										</div>
+									</div>
+									<div class="col-md-8">
+										<div class="row">
+											<div class="col-md-8 product_center">
+												<p>Showing {{SUMFloat queryPaginationObj.offset 1}}-{{this.pageCount}} of {{ratingCount}} Reviews</p>
 											</div>
+											<div class="col-md-4 product_buttion_bg ">
+												<button class="product_buttion">Submit Your Own Review</button>
+											</div>	
 										</div>
-									</div>
-									<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-									</div>
-									
-									{{#each product.Reviews}}
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" src="../img/coming-soon.png" /> 
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">"Great place great food, warm hospitality"</p>
-											<p class="product_star"> <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="product_ago"> 3 days ago </span> </p>
-											<p class="product_we">We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone's radar. By the end of the conference, most of our attendees had arrived after all and had a fabulous time, Well done folks!</p>
-										</div>
-										<div class="col-md-12 product_hr">
+										<div class="col-md-12 product_hr" >
 											<hr>
 										</div>
-									</div>
-								{{/each}}
-									
+										<div class="row">
+											<div class="col-md-1">
+												<i class="fas fa-question-circle review_help_icon"></i>
+											</div>
+											<div class="col-md-11 product_submit">
+												<form name="reviewForm" id="reviewForm" onsubmit="return false">
+													<p class="review_help_title">Submit A Review Of This Product</p>
+													<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
+														please fill out the following it will be sent directly to the vendor.</p>
+														<div>
+															<span class="product_submit_para">Please provide rating for this product</span>
+															<select id="review-stars" style="display:none !important;">
+																<option value=""></option>
+																<option value="1">1</option>
+																<option value="2">2</option>
+																<option value="3">3</option>
+																<option value="4">4</option>
+																<option value="5">5</option>
+															</select>
+														</div>
+														<div class="product_table_bg">
+															<div class="row">
+																<div class="col-md-10">
+																	<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-md-10">
+																	<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
+																	required></textarea>
+																</div>
+																<div class="col-md-2">
+																	<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+											<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
+											</div>
+											
+											{{#each product.Reviews}}
+											<div class="row">
+												<div class="col-md-2 product_img">
+													<img width="100%" style="border-radius:50%" src="{{this.User.user_pic_url}}" /> 
+												</div>
+												<div class="col-md-10 product_great_bg common_padding1"  >
+													<p class="product_great">"
+														{{this.title}}"</p>
+														<p class="product_star">{{starCount this.rating}}<span class="product_ago"> 3 days ago </span> </p>
+														<p class="product_we">{{this.comment}}</p>
+													</div>
+													<div class="col-md-12 product_hr">
+														<hr>
+													</div>
+												</div>
+												{{/each}}
+												
 								{{!-- <nav aria-label="Page navigation example">
 										<ul class="pagination">
 											<li class="page-item"><a class="page-link" href="#">Previous</a></li>
