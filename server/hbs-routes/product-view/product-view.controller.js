@@ -123,6 +123,7 @@ export function GetProductReview(req, res){
     var includeArr = [];
     var LoggedInUser = {};
     var queryPaginationObj = {};
+    var queryParams = {};
     var sub_category;
     var marketplace_id;
     //pagination 
@@ -133,7 +134,7 @@ export function GetProductReview(req, res){
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 1;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
@@ -155,10 +156,11 @@ export function GetProductReview(req, res){
     }
 
     if(req.params.product_id)
-        queryObj['id'] = req.params.product_id;
+        queryParams['id'] = req.params.product_id;
+
 
     if(req.params.product_slug)
-        queryObj['product_slug'] = req.params.product_slug;
+        queryParams['product_slug'] = req.params.product_slug;
 
         queryObj['status'] = status["ACTIVE"];
     var includeArr = [];
@@ -187,7 +189,7 @@ async.series({
         Review: function(callback) {
         	var reviewModel = "Review";
         	var queryObj1 = {
-        		product_id :1//req.params.product_id
+        		product_id :req.params.product_id
         		// ,
         		// status : status["ACTIVE"]
         	}
@@ -208,8 +210,8 @@ async.series({
         },
         RelatedProducts: function(callback) {
         	var queryObj2={
-        		sub_category_id:15,
-        		marketplace_id:1
+        		sub_category_id:sub_category,
+        		marketplace_id:marketplace_id
         	};
         	includeArr = [{ model: model["Vendor"] },
             { model: model["Marketplace"] },
@@ -227,7 +229,6 @@ async.series({
         }];
             service.findAllRows(productModel,includeArr, queryObj2, 0, 9, field, order)
                 .then(function(RelatedProducts) {
-                	console.log("RelatedProducts",RelatedProducts)
                     return callback(null, RelatedProducts);
                 }).catch(function(error) {
                     console.log('Error :::', error);
@@ -274,15 +275,17 @@ async.series({
 					productRating.star2 = star2;
 					productRating.star1 = star1;
 					productRating.total = total;
+					console.log("queryParams",queryParams)
              	res.render('product-review', {
                     title: "Global Trade Connect",
                     product: results.Product,
                     Reviews: results.Review.rows,
                     LoggedInUser: LoggedInUser,
                     Rating:productRating,
-                    RelatedProducts:results.RelatedProducts,
+                    RelatedProducts:results.RelatedProducts.rows,
                     queryPaginationObj: queryPaginationObj,
                     ratingCount:results.Review.count,
+                    queryParams:queryParams,
                     // pagination
 					page: page,
 					pageCount:results.Review.count-offset,
