@@ -8,6 +8,8 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
+const marketplace = require('../../config/marketplace');
+const async = require('async');
 const _ = require('lodash');
 
 
@@ -114,12 +116,15 @@ export function productView(req, res) {
         });
 }
 
+
+
 export function GetProductReview(req, res){
 	var queryObj = {};
     var includeArr = [];
     var LoggedInUser = {};
     var queryPaginationObj = {};
-
+    var sub_category;
+    var marketplace_id;
     //pagination 
 	var page;
 	var offset;
@@ -137,11 +142,13 @@ export function GetProductReview(req, res){
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	delete req.query.page;
+	var field = "id";
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
 	// End pagination
+	var productModel = 'Product';
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
         LoggedInUser = req.gtcGlobalUserObj;
@@ -153,37 +160,75 @@ export function GetProductReview(req, res){
     if(req.params.product_slug)
         queryObj['product_slug'] = req.params.product_slug;
 
-        queryObj['status'] = status["ACTIVE"]
+        queryObj['status'] = status["ACTIVE"];
+    var includeArr = [];
 
 async.series({ 
         Product: function(callback) {
-            queryObj['marketplace_id'] = 1;
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(wholesalerProducts) {
-                    return callback(null, wholesalerProducts.rows);
-
+           var includeArr1 = [{
+                model: model["ProductMedia"], 
+                where: {
+                    status : {
+                        '$eq': status["ACTIVE"]
+                    }
+                }
+        	}];
+           var id = req.params.product_id;
+            service.findRow(productModel, id,includeArr1)
+                .then(function(product) {
+                	sub_category = product.sub_category_id;
+                	marketplace_id = product.marketplace_id;
+                    return callback(null, product);
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
         Review: function(callback) {
-            queryObj['marketplace_id'] = 2;
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(retailProducts) {
-                    return callback(null, retailProducts.rows);
+        	var reviewModel = "Review";
+        	var queryObj1 = {
+        		product_id :1//req.params.product_id
+        		// ,
+        		// status : status["ACTIVE"]
+        	}
+        	var includeArr2 = [
+                    { model: model["User"],
+                    attributes: {
+                        exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+                    }
+                }
+                ];
+            service.findAllRows(reviewModel,includeArr2 , queryObj1, offset, limit, field, order)
+                .then(function(Reviews) {
+                    return callback(null, Reviews);
 
                 }).catch(function(error) {
                     console.log('Error :::', error);
-                    return callback(null);
                 });
         },
         RelatedProducts: function(callback) {
-            queryObj['marketplace_id'] = 2;
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(retailProducts) {
-                    return callback(null, retailProducts.rows);
-
+        	var queryObj2={
+        		sub_category_id:15,
+        		marketplace_id:1
+        	};
+        	includeArr = [{ model: model["Vendor"] },
+            { model: model["Marketplace"] },
+            { model: model["MarketplaceType"] },
+            { model: model["Category"] },
+            { model: model["SubCategory"] },
+            { model: model["Country"] },
+            { model: model["State"] },
+            { model: model["ProductMedia"], 
+                where: {
+                    status : {
+                        '$eq': status["ACTIVE"]
+                    }
+                }
+        }];
+            service.findAllRows(productModel,includeArr, queryObj2, 0, 9, field, order)
+                .then(function(RelatedProducts) {
+                	console.log("RelatedProducts",RelatedProducts)
+                    return callback(null, RelatedProducts);
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
@@ -191,20 +236,59 @@ async.series({
         }
     }, function (err, results) {
         if (!err) {
-             res.render('product-review', {
+        		var total = 0;
+				var star5 = 0;
+				var star4 = 0;
+				var star3 = 0;
+				var star2 = 0
+				var star1 = 0;
+			var productRating = {};
+            var rating = results.Review.rows;
+            console.log(rating)
+					for (let elem in rating) {
+						total = total + rating[elem].rating;
+						switch (rating[elem].rating) {
+							case 1:
+								star1 = star1 + 1;
+								break;
+							case 2:
+								star2 = star2 + 1;
+								break;
+							case 3:
+								star3 = star3 + 1;
+								break;
+							case 4:
+								star4 = star4 + 1;
+								break;
+							case 5:
+								star5 = star5 + 1;
+								break;
+						}
+					}
+					maxSize = results.Review.count/limit;
+					var avg = total / rating.length;
+					productRating.avg = avg;
+					productRating.star5 = star5;
+					productRating.star4 = star4;
+					productRating.star3 = star3;
+					productRating.star2 = star2;
+					productRating.star1 = star1;
+					productRating.total = total;
+             	res.render('product-review', {
                     title: "Global Trade Connect",
-                    product: productsList,
-                    productReviewsList: productReviewsList,
+                    product: results.Product,
+                    Reviews: results.Review.rows,
                     LoggedInUser: LoggedInUser,
                     Rating:productRating,
+                    RelatedProducts:results.RelatedProducts,
                     queryPaginationObj: queryPaginationObj,
-                    ratingCount:rating.length,
+                    ratingCount:results.Review.count,
                     // pagination
 					page: page,
-					pageCount:rating.length-(limit*(page-1)),
+					pageCount:results.Review.count-offset,
 					maxSize:maxSize,
 					pageSize: limit,
-					collectionSize: rating.length
+					collectionSize: results.Review.count
 					// End pagination
                 });
             } else {
