@@ -43,7 +43,6 @@ export function storeData(req, res) {
 		.then(function (results) {
 			console.log('new', results)
 			if (results) {
-
 				var id = results.id;
 				bodyParam.last_updated_on = new Date();
 				bodyParam.last_updated_by = req.user.first_name + ' ' + req.user.last_name;
@@ -64,13 +63,12 @@ export function storeData(req, res) {
 }
 
 export function addVendor(req, res) {
-
-
-	console.log("======================", req.query)
 	var bodyParams = {};
 	var vendorBodyParams = {};
 	model['User'].findOne({
-		where: req.query
+		where: {
+			id: req.query.user_id
+		}
 	}).then(function (user) {
 		if (user) {
 			bodyParams["status"] = status["ACTIVE"];
@@ -79,45 +77,45 @@ export function addVendor(req, res) {
 			bodyParams['last_updated_by'] = req.user.first_name;
 
 			model['User'].update(bodyParams, {
-				where: req.query
-			})
-				.then(function (user) {
-					if (user) {
-						vendorBodyParams["status"] = status["ACTIVE"];
-						bodyParams["user_id"] = req.query.user_id;
-						bodyParams['last_updated_on'] = new Date();
-						bodyParams['last_updated_by'] = req.user.first_name;
+				where: {
+					id: req.query.user_id
+				}
+			}).then(function (user) {
+				if (user) {
+					vendorBodyParams["status"] = status["ACTIVE"];
+					vendorBodyParams["user_id"] = req.query.user_id;
+					vendorBodyParams["vendor_name"] = req.query.vendor_name;
+					vendorBodyParams['last_updated_on'] = new Date();
+					vendorBodyParams['last_updated_by'] = req.user.first_name;
 
-						model['Vendor'].create(vendorBodyParams)
-							.then(function (vendor) {
-								if (vendor) {
-									res.status(201).send(rspUser);
-									return;
-								} else {
-									res.status(404).send("Not found");
-									return;
-								}
-							}).catch(function (error) {
-								console.log('Error :::', error);
-								res.status(500).send("Internal server error");
+					model['Vendor'].create(vendorBodyParams)
+						.then(function (vendor) {
+							if (vendor) {
+								res.status(201).send(vendor);
 								return;
-							})
-					} else {
-						res.status(404).send("Not found");
-						return;
-					}
-				}).catch(function (error) {
-					console.log('Error :::', error);
-					res.status(500).send("Internal server error");
+							} else {
+								res.status(404).send("Not found");
+								return;
+							}
+						}).catch(function (error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return;
+						})
+				} else {
+					res.status(404).send("Not found");
 					return;
-				})
+				}
+			}).catch(function (error) {
+				console.log('Error :::', error);
+				res.status(500).send("Internal server error");
+				return;
+			})
 		}
-	})
-		.catch(function (error) {
-			console.log('Error :::', error);
-			res.status(500).send("Internal server error");
-			return;
-		});
-
+	}).catch(function (error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return;
+	});
 }
 
