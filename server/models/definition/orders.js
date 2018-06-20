@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: true,
+            references: {
+                model: 'vendor',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
@@ -147,6 +158,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const OrderPayment = model.OrderPayment;
     const User = model.User;
+    const Vendor = model.Vendor;
     const Shipping = model.Shipping;
     const Address = model.Address;
     const Product = model.Product;
@@ -168,6 +180,11 @@ module.exports.initRelations = () => {
 
     Order.belongsTo(User, {
         foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    Order.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

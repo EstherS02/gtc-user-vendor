@@ -101,6 +101,13 @@
 
 	}
 
+	$(document).ready(function(){
+		$("#seeAllReview").click(function () {
+	   			location.href = "/product/xth-maths-books/1/allReviews"
+		});
+	});
+
+
 </script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 
 <section>
@@ -530,7 +537,7 @@
                                     <!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
                                 </div>
                                 <div class="col-md-6 col-6">
-                                    <button class="product_buttion" style="background-color: #154881;">See All Reviews</button>
+                                    <button class="product_buttion" id="seeAllReview" style="background-color: #154881;">See All Reviews</button>
                                 </div>
                             </div>
 

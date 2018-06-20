@@ -2,14 +2,15 @@
 	#imageUpload {
 		display: none;
 	}
+
 	#profileImage {
 		cursor: pointer;
 	}
 </style>
 <script>
 	$(document).ready(function () {
-		$('#updatePage').hide();
-		$("#confirm_pwd").attr("disabled", "disabled"); 
+		//$('#updatePage').hide();
+		$("#confirm_pwd").attr("disabled", "disabled");
 		$("#profileImage").click(function (e) {
 			$("#imageUpload").click();
 		});
@@ -32,49 +33,45 @@
 			$("#s_state").val($("#b_state").val());
 			$("#s_city").val($("#b_city").val());
 			$("#s_postal_code").val($("#b_postal_code").val());
-			
+
 		});
 
 		/*$("#confirm_pwd").change(function () {
-			console.log("pwd changed method");
-			var password = $("#new_pwd").val();
-            var confirmPassword = $("#confirm_pwd").val();
-            if (password != confirmPassword) {
-               $('pwd_error').val('Password do not Match')
-            }else{
-            	$('pwd_error').val('Password Matched')
-            }
-			
+		console.log("pwd changed method");
+		var password = $("#new_pwd").val();
+		var confirmPassword = $("#confirm_pwd").val();
+		if (password != confirmPassword) {
+		$('pwd_error').val('Password do not Match')
+		}else{
+		$('pwd_error').val('Password Matched')
+		}
+		
 		});*/
 
-		$('#confirm_pwd').on('input', function() {
-    		// do your stuff
-    		console.log("pwd changed method");
-    		var password = $("#new_pwd").val();
-            var confirmPassword = $("#confirm_pwd").val();
-    		if (password != confirmPassword) {
-    			console.log("false");
-    			 $('#errorAlert').text('Password Do not Matched');
-    			// $('#successAlert').val('');
-    			 //$( "#successAlert").remove();
-    			 $('#successAlert').empty();
-            }else{
-            	console.log("true");
-            	$('#successAlert').text('Password Matched');
-            	/*$('#errorAlert').val('');*/
-            	 //$( "#errorAlert").remove();
-            	 $('#errorAlert').empty();
-            }
-
-           
-
-            
+		$('#confirm_pwd').on('input', function () {
+			// do your stuff
+			console.log("pwd changed method");
+			var password = $("#new_pwd").val();
+			var confirmPassword = $("#confirm_pwd").val();
+			if (password != confirmPassword) {
+				console.log("false");
+				$('#errorAlert').text('Password Do not Matched');
+				// $('#successAlert').val('');
+				//$( "#successAlert").remove();
+				$('#successAlert').empty();
+			} else {
+				console.log("true");
+				$('#successAlert').text('Password Matched');
+				/*$('#errorAlert').val('');*/
+				//$( "#errorAlert").remove();
+				$('#errorAlert').empty();
+			}
 		});
 
-		$('#new_pwd').on('input', function() {
-    		// do your stuff
-    		 $("#confirm_pwd").removeAttr("disabled"); 
-    		console.log("pwd changed method");
+		$('#new_pwd').on('input', function () {
+			// do your stuff
+			$("#confirm_pwd").removeAttr("disabled");
+			console.log("pwd changed method");
 		});
 
 
@@ -106,177 +103,177 @@
 				shippingUpdate.city = $('#s_city').val(),
 				shippingUpdate.postal_code = $('#s_postal_code').val();
 
-				var image = $("#imageUpload")[0].files[0];
+			var image = $("#imageUpload")[0].files[0];
 
-				//var x = document.getElementById("imageUpload");
-				//console.log("x",x);
+			//var x = document.getElementById("imageUpload");
+			//console.log("x",x);
 
-				console.log("image",image);
-				var failed;
-				var success;
+			console.log("image", image);
+			var failed;
+			var success;
 
 			var form = new FormData();
 			form.append("file", $("#imageUpload")[0].files[0]);
 			form.append("filename", "test")
 
-			if(image){
+			if (image) {
 				$.ajax({
-				type: 'POST',
-				url: '/api/vendors/upload',
-				data: form,
-				cache: false,
-				dataType: 'json',
-				processData: false,
-				contentType: false,
-				success: function (data) {
-					$('#updatePage').prop('disabled', false);
-                   
-                        $('#updatePage').removeClass('alert-danger').addClass('alert-success');
-                        $('#updatePage .cart-message').text('User Updated successfully')
-                        $("#updatePage").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#updatePage").slideUp(500);
-                        });  
-					vendorUpdate.vendor_profile_pic_url = data.imageURL;
-					success = true;
-					$.ajax({
-						url: '/api/vendor/' + {{ vendor.id }},
-				type: 'PUT',
-				data: vendorUpdate,
-				success: function (updateData) {
-					console.log("vendor updated");
-					 $('#updatePage').prop('disabled', false);
-                   
-                        $('#updatePage').removeClass('alert-danger').addClass('alert-success');
-                        $('#updatePage .cart-message').text('User Updated successfully')
-                        $("#updatePage").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#updatePage").slideUp(500);
-                        });  
-                        //console.log(res)
-                    
-				},
-				error: function (error) {
-					console.log("Error", error);
-				}
-			});
-			},error: function (error) {
+					type: 'POST',
+					url: '/api/vendors/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						$('#updatePage').prop('disabled', false);
+
+						$('#updatePage').removeClass('alert-danger').addClass('alert-success');
+						$('#updatePage .cart-message').text('User Updated successfully')
+						$("#updatePage").fadeTo(2000, 500).slideUp(500, function () {
+							$("#updatePage").slideUp(500);
+						});
+						vendorUpdate.vendor_profile_pic_url = data.imageURL;
+						success = true;
+						$.ajax({
+							url: '/api/vendor/' + {{ vendor.id }},
+					type: 'PUT',
+					data: vendorUpdate,
+					success: function (updateData) {
+						console.log("vendor updated");
+						$('#updatePage').prop('disabled', false);
+
+						$('#updatePage').removeClass('alert-danger').addClass('alert-success');
+						$('#updatePage .cart-message').text('User Updated successfully')
+						$("#updatePage").fadeTo(2000, 500).slideUp(500, function () {
+							$("#updatePage").slideUp(500);
+						});
+						//console.log(res)
+
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				});
+			}, error: function (error) {
 				console.log("Error", error);
 			}
 		});
-			}
-
-			$.ajax({
-						url: '/api/users/' + {{ vendor.User.id }},
-				type: 'PUT',
-				data: userUpdate,
-				success: function (updateData) {
-					$('#updatePage').prop('disabled', false);
-                   
-                        $('#updatePage').removeClass('alert-danger').addClass('alert-success');
-                        $('#updatePage .cart-message').text('User Updated successfully')
-                        $("#updatePage").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#updatePage").slideUp(500);
-                        });  
-					$.ajax({
-						url: '/api/address/' + {{ billingAddress.id }},
-				type: 'PUT',
-				data: billingUpdate,
-				success: function (updateData) {
-					$('#updatePage').prop('disabled', false);
-                   
-                        $('#updatePage').removeClass('alert-danger').addClass('alert-success');
-                        $('#updatePage .cart-message').text('User Updated successfully')
-                        $("#updatePage").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#updatePage").slideUp(500);
-                        });  
-					$.ajax({
-						url: '/api/address/' + {{ shippingAddress.id }},
-				type: 'PUT',
-				data: shippingUpdate,
-				success: function (updateData) {
-					$('#updatePage').prop('disabled', false);
-                   
-                        $('#updatePage').removeClass('alert-danger').addClass('alert-success');
-                        $('#updatePage .cart-message').text('User Updated successfully')
-                        $("#updatePage").fadeTo(2000, 500).slideUp(500, function(){
-                            $("#updatePage").slideUp(500);
-                        });  
-					console.log("updateData",updateData);
-					console.log("Updated Successfully..");
-				},
-				error: function (error) {
-					console.log("Error", error);
-				}
-			});
-		},
-			error: function (error) {
-				console.log("Error", error);
-			}
-		});
-				},
-	error: function (error) {
-		console.log("Error", error);
 	}
-			});
 
+$.ajax({
+			url: '/api/users/' + {{ vendor.User.id }},
+			type: 'PUT',
+			data: userUpdate,
+			success: function (updateData) {
+				$('#updatePage').prop('disabled', false);
 
-			/*$.ajax({
-				type: 'POST',
-				url: '/api/vendors/upload',
-				data: form,
-				cache: false,
-				dataType: 'json',
-				processData: false,
-				contentType: false,
-				success: function (data) {
-					vendorUpdate.vendor_profile_pic_url = data.imageURL;
-					$.ajax({
-						url: '/api/vendor/' + {{ vendor.id }},
-				type: 'PUT',
-				data: vendorUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/users/' + {{ vendor.User.id }},
-				type: 'PUT',
-				data: userUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/address/' + {{ billingAddress.id }},
-				type: 'PUT',
-				data: billingUpdate,
-				success: function (updateData) {
-					$.ajax({
-						url: '/api/address/' + {{ shippingAddress.id }},
-				type: 'PUT',
-				data: shippingUpdate,
-				success: function (updateData) {
-					console.log("Updated Successfully..");
-				},
-				error: function (error) {
-					console.log("Error", error);
-				}
-			});
-		},
-			error: function (error) {
-				console.log("Error", error);
-			}
-		});
-				},
-	error: function (error) {
-		console.log("Error", error);
-	}
-			});
-		},
-	error: function (error) {
-		console.log("Error", error);
-	}
-		});
+				$('#updatePage').removeClass('alert-danger').addClass('alert-success');
+				$('#updatePage .cart-message').text('User Updated successfully')
+				$("#updatePage").fadeTo(2000, 500).slideUp(500, function () {
+					$("#updatePage").slideUp(500);
+				});
+				$.ajax({
+					url: '/api/address/' + {{ billingAddress.id }},
+			type: 'PUT',
+			data: billingUpdate,
+			success: function (updateData) {
+				$('#updatePage').prop('disabled', false);
+
+				$('#updatePage').removeClass('alert-danger').addClass('alert-success');
+				$('#updatePage .cart-message').text('User Updated successfully')
+				$("#updatePage").fadeTo(2000, 500).slideUp(500, function () {
+					$("#updatePage").slideUp(500);
+				});
+				$.ajax({
+					url: '/api/address/' + {{ shippingAddress.id }},
+			type: 'PUT',
+			data: shippingUpdate,
+			success: function (updateData) {
+				$('#updatePage').prop('disabled', false);
+
+				$('#updatePage').removeClass('alert-danger').addClass('alert-success');
+				$('#updatePage .cart-message').text('User Updated successfully')
+				$("#updatePage").fadeTo(2000, 500).slideUp(500, function () {
+					$("#updatePage").slideUp(500);
+				});
+				console.log("updateData", updateData);
+				console.log("Updated Successfully..");
 			},
+			error: function (error) {
+				console.log("Error", error);
+			}
+});
+},
 	error: function (error) {
 		console.log("Error", error);
 	}
-		});*/
-	 }); 
-	});
+});
+},
+	error: function (error) {
+		console.log("Error", error);
+	}
+});
+
+
+/*$.ajax({
+type: 'POST',
+url: '/api/vendors/upload',
+data: form,
+cache: false,
+dataType: 'json',
+processData: false,
+contentType: false,
+success: function (data) {
+vendorUpdate.vendor_profile_pic_url = data.imageURL;
+$.ajax({
+url: '/api/vendor/' + {{ vendor.id }},
+type: 'PUT',
+data: vendorUpdate,
+success: function (updateData) {
+$.ajax({
+url: '/api/users/' + {{ vendor.User.id }},
+type: 'PUT',
+data: userUpdate,
+success: function (updateData) {
+$.ajax({
+url: '/api/address/' + {{ billingAddress.id }},
+type: 'PUT',
+data: billingUpdate,
+success: function (updateData) {
+$.ajax({
+url: '/api/address/' + {{ shippingAddress.id }},
+type: 'PUT',
+data: shippingUpdate,
+success: function (updateData) {
+console.log("Updated Successfully..");
+},
+error: function (error) {
+console.log("Error", error);
+}
+});
+},
+error: function (error) {
+console.log("Error", error);
+}
+});
+},
+error: function (error) {
+console.log("Error", error);
+}
+});
+},
+error: function (error) {
+console.log("Error", error);
+}
+});
+},
+error: function (error) {
+console.log("Error", error);
+}
+});*/
+}); 
+});
 	function change_b_Country(e) {
 		$.ajax({
 			url: '/api/states?country_id=' + e.value,
@@ -318,37 +315,43 @@
 			<div class="row">
 				{{> vendor/navbar}}
 				<div class="col-md-8" style="background-color: #fff;">
-				
-				{{!-- <div id="divResults"></div>
-				<div id="divErrorMessages"></div> --}}
+
+					{{!--
+					<div id="divResults"></div>
+					<div id="divErrorMessages"></div> --}}
 					<form id="userForm">
 						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
-						<div class="alert" id="updatePage">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-        <span class="cart-message"></span>
-    </div>
+						{{!-- <div class="alert" id="updatePage">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="cart-message"></span>
+						</div> --}}
 						<div class="row">
 							<div class="col-md-6">
 								<div class="row">
-									{{!-- <div class="col-md-6">
+									{{!--
+									<div class="col-md-6">
 										<img src="../../img/login-facebook.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
 										<img src="../../img/login-google.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
 										<img src="../../img/login-twitter.png" style="width: 100%;margin-bottom: 5px;" alt="fb" />
 										<img src="../../img/login-linkedin.png" style="width: 100%;margin-bottom: 30px;" alt="fb" />
 									</div> --}}
-									<div class="col-md-6 text-center">
-									 {{#if vendor}}
-										<img id="UploadedImage" src="{{vendor.vendor_profile_pic_url}}" style="width: 70%; " alt="avt" />
+									<div class="col-md-8 text-center">
+										{{#if vendor}} {{#if vendor.vendor_profile_pic_url}}
+										<img id="UploadedImage" src="{{vendor.vendor_profile_pic_url}}" style="width: 70%; " alt="avt" /> {{else}}
+										<img src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture>
-										{{else}}
-										
-										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />
-										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture>
-										 {{/if}}
+										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture> {{else}}
+										{{#if user.user_pic_url}}
+										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
+										<img src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
+                                        <p id="profileImage" class="text_blue_color">Change Avatar</p>
+										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture> {{/if}}
 									</div>
-								</div>
+
+								</div><br/>
+								<br/><br/><br/>
 								<div class="row">
 									<div class="col-md-4">
 										<p>Account Settings</p>
@@ -364,8 +367,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										<input type="text" id="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
 									</div>
 								</div>
 								<div class="row">
@@ -373,8 +376,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
 									</div>
 								</div>
 								<div class="row">
@@ -384,22 +387,23 @@
 									<div class="col-md-8 common_padding1">
 										<input type="text" id="new_pwd" placeholder="New Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
 									</div>
-									
+
 								</div>
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="confirm_pwd" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+										<input type="text" id="confirm_pwd" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
 
 										<div id="errorAlert" style="color:red;font-size=14px;"></div>
 										<div id="successAlert" style="color:green;font-size=14px;"></div>
 									</div>
-									
-									
+
+
 								</div>
-								 {{#if vendor}}
+								{{#if vendor}}
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
@@ -409,7 +413,7 @@
 										 style="width: 80%" />
 									</div>
 								</div>
-								 {{/if}}
+								{{/if}}
 							</div>
 							<div class="col-md-6">
 								<div class="row">

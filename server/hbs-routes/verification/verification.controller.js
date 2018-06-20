@@ -17,11 +17,10 @@ export function verification(req, res) {
     LoggedInUser = req.user;
     let user_id = LoggedInUser.id;
 
-    var vendor_id = 29;
     var modelName = "VendorVerification";
 	var queryObj = {};
 	queryObj = {
-		vendor_id :vendor_id
+		user_id :user_id
 	};
 	var includeArr = [];
 

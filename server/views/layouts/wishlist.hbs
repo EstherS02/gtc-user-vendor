@@ -68,6 +68,20 @@
 		}
 	}
 
+	function deleteAll(e){
+		$.ajax({
+				type: 'GET',
+				url: '/api/wishlist/delete',
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+	}
+
 	function quantityCheck(val) {
 		var availableProductQuantity = val.max;
 		if (availableProductQuantity == 0) {
@@ -79,7 +93,7 @@
 	}
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
-{{> vendor/not-verified-header}}
+{{> vendor/header}}
 <section class="showing_categ">
 	<div class="" >
 		<div class="container">
@@ -90,6 +104,9 @@
 					<div class="row">
 						<div class="col-md-6">
 							<input type="submit" value="REMOVE" onclick="remove(this)"class="vend_edit_lists_buttonstyle" />
+						</div>
+						<div class="col-md-6">
+							<input type="submit" onclick="deleteAll(this)" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
 						</div>
 					</div>
 					<div class="row">

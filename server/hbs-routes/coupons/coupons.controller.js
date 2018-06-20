@@ -19,6 +19,8 @@ export function coupons(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
+	console.log(req.user)
+
 	let user_id = LoggedInUser.id;
 
 	var field = 'id';

@@ -7,6 +7,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const service = require('../service');
+const roles = require('../../config/roles');
 
 export function storeData(req, res) {
 	var bodyParam = {};
@@ -31,34 +32,90 @@ export function storeData(req, res) {
 
 	bodyParam.request_for_vendor_verification = 1;
 	bodyParam.vendor_verified_status = status['WAITING'];
-	bodyParam.vendor_id = 29;
+	bodyParam.user_id = req.user.id;
 
 	var queryObj = {
-		vendor_id: 29
+		user_id: req.user.id
 	};
 	var includeArr = [];
 
 	service.findOneRow(modelName, queryObj, includeArr)
-		.then(function(results) {
+		.then(function (results) {
 			console.log('new', results)
 			if (results) {
-				
 				var id = results.id;
 				bodyParam.last_updated_on = new Date();
-				bodyParam.last_updated_by = req.user.first_name+' '+req.user.last_name;
-				service.updateRow(modelName, bodyParam, id).then(function(response) {
+				bodyParam.last_updated_by = req.user.first_name + ' ' + req.user.last_name;
+				service.updateRow(modelName, bodyParam, id).then(function (response) {
 					console.log("Update", response)
 					return;
 				});
 			} else {
 				bodyParam.status = 1;
-				bodyParam.created_by = req.user.first_name+' '+req.user.last_name;
+				bodyParam.created_by = req.user.first_name + ' ' + req.user.last_name;
 				bodyParam.uploaded_on = new Date();
-				service.createRow(modelName, bodyParam).then(function(response) {
+				service.createRow(modelName, bodyParam).then(function (response) {
 					console.log("News", response)
 					return;
 				});
 			}
 		});
-
 }
+
+export function addVendor(req, res) {
+	var bodyParams = {};
+	var vendorBodyParams = {};
+	model['User'].findOne({
+		where: {
+			id: req.query.user_id
+		}
+	}).then(function (user) {
+		if (user) {
+			bodyParams["status"] = status["ACTIVE"];
+			bodyParams["role"] = roles["VENDOR"];
+			bodyParams['last_updated_on'] = new Date();
+			bodyParams['last_updated_by'] = req.user.first_name;
+
+			model['User'].update(bodyParams, {
+				where: {
+					id: req.query.user_id
+				}
+			}).then(function (user) {
+				if (user) {
+					vendorBodyParams["status"] = status["ACTIVE"];
+					vendorBodyParams["user_id"] = req.query.user_id;
+					vendorBodyParams["vendor_name"] = req.query.vendor_name;
+					vendorBodyParams['last_updated_on'] = new Date();
+					vendorBodyParams['last_updated_by'] = req.user.first_name;
+
+					model['Vendor'].create(vendorBodyParams)
+						.then(function (vendor) {
+							if (vendor) {
+								res.status(201).send(vendor);
+								return;
+							} else {
+								res.status(404).send("Not found");
+								return;
+							}
+						}).catch(function (error) {
+							console.log('Error :::', error);
+							res.status(500).send("Internal server error");
+							return;
+						})
+				} else {
+					res.status(404).send("Not found");
+					return;
+				}
+			}).catch(function (error) {
+				console.log('Error :::', error);
+				res.status(500).send("Internal server error");
+				return;
+			})
+		}
+	}).catch(function (error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return;
+	});
+}
+

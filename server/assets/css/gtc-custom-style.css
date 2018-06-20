@@ -833,6 +833,7 @@ p.order-details {
 .custom-header-style.topbar p{
   margin-top: 0px;
 }
+<<<<<<< HEAD
 .vend_product_style
 {
   border-radius: 20px !important;
@@ -869,3 +870,8 @@ input:not(:focus):valid ~ .floating-label{
     margin-top: 18px;
     padding: 8px 10px 10px;
 }
+.pmp1_alter{
+  padding-top: 15px!important;
+}
+.ts1_alter{
+  padding-top: 15px!important;

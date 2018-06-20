@@ -48,7 +48,6 @@ export default function(app) {
   app.use('/geo-locate', require('./hbs-routes/geo-locate'));
   app.use('/vendor', require('./hbs-routes/vendor'));
   app.use('/reviews', require('./hbs-routes/reviews'));
-  app.use('/product-review', require('./hbs-routes/product-review'));
   app.use('/notifications', require('./hbs-routes/notifications'));
   app.use('/listings', require('./hbs-routes/listings'));
   app.use('/terms-and-cond', require('./hbs-routes/terms-and-cond'));
