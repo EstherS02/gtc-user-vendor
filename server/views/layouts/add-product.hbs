@@ -7,7 +7,9 @@
                 $("#sub_category").empty();
                 for (var i = 0; i < result.rows.length; i++) {
                     var options;
+                    
                     options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+
                     $("#sub_category").append(options)
                 }
             },
@@ -24,7 +26,9 @@
                 $("#state").empty();
                 for (var i = 0; i < result.rows.length; i++) {
                     var options;
+                    
                     options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                   
                     $("#state").append(options)
                 }
             },
@@ -33,27 +37,36 @@
             }
         });
     }
+
     function changeMarketplace(e) {
-        $.ajax({
-            url: '/api/marketplace-types?marketplace_id=' + e.value,
-            type: 'GET',
-            success: function (result) {
-                $("#type").empty();
-                for (var i = 0; i < result.rows.length; i++) {
-                    var options;
-                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                    $("#type").append(options)
+        if(e.value == 1) {
+            $.ajax({
+                url: '/api/marketplace-types?marketplace_id=' + e.value,
+                type: 'GET',
+                success: function (result) {
+                    $("#type").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var options;
+                        //if(result.rows[i].id == 1){
+                            $('#type').show();
+                            options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                             console.log("options", options);
+                            $("#type").append(options)
+                       // } 
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);
                 }
-            },
-            error: function (error) {
-                console.log("Error", error);
-            }
-        });
+            });
+        } else {
+            $('#type').hide();
+        }
     }
 </script>
 <script>
     $(document).ready(function () {
-
+         $("#type").hide();
         $("#productForm").submit(function (e) {
              e.preventDefault();
            
@@ -145,88 +158,126 @@
             <div class="row">
                 {{> vendor/navbar}}
                 <div class="col-md-8" style="background-color: #fff;">
-                    <form id="productForm">
-                        <h5 style="padding-top: 20px;">Add Product</h5>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input type="text" name="product_name" id="product_name" placeholder="Product Name" class="vend_edit_lists_textstyle" style="width:80%; margin:20px; padding:15px 10px"
-                                    required />
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
+                        <form role="form" id="productForm">
+                            <div class="form-group product-heading">
+                                <p>Add Product</p>
                             </div>
-                            <div class="col-md-12">
-                                <select class="vend_edit_lists_dropdownstyle" id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" style="margin:20px; margin-top:0px; padding:15px 10px; width:25%">
-                                    <option disabled selected>Select Marketplace</option>
-                                    {{#each marketplace}}
-                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-                                <select class="vend_edit_lists_dropdownstyle" name="marketplace_type_id" id="type" value="" style="margin:20px; margin-top:0px;margin-left:0px; padding:15px 10px; width:25%">
-                                    <option disabled selected>Type</option>
-                                </select>
-                                <input type="text" name="moq" id="moq" placeholder="Minimum Order Quantity" class="vend_edit_lists_textstyle1" style="margin:20px; margin-top:0px; margin-left:0px; padding:15px 10px; width:24%"
-                                />
+                           <br><br>
+                            <div class="form-group">
+                                <input type="text" name="product_name" id="product_name" class="form-control input-lg" placeholder="Product Name" tabindex="1" required />
                             </div>
-                            <div class="col-md-12">
-                                <select class="vend_edit_lists_dropdownstyle" id="category" name="product_category_id" style="margin:20px; margin-top:0px;padding:15px 10px; width:38.5%" onChange="changeCategory(this);">
-                                    <option disabled selected>Category</option>
-                                    {{#each category}}
-                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-                                <select class="vend_edit_lists_dropdownstyle" name="sub_category_id" id="sub_category" value="" style="margin:20px; margin-top:0px;margin-left:0px; padding:15px 10px; width:38.5%">
-                                    <option disabled selected>Sub Category</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12">
-                                <select class="vend_edit_lists_dropdownstyle" id="country" name="product_location" onChange="changeCountry(this);" style="margin:20px; margin-top:0px; padding:15px 10px; width:25%">
-                                    <option disabled selected>Country</option>
-                                    {{#each country}}
-                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                    {{/each}}
-                                </select>
-                                <select class="vend_edit_lists_dropdownstyle" name="state_id" id="state" value="" style="margin:20px; margin-top:0px;margin-left:0px; padding:15px 10px; width:25%">
-                                    <option disabled selected>State</option>
-                                </select>
-                                <input type="text" name="city" id="city" placeholder="City" class="vend_edit_lists_textstyle1" style="margin:20px; margin-top:0px; margin-left:0px; padding:15px 10px; width:24%"/>
-                            </div>
-                            <div class="col-md-12">
-                                <input type="text" name="sku" id="sku" placeholder="SKU" class="vend_edit_lists_textstyle1" style="margin:20px; margin-top:0px; padding:15px 10px; width:25%"/>
-                            
-                                <input type="text" name="price" id="price" placeholder="Price" class="vend_edit_lists_textstyle1" style="margin:20px; margin-top:0px; margin-left:0px; padding:15px 10px; width:24%"/>
-                          
-                                <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="vend_edit_lists_textstyle1" 
-                                style="margin:20px; margin-top:0px; margin-left:0px; padding:15px 10px; width:25%"/>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                <label>
-                                    <h6 style="margin-left:30px;">Description</h6>
-                                </label>
+                            <div class="row">
+                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                     <div class="form-group">
+                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control ">
+                                             <option disabled selected>Select Marketplace</option>
+                                                 {{#each marketplace}}
+                                                      <option value="{{this.id}}">{{ this.name}}</option>
+                                                 {{/each}}
+                                             </select>
+                                        </div> 
                                 </div>
-                                <div class="row">
-                                <textarea id="description" name="description" class="vend_edit_lists_textstyle1" style="width:79%; margin:20px; margin-top:0px; margin-left:30px; padding:15px 10px"></textarea>
+                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <div class="form-group">
+                                         <select class="form-control"  name="marketplace_type_id" id="type" value="">
+                                            <option disabled selected>Type</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-md-2">
+                                    <div class="form-group">
+                                         <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity"/>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-6">
+                                     <div class="form-group">
+                                        <select class="form-control " id="category" name="product_category_id" >
+                                                <option disabled selected>Category</option>
+                                                  {{#each category}}
+                                                      <option value="{{this.id}}">{{ this.name}}</option>
+                                                  {{/each}}
+                                        </select>
+                                    </div> 
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control " name="sub_category_id" id="sub_category" value="" >
+                                            <option disabled selected>Sub Category</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-12">
-                                <label>
-                                    <h6 style="margin-left:20px;">Upload Image </h6>
-                                </label>
-                                <input type="file" class="vend_edit_lists_textstyle1" id="file" name="file" />
+                             <div class="row">
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                     <div class="form-group">
+                                          <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" >
+                                            <option disabled selected>Country</option>
+                                            {{#each country}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                     </div> 
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="form-group">
+                                           <select class="form-control " name="state_id" id="state" value="">
+                                            <option disabled selected>State</option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" name="city" id="city" placeholder="City" class="form-control" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <hr/>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input class="list_butt_1" type="Submit" id="productSubmitBtn" name="productSubmitBtn">
-                                <input class="list_butt_2" type="reset" id="productCancelBtn" name="productCancelBtn">
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                     <div class="form-group">
+                                          <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control"/>
+                                     </div> 
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="form-group">
+                                           <input type="text" name="price" id="price" placeholder="Price" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control"/>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="vend_edit_lists_pstyle"></p>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <label>
+                                            <h6>Description</h6>
+                                        </label><br>
+                                    <div class="form-group">
+                                        <textarea id="description" name="description" class="form-control"></textarea>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <label><h6>Upload Image </h6></label>
+                                    <input type="file" class="form-control form-control-file" aria-describedby="fileHelp" id="file" name="file" />
+                            </div>
+                            <hr class="colorgraph">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-6">
+                                            <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 </div>
                 <div class="col-md-2">
                 </div>
