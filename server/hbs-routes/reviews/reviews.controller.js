@@ -28,7 +28,7 @@ export function reviews(req, res) {
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
-	var vendor_id = 29;
+	var vendor_id = req.user.Vendor.id;
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {

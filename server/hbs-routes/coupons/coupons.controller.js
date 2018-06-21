@@ -55,7 +55,7 @@ export function coupons(req, res) {
 	offset = (page - 1) * limit;
 	var maxSize;
 	// End pagination
-	queryObj['vendor_id'] = 28;
+	queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
 
@@ -114,7 +114,7 @@ export function addCoupon(req, res) {
 	productQueryObj['status'] = status["ACTIVE"];
 	categoryQueryObj['status'] = status["ACTIVE"];
 
-	productQueryObj['vendor_id'] = 28;
+	productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 	async.series({
 		products: function(callback) {
