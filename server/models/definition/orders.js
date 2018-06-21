@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_id: {
+       /* vendor_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_id',
             allowNull: true,
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
+        },*/
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
@@ -183,11 +183,11 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-    Order.belongsTo(Vendor, {
+   /* Order.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Order.belongsTo(Shipping, {
         foreignKey: 'shipping_id',
