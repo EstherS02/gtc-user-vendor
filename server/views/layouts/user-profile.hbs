@@ -15,8 +15,8 @@
 			$("#s_company_name").val($("#b_company_name").val());
 			$("#s_address1").val($("#b_address1").val());
 			$("#s_address2").val($("#b_address2").val());
-			$("#s_country").val($("#b_country").val());
-			$("#s_state").val($("#b_state").val());
+			//$("#s_country").val($("#b_country").val());
+			//$("#s_state").val($("#b_state").val());
 			$("#s_city").val($("#b_city").val());
 			$("#s_postal_code").val($("#b_postal_code").val());
 		});
@@ -159,7 +159,7 @@
 										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
 										<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" placeholder="Photo" required="" capture>
+										<input id="imageUpload" type="file" name="file" placeholder="Photo"	capture>
 									</div>
 								</div>
 								<br/>
@@ -168,7 +168,7 @@
 								<br/>
 								<div class="row">
 									<div class="col-md-4">
-										<p>Account Settings</p>
+										<p><b>Account Settings</b></p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
@@ -225,7 +225,7 @@
 							<div class="col-md-6">
 								<div class="row">
 									<div class="col-md-4">
-										<p>Billing Address</p>
+										<p><b>Billing Address</b></p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
@@ -297,11 +297,11 @@
 								</div>
 								<div class="row">
 									<div class="col-md-4">
-										<p>Shipping Address</p>
+										<p><b>Shipping Address</b></p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										 style="width: 80%" required />
 									</div>
 								</div>
 								<div class="row">
@@ -310,7 +310,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										 style="width: 80%" required/>
 									</div>
 								</div>
 								<div class="row">
@@ -326,7 +326,7 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);">
+									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);" required>
 										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
 										{{#each country}}
 										<option value="{{this.id}}">{{ this.name}}</option>
@@ -337,7 +337,7 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state">
+									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state" required>
 										<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
 									</select>
 								</div>
@@ -347,7 +347,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										required />
 									</div>
 								</div>
 								<div class="row">
@@ -356,7 +356,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										 style="width: 80%" required />
 									</div>
 								</div>
 							</div>
