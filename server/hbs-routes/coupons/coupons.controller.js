@@ -163,8 +163,9 @@ export function editCoupons(req, res) {
 	var modelName = "Coupon";
 
 	queryObj['id'] = req.query.id;
-	// queryObj['vendor_id'] = 29;
+	queryObj['vendor_id'] = req.user.Vendor.id;
 	queryObj['status'] = status["ACTIVE"];
+	var coupon_id=0;
 
 	field = "id";
 	order = "asc";
@@ -173,6 +174,9 @@ export function editCoupons(req, res) {
 		coupon: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
 				.then(function(coupon) {
+					if(coupon){
+					coupon_id =req.query.id;
+				}
 					return callback(null, coupon);
 				}).catch(function(error) {
 					console.log('Error:::', error);
@@ -212,7 +216,7 @@ export function editCoupons(req, res) {
 			var couponProductsModel = "CouponProduct";
 
 			couponProductsQueryObj['status'] = status["ACTIVE"];
-			couponProductsQueryObj['coupon_id'] = req.query.id;
+			couponProductsQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponProductsModel, includeArr, couponProductsQueryObj, offset, limit, field, order)
 				.then(function(couponProducts) {
@@ -235,7 +239,7 @@ export function editCoupons(req, res) {
 			var couponExcludeProductsModel = "CouponExcludedProduct";
 
 			couponExcludeProductsQueryObj['status'] = status["ACTIVE"];
-			couponExcludeProductsQueryObj['coupon_id'] = req.query.id;
+			couponExcludeProductsQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponExcludeProductsModel, includeArr, couponExcludeProductsQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeProducts) {
@@ -259,7 +263,7 @@ export function editCoupons(req, res) {
 			var couponCategoryModel = "CouponCategory";
 
 			couponCategoriesQueryObj['status'] = status["ACTIVE"];
-			couponCategoriesQueryObj['coupon_id'] = req.query.id;
+			couponCategoriesQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponCategoryModel, includeArr, couponCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponCategories) {
@@ -283,7 +287,7 @@ export function editCoupons(req, res) {
 			var couponExcludeCategoryModel = "CouponExcludedCategory";
 
 			couponExcludeCategoriesQueryObj['status'] = status["ACTIVE"];
-			couponExcludeCategoriesQueryObj['coupon_id'] = req.query.id;
+			couponExcludeCategoriesQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponExcludeCategoryModel, includeArr, couponExcludeCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeCategories) {
@@ -305,7 +309,7 @@ export function editCoupons(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			// console.log('results', results.couponProducts);
+			// console.log('results', results);
 			res.render('edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,

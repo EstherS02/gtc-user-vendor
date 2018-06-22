@@ -243,11 +243,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.hasMany(Order, {
-        foreignKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Vendor.hasMany(Order, {
+    //     foreignKey: 'vendor_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
    /* Vendor.hasMany(VendorVerification, {
         foreignKey: 'vendor_id',
