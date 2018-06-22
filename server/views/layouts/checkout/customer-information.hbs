@@ -1,9 +1,49 @@
  <script>
+	var state = {{{DisplayJSON state}}}
+	var shippingAddress = {{{DisplayJSON shipping_address}}}
+	var billingAddress = {{{DisplayJSON billing_address}}}
+
 $(document).ready(function(){
-     submitForms = function() {
-            
-            $("#form1").trigger("click");
-			$("#form2").trigger("click");
+
+	$('#shipping-select-country').on('change', function() {
+		$('#shipping-select-state').empty();
+		let emptyOption = `<option value="">Choose Province</option>`;
+		$('#shipping-select-state').append(emptyOption)
+		for(let i=0; i<state.length; i++){
+			if(this.value == state[i].Country.id){
+				let stateOptions = '<option value="'+state[i].id+'">'+state[i].name+'</option>';
+					$('#shipping-select-state').append(stateOptions)
+			}
+		}
+	})
+
+	$("#shipping-select-country").val(shippingAddress[0].Country.id).trigger('change');
+	$("#shipping-select-state").val(shippingAddress[0].State.id)
+
+     continueShipping = function() {
+        var customerInfo = {};
+		customerInfo['shipping_address'] = $("#shipping-method-submission").serializeArray();
+		customerInfo['shipping_address'] = _.mapValues(_.keyBy(customerInfo.shipping_address, 'name'), 'value');
+
+		customerInfo['billing_address'] = billingAddress[0];
+		customerInfo['different_shipping_address'] = $("#different_shipping_address:checked").val();
+
+		console.log(customerInfo)
+
+		/* $.ajax({
+			url: '/api/cart/checkout',
+			type: 'POST',
+			data: customerInfo,
+			dataType: "html",
+			success: function(updateData) {
+					console.log(updateData)
+					window.scrollTo(0,0)
+					$("body").html(updateData)
+			},
+			error: function(error){
+					console.log("Error occured while updating", error);
+			}
+		}); */
 
     }
 });
@@ -38,70 +78,15 @@ $(document).ready(function(){
 											<p><b>Customer Information</b></p>
 										</div>
 										<div class="col-md-9 col-12 checkout_cont" style="">
-											
 											<div>
-											<p><b>Sunny Sarpal</b> <span class="checkout_2_para_span_1">Switch Accouts</span></p>
-											<p class="shop_shipping">833 That Street,</p>
-											<p class="shop_shipping">Calgary, Alberta, Canada</p>
-											<p class="shop_shipping">b2s 4t5</p>
+												<p><b class="text-capitalize">{{billing_address.[0].User.first_name}} {{billing_address.[0].User.last_name}}</b> <span class="checkout_2_para_span_1">Switch Accouts</span></p>
+												<p class="shop_shipping">{{shipping_address.[0].address_line1}}</p>
+												<p class="shop_shipping">{{shipping_address.[0].address_line2}}</p>
+												<p class="shop_shipping">{{shipping_address.[0].city}}</p>
+												<p class="shop_shipping">{{shipping_address.[0].State.name}}, {{shipping_address.[0].Country.name}}</p>
+												<p class="shop_shipping">{{shipping_address.[0].postal_code}}</p>
 											</div>
 										
-										<form id="billing-address-submission" name="billing-address-submission">
-												<div class="row">
-													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="First Name" class="geo_textbox" required/>
-													</div>
-													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="Last Name" class="geo_textbox" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-12 col-12 common_padding1">
-														<input type="text" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-9 col-12 common_padding1">
-														<input type="text" placeholder="Address" class="geo_textbox" required/>
-													</div>
-													<div class="col-md-3 col-12 common_padding1">
-														<input type="text" placeholder="Apt, Suite," class="geo_textbox" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-12 col-12 common_padding1">
-														<input type="text" placeholder="City" class="geo_textbox" style="width: 99%" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-5 col-12 common_padding1">
-														<select class="geo_textbox" required="required">
-															<option value="">Country</option>
-															<option value="ddd">Country</option>
-														</select>
-													</div>
-													<div class="col-md-4 col-12 common_padding1">
-														<select class="geo_textbox" required="required">
-															<option value="">Province</option>
-															<option value="ddd">Country</option>
-														</select>
-													</div>
-													<div class="col-md-3 col-12 common_padding1">
-														<input type="text" placeholder="Postal" class="geo_textbox" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="Phone" class="geo_textbox" required/>
-													</div>
-													<div class="col-md-6 col-12 common_padding1">
-														
-													</div>
-												</div>
-												 <button class="btn btn-primary" id="form1" type="submit" style="display:none;">Submit form</button>
-											</form>
-
-
 										</div>
 									</div>
 									<hr/>
@@ -110,59 +95,63 @@ $(document).ready(function(){
 											<p><b>Shipping Address</b></p>
 										</div>
 										<div class="col-md-9 col-12 checkout_cont">
-										<p><label class="login-checkbox1"><input type="checkbox"><i></i> Shipping Address is different then my billing address above</label></p>
-											<form id="shipping-method-submission">
+											<p>
+												<label class="login-checkbox1">
+													<input type="checkbox" value="" name="different_shipping_address" id="different_shipping_address">
+													<i></i> Shipping Address is different then my billing address above</label>
+											</p>
+											<form id="shipping-method-submission" name="shipping-method-submission" onsubmit="return false">
 												<div class="row">
 													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="First Name" class="geo_textbox" required/>
+														<input type="text" name="shipping_first_name" placeholder="First Name" value="{{shipping_address.[0].User.first_name}}" class="text-capitalize geo_textbox" required/>
 													</div>
 													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="Last Name" class="geo_textbox" required/>
+														<input type="text" name="shipping_last_name" placeholder="Last Name" value="{{shipping_address.[0].User.last_name}}" class="text-capitalize geo_textbox" required/>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-12 col-12 common_padding1">
-														<input type="text" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" required/>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-9 col-12 common_padding1">
-														<input type="text" placeholder="Address" class="geo_textbox" required/>
-													</div>
-													<div class="col-md-3 col-12 common_padding1">
-														<input type="text" placeholder="Apt, Suite," class="geo_textbox" required/>
+														<input type="text" name="shipping_company" placeholder="Company (optional)" value="{{shipping_address.[0].company_name}}" class="geo_textbox" style="width: 99%" required/>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-12 col-12 common_padding1">
-														<input type="text" placeholder="City" class="geo_textbox" style="width: 99%" required/>
+														<input type="text" name="shipping_addressline1" placeholder="Apt, Suite" value="{{shipping_address.[0].address_line1}}" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="shipping_addressline2" placeholder="Address" value="{{shipping_address.[0].address_line2}}" class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="shipping_city" placeholder="City" value="{{shipping_address.[0].city}}" class="geo_textbox" style="width: 99%" required/>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-5 col-12 common_padding1">
-														<select class="geo_textbox" required="required">
-															<option value="">Country</option>
-															<option value="ddd">Country</option>
+														<select id="shipping-select-country" name="shipping_country" class="geo_textbox" required="required">
+															<option value="">Choose Country</option>
+															{{#each country}}
+															<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
 														</select>
 													</div>
 													<div class="col-md-4 col-12 common_padding1">
-														<select class="geo_textbox" required="required">
-															<option value="">Province</option>
-															<option value="ddd">Country</option>
+														<select id="shipping-select-state" name="shipping_state" class="geo_textbox" required="required">
+															<option value="">Choose Province</option>
 														</select>
 													</div>
 													<div class="col-md-3 col-12 common_padding1">
-														<input type="text" placeholder="Postal" class="geo_textbox" required/>
+														<input type="text" placeholder="Postal" name="shipping_postal" value="{{shipping_address.[0].postal_code}}" class="geo_textbox" required/>
 													</div>
 												</div>
 												<div class="row">
-													<div class="col-md-6 col-12 common_padding1">
-														<input type="text" placeholder="Phone" class="geo_textbox" required/>
+													<div class="col-md-6 col-12 common_padding1" >
+														<input type="text" placeholder="Phone" name="shipping_phone" class="geo_textbox" />
 													</div>
 													<div class="col-md-6 col-12 common_padding1">
 														
 													</div>
-													<button class="btn btn-primary" id="form2" type="submit" style="display:none;">Submit form</button>
 												</div>
 											</form>
 										</div>
@@ -176,7 +165,7 @@ $(document).ready(function(){
 									</div>
 									<div class="col-md-6 col-12">
 										<a href="javascript:;">
-											<input type="submit" onclick="submitForms()" value="CONTINUE TO SHIPPING METHOD" class="update_cart"/>
+											<input type="submit" onclick="continueShipping()" value="CONTINUE TO SHIPPING METHOD" class="update_cart"/>
 										</a>
 									</div>
 								</div>

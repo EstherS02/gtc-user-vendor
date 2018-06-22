@@ -266,7 +266,7 @@ export function show(req, res) {
 
 export function findById(req, res) {
 	var paramsID = req.params.id;
-	let includeArr;
+	let includeArr = [];
 
 	if (req.query.populate)
 		includeArr = populate.populateData(req.query.populate);
