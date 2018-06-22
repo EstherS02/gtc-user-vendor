@@ -15,9 +15,9 @@ export function findRows(modelName, queryObj, offset, limit, field, order, inclu
 			order: [
 				[field, order]
 			]
-		}).then(function(rows) {
+		}).then(function (rows) {
 			resolve(rows);
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		});
 	});
@@ -34,17 +34,17 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 			order: [
 				[field, order]
 			]
-		}).then(function(rows) {
+		}).then(function (rows) {
 			var convertRowsJSON = [];
 			if (rows.length > 0) {
 				convertRowsJSON = JSON.parse(JSON.stringify(rows));
 				model[modelName].count({
 					where: queryObj
-				}).then(function(count) {
+				}).then(function (count) {
 					result.count = count;
 					result.rows = convertRowsJSON;
 					resolve(result);
-				}).catch(function(error) {
+				}).catch(function (error) {
 					reject(error);
 				});
 			} else {
@@ -52,7 +52,7 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 				result.rows = convertRowsJSON;
 				resolve(result);
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		});
 	});
@@ -60,32 +60,30 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 
 export function findIdRow(modelName, id, includeArr) {
 	return new Promise((resolve, reject) => {
-		model[modelName].findById(id).then(function(row) {
+		model[modelName].findById(id).then(function (row) {
 			if (row) {
 				resolve(row.toJSON());
 			} else {
 				resolve(null);
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		});
 	});
 }
 
-export function findRow(modelName, id, includeArr) {
+export function findRow(modelName, queryObj, includeArr) {
 	return new Promise((resolve, reject) => {
 		model[modelName].find({
 			include: includeArr,
-			where: {
-				id: id
-			}
-		}).then(function(row) {
+			where: queryObj
+		}).then(function (row) {
 			if (row) {
 				resolve(row);
 			} else {
 				resolve(null);
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		});
 	});
@@ -96,13 +94,13 @@ export function findOneRow(modelName, queryObj, includeArr) {
 		model[modelName].findOne({
 			include: includeArr,
 			where: queryObj
-		}).then(function(row) {
+		}).then(function (row) {
 			if (row) {
 				resolve(row.toJSON());
 			} else {
 				resolve(null);
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		});
 	});
@@ -111,13 +109,13 @@ export function findOneRow(modelName, queryObj, includeArr) {
 export function createRow(modelName, bodyParams) {
 	return new Promise((resolve, reject) => {
 		model[modelName].create(bodyParams)
-			.then(function(row) {
+			.then(function (row) {
 				if (row) {
 					resolve(row);
 				} else {
 					resolve(null);
 				}
-			}).catch(function(error) {
+			}).catch(function (error) {
 				reject(error);
 			});
 	})
@@ -126,15 +124,15 @@ export function createRow(modelName, bodyParams) {
 export function createBulkRow(modelName, bodyParams) {
 	return new Promise((resolve, reject) => {
 		model[modelName].bulkCreate(bodyParams, {
-				individualHooks: true
-			})
-			.then(function(row) {
+			individualHooks: true
+		})
+			.then(function (row) {
 				if (row) {
 					resolve(row);
 				} else {
 					resolve(null);
 				}
-			}).catch(function(error) {
+			}).catch(function (error) {
 				reject(error);
 			});
 	})
@@ -146,13 +144,13 @@ export function updateRow(modelName, bodyParams, id) {
 			where: {
 				id: id
 			}
-		}).then(function(row) {
+		}).then(function (row) {
 			if (row) {
 				resolve(row);
 			} else {
 				resolve(null);
 			}
-		}).catch(function(error) {
+		}).catch(function (error) {
 			reject(error);
 		})
 	})
@@ -164,18 +162,18 @@ export function destroyManyRow(modelName, ids) {
 			status: status["DELETED"],
 			deleted_at: new Date()
 		}, {
-			where: {
-				id: ids
-			}
-		}).then(function(rows) {
-			if (rows[0] > 0) {
-				resolve(rows);
-			} else {
-				resolve(null);
-			}
-		}).catch(function(error) {
-			reject(error);
-		});
+				where: {
+					id: ids
+				}
+			}).then(function (rows) {
+				if (rows[0] > 0) {
+					resolve(rows);
+				} else {
+					resolve(null);
+				}
+			}).catch(function (error) {
+				reject(error);
+			});
 	});
 }
 
@@ -185,24 +183,24 @@ export function destroyRow(modelName, id) {
 			status: status["DELETED"],
 			deleted_at: new Date()
 		}, {
-			where: {
-				id: id
-			},
-			returning: true,
-			plain: true
-		}).then(function(row) {
-			if (row) {
-				resolve(row);
-			} else {
-				resolve(null);
-			}
-		}).catch(function(error) {
-			reject(error);
-		});
+				where: {
+					id: id
+				},
+				returning: true,
+				plain: true
+			}).then(function (row) {
+				if (row) {
+					resolve(row);
+				} else {
+					resolve(null);
+				}
+			}).catch(function (error) {
+				reject(error);
+			});
 	});
 }
 
-export function upsert(modelName, queryObj, includeArr, data) {
+/*export function upsert(modelName, queryObj, includeArr, data) {
 	console.log('data', data);
 	this.findOneRow(modelName, queryObj, includeArr)
 		.then(function(results) {
@@ -224,4 +222,20 @@ export function upsert(modelName, queryObj, includeArr, data) {
 				});
 			}
 		});
+}*/
+
+export function upsert(modelName, data) {
+	return new Promise((resolve, reject) => {
+		console.log('data', data);
+		model[modelName].upsert(data)
+			.then(function (row) {
+				if (row) {
+					resolve(row);
+				} else {
+					resolve(null);
+				}
+			}).catch(function (error) {
+				reject(error);
+			})
+	})
 }
