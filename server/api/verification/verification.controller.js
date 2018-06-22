@@ -63,6 +63,7 @@ export function storeData(req, res) {
 }
 
 export function addVendor(req, res) {
+
 	var bodyParams = {};
 	var vendorBodyParams = {};
 	model['User'].findOne({

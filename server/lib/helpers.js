@@ -279,3 +279,13 @@ Handlebars.registerHelper('ProfilePicture', function(context, options) {
     
     return '/img/avatar.png'
 });
+Handlebars.registerHelper('MarketPlaceId', function(obj, value_pass, options) {
+    var val;
+    Object.keys(obj).forEach(function(key) {
+        if(value_pass == obj[key]){
+            var val1 = key.toLowerCase();
+             val = val1.charAt(0).toUpperCase() + val1.slice(1);
+        }
+    });
+    return val;
+});

@@ -39,7 +39,7 @@ export function index(req, res) {
 			[field, order]
 		],
 		raw: true
-	}).then(function(rows) {
+	}).then(function (rows) {
 		if (rows.length > 0) {
 			res.status(200).send(rows);
 			return;
@@ -47,7 +47,7 @@ export function index(req, res) {
 			res.status(200).send(rows);
 			return;
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
 		return
@@ -94,7 +94,7 @@ export function create(req, res) {
 
 	model['User'].findOne({
 		where: queryObj
-	}).then(function(user) {
+	}).then(function (user) {
 		if (user) {
 			res.status(409).send("Email address already exists");
 			return;
@@ -104,7 +104,7 @@ export function create(req, res) {
 
 
 			model['User'].create(bodyParams)
-				.then(function(row) {
+				.then(function (row) {
 					if (row) {
 						const rspUser = plainTextResponse(row);
 						var email_verified_token = rspUser.email_verified_token;
@@ -120,7 +120,7 @@ export function create(req, res) {
 						queryObj['name'] = config.email.templates.userCreate;
 
 						service.findOneRow(emailTemplateModel, queryObj, includeArr)
-							.then(function(rsp) {
+							.then(function (rsp) {
 								var username = rspUser["first_name"];
 								var email = rspUser["email"];
 								var sub = rsp.subject.replace('%USERNAME%', username);
@@ -135,19 +135,19 @@ export function create(req, res) {
 								res.status(201).send(rspUser);
 								return;
 							})
-							.catch(function(error) {
+							.catch(function (error) {
 								res.status(201).send(rspUser);
 								return;
 							});
 					}
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error :::', error);
 					res.status(500).send("Internal server error");
 					return;
 				});
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
 		return
@@ -163,7 +163,7 @@ export function userAuthenticate(req, res) {
 	queryObj.email_verified_token = req.body.email_verified_token;
 	queryObj.email = req.body.email;
 	service.findOneRow(UserModel, queryObj, includeArr)
-		.then(function(resp) {
+		.then(function (resp) {
 			if (resp) {
 				var expiryTime = moment(resp.email_verified_token_generated).add(24, 'hours').valueOf();
 				var currentTime = moment().valueOf();
@@ -172,11 +172,11 @@ export function userAuthenticate(req, res) {
 						var updateObj = {};
 						updateObj.email_verified = 1;
 						service.updateRow(UserModel, updateObj, resp.id)
-							.then(function(updateRsp) {
+							.then(function (updateRsp) {
 								res.status(200).send("Email has been registered Successfully");
 								return;
 							})
-							.catch(function(err) {
+							.catch(function (err) {
 								res.status(500).send("Unable to update");
 								return;
 							})
@@ -191,11 +191,11 @@ export function userAuthenticate(req, res) {
 				}
 			} else {
 				res.status(404).send("Not Fouond");
-					return;
+				return;
 			}
 
 		})
-		.catch(function(error) {
+		.catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return;
@@ -222,7 +222,7 @@ export function destroy(req, res) {
 		where: {
 			id: ids
 		}
-	}).then(function(row) {
+	}).then(function (row) {
 		if (row > 0) {
 			res.status(200).send("Users deleted successfully");
 			return;
@@ -230,7 +230,7 @@ export function destroy(req, res) {
 			res.status(404).send("Cannot delete users");
 			return
 		}
-	}).catch(function(error) {
+	}).catch(function (error) {
 		console.log('Error :::', error);
 		res.status(500).send("Internal server error");
 		return
@@ -263,6 +263,99 @@ function encryptPassword(req) {
 		return '';
 	var saltWithEmail = new Buffer(req.body.salt + req.body.email.toString('base64'), 'base64');
 	return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+}
+
+
+export function userProfile(req, res) {
+
+	let userUpdate = JSON.parse(req.body.userUpdate);
+	let billingUpdate = JSON.parse(req.body.billingUpdate);
+	let shippingUpdate = JSON.parse(req.body.shippingUpdate);
+	console.log(shippingUpdate);
+	let user_id = req.user.id;
+	billingUpdate['user_id'] = req.user.id;
+	billingUpdate['status'] = 1;
+	shippingUpdate['user_id'] = req.user.id;
+	shippingUpdate['status'] = 1;
+
+	service.updateRow('User', userUpdate, user_id)
+		.then(function (row) {
+			service.findRow('Address', { user_id: user_id, address_type: 1 }, [])
+				.then(function (row) {
+					if (row) {
+						service.updateRow('Address', billingUpdate, row.id)
+							.then(function (update) {
+								service.findRow('Address', { user_id: user_id, address_type: 2 }, [])
+									.then(function (row) {
+										if (row) {
+											service.updateRow('Address', shippingUpdate, row.id)
+												.then(function (update) {
+													console.log(updated);
+												}).catch(function (err) {
+													res.status(500).send(err);
+													return;
+												});
+										} else {
+											service.createRow('Address', shippingUpdate)
+												.then(function (update) {
+													console.log(update);
+
+												}).catch(function (err) {
+													res.status(500).send(err);
+													return;
+												})
+										}
+									}).catch(function (err) {
+										res.status(500).send(err);
+										return;
+									});
+
+							}).catch(function (err) {
+								res.status(500).send(err);
+								return;
+							});
+					} else {
+						service.createRow('Address', billingUpdate)
+							.then(function (update) {
+								service.findRow('Address', { user_id: user_id, address_type: 2 }, [])
+									.then(function (row) {
+										if (row) {
+											service.updateRow('Address', shippingUpdate, row.id)
+												.then(function (update) {
+													console.log(updated);
+												}).catch(function (err) {
+													res.status(500).send(err);
+													return;
+												});
+										} else {
+											service.createRow('Address', shippingUpdate)
+												.then(function (update) {
+													console.log(update);
+
+												}).catch(function (err) {
+													res.status(500).send(err);
+													return;
+												})
+										}
+									}).catch(function (err) {
+										res.status(500).send(err);
+										return;
+									});
+							}).catch(function (err) {
+								res.status(500).send(err);
+								return;
+							})
+					}
+				}).catch(function (err) {
+					res.status(500).send(err);
+					return;
+				});
+		})
+		.catch(function (err) {
+			res.status(500).send(err);
+			return;
+		})
+
 }
 
 exports.authenticate = authenticate;

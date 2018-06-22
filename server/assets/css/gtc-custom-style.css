@@ -875,3 +875,24 @@ input:not(:focus):valid ~ .floating-label{
 }
 .ts1_alter{
   padding-top: 15px!important;
+}
+.review-sort{
+    font-weight: bold;
+    font-size: 11px;
+    /*margin-right: 10px;*/
+}
+.review-hr{
+  margin-top: 10px !important;
+}
+.review-bottom{
+  margin-bottom: 30px;
+}
+.rating-avg1 .rating-avg{
+  display: inline-block;
+}
+p>span.text_blue_color{
+  margin-left: 10px;
+}
+p.p1 {
+  display :inline;
+}
