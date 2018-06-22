@@ -60,7 +60,7 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
 
 export function findIdRow(modelName, id, includeArr) {
 	return new Promise((resolve, reject) => {
-		model[modelName].findById(id).then(function (row) {
+		model[modelName].find({ where: {id: id}, include: includeArr }).then(function (row) {
 			if (row) {
 				resolve(row.toJSON());
 			} else {
@@ -139,6 +139,10 @@ export function createBulkRow(modelName, bodyParams) {
 }
 
 export function updateRow(modelName, bodyParams, id) {
+	console.log(modelName);
+	console.log(bodyParams);
+	console.log(id);
+
 	return new Promise((resolve, reject) => {
 		model[modelName].update(bodyParams, {
 			where: {
