@@ -29,15 +29,10 @@ export function userProfile(req, res) {
     limit = null;
     field = "id";
 	order = "asc";
-
-
 	
 	if(req.user)
 		LoggedInUser = req.user;
-		
 		let user_id = LoggedInUser.id;
-		
-		console.log("**************************************",LoggedInUser)
 
 
 	async.series({
