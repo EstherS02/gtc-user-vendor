@@ -34,6 +34,7 @@ export default function(app) {
   app.post('/auth/fb', controller.facebookLogin);
   app.post('/auth/linkedin', controller.linkedInLogin);
   app.post('/auth/twitter', controller.twitterLogin);
+  app.use('/api/notification',require("./api/notification"));
 
 
   /* Handlerbars routes */

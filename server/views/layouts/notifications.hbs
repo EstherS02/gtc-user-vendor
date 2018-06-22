@@ -16,15 +16,44 @@
 			}
 		}
 	}
-
-	 $(document).ready(function() {
+	var oldArray = [];
+	$(document).ready(function() {
 		var checkboxes = document.getElementsByTagName('input');
-	 	for (var i = 0; i < checkboxes.length; i++) {
-	 		if (checkboxes[i].type == 'checkbox') {
-	 			checkboxes[i].checked = true;
-	 		}
-	 	}
-	 });
+		$(':checkbox:checked').each(function(i) {
+			oldArray.push($(this).val());
+		});
+	});
+
+	function updateNotification(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			chkArray.push($(this).val());
+		});
+		var a = oldArray.diff(chkArray);
+		var formData = {};
+		formData.data =JSON.stringify(a);
+		console.log(formData);
+		//api Call 
+		if(a){
+		$.ajax({
+				type: 'POST',
+				url: '/api/notification/addSettings',
+				data: formData,
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+	}
+	}
+
+	Array.prototype.diff = function(a) {
+		return this.filter(x => !a.includes(x))
+			.concat(a.filter(x => !this.includes(x)))
+	};
 
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -40,7 +69,8 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th><input type="checkbox" onclick="selectAll(this);"></th>
+									<th>
+									 <input type="checkbox" onclick="selectAll(this);"></th> 
 									<th>Event</th>
 									<th>Code</th>
 									<th>Description</th>
@@ -49,7 +79,11 @@
 							<tbody>
 								{{#each notification}}
 								<tr>
-									<td><input type="checkbox" value="{{this.id}}" {{setChecked 0 this.VendorNotificationSettings.enable}}></td>
+									{{#if this.VendorNotificationSettings}}
+									<td><input type="checkbox" value="{{this.id}}" ></td>
+									{{else}}
+									<td><input type="checkbox" value="{{this.id}}" checked ></td>
+									{{/if}}
 									<td><i class="fas fa-check-circle text_green_color"></i>{{this.name}}</td>
 									<td>{{this.code}}</td>
 									<td>{{this.description}}</td>
@@ -57,6 +91,7 @@
 								{{/each}}
 							</tbody>
 						</table>
+						<button class="btn btn-sm"   onclick="updateNotification(this)" style="margin-left:10px"> update</button>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
@@ -65,24 +100,9 @@
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right"></p>
 						</div>
+
 					</div>
-					{{!-- Pagination starts --}}
-					<div class="row">
-						<div style="margin:0 auto;width:100px;">
-							{{#pagination collectionSize page pageSize maxSize}}
-							<nav aria-label="Page navigation example">
-								<ul class="pagination justify-content-center">
-									{{#each pages}}
-									<li class="page-item {{#if isCurrent}} active {{/if}}">
-										<a class="page-link" href="notifications?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-									</li>
-									{{/each}}
-								</ul>
-							</nav>
-							{{/pagination}}
-						</div>
-					</div>
-					{{!-- Pagination starts --}}
+
 				</div>
 				<div class="col-md-2">
 				</div>				

@@ -433,7 +433,7 @@
 			</div>
 			<div class="col-md-11 col-10 product_submit">
 				<p class="review_help_title">Product Rating
-					<span class="product_rating_star" style="font-size:20px; font-weight: bold;">5.9</span>
+					<span class="product_rating_star" style="font-size:20px; font-weight: bold;">{{avgRating}}</span>
 					<span style="font-size: 12px;">Based on</span>
 					<span style="font-size: 12px;" class="text_blue_color">
 						<b>{{product.Reviews.length}} Reviews</b>
@@ -443,67 +443,16 @@
 				<div class="row">
 					<div class="col-md-5">
 						<div class="row">
-							<div class="col-md-8 col-7 com_pad">
-								<p class="product_rating_star1" style="font-size: 11px;">
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-								</p>
-							</div>
-							<div class="col-md-4 col-5 common_padding1">
-								<p class="product_rating_1">(3 Rating)</p>
-							</div>
-							<div class="col-md-8 col-7 com_pad">
-								<p class="product_rating_star1" style="font-size: 11px;">
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-								</p>
-							</div>
-							<div class="col-md-4 col-5 common_padding1">
-								<p class="product_rating_1">(0 Rating)</p>
-							</div>
-							<div class="col-md-8 col-7 com_pad">
-								<p class="product_rating_star1" style="font-size: 11px;">
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-								</p>
-							</div>
-							<div class="col-md-4 col-5 common_padding1">
-								<p class="product_rating_1">(0 Rating)</p>
-							</div>
-							<div class="col-md-8 col-7 com_pad">
-								<p class="product_rating_star1" style="font-size: 11px;">
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-								</p>
-							</div>
-							<div class="col-md-4 col-5 common_padding1">
-								<p class="product_rating_1">(2 Rating)</p>
-							</div>
-							<div class="col-md-8 col-7 com_pad">
-								<p class="product_rating_star1" style="font-size: 11px;">
-									<i class="fas fa-star"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-									<i class="fas fa-star" style="color: #B9B9BB;"></i>
-								</p>
-							</div>
-							<div class="col-md-4 col-5 common_padding1">
-								<p class="product_rating_1">(4 Rating)</p>
-							</div>
-
+							{{#each rating}} 
+								<div class="col-md-8 col-7 com_pad">
+									<p class="product_rating_star1" style="font-size: 11px;">
+									{{starCount this.starCount}}
+									</p>
+								</div>
+								<div class="col-md-4 col-5 common_padding1">
+									<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
+								</div>
+							{{/each}}
 						</div>
 						<div class="row">
 							<div class="col-md-12">

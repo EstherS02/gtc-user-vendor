@@ -19,7 +19,7 @@ export function notifications(req, res) {
 	var page;
 	var offset;
 	var limit;
-	var order = "desc";
+	var order = "asc";
 	var field = "id";
 	var modelName = 'Notification';
 	var queryObj = {};
@@ -30,13 +30,14 @@ export function notifications(req, res) {
 		},
 		required:false
 	}];
-	service.findRows(modelName, queryObj, offset, limit, field, order, includeArr)
+	service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
 		.then(function(results) {
-			console.log(results.rows);
+			// console.log(results.rows);
 			res.render('notifications', {
 				title: "Global Trade Connect",
 				count: results.count,
-				notification: results.rows
+				notification: results.rows,
+				LoggedInUser:LoggedInUser
 			}).catch(function(error) {
 				console.log('Error :::', error);
 				return callback(null);
