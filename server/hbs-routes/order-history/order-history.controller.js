@@ -61,7 +61,7 @@ export function orderHistory(req, res) {
 			orderHistory: function(callback) {
 				service.findRows(modelName, queryObj, offset, limit, field, order, includeArr)
 					.then(function(results) {
-						console.log(results)
+						// console.log(results)
 						return callback(null, results);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -71,7 +71,7 @@ export function orderHistory(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				console.log(marketPlace);
+				// console.log(marketPlace);
 				res.render('order-history', {
 					title: "Global Trade Connect",
 					orderHistory: results.orderHistory.rows,
