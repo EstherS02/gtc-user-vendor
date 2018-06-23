@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+       /* vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: true,
+            references: {
+                model: 'vendor',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },*/
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
@@ -80,6 +91,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10, 4),
             field: 'total_price',
             allowNull: true
+        },
+        coupon_id: {
+            type: DataTypes.BIGINT,
+            field: 'coupon_id',
+            allowNull: false,
+            references: {
+                model: 'coupon',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'coupon_amount',
+            allowNull: false
         },
         tracking_id: {
             type: DataTypes.INTEGER,
@@ -147,6 +174,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const OrderPayment = model.OrderPayment;
     const User = model.User;
+    const Vendor = model.Vendor;
     const Shipping = model.Shipping;
     const Address = model.Address;
     const Product = model.Product;
@@ -171,6 +199,11 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+   /* Order.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });*/
 
     Order.belongsTo(Shipping, {
         foreignKey: 'shipping_id',
@@ -190,26 +223,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(Product, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Tax, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'tax_id',
+    Order.belongsTo(Coupon, {
+        foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

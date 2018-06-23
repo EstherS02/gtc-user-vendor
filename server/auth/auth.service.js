@@ -80,8 +80,7 @@ function isAuthenticated() {
 							include: [
 								{ model: model['Country'] },
 								{ model: model['Currency'] },
-								{ model: model['Timezone'] },
-								{ model: model['VendorVerification'] }
+								{ model: model['Timezone'] }
 							]
 						}).then(function(vendorObj) {
 							if (vendorObj) {

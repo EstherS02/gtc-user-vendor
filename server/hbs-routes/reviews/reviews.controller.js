@@ -16,17 +16,19 @@ export function reviews(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
+	var queryPaginationObj = {};
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
+		queryPaginationObj["field"] = field;
 	} else {
 		var field = 'id';
+		queryPaginationObj["field"] = field;
 	}
 
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
-	var vendor_id = 29;
+	var vendor_id = req.user.Vendor.id;
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {
@@ -40,6 +42,7 @@ export function reviews(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
+	
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	delete req.query.page;
@@ -123,6 +126,7 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
+				console.log("queryPaginationObj",queryPaginationObj)
 				res.render('reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
@@ -132,6 +136,7 @@ export function reviews(req, res) {
 					page: page,
 					maxSize:maxSize,
 					pageSize: limit,
+					queryPaginationObj:queryPaginationObj,
 					collectionSize: results.Reviews.count
 					// End pagination
 				});

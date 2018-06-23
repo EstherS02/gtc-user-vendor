@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: false
+            allowNull: true
         },
         contact_email: {
             type: DataTypes.STRING(128),
@@ -113,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_verification_id: {
+        /*vendor_verification_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_verification_id',
             allowNull: true,
@@ -123,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-        },
+        },*/
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -163,6 +163,7 @@ module.exports.initRelations = () => {
     const BusinessHour = model.BusinessHour;
     const Coupon = model.Coupon;
     const DiscussionBoard = model.DiscussionBoard;
+    const Order = model.Order;
     const Product = model.Product;
     const TalkSetting = model.TalkSetting;
     const VendorFollower = model.VendorFollower;
@@ -170,7 +171,7 @@ module.exports.initRelations = () => {
     const VendorPlan = model.VendorPlan;
     const VendorRating = model.VendorRating;
     const VendorShippingLocation = model.VendorShippingLocation;
-    const VendorVerification = model.VendorVerification;
+   // const VendorVerification = model.VendorVerification;
     const User = model.User;
     const Country = model.Country;
     const Currency = model.Currency;
@@ -242,6 +243,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    // Vendor.hasMany(Order, {
+    //     foreignKey: 'vendor_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
+
    /* Vendor.hasMany(VendorVerification, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
@@ -272,11 +279,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.belongsTo(VendorVerification, {
+   /* Vendor.belongsTo(VendorVerification, {
         foreignKey: 'vendor_verification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Vendor.belongsToMany(Timezone, {
         through: BusinessHour,

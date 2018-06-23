@@ -175,7 +175,7 @@
 					</div>
 				</div>
 				<div class="col-md-10">
-					<div class="row pmp1">
+					<div class="row pmp1 pmp1_alter">
 						<div class="col-md-12">
 							<h5>PRODUCT REVIEW</h5>
 						</div>
@@ -188,150 +188,183 @@
 										<div class="col-md-5 col-5 product_iphone_img">
 											<img style="width:100%;" src="{{product.ProductMedia.[0].url}}">
 										</div>
-										<div class="col-md-7 col-7 product_iphone common_padding1" >
+										<div class="col-md-7 col-7 product_iphone common_padding1">
 											<p class="product_iphone_header">
-												{{product.product_name}}</p>
-												<p class="product_rating">Product Rating</p>
-												<p class="product_rating_star">{{starCount Rating.avg}}<span class="product_rating_num"> {{Rating.avg}}</span></p>
-												<p class="product_rating_header" >Based on 23 Reviews </p>
-												<div class="row">
-													<div class="col-md-7 col-7">
-														<p class="product_rating_star1">{{starCount 5}}</p>
-													</div>
-													<div class="col-md-5 col-5 common_padding1">
-														<p class="product_rating_1">({{Rating.star5}} Rating)</p>
-													</div>
-													<div class="col-md-7">
-														<p class="product_rating_star1">{{starCount 4}}</p>
-													</div>
-													<div class="col-md-5 common_padding1">
-														<p class="product_rating_1">({{Rating.star4}} Rating)</p>
-													</div>
-													<div class="col-md-7">
-														<p class="product_rating_star1">{{starCount 3}}</p>
-													</div>
-													<div class="col-md-5 common_padding1">
-														<p class="product_rating_1">({{Rating.star3}} Rating)</p>
-													</div>
-													<div class="col-md-7">
-														<p class="product_rating_star1">{{starCount 2}}</p>
-													</div>
-													<div class="col-md-5 common_padding1">
-														<p class="product_rating_1">({{Rating.star2}} Rating)</p>
-													</div>
-													<div class="col-md-7">
-														<p class="product_rating_star1">{{starCount 1}}</p>
-													</div>
-													<div class="col-md-5 common_padding1">
-														<p class="product_rating_1">({{Rating.star1}} Rating)</p>
-													</div>
-													
-												</div>           
-											</div>             	
-										</div>
-									</div>
-									<div class="col-md-8">
-										<div class="row">
-											<div class="col-md-8 product_center">
-												<p>Showing {{SUMFloat queryPaginationObj.offset 1}}-{{this.pageCount}} of {{ratingCount}} Reviews</p>
-											</div>
-											<div class="col-md-4 product_buttion_bg ">
-												<button class="product_buttion">Submit Your Own Review</button>
-											</div>	
-										</div>
-										<div class="col-md-12 product_hr" >
-											<hr>
-										</div>
-										<div class="row">
-											<div class="col-md-1">
-												<i class="fas fa-question-circle review_help_icon"></i>
-											</div>
-											<div class="col-md-11 product_submit">
-												<form name="reviewForm" id="reviewForm" onsubmit="return false">
-													<p class="review_help_title">Submit A Review Of This Product</p>
-													<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
-														please fill out the following it will be sent directly to the vendor.</p>
-														<div>
-															<span class="product_submit_para">Please provide rating for this product</span>
-															<select id="review-stars" style="display:none !important;">
-																<option value=""></option>
-																<option value="1">1</option>
-																<option value="2">2</option>
-																<option value="3">3</option>
-																<option value="4">4</option>
-																<option value="5">5</option>
-															</select>
-														</div>
-														<div class="product_table_bg">
-															<div class="row">
-																<div class="col-md-10">
-																	<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
-																</div>
-															</div>
-															<div class="row">
-																<div class="col-md-10">
-																	<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
-																	required></textarea>
-																</div>
-																<div class="col-md-2">
-																	<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
-																</div>
-															</div>
-														</div>
-													</form>
+											{{product.product_name}}
+											</p>
+											<p class="product_rating">Product Rating</p>
+											<p class="product_rating_star">{{starCount AvgRating}}
+												<span class="product_rating_num"> {{AvgRating}}</span>
+											</p>
+											<p class="product_rating_header" >Based on {{ratingCount}} Reviews 
+											</p>
+											<div class="row">											
+												{{#each Rating}} 
+												<div class="col-md-7 col-7">
+													<p class="product_rating_star1">{{starCount this.starCount}}</p>
 												</div>
-											</div>
-											<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-											</div>
-											
-											{{#each product.Reviews}}
-											<div class="row">
-												<div class="col-md-2 product_img">
-													<img width="100%" style="border-radius:50%" src="{{this.User.user_pic_url}}" /> 
-												</div>
-												<div class="col-md-10 product_great_bg common_padding1"  >
-													<p class="product_great">"
-														{{this.title}}"</p>
-														<p class="product_star">{{starCount this.rating}}<span class="product_ago"> 3 days ago </span> </p>
-														<p class="product_we">{{this.comment}}</p>
-													</div>
-													<div class="col-md-12 product_hr">
-														<hr>
-													</div>
+												<div class="col-md-5 col-5 common_padding1">
+													<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
 												</div>
 												{{/each}}
-												
-								{{!-- <nav aria-label="Page navigation example">
-										<ul class="pagination">
-											<li class="page-item"><a class="page-link" href="#">Previous</a></li>
-											<li class="page-item"><a class="page-link" href="#">1</a></li>
-											<li class="page-item"><a class="page-link" href="#">2</a></li>
-											<li class="page-item"><a class="page-link" href="#">3</a></li>
-											<li class="page-item"><a class="page-link" href="#">Next</a></li>
-										</ul>
-									</nav> --}}
+												<!-- <div class="col-md-7 col-7">
+													<p class="product_rating_star1">{{starCount 5}}</p>
+												</div>
+												<div class="col-md-5 col-5 common_padding1">
+													<p class="product_rating_1">({{Rating.star5}} Rating)</p>
+												</div>
+												<div class="col-md-7">
+													<p class="product_rating_star1">{{starCount 4}}</p>
+												</div>
+												<div class="col-md-5 common_padding1">
+													<p class="product_rating_1">({{Rating.star4}} Rating)</p>
+												</div>
+												<div class="col-md-7">
+													<p class="product_rating_star1">{{starCount 3}}</p>
+												</div>
+												<div class="col-md-5 common_padding1">
+													<p class="product_rating_1">({{Rating.star3}} Rating)</p>
+												</div>
+												<div class="col-md-7">
+													<p class="product_rating_star1">{{starCount 2}}</p>
+												</div>
+												<div class="col-md-5 common_padding1">
+													<p class="product_rating_1">({{Rating.star2}} Rating)</p>
+												</div>
+												<div class="col-md-7">
+													<p class="product_rating_star1">{{starCount 1}}</p>
+												</div>
+												<div class="col-md-5 common_padding1">
+													<p class="product_rating_1">({{Rating.star1}} Rating)</p>
+												</div> -->
+											</div>           
+										</div>             	
+									</div>
+								</div>
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-8 product_center">
+											<p>Showing {{SUMFloat queryPaginationObj.offset 1}}-{{this.pageCount}} of {{ratingCount}} Reviews
+											</p>
+										</div>
+										<div class="col-md-4 product_buttion_bg ">
+											<button class="product_buttion">Submit Your Own Review</button>
+										</div>	
+									</div>
+									<div class="col-md-12 product_hr" >
+										<hr>
+									</div>
+									<div class="row">
+										<div class="col-md-1">
+											<i class="fas fa-question-circle review_help_icon"></i>
+										</div>
+										<div class="col-md-11 product_submit">
+											<form name="reviewForm" id="reviewForm" onsubmit="return false">
+												<p class="review_help_title">Submit A Review Of This Product</p>
+												<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
+												please fill out the following it will be sent directly to the vendor.</p>
+												<div>
+													<span class="product_submit_para">Please provide rating for this product</span>
+													<select id="review-stars" style="display:none !important;">
+														<option value=""></option>
+														<option value="1">1</option>
+														<option value="2">2</option>
+														<option value="3">3</option>
+														<option value="4">4</option>
+														<option value="5">5</option>
+													</select>
+												</div>
+												<div class="product_table_bg">
+													<div class="row">
+														<div class="col-md-10">
+															<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-10">
+															<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
+															required></textarea>
+														</div>
+														<div class="col-md-2">
+															<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+									<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
+									</div>
 									
+									{{#each Reviews}}
+									<div class="row">
+										<div class="col-md-2 product_img">
+											<img width="100%" style="border-radius:50%" src="{{this.User.user_pic_url}}"/>
+										</div>
+										<div class="col-md-10 product_great_bg common_padding1"  >
+											<p class="product_great">
+												{{this.title}}
+											</p>
+											<p class="product_star">{{starCount this.rating}}
+												<span class="product_ago">
+													{{FormatDate this.created_on}}
+												</span>
+											 </p>
+											<p class="product_we">{{this.comment}}</p>
+										</div>
+										<div class="col-md-12 product_hr">
+											<hr>                                                   
+										</div>
+									</div>
+									{{/each}}
+									{{!-- Pagination starts --}}
+									<div class="row">
+										<div style="margin:0 auto;width:100px;">
+											{{#pagination collectionSize page pageSize maxSize}}
+											<nav aria-label="Page navigation example">
+												<ul class="pagination justify-content-center">
+													{{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="product/{{../../queryParams.product_slug}}/{{../../
+														queryParams.id}}/allReviews?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+													</li>
+													{{/each}} 
+												</ul>
+											</nav>
+											{{/pagination}}
+										</div>
+									</div>
+									{{!-- Pagination starts --}}
+
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-12 ts1">
+								<div class="col-md-12 ts1 ts1_alter">
 									<h6 class="float-left" style="color:#fff;">RELATED PRODUCTS</h6>
 								</div>
 								<section class="box6" style="margin-bottom: 20px;">
 									<div class="container clearfix">
 										<div class="row">
+											{{#each RelatedProducts}}
 											<div class="col-md-4 common_top">
 												<div class="row">
 													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
+														{{#if this.ProductMedia.[0].url}}
+														<img src="{{this.ProductMedia.[0].url}}" style="width: 30px; height: 70px;">
+														{{else}}
+														<img src="/img/avatar.png" style="width: 30px; height: 70px;">
+														{{/if}}
 													</div>
 													<div class="col-md-9">
 														<div class="row common_padding">
 															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
+																<p class="wts_header">
+																<a href="producr/{{this.product_slug}}/{{this.id}}/allReviews">{{this.product_name}} of Interest
+																</a>
+																</p>
 															</div>
 															<div class="col-md-3">
-																<p>MOQ: 40</p>
+																<p>MOQ:{{this.moq}}</p>
 															</div>
 														</div>
 														<div class="row common_padding">
@@ -339,7 +372,7 @@
 																<p>Origin</p>
 															</div>
 															<div class="col-md-6">
-																<p>Canada</p>
+																<p>{{this.Country.name}}</p>
 															</div>
 															<div class="col-md-3">
 																<p>&nbsp;</p>
@@ -350,343 +383,16 @@
 																<p>Category</p>
 															</div>
 															<div class="col-md-6">
-																<p>Electronic - Phones</p>
+																<p>{{this.Category.name}} {{!-- - {{this.SubCategory.name}} --}}</p>
 															</div>
 															<div class="col-md-3">
 																<p>&nbsp;</p>
 															</div>
 														</div>
-														
 													</div>
 												</div>
 											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										<div class="row">
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										
-										<div class="row">
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														<img src="../img/iphone.png" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header"><a href="#">iPhone Pallets of Interest</a></p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ: 40</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>Canada</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>Electronic - Phones</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														
-													</div>
-												</div>
-											</div>
+											{{/each}}
 										</div>
 									</div>
 								</section>
@@ -696,7 +402,10 @@
 							<p><b>FILTER BY CATEGORY</b></p>
 							<p class="cat_bg_title_shp">ALL CATEGORIES (293)</p>
 							<div class="list-group panel ">
-								<a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false"><i class="fas fa-caret-down"></i> <span class="hidden-sm-down">AGRICULTURE(293)</span> </a>
+								<a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false">
+								<i class="fas fa-caret-down"></i>
+								<span class="hidden-sm-down">AGRICULTURE(293)</span>
+								</a>
 								<div class="collapse" id="menu1">
 									<a href="#menu1sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false">Animals(93)</a>
 									<a href="#" class="list-group-item" data-parent="#menu1">Aquaculture(93)</a>
@@ -704,18 +413,22 @@
 									<a href="#" class="list-group-item" data-parent="#menu1">Fram Machines &amp; Tools(93)</a>
 									<a href="#" class="list-group-item" data-parent="#menu1">Flowers &amp; Plants(93)</a>
 								</div>
-								<a href="#" class="list-group-item collapsed" data-parent="#sidebar"><i class="fas fa-caret-right"></i> <span class="hidden-sm-down">APPAREL &amp; FASHION(293)</span></a>
-								<a href="#menu3" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false"><i class="fas fa-caret-right"></i> <span class="hidden-sm-down">ELECTRONICS &amp; ELECTRICAL(293) </span></a>
-								<a href="#" class="list-group-item collapsed" data-parent="#sidebar"><i class="fas fa-caret-right"></i> <span class="hidden-sm-down">FOOD &amp; BEVERAGE(293)</span></a>
-								
+								<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
+								<i class="fas fa-caret-right"></i>
+								<span class="hidden-sm-down">APPAREL &amp; FASHION(293)</span>
+								</a>
+								<a href="#menu3" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false">
+								<i class="fas fa-caret-right"></i> 
+								<span class="hidden-sm-down">ELECTRONICS &amp; ELECTRICAL(293) </span>
+								</a>
+								<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
+								<i class="fas fa-caret-right"></i>
+								<span class="hidden-sm-down">FOOD &amp; BEVERAGE(293)</span>
+								</a>
 							</div>
-							
 						</div>
-						
 					</div>
-					
 				</div>
-				
 			</section>
 			{{> footer/footer}}
 			<script>
@@ -723,6 +436,5 @@
 					$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
 				});
 			</script>
-			
 		</body>
-		</html>
+	</html>
