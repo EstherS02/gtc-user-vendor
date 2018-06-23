@@ -136,7 +136,7 @@ module.exports.initRelations = () => {
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
-    const OrderItem = model.OrderItem;
+    //const OrderItem = model.OrderItem;
     const Vendor = model.Vendor;
     const Category = model.Category;
     const Product = model.Product;

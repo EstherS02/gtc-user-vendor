@@ -86,6 +86,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'deleted_at',
             allowNull: true
+        },
+        coupon_id: {
+            type: DataTypes.INTEGER,
+            field: 'coupon_id',
+            allowNull: false
         }
     }, {
         tableName: 'order_items',
@@ -100,7 +105,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const Order = model.Order;
     const Product = model.Product;
-    const Coupon = model.Coupon;
+    //const Coupon = model.Coupon;
     const Tax = model.Tax;
 
     OrderItem.belongsTo(Order, {
