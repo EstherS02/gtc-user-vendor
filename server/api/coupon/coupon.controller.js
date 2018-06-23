@@ -88,8 +88,9 @@ export function updateProductCoupon(req, res) {
 						}
 					});
 			});
-			return;
+			
 		}
+		return;
 	});
 }
 export function updateCategoryCoupon(req, res) {
@@ -137,5 +138,6 @@ export function updateCategoryCoupon(req, res) {
 					});
 			});
 		}
+		return;
 	});
 }

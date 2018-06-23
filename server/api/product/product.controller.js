@@ -68,25 +68,25 @@ export function addProduct(req, res) {
 	req.query.status = 1;
 	req.query.publish_date = '2018-06-04';
 
-	console.log("res.body==========", req.body);
-
 	model["Product"].create(req.query)
 		.then(function (row) {
-			req.body.product_id=row.id
-			model["ProductMedia"].create(req.body)
-			
-				.then(function (row) {
-
-					console.log('Created:::', row);
-					res.status(200).send("Created");
-					return;
-
-				}).catch(function (error) {
-					console.log('Error:::', error);
-					res.status(500).send("Internal server error");
-					return;
-				})
-
+			req.body.product_id=row.id;
+			if(req.body.url) {
+				model["ProductMedia"].create(req.body)				
+					.then(function (row) {
+						console.log('Created:::', row);
+						res.status(200).send("Created");
+						return;
+					}).catch(function (error) {
+						console.log('Error:::', error);
+						res.status(500).send("Internal server error");
+						return;
+					});
+			} else {
+				console.log("no image sucess")
+				res.status(200).send("Created");
+				return;
+			}
 		}).catch(function (error) {
 			console.log('Error:::', error);
 			res.status(500).send("Internal server error");

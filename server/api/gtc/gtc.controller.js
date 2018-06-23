@@ -275,7 +275,7 @@ export function findById(req, res) {
 
 	delete req.query.populate;
 
-	service.findRow(req.endpoint, paramsID, includeArr)
+	service.findIdRow(req.endpoint, paramsID, includeArr)
 		.then(function (result) {
 			if (result) {
 				return res.status(200).send(result);
@@ -339,10 +339,12 @@ export function update(req, res) {
 
 	bodyParams["last_updated_on"] = new Date();
 
-	service.findRow(req.endpoint, paramsID)
+	service.findIdRow(req.endpoint, paramsID)
 		.then(function (row) {
 			if (row) {
+				console.log(row);
 				delete bodyParams["id"];
+
 				service.updateRow(req.endpoint, bodyParams, paramsID)
 					.then(function (result) {
 						if (result) {
