@@ -193,13 +193,21 @@
 											{{product.product_name}}
 											</p>
 											<p class="product_rating">Product Rating</p>
-											<p class="product_rating_star">{{starCount Rating.avg}}
-												<span class="product_rating_num"> {{Rating.avg}}</span>
+											<p class="product_rating_star">{{starCount AvgRating}}
+												<span class="product_rating_num"> {{AvgRating}}</span>
 											</p>
 											<p class="product_rating_header" >Based on {{ratingCount}} Reviews 
 											</p>
-											<div class="row">
+											<div class="row">											
+												{{#each Rating}} 
 												<div class="col-md-7 col-7">
+													<p class="product_rating_star1">{{starCount this.starCount}}</p>
+												</div>
+												<div class="col-md-5 col-5 common_padding1">
+													<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
+												</div>
+												{{/each}}
+												<!-- <div class="col-md-7 col-7">
 													<p class="product_rating_star1">{{starCount 5}}</p>
 												</div>
 												<div class="col-md-5 col-5 common_padding1">
@@ -228,7 +236,7 @@
 												</div>
 												<div class="col-md-5 common_padding1">
 													<p class="product_rating_1">({{Rating.star1}} Rating)</p>
-												</div>
+												</div> -->
 											</div>           
 										</div>             	
 									</div>

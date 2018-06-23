@@ -92,6 +92,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'total_price',
             allowNull: true
         },
+        coupon_id: {
+            type: DataTypes.BIGINT,
+            field: 'coupon_id',
+            allowNull: false,
+            references: {
+                model: 'coupon',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'coupon_amount',
+            allowNull: false
+        },
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',
@@ -207,26 +223,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(Product, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Order.belongsToMany(Tax, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'tax_id',
+    Order.belongsTo(Coupon, {
+        foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

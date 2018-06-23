@@ -67,17 +67,53 @@ export function GetProductDetails(req, res) {
     }).then(function(product) {
             if (product) {
 
+                var productsList = JSON.parse(JSON.stringify(product));
 
-            var productsList = JSON.parse(JSON.stringify(product));
+                let productReviewsList = _.groupBy(productsList.Reviews, "rating");
 
-            let productReviewsList = _.groupBy(productsList.Reviews, "rating");
+                var productRating = [
+                    {
+                        starCount : 5, 
+                        ratingCount : 0
+                    },
+                    {
+                        starCount : 4, 
+                        ratingCount : 0
+                    },
+                    {
+                        starCount : 3, 
+                        ratingCount : 0
+                    },
+                    {
+                        starCount : 2, 
+                        ratingCount : 0
+                    },
+                    {
+                        starCount : 1, 
+                        ratingCount : 0
+                    }
+                ];
 
+                var total = 0;
+                var rating = productsList.Reviews;
+
+                for (let key in rating) {
+                    total = total + rating[key].rating;
+                    if(rating[key].rating <= 5)
+                       productRating[5-rating[key].rating].ratingCount = productRating[5-rating[key].rating].ratingCount + 1;
+                }
+
+                var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
+
+                productRating = _.orderBy(productRating, ['ratingCount'], ['desc'])
 
                 res.render('product-view', {
                     title: "Global Trade Connect",
                     product: productsList,
                     productReviewsList: productReviewsList,
-                    LoggedInUser: LoggedInUser
+                    LoggedInUser: LoggedInUser,
+                    rating : productRating,
+                    avgRating : productAvgRating
                 });
 
             } else {
@@ -207,6 +243,26 @@ async.series({
                     console.log('Error :::', error);
                 });
         },
+        AllReviews: function(callback) {
+            var reviewModel = "Review";
+            var queryObj1 = {
+                product_id :req.params.product_id,
+                status : status["ACTIVE"]
+            }
+            var includeArr2 = [
+                    { model: model["User"],
+                    attributes: {
+                        exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+                    }
+                }
+                ];
+            service.findAllRows(reviewModel,includeArr2 , queryObj1, null, null, field, order)
+                .then(function(AllReviews) {
+                    return callback(null, AllReviews);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                });
+        },
         RelatedProducts: function(callback) {
         	var queryObj2={
         		sub_category_id:sub_category,
@@ -236,43 +292,82 @@ async.series({
         }
     }, function (err, results) {
         if (!err) {
-        		var total = 0;
-				var star5 = 0;
-				var star4 = 0;
-				var star3 = 0;
-				var star2 = 0
-				var star1 = 0;
-				var productRating = {};
-           		var rating = results.Review.rows;
-					for (let elem in rating) {
-						total = total + rating[elem].rating;
-						switch (rating[elem].rating) {
-							case 1:
-								star1 = star1 + 1;
-								break;
-							case 2:
-								star2 = star2 + 1;
-								break;
-							case 3:
-								star3 = star3 + 1;
-								break;
-							case 4:
-								star4 = star4 + 1;
-								break;
-							case 5:
-								star5 = star5 + 1;
-								break;
-						}
-					}
-					maxSize = results.Review.count/limit;
-					var avg = total / rating.length;
-					productRating.avg = avg;
-					productRating.star5 = star5;
-					productRating.star4 = star4;
-					productRating.star3 = star3;
-					productRating.star2 = star2;
-					productRating.star1 = star1;
-					productRating.total = total;
+    //     		var total = 0;
+				// var star5 = 0;
+				// var star4 = 0;
+				// var star3 = 0;
+				// var star2 = 0
+				// var star1 = 0;
+				// var productRating = {};
+    //        		var rating = results.AllReviews.rows;
+				// 	for (let elem in rating) {
+				// 		total = total + rating[elem].rating;
+				// 		switch (rating[elem].rating) {
+				// 			case 1:
+				// 				star1 = star1 + 1;
+				// 				break;
+				// 			case 2:
+				// 				star2 = star2 + 1;
+				// 				break;
+				// 			case 3:
+				// 				star3 = star3 + 1;
+				// 				break;
+				// 			case 4:
+				// 				star4 = star4 + 1;
+				// 				break;
+				// 			case 5:
+				// 				star5 = star5 + 1;
+				// 				break;
+				// 		}
+				// 	}
+				//	maxSize = results.Review.count/limit;
+				// 	var avg = total / rating.length;
+				// 	productRating.avg = avg;
+				// 	productRating.star5 = star5;
+				// 	productRating.star4 = star4;
+				// 	productRating.star3 = star3;
+				// 	productRating.star2 = star2;
+				// 	productRating.star1 = star1;
+				// 	productRating.total = total;
+
+
+                    maxSize = results.Review.count / limit;
+
+                    var productRating = [
+                        {
+                            starCount : 5, 
+                            ratingCount : 0
+                        },
+                        {
+                            starCount : 4, 
+                            ratingCount : 0
+                        },
+                        {
+                            starCount : 3, 
+                            ratingCount : 0
+                        },
+                        {
+                            starCount : 2, 
+                            ratingCount : 0
+                        },
+                        {
+                            starCount : 1, 
+                            ratingCount : 0
+                        }
+                    ];
+
+                    var total = 0;
+                    var rating = results.AllReviews.rows;
+
+                    for (let key in rating) {
+                        total = total + rating[key].rating;
+                        if(rating[key].rating <= 5)
+                           productRating[5-rating[key].rating].ratingCount = productRating[5-rating[key].rating].ratingCount + 1;
+                    }
+
+                    var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
+
+                    productRating = _.orderBy(productRating, ['ratingCount'], ['desc'])
 
 	             	res.render('product-review', {
 	                    title: "Global Trade Connect",
@@ -280,6 +375,7 @@ async.series({
 	                    Reviews: results.Review.rows,
 	                    LoggedInUser: LoggedInUser,
 	                    Rating:productRating,
+                        AvgRating : productAvgRating,
 	                    RelatedProducts:results.RelatedProducts.rows,
 	                    queryPaginationObj: queryPaginationObj,
 	                    ratingCount:results.Review.count,

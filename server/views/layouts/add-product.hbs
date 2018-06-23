@@ -48,7 +48,7 @@
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         //if(result.rows[i].id == 1){
-                            $('#type').show();
+                            $('#type, #moq').show();
                             options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
                              console.log("options", options);
                             $("#type").append(options)
@@ -60,11 +60,24 @@
                 }
             });
         } else {
-            $('#type').hide();
+            $('#type, #moq').hide();
         }
     }
 </script>
 <script>
+    function addProduct(obj,input) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/product/add-product?'+input,
+            data: obj,
+            success: function(data) {
+                location.reload();
+            },
+            error: function (error) {
+                console.log('error', error);
+            }
+         })
+    }
     $(document).ready(function () {
          $("#type").hide();
         $("#productForm").submit(function (e) {
@@ -74,40 +87,37 @@
                 return $(element).val() != '';
             }).serialize();   
 
-            var form = new FormData();
-            form.append("file", $("#file")[0].files[0]);
-            form.append("filename", "test")
-            
-            var obj={};
+            if($("#file")[0].files.length > 0) {
+                var form = new FormData();
+                form.append("file", $("#file")[0].files[0]);
+                form.append("filename", "test");
+                
+                var obj={};
 
-            $.ajax({
-                type: 'POST',
-                url: '/api/products/upload',
-                data: form,
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    obj.type = 1;
-                    obj.status = 1;
-                    obj.url = data.imageURL;
-                    obj.base_image = 1;
-                     $.ajax({
-                        type: 'POST',
-                        url: '/api/product/add-product?'+input,
-                        data: obj,
-                        success: function (data) {
-                        },
-                        error: function (error) {
-                                    console.log('error', error);
-                                }
-                     })
-                },
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/products/upload',
+                    data: form,
+                    cache: false,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        obj.type = 1;
+                        obj.status = 1;
+                        obj.url = data.imageURL;
+                        obj.base_image = 1;
+                        addProduct(obj,input);
+                    },
                     error: function (error) {
-                    console.log('error', error);
-                }
-            });
+                        console.log('error', error);
+                    }
+                });
+            } else {
+                var obj={};
+                obj.url = null;
+                addProduct(obj, input);
+            }            
         });
            
   /*  $.ajax({
@@ -171,7 +181,7 @@
                             <div class="row">
                                 <div class="col-xs-5 col-sm-5 col-md-5">
                                      <div class="form-group">
-                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control ">
+                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
                                              <option disabled selected>Select Marketplace</option>
                                                  {{#each marketplace}}
                                                       <option value="{{this.id}}">{{ this.name}}</option>
@@ -188,14 +198,14 @@
                                 </div>
                                 <div class="col-xs-2 col-sm-2 col-md-2">
                                     <div class="form-group">
-                                         <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity"/>
+                                         <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" style="display: none;" />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6 col-sm-4 col-md-6">
                                      <div class="form-group">
-                                        <select class="form-control " id="category" name="product_category_id" >
+                                        <select class="form-control " id="category" name="product_category_id" onchange="changeCategory(this)" required>
                                                 <option disabled selected>Category</option>
                                                   {{#each category}}
                                                       <option value="{{this.id}}">{{ this.name}}</option>
@@ -205,7 +215,7 @@
                                 </div>
                                 <div class="col-xs-6 col-sm-4 col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control " name="sub_category_id" id="sub_category" value="" >
+                                        <select class="form-control " name="sub_category_id" id="sub_category" value="" required>
                                             <option disabled selected>Sub Category</option>
                                         </select>
                                     </div>
@@ -214,7 +224,7 @@
                              <div class="row">
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                      <div class="form-group">
-                                          <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" >
+                                          <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" required>
                                             <option disabled selected>Country</option>
                                             {{#each country}}
                                             <option value="{{this.id}}">{{ this.name}}</option>
@@ -224,31 +234,31 @@
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="form-group">
-                                           <select class="form-control " name="state_id" id="state" value="">
+                                           <select class="form-control " name="state_id" id="state" value="" required>
                                             <option disabled selected>State</option>
                                             </select>
                                     </div>
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="form-group">
-                                        <input type="text" name="city" id="city" placeholder="City" class="form-control" />
+                                        <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                      <div class="form-group">
-                                          <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control"/>
+                                          <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control" required/>
                                      </div> 
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="form-group">
-                                           <input type="text" name="price" id="price" placeholder="Price" class="form-control"/>
+                                           <input type="text" name="price" id="price" placeholder="Price" class="form-control" required/>
                                     </div>
                                 </div>
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="form-group">
-                                        <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control"/>
+                                        <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control" required/>
                                     </div>
                                 </div>
                             </div>
@@ -258,7 +268,7 @@
                                             <h6>Description</h6>
                                         </label><br>
                                     <div class="form-group">
-                                        <textarea id="description" name="description" class="form-control"></textarea>
+                                        <textarea id="description" name="description" class="form-control" required></textarea>
                                     </div>
                                 </div>
                             </div>
