@@ -109,13 +109,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    Tax.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
+    
 };
