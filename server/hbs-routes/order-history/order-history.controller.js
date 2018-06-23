@@ -16,6 +16,8 @@ export function orderHistory(req, res) {
 	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
+
+	var queryObject = {};
 	var orderItemQueryObj = {};
 	var orderQueryObj = {};
 	var productQueryObj = {};
@@ -28,56 +30,66 @@ export function orderHistory(req, res) {
 	var status = req.query.status;
 	var start_date;
 	var end_date;
-	if(dateSelect){
-		 	end_date= moment();
-		if(dateSelect == "today"){
-			start_date =  moment();
-        }else if(dateSelect == "yesterday"){
-			start_date= moment().add(-1,'d').toDate();
-        }else if(dateSelect == "last7day"){
-			start_date= moment().add(-7,'d').toDate();
-        }else if(dateSelect == "last15day"){
-			start_date= moment().add(-15,'d').toDate();	
-        }else if(dateSelect == "last30day"){
-			start_date= moment().add(-30,'d').toDate();	
-        }else {
-        	if(from_date){
-				start_date= from_date;
-        	}else{
-        		start_date= moment().add(-7,'d').toDate();
-        	}
-        	if(to_date){
-				end_date= to_date;
-        	}
-        }
-	        orderQueryObj['from']= {
-	        $between: [start_date, end_date]
-	    };
+	if (dateSelect) {
+		queryObject['dateSelect'] = dateSelect;
+		end_date = moment().add(0, 'd').toDate();
+		if (dateSelect == "today") {
+			start_date = moment();
+		} else if (dateSelect == "yesterday") {
+			start_date = moment().add(-1, 'd').toDate();
+		} else if (dateSelect == "last7day") {
+			start_date = moment().add(-7, 'd').toDate();
+		} else if (dateSelect == "last15day") {
+			start_date = moment().add(-15, 'd').toDate();
+		} else if (dateSelect == "last30day") {
+			start_date = moment().add(-30, 'd').toDate();
+		} else {
+			if (from_date) {
+				start_date = from_date;
+			} else {
+				start_date = moment().add(-70, 'd').toDate();
+			}
+			if (to_date) {
+				end_date = to_date;
+			} else {
+				end_date = moment().add(0, 'd').toDate();
+				// end_date= moment().toDate();
+			}
+		}
 
-	}else {
-        	if(from_date){
-				start_date= from_date;
-        	}else{
-        		start_date= moment().add(-7,'d').toDate();
-        	}
-        	if(to_date){
-				end_date= to_date;
-        	}else{
-        		end_date= moment();
-        	}
-        	orderQueryObj['ordered_date']= {
-		        $between: [start_date, end_date]
-		    };
-        }
-        if(marketType){
-        	productQueryObj['marketplace_id'] = marketType;
-        }
-        if(status){
-        	orderQueryObj['status'] = status;
-        }
-	
+	} else {
+		if (from_date) {
+			start_date = from_date;
+		} else {
+			start_date = moment().add(-70, 'd').toDate();
+		}
+		if (to_date) {
+			end_date = to_date;
+		} else {
+			end_date = moment().add(0, 'd').toDate();
+		}
+		orderQueryObj['ordered_date'] = {
+			$between: [start_date, end_date]
+		};
+	}
+
+	orderQueryObj['ordered_date'] = {
+		$between: [start_date, end_date]
+	};
+	queryObject['start_date'] = start_date;
+	queryObject['end_date'] = end_date;
+
+
+	if (marketType) {
+		queryObject['marketType'] = marketType;
+		productQueryObj['marketplace_id'] = marketType;
+	}
+	if (status) {
+		queryObject['status'] = status;
+		orderQueryObj['status'] = statusCode[status];
+	}
+
 	// end Query string assignment
-
 
 
 
@@ -85,8 +97,8 @@ export function orderHistory(req, res) {
 	var offset = 0;
 	var limit = 1;
 	// var vendor_id = req.user.Vendor.id;
-	
-	
+
+
 
 	let user_id = LoggedInUser.id;
 
@@ -95,7 +107,7 @@ export function orderHistory(req, res) {
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 	delete req.query.order;
@@ -110,21 +122,17 @@ export function orderHistory(req, res) {
 	orderQueryObj['user_id'] = 30;
 	var includeArr = [{
 		model: model["Order"],
-		where:orderQueryObj,
-		attributes:['id','invoice_id','delivered_on','ordered_date','total_price'],
-		// [sequelize.fn('SUM', sequelize.col('Orders.total_price')), 'total_trans']
-		// [sequelize.fn('SUM', sequelize.col('Orders.total_price')), 'total_trans'],
-
-		where: orderItemQueryObj
+		where: orderQueryObj,
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price']
 	}, {
-			model: model['Product'],
-			where:productQueryObj,
-			include: [{
-				model: model['Vendor'],
-			}]
-			
+		model: model['Product'],
+		where: productQueryObj,
+		include: [{
+			model: model['Vendor'],
+		}]
+
 	}];
-	console.log(orderQueryObj);
+	// console.log(orderQueryObj);
 
 	async.series({
 			orderHistory: function(callback) {
@@ -138,18 +146,29 @@ export function orderHistory(req, res) {
 			}
 		},
 		function(err, results) {
+			maxSize = results.orderHistory.count / limit;
+			if (results.orderHistory.count % limit)
+				maxSize++;
 			if (!err) {
-				// console.log(results.orderHistory.rows);
+				console.log("start_date", queryObject['start_date']);
 				res.render('order-history', {
 					title: "Global Trade Connect",
 					OrderItems: results.orderHistory.rows,
 					count: results.orderHistory.count,
+					queryObject: queryObject,
 					LoggedInUser: LoggedInUser,
-					marketPlace: marketPlace
+					marketPlace: marketPlace,
+					// pagination
+					page: page,
+					maxSize: maxSize,
+					pageSize: limit,
+					// queryPaginationObj:queryPaginationObj,
+					collectionSize: results.orderHistory.count
+					// End pagination
 				});
 			} else {
 				res.render('order-history', err);
 			}
 		});
-	
+
 }
