@@ -45,46 +45,46 @@ function selectDatefun(){
 	}
 }
 
-// $("#reviewForm").validate({
+$("#reviewForm").validate({
 
-// 		rules: {
-// 			reviewDetailComment: "required",
-// 			reviewTitle: "required"
-// 		},
-// 		messages: {
-// 			reviewDetailComment: "Please Enter your review Comment",
-// 			reviewTitle: "Please enter your Review title"
-// 		}
+		rules: {
+			reviewDetailComment: "required",
+			reviewTitle: "required"
+		},
+		messages: {
+			reviewDetailComment: "Please Enter your review Comment",
+			reviewTitle: "Please enter your Review title"
+		}
 
-// 	});
+	});
 
 
-	// function searchOrderSubmit() {
-	// 	alert("hai");
-	// 	let orderObj = {};
+	function searchOrderSubmit() {
+		alert("hai");
+		let orderObj = {};
 
-	// 	if (userInfo.email) {
-	// 		if ($("#reviewForm").valid()) {
-	// 			orderObj['from_date'] = $('#from').val();
-	// 			orderObj['to_date'] = $('#to').val();
-	// 			orderObj['selectDate'] = $('#selectDate').val();
-	// 			orderObj['marketType'] = $('#marketType').val();;
-	// 			console.log(orderObj);
+		if (userInfo.email) {
+			if ($("#reviewForm").valid()) {
+				orderObj['from_date'] = $('#from').val();
+				orderObj['to_date'] = $('#to').val();
+				orderObj['selectDate'] = $('#selectDate').val();
+				orderObj['marketType'] = $('#marketType').val();;
+				console.log(orderObj);
 
-	// 			$.ajax({
-	// 				type: "POST",
-	// 				url: "/api/order-history",
-	// 				data: orderObj,
-	// 				success: function (result) {
-	// 					if (result)
-	// 						location.reload();
-	// 				}
-	// 			});
-	// 		}
-	// 	} else {
-	// 		location.href = "/login"
-	// 	}
-	// }
+				$.ajax({
+					type: "POST",
+					url: "/api/order-history",
+					data: orderObj,
+					success: function (result) {
+						if (result)
+							location.reload();
+					}
+				});
+			}
+		} else {
+			location.href = "/login"
+		}
+	}
 
 </script>
 
@@ -117,13 +117,13 @@ function selectDatefun(){
 										<option value = "{{this}}">{{@key}}</option>
 										{{/each}}
 							</select>
-							 <select class="vend_edit_lists_buttonstyle" name="status">
+							 <select class="vend_edit_lists_buttonstyle" name="Status">
 								<option >STATUS</option>
 								<option value="NEWORDER"> New Order</option>
 								<option value="CANCLEORDER"> Cancel Order</option>
 								<option value="FAILEDORDER"> Failed Order</option>
 							</select> 
-							<input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
+							<input type="submit" value="UPDATE" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
 							</form>
 						</div>
 						{{!-- <div class="col-md-2">

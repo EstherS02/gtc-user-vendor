@@ -16,16 +16,81 @@ export function orderHistory(req, res) {
 	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
+	var orderItemQueryObj = {};
+	var orderQueryObj = {};
+	var productQueryObj = {};
+
+	//  Query string assignment
+	var from_date = req.query.from_date;
+	var to_date = req.query.to_date;
+	var dateSelect = req.query.dateSelect;
+	var marketType = req.query.marketType;
+	var status = req.query.status;
+	var start_date;
+	var end_date;
+	if(dateSelect){
+		 	end_date= moment();
+		if(dateSelect == "today"){
+			start_date =  moment();
+        }else if(dateSelect == "yesterday"){
+			start_date= moment().add(-1,'d').toDate();
+        }else if(dateSelect == "last7day"){
+			start_date= moment().add(-7,'d').toDate();
+        }else if(dateSelect == "last15day"){
+			start_date= moment().add(-15,'d').toDate();	
+        }else if(dateSelect == "last30day"){
+			start_date= moment().add(-30,'d').toDate();	
+        }else {
+        	if(from_date){
+				start_date= from_date;
+        	}else{
+        		start_date= moment().add(-7,'d').toDate();
+        	}
+        	if(to_date){
+				end_date= to_date;
+        	}
+        }
+	        orderQueryObj['from']= {
+	        $between: [start_date, end_date]
+	    };
+
+	}else {
+        	if(from_date){
+				start_date= from_date;
+        	}else{
+        		start_date= moment().add(-7,'d').toDate();
+        	}
+        	if(to_date){
+				end_date= to_date;
+        	}else{
+        		end_date= moment();
+        	}
+        	orderQueryObj['ordered_date']= {
+		        $between: [start_date, end_date]
+		    };
+        }
+        if(marketType){
+        	productQueryObj['marketplace_id'] = marketType;
+        }
+        if(status){
+        	orderQueryObj['status'] = status;
+        }
+	
+	// end Query string assignment
+
+
 
 
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
 	// var vendor_id = req.user.Vendor.id;
-	var rating_limit = 120;
-	var queryObj = {};
+	
+	
 
 	let user_id = LoggedInUser.id;
+
+
 	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -41,27 +106,30 @@ export function orderHistory(req, res) {
 	var maxSize;
 	// End pagination
 
-	var modelName = "Order";
-	queryObj = {
-		user_id: 24
-	};
+	var modelName = "OrderItem";
+	orderQueryObj['user_id'] = 30;
 	var includeArr = [{
-		model: model["User"]
+		model: model["Order"],
+		where:orderQueryObj,
+		attributes:['id','invoice_id','delivered_on','ordered_date','total_price'],
+		// [sequelize.fn('SUM', sequelize.col('Orders.total_price')), 'total_trans']
+		// [sequelize.fn('SUM', sequelize.col('Orders.total_price')), 'total_trans'],
+
+		where: orderItemQueryObj
 	}, {
-		model: model["OrderItem"],
-		include: [{
 			model: model['Product'],
+			where:productQueryObj,
 			include: [{
 				model: model['Vendor'],
 			}]
-			// attributes:['id','product_id','final_price',[Sequelizs.fn('SUM', sequelize.col('OrderItems.final_price')), 'total_trans']]
-		}]
+			
 	}];
+	console.log(orderQueryObj);
+
 	async.series({
 			orderHistory: function(callback) {
-				service.findRows(modelName, queryObj, offset, limit, field, order, includeArr)
+				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
 					.then(function(results) {
-						// console.log(results)
 						return callback(null, results);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -71,10 +139,10 @@ export function orderHistory(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				// console.log(marketPlace);
+				// console.log(results.orderHistory.rows);
 				res.render('order-history', {
 					title: "Global Trade Connect",
-					orderHistory: results.orderHistory.rows,
+					OrderItems: results.orderHistory.rows,
 					count: results.orderHistory.count,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace
