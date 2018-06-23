@@ -332,6 +332,8 @@ async.series({
 
 
                     maxSize = results.Review.count / limit;
+                    if(results.Review.count%limit)
+                         maxSize++;
 
                     var productRating = [
                         {

@@ -1,13 +1,13 @@
 <script type="text/javascript"> 
 	$(function () {
 		$("#from").datepicker({
-			format: 'yyyy-mm-dd',
+			format: 'dd-mm-yyyy',
 			autohide: true, 
 
 		});
 		
 		$("#to").datepicker({
-			format: 'yyyy-mm-dd',
+			format: 'dd-mm-yyyy',
 			autohide: true, 
     		// endDate: new Date(),
     		"endDate": {greaterStart: "#from_date"},
@@ -45,6 +45,47 @@ function selectDatefun(){
 	}
 }
 
+$("#reviewForm").validate({
+
+		rules: {
+			reviewDetailComment: "required",
+			reviewTitle: "required"
+		},
+		messages: {
+			reviewDetailComment: "Please Enter your review Comment",
+			reviewTitle: "Please enter your Review title"
+		}
+
+	});
+
+
+	function searchOrderSubmit() {
+		alert("hai");
+		let orderObj = {};
+
+		if (userInfo.email) {
+			if ($("#reviewForm").valid()) {
+				orderObj['from_date'] = $('#from').val();
+				orderObj['to_date'] = $('#to').val();
+				orderObj['selectDate'] = $('#selectDate').val();
+				orderObj['marketType'] = $('#marketType').val();;
+				console.log(orderObj);
+
+				$.ajax({
+					type: "POST",
+					url: "/api/order-history",
+					data: orderObj,
+					success: function (result) {
+						if (result)
+							location.reload();
+					}
+				});
+			}
+		} else {
+			location.href = "/login"
+		}
+	}
+
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
@@ -76,15 +117,18 @@ function selectDatefun(){
 										<option value = "{{this}}">{{@key}}</option>
 										{{/each}}
 							</select>
-							 <select class="vend_edit_lists_buttonstyle" name="status">
-								<option value="">STATUS</option>
+							 <select class="vend_edit_lists_buttonstyle" name="Status">
+								<option >STATUS</option>
 								<option value="NEWORDER"> New Order</option>
 								<option value="CANCLEORDER"> Cancel Order</option>
 								<option value="FAILEDORDER"> Failed Order</option>
 							</select> 
-							<input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
+							<input type="submit" value="UPDATE" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
 							</form>
 						</div>
+						{{!-- <div class="col-md-2">
+						<input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" /> 	
+						</div> --}}
 						<div class="col-md-2">
 							<input style="width: 100%;" type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" />
 						</div>
@@ -102,7 +146,7 @@ function selectDatefun(){
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObject.start_date "MMM D, Y"}} to {{formatTime queryObject.end_date "MMM D, Y"}}</p>
+							<p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObj.from_date "MMM D, Y"}} to {{formatTime queryObj.to_date "MMM D, Y"}}</p>
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
@@ -130,6 +174,7 @@ function selectDatefun(){
 								</tr>
 							</thead>
 							<tbody>
+							{{!-- {{#each orderHistory}} --}}
 								{{#each OrderItems}}
 								<tr>
 									<td><input type="checkbox"></td>
@@ -139,13 +184,14 @@ function selectDatefun(){
 									<td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}
 
 									</td>
-									<td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
+									<td>{{formatTime this.Order.delivered_on "MMM D, Y"}}</td>
 									<td>PayPal</td>
 									<td class="text_green_color">Complete</td>
 									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
 									<td>${{this.final_price}} CAD</td>
 								</tr>
 								{{/each}}
+							{{!-- {{/each}} --}}
 								
 								<tr>
 									<td></td>
@@ -162,26 +208,9 @@ function selectDatefun(){
 							</tbody>
 						</table>
 					</div>
-					{{!-- Pagination starts --}}
-							<div class="row">
-								<div style="margin:0 auto;width:100px;">
-									{{#pagination collectionSize page pageSize maxSize}}
-									<nav aria-label="Page navigation example">
-										<ul class="pagination justify-content-center">
-											{{#each pages}}
-											<li class="page-item {{#if isCurrent}} active {{/if}}">
-												<a class="page-link" href="order-history?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-											</li>
-											{{/each}}
-										</ul>
-									</nav>
-									{{/pagination}}
-								</div>
-							</div>
-							{{!-- Pagination Ends --}}
 					<div class="row">
 						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObject.start_date "MMM D, Y"}} to {{formatTime queryObject.end_date "MMM D, Y"}}</p>
+							<p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObj.from_date "MMM D, Y"}} to {{formatTime queryObj.to_date "MMM D, Y"}}</p>
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page: 

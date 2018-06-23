@@ -33,6 +33,10 @@ function UpdateGtcCart(item){
 	});
 }
 
+function applyGTCCoupon(){
+	
+}
+
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
@@ -237,7 +241,8 @@ function UpdateGtcCart(item){
 						</div>
 						<hr class="common_margin" />
 						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
-						<input type="text" placeholder="Enter Promo Code" class="promo_code_text" />
+						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
+						<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
 						<input type="submit" value="CHECKOUT NOW" class="shop_checkout_btn" />
 						<img src="../img/payment-methods.jpg" alt="payment">
 					</div>
