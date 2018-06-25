@@ -12,11 +12,15 @@ const async = require('async');
 export function talk(req, res) {
 	var modelName = 'TalkSetting';
 	var timeModel = "Timezone";
-	var queryObj1 = {};
+	var queryObj1 = {}, LoggedInUser = {};
 	var queryObj = {
 		vendor_id: 29
 	};
 	var includeArr = [];
+
+	if(req.user)
+		LoggedInUser = req.user;
+		let user_id = LoggedInUser.id;
 
 	async.series({
 		talk: function(callback) {
@@ -60,7 +64,8 @@ export function talk(req, res) {
 				talk: results.talk,
 				busiHours: results.busiHours,
 				timeZone: results.timeZone,
-				dayCode: dayCode
+				dayCode: dayCode,
+				LoggedInUser: LoggedInUser
 			});
 		} else {
 			res.render('services', error);
