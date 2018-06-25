@@ -11,5 +11,6 @@ var router = express.Router();
 router.put('/update', controller.updateCoupon);
 router.put('/update-product-coupon', controller.updateProductCoupon);
 router.put('/update-category-coupon',controller.updateCategoryCoupon);
+router.post('/save',controller.saveCoupon);
 
 module.exports = router;

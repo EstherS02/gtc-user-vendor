@@ -17,20 +17,97 @@ export function orderHistory(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
+	var queryObject = {};
+	var orderItemQueryObj = {};
+	var orderQueryObj = {};
+	var productQueryObj = {};
+
+	//  Query string assignment
+	var from_date = req.query.from_date;
+	var to_date = req.query.to_date;
+	var dateSelect = req.query.dateSelect;
+	var marketType = req.query.marketType;
+	var status = req.query.status;
+	var start_date;
+	var end_date;
+	if (dateSelect) {
+		queryObject['dateSelect'] = dateSelect;
+		end_date = moment().add(0, 'd').toDate();
+		if (dateSelect == "today") {
+			start_date = moment();
+		} else if (dateSelect == "yesterday") {
+			start_date = moment().add(-1, 'd').toDate();
+		} else if (dateSelect == "last7day") {
+			start_date = moment().add(-7, 'd').toDate();
+		} else if (dateSelect == "last15day") {
+			start_date = moment().add(-15, 'd').toDate();
+		} else if (dateSelect == "last30day") {
+			start_date = moment().add(-30, 'd').toDate();
+		} else {
+			if (from_date) {
+				start_date = from_date;
+			} else {
+				start_date = moment().add(-70, 'd').toDate();
+			}
+			if (to_date) {
+				end_date = to_date;
+			} else {
+				end_date = moment().add(0, 'd').toDate();
+				// end_date= moment().toDate();
+			}
+		}
+
+	} else {
+		if (from_date) {
+			start_date = from_date;
+		} else {
+			start_date = moment().add(-70, 'd').toDate();
+		}
+		if (to_date) {
+			end_date = to_date;
+		} else {
+			end_date = moment().add(0, 'd').toDate();
+		}
+		orderQueryObj['ordered_date'] = {
+			$between: [start_date, end_date]
+		};
+	}
+
+	orderQueryObj['ordered_date'] = {
+		$between: [start_date, end_date]
+	};
+	queryObject['start_date'] = start_date;
+	queryObject['end_date'] = end_date;
+
+
+	if (marketType) {
+		queryObject['marketType'] = marketType;
+		productQueryObj['marketplace_id'] = marketType;
+	}
+	if (status) {
+		queryObject['status'] = status;
+		orderQueryObj['status'] = statusCode[status];
+	}
+
+	// end Query string assignment
+
+
 
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
 	// var vendor_id = req.user.Vendor.id;
-	var rating_limit = 120;
-	var queryObj = {};
+
+
 
 	let user_id = LoggedInUser.id;
+
+
 	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 	delete req.query.order;
@@ -41,27 +118,26 @@ export function orderHistory(req, res) {
 	var maxSize;
 	// End pagination
 
-	var modelName = "Order";
-	queryObj = {
-		user_id: 24
-	};
+	var modelName = "OrderItem";
+	orderQueryObj['user_id'] = 30;
 	var includeArr = [{
-		model: model["User"]
+		model: model["Order"],
+		where: orderQueryObj,
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price']
 	}, {
-		model: model["OrderItem"],
+		model: model['Product'],
+		where: productQueryObj,
 		include: [{
-			model: model['Product'],
-			include: [{
-				model: model['Vendor'],
-			}]
-			// attributes:['id','product_id','final_price',[Sequelizs.fn('SUM', sequelize.col('OrderItems.final_price')), 'total_trans']]
+			model: model['Vendor'],
 		}]
+
 	}];
+	// console.log(orderQueryObj);
+
 	async.series({
 			orderHistory: function(callback) {
-				service.findRows(modelName, queryObj, offset, limit, field, order, includeArr)
+				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
 					.then(function(results) {
-						console.log(results)
 						return callback(null, results);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -70,18 +146,29 @@ export function orderHistory(req, res) {
 			}
 		},
 		function(err, results) {
+			maxSize = results.orderHistory.count / limit;
+			if (results.orderHistory.count % limit)
+				maxSize++;
 			if (!err) {
-				console.log(marketPlace);
+				console.log("start_date", queryObject['start_date']);
 				res.render('order-history', {
 					title: "Global Trade Connect",
-					orderHistory: results.orderHistory.rows,
+					OrderItems: results.orderHistory.rows,
 					count: results.orderHistory.count,
+					queryObject: queryObject,
 					LoggedInUser: LoggedInUser,
-					marketPlace: marketPlace
+					marketPlace: marketPlace,
+					// pagination
+					page: page,
+					maxSize: maxSize,
+					pageSize: limit,
+					// queryPaginationObj:queryPaginationObj,
+					collectionSize: results.orderHistory.count
+					// End pagination
 				});
 			} else {
 				res.render('order-history', err);
 			}
 		});
-	
+
 }

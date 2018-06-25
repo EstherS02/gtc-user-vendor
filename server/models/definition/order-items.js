@@ -100,7 +100,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const Order = model.Order;
     const Product = model.Product;
-    const Coupon = model.Coupon;
+    //const Coupon = model.Coupon;
     const Tax = model.Tax;
 
     OrderItem.belongsTo(Order, {
