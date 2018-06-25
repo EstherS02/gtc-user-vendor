@@ -336,16 +336,41 @@ a {
   margin-bottom: -40px;
 }
 
-@media (min-width: 1200px) {
+
+/*@media (min-width: 1200px) {
   .gtc-custom-container {
       max-width: 1223px;
   }
-}
+}*/
 
 @media (min-width: 1200px) {
 	.my-custom-container {
 	    max-width: 1290px;
 	}
+}
+
+
+@media (min-width: 1600px) {
+  .container {
+      max-width: 1500px;
+  }
+}
+
+@media (min-width: 1700px){
+  .container {
+      max-width: 1440px;
+  }
+}
+
+/*@media screen and (min-width: 1600px) {
+  .container {
+    width: 1570px;
+  }
+}
+@media screen and (min-width: 1900px) {
+  .container {
+    width: 1870px;
+  }*/
 }
 
 .btn-primary {
@@ -991,3 +1016,42 @@ p.p1 {
     padding: 3px 15px;
     border-radius: 0px;
 }
+
+*/* {
+    box-sizing: border-box;
+}*/
+
+ /*Create two equal columns that floats next to each other */
+/*.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}*/
+
+/* Clear floats after the columns */
+/*.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}*/
+
+/*.view-button{
+    border: none;
+    outline: none;
+    padding: 3px 0px 2px 0px;
+    background-color: #ffffff;
+    cursor: pointer;
+    margin: -9px;
+    border-radius: 20px;
+}
+
+.view-button:hover {
+    background-color: #ddd;
+}
+
+.view-button:active {
+    background-color: #666;
+    color: white;
+}
+
+*/
