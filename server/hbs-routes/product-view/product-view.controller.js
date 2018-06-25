@@ -18,7 +18,6 @@ export function GetProductDetails(req, res) {
     var includeArr = [];
     var LoggedInUser = {};
 
-
     if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
         LoggedInUser = req.gtcGlobalUserObj;
     }
@@ -107,15 +106,39 @@ export function GetProductDetails(req, res) {
 
                 productRating = _.orderBy(productRating, ['ratingCount'], ['desc'])
 
-                res.render('product-view', {
+
+                var field        = 'id';
+                var order        = 'desc';
+                var productModel = 'MarketplaceProduct';
+                var queryObj2    = {}
+
+                queryObj2.sub_category_id   = productsList.sub_category_id;
+                queryObj2.vendor_id         = productsList.vendor_id;
+                queryObj2.status            = status["ACTIVE"];
+
+                var result_obj = {
                     title: "Global Trade Connect",
                     product: productsList,
                     productReviewsList: productReviewsList,
                     LoggedInUser: LoggedInUser,
                     rating : productRating,
                     avgRating : productAvgRating
-                });
+                };                 
 
+                service.findRows(productModel, queryObj2, 0, 9, field, order)
+                    .then(function(RelatedProducts) {
+                        console.log(RelatedProducts.rows)
+                        console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
+                        if (RelatedProducts) {                         
+                            result_obj.RelatedProducts = RelatedProducts.rows;   
+                        } else {
+                            result_obj.RelatedProducts = [];
+                        }
+                        res.render('product-view', result_obj);
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        res.render('product-view', result_obj);
+                    });
             } else {
                 res.render('product-view', {
                     title: "Global Trade Connect"
@@ -129,28 +152,28 @@ export function GetProductDetails(req, res) {
 }
 
 
-export function productView(req, res) {
-    //old code
+// export function productView(req, res) {
+//     //old code
 
-    let searchObj = {}
+//     let searchObj = {}
 
-    if (req.params.product_id)
-        searchObj["id"] = req.params.product_id;
+//     if (req.params.product_id)
+//         searchObj["id"] = req.params.product_id;
 
-    if (req.params.product_slug)
-        searchObj["product_slug"] = req.params.product_slug;
+//     if (req.params.product_slug)
+//         searchObj["product_slug"] = req.params.product_slug;
 
-    service.findOneRow('Product', searchObj)
-        .then(function(productDetails) {
-            res.render('productView', {
-                title: 'Global Trade Connect',
-                productDetails: productDetails
-            });
-        }).catch(function(error) {
-            console.log('Error :::', error);
-            res.render('productView', error)
-        });
-}
+//     service.findOneRow('Product', searchObj)
+//         .then(function(productDetails) {
+//             res.render('productView', {
+//                 title: 'Global Trade Connect',
+//                 productDetails: productDetails
+//             });
+//         }).catch(function(error) {
+//             console.log('Error :::', error);
+//             res.render('productView', error)
+//         });
+// }
 
 
 
@@ -161,6 +184,7 @@ export function GetProductReview(req, res){
     var queryPaginationObj = {};
     var queryParams = {};
     var sub_category;
+    var vendor_id;
     var marketplace_id;
     //pagination 
 	var page;
@@ -211,11 +235,14 @@ async.series({
                     }
                 }
         	}];
-           var id = req.params.product_id;
+            var id = {                
+                id :req.params.product_id
+            }
             service.findRow(productModel, id,includeArr1)
                 .then(function(product) {
                 	sub_category = product.sub_category_id;
-                	marketplace_id = product.marketplace_id;
+                    // marketplace_id = product.marketplace_id;
+                	vendor_id = product.vendor_id;
                     return callback(null, product);
                 }).catch(function(error) {
                     console.log('Error :::', error);
@@ -266,7 +293,7 @@ async.series({
         RelatedProducts: function(callback) {
         	var queryObj2={
         		sub_category_id:sub_category,
-        		marketplace_id:marketplace_id
+        		vendor_id:vendor_id
         	};
         	includeArr = [{ model: model["Vendor"] },
             { model: model["Marketplace"] },

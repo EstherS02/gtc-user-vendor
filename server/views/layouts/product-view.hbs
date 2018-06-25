@@ -101,13 +101,6 @@
 
 	}
 
-	$(document).ready(function(){
-		$("#seeAllReview").click(function () {
-	   			location.href = "/product/xth-maths-books/1/allReviews"
-		});
-	});
-
-
 </script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 
 <section>
@@ -486,7 +479,9 @@
                                     <!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
                                 </div>
                                 <div class="col-md-6 col-6">
-                                    <button class="product_buttion" id="seeAllReview" style="background-color: #154881;">See All Reviews</button>
+                                	{{#ifCond product.Reviews.length '>' 0}}
+                                    	<a class="product_buttion" href="/product/{{product.product_name}}/{{product.id}}/allReviews" style="background-color: #154881;padding: 3px 6px;">See All Reviews</a>
+                                    {{/ifCond}}
                                 </div>
                             </div>
 
@@ -559,7 +554,73 @@
 			<section class="box4" style="margin-bottom:20px;">
 				<div class="container clearfix">
 					<div class="row">
+						{{#each RelatedProducts}}
 						<div class="col-md-4 col-12 common_top">
+							<div class="row">
+								<div class="col-md-3 col-2">
+									<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+								</div>
+								<div class="col-md-9 col-10">
+									<div class="row common_padding">
+										<div class="col-md-8 col-8">
+											<p class="wts_header">
+												<a href="#">{{this.product_name}}</a>
+											</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<p>											
+												{{#if minimum_order_quantity}}	
+                                                MOQ:{{this.minimum_order_quantity}}
+                                                {{else}}
+                                                ${{product_price}}
+                                                {{/if}}
+											</p>
+										</div>
+									</div>
+									<div class="row common_padding">
+										<div class="col-md-3 col-3">
+											<p>Origin</p>
+										</div>
+										<div class="col-md-5 col-5">
+											<p>{{this.country_name}}</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<p>&nbsp;</p>
+										</div>
+									</div>
+									<div class="row common_padding">
+										<div class="col-md-3 col-3">
+											<p>Category</p>
+										</div>
+										<div class="col-md-5 col-5">
+											<p>{{this.category_name}} > {{this.sub_category_name}}</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<p>Seller Rating</p>
+										</div>
+									</div>
+									<div class="row common_padding">
+										<div class="col-md-3 col-3">
+											<p>Seller</p>
+										</div>
+										<div class="col-md-5 col-5">
+											<p>
+												{{#if ../LoggedInUser.email}}	
+                                                <a>{{this.vendor_name}}</a>
+                                                {{else}}
+                                                <a href="/login">(Login for Seller Info)</a>
+                                                {{/if}}
+                                            </p>
+										</div>
+										<div class="sm-text col-md-4 col-4">
+											{{ starCount product_rating}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{{/each}}
+						<!-- <div class="col-md-4 col-12 common_top">
 							<div class="row">
 								<div class="col-md-3 col-2">
 									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
@@ -674,68 +735,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						</div> -->
 
 					</div>
-					<div class="row">
+					<!-- <div class="row">
 						<div class="col-md-4 col-12 common_top">
 							<div class="row">
 								<div class="col-md-3 col-2">
@@ -1088,7 +1091,7 @@
 							</div>
 						</div>
 
-					</div>
+					</div> -->
 
 				</div>
 			</section>
