@@ -106,12 +106,12 @@ export function salesHistory(req, res) {
     if (req.user)
         LoggedInUser = req.user;
 
-    var queryObject = {};
+    var queryURI = {};
+    var queryPaginationObj = {};
     var orderItemQueryObj = {};
     var orderQueryObj = {};
     var productQueryObj = {};
     var queryUrl = {};
-    queryUrl['url'] = req.url;
     //  Query string assignment
     var from_date = req.query.from_date;
     var to_date = req.query.to_date;
@@ -121,7 +121,7 @@ export function salesHistory(req, res) {
     var start_date;
     var end_date;
     if (dateSelect) {
-        queryObject['dateSelect'] = dateSelect;
+        queryURI['dateSelect'] = dateSelect;
         end_date = moment().add(0, 'd').toDate();
         if (dateSelect == "today") {
             start_date = moment();
@@ -166,16 +166,16 @@ export function salesHistory(req, res) {
     orderQueryObj['ordered_date'] = {
         $between: [start_date, end_date]
     };
-    queryObject['start_date'] = start_date;
-    queryObject['end_date'] = end_date;
+    queryURI['start_date'] = start_date;
+    queryURI['end_date'] = end_date;
 
 
     if (marketType) {
-        queryObject['marketType'] = marketType;
+        queryURI['marketType'] = marketType;
         productQueryObj['marketplace_id'] = marketType;
     }
     if (status) {
-        queryObject['status'] = status;
+        queryURI['status'] = status;
         orderQueryObj['status'] = statusCode[status];
     }
     // end Query string assignment
@@ -187,15 +187,20 @@ export function salesHistory(req, res) {
     //pagination 
     var page;
     offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    queryPaginationObj['offset'] = offset;
     delete req.query.offset;
     limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    queryPaginationObj['limit'] = limit;
     delete req.query.limit;
     order = req.query.order ? req.query.order : "desc";
+    queryPaginationObj['order'] = order;
     delete req.query.order;
     page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['page'] = page;
     delete req.query.page;
     var field = "id";
     offset = (page - 1) * limit;
+    queryPaginationObj['offset'] = offset;
     var maxSize;
     // End pagination
     var modelName = "OrderItem";
@@ -227,13 +232,14 @@ export function salesHistory(req, res) {
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
+            queryPaginationObj['maxSize'] = maxSize;
             if (!err) {
-                console.log("start_date", queryObject['start_date']);
+                console.log("start_date", queryURI['start_date']);
                 res.render('sales-history', {
                     title: "Global Trade Connect",
                     OrderItems: results.orderHistory.rows,
                     count: results.orderHistory.count,
-                    queryObject: queryObject,
+                    queryURI: queryURI,
                     LoggedInUser: LoggedInUser,
                     marketPlace: marketPlace,
                     queryUrl: queryUrl,
@@ -241,7 +247,7 @@ export function salesHistory(req, res) {
                     page: page,
                     maxSize: maxSize,
                     pageSize: limit,
-                    // queryPaginationObj:queryPaginationObj,
+                    queryPaginationObj:queryPaginationObj,
                     collectionSize: results.orderHistory.count
                     // End pagination
                 });
