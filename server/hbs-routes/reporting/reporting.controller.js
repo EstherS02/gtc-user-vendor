@@ -26,17 +26,48 @@ export function reporting(req, res) {
 }
 
 export function performance(req, res) {
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55");
+    var offset, limit, field, order;
+    var queryObj = {};
     var LoggedInUser = {};
+
+    offset = 0;
+    limit = 25;
+    field = 'id';
+    order = 'asc';
+    var productModel = "Product";
 
     if (req.user)
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
 
-    res.render('performance', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
-    });
+    async.series({
+        products: function (callback) {
+            queryObj['vendor_id'] = LoggedInUser.Vendor.id;
+            service.findRows(productModel, queryObj, offset, limit, field, order)
+                .then(function (products) {
+                    return callback(null, products.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+    },
+        function (err, results) {
+            if (!err) {
+                res.render('performance', {
+                    title: "Global Trade Connect",
+                    products: results.products,
+                    marketPlace:marketPlace,
+                    LoggedInUser:LoggedInUser
+                });
+            }
+            else {
+                res.render('performance', err);
+            }
+        });
 }
 
 
@@ -188,17 +219,17 @@ export function salesHistory(req, res) {
         }]
     }];
     async.series({
-            orderHistory: function(callback) {
-                service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
-                    .then(function(results) {
-                        return callback(null, results);
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return callback(null);
-                    });
-            }
-        },
-        function(err, results) {
+        orderHistory: function (callback) {
+            service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
+                .then(function (results) {
+                    return callback(null, results);
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+    },
+        function (err, results) {
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
