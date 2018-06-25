@@ -13,11 +13,11 @@
         "endDate": {greaterStart: "#from_date"},
         onSelect: $('#selectDate').val("")
 
-    });
+      });
   });
 </script>
 <script type="text/javascript">
-function selectAll(ele) {
+  function selectAll(ele) {
     var checkboxes = document.getElementsByTagName('input');
     if (ele.checked) {
       for (var i = 0; i < checkboxes.length; i++) {
@@ -36,19 +36,19 @@ function selectAll(ele) {
   }
 </script>
 <script type="text/javascript">
-function selectDatefun(){
-  var val = $( "#selectDate option:selected" ).val();
-  if(val){
-    console.log();
-    $('#from').val("");
-    $('#to').val(""); 
+  function selectDatefun(){
+    var val = $( "#selectDate option:selected" ).val();
+    if(val){
+      console.log();
+      $('#from').val("");
+      $('#to').val(""); 
+    }
   }
-}
 
 </script>
 
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
-   <section class="showing_categ">
+<section class="showing_categ">
   <div class="" >
     <div class="container">
       <div class="row">
@@ -57,32 +57,32 @@ function selectDatefun(){
           <h5 style="padding-top: 20px;">Order History</h5>
           <div class="row">
             <div class="col-md-10">
-            <form id="searchOrder">
-              Date Range
-               <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
-               to
-               <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" name="to_date" id="to" /> 
-               <select class="vend_edit_lists_buttonstyle" name="dateSelect" id="selectDate" onchange="selectDatefun()">
-                <option value="">select</option>>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="last7day">LAST 7 DAY</option>
-                <option value="last15day">LAST 15 DAY</option>
-                <option value="last30day">LAST 30 DAY</option>
-              </select> 
-              <select class="vend_edit_lists_buttonstyle" name="marketType">
-                <option value=""> TYPE </option>
-                {{#each marketPlace}}
-                    <option value = "{{this}}">{{@key}}</option>
-                    {{/each}}
-              </select>
-               <select class="vend_edit_lists_buttonstyle" name="status">
-                <option value="">STATUS</option>
-                <option value="NEWORDER"> New Order</option>
-                <option value="CANCLEORDER"> Cancel Order</option>
-                <option value="FAILEDORDER"> Failed Order</option>
-              </select> 
-              <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
+              <form id="searchOrder">
+                Date Range
+                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
+                to
+                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" name="to_date" id="to" /> 
+                <select class="vend_edit_lists_buttonstyle" name="dateSelect" id="selectDate" onchange="selectDatefun()">
+                  <option value="">select</option>>
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="last7day">LAST 7 DAY</option>
+                  <option value="last15day">LAST 15 DAY</option>
+                  <option value="last30day">LAST 30 DAY</option>
+                </select> 
+                <select class="vend_edit_lists_buttonstyle" name="marketType">
+                  <option value=""> TYPE </option>
+                  {{#each marketPlace}}
+                  <option value = "{{this}}">{{@key}}</option>
+                  {{/each}}
+                </select>
+                <select class="vend_edit_lists_buttonstyle" name="status">
+                  <option value="">STATUS</option>
+                  <option value="NEWORDER"> New Order</option>
+                  <option value="CANCLEORDER"> Cancel Order</option>
+                  <option value="FAILEDORDER"> Failed Order</option>
+                </select> 
+                <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
               </form>
             </div>
             <div class="col-md-2">
@@ -94,7 +94,7 @@ function selectDatefun(){
               
             </div>
             <div class="col-md-4">
-            <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" />
+              <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" />
               <select style="width: 35%" class="vend_edit_lists_buttonstyle float-right">
                 <option>EXPORT TO</option>
               </select>
@@ -102,14 +102,14 @@ function selectDatefun(){
           </div>
           <div class="row">
             <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObject.start_date "MMM D, Y"}} to {{formatTime queryObject.end_date "MMM D, Y"}}</p>
+              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
             </div>
             <div class="col-md-6">
               <p class="vend_edit_lists_pstyle float-right">Entries per page: 
-                <a href="/reporting/sales-history?limit=10"> 10</a>
-                <a href="/reporting/sales-history?limit=25"> 25</a>
-                <a href="/reporting/sales-history?limit=100"> 100</a>
-                <a href="/reporting/sales-history?limit=All"> All </a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
               </p>
             </div>
           </div>
@@ -163,37 +163,49 @@ function selectDatefun(){
             </table>
           </div>
           {{!-- Pagination starts --}}
-              <div class="row">
-                <div style="margin:0 auto;width:100px;">
-                  {{#pagination collectionSize page pageSize maxSize}}
-                  <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                      {{#each pages}}
-                      <li class="page-item {{#if isCurrent}} active {{/if}}">
-                        <a class="page-link" href="/reporting/sales-history?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-                      </li>
-                      {{/each}}
-                    </ul>
-                  </nav>
-                  {{/pagination}}
-                </div>
-              </div>
-              {{!-- Pagination Ends --}}
+          {{#ifCond count '>' queryPaginationObj.limit}}
+          <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-7">
+              {{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  {{#unless startFromFirstPage}}
+                  <li class="page-item">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                  </li>
+                  {{/unless}} {{#each pages}}
+                  <li class="page-item {{#if isCurrent}} active {{/if}}">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                  </li>
+                  {{/each}} {{#unless endAtLastPage}}
+                  <li class="page-item">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                  </li>
+                  {{/unless}}
+                </ul>
+              </nav>
+              {{/pagination}}
+            </div>
+          </div>
+          {{/ifCond}}
+          {{!-- Pagination Ends --}}
           <div class="row">
             <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryObject.start_date "MMM D, Y"}} to {{formatTime queryObject.end_date "MMM D, Y"}}</p>
+              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
             </div>
             <div class="col-md-6">
               <p class="vend_edit_lists_pstyle float-right">Entries per page: 
-                <a href="/reporting/sales-history?limit=10"> 10</a>
-                <a href="/reporting/sales-history?limit=25"> 25</a>
-                <a href="/reporting/sales-history?limit=100"> 100</a>
-                <a href="/reporting/sales-history?limit=All"> All </a></p>
+                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
+              </div>
             </div>
-          </div>
-        </div>    
+          </div>    
+        </div>
       </div>
     </div>
-  </div>
-</section>
-{{> footer/footer}}
+  </section>
+  {{> footer/footer}}
