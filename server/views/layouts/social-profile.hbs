@@ -11,7 +11,7 @@
             type: 'PUT',
             data: formInput,
             success: function (updateData) {
-                console.log("success2")
+                alert("Upadted");
             },
             error: function (error) {
                 console.log("Error", error);
@@ -20,15 +20,19 @@
         });
     });
 
-function validate_url(url) {
-        if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(url))
-            return 'twitter';
+    function validate_fb(url) {
+        // $("#facebook_append").remove();
+        var domElements = '<div class="col-md-4 text_green_color social_check">' +
+            '<i class="fas fa-check-circle"></i>' + '</div>'
+        var value1 = url.value;
 
-        if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(url))
-            return 'facebook';
-   
-        return 'unknown';
- }
+        if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value1))
+            $("#facebook_append").append(domElements);
+
+        else
+            $("input[name=facebook_url]").val("");
+    }
+
 </script>
 <section class="showing_categ">
     <div class="row">
@@ -49,13 +53,11 @@ function validate_url(url) {
                                     <i class="fab fa-facebook-f  "></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="facebook_url" value="" onChange="validate_url(this);"  aria-label="Username"
-                                aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" name="facebook_url" value="{{vendorInfo.facebook_url}}" onChange="validate_fb(this);"
+                                aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                     </div>
-                    <div class="col-md-4 text_green_color social_check">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
+                    <div id="facebook_append"> </div>
                 </div>
                 <div class="row">
                     <div class="col-md-1 social_face">
@@ -69,13 +71,14 @@ function validate_url(url) {
                                     <i class="fab fa-google-plus-g"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="google_plus_url" value=""
+                            <input type="text" class="form-control social_input" name="google_plus_url" value="{{vendorInfo.google_plus_url}}" onChange="validate_g+(this);"
                                 aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                     </div>
+                    {{!--
                     <div class="col-md-4 text_green_color social_check_1">
                         <i class="fas fa-check-circle"></i>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="row">
                     <div class="col-md-1 social_face">
@@ -88,7 +91,8 @@ function validate_url(url) {
                                     <i class="fab fa-twitter"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="twitter_url" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" name="twitter_url" value="{{vendorInfo.twitter_url}}" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -105,7 +109,8 @@ function validate_url(url) {
                                     <i class="fab fa-linkedin-in"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="linkedin_url" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" name="linkedin_url" value="{{vendorInfo.linkedin_url}}" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -122,7 +127,8 @@ function validate_url(url) {
                                     <i class<i class="fab fa-youtube"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="youtube_url" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" name="youtube_url" aria-label="Username" value="{{vendorInfo.youtube_url}}"
+                                aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -139,7 +145,8 @@ function validate_url(url) {
                                     <i class="fab fa-instagram"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="instagram_url" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" value="{{vendorInfo.instagram_url}}" name="instagram_url" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -156,7 +163,8 @@ function validate_url(url) {
                                     <i class="fab fa-flickr"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control social_input" name="flickr_url" aria-label="Username" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control social_input" value="{{vendorInfo.flickr_url}}" name="flickr_url" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
                     </div>
                     <div class="col-md-4">

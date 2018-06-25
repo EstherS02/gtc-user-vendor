@@ -26,7 +26,6 @@ export function reporting(req, res) {
 }
 
 export function performance(req, res) {
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55");
     var offset, limit, field, order;
     var queryObj = {};
     var LoggedInUser = {};
