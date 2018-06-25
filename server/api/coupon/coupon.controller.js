@@ -25,14 +25,18 @@ export function updateCoupon(req, res) {
 	newCoupon.usage_limit = req.body.usage_limit;
 	newCoupon.limit_usage_to_x_items = req.body.limit_usage_to_x_items;
 	newCoupon.usage_limit_per_user = req.body.usage_limit_per_user;
-	newCoupon.discount_value = req.body.discount_value;
-	newCoupon.discount_value = req.body.discount_value;
+	// newCoupon.discount_value = req.body.discount_value;
+	// newCoupon.discount_value = req.body.discount_value;
 
 	var queryObj = {};
 	var includeArr = [];
 
 	service.updateRow(modelName, newCoupon, id).then(function(results) {
 		if (results) {
+			updateProductCoupon(JSON.parse(req.body.products));
+			updateProductCoupon(JSON.parse(req.body.excludeProduct));
+			updateCategoryCoupon(JSON.parse(req.body.categories));
+			updateCategoryCoupon(JSON.parse(req.body.excludeCategories));
 			return res.status(200).send(results);
 		} else {
 			return res.status(404).send("Not found");
@@ -44,11 +48,12 @@ export function updateCoupon(req, res) {
 	});
 }
 
-export function updateProductCoupon(req, res) {
-	var id = req.body.id;
-	var newCouponArry = JSON.parse(req.body.couponArray);
-	var modelName = req.body.modelName;
-	console.log(req.body.couponProducts);
+// export function updateProductCoupon(req, res) {
+function updateProductCoupon(req) {
+	var id = req.id;
+	var newCouponArry = (req.couponArray);
+	var modelName = req.modelName;
+	// console.log(req.body.couponProducts);
 	model[modelName].update({
 		status: 0
 	}, {
@@ -94,11 +99,12 @@ export function updateProductCoupon(req, res) {
 		return;
 	});
 }
-export function updateCategoryCoupon(req, res) {
-	var id = req.body.id;
-	var newCouponArry = JSON.parse(req.body.couponArray);
-	var modelName = req.body.modelName;
-	console.log(req.body.couponProducts);
+// export function updateCategoryCoupon(req, res) {
+function updateCategoryCoupon(req) {
+	var id = req.id;
+	var newCouponArry = (req.couponArray);
+	var modelName = req.modelName;
+	// console.log(req.body.couponProducts);
 	model[modelName].update({
 		status: 0
 	}, {
