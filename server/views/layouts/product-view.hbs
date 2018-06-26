@@ -554,6 +554,11 @@
 			<section class="box4" style="margin-bottom:20px;">
 				<div class="container clearfix">
 					<div class="row">
+						{{#ifCond RelatedProducts.length '==' 0}}
+						<div class="col-md-12 text-center list_add"> 
+							No Related Products
+						</div>
+						{{/ifCond}}
 						{{#each RelatedProducts}}
 						<div class="col-md-4 col-12 common_top">
 							<div class="row">
