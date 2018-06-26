@@ -78,7 +78,7 @@ export default function(app) {
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
   app.use('/user-verify', require('./hbs-routes/user-verify'));
   app.use('/order-checkout', require('./hbs-routes/checkout'));
-
+  app.use('/user-join', require('./hbs-routes/user-join'))
 
 
 
