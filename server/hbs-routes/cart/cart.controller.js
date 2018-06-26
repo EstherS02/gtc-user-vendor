@@ -34,33 +34,19 @@ export function cart(req, res) {
 
             return model["Cart"].findAndCountAll({
                 where: queryObj,
-                include: [{
-                        model: model["User"]
-                    },
+                include: [
+                    { model: model["User"]},
                     {
                         model: model["Product"],
-                        include: [{
-                                model: model["Vendor"]
-                            },
-                            {
-                                model: model["Category"]
-                            },
-                            {
-                                model: model["SubCategory"]
-                            },
-                            {
-                                model: model["Marketplace"]
-                            },
-                            {
-                                model: model["MarketplaceType"]
-                            },
-                            {
-                                model: model["Country"]
-                            },
-                            {
-                                model: model["State"]
-                            },
-                            {
+                        include: [
+                            { model: model["Vendor"]},
+                            { model: model["Category"]},
+                            { model: model["SubCategory"]},
+                            { model: model["Marketplace"]},
+                            { model: model["MarketplaceType"]},
+                            { model: model["Country"]},
+                            { model: model["State"]},
+                            {  
                                 model: model["ProductMedia"],
                                 where: {
                                     base_image: 1,

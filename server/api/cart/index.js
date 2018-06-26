@@ -12,5 +12,6 @@ var router = express.Router();
 router.post('/add-cart/:id', auth.isAuthenticated(), controller.addToCart);
 router.delete('/remove-cart/:id', auth.isAuthenticated(), controller.removeCart);
 router.put('/update-cart/:id', auth.isAuthenticated(), controller.updateCart);
+router.post('/apply-coupon', auth.isAuthenticated(), controller.applyCoupon);
 
 module.exports = router;

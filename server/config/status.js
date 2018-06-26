@@ -1,4 +1,5 @@
 module.exports = {
+	"TEMPORARY": 0,
 	"ACTIVE": 1,
 	"INACTIVE": 2,
 	"DELETED": 3,
@@ -12,6 +13,9 @@ module.exports = {
 	"SOLDOUT":11,
 	"WAITING":12,
 	"APPROVED":13,
-	"REJECTED":14
-
+	"REJECTED":14,
+	"PROCESSINGORDER":15,
+	"DISPATCHEDORDER":16,
+	"DELIVEREDORDER":17,
+	"RETURNEDORDER":18
 };
