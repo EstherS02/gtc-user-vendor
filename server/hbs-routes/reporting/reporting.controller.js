@@ -34,7 +34,7 @@ export function performance(req, res) {
     limit = 25;
     field = 'id';
     order = 'asc';
-    var productModel = "Product";
+    var productModel = "MarketplaceProduct";
 
     if (req.user)
         LoggedInUser = req.user;
