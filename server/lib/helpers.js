@@ -189,7 +189,6 @@ Handlebars.registerHelper("days", function(value) {
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
-    console.log('test', test);
 
     for (var i = 0, len = context.length; i < len; i++) {
         var option = '<option value="' + context[i].id + '"';
@@ -288,4 +287,31 @@ Handlebars.registerHelper('MarketPlaceId', function(obj, value_pass, options) {
         }
     });
     return val;
+});
+
+Handlebars.registerHelper('countrySelected', function(context, test) {
+    var ret = '';
+    var option;
+    for (var i = 0, len = context.length; i < len; i++) {
+        if (test.indexOf(context[i].id) == -1) {
+            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
+        ret += option;
+            
+        }
+    }
+    return new Handlebars.SafeString(ret);
+});
+Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
+    var ret = '';
+    var option;
+    console.log(test);
+    for (var i = 0, len = context.length; i < len; i++) {
+        if (test.indexOf(context[i].id) >= 0) {
+            console.log('context',test.indexOf(context[i].id));
+            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
+            ret += option;
+        }
+        
+    }
+    return new Handlebars.SafeString(ret);
 });

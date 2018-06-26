@@ -126,7 +126,7 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				// console.log("queryPaginationObj",queryPaginationObj)
+				console.log("queryPaginationObj",LoggedInUser)
 				res.render('reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,

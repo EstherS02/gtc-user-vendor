@@ -50,7 +50,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
   <div class="" >
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-10" style="background-color: #fff;">
@@ -125,6 +125,7 @@
                   <th>Date</th>
                   <th>Method</th>
                   <th>Status</th>
+                  <th>Notes</th>
                   <th></th>
                   <th>Amount</th>
                 </tr>
@@ -136,28 +137,20 @@
                   <td>{{this.Order.invoice_id}}</td>
                   <td>{{this.Product.product_name}}</td>
                   <td class="text_blue_color">{{this.Product.Vendor.vendor_name}}</td>
-                  <td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}
-
-                  </td>
+                  <td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}</td>
                   <td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
                   <td>PayPal</td>
                   <td class="text_green_color">Complete</td>
+                  <td> <td>
                   <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
                   <td>${{this.final_price}} CAD</td>
                 </tr>
                 {{/each}}
                 
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td colspan="8"></td>
                   <td class="text_blue_color">Total Transaction</td>
-                  <td>$11,227.32 CAD</td>
+                  <td>${{totalTransaction}} CAD</td>
                 </tr>
               </tbody>
             </table>
@@ -197,10 +190,10 @@
             </div>
             <div class="col-md-6">
               <p class="vend_edit_lists_pstyle float-right">Entries per page: 
-                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-                <a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
               </div>
             </div>
           </div>    

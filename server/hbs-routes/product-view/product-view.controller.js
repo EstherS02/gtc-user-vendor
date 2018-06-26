@@ -115,6 +115,7 @@ export function GetProductDetails(req, res) {
                 queryObj2.sub_category_id   = productsList.sub_category_id;
                 queryObj2.vendor_id         = productsList.vendor_id;
                 queryObj2.status            = status["ACTIVE"];
+                queryObj2.id                = { $ne : [productsList.id]};
 
                 var result_obj = {
                     title: "Global Trade Connect",
