@@ -41,6 +41,11 @@
 	function create(e){
 		window.location.href = '/coupons/add-coupon';
 	}
+	function searchName(e,ths){
+		if(e.keyCode == 13) {
+			window.location.href = '/coupons?name=' + $(ths).val();
+		}
+	}
 
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -65,7 +70,7 @@
 							<input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
-							<input type="text" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" />
+							<input type="text" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" onkeypress="searchName(event,this)" />
 						</div>
 					</div>
 					<div class="row">

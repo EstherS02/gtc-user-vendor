@@ -12,16 +12,39 @@ var async = require('async');
 
 export function socialProfile(req, res) {
     var LoggedInUser = {};
+   
+    var vendorModel = "Vendor";
+   console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
     if(req.user)
     LoggedInUser = req.user;
     
     let user_id = LoggedInUser.id;
 
-    res.render('social-profile', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser,
-        statusCode:statusCode
+    async.series({
+        vendorInfo: function (callback) {
+            var id = LoggedInUser.Vendor.id;
+            service.findIdRow(vendorModel,id )
+                .then(function (vendorInfo) {
+
+                    return callback(null, vendorInfo);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+    }, function (err, results) {
+        if (!err) {
+            res.render('social-profile', {
+				title: "Global Trade Connect",
+                vendorInfo:results.vendorInfo,
+                LoggedInUser: LoggedInUser
+			});
+        }
+        else {
+            res.render('social-profile', err);
+        }
     });
 
 }
