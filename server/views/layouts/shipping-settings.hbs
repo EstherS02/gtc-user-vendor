@@ -1,64 +1,118 @@
+<script type="text/javascript">
+function myAdd(e){
+    var addSelected = $('select[name="country"] option:selected').val();
+    if(addSelected){
+        var newData = {};
+        newData.vendor_id = {{LoggedInUser.Vendor.id}};
+        if(addSelected == 'All'){
+
+        }
+        else{
+        newData.country_id = addSelected;
+        $.ajax({
+                type: 'PUT',
+                url: '/api/shipping-setting/add-country',
+                data: newData,
+                success: function(data, text) {
+                    location.reload();
+                },
+                error: function(request, status, error) {
+                    console.log('status', status);
+                    console.log('error', error);
+                }
+            });
+        }
+    }
+
+}
+function myRemove(e){
+    var removeSelected = $('select[name="addedCountry"] option:selected').val();
+    if(removeSelected){
+        var newData = {};
+        newData.country_id = removeSelected;
+        newData.vendor_id = {{LoggedInUser.Vendor.id}};
+        $.ajax({
+                type: 'PUT',
+                url: '/api/shipping-setting/remove-country',
+                data: newData,
+                success: function(data, text) {
+                    location.reload();
+                },
+                error: function(request, status, error) {
+                    console.log('status', status);
+                    console.log('error', error);
+                }
+            });
+    }
+
+}
+function updateFunction(){
+
+     var old_base_location = {{LoggedInUser.Vendor.base_location}};
+     var new_base_location = $('select[name="base_location"] option:selected').val();
+     if(old_base_location != new_base_location)
+     {
+         var newData = {};
+        newData.country_id = new_base_location;
+        $.ajax({
+                type: 'PUT',
+                url: '/api/shipping-setting/vendor-update',
+                data: newData,
+                success: function(data, text) {
+                    location.reload();
+                },
+                error: function(request, status, error) {
+                    console.log('status', status);
+                    console.log('error', error);
+                }
+            });
+     }
+
+}
+</script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
     <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-8 list_bg">
-            <h5 class="gtc-title"> Shippingt Settings </h5>
-            <select class="payment-selection">
-                <option value="base-selection" selected> Base :Location </option>
+            <h5 class="gtc-title"> Shipping Settings </h5>
+            <select class="payment-selection" name="base_location">
+                    {{#each Countries}}
+                    {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
+                            <option value={{this.id}} selected>Base :{{this.name}}</option>
+                            {{else}}
+                            <option value={{this.id}}>{{this.name}}</option>
+                            {{/ifCond}}
+                    {{/each}}
             </select>
             <label class="base-location" for="lacation">The physical location of your business</label>
             <div class="col-sm-8 all-coutries" style="height: 300px;">
                 <h5 class="gtc-title"> Selling Location </h5>
                 <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
                 <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
-                <div class="cuntries">
-                    <p class="cuntry-lists">All
-                        <span class="up-down-btn"> &#9660;</span>
-                    </p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists">United States</p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists">United States</p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists" style=" margin-bottom: 0px">United States
-                        <span class="up-down-btn"> &#9650;</span>
-                    </p>
-                </div>
-                <div class="add-remove">
-                    <button class="add-btn" type="submit">ADD</button>
-                    <br>
-                    <button class="remove-btn" type="submit">REMOVE</button>
-                </div>
-                <div class="cuntries">
-                    <p class="cuntry-lists">All
-                        <span class="up-down-btn"> &#9660;</span>
-                    </p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists">United States</p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists">United States</p>
-                    <p class="cuntry-lists">India</p>
-                    <p class="cuntry-lists">Australia</p>
-                    <p class="cuntry-lists">Canada</p>
-                    <p class="cuntry-lists" style=" margin-bottom: 0px">United States
-                        <span class="up-down-btn"> &#9650;</span>
-                    </p>
-                </div>
+                     <select class="cuntries" size="4" name="country">
+                     <option value="All">All</option>
+                     {{#if vendorCountry}}
+                        {{{countrySelected  Countries vendorCountry}}}
+                    {{else}}
+                        {{#each Countries}}
+                            <option value={{this.id}}>{{this.name}}</option>
+                        {{/each}}
+                    {{/if}}
+                    </select>
+                 <div class="add-remove">
+                        <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button><br>
+                        <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
+                    </div>
+                    <select id="mySelect" size="4" class="cuntries" name="addedCountry">
+                      {{#if vendorCountry}}
+                        {{{vendorSelectedcountry  Countries vendorCountry}}}
+                    {{/if}}
+                    </select>
             </div>
             <hr style="margin-top: 10px;">
             <p>
-                <button class="update-btn" style="padding: 5px 20px;">UPDATE </button>
+                <button class="update-btn" style="padding: 5px 20px;" onclick="updateFunction(this)">UPDATE </button>
                 <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button>
             </p>
         </div>
