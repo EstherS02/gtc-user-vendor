@@ -26,31 +26,33 @@
 			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
-			newCoupon.vendor_id = 28;
+			newCoupon.vendor_id = {{LoggedInUser.Vendor.id}};
 			newCoupon.publish_date = new Date().toISOString().split("T")[0];
 			newCoupon.usage_limit = $('#inputUsageLimit').val();
 			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
 			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
 
-			var couponProducts = $('#inputProducts').val();
-			var couponExcludeProducts = $('#inputExcludeProduct').val();
-			var couponCategories = $('#inputCategories').val();
-			var couponExcludeCategories = $('#inputExcludeCategories').val();
+			newCoupon.couponProducts 			= JSON.stringify($('#inputProducts').val());
+			newCoupon.couponExcludeProducts 	= JSON.stringify($('#inputExcludeProduct').val());
+			newCoupon.couponCategories 		= JSON.stringify($('#inputCategories').val());
+			newCoupon.couponExcludeCategories = JSON.stringify($('#inputExcludeCategories').val());
 
 			$.ajax({
 				type: 'POST',
-				url: '/api/coupons',
+				url: '/api/coupon/save',
 				data: newCoupon,
 				success: function(data, text) {
-					products(data, function() {
-						excludeProducts(data, function() {
-							categories(data, function() {
-								excludeCategories(data, function() {
-									console.log('done');
-								});
-							});
-						});
-					});
+					alert("Added successfully");
+					location.reload();
+					// products(data, function() {
+					// 	excludeProducts(data, function() {
+					// 		categories(data, function() {
+					// 			excludeCategories(data, function() {
+					// 				console.log('done');
+					// 			});
+					// 		});
+					// 	});
+					// });
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
@@ -58,105 +60,105 @@
 				}
 			});
 
-			function products(data, callback) {
-				if (couponProducts.length > 0) {
-					for (var i = 0; i < couponProducts.length; i++) {
-						newCouponProducts.push({
-							product_id: parseInt(couponProducts[i]),
-							coupon_id: data.id
-						});
-					}
-					$.ajax({
-						type: 'POST',
-						url: '/api/coupon-products/bulk-create',
-						contentType: "application/json",
-						data: JSON.stringify(newCouponProducts),
-						success: function(data, text) {
-							callback();
-						},
-						error: function(request, status, error) {
-							callback();
-						}
-					});
-				} else {
-					callback();
-				}
-			}
+			// function products(data, callback) {
+			// 	if (couponProducts.length > 0) {
+			// 		for (var i = 0; i < couponProducts.length; i++) {
+			// 			newCouponProducts.push({
+			// 				product_id: parseInt(couponProducts[i]),
+			// 				coupon_id: data.id
+			// 			});
+			// 		}
+			// 		$.ajax({
+			// 			type: 'POST',
+			// 			url: '/api/coupon-products/bulk-create',
+			// 			contentType: "application/json",
+			// 			data: JSON.stringify(newCouponProducts),
+			// 			success: function(data, text) {
+			// 				callback();
+			// 			},
+			// 			error: function(request, status, error) {
+			// 				callback();
+			// 			}
+			// 		});
+			// 	} else {
+			// 		callback();
+			// 	}
+			// }
 
-			function excludeProducts(data, callback) {
-				if (couponExcludeProducts.length > 0) {
-					for (var i = 0; i < couponExcludeProducts.length; i++) {
-						newCouponExcludeProducts.push({
-							product_id: couponExcludeProducts[i],
-							coupon_id: data.id
-						});
-					}
-					$.ajax({
-						type: 'POST',
-						url: '/api/coupon-excluded-products/bulk-create',
-						contentType: "application/json",
-						data: JSON.stringify(newCouponExcludeProducts),
-						success: function(data, text) {
-							callback();
-						},
-						error: function(request, status, error) {
-							callback();
-						}
-					});
-				} else {
-					callback();
-				}
-			}
+			// function excludeProducts(data, callback) {
+			// 	if (couponExcludeProducts.length > 0) {
+			// 		for (var i = 0; i < couponExcludeProducts.length; i++) {
+			// 			newCouponExcludeProducts.push({
+			// 				product_id: couponExcludeProducts[i],
+			// 				coupon_id: data.id
+			// 			});
+			// 		}
+			// 		$.ajax({
+			// 			type: 'POST',
+			// 			url: '/api/coupon-excluded-products/bulk-create',
+			// 			contentType: "application/json",
+			// 			data: JSON.stringify(newCouponExcludeProducts),
+			// 			success: function(data, text) {
+			// 				callback();
+			// 			},
+			// 			error: function(request, status, error) {
+			// 				callback();
+			// 			}
+			// 		});
+			// 	} else {
+			// 		callback();
+			// 	}
+			// }
 
-			function categories(data, callback) {
-				if (couponCategories.length > 0) {
-					for (var i = 0; i < couponCategories.length; i++) {
-						newCouponCategories.push({
-							category_id: couponCategories[i],
-							coupon_id: data.id
-						});
-					}
-					$.ajax({
-						type: 'POST',
-						url: '/api/coupon-categories/bulk-create',
-						contentType: "application/json",
-						data: JSON.stringify(newCouponCategories),
-						success: function(data, text) {
-							callback();
-						},
-						error: function(request, status, error) {
-							callback();
-						}
-					});
-				} else {
-					callback();
-				}
-			}
+			// function categories(data, callback) {
+			// 	if (couponCategories.length > 0) {
+			// 		for (var i = 0; i < couponCategories.length; i++) {
+			// 			newCouponCategories.push({
+			// 				category_id: couponCategories[i],
+			// 				coupon_id: data.id
+			// 			});
+			// 		}
+			// 		$.ajax({
+			// 			type: 'POST',
+			// 			url: '/api/coupon-categories/bulk-create',
+			// 			contentType: "application/json",
+			// 			data: JSON.stringify(newCouponCategories),
+			// 			success: function(data, text) {
+			// 				callback();
+			// 			},
+			// 			error: function(request, status, error) {
+			// 				callback();
+			// 			}
+			// 		});
+			// 	} else {
+			// 		callback();
+			// 	}
+			// }
 
-			function excludeCategories(data, callback) {
-				if (couponExcludeCategories.length > 0) {
-					for (var i = 0; i < couponExcludeCategories.length; i++) {
-						newCouponExcludeCategories.push({
-							category_id: couponExcludeCategories[i],
-							coupon_id: data.id
-						});
-					}
-					$.ajax({
-						type: 'POST',
-						url: '/api/coupon-excluded-categories/bulk-create',
-						contentType: "application/json",
-						data: JSON.stringify(newCouponExcludeCategories),
-						success: function(data, text) {
-							callback();
-						},
-						error: function(request, status, error) {
-							callback();
-						}
-					});
-				} else {
-					callback();
-				}
-			}
+			// function excludeCategories(data, callback) {
+			// 	if (couponExcludeCategories.length > 0) {
+			// 		for (var i = 0; i < couponExcludeCategories.length; i++) {
+			// 			newCouponExcludeCategories.push({
+			// 				category_id: couponExcludeCategories[i],
+			// 				coupon_id: data.id
+			// 			});
+			// 		}
+			// 		$.ajax({
+			// 			type: 'POST',
+			// 			url: '/api/coupon-excluded-categories/bulk-create',
+			// 			contentType: "application/json",
+			// 			data: JSON.stringify(newCouponExcludeCategories),
+			// 			success: function(data, text) {
+			// 				callback();
+			// 			},
+			// 			error: function(request, status, error) {
+			// 				callback();
+			// 			}
+			// 		});
+			// 	} else {
+			// 		callback();
+			// 	}
+			// }
 
 		});
 
@@ -191,23 +193,46 @@
 			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
 			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
 
+			newCoupon.products = JSON.stringify({
+				id : id,
+				couponArray : $('#inputProducts').val(),
+				modelName : "CouponProduct"
+			});
+			newCoupon.excludeProduct = JSON.stringify({
+				id : id,
+				couponArray : $('#inputExcludeProduct').val(),
+				modelName : "CouponExcludedProduct"
+			});
+			newCoupon.categories = JSON.stringify({
+				id : id,
+				couponArray : $('#inputCategories').val(),
+				modelName : "CouponCategory"
+			});
+			newCoupon.excludeCategories = JSON.stringify({
+				id : id,
+				couponArray : $('#inputExcludeCategories').val(),
+				modelName : "CouponExcludedCategory"
+			});
+
 			$.ajax({
 				type: 'PUT',
 				url: '/api/coupon/update',
 				data: newCoupon,
 				success: function(data, text) {
-					products(data, function() {
+					alert("Updated successfully");
+					location.reload();
+					// products(data, function() {
 
-					});
-					excludeProducts(data, function() {
+					// });
+					// excludeProducts(data, function() {
 
-					});
-					categories(data, function() {
+					// });
+					// categories(data, function() {
 
-					});
-					excludeCategories(data, function() {
-						window.location.href = '/coupons';
-					});
+					// });
+					// excludeCategories(data, function() {
+					// 	window.location.href = '/coupons';
+					// });
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
@@ -215,81 +240,118 @@
 				}
 			});
 
-			function products(data, callback) {
-				var product = {};
-				product.id = id;
-				product.couponArray = JSON.stringify($('#inputProducts').val());
-				product.modelName = "CouponProduct";
-				console.log(product)
-				$.ajax({
-					type: 'PUT',
-					url: '/api/coupon/update-product-coupon',
-					data: product,
-					success: function(data, text) {
-						// console.log('data', data);
-						// console.log('text', text);
-						callback();
-					},
-					error: function(request, status, error) {
-						callback();
-					}
-				});
-			}
+			// function products(data, callback) {
+			// 	var product = {};
+			// 	product.id = id;
+			// 	product.couponArray = JSON.stringify($('#inputProducts').val());
+			// 	product.modelName = "CouponProduct";
+			// 	console.log(product)
+			// 	$.ajax({
+			// 		type: 'PUT',
+			// 		url: '/api/coupon/update-product-coupon',
+			// 		data: product,
+			// 		success: function(data, text) {
+			// 			// console.log('data', data);
+			// 			// console.log('text', text);
+			// 			callback();
+			// 		},
+			// 		error: function(request, status, error) {
+			// 			callback();
+			// 		}
+			// 	});
+			// }
 
-			function excludeProducts(data, callback) {
-				var product = {};
-				product.id = id;
-				product.couponArray = JSON.stringify($('#inputExcludeProduct').val());
-				product.modelName = "CouponExcludedProduct";
-				$.ajax({
-					type: 'PUT',
-					url: '/api/coupon/update-product-coupon',
-					data: product,
-					success: function(data, text) {
-						callback();
-					},
-					error: function(request, status, error) {
-						callback();
-					}
-				});
-			}
+			// function excludeProducts(data, callback) {
+			// 	var product = {};
+			// 	product.id = id;
+			// 	product.couponArray = JSON.stringify($('#inputExcludeProduct').val());
+			// 	product.modelName = "CouponExcludedProduct";
+			// 	$.ajax({
+			// 		type: 'PUT',
+			// 		url: '/api/coupon/update-product-coupon',
+			// 		data: product,
+			// 		success: function(data, text) {
+			// 			callback();
+			// 		},
+			// 		error: function(request, status, error) {
+			// 			callback();
+			// 		}
+			// 	});
+			// }
 
-			function categories(data, callback) {
-				var product = {};
-				product.id = id;
-				product.couponArray = JSON.stringify($('#inputCategories').val());
-				product.modelName = "CouponCategory";
-				$.ajax({
-					type: 'PUT',
-					url: '/api/coupon/update-category-coupon',
-					data: product,
-					success: function(data, text) {
-						callback();
-					},
-					error: function(request, status, error) {
-						callback();
-					}
-				});
-			}
+			// function categories(data, callback) {
+			// 	var product = {};
+			// 	product.id = id;
+			// 	product.couponArray = JSON.stringify($('#inputCategories').val());
+			// 	product.modelName = "CouponCategory";
+			// 	$.ajax({
+			// 		type: 'PUT',
+			// 		url: '/api/coupon/update-category-coupon',
+			// 		data: product,
+			// 		success: function(data, text) {
+			// 			callback();
+			// 		},
+			// 		error: function(request, status, error) {
+			// 			callback();
+			// 		}
+			// 	});
+			// }
 
-			function excludeCategories(data, callback) {
-				var product = {};
-				product.id = id;
-				product.couponArray = JSON.stringify($('#inputExcludeCategories').val());
-				product.modelName = "CouponExcludedCategory";
-				$.ajax({
-					type: 'PUT',
-					url: '/api/coupon/update-category-coupon',
-					data: product,
-					success: function(data, text) {
-						callback();
-					},
-					error: function(request, status, error) {
-						callback();
-					}
-				});
-			}
+			// function excludeCategories(data, callback) {
+			// 	var product = {};
+			// 	product.id = id;
+			// 	product.couponArray = JSON.stringify($('#inputExcludeCategories').val());
+			// 	product.modelName = "CouponExcludedCategory";
+			// 	$.ajax({
+			// 		type: 'PUT',
+			// 		url: '/api/coupon/update-category-coupon',
+			// 		data: product,
+			// 		success: function(data, text) {
+			// 			callback();
+			// 		},
+			// 		error: function(request, status, error) {
+			// 			callback();
+			// 		}
+			// 	});
+			// }
 		});
+
+		$("body").on("change", "#inputCategories", function() {
+			var selected_val = $(this).val();
+			if(Array.isArray(selected_val)) {
+				$('#inputExcludeCategories option').prop('disabled', false).select2();
+				selected_val.forEach((val) => {
+					$("#inputExcludeCategories option[value='"+val+"']").prop('disabled', true).select2();
+				});
+			}
+		}).on("change", "#inputExcludeCategories", function() {
+			var selected_val = $(this).val();
+			if(Array.isArray(selected_val)) {
+				$('#inputCategories option').prop('disabled', false).select2();
+				selected_val.forEach((val) => {
+					$("#inputCategories option[value='"+val+"']").prop('disabled', true).select2();
+				});
+			}
+		}).on("change", "#inputProducts", function() {
+			var selected_val = $(this).val();
+			if(Array.isArray(selected_val)) {
+				$('#inputExcludeProduct option').prop('disabled', false).select2();
+				selected_val.forEach((val) => {
+					$("#inputExcludeProduct option[value='"+val+"']").prop('disabled', true).select2();
+				});
+			}
+		}).on("change", "#inputExcludeProduct", function() {
+			var selected_val = $(this).val();
+			if(Array.isArray(selected_val)) {
+				$('#inputProducts option').prop('disabled', false).select2();
+				selected_val.forEach((val) => {
+					$("#inputProducts option[value='"+val+"']").prop('disabled', true).select2();
+				});
+			}
+		}).on("select2:unselecting", ".multiSelect", function() {
+			$(this).trigger('change');
+		});
+		$(".multiSelect").trigger('change');
 	});
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}

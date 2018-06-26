@@ -1,210 +1,204 @@
+<script type="text/javascript"> 
+  $(function () {
+    $("#from").datepicker({
+      format: 'yyyy-mm-dd',
+      autohide: true, 
+
+    });
+    
+    $("#to").datepicker({
+      format: 'yyyy-mm-dd',
+      autohide: true, 
+        // endDate: new Date(),
+        "endDate": {greaterStart: "#from_date"},
+        onSelect: $('#selectDate').val("")
+
+      });
+  });
+</script>
+<script type="text/javascript">
+  function selectAll(ele) {
+    var checkboxes = document.getElementsByTagName('input');
+    if (ele.checked) {
+      for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].type == 'checkbox') {
+          checkboxes[i].checked = true;
+        }
+      }
+    } else {
+      for (var i = 0; i < checkboxes.length; i++) {
+        console.log(i)
+        if (checkboxes[i].type == 'checkbox') {
+          checkboxes[i].checked = false;
+        }
+      }
+    }
+  }
+</script>
+<script type="text/javascript">
+  function selectDatefun(){
+    var val = $( "#selectDate option:selected" ).val();
+    if(val){
+      console.log();
+      $('#from').val("");
+      $('#to').val(""); 
+    }
+  }
+
+</script>
+
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
   <div class="" >
-      <div class="container">
+    <div class="container">
+      <div class="row">
+        {{> vendor/navbar}}
+        <div class="col-md-10" style="background-color: #fff;">
+          <h5 style="padding-top: 20px;">Order History</h5>
           <div class="row">
-             {{> vendor/navbar}}
-              <div class="col-md-10" style="background-color: #fff;">
-                  <h5 style="padding-top: 20px;">Sales History</h5>
-                  <div class="row">
-                      <div class="col-md-10">
-                          Date Range <input data-date-format="dd/mm/yyyy" class="vend_edit_lists_buttonstyle" id="datepicker"> to <input data-date-format="dd/mm/yyyy" class="vend_edit_lists_buttonstyle" id="datepicker"> <select class="vend_edit_lists_buttonstyle">
-                              <option>LAST 30 DAY</option>
-                          </select> <select class="vend_edit_lists_buttonstyle">
-                              <option>TYPE</option>
-                          </select> <select class="vend_edit_lists_buttonstyle">
-                              <option>STATUS</option>
-                          </select> <input type="submit" value="UPDATE" class="vend_edit_lists_update_buttonstyle" style="padding: 6px 0px;" />
-                          <input type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" style="width: 10%;"/>
-                      </div>
-                      
-                  
-                  
-                      <div class="col-md-2">
-                            <select class="vend_edit_lists_buttonstyle float-right" style="width: 100%;">
-                                    <option>EXPORT TO</option>
-                                </select>
-                      </div>
-                    </div>
-                      <div class="col-md-12" style="    padding-top: 20px;">
-                          <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" style="float: right;" />
-                          <br><br>
-                          <p class="vend_edit_lists_pstyle float-right" style="float: right;">Entries per page: 10 25 100 All</p> 
-                      </div>
-                  
-                  <div class="row">
-                      <div class="col-md-6">
-                          <p class="vend_edit_lists_pstyle">333,333 items total from May 01, 2017 to June 30, 2017</p>
-                      </div>
-                      <div class="col-md-6">
-                          
-                      </div>
-                  </div>
-                  <div class="row">
-                      <table class="table table-hover">
-                          <thead>
-                              <tr>
-                                  <th><input type="checkbox"></th>
-                                  <th>Invoice #</th>
-                                  <th>Vendor</th>
-                                  <th>Type</th>
-                                  <th>Date</th>
-                                  <th>Method</th>
-                                  <th>Status</th>
-                                  <th></th>
-                                  <th>Amount</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr>
-                              <tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr>
-                              <tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr>
-                              <tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_orange_color">In Escrow</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr><tr>
-                                  <td><input type="checkbox"></td>
-                                  <td>1700014</td>
-                                  <td class="text_blue_color">Great Earth Expeditions</td>
-                                  <td>Wholesale</td>
-                                  <td>April 21, 2017</td>
-                                  <td>PayPal</td>
-                                  <td class="text_green_color">Complete</td>
-                                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
-                                  <td>$150.00 CAD</td>
-                              </tr>
-                              <tr>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td class="text_blue_color">Total Transaction</td>
-                                  <td>$11,227.32 CAD</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-                  <div class="row">
-                      <div class="col-md-6">
-                          <p class="vend_edit_lists_pstyle">333,333 items total from May 01, 2017 to June 30, 2017</p>
-                      </div>
-                      <div class="col-md-6">
-                          <p class="vend_edit_lists_pstyle float-right">Entries per page: 10 25 100 All</p>
-                      </div>
-                  </div>
-              </div>		
+            <div class="col-md-10">
+              <form id="searchOrder">
+                Date Range
+                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
+                to
+                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" name="to_date" id="to" /> 
+                <select class="vend_edit_lists_buttonstyle" name="dateSelect" id="selectDate" onchange="selectDatefun()">
+                  <option value="">select</option>>
+                  <option value="today">Today</option>
+                  <option value="yesterday">Yesterday</option>
+                  <option value="last7day">LAST 7 DAY</option>
+                  <option value="last15day">LAST 15 DAY</option>
+                  <option value="last30day">LAST 30 DAY</option>
+                </select> 
+                <select class="vend_edit_lists_buttonstyle" name="marketType">
+                  <option value=""> TYPE </option>
+                  {{#each marketPlace}}
+                  <option value = "{{this}}">{{@key}}</option>
+                  {{/each}}
+                </select>
+                <select class="vend_edit_lists_buttonstyle" name="status">
+                  <option value="">STATUS</option>
+                  <option value="NEWORDER"> New Order</option>
+                  <option value="CANCLEORDER"> Cancel Order</option>
+                  <option value="FAILEDORDER"> Failed Order</option>
+                </select> 
+                <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
+              </form>
+            </div>
+            <div class="col-md-2">
+              <input style="width: 100%;" type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" />
+            </div>
           </div>
+          <div class="row" style="padding-top: 10px">
+            <div class="col-md-8">
+              
+            </div>
+            <div class="col-md-4">
+              <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" />
+              <select style="width: 35%" class="vend_edit_lists_buttonstyle float-right">
+                <option>EXPORT TO</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="vend_edit_lists_pstyle float-right">Entries per page: 
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" onclick="selectAll(this);"></th>
+                  <th>Invoice #</th>
+                  <th>Product</th>
+                  <th>Vendor</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th></th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each OrderItems}}
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td>{{this.Order.invoice_id}}</td>
+                  <td>{{this.Product.product_name}}</td>
+                  <td class="text_blue_color">{{this.Product.Vendor.vendor_name}}</td>
+                  <td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}
+
+                  </td>
+                  <td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
+                  <td>PayPal</td>
+                  <td class="text_green_color">Complete</td>
+                  <td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+                  <td>${{this.final_price}} CAD</td>
+                </tr>
+                {{/each}}
+                
+                <tr>
+                  <td colspan="8"></td>
+                  <td class="text_blue_color">Total Transaction</td>
+                  <td>${{totalTransaction}} CAD</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          {{!-- Pagination starts --}}
+          {{#ifCond count '>' queryPaginationObj.limit}}
+          <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-7">
+              {{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  {{#unless startFromFirstPage}}
+                  <li class="page-item">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                  </li>
+                  {{/unless}} {{#each pages}}
+                  <li class="page-item {{#if isCurrent}} active {{/if}}">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                  </li>
+                  {{/each}} {{#unless endAtLastPage}}
+                  <li class="page-item">
+                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                  </li>
+                  {{/unless}}
+                </ul>
+              </nav>
+              {{/pagination}}
+            </div>
+          </div>
+          {{/ifCond}}
+          {{!-- Pagination Ends --}}
+          <div class="row">
+            <div class="col-md-6">
+              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="vend_edit_lists_pstyle float-right">Entries per page: 
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
+              </div>
+            </div>
+          </div>    
+        </div>
       </div>
-  </div>
-</section>
-{{> footer/footer}}
+    </div>
+  </section>
+  {{> footer/footer}}

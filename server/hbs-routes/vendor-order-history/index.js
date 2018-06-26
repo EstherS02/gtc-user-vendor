@@ -8,9 +8,9 @@ var auth = require('../../auth/auth.service');
 
 
 /* Handlebars routes */
-var controller = require('./talk.controller');
+var controller = require('./order-history.controller');
 
-router.get('/', auth.isAuthenticated(), controller.talk);
+router.get('/',auth.isAuthenticated(), controller.orderHistory);
 
 
 module.exports = router;

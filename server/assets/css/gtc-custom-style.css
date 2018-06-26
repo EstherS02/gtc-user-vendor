@@ -336,16 +336,41 @@ a {
   margin-bottom: -40px;
 }
 
-@media (min-width: 1200px) {
+
+/*@media (min-width: 1200px) {
   .gtc-custom-container {
       max-width: 1223px;
   }
-}
+}*/
 
 @media (min-width: 1200px) {
 	.my-custom-container {
 	    max-width: 1290px;
 	}
+}
+
+
+@media (min-width: 1600px) {
+  .container {
+      max-width: 1500px;
+  }
+}
+
+@media (min-width: 1700px){
+  .container {
+      max-width: 1440px;
+  }
+}
+
+/*@media screen and (min-width: 1600px) {
+  .container {
+    width: 1570px;
+  }
+}
+@media screen and (min-width: 1900px) {
+  .container {
+    width: 1870px;
+  }*/
 }
 
 .btn-primary {
@@ -959,3 +984,74 @@ p.p1 {
   display :inline;
 }
 
+.price_signup{
+  margin: 11px 52px;
+  padding: 7px 18px;
+  font-size: 12px;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  background-color:  rgb(255, 160, 37);
+  border-width: initial;
+  border-style: none;
+  border-color: initial;
+  border-image: initial;
+ }
+
+.its_free_btn {
+    background: #E62246;
+    color: #fff;
+    font-size: 12px;
+    border: none;
+    padding: 5px 20px;
+    font-weight: 600;
+}
+
+.login_head_ban {
+    background: #FFA025;
+    border: none;
+    font-size: 12px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 32px;
+    padding: 3px 15px;
+    border-radius: 0px;
+}
+
+*/* {
+    box-sizing: border-box;
+}*/
+
+ /*Create two equal columns that floats next to each other */
+/*.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}*/
+
+/* Clear floats after the columns */
+/*.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}*/
+
+/*.view-button{
+    border: none;
+    outline: none;
+    padding: 3px 0px 2px 0px;
+    background-color: #ffffff;
+    cursor: pointer;
+    margin: -9px;
+    border-radius: 20px;
+}
+
+.view-button:hover {
+    background-color: #ddd;
+}
+
+.view-button:active {
+    background-color: #666;
+    color: white;
+}
+
+*/
