@@ -12,7 +12,6 @@
                 $("#sub_category").empty();
                 for (var i = 0; i < result.rows.length; i++) {
                     var options;
-
                     options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
 
                     $("#sub_category").append(options)
@@ -43,7 +42,7 @@
         });
     }
 
-    function changeMarketplace(e) {
+/*function changeMarketplace(e) {
         if (e.value == 1) {
             $.ajax({
                 url: '/api/marketplace-types?marketplace_id=' + e.value,
@@ -67,7 +66,7 @@
         } else {
             $('#type, #moq').hide();
         }
-    }
+    }*/
 </script>
 <script>
     function addProduct(obj, input) {
@@ -85,7 +84,7 @@
     }
     $(document).ready(function () {
 
-        function fasterPreview(uploader) {
+       /* function fasterPreview(uploader) {
             if (uploader.files && uploader.files[0]) {
                 $('#UploadedImage').attr('src',
                     window.URL.createObjectURL(uploader.files[0]));
@@ -95,7 +94,7 @@
             fasterPreview(this);
         });
 
-        $("#type").hide();
+        $("#type").hide();*/
 
         $("#productForm").submit(function (e) {
             e.preventDefault();
@@ -106,16 +105,16 @@
 
             if ($("#file")[0].files.length > 0) {
                 var form = new FormData();
-                //  form.append("file", $("#file")[0].files);
-                //form.append("filename", "test");
+                 form.append("file", $("#file")[0].files);
+                 form.append("filename", "test");
 
-                $.each($("#file")[0].files, function (i, file) {
+              /*  $.each($("#file")[0].files, function (i, file) {
                     form.append("file[" + i + "]", file);
                 });
 
                 var obj = {};
 
-                console.log("uploaded files", $("#file")[0].files);
+                console.log("uploaded files", $("#file")[0].files);*/
 
                 $.ajax({
                     type: 'POST',
@@ -165,26 +164,40 @@
                                 <div class="row">
                                     <div class="col-xs-5 col-sm-5 col-md-5">
                                         <div class="form-group">
-                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
+                                            {{!-- <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
                                                 <option disabled selected>Select Marketplace</option>
                                                 {{#each marketplace}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select> --}}
+                                            {{#ifCond this.type '==' 'wholesale'}}
+                                            <input type="text" class="form-control" name="marketplace"  value="Private Wholesale Marketplace" readonly />
+                                            	{{else ifCond this.type '==' 'shop'}}
+                                             <input type="text" class="form-control" name="marketplace"  value="Public Marketplace" readonly />
+                                             	{{else ifCond this.type '==' 'services'}}
+                                              <input type="text" class="form-control" name="marketplace"  value="Services Marketplace" readonly />
+                                              	{{else ifCond this.type '==' 'subscription'}}
+                                               <input type="text" class="form-control" name="marketplace" value="Lifestyle Marketplace" readonly />
+                                               {{/ifCond}}
+                                        </div>
+                                    </div>
+                                    {{#ifCond this.type '==' 'wholesale'}}
+                                    <div class="col-xs-5 col-sm-5 col-md-5">
+                                        <div class="form-group">
+                                            <select class="form-control" name="marketplace_type_id"  value="">
+                                                <option disabled selected>Select Type</option>
+                                                {{#each marketplaceType}}
                                                 <option value="{{this.id}}">{{ this.name}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-xs-5 col-sm-5 col-md-5">
-                                        <div class="form-group">
-                                            <select class="form-control" name="marketplace_type_id" id="type" value="">
-                                                <option disabled selected>Type</option>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-xs-2 col-sm-2 col-md-2">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" style="display: none;" />
+                                            <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" />
                                         </div>
                                     </div>
+                                    {{/ifCond}}
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-6 col-sm-4 col-md-6">
@@ -258,7 +271,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                {{!-- <div class="form-group">
                                     <label>
                                         <h6> Upload Image</h6>
                                     </label>
@@ -267,7 +280,11 @@
                                         <input type="file" id="imageUpload" style="display: none;" name="file" />
                                     </p>
                                 </div>
-                                <img id="UploadedImage" src="" style="width:10%; " alt="avt" />
+                                <img id="UploadedImage" src="" style="width:10%; " alt="avt" /> --}}
+                           <div class="form-group">
+                                <label><h6>Upload Image </h6></label>
+                                    <input type="file" class="form-control form-control-file" aria-describedby="fileHelp" id="file" name="file" />
+                            </div>     
                         <hr class="colorgraph">
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
