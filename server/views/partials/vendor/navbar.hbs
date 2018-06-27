@@ -20,16 +20,14 @@
 				</li>
 			</ul>
 		</li>
+
+	{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 1}}
+		
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings">Edit Listing </a>
 			<ul class="list-group collapse list-group-flush" id="listings">
 				<li class="list-group-item">
-					<a data-toggle="collapse" href="#wholesale">Wholesale Listing</a>
-					<ul class="list-style: none list-group collapse" id="wholesale">
-						<li class="list-group-item">
-							<a href="/listings/tax">Edit Listingx</a>
-						</li>
-					</ul>
+					<a href="/listings/wholesale">Wholesale Listing</a>
 				</li>
 				<li class="list-group-item">
 					<a href="/listings/shop">Shop Listing</a>
@@ -42,7 +40,77 @@
 				</li>
 			</ul>
 		</li>
+
+		{{/ifCond}}
+
+		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 2}}
+		
 		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings">Edit Listing </a>
+			<ul class="list-group collapse list-group-flush" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/shop">Shop Listing</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/services">Service listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/subscription"> Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}}
+
+		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 3}}
+		
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings">Edit Listing </a>
+			<ul class="list-group collapse list-group-flush" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/services">Service listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}}
+
+		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 4}}
+		
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings">Edit Listing </a>
+			<ul class="list-group collapse list-group-flush" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/subscription"> Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}}
+
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 5}}
+		
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings">Edit Listing </a>
+			<ul class="list-group collapse list-group-flush" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/wholesale">Wholesale Listing</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/shop">Shop Listing</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/services">Service listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/subscription"> Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}}
+
+       <li class="list-group-item">
 			<a href="/coupons">Edit/Add Coupons</a>
 		</li>
 		<li class="list-group-item">

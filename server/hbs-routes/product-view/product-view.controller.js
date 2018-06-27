@@ -29,6 +29,15 @@ export function GetProductDetails(req, res) {
         queryObj['product_slug'] = req.params.product_slug;
 
         queryObj['status'] = status["ACTIVE"];
+        var wishQueryObj = {};
+        if(LoggedInUser.id){
+             wishQueryObj = {
+                    user_id : LoggedInUser.id,
+                    status :{
+                        '$eq': status["ACTIVE"]
+                    }
+                }
+        }
 
     //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
 
@@ -42,6 +51,11 @@ export function GetProductDetails(req, res) {
             { model: model["SubCategory"] },
             { model: model["Country"] },
             { model: model["State"] },
+            {
+                model: model["WishList"],
+                where:wishQueryObj,
+                required:false
+            },
             { model: model["Review"], 
                 include : [
                     { model: model["User"],
@@ -116,20 +130,22 @@ export function GetProductDetails(req, res) {
                 queryObj2.vendor_id         = productsList.vendor_id;
                 queryObj2.status            = status["ACTIVE"];
                 queryObj2.id                = { $ne : [productsList.id]};
-
+                console.log("productsList.WishList",productsList.WishLists)
                 var result_obj = {
                     title: "Global Trade Connect",
                     product: productsList,
                     productReviewsList: productReviewsList,
                     LoggedInUser: LoggedInUser,
                     rating : productRating,
+                    status : status,
+                    wishList:productsList.WishLists,
                     avgRating : productAvgRating
                 };                 
 
                 service.findRows(productModel, queryObj2, 0, 9, field, order)
                     .then(function(RelatedProducts) {
-                        console.log(RelatedProducts.rows)
-                        console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
+                        // console.log(RelatedProducts.rows)
+                        // console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
                         if (RelatedProducts) {                         
                             result_obj.RelatedProducts = RelatedProducts.rows;   
                         } else {
@@ -294,7 +310,10 @@ async.series({
         RelatedProducts: function(callback) {
         	var queryObj2={
         		sub_category_id:sub_category,
-        		vendor_id:vendor_id
+        		vendor_id:vendor_id,
+                id:{
+                    $ne:req.params.product_id
+                }
         	};
         	includeArr = [{ model: model["Vendor"] },
             { model: model["Marketplace"] },

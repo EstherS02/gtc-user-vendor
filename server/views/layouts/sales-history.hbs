@@ -50,7 +50,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
   <div class="" >
-    <div class="container-fluid">
+    <div class="container">
       <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-10" style="background-color: #fff;">
@@ -135,8 +135,8 @@
                 <tr>
                   <td><input type="checkbox"></td>
                   <td>{{this.Order.invoice_id}}</td>
-                  <td>{{this.Product.product_name}}</td>
-                  <td class="text_blue_color">{{this.Product.Vendor.vendor_name}}</td>
+                  <td><a href="/product/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a></td>
+                  <td class="text_blue_color"><a href="/vendor-about">{{this.Product.Vendor.vendor_name}}</a></td>
                   <td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}</td>
                   <td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
                   <td>PayPal</td>
