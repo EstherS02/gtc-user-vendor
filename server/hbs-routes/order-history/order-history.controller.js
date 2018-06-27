@@ -102,7 +102,7 @@ export function orderHistory(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
@@ -151,6 +151,15 @@ export function orderHistory(req, res) {
 				maxSize++;
 				queryPaginationObj['maxSize'] = maxSize;
 			console.log("start_date", queryPaginationObj,queryURI);
+
+            var total_transaction = 0.00;
+            if(results.orderHistory.count > 0) {
+                results.orderHistory.rows.forEach((value, index) => {
+                    total_transaction += parseFloat(value.final_price);                    
+                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+                });    
+            }
+
 			if (!err) {
 				
 				res.render('order-history', {
@@ -160,6 +169,7 @@ export function orderHistory(req, res) {
 					queryURI: queryURI,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
+                    totalTransaction : (total_transaction).toFixed(2),
 					// pagination
 					page: page,
 					maxSize:maxSize,

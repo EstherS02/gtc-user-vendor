@@ -22,7 +22,7 @@ export function wishlist(req, res) {
 	var order = "desc";
 	var offset = 0;
 	var limit = 10;
-	var vendor_id = 29;
+	// var vendor_id = req.user.Vendor.id;
 	var queryObj = {};
 	if (typeof req.query.limit !== 'undefined') {
 		if (req.query.limit == 'All') {
@@ -33,7 +33,7 @@ export function wishlist(req, res) {
 		}
 	}
 	queryObj = {
-		user_id: 62,
+		user_id: req.user.id,
 		status: 1
 	};
 	var wishModel = 'WishList';
@@ -43,13 +43,15 @@ export function wishlist(req, res) {
 			model: model['ProductMedia'],
 		}]
 	}, {
-		model: model['User']
+		model: model['User'],
+		attributes:['first_name','last_name']
+
 	}];
 	async.series({
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
-						// console.log(category)
+						console.log(category.rows)
 						return callback(null, category);
 					}).catch(function(error) {
 						console.log('Error :::', error);

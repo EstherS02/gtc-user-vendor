@@ -25,7 +25,7 @@
 										<img src="{{this.User.user_pic_url}}" alt="img" style="width: 60%;border-radius:50%"/> {{!-- "../../img/signup-feature-1.png" --}}
 									</div>
 									<div class="col-md-6 common_padding1">
-										<p style="font-size: 11px;"><span class="text_blue_color">{{this.created_by}}</span> reviewed Hayden Auto - {{this.rating}}&nbsp;star</p>
+										<p style="font-size: 11px;"><span class="text_blue_color">{{this.created_by}}</span> reviewed {{../LoggedInUser.Vendor.vendor_name}} - {{this.rating}}&nbsp;star</p>
 										<p>{{formatTime this.created_on "MMM D YY"}}
 										</p>
 									</div>

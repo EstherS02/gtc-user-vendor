@@ -2,19 +2,19 @@
 	{{#if LoggedInUser.Vendor}}
 	<ul class="list-group list-group-flush list-unstyled components">
 		<li class="list-group-item">
-			<a data-toggle="collapse" href="#reporting">Reporting</a>
-			<ul class="list-group collapse list-group-flush" id="reporting">
+			<a data-toggle="collapse" href="#reporting" {{#if selectedPage}} aria-expanded="true" {{/if}}>Reporting</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="reporting">
 				<li class="list-group-item">
-					<a href="/reporting/performance">Performance</a>
+					<a href="/reporting/performance" {{#ifCond selectedPage '==' 'performance'}} style="color:#234267" {{/ifCond}}>Performance</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/reporting/sales-history">Sales History</a>
+					<a href="/reporting/sales-history" {{#ifCond selectedPage '==' 'sales-history'}} style="color:#234267" {{/ifCond}}>Sales History</a>
 				</li>
 				<li class="list-group-item" id="acc-collapse">
-					<a data-toggle="collapse" data-parent="#acc-collapse" href="#account">Accounting</a>
-					<ul class="list-group collapse" id="account">
+					<a data-toggle="collapse" data-parent="#acc-collapse" href="#account" {{#ifCond selectedPage '==' 'tax'}} aria-expanded="true" {{/ifCond}}>Accounting</a>
+					<ul class="list-group collapse {{#ifCond selectedPage '==' 'tax'}} show {{/ifCond}}" id="account">
 						<li class="list-group-item">
-							<a href="/reporting/tax">Report tax</a>
+							<a href="/reporting/tax" {{#ifCond selectedPage '==' 'tax'}} style="color:#234267" {{/ifCond}}>Report tax</a>
 						</li>
 					</ul>
 				</li>

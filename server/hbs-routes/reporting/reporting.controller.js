@@ -60,7 +60,8 @@ export function performance(req, res) {
                     title: "Global Trade Connect",
                     products: results.products,
                     marketPlace:marketPlace,
-                    LoggedInUser:LoggedInUser
+                    LoggedInUser:LoggedInUser,
+                    selectedPage: 'performance'
                 });
             }
             else {
@@ -80,7 +81,8 @@ export function accounting(req, res) {
 
     res.render('accounting', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        selectedPage: 'accounting'
     });
 }
 
@@ -94,7 +96,8 @@ export function tax(req, res) {
 
     res.render('tax', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        selectedPage: 'tax'
     });
 }
 
@@ -232,6 +235,15 @@ export function salesHistory(req, res) {
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
+
+            var total_transaction = 0.00;
+            if(results.orderHistory.count > 0) {
+                results.orderHistory.rows.forEach((value, index) => {
+                    total_transaction += parseFloat(value.final_price);                    
+                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+                });    
+            }
+
             queryPaginationObj['maxSize'] = maxSize;
             if (!err) {
                 console.log("start_date", queryURI['start_date']);
@@ -243,6 +255,8 @@ export function salesHistory(req, res) {
                     LoggedInUser: LoggedInUser,
                     marketPlace: marketPlace,
                     queryUrl: queryUrl,
+                    selectedPage: 'sales-history',
+                    totalTransaction : (total_transaction).toFixed(2),
                     // pagination
                     page: page,
                     maxSize: maxSize,
