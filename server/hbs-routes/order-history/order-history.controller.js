@@ -123,13 +123,14 @@ export function orderHistory(req, res) {
 	var includeArr = [{
 		model: model["Order"],
 		where: orderQueryObj,
-		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price']
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price','status']
 	}, {
 		model: model['Product'],
 		where: productQueryObj,
 		include: [{
 			model: model['Vendor'],
-		}]
+		}
+		]
 
 	}];
 	// console.log(orderQueryObj);
@@ -169,6 +170,7 @@ export function orderHistory(req, res) {
 					queryURI: queryURI,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
+					statusCode : statusCode,
                     totalTransaction : (total_transaction).toFixed(2),
 					// pagination
 					page: page,

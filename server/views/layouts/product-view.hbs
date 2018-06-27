@@ -90,33 +90,31 @@
 		}
 	}
 
-	function wishUpdate(){
-		var newObj = {};
-		newObj.product_id = productSpecs.id;
-		newObj.user_id = userInfo.id;
-		if($('input[name=wishID]').val())
-		{
-			newObj.status = 0;
-		}else{
-			newObj.status = statusCode.ACTIVE;
-		}
-		console.log(newObj);
-		var queryObj = {};
-		queryObj.product_id = productSpecs.id;
-		queryObj.user_id = userInfo.id;
-		var data = JSON.stringify({
-				queryObj : queryObj,
-				newObj : newObj
+	function wishUpdate() {
+		if (userInfo.email) {
+			var newObj = {};
+			newObj.product_id = productSpecs.id;
+			newObj.user_id = userInfo.id;
+			if ($('input[name=wishID]').val()) {
+				newObj.status = 0;
+			} else {
+				newObj.status = statusCode.ACTIVE;
+			}
+			console.log(newObj);
+			var queryObj = {};
+			queryObj.product_id = productSpecs.id;
+			queryObj.user_id = userInfo.id;
+			var data = JSON.stringify({
+				queryObj: queryObj,
+				newObj: newObj
 			});
-		var newData  ={};
-		newData.data = data;
-		$.ajax({
+			var newData = {};
+			newData.data = data;
+			$.ajax({
 				type: 'PUT',
 				url: '/api/product-view/addOrRemove',
 				data: newData,
 				success: function(data, text) {
-					console.log(data,"hello",text);
-					// $('input[name=wishID]').val("")
 					location.reload();
 				},
 				error: function(request, status, error) {
@@ -125,12 +123,11 @@
 				}
 			});
 
+		} else {
+			location.href = "/login"
+		}
 
 	}
-	function login(){
-		window.location.href = "/login";
-	}
-
 
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -163,30 +160,30 @@
 										<a href="#">
 											<img src="../../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;" />
 										</a>
-										<a >
+										<a onclick="followVendor()" >
 											<img src="../../img/follow.png" alt="Follow" style="width: 80px; margin-top: 5px;" />
 										</a>
 									</li>
 									<li class="nav-item" style="background-color: #084681;">
-										<a class="nav-link" href="#" style="color: #fff">WHOLESALE</a>
+										<a class="nav-link" href="/vendor-wholesale" style="color: #fff">WHOLESALE</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="">SHOP</a>
+										<a class="nav-link" href="/vendor-shop">SHOP</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#">SERVICES</a>
+										<a class="nav-link" href="/vendor-services">SERVICES</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#">LIFESTYLE</a>
+										<a class="nav-link" href="">LIFESTYLE</a>
 									</li>
 									<li class="nav-item">
 										<a class="nav-link" href="#">DISCUSSION BOARD</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#">ABOUT</a>
+										<a class="nav-link" href="/vendor-about">ABOUT</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#">SUPPORT</a>
+										<a class="nav-link" href="/vendor-support">SUPPORT</a>
 									</li>
 
 								</ul>
@@ -443,10 +440,6 @@
 					{{else}}
 					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
 					 {{/if}}
-					 Add to Wishlist</p>
-				{{else}}
-				<p class="text_blue_color" style="font-size: 14px;margin-bottom: 0px;" onclick="login()">
-					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
 					 Add to Wishlist</p>
 				{{/if}}
 

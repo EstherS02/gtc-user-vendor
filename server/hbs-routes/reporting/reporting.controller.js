@@ -253,6 +253,7 @@ export function salesHistory(req, res) {
                     count: results.orderHistory.count,
                     queryURI: queryURI,
                     LoggedInUser: LoggedInUser,
+                    statusCode : statusCode,
                     marketPlace: marketPlace,
                     queryUrl: queryUrl,
                     selectedPage: 'sales-history',

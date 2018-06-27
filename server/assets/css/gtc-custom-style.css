@@ -983,6 +983,16 @@ p>span.text_blue_color{
 p.p1 {
   display :inline;
 }
+.vend_edit_lists_update_buttonstyle2
+{
+  background-color: #3BB804;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 5px;
+    color: #fff;
+  /*width: 8%;*/
+}
 
 .price_signup{
   margin: 11px 52px;
