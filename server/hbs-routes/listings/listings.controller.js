@@ -27,7 +27,7 @@ export function listings(req, res) {
 	offset = (page - 1) * limit;
 
 	if(req.user)
-    LoggedInUser = req.user;
+	LoggedInUser = req.user;
     
     queryParams['user_id'] = LoggedInUser.id;
 

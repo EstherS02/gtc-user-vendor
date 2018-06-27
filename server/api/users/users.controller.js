@@ -102,8 +102,7 @@ export function create(req, res) {
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams["role"] = roles["USER"];
 
-
-			model['User'].create(bodyParams)
+            model['User'].create(bodyParams)
 				.then(function (row) {
 					if (row) {
 						const rspUser = plainTextResponse(row);
@@ -355,8 +354,7 @@ export function userProfile(req, res) {
 		.catch(function (err) {
 			res.status(500).send(err);
 			return;
-		})
-
+	})
 }
 
 exports.authenticate = authenticate;

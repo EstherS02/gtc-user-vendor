@@ -95,28 +95,5 @@ export function addProduct(req, res) {
 }
 
 
-	/*service.createRow("Product",req.query)
-	.then(function(row) {
-		req.body.product_id=row.id
-
-		console.log("=========",req.body)
-
-	service.createRow("ProductMedia",req.body)
-	.then(function(row) {
-		console.log("created row+++++++++++",row);
-		res.status(200).send("Created");
-	    return;
-
-	}).catch(function(error) {
-		res.status(404).send("Not Api found");
-	    return;
-		
-	});
-
-
-	}).catch(function(error) {
-		console.log("err",err);
-		
-	});*/
 		
 
