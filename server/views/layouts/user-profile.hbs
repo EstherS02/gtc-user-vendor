@@ -231,7 +231,7 @@
 										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
 										<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" placeholder="Photo"	capture>
+										<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo"	capture>
 									</div>
 								</div>
 								<br/>
