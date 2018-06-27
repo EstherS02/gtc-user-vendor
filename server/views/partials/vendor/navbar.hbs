@@ -22,40 +22,39 @@
 		</li>
 
 	{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 1}}
-		
+			
 		<li class="list-group-item">
-			<a data-toggle="collapse" href="#listings">Edit Listing </a>
-			<ul class="list-group collapse list-group-flush" id="listings">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
 				<li class="list-group-item">
-					<a href="/listings/wholesale">Wholesale Listing</a>
+					<a href="/listings/wholesale" {{#ifCond selectedPage '==' 'wholesale'}} style="color:#234267" {{/ifCond}}>Wholesale Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/shop">Shop Listing</a>
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/services">Service listings</a>
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/subscription"> Subscription Listings</a>
+					<a href="/listings/subscription" {{#ifCond selectedPage '==' 'subscription'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
 				</li>
 			</ul>
 		</li>
-
-		{{/ifCond}}
+    {{/ifCond}}
 
 		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 2}}
 		
-		<li class="list-group-item">
-			<a data-toggle="collapse" href="#listings">Edit Listing </a>
-			<ul class="list-group collapse list-group-flush" id="listings">
+			<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
 				<li class="list-group-item">
-					<a href="/listings/shop">Shop Listing</a>
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/services">Service listings</a>
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/subscription"> Subscription Listings</a>
+					<a href="/listings/subscription" {{#ifCond selectedPage '==' 'subscription'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
 				</li>
 			</ul>
 		</li>
@@ -64,11 +63,11 @@
 
 		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 3}}
 		
-		<li class="list-group-item">
-			<a data-toggle="collapse" href="#listings">Edit Listing </a>
-			<ul class="list-group collapse list-group-flush" id="listings">
+			<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
 				<li class="list-group-item">
-					<a href="/listings/services">Service listings</a>
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
 				</li>
 			</ul>
 		</li>
@@ -77,11 +76,11 @@
 
 		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 4}}
 		
-		<li class="list-group-item">
-			<a data-toggle="collapse" href="#listings">Edit Listing </a>
-			<ul class="list-group collapse list-group-flush" id="listings">
+			<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
 				<li class="list-group-item">
-					<a href="/listings/subscription"> Subscription Listings</a>
+					<a href="/listings/subscription" {{#ifCond selectedPage '==' 'subscription'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
 				</li>
 			</ul>
 		</li>
@@ -90,20 +89,20 @@
 
 			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 5}}
 		
-		<li class="list-group-item">
-			<a data-toggle="collapse" href="#listings">Edit Listing </a>
-			<ul class="list-group collapse list-group-flush" id="listings">
+			<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
 				<li class="list-group-item">
-					<a href="/listings/wholesale">Wholesale Listing</a>
+					<a href="/listings/wholesale" {{#ifCond selectedPage '==' 'wholesale'}} style="color:#234267" {{/ifCond}}>Wholesale Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/shop">Shop Listing</a>
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/services">Service listings</a>
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/listings/subscription"> Subscription Listings</a>
+					<a href="/listings/subscription" {{#ifCond selectedPage '==' 'subscription'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
 				</li>
 			</ul>
 		</li>

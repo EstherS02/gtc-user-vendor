@@ -9,7 +9,7 @@ const async = require('async');
 
 export function listings(req, res) {
 
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page, type;
 	var queryParams = {}, LoggedInUser = {};
 	var productModel = "MarketplaceProduct";
 	field = "id";
@@ -26,26 +26,36 @@ export function listings(req, res) {
 
 	offset = (page - 1) * limit;
 
-	if(req.user)
-	LoggedInUser = req.user;
-    
-    queryParams['user_id'] = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+
+	queryParams['user_id'] = LoggedInUser.id;
 
 
-	if(req.params.type=='wholesale')
-		 queryParams["marketplace_id"] = 1;    
-		 
-	if(req.params.type=='shop')
-		 queryParams["marketplace_id"] = 2; 
-		 
-	if(req.params.type=='services')
-		 queryParams["marketplace_id"] = 3; 
-		 
-	if(req.params.type=='subscription')
-	     queryParams["marketplace_id"] = 4; 
+	if (req.params.type == 'wholesale') {
+		queryParams["marketplace_id"] = 1;
+		type = 'wholesale';
+	}
 
-	if (req.query.product_name) {
-           queryParams['product_name'] = req.query.product_name;
+	if (req.params.type == 'shop') {
+		queryParams["marketplace_id"] = 2;
+		type = 'shop';
+	}
+
+	if (req.params.type == 'services') {
+		queryParams["marketplace_id"] = 3;
+		type = 'services';
+	}
+
+	if (req.params.type == 'subscription') {
+		queryParams["marketplace_id"] = 4;
+		type = 'subscription';
+	}
+
+	if (req.query.keyword) {
+		queryParams['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
 	}
 
 	if (req.query.status) {
@@ -87,7 +97,9 @@ export function listings(req, res) {
 				offset: offset,
 				maxSize: 5,
 				statusCode: status,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				type: type,
+				selectedPage: type
 			});
 		}
 		else {
@@ -101,20 +113,20 @@ export function editListings(req, res) {
 	let searchObj = {}
 	var productModel = "MarketplaceProduct";
 
-    if(req.params.product_slug)
-        searchObj["product_slug"] = req.params.product_slug;    
+	if (req.params.product_slug)
+		searchObj["product_slug"] = req.params.product_slug;
 
-    service.findOneRow(productModel, searchObj)
-        .then(function (product) {
-            res.render('edit-listing', {
+	service.findOneRow(productModel, searchObj)
+		.then(function (product) {
+			res.render('edit-listing', {
 				title: 'Global Trade Connect',
 				statusCode: status,
-                product : product
-            });
-        }).catch(function (error) {
-            console.log('Error :::', error);
-            res.render('edit-listing', error)
-        });
+				product: product
+			});
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.render('edit-listing', error)
+		});
 }
 
 
