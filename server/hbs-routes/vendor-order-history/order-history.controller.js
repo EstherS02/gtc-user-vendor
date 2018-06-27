@@ -31,7 +31,7 @@ export function orderHistory(req, res) {
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 	delete req.query.order;

@@ -310,7 +310,10 @@ async.series({
         RelatedProducts: function(callback) {
         	var queryObj2={
         		sub_category_id:sub_category,
-        		vendor_id:vendor_id
+        		vendor_id:vendor_id,
+                id:{
+                    $ne:req.params.product_id
+                }
         	};
         	includeArr = [{ model: model["Vendor"] },
             { model: model["Marketplace"] },
