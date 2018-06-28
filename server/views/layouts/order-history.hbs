@@ -134,8 +134,8 @@
 								<tr>
 									<td><input type="checkbox"></td>
 									<td>{{this.Order.invoice_id}}</td>
-									<td>{{this.Product.product_name}}</td>
-									<td class="text_blue_color">{{this.Product.Vendor.vendor_name}}</td>
+									<td><a href="/product/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a></td>
+									<td class="text_blue_color"><a href="/vendor-about">{{this.Product.Vendor.vendor_name}}</a></td>
 									<td>{{MarketPlaceId  ../marketPlace this.Product.marketplace_id }}
 
 									</td>

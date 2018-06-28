@@ -1,3 +1,8 @@
+<style>
+    #productImage {
+        cursor: pointer;
+    }
+</style>
 <script>
     function changeCategory(e) {
         $.ajax({
@@ -7,7 +12,6 @@
                 $("#sub_category").empty();
                 for (var i = 0; i < result.rows.length; i++) {
                     var options;
-                    
                     options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
 
                     $("#sub_category").append(options)
@@ -26,9 +30,9 @@
                 $("#state").empty();
                 for (var i = 0; i < result.rows.length; i++) {
                     var options;
-                    
+
                     options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                   
+
                     $("#state").append(options)
                 }
             },
@@ -38,8 +42,8 @@
         });
     }
 
-    function changeMarketplace(e) {
-        if(e.value == 1) {
+/*function changeMarketplace(e) {
+        if (e.value == 1) {
             $.ajax({
                 url: '/api/marketplace-types?marketplace_id=' + e.value,
                 type: 'GET',
@@ -48,11 +52,11 @@
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         //if(result.rows[i].id == 1){
-                            $('#type, #moq').show();
-                            options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                             console.log("options", options);
-                            $("#type").append(options)
-                       // } 
+                        $('#type, #moq').show();
+                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                        console.log("options", options);
+                        $("#type").append(options)
+                        // } 
                     }
                 },
                 error: function (error) {
@@ -62,37 +66,55 @@
         } else {
             $('#type, #moq').hide();
         }
-    }
+    }*/
 </script>
 <script>
-    function addProduct(obj,input) {
+    function addProduct(obj, input) {
         $.ajax({
             type: 'POST',
-            url: '/api/product/add-product?'+input,
+            url: '/api/product/add-product?' + input,
             data: obj,
-            success: function(data) {
+            success: function (data) {
                 location.reload();
             },
             error: function (error) {
                 console.log('error', error);
             }
-         })
+        })
     }
     $(document).ready(function () {
-         $("#type").hide();
+
+       /* function fasterPreview(uploader) {
+            if (uploader.files && uploader.files[0]) {
+                $('#UploadedImage').attr('src',
+                    window.URL.createObjectURL(uploader.files[0]));
+            }
+        }
+        $("#imageUpload").change(function () {
+            fasterPreview(this);
+        });
+
+        $("#type").hide();*/
+
         $("#productForm").submit(function (e) {
-             e.preventDefault();
-           
+            e.preventDefault();
+
             let input = $("#productForm :input").filter(function (index, element) {
                 return $(element).val() != '';
-            }).serialize();   
+            }).serialize();
 
-            if($("#file")[0].files.length > 0) {
+            if ($("#file")[0].files.length > 0) {
                 var form = new FormData();
-                form.append("file", $("#file")[0].files[0]);
-                form.append("filename", "test");
-                
-                var obj={};
+                 form.append("file", $("#file")[0].files);
+                 form.append("filename", "test");
+
+              /*  $.each($("#file")[0].files, function (i, file) {
+                    form.append("file[" + i + "]", file);
+                });
+
+                var obj = {};
+
+                console.log("uploaded files", $("#file")[0].files);*/
 
                 $.ajax({
                     type: 'POST',
@@ -107,59 +129,18 @@
                         obj.status = 1;
                         obj.url = data.imageURL;
                         obj.base_image = 1;
-                        addProduct(obj,input);
+                        addProduct(obj, input);
                     },
                     error: function (error) {
                         console.log('error', error);
                     }
                 });
             } else {
-                var obj={};
+                var obj = {};
                 obj.url = null;
                 addProduct(obj, input);
-            }            
+            }
         });
-           
-  /*  $.ajax({
-                type: 'POST',
-                url: '/api/products/upload',
-                data: form,
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    obj.type = 1;
-                    obj.status = 1;
-                    obj.url = data.imageURL;
-                    $.ajax({
-                        type: 'POST',
-                        url: '/api/product-medias',
-                        data: obj,
-                        success: function (data) {
-                            $.ajax({
-                                type: 'POST',
-                                url: '/api/products',
-                                data: newProduct,
-                                success: function (data) {
-                                    console.log("data", data);
-                                },
-                                error: function (error) {
-                                    console.log('error', error);
-                                }
-                            });
-                        },
-                        error: function (error) {
-                            console.log('error', error);
-                        }
-                    });
-                },
-                error: function (error) {
-                    console.log('error', error);
-                }
-            });*/
-
-        
     });
 </script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
@@ -168,131 +149,159 @@
             <div class="row">
                 {{> vendor/navbar}}
                 <div class="col-md-8" style="background-color: #fff;">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
-                        <form role="form" id="productForm">
-                            <div class="form-group product-heading">
-                                <p>Add Product</p>
-                            </div>
-                           <br><br>
-                            <div class="form-group">
-                                <input type="text" name="product_name" id="product_name" class="form-control input-lg" placeholder="Product Name" tabindex="1" required />
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-5 col-sm-5 col-md-5">
-                                     <div class="form-group">
-                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
-                                             <option disabled selected>Select Marketplace</option>
-                                                 {{#each marketplace}}
-                                                      <option value="{{this.id}}">{{ this.name}}</option>
-                                                 {{/each}}
-                                             </select>
-                                        </div> 
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
+                            <form role="form" id="productForm">
+                                <div class="form-group product-heading">
+                                    <p>Add Product</p>
                                 </div>
-                                <div class="col-xs-5 col-sm-5 col-md-5">
-                                    <div class="form-group">
-                                         <select class="form-control"  name="marketplace_type_id" id="type" value="">
-                                            <option disabled selected>Type</option>
-                                        </select>
+                                <br>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" name="product_name" id="product_name" class="form-control input-lg" placeholder="Product Name" tabindex="1"
+                                        required />
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-5 col-sm-5 col-md-5">
+                                        <div class="form-group">
+                                            {{!-- <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
+                                                <option disabled selected>Select Marketplace</option>
+                                                {{#each marketplace}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select> --}}
+                                            {{#ifCond this.type '==' 'wholesale'}}
+                                            <input type="text" class="form-control" name="marketplace"  value="Private Wholesale Marketplace" readonly />
+                                            	{{else ifCond this.type '==' 'shop'}}
+                                             <input type="text" class="form-control" name="marketplace"  value="Public Marketplace" readonly />
+                                             	{{else ifCond this.type '==' 'services'}}
+                                              <input type="text" class="form-control" name="marketplace"  value="Services Marketplace" readonly />
+                                              	{{else ifCond this.type '==' 'lifestyle'}}
+                                               <input type="text" class="form-control" name="marketplace" value="Lifestyle Marketplace" readonly />
+                                               {{/ifCond}}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xs-2 col-sm-2 col-md-2">
-                                    <div class="form-group">
-                                         <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" style="display: none;" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-4 col-md-6">
-                                     <div class="form-group">
-                                        <select class="form-control " id="category" name="product_category_id" onchange="changeCategory(this)" required>
-                                                <option disabled selected>Category</option>
-                                                  {{#each category}}
-                                                      <option value="{{this.id}}">{{ this.name}}</option>
-                                                  {{/each}}
-                                        </select>
-                                    </div> 
-                                </div>
-                                <div class="col-xs-6 col-sm-4 col-md-6">
-                                    <div class="form-group">
-                                        <select class="form-control " name="sub_category_id" id="sub_category" value="" required>
-                                            <option disabled selected>Sub Category</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="row">
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                     <div class="form-group">
-                                          <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" required>
-                                            <option disabled selected>Country</option>
-                                            {{#each country}}
-                                            <option value="{{this.id}}">{{ this.name}}</option>
-                                            {{/each}}
-                                        </select>
-                                     </div> 
-                                </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <div class="form-group">
-                                           <select class="form-control " name="state_id" id="state" value="" required>
-                                            <option disabled selected>State</option>
+                                    {{#ifCond this.type '==' 'wholesale'}}
+                                    <div class="col-xs-5 col-sm-5 col-md-5">
+                                        <div class="form-group">
+                                            <select class="form-control" name="marketplace_type_id"  value="">
+                                                <option disabled selected>Select Type</option>
+                                                {{#each marketplaceType}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 col-sm-2 col-md-2">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" />
+                                        </div>
+                                    </div>
+                                    {{/ifCond}}
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <div class="form-group">
+                                            <select class="form-control " id="category" name="product_category_id" onchange="changeCategory(this)" required>
+                                                <option disabled selected>Category</option>
+                                                {{#each category}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <div class="form-group">
+                                            <select class="form-control " name="sub_category_id" id="sub_category" value="" required>
+                                                <option disabled selected>Sub Category</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <div class="form-group">
-                                        <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" required>
+                                                <option disabled selected>Country</option>
+                                                {{#each country}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <select class="form-control " name="state_id" id="state" value="" required>
+                                                <option disabled selected>State</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                     <div class="form-group">
-                                          <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control" required/>
-                                     </div> 
-                                </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <div class="form-group">
-                                           <input type="text" name="price" id="price" placeholder="Price" class="form-control" required/>
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" name="price" id="price" placeholder="Price" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control"
+                                                required/>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <div class="form-group">
-                                        <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control" required/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-12">
-                                    <label>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
                                             <h6>Description</h6>
-                                        </label><br>
-                                    <div class="form-group">
-                                        <textarea id="description" name="description" class="form-control" required></textarea>
+                                        </label>
+                                        <br>
+                                        <div class="form-group">
+                                            <textarea id="description" name="description" class="form-control" required></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
+                                {{!-- <div class="form-group">
+                                    <label>
+                                        <h6> Upload Image</h6>
+                                    </label>
+                                    <p id="productImage" onclick="document.getElementById('imageUpload').click();">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <input type="file" id="imageUpload" style="display: none;" name="file" />
+                                    </p>
+                                </div>
+                                <img id="UploadedImage" src="" style="width:10%; " alt="avt" /> --}}
+                           <div class="form-group">
                                 <label><h6>Upload Image </h6></label>
                                     <input type="file" class="form-control form-control-file" aria-describedby="fileHelp" id="file" name="file" />
+                            </div>     
+                        <hr class="colorgraph">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
                             </div>
-                            <hr class="colorgraph">
-                            <div class="row">
-                                <div class="col-xs-12 col-md-6">
-                                            <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
-                                </div>
-                                <div class="col-xs-12 col-md-6">
-                                        <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
-                                </div>
+                            <div class="col-xs-12 col-md-6">
+                                <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
                             </div>
+                        </div>
                         </form>
                     </div>
                 </div>
-                </div>
-                <div class="col-md-2">
-                </div>
+            </div>
+            <div class="col-md-2">
             </div>
         </div>
+    </div>
     </div>
 </section>
 {{> footer/footer}}

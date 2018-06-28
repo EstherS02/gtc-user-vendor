@@ -102,8 +102,7 @@ export function create(req, res) {
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams["role"] = roles["USER"];
 
-
-			model['User'].create(bodyParams)
+            model['User'].create(bodyParams)
 				.then(function (row) {
 					if (row) {
 						const rspUser = plainTextResponse(row);
@@ -124,8 +123,9 @@ export function create(req, res) {
 								var username = rspUser["first_name"];
 								var email = rspUser["email"];
 								var sub = rsp.subject.replace('%USERNAME%', username);
-								var body = rsp.body.replace('%USERNAME%', username);
-								body = rsp.body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
+								var body;
+								body = rsp.body.replace('%USERNAME%', username);
+								body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 								mail.jobNotifications({
 									from: config.email.smtpfrom,
 									to: email,
@@ -354,8 +354,7 @@ export function userProfile(req, res) {
 		.catch(function (err) {
 			res.status(500).send(err);
 			return;
-		})
-
+	})
 }
 
 exports.authenticate = authenticate;

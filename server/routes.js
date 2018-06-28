@@ -21,6 +21,7 @@ export default function(app) {
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
   app.use('/api/product', require('./api/product'));
+   app.use('/api/product-view', require('./api/product-view'));
   app.use('/api/users', require('./api/users'));
   app.use('/api/tickets', require('./api/ticket'));
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
@@ -78,7 +79,7 @@ export default function(app) {
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
   app.use('/user-verify', require('./hbs-routes/user-verify'));
   app.use('/order-checkout', require('./hbs-routes/checkout'));
-
+  app.use('/user-join', require('./hbs-routes/user-join'))
 
 
 
