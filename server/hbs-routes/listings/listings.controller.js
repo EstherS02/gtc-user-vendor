@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
+const populate = require('../../utilities/populate');
 
 export function listings(req, res) {
 
@@ -110,7 +111,10 @@ export function listings(req, res) {
 export function editListings(req, res) {
 
 	let searchObj = {}, LoggedInUser = {}, type;
-	var productModel = "MarketplaceProduct";
+	var productModel = "Product";
+	var productIncludeArr= [];
+
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia');
 
 	type=req.params.type;
 
@@ -120,8 +124,9 @@ export function editListings(req, res) {
 	if (req.params.product_slug)
 		searchObj["product_slug"] = req.params.product_slug;
 
-	service.findOneRow(productModel, searchObj)
+	service.findOneRow(productModel, searchObj,productIncludeArr)
 		.then(function (product) {
+
 			res.render('edit-listing', {
 				title: 'Global Trade Connect',
 				statusCode: status,

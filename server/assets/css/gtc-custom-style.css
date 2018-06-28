@@ -37,6 +37,17 @@ h6 {
   object-fit: cover;
 }
 
+.edit-listing{
+  font-size: 14px;
+  border:none;
+  margin:0px;
+  padding: 0px;
+  color:gray;
+  margin-top: -10px;
+  margin-bottom: -5px;
+  
+}
+
 .product-img-sm {
   width: 50px;
   height: 60px;
