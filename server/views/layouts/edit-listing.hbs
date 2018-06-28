@@ -136,25 +136,17 @@
 											Status
 										</label>
 									</div>
-									<div class="col-xs-9 col-sm-9 col-md-9">
+									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" placeholder="Enter product status" value="{{product.status}}" id="product_name" class="edit-listing"
-											 required/>
+											<select class="edit-listing" style="background:white;">
+												<option value="ACTIVE">Active</option>
+												<option value="INACTIVE">InActive</option>
+												<option value="SUSPENDED">Suspended</option>
+												<option value="SOLDOUT">Sold Out</option>
+											</select>
 										</div>
 									</div>
 								</div>
-								{{!-- <div class="row">
-									<div class="col-xs-3 col-sm-3 col-md-3">
-										<label class="edit-listing">
-											Category
-										</label>
-									</div>
-									<div class="col-xs-5 col-sm-5 col-md-5">
-										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" class="edit-listing" required/>
-										</div>
-									</div>
-								</div> --}}
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
 										<label class="edit-listing">
@@ -163,10 +155,44 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{Titlecase product.Category.name}} > {{product.SubCategory.name}}" class="edit-listing" required/>
+											<select class="edit-listing" style="background:white;">
+												{{#each category}}
+												<option value="{{this.id}}">{{ this.name}}</option>
+												{{/each}}
+											</select>
 										</div>
 									</div>
 								</div>
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<label class="edit-listing">
+											Sub Category
+										</label>
+									</div>
+									<div class="col-xs-5 col-sm-5 col-md-5">
+										<div class="form-group">
+											<select class="edit-listing" style="background:white;">
+												{{#each subCategory}}
+												<option value="{{this.id}}">{{ this.name}}</option>
+												{{/each}}
+											</select>
+										</div>
+									</div>
+								</div>
+								{{!--
+								<div class="row">
+									<div class="col-xs-3 col-sm-3 col-md-3">
+										<label class="edit-listing">
+											Category
+										</label>
+									</div>
+									<div class="col-xs-5 col-sm-5 col-md-5">
+										<div class="form-group">
+											<input type="text" name="product_name" id="product_name" value="{{Titlecase product.Category.name}} > {{product.SubCategory.name}}"
+											 class="edit-listing" required/>
+										</div>
+									</div>
+								</div> --}}
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
 										<label class="edit-listing">
