@@ -1,32 +1,45 @@
 <ul class="navbar-nav mr-auto">
 	<li class="gtc-follow-img">
-		<a href="#">
-			<img src="../../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;" />
-		</a>
-		<a >
-			<img src="../../img/follow.png" alt="Follow" style="width: 80px; margin-top: 5px;" />
-		</a>
-	</li>
-	<li class="nav-item" style="background-color: #084681;">
-		<a class="nav-link" href="/vendor-wholesale" style="color: #fff">WHOLESALE</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-shop">SHOP</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-services">SERVICES</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="">LIFESTYLE</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="#">DISCUSSION BOARD</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-about">ABOUT</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-support">SUPPORT</a>
+		<a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
+		<a href="#"><img src="../img/follow.png" alt="Follow" style="width: 80px; margin-top: 5px;"/></a>
 	</li>
 
+	<li class="nav-item" style="background-color: #084681;">
+		<a class="nav-link" href="/vendor_wholesale" style="color: #fff">{{#vendorPlan "WHOLESALE" LoggedInUser.Vendor.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="/vendor_shop">{{#vendorPlan "SHOP" LoggedInUser.Vendor.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="/vendor_service">{{#vendorPlan "SERVICES" LoggedInUser.Vendor.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="/vendor_lifestyle">{{#vendorPlan "LIFESTYLE" LoggedInUser.Vendor.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="#">SUPPORT</a>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+			<i class="fas fa-ellipsis-h"></i>
+		</a>
+		<div class="dropdown-menu">
+			<a class="dropdown-item" href="/edit-listing">Edit Listings</a>
+			<a class="dropdown-item" href="/vendor-order-history">Order History</a>
+			<a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
+			<a class="dropdown-item" href="/reporting/performance">Reporting</a>
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="/reviews">See My Reviews</a>
+			<a class="dropdown-item" href="/promote-store">Store Branding</a>
+			<a class="dropdown-item" href="/notifications">Notification Settings</a>
+			<a class="dropdown-item" href="/social-profile">Social Profile Settings</a>
+			<a class="dropdown-item" href="/shipping-settings">Shipping Settings</a>
+			<a class="dropdown-item" href="/payment-settings">Payment Settings</a>
+			<a class="dropdown-item" href="/verification">Get GTC Verified</a>
+			<a class="dropdown-item" href="/gtc-talk">GTC Talk Settings</a>
+			<a class="dropdown-item" href="#">GTC Mail Settings</a>
+		</div>
+	</li>
 </ul>
