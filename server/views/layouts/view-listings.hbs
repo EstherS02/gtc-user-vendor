@@ -9,7 +9,6 @@
 			}
 		} else {
 			for (var i = 0; i < checkboxes.length; i++) {
-				console.log(i)
 				if (checkboxes[i].type == 'checkbox') {
 					checkboxes[i].checked = false;
 				}
@@ -19,36 +18,35 @@
 </script>
 <script type="text/javascript">
 	function changeStatus(e) {
-		window.location.href = '/listings/wholesale?status=' + e.value;
+		window.location.href = '/listings/' + e.name + '?status=' + e.value;
 	}
 	function search(e) {
-		window.location.href = '/listings?product_name=' + e.value;
+		window.location.href = '/listings/' + e.name + '?keyword=' + e.value;
 	}
 
-	function edit() {
+	function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
 			chkArray.push($(this).val());
 		});
 		var selected;
 		selected = chkArray.join(',');
-		console.log("selected...."+selected);
-		if (selected.length > 0) {
-			window.location.href = '/listings/edit/' + selected;
-		} else {
-			alert("Please at least check one of the checkbox");
+		if (chkArray.length == 1) {
+			window.location.href = '/listings/' + e.name + '/' + selected;
+		}
+		else {
+			alert("Please select one product to edit");
 		}
 	}
 
-	function add() {
-		window.location.href = '/add-product';
+	function add(e) {
+		window.location.href = 'add-product/' + e.name;
 	}
 
-</script> 
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}{{> vendor/header}}
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}{{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				{{> vendor/navbar}}
 				<div class="col-md-8" style="background-color: #fff;">
@@ -57,10 +55,11 @@
 						the product name or SKU to go to the full edit details page for that specific products.</p>
 					<div class="row">
 						<div class="col-md-2">
-							<input style="width: 100%;" type="submit" value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add();" />
+							<input style="width: 100%;" type="submit" name={{this.type}} value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add(this);"
+							/>
 						</div>
 						<div class="col-md-2 common_padding1">
-							<select style="width: 90%;" class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+							<select style="width: 90%;" class="vend_edit_lists_buttonstyle" name="{{this.type}}" onChange="changeStatus(this);">
 								<option disabled selected>CHANGE STATUS</option>
 								<option value="ACTIVE">Active</option>
 								<option value="INACTIVE">InActive</option>
@@ -74,13 +73,15 @@
 							</select>
 						</div>
 						<div class="col-md-2 common_padding1">
-							<input style="width: 90%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" onclick="edit();" />
+							<input style="width: 90%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
+							 onclick="edit(this);" />
 						</div>
 						<div class="col-md-1 common_padding1">
 							<input style="width: 100%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
-							<input type="text" placeholder="Search Products" class="vend_edit_lists_searchstyle" onChange="search(this);" />
+							<input type="text" placeholder="Search Products" id="search" class="vend_edit_lists_searchstyle" name="{{this.type}}" onChange="search(this);"
+							/>
 						</div>
 					</div>
 					<div class="row">
@@ -89,10 +90,10 @@
 						</div>
 						<div class="col-md-6">
 							<p class="vend_edit_lists_pstyle float-right">Entries per page:
-								<a href="listings?limit=10">10</a>
-								<a href="listings?limit=25">25</a>
-								<a href="listings?limit=100">100</a>
-								<a href="listings">All</a>
+								<a href="listings/{{this.type}}?limit=10">10</a>
+								<a href="listings/{{this.type}}?limit=25">25</a>
+								<a href="listings/{{this.type}}?limit=100">100</a>
+								<a href="listings/{{this.type}}">All</a>
 							</p>
 						</div>
 					</div>
@@ -118,7 +119,9 @@
 										<input type="checkbox" name="selected" value={{this.product_slug}}>
 									</td>
 									<td class="text_blue_color">
-										<img src="{{this.url}}" style="width: 15px;" /> {{this.product_name}}</td>
+										<img src="{{this.product_base_image}}" style="width: 30px;" />
+										<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+									</td>
 									<td>{{ prettifyDate this.publish_date }}</td>
 									<td class="text_blue_color">{{this.product_selling_count}}</td>
 									<td>${{this.product_price}} CAD</td>

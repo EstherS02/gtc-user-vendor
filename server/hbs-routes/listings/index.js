@@ -12,7 +12,7 @@ var globalUser = require('../../auth/global-user-obj');
 var controller = require('./listings.controller');
 
 router.get('/:type',  auth.isAuthenticated(), controller.listings);
-router.get('/edit/:product_slug', controller.editListings);
+router.get('/:type/:product_slug', auth.isAuthenticated(), controller.editListings);
 
 
 module.exports = router;

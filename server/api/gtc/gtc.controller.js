@@ -2,6 +2,7 @@
 
 const mv = require('mv');
 const _ = require('lodash');
+const path = require('path');
 const sequelize = require('sequelize');
 
 const service = require('../service');
@@ -452,21 +453,13 @@ exports.multipleUpload = function (req, res) {
 }; 
 
 exports.upload = function (req, res) {
+	let file = req.files.file;
+	let parsedFile = path.parse(file.originalFilename);
+	let timeInMilliSeconds = new Date().getTime();
 
-	var file = req.files.file;
-	var originalFilename = file.originalFilename;
+	let uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 
-	console.log(file)
-
-	var timestamp = new Date();
-	var df = timestamp.getDate() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getFullYear() + '-' + timestamp.getHours() + '-' + timestamp.getMinutes() + '-' + timestamp.getSeconds();
-	var date = df.replace(/-/g, "");
-
-	var fileExt = originalFilename.split('.').pop();
-	var parts = originalFilename.split(".");
-	var fileName = parts[0];
-
-	var uploadPath = config.images_base_path + fileName + date + '_' + req.user.id + '.' + fileExt;
+	console.log(uploadPath)
 
 	mv(file.path, uploadPath, {
 		clobber: true,
@@ -476,7 +469,7 @@ exports.upload = function (req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			var image = config.imageUrlRewritePath.base + fileName + date + '_' + req.user.id + '.' + fileExt;
+			let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 			return res.status(201).json({
 				imageURL: image
 			});

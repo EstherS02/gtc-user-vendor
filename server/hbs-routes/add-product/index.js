@@ -9,7 +9,7 @@ var auth = require('../../auth/auth.service')
 /* Handlebars routes */
 var controller = require('./add-product.controller');
 
-router.get('/', auth.isAuthenticated(), controller.AddProduct);
+router.get('/:type', auth.isAuthenticated(), controller.AddProduct);
 
 
 module.exports = router;

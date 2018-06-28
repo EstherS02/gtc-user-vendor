@@ -9,7 +9,7 @@ const async = require('async');
 
 export function listings(req, res) {
 
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page, type;
 	var queryParams = {}, LoggedInUser = {};
 	var productModel = "MarketplaceProduct";
 	field = "id";
@@ -26,26 +26,35 @@ export function listings(req, res) {
 
 	offset = (page - 1) * limit;
 
-	if(req.user)
-	LoggedInUser = req.user;
-    
-    queryParams['user_id'] = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+
+	queryParams['user_id'] = LoggedInUser.id;
+
+	type=req.params.type;
 
 
-	if(req.params.type=='wholesale')
-		 queryParams["marketplace_id"] = 1;    
-		 
-	if(req.params.type=='shop')
-		 queryParams["marketplace_id"] = 2; 
-		 
-	if(req.params.type=='services')
-		 queryParams["marketplace_id"] = 3; 
-		 
-	if(req.params.type=='subscription')
-	     queryParams["marketplace_id"] = 4; 
+	if (req.params.type == 'wholesale') {
+		queryParams["marketplace_id"] = 1;
+		type = 'wholesale';
+	}
 
-	if (req.query.product_name) {
-           queryParams['product_name'] = req.query.product_name;
+	if (req.params.type == 'shop') {
+		queryParams["marketplace_id"] = 2;
+	}
+
+	if (req.params.type == 'services') {
+		queryParams["marketplace_id"] = 3;
+	}
+
+	if (req.params.type == 'lifestyle') {
+		queryParams["marketplace_id"] = 4;
+	}
+
+	if (req.query.keyword) {
+		queryParams['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
 	}
 
 	if (req.query.status) {
@@ -87,7 +96,9 @@ export function listings(req, res) {
 				offset: offset,
 				maxSize: 5,
 				statusCode: status,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				type: type,
+				selectedPage: type
 			});
 		}
 		else {
@@ -98,23 +109,30 @@ export function listings(req, res) {
 
 export function editListings(req, res) {
 
-	let searchObj = {}
+	let searchObj = {}, LoggedInUser = {}, type;
 	var productModel = "MarketplaceProduct";
 
-    if(req.params.product_slug)
-        searchObj["product_slug"] = req.params.product_slug;    
+	type=req.params.type;
 
-    service.findOneRow(productModel, searchObj)
-        .then(function (product) {
-            res.render('edit-listing', {
+	if (req.user)
+		LoggedInUser = req.user;
+
+	if (req.params.product_slug)
+		searchObj["product_slug"] = req.params.product_slug;
+
+	service.findOneRow(productModel, searchObj)
+		.then(function (product) {
+			res.render('edit-listing', {
 				title: 'Global Trade Connect',
 				statusCode: status,
-                product : product
-            });
-        }).catch(function (error) {
-            console.log('Error :::', error);
-            res.render('edit-listing', error)
-        });
+				product: product,
+				LoggedInUser: LoggedInUser,
+				type: type
+			});
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.render('edit-listing', error)
+		});
 }
 
 
