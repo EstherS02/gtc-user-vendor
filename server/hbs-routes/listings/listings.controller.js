@@ -31,6 +31,8 @@ export function listings(req, res) {
 
 	queryParams['user_id'] = LoggedInUser.id;
 
+	type=req.params.type;
+
 
 	if (req.params.type == 'wholesale') {
 		queryParams["marketplace_id"] = 1;
@@ -39,17 +41,14 @@ export function listings(req, res) {
 
 	if (req.params.type == 'shop') {
 		queryParams["marketplace_id"] = 2;
-		type = 'shop';
 	}
 
 	if (req.params.type == 'services') {
 		queryParams["marketplace_id"] = 3;
-		type = 'services';
 	}
 
 	if (req.params.type == 'lifestyle') {
 		queryParams["marketplace_id"] = 4;
-		type = 'lifestyle';
 	}
 
 	if (req.query.keyword) {
@@ -110,8 +109,13 @@ export function listings(req, res) {
 
 export function editListings(req, res) {
 
-	let searchObj = {}
+	let searchObj = {}, LoggedInUser = {}, type;
 	var productModel = "MarketplaceProduct";
+
+	type=req.params.type;
+
+	if (req.user)
+		LoggedInUser = req.user;
 
 	if (req.params.product_slug)
 		searchObj["product_slug"] = req.params.product_slug;
@@ -121,7 +125,9 @@ export function editListings(req, res) {
 			res.render('edit-listing', {
 				title: 'Global Trade Connect',
 				statusCode: status,
-				product: product
+				product: product,
+				LoggedInUser: LoggedInUser,
+				type: type
 			});
 		}).catch(function (error) {
 			console.log('Error :::', error);
