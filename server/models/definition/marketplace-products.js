@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'marketplace_id',
 			allowNull: false
 		},
+		marketplace: {
+			type: DataTypes.STRING(128),
+			field: 'marketplace',
+			allowNull: true
+		},
 		marketplace_type_id: {
 			type: DataTypes.BIGINT,
 			field: 'marketplace_type_id',
