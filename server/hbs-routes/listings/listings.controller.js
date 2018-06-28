@@ -114,7 +114,7 @@ export function editListings(req, res) {
 	var productModel = "Product";
 	var productIncludeArr= [];
 
-	productIncludeArr = populate.populateData('Marketplace,ProductMedia');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory');
 
 	type=req.params.type;
 
