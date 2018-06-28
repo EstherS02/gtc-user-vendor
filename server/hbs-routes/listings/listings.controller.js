@@ -47,9 +47,9 @@ export function listings(req, res) {
 		type = 'services';
 	}
 
-	if (req.params.type == 'subscription') {
+	if (req.params.type == 'lifestyle') {
 		queryParams["marketplace_id"] = 4;
-		type = 'subscription';
+		type = 'lifestyle';
 	}
 
 	if (req.query.keyword) {
