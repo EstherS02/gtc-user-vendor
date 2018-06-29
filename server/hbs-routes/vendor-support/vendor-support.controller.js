@@ -17,10 +17,36 @@ export function vendorSupport(req, res) {
     LoggedInUser = req.user;
     
     let user_id = LoggedInUser.id;
+var vendor_id = req.params.id;
+    
+async.series({
+		VendorDetail: function(callback) {
+			var vendorIncludeArr = [{
+				model: model['Country']
 
-    res.render('vendor-support', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
-    });
+			}, {
+				model: model['VendorPlan'],
 
+			}];
+			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
+				.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
+	}, function(err, results) {
+
+		if (!err) {
+			res.render('vendor-support', {
+				title: "Global Trade Connect",
+				VendorDetail : results.VendorDetail,
+				LoggedInUser: LoggedInUser
+			});
+		} else {
+			res.render('vendor-support', err);
+		}
+	});
 }

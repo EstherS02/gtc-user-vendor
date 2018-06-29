@@ -8,9 +8,9 @@ var auth = require('../../auth/auth.service');
 
 
 /* Handlebars routes */
-var controller = require('./vendor-support.controller');
+var controller = require('./vendor-lifestyle.controller');
 
-router.get('/:id',auth.isAuthenticated(), controller.vendorSupport);
+router.get('/:id',auth.isAuthenticated(), controller.vendorLifestyle);
 
 
 module.exports = router;

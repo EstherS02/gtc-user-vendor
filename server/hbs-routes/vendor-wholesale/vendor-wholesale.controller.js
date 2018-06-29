@@ -13,76 +13,98 @@ import series from 'async/series';
 var async = require('async');
 
 export function vendorWholesale(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    var productModel = "MarketplaceProduct";
-    var vendorModel = "VendorUserProduct";
-    var categoryModel = "Category";
-    var offset, limit, field, order;
-    var queryObj = {};
-    // var LoggedInUser = {};
-    queryObj['marketplace_id'] = marketplace['WHOLESALE'];
-    queryObj['vendor_id'] = req.user.Vendor.id;
-    console.log(req.user.Vendor.VendorPlans[0].plan_id);
+	let user_id = LoggedInUser.id;
 
+	var productModel = "MarketplaceProduct";
+	var vendorModel = "VendorUserProduct";
+	var categoryModel = "Category";
+	var offset, limit, field, order;
+	var queryObj = {};
+	var vendor_id;
+	queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+	if (req.params.id) {
+		queryObj['vendor_id'] = req.params.id;
+		vendor_id = req.params.id;
+	} else if (req.query.vendor_id) {
+		queryObj['vendor_id'] = req.query.vendor_id;
+		vendor_id = req.query.vendor_id;
+	} else {
+		vendor_id = 0;
+	}
 
-    offset = 0;
-    limit = 9;
-    field = "id";
-    order = "asc";
+	offset = 0;
+	limit = 9;
+	field = "id";
+	order = "asc";
 
-    async.series({
-        wantToSell: function(callback) {
-            
-            queryObj['marketplace_type_id'] = marketplace_type['WTS'];
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(wantToSell) {
-                    return callback(null, wantToSell.rows);
+	async.series({
+		wantToSell: function(callback) {
 
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        wantToBuy: function(callback) {
-            queryObj['marketplace_type_id'] = marketplace_type['WTB'];
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(wantToBuy) {
-                    return callback(null, wantToBuy.rows);
+			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
+			service.findRows(productModel, queryObj, offset, limit, field, order)
+				.then(function(wantToSell) {
+					return callback(null, wantToSell.rows);
 
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        wantToTrade: function(callback) {
-            queryObj['marketplace_type_id'] = marketplace_type['WTT'];
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(wantToTrade) {
-                    return callback(null, wantToTrade.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		wantToBuy: function(callback) {
+			queryObj['marketplace_type_id'] = marketplace_type['WTB'];
+			service.findRows(productModel, queryObj, offset, limit, field, order)
+				.then(function(wantToBuy) {
+					return callback(null, wantToBuy.rows);
 
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        requestForQuote: function(callback) {
-            queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(requestForQuote) {
-                    return callback(null, requestForQuote.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		wantToTrade: function(callback) {
+			queryObj['marketplace_type_id'] = marketplace_type['WTT'];
+			service.findRows(productModel, queryObj, offset, limit, field, order)
+				.then(function(wantToTrade) {
+					return callback(null, wantToTrade.rows);
 
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        categories: function(callback) {
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		requestForQuote: function(callback) {
+			queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
+			service.findRows(productModel, queryObj, offset, limit, field, order)
+				.then(function(requestForQuote) {
+					return callback(null, requestForQuote.rows);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		vendorDetail: function(callback) {
+			var vendorIncludeArr = [{
+				model: model['Country']
+
+			}, {
+				model: model['VendorPlan'],
+
+			}];
+			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		categories: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -90,7 +112,7 @@ export function vendorWholesale(req, res) {
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
-			productCountQueryParames['vendor_id'] = req.user.Vendor.id;
+			productCountQueryParames['vendor_id'] = vendor_id;
 			if (req.query.marketplace) {
 				productCountQueryParames['marketplace_id'] = req.query.marketplace;
 			}
@@ -112,12 +134,15 @@ export function vendorWholesale(req, res) {
 					model: model['SubCategory'],
 					where: categoryQueryObj,
 					attributes: ['id', 'category_id', 'name', 'code'],
-					required: false
+					include: [{
+						model: model['Product'],
+						where: productCountQueryParames,
+						attributes: []
+					}]
 				}, {
 					model: model['Product'],
 					where: productCountQueryParames,
-					attributes: [],
-					required: false
+					attributes: []
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['SubCategories.id']
@@ -201,31 +226,30 @@ export function vendorWholesale(req, res) {
 				return callback(error, null);
 			});
 		}
-    }, function(err, results) {
-    	// console.log(results.categories);
-			console.log(LoggedInUser.Vendor.VendorPlans);
+	}, function(err, results) {
 
-        if (!err) {
-            res.render('vendor-wholesale', {
-                title: "Global Trade Connect",
-                marketPlace: marketplace,
-                marketPlaceType: marketplace_type,
-                marketPlaceTypes :results.marketPlaceTypes,
-                wantToSell: results.wantToSell,
-                wantToBuy: results.wantToBuy,
-                wantToTrade: results.wantToTrade,
-                requestForQuote: results.requestForQuote,
-                categories:results.categories,
-                LoggedInUser: LoggedInUser
-            });
-        } else {
-            res.render('homePage', err);
-        }
-    });
+		if (!err) {
+			res.render('vendor-wholesale', {
+				title: "Global Trade Connect",
+				VendorDetail: results.vendorDetail,
+				marketPlace: marketplace,
+				marketPlaceType: marketplace_type,
+				marketPlaceTypes: results.marketPlaceTypes,
+				wantToSell: results.wantToSell,
+				wantToBuy: results.wantToBuy,
+				wantToTrade: results.wantToTrade,
+				requestForQuote: results.requestForQuote,
+				categories: results.categories,
+				LoggedInUser: LoggedInUser
+			});
+		} else {
+			res.render('vendor-wholesale', err);
+		}
+	});
 
-    // res.render('vendor-wholesale', {
-    //     title: "Global Trade Connect",
-    //     LoggedInUser: LoggedInUser
-    // });
+	// res.render('vendor-wholesale', {
+	//     title: "Global Trade Connect",
+	//     LoggedInUser: LoggedInUser
+	// });
 
 }

@@ -7,10 +7,10 @@
           <div class="row prfl-wt-txt" style="top: -58px;">
             <div class="col-md-2 common_padding1">
               <a class="navbar-brand float-right" href="javascript:void(0)" style="margin-right: 0px;">
-              <img src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width=154px height=154px/></a>
+              <img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
             </div>
             <div class="col-md-6">
-              <span class="prf_landing_cmpy">Red Roof Inn</span>
+              <span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}}</span>
 
             </div>
           </div>
@@ -21,7 +21,7 @@
               <nav class="navbar navbar-expand-lg">
                 <div class="collapse navbar-collapse" id="navb">
                   <!-- Links -->
-                  {{> vendor/vendor-navbar LoggedInUser = LoggedInUser}}
+                  {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
                   <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" type="text" placeholder="Search">
                     <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
@@ -33,11 +33,12 @@
         </div>
       </div>
     </div>
+    </div>
     <div class="logged_in_cont" >
       <div class="container">
         <div class="row">
           <div class="col-md-2 col-12"  >
-          {{> vendor/vendor-left LoggedInUser = LoggedInUser}}
+          {{> vendor/vendor-left VendorDetail = VendorDetail}}
           </div>
           <div class="col-md-10 col-12">
             <div class="row pmp4">
@@ -375,8 +376,8 @@
         <ul class="list-group collapse" id="collapseCategory{{this.id}}">
           {{#each this.SubCategories}}
           <li class="list-group-item">
-            <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?page=1&category={{../this.id}}&sub_category={{this.id}} 'null'}}">
-              <span>{{this.name}}</span>({{this.sub_count}})
+            <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?page=1&category={{../this.id}}&sub_category={{this.id}}">
+              <span>{{this.name}}</span>
             </a>
             <ul></ul>
           </li>

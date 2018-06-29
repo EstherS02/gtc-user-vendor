@@ -41,12 +41,12 @@
                     {{> vendor/vendor-left VendorDetail = VendorDetail}}
                 </div>
                 <div class="col-md-10 col-12">
-                    <div class="row pmp2">
+                    <div class="row pmp2 lifestyle-market-bg">
                         <div class="col-md-5 col-12">
-                            <h5>SERVICES MARKETPLACE</h5>
+                            <h5>LIFESTYLE MARKETPLACE</h5>
                         </div>
                         <div class="col-md-2 col-12 common_padding1">
-                            <p>Showing 1 - 20 of {{publicService.count}}</p>
+                            <p>Showing 1 - 20 of {{publicLifestyle.count}}</p>
                         </div>
                         <div class="col-md-2 col-12 common_padding1">
                             <select class="geo_textbox">
@@ -59,7 +59,7 @@
                             <section class="box6" style="margin-bottom: 20px;">
                                 <div class="container clearfix">
                                     <div class="row">
-                                    {{#each publicService.rows}}
+                                    {{#each publicLifestyle.rows}}
                                         <div class="col-md-4 col-12 common_top">
                                             <div class="row">
                                                 <div class="col-md-3 col-2">
@@ -117,7 +117,7 @@
                             <p>
                                 <b>FILTER BY CATEGORY</b>
                             </p>
-                            <p class="cat_bg_title_serv">ALL CATEGORIES ({{categories.count}})</p>
+                            <p class="cat_bg_title_serv lifestyle-market-bg">ALL CATEGORIES ({{categories.count}})</p>
                             <div class="list-group panel ">
                                 <ul class="list-group">
                                   {{#each categories.rows}}

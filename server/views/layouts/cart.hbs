@@ -60,6 +60,7 @@ function UpdateAllCartItems(){
 	});
 }
 
+<<<<<<< HEAD
 function UpdateGtcCart(item, qtyItem, cartItemId){
 	let cartInfo = {};
 		cartInfo["cartUpdateArray"] = [];
@@ -89,6 +90,24 @@ function UpdateGtcCart(item, qtyItem, cartItemId){
 		error: function(error){
 			console.log("Error occured while updating", error);
 			$('#quantity-cart-'+ qtyItem).notify(error.responseJSON.message_details, "error");
+=======
+function applyGTCCoupon(){
+	var cartInfo = {};
+	cartInfo.coupon_code = $("#coupon-input-code").val();
+	if(!cartInfo.coupon_code) {
+		alert('Please enter promo code to apply coupon code');
+		return false;
+	}
+	$.ajax({
+		url: '/api/cart/apply-coupon',
+		type: 'POST',
+		data: cartInfo,
+		success: function(updateData) {
+			console.log(updateData);
+		},
+		error: function(error) {
+			console.log("Error occured while updating", error);
+>>>>>>> bf04a4c28f0dc22d29331e437a90e468e27a5492
 		}
 	});
 }
@@ -209,7 +228,11 @@ function UpdateGtcCart(item, qtyItem, cartItemId){
 												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num all-quantity-cart-items" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
+<<<<<<< HEAD
 												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
+=======
+												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
+>>>>>>> bf04a4c28f0dc22d29331e437a90e468e27a5492
 											</div>
 										</div>
 									</td>
@@ -297,11 +320,43 @@ function UpdateGtcCart(item, qtyItem, cartItemId){
 									<p class="shop_subtotal float-right"><b>${{totalPriceList.grandTotal}}</b></p>
 							</div>
 						</div>
+
 						<hr class="common_margin" />
+						{{#ifCond couponData.length '>' 0}}						
+						{{#each couponData}}
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal"><b>DISCOUNT</b></p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">
+									<b>${{this.discount_price}}</b>
+								</p>
+							</div>
+						</div>
+						<hr class="common_margin"/>
+						<div class="row">
+							<div class="col-md-8">
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+							</div>
+							<div class="col-md-4">
+									<p class="shop_subtotal float-right"><b>${{this.final_price}}</b></p>
+							</div>	
+						</div>
+						<p class="promo_code_p">{{{this.message_details}}}</p>
+
+						{{/each}}
+						{{/ifCond}}
+						
+						{{#ifCond couponData.length '==' 0}}
 						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
 						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
 						<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
-						<input type="submit" value="CHECKOUT NOW" class="shop_checkout_btn" />
+						{{/ifCond}}
+						{{#ifCond couponUpdateErrorMessage '!=' ""}}
+							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
+						{{/ifCond}}
+						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="checkoutSave()"/>
 						<img src="../img/payment-methods.jpg" alt="payment">
 					</div>
 				</div>

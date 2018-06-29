@@ -11,37 +11,41 @@ export function notificationSetting(req, res) {
 	var modelName = "VendorNotificationSetting";
 	var queryObj = {};
 	var includeArr = [];
-	var vendor_id = 29;
-	queryObj.vendor_id = vendor_id;
-	data.forEach(function(element) {
-		queryObj.notification_id = element;
-		model[modelName].findOne({
-			where: queryObj
-		}).then(function(result) {
-			var notification_id = element;
-			if (result) {
-				model[modelName].destroy({
-					where: {
-						vendor_id: vendor_id,
-						notification_id: result.notification_id
-					}
-				}).then(function(response) {
-					return;
-				});
+	if (req.user.Vendor.id) {
+		var vendor_id = req.user.Vendor.id;
+		queryObj.vendor_id = vendor_id;
+		data.forEach(function(element) {
+			queryObj.notification_id = element;
+			model[modelName].findOne({
+				where: queryObj
+			}).then(function(result) {
+				var notification_id = element;
+				if (result) {
+					model[modelName].destroy({
+						where: {
+							vendor_id: vendor_id,
+							notification_id: result.notification_id
+						}
+					}).then(function(response) {
+						return;
+					});
 
-			} else {
-				var bodyParam = {};
-				bodyParam.vendor_id = vendor_id;
-				bodyParam.notification_id = element;
-				bodyParam.enabled = 0;
-				bodyParam.status = 1;
-				bodyParam.created_at = new Date();
-				service.createRow(modelName, bodyParam).then(function(response) {
-					return;
-				});
-				// console.log(i, "not in db")
-			}
+				} else {
+					var bodyParam = {};
+					bodyParam.vendor_id = vendor_id;
+					bodyParam.notification_id = element;
+					bodyParam.enabled = 0;
+					bodyParam.status = 1;
+					bodyParam.created_at = new Date();
+					service.createRow(modelName, bodyParam).then(function(response) {
+						return;
+					});
+					// console.log(i, "not in db")
+				}
+			});
 		});
-	});
-	return res.status( 200 ).send( "success" );
+		return res.status(200).send("success");
+	} else {
+		return res.status(404).send("Invalid Entry");
+	}
 }

@@ -108,6 +108,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'coupon_amount',
             allowNull: false
         },
+        coupon_applied_on: {
+            type: DataTypes.DATE,
+            field: 'coupon_applied_on',
+            allowNull: false
+        },
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',

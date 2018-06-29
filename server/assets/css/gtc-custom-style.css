@@ -46,8 +46,21 @@ h6 {
   margin-top: -10px;
   margin-bottom: -5px;
   width:auto;
+  outline:0px;
   
 }
+
+.edit-listing-discount{
+   font-size: 10px;
+   margin-right: 5px;
+   color: gray;
+}
+
+.edit-listing-dis{
+  font-size: 10px;
+   color: gray;
+}
+
 
 .product-img-sm {
   width: 50px;
