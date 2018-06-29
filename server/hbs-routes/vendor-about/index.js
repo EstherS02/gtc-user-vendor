@@ -10,7 +10,7 @@ var auth = require('../../auth/auth.service');
 /* Handlebars routes */
 var controller = require('./vendor-about.controller');
 
-router.get('/',auth.isAuthenticated(), controller.vendorAbout);
+router.get('/:id',auth.isAuthenticated(), controller.vendorAbout);
 
 
 module.exports = router;

@@ -155,38 +155,7 @@
 						<nav class="navbar navbar-expand-lg">
 							<div class="collapse navbar-collapse" id="navb" style="position: relative; top: 20px;">
 								<!-- Links -->
-								<ul class="navbar-nav mr-auto">
-									<li class="gtc-follow-img">
-										<a href="#">
-											<img src="../../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;" />
-										</a>
-										<a onclick="followVendor()" >
-											<img src="../../img/follow.png" alt="Follow" style="width: 80px; margin-top: 5px;" />
-										</a>
-									</li>
-									<li class="nav-item" style="background-color: #084681;">
-										<a class="nav-link" href="/vendor-wholesale" style="color: #fff">WHOLESALE</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/vendor-shop">SHOP</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/vendor-services">SERVICES</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="">LIFESTYLE</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">DISCUSSION BOARD</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/vendor-about">ABOUT</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/vendor-support">SUPPORT</a>
-									</li>
-
-								</ul>
+								{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 								<div class="field-search1 form-inline my-2 my-lg-0">
 									<input type="search" placeholder="Search My store">
 									<div class="right">
@@ -214,61 +183,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-2 col-12">
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">joined:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="jan_style">January 2017</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">Location:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="profile_logged_in_body2_font_2">
-								<img src="../../img/flag-ca.png"> Canada</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">Catagory:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="profile_logged_in_body2_font_2">Wholesale-Automotive</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">User Rating:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p style="margin-bottom: 0px;font-size: 10px;">
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #B8B8BA;"></i>
-								<i class="fas fa-star" style="color: #B8B8BA;"></i>
-							</p>
-							<p class="profile_logged_in_body2_font_2">(Ratings-See All)</p>
-						</div>
-					</div>
-
-					<div class=" row col-md-12 col-12" style="margin-top: 10px;padding-right: 0px;">
-						<i class="fab fa-facebook-f social_logged"></i>
-						<i class="fab fa-youtube social_logged"></i>
-						<i class="fab fa-twitter social_logged"></i>
-						<i class="fab fa-instagram social_logged"></i>
-						<i class="fab fa-linkedin-in social_logged"></i>
-						<i class="fab fa-flickr social_logged"></i>
-						<p class="profile_logged_in_body2_font_3">Accepted Payment Methods:</p>
-						<img width="100%" src="../../img/payment-methods.jpg">
-						<p class="profile_logged_in_body2_font_1">
-							At Hayden Auto,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans
-							they need to buy a vehicle.
-						</p>
-					</div>
+					{{> vendor/vendor-left VendorDetail = VendorDetail}}
 				</div>
 				<div class="col-md-10 col-12">
 					<div class="alert" id="gtc-cart-alert">

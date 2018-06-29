@@ -14,7 +14,7 @@ export function notifications(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
+	if(req.user.Vendor.id){
 	//pagination 
 	var page;
 	var offset;
@@ -26,7 +26,7 @@ export function notifications(req, res) {
 	var includeArr = [{
 		model: model["VendorNotificationSetting"],
 		where: {
-			vendor_id: 29
+			vendor_id: req.user.Vendor.id
 		},
 		required:false
 	}];
@@ -39,10 +39,13 @@ export function notifications(req, res) {
 				notification: results.rows,
 				LoggedInUser:LoggedInUser
 			}).catch(function(error) {
-				console.log('Error :::', error);
-				return callback(null);
+				console.log('Error:::', error);
+            	res.render('notifications', error);
 			});
 		});
+	}else {
+		res.render('notifications');
+	}
 }
 
 function plainTextResponse(response) {
