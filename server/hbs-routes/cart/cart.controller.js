@@ -7,6 +7,7 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
+const cartObj = require('../../api/cart/cart.controller');
 const populate = require('../../utilities/populate');
 
 
@@ -34,33 +35,19 @@ export function cart(req, res) {
 
             return model["Cart"].findAndCountAll({
                 where: queryObj,
-                include: [{
-                        model: model["User"]
-                    },
+                include: [
+                    { model: model["User"]},
                     {
                         model: model["Product"],
-                        include: [{
-                                model: model["Vendor"]
-                            },
-                            {
-                                model: model["Category"]
-                            },
-                            {
-                                model: model["SubCategory"]
-                            },
-                            {
-                                model: model["Marketplace"]
-                            },
-                            {
-                                model: model["MarketplaceType"]
-                            },
-                            {
-                                model: model["Country"]
-                            },
-                            {
-                                model: model["State"]
-                            },
-                            {
+                        include: [
+                            { model: model["Vendor"]},
+                            { model: model["Category"]},
+                            { model: model["SubCategory"]},
+                            { model: model["Marketplace"]},
+                            { model: model["MarketplaceType"]},
+                            { model: model["Country"]},
+                            { model: model["State"]},
+                            {  
                                 model: model["ProductMedia"],
                                 where: {
                                     base_image: 1,
@@ -134,15 +121,57 @@ export function cart(req, res) {
 
             console.log(totalPrice)
 
-            return res.status(200).render('cart', {
+            var coupon_data = [];
+            if(typeof(req.cookies.check_promo_code) != 'undefined') {
+                let default_promo_obj = req.cookies.check_promo_code;
+                var obj_key = -1;
+                for(let key in default_promo_obj) {
+                    if(default_promo_obj[key].user_id == user_id) {
+                        obj_key = key;
+                    }
+                }
+
+                if(obj_key > -1) {
+                    coupon_data.push(req.cookies.check_promo_code[obj_key]);
+                }
+            }
+            var result_obj = {
                 title: "Global Trade Connect",
                 cartItems: results.cartItems.rows,
                 cartItemsCount: results.cartItems.count,
                 marketPlaces: results.marketPlace.rows,
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
-                LoggedInUser: LoggedInUser
-            });
+                LoggedInUser: LoggedInUser,
+                couponData: [],
+                couponUpdateError : "",
+                couponUpdateErrorMessage : ""
+            }
+            console.log(coupon_data)
+            if(coupon_data.length > 0) {
+                var original_price = coupon_data[0].original_price;
+                if(parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
+                    req.body.coupon_code = coupon_data[0].coupon_code;
+                    cartObj.callApplyCoupon(req,res, function(return_val) {
+                        if(typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPILED') {
+                            console.log("====================");
+                            console.log(return_val.coupon_data);
+                            result_obj['couponData'] = [return_val.coupon_data];
+                            return res.status(200).render('cart', result_obj);    
+                        } else {
+                            console.log("ssss====================");
+                            result_obj['couponUpdateError'] = return_val.message;
+                            result_obj['couponUpdateErrorMessage'] = return_val.message_details;
+                            return res.status(200).render('cart', result_obj);    
+                        }
+                    })
+                } else {
+                    result_obj['couponData'] = coupon_data;
+                    return res.status(200).render('cart', result_obj);    
+                }
+            } else {
+                return res.status(200).render('cart', result_obj);
+            }
               /* return res.status(200).send({
                  title : "Global Trade Connect",
                  seperatedItemsList : seperatedItems,
