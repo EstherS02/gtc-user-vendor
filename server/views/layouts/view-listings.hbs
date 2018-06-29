@@ -67,20 +67,20 @@
 								<option value="SOLDOUT">Sold Out</option>
 							</select>
 						</div>
-						<div class="col-md-2 common_padding1">
+						{{!-- <div class="col-md-2 common_padding1">
 							<select style="width: 90%;" class="vend_edit_lists_buttonstyle">
 								<option>CHANGE TYPE</option>
 							</select>
-						</div>
-						<div class="col-md-2 common_padding1">
-							<input style="width: 90%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
+						</div> --}}
+						<div class="col-md-3 common_padding1">
+							<input style="width: 50%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
 							 onclick="edit(this);" />
 						</div>
-						<div class="col-md-1 common_padding1">
-							<input style="width: 100%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
+						<div class="col-md-2 common_padding1">
+							<input style="width: 90%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
 						</div>
 						<div class="col-md-2">
-							<input type="text" placeholder="Search Products" id="search" class="vend_edit_lists_searchstyle" name="{{this.type}}" onChange="search(this);"
+							<input type="text" placeholder="      Search Products" id="search" class="vend_edit_lists_searchstyle" name="{{this.type}}" onChange="search(this);"
 							/>
 						</div>
 					</div>

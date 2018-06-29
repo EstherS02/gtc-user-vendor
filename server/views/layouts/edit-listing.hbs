@@ -1,3 +1,4 @@
+{{!--
 <script>
 	$(function () {
 		console.log("comming....");
@@ -19,24 +20,6 @@
 			}
 		});
 	});
-</script>
-<style>
-	textarea {
-		resize: none;
-		overflow: hidden;
-		height: auto;
-	}
-</style>
-<script>
-	var textarea = null;
-	window.addEventListener("load", function () {
-		textarea = window.document.querySelector("textarea");
-		textarea.addEventListener("keypress", function () {
-			if (textarea.scrollTop != 0) {
-				textarea.style.height = textarea.scrollHeight + "px";
-			}
-		}, false);
-	}, false);
 </script>
 <script>
 	$(function () {
@@ -94,7 +77,52 @@
 			});
 		});
 	});
-</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+</script> --}}
+<style>
+	textarea {
+		resize: none;
+		overflow: hidden;
+		height: auto;
+	}
+</style>
+<script>
+	var textarea = null;
+	window.addEventListener("load", function () {
+		textarea = window.document.querySelector("textarea");
+		textarea.addEventListener("keypress", function () {
+			if (textarea.scrollTop != 0) {
+				textarea.style.height = textarea.scrollHeight + "px";
+			}
+		}, false);
+	}, false);
+</script>
+<script>
+	function addProduct(input) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/product/add-product?' + input,
+           // data: obj,
+            success: function (data) {
+                location.reload();
+            },
+            error: function (error) {
+                console.log('error', error);
+            }
+        })
+    }
+	$(document).ready(function () {
+		$("#editForm").submit(function (e) {
+			e.preventDefault();
+			let input = $("#editForm :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			// var obj = {};
+            // obj.url = null;
+			addProduct(input);
+		})
+	})
+</script> 
+{{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -102,7 +130,7 @@
 				{{> vendor/navbar}}
 
 				<div class="col-md-8" style="background-color: #fff;">
-					<form role="form">
+					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
 						<section class="box2 list_sec">
 							<div class="container">
@@ -138,7 +166,7 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<select class="edit-listing" style="background:white;">
+											<select class="edit-listing" name="status" id="status" value="${{product.status}}" style="background:white;">
 												<option value="ACTIVE">Active</option>
 												<option value="INACTIVE">InActive</option>
 												<option value="SUSPENDED">Suspended</option>
@@ -155,9 +183,10 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<select class="edit-listing" style="background:white;">
+											<select class="edit-listing" name="product_category_id" id="category" style="background:white;">
+												<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
 												{{#each category}}
-												<option value="{{this.id}}">{{ this.name}}</option>
+												<option value="{{this.id}}">{{Titlecase this.name}}</option>
 												{{/each}}
 											</select>
 										</div>
@@ -171,7 +200,8 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<select class="edit-listing" style="background:white;">
+											<select class="edit-listing" name="sub_category_id" id="sub_category" style="background:white;">
+												<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
 												{{#each subCategory}}
 												<option value="{{this.id}}">{{ this.name}}</option>
 												{{/each}}
@@ -179,20 +209,6 @@
 										</div>
 									</div>
 								</div>
-								{{!--
-								<div class="row">
-									<div class="col-xs-3 col-sm-3 col-md-3">
-										<label class="edit-listing">
-											Category
-										</label>
-									</div>
-									<div class="col-xs-5 col-sm-5 col-md-5">
-										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{Titlecase product.Category.name}} > {{product.SubCategory.name}}"
-											 class="edit-listing" required/>
-										</div>
-									</div>
-								</div> --}}
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
 										<label class="edit-listing">
@@ -201,10 +217,12 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{product.sku}}" class="edit-listing" required/>
+											<input type="text" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" class="edit-listing"
+											 required/>
 										</div>
 									</div>
 								</div>
+								{{#ifCond this.type '==' 'wholesale'}}
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
 										<label class="edit-listing">
@@ -213,10 +231,12 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{product.moq}}" class="edit-listing" required/>
+											<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
+											 required/>
 										</div>
 									</div>
 								</div>
+								{{/ifCond}}
 								<div class="row">
 									<div class="col-xs-3 col-sm-3 col-md-3">
 										<label class="edit-listing">
@@ -225,8 +245,8 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{product.quantity_available}} in stock" class="edit-listing"
-											 required/>
+											<input type="text" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}"
+											 class="edit-listing" required/>
 										</div>
 									</div>
 								</div>
@@ -239,7 +259,12 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{product.marketplace_type_id}}" class="edit-listing" required/>
+											<select class="edit-listing" name="marketplace_type_id" style="background:white;">
+												<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
+												{{#each marketplaceType}}
+												<option value="{{this.id}}">{{this.name}}</option>
+												{{/each}}
+											</select>
 										</div>
 									</div>
 								</div>
@@ -252,7 +277,8 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" required/>
+											<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" placeholder="Enter Product Name"
+											 required/>
 										</div>
 									</div>
 								</div>
@@ -264,7 +290,7 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="product_name" id="product_name" value="${{product.price}}" class="edit-listing" required/>
+											<input type="text" name="price" id="price" value="${{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
 										</div>
 									</div>
 								</div>
@@ -276,7 +302,7 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<textarea class="edit-listing" rows="10" cols="35">{{product.description}}</textarea>
+											<textarea class="edit-listing" id="description" name="description" rows="10" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
 										</div>
 									</div>
 								</div>

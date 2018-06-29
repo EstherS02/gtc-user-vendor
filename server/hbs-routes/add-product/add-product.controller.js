@@ -63,7 +63,7 @@ export function AddProduct(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        },
+        }
     }, function (err, results) {
         if (!err) {
             res.render('add-product', {

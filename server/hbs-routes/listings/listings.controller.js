@@ -111,10 +111,10 @@ export function listings(req, res) {
 export function editListings(req, res) {
 
 	let searchObj = {},LoggedInUser = {},queryObj = {},type;
-	
 	var productModel = "Product";
 	var categoryModel = "Category";
 	var subCategoryModel = "SubCategory";
+    var marketplaceTypeModel = "MarketplaceType";
 	var productIncludeArr = [];
 
 	var offset, limit, field, order;
@@ -123,8 +123,7 @@ export function editListings(req, res) {
     field = "id";
     order = "asc";
 
-
-	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType');
 
 	type = req.params.type;
 
@@ -168,6 +167,16 @@ export function editListings(req, res) {
 					return callback(null);
 				});
 		},
+		marketplaceType: function (callback) {
+            service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
+                .then(function (marketplaceType) {
+                    return callback(null, marketplaceType.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
 	}, function (err, results) {
 		if (!err) {
 			res.render('edit-listing', {
@@ -177,6 +186,7 @@ export function editListings(req, res) {
 				category: results.category,
 				subCategory: results.subCategory,
 				LoggedInUser: LoggedInUser,
+				marketplaceType:results.marketplaceType,
 				type: type
 			});
 		}
