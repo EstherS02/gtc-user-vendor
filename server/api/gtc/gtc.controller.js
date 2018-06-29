@@ -417,24 +417,13 @@ export function destroy(req, res) {
 
 exports.multipleUpload = function (req, res) {
 
-	var timestamp = new Date();
-	var df = timestamp.getDate() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getFullYear()
-	         + '-' + timestamp.getHours() + '-' + timestamp.getMinutes() + '-' + timestamp.getSeconds();
-	var date = df.replace(/-/g, "");
-
-	var files = req.files.file;
-	console.log(JSON.stringify(files));
+	let timeInMilliSeconds = new Date().getTime();
+    let files = req.files.file;
 	
 	async.mapSeries(files, function (data, callback) {
 
-		var originalFilename = data.originalFilename;
-
-		var fileExt = originalFilename.split('.').pop();
-		var parts = originalFilename.split(".");
-		var fileName = parts[0];
-
-		var uploadPath = config.images_base_path + fileName + date + '_' + req.user.id + '.' + fileExt;
-
+		let parsedFile = path.parse(data.originalFilename);
+		let uploadPath = config.images_base_path +"/"+ parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 		mv(data.path, uploadPath, {
 			clobber: true,
 			mkdirp: true
@@ -443,7 +432,7 @@ exports.multipleUpload = function (req, res) {
 				console.log('Error:::', error)
 				return callback(null);
 			} else {
-				var image = config.imageUrlRewritePath.base + fileName + date + '_' + req.user.id + '.' + fileExt;
+				let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 				return callback(null,image);
 			}
 		});	

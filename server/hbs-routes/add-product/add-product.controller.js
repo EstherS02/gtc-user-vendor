@@ -28,8 +28,6 @@ export function AddProduct(req, res) {
     if(req.user)
     LoggedInUser = req.user;
     
-    //queryParams['user_id'] = LoggedInUser.id;
-
 
     queryObj['status'] = status["ACTIVE"];
 

@@ -97,32 +97,34 @@
 	}, false);
 </script>
 <script>
-	function addProduct(input) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/product/add-product?' + input,
-           // data: obj,
-            success: function (data) {
-                location.reload();
-            },
-            error: function (error) {
-                console.log('error', error);
-            }
-        })
-    }
-	$(document).ready(function () {
-		$("#editForm").submit(function (e) {
-			e.preventDefault();
-			let input = $("#editForm :input").filter(function (index, element) {
-				return $(element).val() != '';
-			}).serialize();
-			// var obj = {};
-            // obj.url = null;
-			addProduct(input);
+	function addProduct(data, input) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product/edit-product?product_id=' +data ,
+			data: input,
+			success: function (data) {
+				alert("Product Updated Successfully");
+				location.reload();
+			},
+			error: function (error) {
+				console.log('error', error);
+			}
 		})
+	}
+	$(document).ready(function () {
+		var data = {{ product.id }};
+
+	$("#editForm").submit(function (e) {
+		e.preventDefault();
+		let input = $("#editForm :input").filter(function (index, element) {
+			return $(element).val() != '';
+		}).serialize();
+		// var obj = {};
+		// obj.url = null;
+		addProduct(data, input);
 	})
-</script> 
-{{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+	})
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
@@ -132,7 +134,15 @@
 				<div class="col-md-8" style="background-color: #fff;">
 					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
+						{{#ifCond this.type '==' 'wholesale'}}
 						<section class="box2 list_sec">
+							{{else ifCond this.type '==' 'shop'}}
+							<section class="public-market-bg list_sec">
+								{{else ifCond this.type '==' 'services'}}
+								<section class="service-market-bg list_sec">
+									{{else ifCond this.type '==' 'lifestyle'}}
+									<section class="lifestyle-market-bg list_sec">
+										{{/ifCond}}
 							<div class="container">
 								<div class="row">
 									<div class="col-md-12 box2_align">
@@ -290,7 +300,7 @@
 									</div>
 									<div class="col-xs-5 col-sm-5 col-md-5">
 										<div class="form-group">
-											<input type="text" name="price" id="price" value="${{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
+											<input type="text" name="price" id="price" value="{{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
 										</div>
 									</div>
 								</div>
@@ -312,7 +322,7 @@
 										<input class="list_butt_1" type="submit" value="UPDATE" />
 									</div>
 									<div class="col-md-10 col-6">
-										<input class="list_butt_2" type="submit" value="CANCEL" />
+										<input class="list_butt_2" type="reset" value="CANCEL" />
 									</div>
 								</div>
 							</div>
