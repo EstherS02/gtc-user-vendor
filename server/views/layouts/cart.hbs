@@ -60,7 +60,6 @@ function UpdateAllCartItems(){
 	});
 }
 
-<<<<<<< HEAD
 function UpdateGtcCart(item, qtyItem, cartItemId){
 	let cartInfo = {};
 		cartInfo["cartUpdateArray"] = [];
@@ -90,7 +89,11 @@ function UpdateGtcCart(item, qtyItem, cartItemId){
 		error: function(error){
 			console.log("Error occured while updating", error);
 			$('#quantity-cart-'+ qtyItem).notify(error.responseJSON.message_details, "error");
-=======
+		}
+	});
+}
+
+
 function applyGTCCoupon(){
 	var cartInfo = {};
 	cartInfo.coupon_code = $("#coupon-input-code").val();
@@ -107,7 +110,6 @@ function applyGTCCoupon(){
 		},
 		error: function(error) {
 			console.log("Error occured while updating", error);
->>>>>>> bf04a4c28f0dc22d29331e437a90e468e27a5492
 		}
 	});
 }
@@ -228,11 +230,7 @@ function applyGTCCoupon(){
 												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num all-quantity-cart-items" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
-<<<<<<< HEAD
 												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
-=======
-												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
->>>>>>> bf04a4c28f0dc22d29331e437a90e468e27a5492
 											</div>
 										</div>
 									</td>

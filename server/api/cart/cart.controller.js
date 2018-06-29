@@ -6,7 +6,6 @@ const model = require('../../sqldb/model-connect');
 const service = require('../service');
 const status = require('../../config/status');
 const discount = require('../../config/discount');
-const async = require('async');
 const _ = require('lodash');
 const moment = require('moment');
 
