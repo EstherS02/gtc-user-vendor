@@ -35,7 +35,10 @@ export function cart(req, res) {
             return model["Cart"].findAndCountAll({
                 where: queryObj,
                 include: [{
-                        model: model["User"]
+                        model: model["User"],
+                        attributes: {
+                            exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+                        }
                     },
                     {
                         model: model["Product"],
