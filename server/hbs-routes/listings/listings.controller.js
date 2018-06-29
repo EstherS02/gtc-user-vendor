@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
+const populate = require('../../utilities/populate');
 
 export function listings(req, res) {
 
@@ -31,7 +32,7 @@ export function listings(req, res) {
 
 	queryParams['user_id'] = LoggedInUser.id;
 
-	type=req.params.type;
+	type = req.params.type;
 
 
 	if (req.params.type == 'wholesale') {
@@ -109,10 +110,22 @@ export function listings(req, res) {
 
 export function editListings(req, res) {
 
-	let searchObj = {}, LoggedInUser = {}, type;
-	var productModel = "MarketplaceProduct";
+	let searchObj = {},LoggedInUser = {},queryObj = {},type;
+	var productModel = "Product";
+	var categoryModel = "Category";
+	var subCategoryModel = "SubCategory";
+    var marketplaceTypeModel = "MarketplaceType";
+	var productIncludeArr = [];
 
-	type=req.params.type;
+	var offset, limit, field, order;
+	offset = 0;
+    limit = null;
+    field = "id";
+    order = "asc";
+
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType');
+
+	type = req.params.type;
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -120,19 +133,67 @@ export function editListings(req, res) {
 	if (req.params.product_slug)
 		searchObj["product_slug"] = req.params.product_slug;
 
-	service.findOneRow(productModel, searchObj)
-		.then(function (product) {
+	async.series({
+		product: function (callback) {
+
+			service.findOneRow(productModel, searchObj, productIncludeArr)
+				.then(function (product) {
+					return callback(null, product);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		category: function (callback) {
+
+			service.findRows(categoryModel, queryObj, offset, limit, field, order)
+				.then(function (category) {
+					return callback(null, category.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		subCategory: function (callback) {
+
+			service.findRows(subCategoryModel, queryObj, offset, limit, field, order)
+				.then(function (subCategory) {
+					return callback(null, subCategory.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		marketplaceType: function (callback) {
+            service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
+                .then(function (marketplaceType) {
+                    return callback(null, marketplaceType.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+	}, function (err, results) {
+		if (!err) {
 			res.render('edit-listing', {
-				title: 'Global Trade Connect',
+				title: "Global Trade Connect",
 				statusCode: status,
-				product: product,
+				product: results.product,
+				category: results.category,
+				subCategory: results.subCategory,
 				LoggedInUser: LoggedInUser,
+				marketplaceType:results.marketplaceType,
 				type: type
 			});
-		}).catch(function (error) {
-			console.log('Error :::', error);
-			res.render('edit-listing', error)
-		});
+		}
+		else {
+			res.render('edit-listing', err);
+		}
+	});
 }
 
 

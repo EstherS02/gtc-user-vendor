@@ -1,3 +1,4 @@
+{{!--
 <script>
 	$(function () {
 		console.log("comming....");
@@ -76,182 +77,292 @@
 			});
 		});
 	});
+</script> --}}
+<style>
+	textarea {
+		resize: none;
+		overflow: hidden;
+		height: auto;
+	}
+</style>
+<script>
+	var textarea = null;
+	window.addEventListener("load", function () {
+		textarea = window.document.querySelector("textarea");
+		textarea.addEventListener("keypress", function () {
+			if (textarea.scrollTop != 0) {
+				textarea.style.height = textarea.scrollHeight + "px";
+			}
+		}, false);
+	}, false);
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
-{{> vendor/header}}
+<script>
+	function addProduct(data, input) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product/edit-product?product_id=' + data,
+			data: input,
+			success: function (data) {
+				alert("Product Updated Successfully");
+				location.reload();
+			},
+			error: function (error) {
+				console.log('error', error);
+			}
+		})
+	}
+	$(document).ready(function () {
+		var data = {{product.id}};
+
+	$("#editForm").submit(function (e) {
+		e.preventDefault();
+		let input = $("#editForm :input").filter(function (index, element) {
+			return $(element).val() != '';
+		}).serialize();
+		// var obj = {};
+		// obj.url = null;
+		addProduct(data, input);
+	})
+	})
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}}
-				<div class="col-md-8 list_bg">
-					<h5 class="list_manage">Manage Product - {{product.product_name}}</h5>
-					<section class="box2 list_sec">
-						<div class="container">
-							<div class="row">
-								<div class="col-md-12 box2_align">
-									<h5>{{product.marketplace}}</h5>
-								</div>
-							</div>
-						</div>
-					</section>
-					<div class="row">
-						<div class="col-md-4">
-							<img src="{{product.product_base_image}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
-							<div class="row">
-								<div class="col-md-4">
-									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
-								</div>
-								<div class="col-md-4">
-									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
-								</div>
-								<div class="col-md-4">
-									<img src="{{product.product_base_image}}" alt="logo" style="width: 100%" />
-								</div>
-							</div>
 
-						</div>
-						<div class="col-md-8">
-							<div class="row">
-								<div class="col-md-2">
-									<p>Status</p>
-								</div>
-								<div class="col-md-10">
-									{{#ifCond product.status '==' statusCode.ACTIVE}}
-									<td class="text_green_color">Active</td>
-									{{else ifCond product.status '==' statusCode.INACTIVE}}
-									<td class="text_green_color">InActive</td>
-									{{else ifCond product.status '==' statusCode.SUSPENDED}}
-									<td class="text_orange_color">Suspended</td>
-									{{else ifCond product.status '==' statusCode.SOLDOUT}}
-									<td class="text_red_color">Sold Out</td>
-									{{/ifCond}}
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Type</p>
-								</div>
-								<div class="col-md-10">
-									<p>Wholesale</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Category</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.category_name}} > {{product.sub_category_name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>SKU</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.stock_keep_unit}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>MOQ</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.minimum_order_quantity}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Availability</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.product_quantity}} in stock</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Category</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_wts">{{product.marketplace_type}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Name</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_iphone">{{product.product_name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Price</p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_doll">${{product.product_price}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p></p>
-								</div>
-								<div class="col-md-10">
+				<div class="col-md-8" style="background-color: #fff;">
+					<form role="form" id="editForm">
+						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
+						{{#ifCond this.type '==' 'wholesale'}}
+						<section class="box2 list_sec">
+							{{else ifCond this.type '==' 'shop'}}
+							<section class="public-market-bg list_sec">
+								{{else ifCond this.type '==' 'services'}}
+								<section class="service-market-bg list_sec">
+									{{else ifCond this.type '==' 'lifestyle'}}
+									<section class="lifestyle-market-bg list_sec">
+										{{/ifCond}}
+										<div class="container">
+											<div class="row">
+												<div class="col-md-12 box2_align">
+													<h5>{{ convertUpperCase product.Marketplace.name}}</h5>
+												</div>
+											</div>
+										</div>
+									</section>
 									<div class="row">
-										<div class="col-md-1">
-											<p>For</p>
+										<div class="col-md-4">
+											<img src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 100%;  margin-bottom: 10px;" />
+											<div class="row">
+												<div class="col-md-4">
+													<img src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 100%" />
+												</div>
+												<div class="col-md-4">
+													<img src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 100%" />
+												</div>
+												<div class="col-md-4">
+													<img src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 100%" />
+												</div>
+											</div>
+
 										</div>
-										<div class="col-md-1 common_padding1">
-											<input class="list_place_1" type="text" placeholder="20" />
-										</div>
-										<div class="col-md-2 common_padding1">
-											<p>User recieves</p>
-										</div>
-										<div class="col-md-4 common_padding1">
-											<p>
-												<input type="radio" name="discount" />Total Percent Discount</p>
-											<p>
-												<input type="radio" name="discount" />Total Value Discount</p>
-										</div>
-										<div class="col-md-2 common_padding1">
-											<input class="list_place_2" type="text" placeholder="20%" />
-										</div>
-										<div class="col-md-1 common_padding1">
-											<p class="list_edit">
-												<i class="fas fa-pencil-alt"></i> Edit</p>
+										<div class="col-md-8">
+											<div class="row" style="padding-top:20px">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Status
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<select class="edit-listing" name="status" id="status" value="${{product.status}}" style="background:white;">
+															<option value="ACTIVE">Active</option>
+															<option value="INACTIVE">InActive</option>
+															<option value="SUSPENDED">Suspended</option>
+															<option value="SOLDOUT">Sold Out</option>
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Category
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<select class="edit-listing" name="product_category_id" id="category" style="background:white;">
+															<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
+															{{#each category}}
+															<option value="{{this.id}}">{{Titlecase this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Sub Category
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<select class="edit-listing" name="sub_category_id" id="sub_category" style="background:white;">
+															<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
+															{{#each subCategory}}
+															<option value="{{this.id}}">{{ this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														SKU
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" class="edit-listing"
+														 required/>
+													</div>
+												</div>
+											</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														MOQ
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
+														 required/>
+													</div>
+												</div>
+											</div>
+											{{/ifCond}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Availablity
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}"
+														 class="edit-listing" required/>
+													</div>
+												</div>
+											</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Category
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<select class="edit-listing" name="marketplace_type_id" style="background:white;">
+															<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
+															{{#each marketplaceType}}
+															<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+											</div>
+											{{/ifCond}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Name
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" placeholder="Enter Product Name"
+														 required/>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Price
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="price" id="price" value="{{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
+													</div>
+												</div>
+											</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+												</div>
+												<div class="col-xs-9 col-sm-9 col-md-9">
+													<div class="row form-group">
+														<div class="col-md-1 edit-listing-discount">
+															<p>For</p>
+														</div>
+														<div class="col-md-1 common_padding1" style="margin-right: 5px;">
+															<input class="list_place_1" type="text" placeholder="20" />
+														</div>
+														<div class="col-md-2 common_padding1" style="margin-right: 5px;">
+															<p class="edit-listing-dis">user recieves</p>
+														</div>
+														<div class="col-md-4 common_padding1">
+															<p class="edit-listing-dis">
+																<input type="radio" name="checkbox_check" checked /> Total Percent Discount</p>
+															<p class="edit-listing-dis">
+																<input type="radio" name="checkbox_check" /> Total Value Discount</p>
+														</div>
+														<div class="col-md-2 common_padding1">
+															<input class="list_place_2" type="text" placeholder="20%" />%
+														</div>
+														<div class="col-md-1 common_padding1">
+															<p class="list_edit">
+																<i class="fas fa-pencil-alt"></i> Edit</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											{{/ifCond}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Description
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<textarea class="edit-listing" id="description" name="description" rows="10" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
+													</div>
+												</div>
+											</div>
+											<hr/>
+											<div class="row" style="margin-bottom: 20px;">
+												<div class="col-md-2 col-5">
+													<input class="list_butt_1" type="submit" value="UPDATE" />
+												</div>
+												<div class="col-md-10 col-6">
+													<input class="list_butt_2" type="reset" value="CANCEL" />
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p></p>
-								</div>
-								<div class="col-md-10">
-									<p class="list_add">
-										<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-2">
-									<p>Description</p>
-								</div>
-								<div class="col-md-10">
-									<p>{{product.product_description}}</p>
-								</div>
-							</div>
-							<hr/>
-							<div class="row">
-								<div class="col-md-2">
-									<input class="list_butt_1" type="submit" value="UPDATE" />
-								</div>
-								<div class="col-md-10">
-									<input class="list_butt_2" type="submit" value="CANCEL" />
-								</div>
-							</div>
-						</div>
-					</div>
+					</form>
 				</div>
+
+				{{!--
 				<div class="col-md-2 list_bg common_padding1">
 					<p class="list_fe">FEATURE THIS PRODUCT!</p>
 					<div class="row">
@@ -359,10 +470,9 @@
 							<i class="fas fa-caret-right"></i>
 						</a>
 					</p>
-				</div>
+				</div> --}}
 			</div>
 		</div>
 	</div>
-	</div>
-</section>
-{{> footer/footer}}
+	</section>
+	{{> footer/footer}}

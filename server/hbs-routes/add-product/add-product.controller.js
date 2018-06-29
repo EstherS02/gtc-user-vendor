@@ -28,8 +28,6 @@ export function AddProduct(req, res) {
     if(req.user)
     LoggedInUser = req.user;
     
-    //queryParams['user_id'] = LoggedInUser.id;
-
 
     queryObj['status'] = status["ACTIVE"];
 
@@ -63,7 +61,7 @@ export function AddProduct(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        },
+        }
     }, function (err, results) {
         if (!err) {
             res.render('add-product', {
