@@ -357,4 +357,51 @@ export function userProfile(req, res) {
 	})
 }
 
+export function vendorFollow(req, res){
+	var user_id = req.user.id;
+	var vendor_id = req.body.vendor_id;
+	var queryObj = {
+		user_id: user_id,
+		vendor_id: vendor_id
+	};
+	var modelName = "VendorFollower";
+	model[modelName].findOne({
+		where: queryObj
+	}).then(function(result) {
+		console.log("result",result.id);
+		if (result) {
+			var newStatus;
+			if(result.status == 1){
+				newStatus = 0;
+			}
+			else{
+				newStatus = 1;
+			}
+			model[modelName].update({
+					status: newStatus,
+					last_updated_on:new Date()
+				},{
+					where:{
+					id: result.id
+				}
+				})
+				.then(function(response) {
+					res.status(200).send(response);
+					return;
+				});
+		} else {
+			var bodyParam = {};
+			bodyParam.vendor_id = vendor_id;
+			bodyParam.user_id = req.user.id;
+			bodyParam.status = 1;
+			bodyParam.created_on = new Date();
+			service.createRow(modelName, bodyParam).then(function(response) {
+				res.status(200).send(response);
+					return;
+			});
+			// console.log(i, "not in db")
+		}
+	});
+}
+
 exports.authenticate = authenticate;

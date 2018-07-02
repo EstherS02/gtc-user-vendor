@@ -3,7 +3,7 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
-const statusCode = require('../../config/status');
+const status = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
@@ -24,41 +24,52 @@ export function vendorAbout(req, res) {
 	let user_id = LoggedInUser.id;
 
 	async.series({
-			About: function(callback) {
-				var vendorIncludeArr = [{
-					model: model['Country']
+		VendorDetail: function(callback) {
+			var vendorIncludeArr = [{
+				model: model['Country']
 
-				}, {
-					model: model['VendorPlan']
-					
-				}, {
-					model: model['VendorFollower'],
-					where:{
-						status : statusCode['ACTIVE']
-					},
-					required:false
+			}, {
+				model: model['VendorPlan'],
 
-				}];
-				service.findIdRow('Vendor', 28, vendorIncludeArr)
-					.then(function(response) {
-						return callback(null, response);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			},
-			Follower: function(callback){
+			}, {
+				model: model['User'],
+				attributes:['id'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}]
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
+			}];
+			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
+				.then(function(response) {
+					return callback(null, response);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		Follower: function(callback) {
 			var queryObj = {
 				status: 1,
-				vendor_id :28
-				
+				vendor_id: 28
+
 			};
 			var includeArr = [{
 				model: model['User'],
-				user_pic_url:{
-			        $ne : null
-			      },
-			    attributes: ['first_name','last_name','user_pic_url']
+				user_pic_url: {
+					$ne: null
+				},
+				attributes: ['first_name', 'last_name', 'user_pic_url']
 			}];
 			service.findRows('VendorFollower', queryObj, 0, 5, 'id', 'desc', includeArr)
 				.then(function(response) {
@@ -70,18 +81,19 @@ export function vendorAbout(req, res) {
 				});
 		}
 
-		},function(err, results) {
-			console.log(results);
-				if (!err) {
-					res.render('vendor-about', {
-						title: "Global Trade Connect",
-						VendorDetail: results.About,
-						follower:results.Follower,
-						LoggedInUser: LoggedInUser
-					});
-				} else {
-
-					res.render('vendor-about', err);
-				}
+	}, function(err, results) {
+		// console.log(results);
+		if (!err) {
+			res.render('vendor-about', {
+				title: "Global Trade Connect",
+				VendorDetail: results.VendorDetail,
+				follower: results.Follower,
+				LoggedInUser: LoggedInUser,
+				selectedPage: 'about'
 			});
+		} else {
+
+			res.render('vendor-about', err);
+		}
+	});
 }

@@ -13,13 +13,13 @@ import series from 'async/series';
 var async = require('async');
 
 export function vendorServices(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
-    let user_id = LoggedInUser.id;
-    var productModel = "MarketplaceProduct";
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
 	var offset, limit, field, order;
@@ -42,7 +42,7 @@ export function vendorServices(req, res) {
 		publicService: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(response) {
-					return callback(null,response);
+					return callback(null, response);
 
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -56,6 +56,23 @@ export function vendorServices(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
+			}, {
+				model: model['User'],
+				attributes:['id'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}]
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -131,17 +148,18 @@ export function vendorServices(req, res) {
 			});
 		}
 	}, function(err, results) {
-		console.log(JSON.stringify(results));
+		console.log(JSON.stringify(results.VendorDetail));
 
 		if (!err) {
 			res.render('vendor-services', {
 				title: "Global Trade Connect",
-				VendorDetail : results.VendorDetail,
+				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				publicService: results.publicService,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				selectedPage: 'services'
 			});
 		} else {
 			res.render('vendor-services', err);

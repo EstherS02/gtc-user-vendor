@@ -50,12 +50,29 @@ export function vendorShop(req, res) {
 				});
 		},
 		VendorDetail: function(callback) {
-			var vendorIncludeArr = [{
+		var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
 				model: model['VendorPlan'],
 
+			}, {
+				model: model['User'],
+				attributes:['id'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}]
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -141,7 +158,8 @@ export function vendorShop(req, res) {
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				selectedPage:'shop'
 			});
 		} else {
 			res.render('vendor-shop', err);
