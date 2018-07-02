@@ -3,7 +3,7 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
-const statusCode = require('../../config/status');
+const status = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
@@ -27,6 +27,23 @@ async.series({
 			}, {
 				model: model['VendorPlan'],
 
+			}, {
+				model: model['User'],
+				attributes:['id'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}]
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -43,7 +60,8 @@ async.series({
 			res.render('vendor-support', {
 				title: "Global Trade Connect",
 				VendorDetail : results.VendorDetail,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				selectedPage:'support'
 			});
 		} else {
 			res.render('vendor-support', err);

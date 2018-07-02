@@ -95,7 +95,10 @@ export function index(req, res) {
 		queryURI['marketplace_type'] = req.query.marketplace_type;
 		queryParameters['marketplace_type_id'] = req.query.marketplace_type;
 	}
-
+	if (req.query.vendor_id) {
+		queryURI['vendor_id'] = req.query.vendor_id;
+		queryParameters['vendor_id'] = req.query.vendor_id;
+	}
 	queryParameters['status'] = status["ACTIVE"];
 
 	async.series({

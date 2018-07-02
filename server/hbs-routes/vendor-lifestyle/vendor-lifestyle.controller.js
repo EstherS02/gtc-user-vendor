@@ -57,6 +57,23 @@ export function vendorLifestyle(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
+			}, {
+				model: model['User'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}],
+				attributes:['id']
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -73,7 +90,7 @@ export function vendorLifestyle(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] =marketplace['LIFESTYLE'];
+			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
 			// if (req.query.marketplace) {
@@ -131,12 +148,13 @@ export function vendorLifestyle(req, res) {
 		if (!err) {
 			res.render('vendor-lifestyle', {
 				title: "Global Trade Connect",
-				VendorDetail : results.VendorDetail,
+				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				publicLifestyle: results.publicLifestyle,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				selectedPage: 'lifestyle'
 			});
 		} else {
 			res.render('vendor-lifestyle', err);

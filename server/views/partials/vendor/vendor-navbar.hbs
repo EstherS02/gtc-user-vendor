@@ -1,39 +1,70 @@
 <script type="text/javascript">
-$("#followVendor").click(function(e) {
-			e.preventDefault();
+	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	$("body").on("click", "#followVendor", function() {
+		if(vendorInfo.user_id){
+			var  dataItem = {};
+			dataItem.vendor_id = vendorInfo.id;
+			$.ajax({
+				type: "PUT",
+				url: "/api/users/user-vendor-follow",
+				data: dataItem,
+				success: function(result) {
+					if (result)
+						location.reload();
+				}
+			});
 
-		});
+		}else{
+			location.href = "/login";
+		}
+	});
+
+
 </script>
 
 <ul class="navbar-nav mr-auto">
 	<li class="gtc-follow-img">
-	{{#ifCond VendorDetail.VendorVerification.vendor_verified_status '==' 1}}
+		{{#if VendorDetail.User.VendorVerification}}
 		<a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
 		{{else}}
-		<a href="#"><img src="../img/gtc-not-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
-		{{/ifCond}}
-		<a href="#"><img src="../img/follow.png" alt="Follow" id = "followVendor" style="width: 80px; margin-top: 5px;"/></a>
+		<a href="#"><img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified" style="width: 80px; margin-top: 5px;"/></a>
+		{{/if}}
+		{{#if VendorDetail.VendorFollowers}}
+		<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+		{{else}}
+		<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+		{{/if}}
 	</li>
 
-	<li class="nav-item" style="background-color: #084681;">
-		<a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" style="color: #fff">{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+	<li class="nav-item" {{#ifCond selectedPage '==' 'wholesale'}} style="background-color: #084681;color: #fff" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
+			{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}} 
 		</a>
 	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-shop/{{VendorDetail.id}}">{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+	<li class="nav-item"  {{#ifCond selectedPage '==' 'shop'}} style="background-color: #084681;" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-shop/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'shop'}} style="color: #fff" {{/ifCond}}>
+			{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 		</a>
 	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-services/{{VendorDetail.id}}">{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a>
+	<li class="nav-item"  {{#ifCond selectedPage '==' 'services'}} style="background-color: #084681;" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-services/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'services'}} style="color: #fff" {{/ifCond}}>
+			{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+		</a>
 	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-lifestyle/{{VendorDetail.id}}">{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a>
+	<li class="nav-item" {{#ifCond selectedPage '==' 'lifestyle'}} style="background-color: #084681;" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-lifestyle/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'lifestyle'}} style="color: #fff;" {{/ifCond}} >
+			{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+		</a>
 	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="/vendor-about">ABOUT</a>
+	<li class="nav-item" {{#ifCond selectedPage '==' 'about'}} style="background-color: #084681;" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-about/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'about'}} style="color: #fff" {{/ifCond}}>
+			ABOUT
+		</a>
 	</li>
-		<li class="nav-item">
-		<a class="nav-link" href="/vendor-support">SUPPORT</a>
+	<li class="nav-item" {{#ifCond selectedPage '==' 'support'}} style="background-color: #084681;" {{/ifCond}} >
+		<a class="nav-link" href="/vendor-support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
+			SUPPORT
+		</a>
 	</li>
 	<li>
 	</li>

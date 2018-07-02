@@ -23,13 +23,14 @@
                                 <div class="collapse navbar-collapse" id="navb">
                                     <!-- Links -->
                                      {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
-									<div class="field-search1 form-inline my-2 my-lg-0">
-						<input type="search" placeholder="Search My store">
-						<div class="right">
+									<form class="form-inline my-2 my-lg-0">
+                                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                                    <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
+                                </form>
 						
-						  <button><svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6"><g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10"><circle cx="9.3" cy="9.3" r="7.3"></circle><path d="M14.2 14.6l6.9 7.6"></path></g></svg></button>
+						  {{!-- <button><svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6"><g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10"><circle cx="9.3" cy="9.3" r="7.3"></circle><path d="M14.2 14.6l6.9 7.6"></path></g></svg></button>
 						</div>
-					  </div>
+					  </div> --}}
                                 </div>
                             </nav>
                         </div>

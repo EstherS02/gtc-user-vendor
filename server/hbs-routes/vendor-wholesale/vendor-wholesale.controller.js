@@ -95,10 +95,28 @@ export function vendorWholesale(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
+			}, {
+				model: model['User'],
+				attributes:['id'],
+				include: [{
+					model: model['VendorVerification'],
+					where: {
+						vendor_verified_status: status['ACTIVE']
+					}
+				}]
+
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
 					return callback(null, response);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -227,7 +245,7 @@ export function vendorWholesale(req, res) {
 			});
 		}
 	}, function(err, results) {
-
+		console.log(JSON.stringify(results.vendorDetail))
 		if (!err) {
 			res.render('vendor-wholesale', {
 				title: "Global Trade Connect",
@@ -240,7 +258,8 @@ export function vendorWholesale(req, res) {
 				wantToTrade: results.wantToTrade,
 				requestForQuote: results.requestForQuote,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				selectedPage: 'wholesale'
 			});
 		} else {
 			res.render('vendor-wholesale', err);
