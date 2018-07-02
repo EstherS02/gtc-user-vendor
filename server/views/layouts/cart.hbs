@@ -1,8 +1,11 @@
 <script>
 
+var cartItems = {{{DisplayJSON cartItems}}};
+
 function removeGtcCart(item){
 
 	$('#remove-cart-'+ item).removeAttr('href');
+
 	$.ajax({
 		url: '/api/cart/remove-cart/'+ item,
 		type: 'DELETE',
@@ -16,26 +19,102 @@ function removeGtcCart(item){
 	}); 
 }
 
-function UpdateGtcCart(item){
-	var cartInfo = {};
-        cartInfo.quantity = $('#quantity-cart-'+ item).val();
+
+function UpdateAllCartItems(){
+
+	let allCartInfo = {};
+
+	allCartInfo["cartUpdateArray"] = [];
+
+
+	$(".all-quantity-cart-items").each(function() {
+		for(var i=0; i<cartItems.length; i++){
+			
+			let uniqueId = "quantity-cart-"+ cartItems[i].id;
+			let currentElementId = $(this).attr('id');
+
+			if(uniqueId == currentElementId){
+				let temp = {};
+
+				temp['product_quantity'] = $(this).val();
+				temp['product_id'] = cartItems[i].product_id;
+				temp['cart_item_id'] = cartItems[i].id
+
+				allCartInfo['cartUpdateArray'].push(temp);
+			}
+		}
+	});
 
 	$.ajax({
-		url: '/api/cart/update-cart/'+ item,
-		type: 'PUT',
-		data: cartInfo,
-		success: function(updateData) {
-			console.log(updateData)
+		url: '/api/cart/update-cart',
+		type: 'POST',
+		data: JSON.stringify(allCartInfo),
+        contentType: "application/json",
+		success: function(updateAllData) {
+			window.location.reload();
 		},
 		error: function(error){
+			console.log("Error occured while updating", error);
+			$('#quantity-cart-'+ error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details, "error");
+		}
+	});
+}
+
+function UpdateGtcCart(item, qtyItem, cartItemId){
+	let cartInfo = {};
+		cartInfo["cartUpdateArray"] = [];
+
+		let cartItem = {};
+
+        cartItem['product_quantity'] = $('#quantity-cart-'+ qtyItem).val();
+		cartItem['product_id'] = item;
+		cartItem['cart_item_id'] = cartItemId;
+
+		cartInfo['cartUpdateArray'].push(cartItem);
+
+
+	$.ajax({
+		url: '/api/cart/update-cart',
+		type: 'POST',
+		data: JSON.stringify(cartInfo),
+        contentType: "application/json",
+		success: function(updateData) {
+			
+			$('#quantity-cart-'+ qtyItem).notify("Quantity Updated to "+ cartItem.product_quantity, "success");
+
+			 setTimeout(function () {
+                    window.location.reload();
+                 }, 1500);
+		},
+		error: function(error){
+			console.log("Error occured while updating", error);
+			$('#quantity-cart-'+ qtyItem).notify(error.responseJSON.message_details, "error");
+		}
+	});
+}
+
+
+function applyGTCCoupon(){
+	var cartInfo = {};
+	cartInfo.coupon_code = $("#coupon-input-code").val();
+	if(!cartInfo.coupon_code) {
+		alert('Please enter promo code to apply coupon code');
+		return false;
+	}
+	$.ajax({
+		url: '/api/cart/apply-coupon',
+		type: 'POST',
+		data: cartInfo,
+		success: function(updateData) {
+			console.log(updateData);
+		},
+		error: function(error) {
 			console.log("Error occured while updating", error);
 		}
 	});
 }
 
-function applyGTCCoupon(){
-	
-}
+
 
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
@@ -148,10 +227,10 @@ function applyGTCCoupon(){
 									<td>
 										<div class="row">
 											<div class="col-md-6">
-												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num" style="width: 50px;">
+												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num all-quantity-cart-items" style="width: 50px;">
 											</div>
 											<div class="col-md-6">
-												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCartdummy(`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
+												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
 											</div>
 										</div>
 									</td>
@@ -176,10 +255,10 @@ function applyGTCCoupon(){
 
 					<div class="row">
 						<div class="col-md-6">
-							<input type="submit" value="CONTINUE SHOPPING" class="cont_shopping"/>
+							<input type="submit" value="CONTINUE SHOPPING" onclick="location.href = '/'" class="cont_shopping"/>
 						</div>
 						<div class="col-md-6">
-							<input type="submit" value="UPDATE CART" class="update_cart"/>
+							<input type="submit" value="UPDATE CART" onclick="UpdateAllCartItems()" class="update_cart"/>
 						</div>
 					</div>
 				</div>
@@ -239,11 +318,43 @@ function applyGTCCoupon(){
 									<p class="shop_subtotal float-right"><b>${{totalPriceList.grandTotal}}</b></p>
 							</div>
 						</div>
+
 						<hr class="common_margin" />
+						{{#ifCond couponData.length '>' 0}}						
+						{{#each couponData}}
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal"><b>DISCOUNT</b></p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">
+									<b>${{this.discount_price}}</b>
+								</p>
+							</div>
+						</div>
+						<hr class="common_margin"/>
+						<div class="row">
+							<div class="col-md-8">
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+							</div>
+							<div class="col-md-4">
+									<p class="shop_subtotal float-right"><b>${{this.final_price}}</b></p>
+							</div>	
+						</div>
+						<p class="promo_code_p">{{{this.message_details}}}</p>
+
+						{{/each}}
+						{{/ifCond}}
+						
+						{{#ifCond couponData.length '==' 0}}
 						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
 						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
 						<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
-						<input type="submit" value="CHECKOUT NOW" class="shop_checkout_btn" />
+						{{/ifCond}}
+						{{#ifCond couponUpdateErrorMessage '!=' ""}}
+							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
+						{{/ifCond}}
+						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="checkoutSave()"/>
 						<img src="../img/payment-methods.jpg" alt="payment">
 					</div>
 				</div>
