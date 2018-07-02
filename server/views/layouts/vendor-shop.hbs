@@ -136,7 +136,7 @@
                                   <ul class="list-group collapse" id="collapseCategory{{this.id}}">
                                       {{#each this.SubCategories}}
                                       <li class="list-group-item">
-                                        <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?page=1&category={{../this.id}}&sub_category={{this.id}}">
+                                        <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?page=1&category={{../this.id}}&vendor_id={{../../VendorDetail.id}}&sub_category={{this.id}}">
                                           <span>{{this.name}}</span>
                                       </a>
                                       <ul></ul>

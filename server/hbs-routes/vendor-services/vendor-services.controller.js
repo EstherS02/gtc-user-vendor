@@ -56,6 +56,9 @@ export function vendorServices(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
+			},{
+				model: model['VendorVerification'],
+
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -131,7 +134,7 @@ export function vendorServices(req, res) {
 			});
 		}
 	}, function(err, results) {
-		console.log(JSON.stringify(results));
+		console.log(JSON.stringify(results.VendorDetail));
 
 		if (!err) {
 			res.render('vendor-services', {

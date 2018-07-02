@@ -66,6 +66,8 @@
 								<div class="col-md-9 col-12">
 									<p class="about_head">
 										<i class="fas fa-user-circle icon_style_abt"></i> {{follower.count}} FOLLOWERS</p>
+								{{#if follower.count}}
+
 									<p class="about_para">Followers you may know
 										
 										{{#each follower.rows}}
@@ -76,10 +78,11 @@
 										
 										<a href="">See all</a>
 									</p>
-
+									{{/if}}
 									<p class="about_head">
 										<i class="fas fa-info-circle icon_style_abt"></i> SNAPSHOT</p>
 									<p class="about_para">{{VendorDetail.about}}</p>
+										
 								</div>
 
 							</div>
