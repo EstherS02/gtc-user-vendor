@@ -97,7 +97,7 @@
 	}, false);
 </script>
 <script>
-	function addProduct(data, input) {
+	function editProduct(data, input) {
 		$.ajax({
 			type: 'POST',
 			url: '/api/product/edit-product?product_id=' + data,
@@ -112,18 +112,36 @@
 		})
 	}
 	$(document).ready(function () {
-		var data = {{product.id}};
+		var data = {{ product.id }};
 
 	$("#editForm").submit(function (e) {
+
 		e.preventDefault();
 		let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
 		}).serialize();
 		// var obj = {};
 		// obj.url = null;
-		addProduct(data, input);
+		editProduct(data, input);
 	})
-	})
+
+    $("#editForm").validate({
+		rules: {
+			product_name: "required",
+			sku:"required",
+			quantity_available:"required",
+			price:"required",
+			description:"description"
+		},
+		messages: {
+			product_name: "Please enter product name",
+			sku: "Please enter stock keeping unit",
+			quantity_available:"Please enter available quantity",
+            price: "Please enter product price",
+			description:"Please enter product description"
+		}
+	});
+})
 </script> {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="">
@@ -242,7 +260,7 @@
 												<div class="col-xs-5 col-sm-5 col-md-5">
 													<div class="form-group">
 														<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
-														 required/>
+														 />
 													</div>
 												</div>
 											</div>
@@ -314,25 +332,40 @@
 															<p>For</p>
 														</div>
 														<div class="col-md-1 common_padding1" style="margin-right: 5px;">
-															<input class="list_place_1" type="text" placeholder="20" />
+															<input class="list_place_1" type="text" name="discount_quantity" placeholder="20" />
 														</div>
-														<div class="col-md-2 common_padding1" style="margin-right: 5px;">
+														<div class="col-md-2 common_padding1" style="margin-right:15px;">
 															<p class="edit-listing-dis">user recieves</p>
 														</div>
-														<div class="col-md-4 common_padding1">
-															<p class="edit-listing-dis">
-																<input type="radio" name="checkbox_check" checked /> Total Percent Discount</p>
-															<p class="edit-listing-dis">
-																<input type="radio" name="checkbox_check" /> Total Value Discount</p>
-														</div>
-														<div class="col-md-2 common_padding1">
-															<input class="list_place_2" type="text" placeholder="20%" />%
-														</div>
-														<div class="col-md-1 common_padding1">
-															<p class="list_edit">
-																<i class="fas fa-pencil-alt"></i> Edit</p>
-														</div>
-													</div>
+														<div class="col-md-7 common_padding1">
+															<div class="row ">
+																<div class="col-md-6 common_padding1">
+																	<p class="edit-listing-dis">
+																		<input type="radio" name="discount_type" value="percentage_discount" checked /> Total Percent Discount</p>
+																</div>
+																<div class="col-md-3 common_padding1">
+																	<input class="list_place_2" type="text" name="percent_discount_amount" placeholder="20%"  />%
+																</div>
+																<div class="col-md-1 common_padding1">
+																	<p class="list_edit">
+																		<i class="fas fa-pencil-alt"></i> Edit</p>
+																</div>
+															</div>
+															<div class="row ">
+																<div class="col-md-6 common_padding1">
+																	<p class="edit-listing-dis">
+																		<input type="radio" name="discount_type" value="value_discount"/> Total Value Discount</p>
+																</div>
+																<div class="col-md-3 common_padding1">
+																	<input class="list_place_2" type="text" name="value_discount_amount" placeholder="20$"/>$
+																</div>
+																<div class="col-md-1 common_padding1">
+																	<p class="list_edit">
+																		<i class="fas fa-pencil-alt"></i> Edit</p>
+																</div>
+															</div>
+													    </div>
+							                        </div>
 												</div>
 											</div>
 											{{/ifCond}}
@@ -344,7 +377,7 @@
 												</div>
 												<div class="col-xs-5 col-sm-5 col-md-5">
 													<div class="form-group">
-														<textarea class="edit-listing" id="description" name="description" rows="10" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
+														<textarea class="edit-listing" id="description" name="description" rows="7" cols="35" placeholder="Enter Product Description" required>{{product.description}}</textarea>
 													</div>
 												</div>
 											</div>

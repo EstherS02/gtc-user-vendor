@@ -98,8 +98,8 @@ export function addProduct(req, res) {
 export function editProduct(req, res) {
 	var id=req.query.product_id;
 
-	console.log("=======================================",req.query.product_id);
-	console.log("=======================================",req.body.status);
+	console.log("=======================================",req.query);
+	console.log("=======================================",req.body);
 
 	var stat= req.body.status;
 	delete req.body.status;
@@ -107,19 +107,20 @@ export function editProduct(req, res) {
 	req.body.status= status[stat];
 	var bodyParams=req.body;
 
-			model["Product"].update(bodyParams, {
-				where: {
-					id: id
-				}
-			}).then(function (row) {
-				if (row) {
-					res.status(200).send("Created");
-				} else {
-					res.status(500).send("Internal server error");
-				}
-			}).catch(function (error) {
-				res.status(500).send(error);
-			})
+
+			// model["Product"].update(bodyParams, {
+			// 	where: {
+			// 		id: id
+			// 	}
+			// }).then(function (row) {
+			// 	if (row) {
+			// 		res.status(200).send("Created");
+			// 	} else {
+			// 		res.status(500).send("Internal server error");
+			// 	}
+			// }).catch(function (error) {
+			// 	res.status(500).send(error);
+			// })
 }
 
 
