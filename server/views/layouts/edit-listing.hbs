@@ -234,18 +234,26 @@
 
 		var data = {{ product.id }};
 	$("#editForm").submit(function (e) {
+	  e.preventDefault();
 
-	e.preventDefault();
-
-	let obj={};
+          let imageId1= {{product.ProductMedia.[0].id}};
+	      let imageId2= {{product.ProductMedia.[1].id}};
+	      let imageId3= {{product.ProductMedia.[2].id}};
+	      let imageId4= {{product.ProductMedia.[3].id}};
+	
+		
+		let obj={};
 		
 			if ($("#imageEdit1")[0].files[0]) {
 				var form = new FormData();
 				form.append("file", $("#imageEdit1")[0].files[0]);
 				uploads(form, function (location) {
 					obj={
-						url:location1.imageURL
+						url:location.imageURL
 					}
+					uploadMedia(obj,imageId1,function(data){
+						console.log("updated Successfully");
+					})
 					 
 				});
 			} 
@@ -254,8 +262,11 @@
 				form.append("file", $("#imageEdit2")[0].files[0]);
 				uploads(form, function (location) {
 					obj={
-						url:location1.imageURL
+						url:location.imageURL
 					} 
+					uploadMedia(obj,imageId2,function(data){
+						console.log("updated Successfully");
+					})
 				});
 			} 
 			if ($("#imageEdit3")[0].files[0]) {
@@ -263,9 +274,11 @@
 				form.append("file", $("#imageEdit3")[0].files[0]);
 				uploads(form, function (location) {
 					obj={
-						url:location1.imageURL
+						url:location.imageURL
 					}
-					  
+					uploadMedia(obj,imageId3,function(data){
+						console.log("updated Successfully");
+					}) 
 				});
 			} 
 			if ($("#imageEdit4")[0].files[0]) {
@@ -273,8 +286,11 @@
 				form.append("file", $("#imageEdit4")[0].files[0]);
 				uploads(form, function (location) {
 					obj={
-						url:location1.imageURL
+						url:location.imageURL
 					}  
+					uploadMedia(obj,imageId4,function(data){
+						console.log("updated Successfully");
+					})
 				});
 			} 
 
@@ -427,8 +443,6 @@
 											</div>
 										</div>
 
-
-
 										{{!--
 										<div class="col-md-4">
 											{{#each product.ProductMedia}} {{#ifCond @index "==" 0}}
@@ -494,7 +508,7 @@
 												</div>
 												<div class="col-xs-5 col-sm-5 col-md-5">
 													<div class="form-group">
-														<select class="edit-listing" name="sub_category_id" style="background:white;" id="sub_category" value="" required>
+														<select class="edit-listing" name="sub_category_id" style="background:white;" id="sub_category" value="">
 															<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
 														</select>
 													</div>
