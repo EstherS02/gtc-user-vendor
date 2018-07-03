@@ -96,10 +96,9 @@ export function addProduct(req, res) {
 }
 
 export function editProduct(req, res) {
-	var id=req.query.product_id;
+	
 
-	console.log("=======================================",req.query.product_id);
-	console.log("=======================================",req.body.status);
+	var id=req.query.product_id;
 
 	var stat= req.body.status;
 	delete req.body.status;
