@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
 	$(document).ready(function () {
 		$('#percentage_discount0').click(function () {
 			if ($(this).is(":checked")) {
@@ -235,11 +236,21 @@
 		var data = {{ product.id }};
 	$("#editForm").submit(function (e) {
 	  e.preventDefault();
+	  		// product.ProductMedia.forEach(){
 
-          let imageId1= {{product.ProductMedia.[0].id}};
-	      let imageId2= {{product.ProductMedia.[1].id}};
-	      let imageId3= {{product.ProductMedia.[2].id}};
-	      let imageId4= {{product.ProductMedia.[3].id}};
+	  		// }
+	  		var productSpecs = {{{DisplayJSON product.ProductMedia}}}
+	  		var i=0;
+	  		var imageId=[];
+	  		productSpecs.forEach(function(element) {
+	  			imageId[i] = element.id;
+	  			console.log(imageId);
+	  			i++;
+			});
+       //    let imageId1= {{product.ProductMedia.[0].id}};
+	      // let imageId2= {{product.ProductMedia.[1].id}};
+	      // let imageId3= {{product.ProductMedia.[2].id}};
+	      // let imageId4= {{product.ProductMedia.[3].id}};
 	
 		
 		let obj={};
@@ -251,7 +262,7 @@
 					obj={
 						url:location.imageURL
 					}
-					uploadMedia(obj,imageId1,function(data){
+					uploadMedia(obj,imageId[0],function(data){
 						console.log("updated Successfully");
 					})
 					 
@@ -264,7 +275,7 @@
 					obj={
 						url:location.imageURL
 					} 
-					uploadMedia(obj,imageId2,function(data){
+					uploadMedia(obj,imageId[1],function(data){
 						console.log("updated Successfully");
 					})
 				});
@@ -276,7 +287,7 @@
 					obj={
 						url:location.imageURL
 					}
-					uploadMedia(obj,imageId3,function(data){
+					uploadMedia(obj,imageId[2],function(data){
 						console.log("updated Successfully");
 					}) 
 				});
@@ -288,7 +299,7 @@
 					obj={
 						url:location.imageURL
 					}  
-					uploadMedia(obj,imageId4,function(data){
+					uploadMedia(obj,imageId[3],function(data){
 						console.log("updated Successfully");
 					})
 				});
