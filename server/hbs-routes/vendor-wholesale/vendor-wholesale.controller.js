@@ -126,14 +126,14 @@ export function vendorWholesale(req, res) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
-
+			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE']
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
+			// if (req.query.marketplace) {
+			// 	productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			// }
 			if (req.query.marketplace_type) {
 				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
 			}
@@ -192,7 +192,7 @@ export function vendorWholesale(req, res) {
 			var productCountQueryParames = {};
 
 			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['vendor_id'] = req.user.Vendor.id;
+			productCountQueryParames['vendor_id'] = vendor_id;
 			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
@@ -223,6 +223,7 @@ export function vendorWholesale(req, res) {
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['MarketplaceType.id']
 			}).then(function(results) {
+				console.log("results",results)
 				if (results.length > 0) {
 					model['Product'].count({
 						where: productCountQueryParames
@@ -245,7 +246,7 @@ export function vendorWholesale(req, res) {
 			});
 		}
 	}, function(err, results) {
-		console.log(JSON.stringify(results.vendorDetail))
+		console.log((results.marketPlaceTypes))
 		if (!err) {
 			res.render('vendor-wholesale', {
 				title: "Global Trade Connect",

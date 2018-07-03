@@ -10,7 +10,7 @@
         <ul class="list-group collapse" id="collapseCategory{{this.id}}">
           {{#each this.SubCategories}}
           <li class="list-group-item">
-            <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?page=1&category={{../this.id}}&sub_category={{this.id}}&vendor_id={{../../VendorDetail.id}}">
+            <a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../search?category={{../this.id}}&sub_category={{this.id}}&vendor_id={{../../VendorDetail.id}}">
               <span>{{this.name}}</span>
             </a>
             <ul></ul>
@@ -28,7 +28,7 @@
     <ul class="list-group">
       {{#each marketPlaceTypes.rows}}
       <li class="list-group-item">
-        <a  class="text-black" }} href="../search?page=1&marketplace={{../marketPlace.WHOLESALE}}& marketplace_type={{this.id}}">
+        <a  class="text-black" }} href="../search?&vendor_id={{../VendorDetail.id}}&marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">
           <span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
         </a>
       </li>

@@ -339,45 +339,6 @@ async.series({
         }
     }, function (err, results) {
         if (!err) {
-    //     		var total = 0;
-				// var star5 = 0;
-				// var star4 = 0;
-				// var star3 = 0;
-				// var star2 = 0
-				// var star1 = 0;
-				// var productRating = {};
-    //        		var rating = results.AllReviews.rows;
-				// 	for (let elem in rating) {
-				// 		total = total + rating[elem].rating;
-				// 		switch (rating[elem].rating) {
-				// 			case 1:
-				// 				star1 = star1 + 1;
-				// 				break;
-				// 			case 2:
-				// 				star2 = star2 + 1;
-				// 				break;
-				// 			case 3:
-				// 				star3 = star3 + 1;
-				// 				break;
-				// 			case 4:
-				// 				star4 = star4 + 1;
-				// 				break;
-				// 			case 5:
-				// 				star5 = star5 + 1;
-				// 				break;
-				// 		}
-				// 	}
-				//	maxSize = results.Review.count/limit;
-				// 	var avg = total / rating.length;
-				// 	productRating.avg = avg;
-				// 	productRating.star5 = star5;
-				// 	productRating.star4 = star4;
-				// 	productRating.star3 = star3;
-				// 	productRating.star2 = star2;
-				// 	productRating.star1 = star1;
-				// 	productRating.total = total;
-
-
                     maxSize = results.Review.count / limit;
                     if(results.Review.count%limit)
                          maxSize++;

@@ -1,44 +1,44 @@
   {{> header/defaultHeader LoggedInUser = LoggedInUser}}
   <section>
     <div class="banner_bg">
-
+{{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
       <div class="container-fluid banner_bg_menu">
         <div class="">
           <div class="row prfl-wt-txt" style="top: -58px;">
             <div class="col-md-2 common_padding1">
               <a class="navbar-brand float-right" href="javascript:void(0)" style="margin-right: 0px;">
-              <img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
-            </div>
-            <div class="col-md-6">
-              <span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}}</span>
+                <img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
+              </div>
+              <div class="col-md-6">
+                <span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}}</span>
 
+              </div>
             </div>
-          </div>
-          <div class="row img-wt-menu">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-10 common_padding1">
-              <nav class="navbar navbar-expand-lg">
-                <div class="collapse navbar-collapse" id="navb">
-                  <!-- Links -->
-                  {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
-                  <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                    <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
-                  </form>
-                </div>
-              </nav>
+            <div class="row img-wt-menu">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-10 common_padding1">
+                <nav class="navbar navbar-expand-lg">
+                  <div class="collapse navbar-collapse" id="navb">
+                    <!-- Links -->
+                    {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+                    <form class="form-inline my-2 my-lg-0">
+                      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                      <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
+                    </form>
+                  </div>
+                </nav>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
     <div class="logged_in_cont" >
       <div class="container">
         <div class="row">
           <div class="col-md-2 col-12"  >
-          {{> vendor/vendor-left VendorDetail = VendorDetail}}
+            {{> vendor/vendor-left VendorDetail = VendorDetail}}
           </div>
           <div class="col-md-10 col-12">
             <div class="row pmp4">
@@ -46,7 +46,7 @@
               <h5>PRIVATE WHOLESALE MARKETPLACE</h5>
             </div>
             <div class="col-md-2 col-12 common_padding1">
-              <p>Showing 1 - 20 of 165,680</p>
+              <p>Showing 1 - 20 of {{categories.count}}</p>
             </div>
             <div class="col-md-2 col-12 common_padding1">
               <select class="geo_textbox">
@@ -61,7 +61,7 @@
                <div class="row ">
                 <div class="col-md-12 col-12 wts1 ">
                  <h6 class="float-left">WTS - Want To Sell</h6>
-                 <p class="float-right see_all"> <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceTypes.WTS}}">
+                 <p class="float-right see_all"> <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
                   <small class="pull-right">SEE ALL
                     <i class="fa fa-caret-right"></i>
                   </small>
@@ -366,14 +366,9 @@
   <div class="col-md-3 showing_categ">
     <p><b>FILTER BY CATEGORY</b></p>
     <p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
-   {{> vendor/vendor-category }}
-
-
+    {{> vendor/vendor-category  }}
   </div>
-  </div>
-  </div>
-
-  </div>
-  </div>
-  </section>
-  {{> footer/footer}}
+</div>
+</div>
+</section>
+{{> footer/footer}}
