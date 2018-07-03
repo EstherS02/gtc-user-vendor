@@ -124,6 +124,7 @@ export function vendorWholesale(req, res) {
 		},
 		categories: function(callback) {
 			var result = {};
+			var queryPaginationObj = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE']

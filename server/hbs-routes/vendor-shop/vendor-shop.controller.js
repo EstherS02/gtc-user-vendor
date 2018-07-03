@@ -23,15 +23,32 @@ export function vendorShop(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order;
+	var offset, limit, field, order,page;
+	var queryPaginationObj = {};
 	var queryObj = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
-	// var vevndorIncludeArr = [{
-	// 	model:model['Country']
 
-	// }]
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 12;
+	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	queryPaginationObj['field'] = field;
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
 
 	offset = 0;
 	limit = 9;
@@ -89,12 +106,12 @@ export function vendorShop(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-
+			productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
+			// if (req.query.marketplace) {
+			// 	productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			// }
 			if (req.query.marketplace_type) {
 				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
 			}
@@ -148,11 +165,12 @@ export function vendorShop(req, res) {
 			});
 		}
 	}, function(err, results) {
-		console.log(results);
-
+		// console.log(results);
+		ueryPaginationObj['maxSize'] = 5;
 		if (!err) {
 			res.render('vendor-shop', {
 				title: "Global Trade Connect",
+				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,

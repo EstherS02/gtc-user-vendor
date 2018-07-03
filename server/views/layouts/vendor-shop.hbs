@@ -1,6 +1,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
     <div class="banner_bg">
+    {{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
         <div class="container-fluid banner_bg_menu">
             <div class="">
                 <div class="row prfl-wt-txt" style="top: -58px;">
@@ -120,6 +121,18 @@
                                     </div>
                                 </div>
                             </section>
+                            <div class="col-md-6">
+                    <p class="showing_res1">Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
+                        <b>{{productResults.count}}</b> Products matching
+                        {{#if queryPaginationObj.keyword}}
+                        <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
+                        {{#if selectedMarketPlace}}
+                        in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
+                        {{/if}}
+                    </p>
+                </div>
+                    
                         </div>
                         <div class="col-md-3 col-12 showing_categ">
                             <p><b>FILTER BY CATEGORY</b></p>
