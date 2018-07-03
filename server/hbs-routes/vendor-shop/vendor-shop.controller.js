@@ -26,6 +26,7 @@ export function vendorShop(req, res) {
 	var offset, limit, field, order,page;
 	var queryPaginationObj = {};
 	var queryObj = {};
+	var queryURI = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
@@ -33,7 +34,7 @@ export function vendorShop(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 12;
+	limit = req.query.limit ? parseInt(req.query.limit) : 20;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
@@ -45,15 +46,11 @@ export function vendorShop(req, res) {
 
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
-
-	offset = 0;
-	limit = 9;
-	field = "id";
-	order = "asc";
 
 	async.series({
 		publicShop: function(callback) {
@@ -90,6 +87,11 @@ export function vendorShop(req, res) {
 					status: 1
 				},
 				required: false
+			},{
+				model:model['VendorRating'],
+				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+				group: ['VendorRating.vendor_id'],
+				required:false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -109,9 +111,6 @@ export function vendorShop(req, res) {
 			productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			// if (req.query.marketplace) {
-			// 	productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			// }
 			if (req.query.marketplace_type) {
 				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
 			}
@@ -165,14 +164,14 @@ export function vendorShop(req, res) {
 			});
 		}
 	}, function(err, results) {
-		// console.log(results);
-		ueryPaginationObj['maxSize'] = 5;
+		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
 			res.render('vendor-shop', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
 				marketPlace: marketplace,
+				queryURI:queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				categories: results.categories,

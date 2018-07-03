@@ -22,71 +22,121 @@
 
 </script>
 
-<ul class="navbar-nav mr-auto">
-	<li class="gtc-follow-img">
-		{{#if VendorDetail.User.VendorVerification}}
-		<a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
-		{{else}}
-		<a href="#"><img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified" style="width: 80px; margin-top: 5px;"/></a>
-		{{/if}}
-		{{#if VendorDetail.VendorFollowers}}
-		<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
-		{{else}}
-		<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
-		{{/if}}
-	</li>
+ <div class="banner_bg">
+      {{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
+      <div class="container-fluid banner_bg_menu">
+        <div class="">
+          <div class="row prfl-wt-txt" style="top: -58px;">
+            <div class="col-md-2 common_padding1">
+              <a class="navbar-brand float-right" href="/vendor/{{this.VendorDetail.id}}" style="margin-right: 0px;">
+                <img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
+              </div>
+              <div class="col-md-6">
+                <span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}}</span>
 
-	<li class="nav-item" {{#ifCond selectedPage '==' 'wholesale'}} style="background-color: #084681;color: #fff" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
-			{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}} 
-		</a>
-	</li>
-	<li class="nav-item"  {{#ifCond selectedPage '==' 'shop'}} style="background-color: #084681;" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-shop/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'shop'}} style="color: #fff" {{/ifCond}}>
-			{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
-		</a>
-	</li>
-	<li class="nav-item"  {{#ifCond selectedPage '==' 'services'}} style="background-color: #084681;" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-services/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'services'}} style="color: #fff" {{/ifCond}}>
-			{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
-		</a>
-	</li>
-	<li class="nav-item" {{#ifCond selectedPage '==' 'lifestyle'}} style="background-color: #084681;" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-lifestyle/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'lifestyle'}} style="color: #fff;" {{/ifCond}} >
-			{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
-		</a>
-	</li>
-	<li class="nav-item" {{#ifCond selectedPage '==' 'about'}} style="background-color: #084681;" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-about/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'about'}} style="color: #fff" {{/ifCond}}>
-			ABOUT
-		</a>
-	</li>
-	<li class="nav-item" {{#ifCond selectedPage '==' 'support'}} style="background-color: #084681;" {{/ifCond}} >
-		<a class="nav-link" href="/vendor-support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
-			SUPPORT
-		</a>
-	</li>
-	<li>
-	</li>
-	{{!-- <li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-			<i class="fas fa-ellipsis-h"></i>
-		</a>
-		<div class="dropdown-menu">
-			<a class="dropdown-item" href="/edit-listing">Edit Listings</a>
-			<a class="dropdown-item" href="/vendor-order-history">Order History</a>
-			<a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
-			<a class="dropdown-item" href="/reporting/performance">Reporting</a>
-			<div class="dropdown-divider"></div>
-			<a class="dropdown-item" href="/reviews">See My Reviews</a>
-			<a class="dropdown-item" href="/promote-store">Store Branding</a>
-			<a class="dropdown-item" href="/notifications">Notification Settings</a>
-			<a class="dropdown-item" href="/social-profile">Social Profile Settings</a>
-			<a class="dropdown-item" href="/shipping-settings">Shipping Settings</a>
-			<a class="dropdown-item" href="/payment-settings">Payment Settings</a>
-			<a class="dropdown-item" href="/verification">Get GTC Verified</a>
-			<a class="dropdown-item" href="/gtc-talk">GTC Talk Settings</a>
-			<a class="dropdown-item" href="#">GTC Mail Settings</a>
-		</div>
-	</li> --}}
-</ul>
+              </div>
+            </div>
+            <div class="row img-wt-menu">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-10 common_padding1">
+                <nav class="navbar navbar-expand-lg">
+
+                  <div class="collapse navbar-collapse sm_style" id="nav1">
+                    <!-- Links -->
+                    {{!-- {{> vendor/vendor-navbar VendorDetail = VendorDetail}} --}}
+                    <ul class="navbar-nav mr-auto">
+                      <li class="gtc-follow-img">
+                        {{#if VendorDetail.User.VendorVerification}}
+                        <a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
+                        {{else}}
+                        <a href="#"><img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified" style="width: 80px; margin-top: 5px;"/></a>
+                        {{/if}}
+                        {{#if LoggedInUser.Vendor.id}}
+                        {{else}}
+                        {{#if VendorDetail.VendorFollowers}}
+                        <a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+                        {{else}}
+                        <a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+                        {{/if}}
+                        {{/if}}
+                      </li>
+
+                      <li class="nav-item" {{#ifCond selectedPage '==' 'wholesale'}} style="background-color: #084681;color: #fff" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
+                          {{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}} 
+                        </a>
+                      </li>
+                      <li class="nav-item"  {{#ifCond selectedPage '==' 'shop'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-shop/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'shop'}} style="color: #fff" {{/ifCond}}>
+                          {{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+                        </a>
+                      </li>
+                      <li class="nav-item"  {{#ifCond selectedPage '==' 'services'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-services/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'services'}} style="color: #fff" {{/ifCond}}>
+                          {{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+                        </a>
+                      </li>
+                      <li class="nav-item" {{#ifCond selectedPage '==' 'lifestyle'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-lifestyle/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'lifestyle'}} style="color: #fff;" {{/ifCond}} >
+                          {{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
+                        </a>
+                      </li>
+
+                      <li class="nav-item" {{#ifCond selectedPage '==' 'support'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
+                          DISCUSSION BOARD
+                        </a>
+                      </li>
+                      <li class="nav-item" {{#ifCond selectedPage '==' 'about'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-about/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'about'}} style="color: #fff" {{/ifCond}}>
+                          ABOUT
+                        </a>
+                      </li>
+                      <li class="nav-item" {{#ifCond selectedPage '==' 'support'}} style="background-color: #084681;" {{/ifCond}} >
+                        <a class="nav-link" href="/vendor-support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
+                          SUPPORT
+                        </a>
+                      </li>
+                      {{#if LoggedInUser.Vendor.id}}
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                          <i class="fas fa-ellipsis-h"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="/edit-listing">Edit Listings</a>
+                          <a class="dropdown-item" href="/vendor-order-history">Order History</a>
+                          <a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
+                          <a class="dropdown-item" href="/reporting/performance">Reporting</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="/reviews">See My Reviews</a>
+                          <a class="dropdown-item" href="/promote-store">Store Branding</a>
+                          <a class="dropdown-item" href="/notifications">Notification Settings</a>
+                          <a class="dropdown-item" href="/social-profile">Social Profile Settings</a>
+                          <a class="dropdown-item" href="/shipping-settings">Shipping Settings</a>
+                          <a class="dropdown-item" href="/payment-settings">Payment Settings</a>
+                          <a class="dropdown-item" href="/verification">Get GTC Verified</a>
+                          <a class="dropdown-item" href="/gtc-talk">GTC Talk Settings</a>
+                          <a class="dropdown-item" href="#">GTC Mail Settings</a>
+                        </div>
+                      </li>
+                      {{/if}}
+                    </ul>
+                    <div class="field-search1 form-inline my-2 my-lg-0">
+                      <input type="search" placeholder="Search {{this.VendorDetail.vendor_name}}">
+                      <div class="right">
+
+                        <button>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6"><g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10"><circle cx="9.3" cy="9.3" r="7.3"></circle><path d="M14.2 14.6l6.9 7.6"></path></g>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
