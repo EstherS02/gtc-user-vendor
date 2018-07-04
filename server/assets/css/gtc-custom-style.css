@@ -1050,6 +1050,12 @@ p.p1 {
     border-radius: 0px;
 }
 
+<<<<<<< HEAD
+.Views-button{
+    border: snow;
+    border-radius: 20px;
+
+=======
 /* {
     box-sizing: border-box;
 }*/
@@ -1090,4 +1096,5 @@ p.p1 {
 
 ul.list-group.list-group-flush {
   padding-left: 35px;
+>>>>>>> d0ed6c18376e4999b842a94120baeb8cc8f37e21
 }
