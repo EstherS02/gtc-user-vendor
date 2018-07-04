@@ -27,8 +27,75 @@
 	function globalSearch() {
 		window.location.href = window.location.origin + "/search";
 	}
-	</script>
 
+<<<<<<< HEAD
+	howMany = 10;
+	listButton = $('button.list-view');
+	gridButton = $('button.grid-view');
+	wrapper = $('div.wrapper');
+
+	div = '<div class="item"><a href="javascript:void(0);"><img src="http://files.braadmartin.com/gretsch-catalina-club-in-natural.jpg" /></a><div class="details"><h2>Gretsch Catalina Club Jazz</h2><span>Yours for only <span class="price">$599.99</span></span><p>What a classic kit! Available in several great colors, including Natural (shown), Walnut Glaze, White Marine, Copper Sparkle, and Black Galaxy. Every drummer needs one of these.</p></div></div>';
+
+	// Set up divs
+for (i = 0; i < howMany; i++) { 
+	$('.wrapper').append( div );  
+}
+
+listButton.on('click',function(){
+	
+  gridButton.removeClass('on');
+  listButton.addClass('on');
+  wrapper.removeClass('grid').addClass('list');
+  
+});
+
+gridButton.on('click',function(){
+	
+  listButton.removeClass('on');
+  gridButton.addClass('on');
+  wrapper.removeClass('list').addClass('grid');
+  
+});
+
+</script>
+
+
+	{{!-- // <script>
+	// // Get the elements with class="column"
+	// var elements = document.getElementsByClassName("column");
+
+	// // Declare a loop variable
+	// var View;
+
+	// // List View
+	// function listView() {
+	//     for (view = 0; view < elements.length; view++) {
+	//         elements[view].style.width = "100%";
+	//     }
+	// }
+
+	// // Grid View
+	// function gridView() {
+	//     for (view = 0; view < elements.length; view++) {
+	//         elements[view].style.width = "50%";
+	//     }
+	// }
+
+	//  Optional: Add active class to the current button (highlight it) 
+	// var container = document.getElementById("btnContainer");
+	// var btns = container.getElementsByClassName("view_button");
+	// for (var view = 0; i < btns.length; i++) {
+	//   btns[view].addEventListener("click", function(){
+	//     var current = document.getElementsByClassName("active");
+	//     current[0].className = current[0].className.replace(" active", "");
+	//     this.className += " active";
+	//   });
+	// }
+	// </script>
+ --}}
+
+=======
+>>>>>>> d0ed6c18376e4999b842a94120baeb8cc8f37e21
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
 	<div>
@@ -56,8 +123,8 @@
 			</div>
 
 			<div class="row">
-				<div class="col-md-6">
-					<p class="showing_res1">Showing
+				<div class="col-md-7">
+					<p class="showing_res1" style="font-size:18px">Showing
 						<b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
 						<b>{{productResults.count}}</b> Products matching
 						{{#if queryPaginationObj.keyword}}
@@ -70,33 +137,20 @@
 					
 
 
-				<div class="col-md-5">
-					<div class="row">
-						<div class="col-md-1">
-							<p class="showing_res1">View</p>
-						</div>
-			
-						<div class="col-md-1">
-							<button class="view_button" onclick="listView()"><i class="fas fa-th-large icon_active_showing_res"></i>
-						</div>
-						<div class="col-md-1">
-							<a href="wholesale_result2.html">
-								<button class="view_button" onclick="gridView()"><i class="fas fa-list-ul"></i>
-							</a>
-						</div>
-						
 				
-						<div class="col-md-3">
-							<p class="float-right">Sort by</p>
-						</div>
-						<div class="col-md-6">
-							<select class="geo_textbox">
-								<option>Alphabetical</option>
-							</select>
+						<div class="col-md-4">
+						
+							<div class="buttons">
+								<a>view</a>
+  								<button class="Views-button"><i class="fa fa-th-large "></i></button>
+  								<button class="Views-button"><i class="fa fa-list"></i></button>
+  								<a>Sort by</a><select class="geo_textbox"style="width:30%"><option>Alphabetical</option></select>
+							</div>
+								
 						</div>
 					</div>
-				</div>
-			</div>
+				
+
 			
 
 			<div class="row">
@@ -250,7 +304,7 @@
 					</div>
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
-					<div class="row">
+
 						{{#ifCond productResults.count '==' 0}}
 						<div class="col-md-12">
 							<p class="text-primary text-center no-margins">No products available.</p>

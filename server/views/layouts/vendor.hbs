@@ -1,271 +1,166 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
-    <div class="banner_bg">
-        <div class="container-fluid banner_bg_menu">
-            <div class="row">
-                <nav class="navbar navbar-expand-sm menu_style1 navbar-dark">
-                    <a class="navbar-brand" href="javascript:void(0)">
-                        <img src="../img/logo/red_roof.png" />
-                    </a>
-                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navb">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    DIRECTORY
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    WHOLESALE
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    SHOP
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    SERVICES
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    LIFESTYLE
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                    PRODUCTS
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Link 1</a>
-                                    <a class="dropdown-item" href="#">Link 2</a>
-                                    <a class="dropdown-item" href="#">Link 3</a>
-                                </div>
-                            </li>
-                        </ul>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                            <button class="btn btn-success my-2 my-sm-0" type="button">Search</button>
-                        </form>
+ {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+<div class="logged_in_cont" >
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-12"  >
+                <div class="row profile_logged_in_body2_bg_color_1  " >
+                    <div class="col-md-5 col-5 "  >
+                        <p class="profile_logged_in_body2_font_1">joined:</p>
                     </div>
-                </nav>
-            </div>
-        </div>
-    </div>
-    <div class="logged_in_cont">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="row profile_logged_in_body2_bg_color_1  ">
-                        <div class="col-md-5 ">
-                            <p class="profile_logged_in_body2_font_1">joined:</p>
-                        </div>
-                        <div class="col-md-7">
-                            <p class="jan_style">January 2017</p>
-                        </div>
+                    <div class="col-md-7 col-7"  >
+                        <p class="jan_style">January 2017</p>
                     </div>
-                    <div class="row profile_logged_in_body2_bg_color_1  ">
-                        <div class="col-md-5 ">
-                            <p class="profile_logged_in_body2_font_1">Location:</p>
-                        </div>
-                        <div class="col-md-7">
-                            <p class="profile_logged_in_body2_font_2">
-                                <img src="../img/flag-ca.png"> Canada</p>
-                        </div>
+                </div>
+                <div class="row profile_logged_in_body2_bg_color_1  " >
+                    <div class="col-md-5 col-5 "  >
+                        <p class="profile_logged_in_body2_font_1">Location:</p>
                     </div>
-                    <div class="row profile_logged_in_body2_bg_color_1  ">
-                        <div class="col-md-5 ">
-                            <p class="profile_logged_in_body2_font_1">Catagory:</p>
-                        </div>
-                        <div class="col-md-7">
-                            <p class="profile_logged_in_body2_font_2">Wholesale-Automotive</p>
-                        </div>
+                    <div class="col-md-7 col-7"  >
+                        <p class="profile_logged_in_body2_font_2"><img src="../img/flag-ca.png"> Canada</p>
                     </div>
-                    <div class="row profile_logged_in_body2_bg_color_1  ">
-                        <div class="col-md-5 ">
-                            <p class="profile_logged_in_body2_font_1">User Rating:</p>
-                        </div>
-                        <div class="col-md-7">
-                            <p style="margin-bottom: 0px;">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </p>
-                            <p class="profile_logged_in_body2_font_2">(Ratings-See All)</p>
-                        </div>
+                </div>
+                <div class="row profile_logged_in_body2_bg_color_1  " >
+                    <div class="col-md-5 col-5 "  >
+                        <p class="profile_logged_in_body2_font_1">Catagory:</p>
                     </div>
-
-                    <div class=" row col-md-12" style="margin-top: 10px;padding-right: 0px;">
-                        <i class="fab fa-facebook-f social_logged"></i>
-                        <i class="fab fa-youtube social_logged"></i>
-                        <i class="fab fa-twitter social_logged"></i>
-                        <i class="fab fa-instagram social_logged"></i>
-                        <i class="fab fa-linkedin-in social_logged"></i>
-                        <i class="fab fa-flickr social_logged"></i>
-                        <p class="profile_logged_in_body2_font_3">Accepted Payment Methods:</p>
-                        <img width="100%" src="../img/payment-methods.jpg">
-                        <p class="profile_logged_in_body2_font_1">
-                            At Hayden Auto,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans
-                            they need to buy a vehicle.
-                        </p>
+                    <div class="col-md-7 col-7"  >
+                        <p class="profile_logged_in_body2_font_2">Wholesale-Automotive</p>
+                    </div>
+                </div>
+                <div class="row profile_logged_in_body2_bg_color_1  " >
+                    <div class="col-md-5 col-5 "  >
+                        <p class="profile_logged_in_body2_font_1">User Rating:</p>
+                    </div>
+                    <div class="col-md-7 col-7"  >
+                        <p style="margin-bottom: 0px;font-size: 10px;"><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i></p>
+                        <p class="profile_logged_in_body2_font_2">(Ratings-See All)</p>
                     </div>
                 </div>
 
-                <div class="col-md-3 ">
-                    <h5 class="log_head_style">FEATURED</h5>
-                    <div class="row profile_logged_in_body2_bg_color">
-                        <div class="col-md-6" style="padding-right: 0px; margin-top:10px;">
-                            <img width="100%" src="../img/signup-feature-1.png">
-                        </div>
-                        <div class="col-md-6" style="padding-left: 8px; padding-right: 0px;">
-                            <h5 class="log_doller_value">$119.99</h5>
-                            <p class="profile_logged_in_body2_font_para">SAVE $20
-                                <span class="log_left_style">12m left</span>
-                            </p>
-                            <p class="profile_logged_in_body2_font_para_1">Standard King Smoke Free-15off for the month Augest</p>
+                <div class=" row col-md-12 col-12" style="margin-top: 10px;padding-right: 0px;" >
+                    <i class="fab fa-facebook-f social_logged"></i>
+                    <i class="fab fa-youtube social_logged"></i>
+                    <i class="fab fa-twitter social_logged"></i>
+                    <i class="fab fa-instagram social_logged"></i>
+                    <i class="fab fa-linkedin-in social_logged"></i>
+                    <i class="fab fa-flickr social_logged"></i>
+                    <p class="profile_logged_in_body2_font_3">Accepted Payment Methods:</p>
+                    <img width="100%" src="../img/payment-methods.jpg">
+                    <p class="profile_logged_in_body2_font_1">
+                        At Hayden Auto,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans they need to buy a vehicle.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-12 ">
+                <h5 class="log_head_style">FEATURED</h5>
+                <div class="row profile_logged_in_body2_bg_color">
+                    <div class="col-md-6 col-6" style="padding-right: 0px; margin-top:10px;">
+                        <img width="100%" src="../img/signup-feature-1.png">
+                    </div>
+                    <div class="col-md-6 col-6" style="padding-left: 8px; padding-right: 0px;">
+                        <h5 class="log_doller_value">$119.99</h5>
+                        <p class="profile_logged_in_body2_font_para">SAVE $20 <span class="log_left_style">12m left</span></p>
+                        <p class="profile_logged_in_body2_font_para_1">Standard King Smoke Free-15off for the month Augest</p>
+                        <div class="container">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-4 col-4">
                                     <p class="profile_logged_in_body2_font_2">Category</p>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-8 col-8">
                                     <p class="profile_logged_in_body2_font_2">Hotel &gt; Accomodation</p>
                                 </div>
                             </div>
-                            <input type="submit" value="VIEW" class="profile_logged_in_body2_view_buttion" />
                         </div>
+                        <input type="submit" value="VIEW" class="profile_logged_in_body2_view_buttion"/>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <h5 class="log_head_style">ON SALE</h5>
-                    <div class="row profile_logged_in_body2_bg_color">
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+            </div>  
+            <div class="col-md-3 col-12">
+                <h5 class="log_head_style">ON SALE</h5>
+                <div class="row profile_logged_in_body2_bg_color">
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
+                    </div>
 
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
+                    </div>
 
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-3">
-                    <h5 class="log_head_style">TOP RATED</h5>
-                    <div class="row profile_logged_in_body2_bg_color">
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+            <div class="col-md-3 col-12">
+                <h5 class="log_head_style">TOP RATED</h5>
+                <div class="row profile_logged_in_body2_bg_color">
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
+                    </div>
 
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
+                    </div>
 
-                        <div class="col-md-4" style="margin-top:10px; padding-right:0px;">
-                            <img width="100%" src="../img/signup-feature-2.png">
-                        </div>
-                        <div class="col-md-8" style="margin-top:10px;">
-                            <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
-                            <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
-                            <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20
-                                <span class="log_left_style">12m left!</span>
-                            </p>
-                        </div>
-                        <div class="col-md-12">
-                            <hr>
-                        </div>
+                    <div class="col-md-4 col-4" style="margin-top:10px; padding-right:0px;">
+                        <img width="100%" src="../img/signup-feature-2.png">
+                    </div>
+                    <div class="col-md-8 col-8" style="margin-top:10px;">
+                        <P class="profile_logged_in_body2_font_para_1">Standard King Smoke-Free 20% off </P>
+                        <p class="profile_logged_in_body2_font_para_1">Availability 8384 Remaining</p>
+                        <p class="profile_logged_in_body2_font_para"> $119.99 - Save $20 <span class="log_left_style">12m left!</span></p>
+                    </div>
+                    <div class="col-md-12 col-12">
+                        <hr>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </section>
+
 {{> footer/footer}}

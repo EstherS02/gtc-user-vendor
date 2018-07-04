@@ -40,7 +40,9 @@
         <p class="profile_logged_in_body2_font_1">User Rating:</p>
       </div>
       <div class="col-md-7 col-7"  >
-        <p style="margin-bottom: 0px;font-size: 10px;"><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #CDBE29;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i><i class="fas fa-star" style="color: #B8B8BA;"></i></p>
+        <p style="margin-bottom: 0px;font-size: 10px;">
+        {{starCount VendorDetail.VendorRatings.[0].rating}}
+        </p>
         <p class="profile_logged_in_body2_font_2"><a href="/vendor-rating">(Ratings-See All)</a></p>
       </div>
     </div>

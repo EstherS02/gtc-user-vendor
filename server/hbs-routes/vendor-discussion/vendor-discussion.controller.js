@@ -3,7 +3,6 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
-const position = require('../../config/position');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
@@ -13,7 +12,7 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function vendor(req, res) {
+export function vendorDiscussion(req, res) {
 	var LoggedInUser = {};
 
 	if (req.user)
@@ -29,7 +28,7 @@ export function vendor(req, res) {
 	var queryObj = {};
 	var queryURI = {};
 	var vendor_id = req.params.id;
-	// queryObj['marketplace_id'] = marketplace['PUBLIC'];
+	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -54,53 +53,16 @@ export function vendor(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		featuredProducts: function(callback) {
-            delete queryObj['marketplace_id'];
-            queryObj['featured_position'] = position.SignUp;
-            queryObj['is_featured_product'] = 1;
-            limit = null;
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function(featuredProducts) {
-                    return callback(null, featuredProducts.rows);
+		publicShop: function(callback) {
+			service.findRows(productModel, queryObj, offset, limit, field, order)
+				.then(function(wantToSell) {
+					return callback(null, wantToSell);
 
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        topSelling: function(callback) {
-            delete queryObj['featured_position'];
-            delete queryObj['is_featured_product'];
-            // queryObj['vendor_id'] = vendor_id;
-            field = 'product_selling_count';
-            order = 'desc';
-            limit = 3;
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
-                .then(function(servicesProviders) {
-                    return callback(null, servicesProviders.rows);
-
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-        topRating: function(callback) {
-            delete queryObj['featured_position'];
-            delete queryObj['is_featured_product'];
-            // queryObj['vendor_id'] = vendor_id;
-            field = 'product_rating';
-            order = 'desc';
-            limit = 3;
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
-                .then(function(servicesProviders) {
-                    return callback(null, servicesProviders.rows);
-
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        },
-
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		VendorDetail: function(callback) {
 		var vendorIncludeArr = [{
 				model: model['Country']
@@ -121,7 +83,7 @@ export function vendor(req, res) {
 			}, {
 				model: model['VendorFollower'],
 				where: {
-					user_id: 2,
+					user_id: req.user.id,
 					status: 1
 				},
 				required: false
@@ -140,11 +102,71 @@ export function vendor(req, res) {
 					return callback(null);
 				});
 		},
+		categories: function(callback) {
+			var result = {};
+			var categoryQueryObj = {};
+			var productCountQueryParames = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+			productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
+			productCountQueryParames['status'] = status["ACTIVE"];
+			productCountQueryParames['vendor_id'] = vendor_id;
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
+			}
+
+			model['Category'].findAll({
+				where: categoryQueryObj,
+				include: [{
+					model: model['SubCategory'],
+					where: categoryQueryObj,
+					attributes: ['id', 'category_id', 'name', 'code'],
+					include: [{
+						model: model['Product'],
+						where: productCountQueryParames,
+						attributes: []
+					}]
+				}, {
+					model: model['Product'],
+					where: productCountQueryParames,
+					attributes: []
+				}],
+				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+				group: ['SubCategories.id']
+			}).then(function(results) {
+				if (results.length > 0) {
+					model['Product'].count({
+						where: productCountQueryParames
+					}).then(function(count) {
+						result.count = count;
+						result.rows = JSON.parse(JSON.stringify(results));
+						return callback(null, result);
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						return callback(error, null);
+					});
+				} else {
+					result.count = 0;
+					result.rows = [];
+					return callback(null, result);
+				}
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		}
 	}, function(err, results) {
-		console.log(LoggedInUser);
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
-			res.render('vendor', {
+			res.render('vendor-discussion', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
@@ -153,11 +175,11 @@ export function vendor(req, res) {
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
-				// selectedPage:'shop'
+				LoggedInUser: LoggedInUser,
+				selectedPage:'discussion'
 			});
 		} else {
-			res.render('vendor', err);
+			res.render('vendor-discussion', err);
 		}
 	});
 

@@ -1,0 +1,10 @@
+module.exports = {
+    "NEWORDER":1,
+    "AWAITINGORDER":2,
+    "PROCESSINGORDER":3,
+    "DISPATCHEDORDER":4,
+    "DELIVEREDORDER":5,
+    "RETURNEDORDER":6,  
+    "CANCELLEDORDER":7,
+    "FAILEDORDER":8   
+}
