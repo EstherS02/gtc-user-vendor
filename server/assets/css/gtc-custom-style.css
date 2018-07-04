@@ -1017,41 +1017,8 @@ p.p1 {
     border-radius: 0px;
 }
 
-*/* {
-    box-sizing: border-box;
-}*/
-
- /*Create two equal columns that floats next to each other */
-/*.column {
-    float: left;
-    width: 50%;
-    padding: 10px;
-}*/
-
-/* Clear floats after the columns */
-/*.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}*/
-
-/*.view-button{
-    border: none;
-    outline: none;
-    padding: 3px 0px 2px 0px;
-    background-color: #ffffff;
-    cursor: pointer;
-    margin: -9px;
+.Views-button{
+    border: snow;
     border-radius: 20px;
-}
 
-.view-button:hover {
-    background-color: #ddd;
 }
-
-.view-button:active {
-    background-color: #666;
-    color: white;
-}
-
-*/
