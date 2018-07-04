@@ -1,3 +1,29 @@
+<style>
+	textarea {
+		resize: none;
+		overflow: hidden;
+		height: auto;
+	}
+	.edit-image {
+		cursor: pointer;
+	}
+	#editdiscount, #update,#reset {
+		cursor: pointer;
+	}
+	.upload {
+		display: none;
+	}
+	.editpic {
+		padding-top: 10px;
+		padding-right: 10px;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	.edit-image {
+		transform: scale(1, 2);
+	}
+</style>
 <script type="text/javascript">
 
 	$(document).ready(function () {
@@ -13,60 +39,8 @@
 				$(".percent_discount_amount0").hide();
 			}
 		});
-		$('#value_discount1').click(function () {
-			console.log("-----------------------99999999999----------");
-			if ($(this).is(":checked")) {
-
-				console.log("----------------------------------");
-				$(".value_discount_amount1").css("display","block")
-				$(".percent_discount_amount1").hide();
-			}
-		});
-		$('#value_discount2').click(function () {
-			if ($(this).is(":checked")) {
-				$(".value_discount_amount2").show();
-				$(".percent_discount_amount2").hide();
-			}
-		});
-		$('#percentage_discount1').click(function () {
-			if ($(this).is(":checked")) {
-				$(".percent_discount_amount1").show();
-				$(".value_discount_amount1").hide();
-			}
-		});
 	});
 </script>
-<style>
-	textarea {
-		resize: none;
-		overflow: hidden;
-		height: auto;
-	}
-
-	.edit-image {
-		cursor: pointer;
-	}
-
-	#editdiscount {
-		cursor: pointer;
-	}
-
-	.upload {
-		display: none;
-	}
-
-	.editpic {
-		padding-top: 10px;
-		padding-right: 10px;
-		position: absolute;
-		right: 0;
-		top: 0;
-	}
-
-	.edit-image {
-		transform: scale(1, 2);
-	}
-</style>
 <script>
 	var textarea = null;
 	window.addEventListener("load", function () {
@@ -199,7 +173,7 @@
       });
     }
 
-		function fasterPreview(uploader) {
+	function fasterPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
 
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
@@ -214,16 +188,17 @@
 
 				$('#profile-picture-modal').modal('show');
 			}
-		}
+	}
 	
-
-		var data = {{ product.id }};
+	var data = {{ product.id }};
 	$("#editForm").submit(function (e) {
+	 
 	  e.preventDefault();
 
 	  	let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
 		}).serialize();
+
 		editProduct(data, input);
 	  		
 	  		var productImage = {{{DisplayJSON product.ProductMedia}}}
@@ -235,7 +210,6 @@
 	  			i++;
 			});
 	
-		
 		let obj={};
 		
 			if ($("#imageEdit1")[0].files[0]) {
@@ -247,8 +221,7 @@
 					}
 					uploadMedia(obj,imageId[0],function(data){
 						console.log("updated Successfully");
-					})
-					 
+					}) 
 				});
 			} 
 			if ($("#imageEdit2")[0].files[0]) {
@@ -633,10 +606,10 @@
 											<hr/>
 											<div class="row" style="margin-bottom: 20px;">
 												<div class="col-md-2 col-5">
-													<input class="list_butt_1" type="submit" value="UPDATE" />
+													<input class="list_butt_1" type="submit" id="update" value="UPDATE" />
 												</div>
 												<div class="col-md-10 col-6">
-													<input class="list_butt_2" type="reset" value="CANCEL" />
+													<input class="list_butt_2" type="reset" id="reset" value="CANCEL" />
 												</div>
 											</div>
 										</div>
