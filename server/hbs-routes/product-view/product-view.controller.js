@@ -44,8 +44,9 @@ export function GetProductDetails(req, res) {
     return model["Product"].findOne({
         where: queryObj,
         include: [
-            { model: model["Vendor"],
-            include:[{
+        {
+            model: model["Vendor"],
+            include: [{
                 model: model['Country']
 
             }, {
@@ -53,7 +54,7 @@ export function GetProductDetails(req, res) {
 
             }, {
                 model: model['User'],
-                attributes:['id'],
+                attributes: ['id'],
                 include: [{
                     model: model['VendorVerification'],
                     where: {
@@ -61,7 +62,13 @@ export function GetProductDetails(req, res) {
                     }
                 }]
 
-            }] },
+            },{
+                model:model['VendorRating'],
+                attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+                group: ['VendorRating.vendor_id'],
+                required:false,
+            }]
+        },
             { model: model["Marketplace"] },
             { model: model["MarketplaceType"] },
             { model: model["Category"] },
@@ -147,7 +154,7 @@ export function GetProductDetails(req, res) {
                 queryObj2.vendor_id         = productsList.vendor_id;
                 queryObj2.status            = status["ACTIVE"];
                 queryObj2.id                = { $ne : [productsList.id]};
-                console.log("productsList.WishList",productsList.Vendor)
+                console.log("productsList.WishList",productsList.WishLists)
                 var result_obj = {
                     title: "Global Trade Connect",
                     product: productsList,
