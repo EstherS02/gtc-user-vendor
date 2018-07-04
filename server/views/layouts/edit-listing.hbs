@@ -13,16 +13,25 @@
 				$(".percent_discount_amount0").hide();
 			}
 		});
+		$('#value_discount1').click(function () {
+			console.log("-----------------------99999999999----------");
+			if ($(this).is(":checked")) {
+
+				console.log("----------------------------------");
+				$(".value_discount_amount1").css("display","block")
+				$(".percent_discount_amount1").hide();
+			}
+		});
+		$('#value_discount2').click(function () {
+			if ($(this).is(":checked")) {
+				$(".value_discount_amount2").show();
+				$(".percent_discount_amount2").hide();
+			}
+		});
 		$('#percentage_discount1').click(function () {
 			if ($(this).is(":checked")) {
 				$(".percent_discount_amount1").show();
 				$(".value_discount_amount1").hide();
-			}
-		});
-		$('#value_discount1').click(function () {
-			if ($(this).is(":checked")) {
-				$(".value_discount_amount1").show();
-				$(".percent_discount_amount1").hide();
 			}
 		});
 	});
@@ -95,7 +104,7 @@
 			data: input,
 			success: function (data) {
 				alert("Product Updated Successfully");
-				//location.reload();
+				location.reload();
 			},
 			error: function (error) {
 				console.log('error', error);
@@ -206,51 +215,25 @@
 				$('#profile-picture-modal').modal('show');
 			}
 		}
-
-		//var user_pic_url;
-		//var form = new FormData();
-		//form.append("file", $("#imageUpload")[0].files[0]);
-		//	form.append("file", cropperOutputImage, fileDetails["fileName"]);
-
-		//	$.ajaxSetup({ async: false });
-
-
-			/*$.ajax({
-				type: 'POST',
-				url: '/api/vendors/upload',
-				data: form,
-				cache: false,
-				dataType: 'json',
-				processData: false,
-				contentType: false,
-				success: function (data) {
-					userUpdate.user_pic_url = data.imageURL;
-
-				},
-				error: function (error) {
-					console.log("Error", error);
-				}
-			})*/
 	
 
 		var data = {{ product.id }};
 	$("#editForm").submit(function (e) {
 	  e.preventDefault();
-	  		// product.ProductMedia.forEach(){
 
-	  		// }
-	  		var productSpecs = {{{DisplayJSON product.ProductMedia}}}
+	  	let input = $("#editForm :input").filter(function (index, element) {
+			return $(element).val() != '';
+		}).serialize();
+		editProduct(data, input);
+	  		
+	  		var productImage = {{{DisplayJSON product.ProductMedia}}}
 	  		var i=0;
 	  		var imageId=[];
-	  		productSpecs.forEach(function(element) {
+	  		productImage.forEach(function(element) {
 	  			imageId[i] = element.id;
 	  			console.log(imageId);
 	  			i++;
 			});
-       //    let imageId1= {{product.ProductMedia.[0].id}};
-	      // let imageId2= {{product.ProductMedia.[1].id}};
-	      // let imageId3= {{product.ProductMedia.[2].id}};
-	      // let imageId4= {{product.ProductMedia.[3].id}};
 	
 		
 		let obj={};
@@ -304,14 +287,6 @@
 					})
 				});
 			} 
-
-	
-		let input = $("#editForm :input").filter(function (index, element) {
-			return $(element).val() != '';
-		}).serialize();
-		// var obj = {};
-		// obj.url = null;
-		editProduct(data, input);
 	})
 
 	$("#editForm").validate({
@@ -319,15 +294,13 @@
 			product_name: "required",
 			sku: "required",
 			quantity_available: "required",
-			price: "required",
-			//description: "description"
+			price: "required"
 		},
 		messages: {
 			product_name: "Please enter product name",
 			sku: "Please enter stock keeping unit",
 			quantity_available: "Please enter available quantity",
-			price: "Please enter product price",
-			//description: "Please enter product description"
+			price: "Please enter product price"
 		}
 	});
 
@@ -348,8 +321,8 @@
 				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
 				'<div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
 				'<input type="radio" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" /> Total Value Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$" />$</div>' +
-				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
+				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
+				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
 			$('#discountAppend').append(domElements)
 
@@ -453,28 +426,6 @@
 
 											</div>
 										</div>
-
-										{{!--
-										<div class="col-md-4">
-											{{#each product.ProductMedia}} {{#ifCond @index "==" 0}}
-											<img id="UploadedImage1" src="{{this.url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;" />
-											<div class="editpic">
-												<i class="far fa-edit edit-image" id="edit-image1" style="color:black"></i>
-											</div>
-											{{/ifCond}} {{/each}}
-											<div class="row">
-												{{#each product.ProductMedia}} {{#ifCond @index "!=" 0}}
-												<div class="col-md-4">
-													<img id="UploadedImage2" src="{{this.url}}" alt="logo" style="width:70px;height:100px;" />
-													<div class="editpic" onclick="document.getElementById('selectedFile').click();">
-														<i class="far fa-edit edit-image" id="edit-image2" style="color:black"></i>
-													</div>
-													<input type="file" class="upload" id="imageEdit" onclick="this.value=null;" name="file" />
-												</div>
-												{{/ifCond}} {{/each}}
-											</div>
-										</div> --}}
-
 
 										<div class="col-md-8">
 											<div class="row" style="padding-top:20px">
