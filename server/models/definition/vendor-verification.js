@@ -110,11 +110,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
-        verification_status: {
-            type: DataTypes.INTEGER,
-            field: 'verification_status',
-            allowNull: false
-        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
