@@ -114,15 +114,14 @@ export function vendor(req, res) {
 				include: [{
 					model: model['VendorVerification'],
 					where: {
-						vendor_verified_status: status['ACTIVE']
+							vendor_verified_status: status['ACTIVE']
 					}
 				}]
-
 			}, {
 				model: model['VendorFollower'],
 				where: {
-					user_id: 2,
-					status: 1
+					user_id: req.user.id,
+					status: status['ACTIVE']
 				},
 				required: false
 			},{
@@ -141,7 +140,7 @@ export function vendor(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(LoggedInUser);
+		console.log(results.VendorDetail);
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
 			res.render('vendor', {

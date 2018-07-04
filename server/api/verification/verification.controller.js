@@ -8,30 +8,31 @@ const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const service = require('../service');
 const roles = require('../../config/roles');
+const verificationStatus = require('../../config/verification_status');
 
 export function storeData(req, res) {
 	var bodyParam = {};
 	var modelName = "VendorVerification";
 	if (req.body.personal_id_verification_file_link) {
 		bodyParam.personal_id_verification_file_type = req.body.personal_id_verification_file_type;
-		bodyParam.personal_id_verification_file_status = status['WAITING'];
+		bodyParam.personal_id_verification_file_status = verificationStatus['WAITING'];
 		bodyParam.personal_id_verification_file_link = req.body.personal_id_verification_file_link;
 	}
 	if (req.body.personal_address_verification_file_link) {
 		bodyParam.personal_address_verification_file_link = req.body.personal_address_verification_file_link;
-		bodyParam.personal_address_verification_file_status = status['WAITING'];
+		bodyParam.personal_address_verification_file_status = verificationStatus['WAITING'];
 	}
 	if (req.body.business_verification_file_link) {
 		bodyParam.business_verification_file_link = req.body.business_verification_file_link;
-		bodyParam.business_verification_file_status = status['WAITING'];
+		bodyParam.business_verification_file_status = verificationStatus['WAITING'];
 	}
 	if (req.body.business_address_verification_file_link) {
 		bodyParam.business_address_verification_file_link = req.body.business_address_verification_file_link;
-		bodyParam.business_address_verification_file_status = status['WAITING'];
+		bodyParam.business_address_verification_file_status = verificationStatus['WAITING'];
 	}
 
 	bodyParam.request_for_vendor_verification = 1;
-	bodyParam.vendor_verified_status = status['WAITING'];
+	bodyParam.vendor_verified_status = verificationStatus['WAITING'];
 	bodyParam.user_id = req.user.id;
 
 	var queryObj = {

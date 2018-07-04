@@ -46,12 +46,14 @@
                     <!-- Links -->
                     {{!-- {{> vendor/vendor-navbar VendorDetail = VendorDetail}} --}}
                     <ul class="navbar-nav mr-auto">
-                      <li class="gtc-follow-img">
+                      <li class=" nav-item"> {{!-- gtc-follow-img --}}
                         {{#if VendorDetail.User.VendorVerification}}
                         <a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
                         {{else}}
                         <a href="#"><img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified" style="width: 80px; margin-top: 5px;"/></a>
                         {{/if}}
+                        </li>
+                        <li class=" nav-item">
                         {{#if LoggedInUser.Vendor.id}}
                         {{else}}
                         {{#if VendorDetail.VendorFollowers}}
