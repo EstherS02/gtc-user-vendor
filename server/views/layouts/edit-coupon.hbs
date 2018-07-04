@@ -42,6 +42,7 @@
 				url: '/api/coupon/save',
 				data: newCoupon,
 				success: function(data, text) {
+					alert("Added successfully");
 					location.reload();
 					// products(data, function() {
 					// 	excludeProducts(data, function() {
@@ -218,6 +219,7 @@
 				url: '/api/coupon/update',
 				data: newCoupon,
 				success: function(data, text) {
+					alert("Updated successfully");
 					location.reload();
 					// products(data, function() {
 
@@ -379,9 +381,9 @@
 									<option >Discount Type</option>
 									<option value="1">Percentage</option>
 									<option value="2">Fixed Price</option>
-									<option value="3">Fixed Price Discount</option>
+<!-- 									<option value="3">Fixed Price Discount</option>
 									<option value="4">Fixed Cart Discount</option>
-									{{/select}}
+ -->									{{/select}}
 								</select>
 							</div>
 							<div class="col-md-12">

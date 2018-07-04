@@ -13,11 +13,11 @@ var validateJwt = expressJwt({
 	getToken: function (req) {
 		if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
 			return req.headers.authorization.split(' ')[1];
-		} else if(req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']){
-			return req.cookies['gtc_access_token']; 
+		} else if (req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']) {
+			return req.cookies['gtc_access_token'];
 		}
 		return null;
-	  }
+	}
 });
 
 
@@ -27,35 +27,35 @@ var globalValidateJwt = expressJwt({
 
 function isAuthenticated() {
 	return compose()
-		.use(function(req, res, next) {
+		.use(function (req, res, next) {
 			if (req.query && req.query.hasOwnProperty('access_token')) {
 				req.headers.authorization = 'Bearer ' + req.query.access_token;
 			}
 			validateJwt(req, res, next);
 		})
-		.use(function(err, req, res, next){
+		.use(function (err, req, res, next) {
 			//Manually handling errors from express jwt
-			if(err.name === 'UnauthorizedError') {
+			if (err.name === 'UnauthorizedError') {
 				console.log("Error From - express Jwt", err.inner);
 
-				if(new RegExp("api").test(req.originalUrl) || new RegExp("auth").test(req.originalUrl)){
-					return res.status(err.status).send({ 
+				if (new RegExp("api").test(req.originalUrl) || new RegExp("auth").test(req.originalUrl)) {
+					return res.status(err.status).send({
 						message: err.message
 					});
-				}else{
+				} else {
 					return res.redirect('/login');
 				}
 			}
 
 			next();
 		})
-	 	.use(function(req, res, next) {
+		.use(function (req, res, next) {
 			let queryObj = {};
 
 			queryObj['status'] = {
-                '$eq': status["ACTIVE"]
+				'$eq': status["ACTIVE"]
 			}
-			
+
 			queryObj['id'] = req.user.userId;
 
 			model['User'].findOne({
@@ -63,48 +63,50 @@ function isAuthenticated() {
 				attributes: {
 					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 				}
-			}).then(function(user) {
-					if (user) {
-						req.user = plainTextResponse(user);
+			}).then(function (user) {
+				if (user) {
+					req.user = plainTextResponse(user);
 
-						let vendorQueryObj = {};
+					let vendorQueryObj = {};
 
-						vendorQueryObj['status'] = {
-							'$eq': status["ACTIVE"]
-						}
-						
-						vendorQueryObj['user_id'] = req.user.id;
-
-						model['Vendor'].findOne({
-							where: vendorQueryObj,
-							include: [
-								{ model: model['Country'] },
-								{ model: model['Currency'] },
-								{ model: model['Timezone'] }
-							]
-						}).then(function(vendorObj) {
-							if (vendorObj) {
-								req.user['Vendor'] = vendorObj.toJSON();
-								req.user['VendorStatus'] = true;
-								next();
-							} else {
-								req.user['Vendor'] = false;
-								next();
-							}
-						}).catch(function(error) {
-							req.user['Vendor'] = false;
-							next();
-						});
-						//next();
-					} else {
-						res.status(404).send("User not found");
-						return;
+					vendorQueryObj['status'] = {
+						'$eq': status["ACTIVE"]
 					}
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return next(error);
+
+					vendorQueryObj['user_id'] = req.user.id;
+
+					model['Vendor'].findOne({
+						where: vendorQueryObj,
+
+						include: [
+							{ model: model['Country'] },
+							{ model: model['Currency'] },
+							{ model: model['Timezone'] },
+							{ model: model['VendorPlan']}
+                        ]
+						}).then(function (vendorObj) {
+					if (vendorObj) {
+						req.user['Vendor'] = vendorObj.toJSON();
+						req.user['VendorStatus'] = true;
+						next();
+					} else {
+						req.user['Vendor'] = false;
+						next();
+					}
+				}).catch(function (error) {
+					req.user['Vendor'] = false;
+					next();
 				});
+			//next();
+		} else {
+				res.status(404).send("User not found");
+				return;
+			}
+				})
+				.catch (function(error) {
+	console.log('Error:::', error);
+	return next(error);
+});
 		});
 }
 
@@ -120,7 +122,7 @@ function hasPermission(withAction) {
 
 	return compose()
 		.use(isAuthenticated())
-		.use(function(req, res, next) {
+		.use(function (req, res, next) {
 			return;
 		});
 }

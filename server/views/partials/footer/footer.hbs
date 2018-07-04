@@ -48,8 +48,11 @@ $(document).ready(function() {
                 </div>
                 <div class="col-md-2 help_f">
                     <p class="footer_help">ACCOUNT CENTER</p>
-                    <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
+                    {{#if LoggedInUser.id}}
                     <p class="footer_help_para"><a href="/user-profile">My Account</a></p>
+                    {{else}}
+                    <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
+                    {{/if}}
                     <p class="footer_help_para"><a href="/order-track">Track Your Order</a></p>
                     <p class="footer_help_para"><a href="/wishlist">Wishlist</a></p>
                     <p class="footer_help_para"><a href="/cart">Shopping Cart</a></p>

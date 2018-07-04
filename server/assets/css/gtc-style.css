@@ -125,12 +125,12 @@ a:hover
 }
 .font_icon
 {
-	padding: 10px;
+	padding: 8px !important;
 }
 .menu_style
 {
 	color: #fff;
-	font-size: 10px;
+	font-size: 13px;
 	padding: 0px!important;
 	margin: 0px !important;
 	width: 100%;
@@ -1219,8 +1219,10 @@ width: 100%;
 	width: 100%;
 }
 .img-wt-menu .gtc-follow-img{
-    display: flex;
-    margin-left: 14px;
+        display: flex;
+    margin-left: 0px;
+    /* margin-right: 15px; */
+    margin-top: 20px;
 }
 .img-wt-menu ul{
     margin-top: 10px;
@@ -1232,7 +1234,7 @@ width: 100%;
 .img-wt-menu .dropdown-toggle::after{
     display: none;
 }
-.img-wt-menu ul li + li{
+.img-wt-menu ul li{
     color: #084681;
     margin-top: 5px;
 	font-size: 13px;
@@ -1764,7 +1766,7 @@ font-size:11px;
     font-size: 11px;
     font-weight: bold;
     padding: 2px 5px;
-	width: 100px;
+	/*width: 100px;*/
 }
 .vend_edit_lists_searchstyle
 {
@@ -1816,6 +1818,8 @@ font-size:11px;
 	color: #255794;
     font-size: 100px;
     margin-bottom: 100px;
+	font-family: 'Oswald', sans-serif;
+
 }
 .vendor_h
 {
@@ -2194,7 +2198,7 @@ font-size: 12px;
 .field-search input {
     display: inline-block;
     vertical-align: middle;
-    width: 450px;
+    width: 490px;
     border: 3px solid #ff9524;
     border-radius: 1em;
     padding: 0.5em 1em;
@@ -2358,7 +2362,7 @@ font-size: 12px;
 .field-search_shop input {
     display: inline-block;
     vertical-align: middle;
-    width: 365px;
+    width: 364px;
     border: none;
     /* border-radius: 1em; */
     padding: 0.5em 1em;
@@ -2639,6 +2643,7 @@ font-size: 12px;
 {
 	font-size: 10px;
     margin-bottom: 3px;
+    margin-top: 7px;
 }
 .login-checkbox input:checked + i:before {
     content: "\2713";
@@ -2963,9 +2968,101 @@ font-size: 12px;
 	background-color: #fff;
 	
 }
-
-
+.top_text
+{
+	top: -59px!important;
+}
+.full_view_pad
+{
+	    padding-left: 80px;
+    padding-right: 80px;
+}
+.full_view_pad1
+{
+	    padding-left: 50px;
+    padding-right: 50px;
+}
 @media only screen and (max-width: 600px) {
+	.logg_menu {
+
+    color: rgba(0,0,0,1) !important;
+border-color: rgba(0,0,0,1);
+background-color: #fff;
+position: relative;
+right: 0;
+left: 230px;
+top: 37px;
+}
+.prf_landing_cmpy {
+    color: #000;
+position: relative;
+left: 73px;
+top: -9px;
+}
+.img-wt-menu .gtc-follow-img {
+    display: flex;
+    margin-left: 0px;
+    margin-right: 15px;
+    margin-top: 20px;
+    position: absolute;
+top: -22px !important;
+left: 150px;
+}
+.gtc_top
+{
+	top: 86px !important;
+}
+.gtc_top1
+{
+	top: 113px !important;
+}
+.res_img
+{
+	width: 85%;
+}
+.top_text
+{
+	top: -36px!important;
+}
+.top_text1
+{
+	top: -64px!important;
+}
+	.sm_style{
+	background: #fff;
+	position: relative;
+top: 60px;
+bottom: 0;
+z-index: 1000;
+left: -11px;
+padding-left: 15px;
+}
+
+	.field-search1 input
+	{
+		width: 280px;
+	}
+.prfl-wt-txt{
+	left: -84px;
+}
+.prf-text > :first-child {
+	color: #000;
+    left: 82px;
+    position: relative;
+	top: -10px;
+}
+.prf-text > :last-child {
+    position: relative;
+    left: 85px;
+	top: -10px;
+}
+.prf-text {
+    margin-top: 0px;
+}
+.edit-banner	
+{
+	width: 50%;
+}
 	.which_pkg{
 	background-color: #fff;
     padding: 2em 28em;
@@ -3435,10 +3532,10 @@ font-size: 12px;
     opacity: 0;
     position: absolute;
 }
-.modal-dialog {
+/* .modal-dialog {
     max-width: 420px;
     margin: 1.75rem auto;
-}
+} */
 /*-------------------------------geolocate----------------------------------*/
 .geo_bg
 {
@@ -3541,6 +3638,54 @@ font-size: 12px;
 	border:none;
 	
 }
+.datepicker-orient-top
+{
+	z-index: 10000!important;
+}
+.checkout_drop
+{
+	font-size: 12px;
+    text-align: center;
+    background-color: #0E478C;
+}
+.checkout_mycart
+{
+	color: #fff !important;
+	font-size: 24px;
+	font-family: 'Oswald', sans-serif;
+}
+.checkout_ws
+{
+	color: #D78505!important;
+}
+.checkout_shop
+{
+	color: #fff !important;
+}
+.checkout_ser
+{
+	color: #3BB804!important;
+}
+.checkout_sub
+{
+	color: #D86581!important;
+}
+.checkout_doller
+{
+	color: #fff !important;
+	font-size: 15px;
+	font-weight: bold;
+}
+.font_icon {
+    padding: 9px;
+}
+.order_his a
+{	
+	color: #000 !important;
+	font-size: 11px;
+}
+	
+
 
 
 /*Include fonts*/
@@ -4464,6 +4609,7 @@ label.daterange {
     padding: 10px 0px 0px 10px;
     float: left;
     height: 207px;
+	border: none;
     overflow: overlay;
 }
 
@@ -4734,19 +4880,39 @@ hr {
 .input-group-prepend {
     cursor: pointer;
 }
-/*-- Thangapandi --*/
+
+#show-hide {
+  display:none;
+}
+p.cuntry-lists.ui-selectee.ui-selected {
+    background-color: black;
+    color: white;
+}
+p.cuntry-lists.ui-selectee {
+    cursor: pointer;
+}
+select#mySelect {
+    width: 200px;
+    background-color: #ededed;
+    padding: 10px 0px 0px 10px;
+    float: left;
+    border: none;
+    height: 207px;
+}
+
+
 
 /*------------------------return product--------------------------------------------*/
 .re_return_sect
 {
-		background-color:#E7E7E9;
+		background-color:#EDEDED;
 		padding-bottom:55px;
 		padding-top: 10px;
 
 }
 .return_product_report_bg
 {
-	background-color:#E7E7E9;
+	background-color:#EDEDED;
 	padding-top:5px;
 }
 .re_pr_re_bd_bg
@@ -4758,7 +4924,7 @@ hr {
 {
 	font-size: 20px;
     margin-bottom: 5px;
-	color: #000000cf;
+	color: #0000008c;
 }
 .re_return-fo
 {
@@ -4831,7 +4997,7 @@ hr {
 }
 .return_pr_re_pa
 {
-	background-color:#E7E7E9;
+	background-color:#EDEDED;
 	font-size:9px;
 	padding: 40px 0px 0px 45px;
 }
@@ -4845,7 +5011,7 @@ hr {
 color: #80808094;}
 .return_pr_re_pa2
 {
-	background-color:#E7E7E9;
+	background-color:#EDEDED;
 	font-size:9px;
 padding:2px;
 margin-left:30px;
@@ -4872,7 +5038,7 @@ width: 100%;
 }
 .re_return_last
 {
-	background-color:#E7E7E9;
+	background-color:#EDEDED;
 	font-size:11px;
 	padding-top:5px;
 	padding-left:19px;
@@ -4984,7 +5150,7 @@ a.list-group-item.return_pr_re_pa2 {
 }
 .re_terms_te
 {
-	background-color:#E7E7E9;
+	background-color:#EDEDED;
 	font-size:12px;
 	width: 485px;
     height: 160px;
@@ -5021,10 +5187,6 @@ a.list-group-item.return_pr_re_pa2 {
 	.re_terms_te{
 		width:320px;
 	}
-	.re_return_are {
-    
-    width: 280px;
-}
 }
 
 @media only screen and (max-width: 414px) {
@@ -5032,4 +5194,6 @@ a.list-group-item.return_pr_re_pa2 {
 		width:360px;
 	}
 }
+
+
 

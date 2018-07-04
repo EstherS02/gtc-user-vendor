@@ -8,6 +8,6 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.post('/addSettings', controller.notificationSetting);
+router.post('/addSettings',auth.isAuthenticated(), controller.notificationSetting);
 
 module.exports = router;

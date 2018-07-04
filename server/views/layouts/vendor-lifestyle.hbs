@@ -1,0 +1,92 @@
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<section>
+ {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+    <div class="logged_in_cont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-12">
+                    {{> vendor/vendor-left VendorDetail = VendorDetail}}
+                </div>
+                <div class="col-md-10 col-12">
+                    <div class="row pmp2 lifestyle-market-bg">
+                        <div class="col-md-5 col-12">
+                            <h5>LIFESTYLE MARKETPLACE</h5>
+                        </div>
+                        <div class="col-md-2 col-12 common_padding1">
+                            <p>Showing 1 - 20 of {{publicLifestyle.count}}</p>
+                        </div>
+                        <div class="col-md-2 col-12 common_padding1">
+                            <select class="geo_textbox">
+                                <option>Sort by Newest</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9 col-12" style="background-color: #fff;">
+                            <section class="box6" style="margin-bottom: 20px;">
+                                <div class="container clearfix">
+                                    <div class="row">
+                                        {{#each publicLifestyle.rows}}
+                                        <div class="col-md-4 col-12 common_top">
+                                            <div class="row">
+                                                <div class="col-md-3 col-2">
+                                                    <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+                                                </div>
+                                                <div class="col-md-9 col-10">
+                                                    <div class="row common_padding">
+                                                        <div class="col-md-8 col-8">
+                                                            <p class="wts_header">
+                                                             <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+                                                         </p>
+                                                     </div>
+                                                     <div class="col-md-4 col-4">
+                                                        <p class="">${{this.product_price}}CAD</p>
+                                                        {{!-- //doller_value --}}
+                                                    </div>
+                                                </div>
+                                                <div class="row common_padding">
+                                                    <div class="col-md-3 col-3">
+                                                        <p>Origin</p>
+                                                    </div>
+                                                    <div class="col-md-5 col-5">
+                                                        <p>{{this.country_name}}</p>
+                                                    </div>
+                                                    <div class="col-md-4 col-4">
+                                                        <p>&nbsp;</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row common_padding">
+                                                    <div class="col-md-3 col-3">
+                                                        <p>Category</p>
+                                                    </div>
+                                                    <div class="col-md-9 col-5">
+                                                        <p>{{this.category_name}} - {{this.sub_category_name}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row common_padding">
+                                                    <div class="col-md-3 col-3">
+                                                        <p>Seller Rating</p>
+                                                    </div>
+                                                    <div class="col-md-5 col-5">
+                                                        <p>{{ starCount product_rating}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-3 col-12 showing_categ">
+                        <p><b>FILTER BY CATEGORY</b></p>
+                        <p class="cat_bg_title_serv lifestyle-market-bg">ALL CATEGORIES ({{categories.count}})</p>
+                        {{> vendor/vendor-category }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{> footer/footer}}

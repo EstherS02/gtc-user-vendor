@@ -189,7 +189,6 @@ Handlebars.registerHelper("days", function(value) {
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
-    console.log('test', test);
 
     for (var i = 0, len = context.length; i < len; i++) {
         var option = '<option value="' + context[i].id + '"';
@@ -279,13 +278,74 @@ Handlebars.registerHelper('ProfilePicture', function(context, options) {
     
     return '/img/avatar.png'
 });
-Handlebars.registerHelper('MarketPlaceId', function(obj, value_pass, options) {
+Handlebars.registerHelper('objectKey', function(obj, value_pass, options) {
     var val;
     Object.keys(obj).forEach(function(key) {
         if(value_pass == obj[key]){
             var val1 = key.toLowerCase();
              val = val1.charAt(0).toUpperCase() + val1.slice(1);
+             val = val.replace("order"," Order");
         }
     });
     return val;
+});
+
+Handlebars.registerHelper('countrySelected', function(context, test) {
+    var ret = '';
+    var option;
+    for (var i = 0, len = context.length; i < len; i++) {
+        if (test.indexOf(context[i].id) == -1) {
+            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
+        ret += option;
+            
+        }
+    }
+    return new Handlebars.SafeString(ret);
+});
+Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
+    var ret = '';
+    var option;
+    console.log(test);
+    for (var i = 0, len = context.length; i < len; i++) {
+        if (test.indexOf(context[i].id) >= 0) {
+            console.log('context',test.indexOf(context[i].id));
+            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
+            ret += option;
+        }
+        
+    }
+    return new Handlebars.SafeString(ret);
+});
+
+Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
+    var ret = '';
+    var option;
+    if (plan == 1) {
+        return context;
+    } else if (plan == 2) {
+        if (context == 'SHOP') {
+            return context;
+        } else if (context == 'SERVICES') {
+            return context;
+        } else if (context == 'LIFESTYLE') {
+            return context;
+        } else {
+            return ret;
+        }
+
+    } else if (plan == 3) {
+        if (context == 'SERVICES') {
+            return context;
+        } else {
+            return;
+        }
+    } else if (plan == 4) {
+        if (context == 'LIFESTYLE') {
+            return context;
+        } else {
+            return;
+        }
+    } else {
+        return;
+    }
 });

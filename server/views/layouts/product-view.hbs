@@ -2,58 +2,50 @@
 
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
+	var statusCode = {{{DisplayJSON status}}}
 
-
-	$(function(){
+	$(function() {
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
 		});
 
 		$("#gtc-cart-alert").hide();
+		$("#gtc-add-to-cart").click(function() {
+			$('#gtc-add-to-cart').prop('disabled', true);
 
-        $("#gtc-add-to-cart").click(function () {
-            $('#gtc-add-to-cart').prop('disabled', true);
-            
-            var cartInfo = {};
-            cartInfo.product_quantity = $('#product-quantity').val();
+			var cartInfo = {};
+			cartInfo.product_quantity = $('#product-quantity').val();
 
-            $.ajax({
-                type: "POST",
-                url: "/api/cart/add-cart/" + productSpecs.id,
-                data: cartInfo,
-                success: function (res) {
-                    $('#gtc-add-to-cart').prop('disabled', false);
-                    if(res && res.message === "SUCCESS"){
-                        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                        $('#gtc-cart-alert .cart-message').text(res.message_details)
-                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function(){
-                            $("#gtc-cart-alert").slideUp(500);
-                        });  
-                        console.log(res)
-                    }
-                },
-                error: function (error) {
-                    $('#gtc-add-to-cart').prop('disabled', false);
-                    if(error){
-                        if(error.status === 401)
-                            return location.href = "/login";
-                            
-                        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-                        $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
-                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function(){
-                            $("#gtc-cart-alert").slideUp(500);
-                        });
-                    }
-                }
-            });
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(res) {
+					$('#gtc-add-to-cart').prop('disabled', false);
+					if (res && res.message === "SUCCESS") {
+						$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-cart-alert .cart-message').text(res.message_details)
+						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-cart-alert").slideUp(500);
+						});
+						console.log(res)
+					}
+				},
+				error: function(error) {
+					$('#gtc-add-to-cart').prop('disabled', false);
+					if (error) {
+						if (error.status === 401)
+							return location.href = "/login";
 
-
-        });
-
-
-
-
-
+						$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
+						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-cart-alert").slideUp(500);
+						});
+					}
+				}
+			});
+		});
 	});
 
 
@@ -66,9 +58,7 @@
 			reviewDetailComment: "Please Enter your review Comment",
 			reviewTitle: "Please enter your Review title"
 		}
-
 	});
-
 
 	function reviewSubmit(id) {
 
@@ -89,7 +79,7 @@
 					type: "POST",
 					url: "/api/reviews",
 					data: reviewObj,
-					success: function (result) {
+					success: function(result) {
 						if (result)
 							location.reload();
 					}
@@ -98,148 +88,57 @@
 		} else {
 			location.href = "/login"
 		}
+	}
+
+	function wishUpdate() {
+		if (userInfo.email) {
+			var newObj = {};
+			newObj.product_id = productSpecs.id;
+			newObj.user_id = userInfo.id;
+			if ($('input[name=wishID]').val()) {
+				newObj.status = 0;
+			} else {
+				newObj.status = statusCode.ACTIVE;
+			}
+			console.log(newObj);
+			var queryObj = {};
+			queryObj.product_id = productSpecs.id;
+			queryObj.user_id = userInfo.id;
+			var data = JSON.stringify({
+				queryObj: queryObj,
+				newObj: newObj
+			});
+			var newData = {};
+			newData.data = data;
+			$.ajax({
+				type: 'PUT',
+				url: '/api/product-view/addOrRemove',
+				data: newData,
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+
+		} else {
+			location.href = "/login"
+		}
 
 	}
 
-</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+</script>
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
 
 <section>
-	<div class="banner_bg">
-
-		<div class="container-fluid banner_bg_menu">
-			<div class="">
-				<div class="row prfl-wt-txt" style="top: -58px;">
-					<div class="col-md-2 common_padding1">
-						<a class="navbar-brand float-right" href="javascript:void(0)" style="margin-right: 0px;">
-							<img src="{{product.Vendor.vendor_profile_pic_url}}" style="width:155px; height:155px" />
-						</a>
-					</div>
-					<div class="col-md-6">
-						<span class="prf_landing_cmpy text-capitalize">{{product.Vendor.vendor_name}}</span>
-
-					</div>
-				</div>
-				<div class="row img-wt-menu">
-					<div class="col-md-2">
-					</div>
-					<div class="col-md-10 common_padding1">
-						<nav class="navbar navbar-expand-lg">
-							<div class="collapse navbar-collapse" id="navb" style="position: relative; top: 20px;">
-								<!-- Links -->
-								<ul class="navbar-nav mr-auto">
-									<li class="gtc-follow-img">
-										<a href="#">
-											<img src="../../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;" />
-										</a>
-										<a href="#">
-											<img src="../../img/follow.png" alt="Follow" style="width: 80px; margin-top: 5px;" />
-										</a>
-									</li>
-									<li class="nav-item" style="background-color: #084681;">
-										<a class="nav-link" href="#" style="color: #fff">WHOLESALE</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">SHOP</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">SERVICES</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">LIFESTYLE</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">DISCUSSION BOARD</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">ABOUT</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="#">SUPPORT</a>
-									</li>
-
-								</ul>
-								<div class="field-search1 form-inline my-2 my-lg-0">
-									<input type="search" placeholder="Search My store">
-									<div class="right">
-										<select>
-											<option>Options</option>
-										</select>
-										<button>
-											<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
-												<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
-													<circle cx="9.3" cy="9.3" r="7.3"></circle>
-													<path d="M14.2 14.6l6.9 7.6"></path>
-												</g>
-											</svg>
-										</button>
-									</div>
-								</div>
-							</div>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 	<div class="logged_in_cont">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-2 col-12">
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">joined:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="jan_style">January 2017</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">Location:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="profile_logged_in_body2_font_2">
-								<img src="../../img/flag-ca.png"> Canada</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">Catagory:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p class="profile_logged_in_body2_font_2">Wholesale-Automotive</p>
-						</div>
-					</div>
-					<div class="row profile_logged_in_body2_bg_color_1  ">
-						<div class="col-md-5 col-5 ">
-							<p class="profile_logged_in_body2_font_1">User Rating:</p>
-						</div>
-						<div class="col-md-7 col-7">
-							<p style="margin-bottom: 0px;font-size: 10px;">
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #CDBE29;"></i>
-								<i class="fas fa-star" style="color: #B8B8BA;"></i>
-								<i class="fas fa-star" style="color: #B8B8BA;"></i>
-							</p>
-							<p class="profile_logged_in_body2_font_2">(Ratings-See All)</p>
-						</div>
-					</div>
-
-					<div class=" row col-md-12 col-12" style="margin-top: 10px;padding-right: 0px;">
-						<i class="fab fa-facebook-f social_logged"></i>
-						<i class="fab fa-youtube social_logged"></i>
-						<i class="fab fa-twitter social_logged"></i>
-						<i class="fab fa-instagram social_logged"></i>
-						<i class="fab fa-linkedin-in social_logged"></i>
-						<i class="fab fa-flickr social_logged"></i>
-						<p class="profile_logged_in_body2_font_3">Accepted Payment Methods:</p>
-						<img width="100%" src="../../img/payment-methods.jpg">
-						<p class="profile_logged_in_body2_font_1">
-							At Hayden Auto,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans
-							they need to buy a vehicle.
-						</p>
-					</div>
+					{{> vendor/vendor-left VendorDetail = VendorDetail}}
 				</div>
 				<div class="col-md-10 col-12">
 					<div class="alert" id="gtc-cart-alert">
@@ -403,8 +302,17 @@
 					<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare</p>
 			</div>
 			<div class="col-md-4 col-6 common_padding1">
-				<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;">
-					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo"> Add to Wishlist</p>
+				{{#if LoggedInUser.id}}
+				<p class="text_blue_color" style="font-size: 14px;margin-bottom: 0px;" onclick="wishUpdate()">
+				{{#if wishList}}
+					<input type="hidden" name="wishID" value="{{wishList.[0].id}}">
+					<i class="fa fa-heart" aria-hidden="true"></i>
+					{{else}}
+					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
+					 {{/if}}
+					 Add to Wishlist</p>
+				{{/if}}
+
 			</div>
 			<div class="col-md-4 col-6 float-right">
 				<img src="../../img/social-icons/linked-in.png" style="width: 15%;" alt="geo">
@@ -554,6 +462,11 @@
 			<section class="box4" style="margin-bottom:20px;">
 				<div class="container clearfix">
 					<div class="row">
+						{{#ifCond RelatedProducts.length '==' 0}}
+						<div class="col-md-12 text-center list_add"> 
+							No Related Products
+						</div>
+						{{/ifCond}}
 						{{#each RelatedProducts}}
 						<div class="col-md-4 col-12 common_top">
 							<div class="row">
@@ -620,479 +533,7 @@
 							</div>
 						</div>
 						{{/each}}
-						<!-- <div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div> -->
-
 					</div>
-					<!-- <div class="row">
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header_red">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p class="wts_header_red">24h 12m left!</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header_red">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p class="wts_header_red">24h 12m left!</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header_red">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p class="wts_header_red">24h 12m left!</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div>
-					<div class="row">
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="../../img/iphone.png" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">WTS - iphone Pallets</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>MOQ: 40</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Canada</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>Electronic - Phones</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>(
-												<b>Login for Seller Info</b>)</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-												<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-					</div> -->
-
 				</div>
 			</section>
 

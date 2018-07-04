@@ -6,10 +6,11 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
+const populate = require('../../utilities/populate');
 
 export function listings(req, res) {
 
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page, type;
 	var queryParams = {}, LoggedInUser = {};
 	var productModel = "MarketplaceProduct";
 	field = "id";
@@ -26,26 +27,35 @@ export function listings(req, res) {
 
 	offset = (page - 1) * limit;
 
-	if(req.user)
-    LoggedInUser = req.user;
-    
-    queryParams['user_id'] = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+
+	queryParams['user_id'] = LoggedInUser.id;
+
+	type = req.params.type;
 
 
-	if(req.params.type=='wholesale')
-		 queryParams["marketplace_id"] = 1;    
-		 
-	if(req.params.type=='shop')
-		 queryParams["marketplace_id"] = 2; 
-		 
-	if(req.params.type=='services')
-		 queryParams["marketplace_id"] = 3; 
-		 
-	if(req.params.type=='subscription')
-	     queryParams["marketplace_id"] = 4; 
+	if (req.params.type == 'wholesale') {
+		queryParams["marketplace_id"] = 1;
+		type = 'wholesale';
+	}
 
-	if (req.query.product_name) {
-           queryParams['product_name'] = req.query.product_name;
+	if (req.params.type == 'shop') {
+		queryParams["marketplace_id"] = 2;
+	}
+
+	if (req.params.type == 'services') {
+		queryParams["marketplace_id"] = 3;
+	}
+
+	if (req.params.type == 'lifestyle') {
+		queryParams["marketplace_id"] = 4;
+	}
+
+	if (req.query.keyword) {
+		queryParams['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
 	}
 
 	if (req.query.status) {
@@ -87,7 +97,9 @@ export function listings(req, res) {
 				offset: offset,
 				maxSize: 5,
 				statusCode: status,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				type: type,
+				selectedPage: type
 			});
 		}
 		else {
@@ -98,23 +110,90 @@ export function listings(req, res) {
 
 export function editListings(req, res) {
 
-	let searchObj = {}
-	var productModel = "MarketplaceProduct";
+	let searchObj = {},LoggedInUser = {},queryObj = {},type;
+	var productModel = "Product";
+	var categoryModel = "Category";
+	var subCategoryModel = "SubCategory";
+    var marketplaceTypeModel = "MarketplaceType";
+	var productIncludeArr = [];
 
-    if(req.params.product_slug)
-        searchObj["product_slug"] = req.params.product_slug;    
+	var offset, limit, field, order;
+	offset = 0;
+    limit = null;
+    field = "id";
+    order = "asc";
 
-    service.findOneRow(productModel, searchObj)
-        .then(function (product) {
-            res.render('edit-listing', {
-				title: 'Global Trade Connect',
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType');
+
+	type = req.params.type;
+
+	if (req.user)
+		LoggedInUser = req.user;
+
+	if (req.params.product_slug)
+		searchObj["product_slug"] = req.params.product_slug;
+
+	async.series({
+		product: function (callback) {
+
+			service.findOneRow(productModel, searchObj, productIncludeArr)
+				.then(function (product) {
+					return callback(null, product);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		category: function (callback) {
+
+			service.findRows(categoryModel, queryObj, offset, limit, field, order)
+				.then(function (category) {
+					return callback(null, category.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		subCategory: function (callback) {
+
+			service.findRows(subCategoryModel, queryObj, offset, limit, field, order)
+				.then(function (subCategory) {
+					return callback(null, subCategory.rows);
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		marketplaceType: function (callback) {
+            service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
+                .then(function (marketplaceType) {
+                    return callback(null, marketplaceType.rows);
+
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+	}, function (err, results) {
+		if (!err) {
+			res.render('edit-listing', {
+				title: "Global Trade Connect",
 				statusCode: status,
-                product : product
-            });
-        }).catch(function (error) {
-            console.log('Error :::', error);
-            res.render('edit-listing', error)
-        });
+				product: results.product,
+				category: results.category,
+				subCategory: results.subCategory,
+				LoggedInUser: LoggedInUser,
+				marketplaceType:results.marketplaceType,
+				type: type
+			});
+		}
+		else {
+			res.render('edit-listing', err);
+		}
+	});
 }
 
 

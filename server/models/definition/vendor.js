@@ -41,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        about: {
+            type: DataTypes.TEXT,
+            field: 'about',
+            allowNull: false
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

@@ -29,19 +29,50 @@ export function GetProductDetails(req, res) {
         queryObj['product_slug'] = req.params.product_slug;
 
         queryObj['status'] = status["ACTIVE"];
+        var wishQueryObj = {};
+        if(LoggedInUser.id){
+             wishQueryObj = {
+                    user_id : LoggedInUser.id,
+                    status :{
+                        '$eq': status["ACTIVE"]
+                    }
+                }
+        }
 
     //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
 
     return model["Product"].findOne({
         where: queryObj,
         include: [
-            { model: model["Vendor"] },
+            { model: model["Vendor"],
+            include:[{
+                model: model['Country']
+
+            }, {
+                model: model['VendorPlan'],
+
+            }, {
+                model: model['User'],
+                attributes:['id'],
+                include: [{
+                    model: model['VendorVerification'],
+                    where: {
+                        vendor_verified_status: status['ACTIVE']
+                    }
+                }]
+
+            }] },
             { model: model["Marketplace"] },
             { model: model["MarketplaceType"] },
             { model: model["Category"] },
             { model: model["SubCategory"] },
             { model: model["Country"] },
             { model: model["State"] },
+            {
+                model: model["WishList"],
+                where:wishQueryObj,
+                required:false
+            },
             { model: model["Review"], 
                 include : [
                     { model: model["User"],
@@ -65,7 +96,7 @@ export function GetProductDetails(req, res) {
         ]
     }).then(function(product) {
             if (product) {
-
+                    console.log(product)
                 var productsList = JSON.parse(JSON.stringify(product));
 
                 let productReviewsList = _.groupBy(productsList.Reviews, "rating");
@@ -115,20 +146,24 @@ export function GetProductDetails(req, res) {
                 queryObj2.sub_category_id   = productsList.sub_category_id;
                 queryObj2.vendor_id         = productsList.vendor_id;
                 queryObj2.status            = status["ACTIVE"];
-
+                queryObj2.id                = { $ne : [productsList.id]};
+                console.log("productsList.WishList",productsList.Vendor)
                 var result_obj = {
                     title: "Global Trade Connect",
                     product: productsList,
                     productReviewsList: productReviewsList,
                     LoggedInUser: LoggedInUser,
                     rating : productRating,
+                    status : status,
+                    VendorDetail:productsList.Vendor,
+                    wishList:productsList.WishLists,
                     avgRating : productAvgRating
                 };                 
 
                 service.findRows(productModel, queryObj2, 0, 9, field, order)
                     .then(function(RelatedProducts) {
-                        console.log(RelatedProducts.rows)
-                        console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
+                        // console.log(RelatedProducts.rows)
+                        // console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
                         if (RelatedProducts) {                         
                             result_obj.RelatedProducts = RelatedProducts.rows;   
                         } else {
@@ -293,7 +328,10 @@ async.series({
         RelatedProducts: function(callback) {
         	var queryObj2={
         		sub_category_id:sub_category,
-        		vendor_id:vendor_id
+        		vendor_id:vendor_id,
+                id:{
+                    $ne:req.params.product_id
+                }
         	};
         	includeArr = [{ model: model["Vendor"] },
             { model: model["Marketplace"] },
@@ -319,45 +357,6 @@ async.series({
         }
     }, function (err, results) {
         if (!err) {
-    //     		var total = 0;
-				// var star5 = 0;
-				// var star4 = 0;
-				// var star3 = 0;
-				// var star2 = 0
-				// var star1 = 0;
-				// var productRating = {};
-    //        		var rating = results.AllReviews.rows;
-				// 	for (let elem in rating) {
-				// 		total = total + rating[elem].rating;
-				// 		switch (rating[elem].rating) {
-				// 			case 1:
-				// 				star1 = star1 + 1;
-				// 				break;
-				// 			case 2:
-				// 				star2 = star2 + 1;
-				// 				break;
-				// 			case 3:
-				// 				star3 = star3 + 1;
-				// 				break;
-				// 			case 4:
-				// 				star4 = star4 + 1;
-				// 				break;
-				// 			case 5:
-				// 				star5 = star5 + 1;
-				// 				break;
-				// 		}
-				// 	}
-				//	maxSize = results.Review.count/limit;
-				// 	var avg = total / rating.length;
-				// 	productRating.avg = avg;
-				// 	productRating.star5 = star5;
-				// 	productRating.star4 = star4;
-				// 	productRating.star3 = star3;
-				// 	productRating.star2 = star2;
-				// 	productRating.star1 = star1;
-				// 	productRating.total = total;
-
-
                     maxSize = results.Review.count / limit;
                     if(results.Review.count%limit)
                          maxSize++;

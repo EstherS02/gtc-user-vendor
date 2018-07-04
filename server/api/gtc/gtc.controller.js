@@ -2,6 +2,7 @@
 
 const mv = require('mv');
 const _ = require('lodash');
+const path = require('path');
 const sequelize = require('sequelize');
 
 const service = require('../service');
@@ -12,6 +13,7 @@ const marketplace = require('../../config/marketplace');
 const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
+const async=require('async');
 
 export function indexA(req, res) {
 	var result = {};
@@ -413,19 +415,40 @@ export function destroy(req, res) {
 		});
 }
 
+exports.multipleUpload = function (req, res) {
+
+	let timeInMilliSeconds = new Date().getTime();
+    let files = req.files.file;
+	
+	async.mapSeries(files, function (data, callback) {
+
+		let parsedFile = path.parse(data.originalFilename);
+		let uploadPath = config.images_base_path +"/"+ parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+		mv(data.path, uploadPath, {
+			clobber: true,
+			mkdirp: true
+		}, function (error) {
+			if (error) {
+				console.log('Error:::', error)
+				return callback(null);
+			} else {
+				let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
+				return callback(null,image);
+			}
+		});	
+	}, function (err, results) {
+        console.log('results : ' + results); 
+	});
+}; 
+
 exports.upload = function (req, res) {
-	var file = req.files.file;
-	var originalFilename = file.originalFilename;
+	let file = req.files.file;
+	let parsedFile = path.parse(file.originalFilename);
+	let timeInMilliSeconds = new Date().getTime();
 
-	var timestamp = new Date();
-	var df = timestamp.getDate()+'-'+(timestamp.getMonth()+1)+'-'+timestamp.getFullYear()+'-'+timestamp.getHours()+'-'+timestamp.getMinutes()+'-'+timestamp.getSeconds();
-	var date= df.replace(/-/g, "");
+	let uploadPath = config.images_base_path + "/" + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 
-	var fileExt = originalFilename.split('.').pop();
-    var parts = originalFilename.split(".");
-	var fileName = parts[0];
-
-	var uploadPath = config.images_base_path + fileName+date+'_'+req.user.id+'.'+fileExt;
+	console.log(uploadPath)
 
 	mv(file.path, uploadPath, {
 		clobber: true,
@@ -435,7 +458,7 @@ exports.upload = function (req, res) {
 			console.log('Error:::', error)
 			return res.status(400).send("Failed to upload");
 		} else {
-			var image = config.imageUrlRewritePath.base + fileName+date+'_'+req.user.id+'.'+fileExt;
+			let image = config.imageUrlRewritePath.base + parsedFile.name + "-" + timeInMilliSeconds + "-" + req.user.id + parsedFile.ext;
 			return res.status(201).json({
 				imageURL: image
 			});

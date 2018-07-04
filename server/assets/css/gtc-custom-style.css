@@ -37,6 +37,31 @@ h6 {
   object-fit: cover;
 }
 
+.edit-listing{
+  font-size: 14px;
+  border:none;
+  margin:0px;
+  padding: 0px;
+  color:gray;
+  margin-top: -10px;
+  margin-bottom: -5px;
+  width:auto;
+  outline:0px;
+  
+}
+
+.edit-listing-discount{
+   font-size: 10px;
+   margin-right: 5px;
+   color: gray;
+}
+
+.edit-listing-dis{
+  font-size: 10px;
+   color: gray;
+}
+
+
 .product-img-sm {
   width: 50px;
   height: 60px;
@@ -370,8 +395,8 @@ a {
 @media screen and (min-width: 1900px) {
   .container {
     width: 1870px;
-  }*/
-}
+  }
+}*/
 
 .btn-primary {
   background-color: #f9a025;
@@ -475,8 +500,6 @@ a {
   margin-top: 7px;
   text-align: -webkit-left;
   font-family: 'Oswald', sans-serif;
-}
-s
 }
 
 .wts-bg {
@@ -858,7 +881,7 @@ p.order-details {
 .custom-header-style.topbar p{
   margin-top: 0px;
 }
-<<<<<<< HEAD
+
 .shop_checkout_btn {
     background-color: #E62246;
     color: #fff;
@@ -921,8 +944,8 @@ p.order-details {
   }
 }
 
-.vend_product_style
-{
+.vend_product_style{
+
   border-radius: 20px !important;
   background-color: #eae8ea;
     border: none;
@@ -983,6 +1006,16 @@ p>span.text_blue_color{
 p.p1 {
   display :inline;
 }
+.vend_edit_lists_update_buttonstyle2
+{
+  background-color: #3BB804;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 5px;
+    color: #fff;
+  /*width: 8%;*/
+}
 
 .price_signup{
   margin: 11px 52px;
@@ -1017,8 +1050,51 @@ p.p1 {
     border-radius: 0px;
 }
 
+<<<<<<< HEAD
 .Views-button{
     border: snow;
     border-radius: 20px;
 
+=======
+/* {
+    box-sizing: border-box;
+}*/
+
+ /*Create two equal columns that floats next to each other */
+/*.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+}*/
+
+/* Clear floats after the columns */
+/*.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}*/
+
+/*.view-button{
+    border: none;
+    outline: none;
+    padding: 3px 0px 2px 0px;
+    background-color: #ffffff;
+    cursor: pointer;
+    margin: -9px;
+    border-radius: 20px;
+}
+
+.view-button:hover {
+    background-color: #ddd;
+}
+
+.view-button:active {
+    background-color: #666;
+    color: white;
+}
+*/
+
+ul.list-group.list-group-flush {
+  padding-left: 35px;
+>>>>>>> d0ed6c18376e4999b842a94120baeb8cc8f37e21
 }

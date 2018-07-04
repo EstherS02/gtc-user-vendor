@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
+            allowNull: false
         },
         expected_delivery_date: {
             type: DataTypes.DATEONLY,
@@ -108,6 +108,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'coupon_amount',
             allowNull: false
         },
+        coupon_applied_on: {
+            type: DataTypes.DATE,
+            field: 'coupon_applied_on',
+            allowNull: false
+        },
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',
@@ -134,6 +139,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

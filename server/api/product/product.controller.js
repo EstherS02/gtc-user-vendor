@@ -3,6 +3,7 @@
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const status = require('../../config/status');
 var async = require('async');
 
 export function featureMany(req, res) {
@@ -64,9 +65,9 @@ export function featureOne(req, res) {
 
 export function addProduct(req, res) {
 
-	req.query.vendor_id = 36;
+	req.query.vendor_id = req.user.Vendor.id;
 	req.query.status = 1;
-	req.query.publish_date = '2018-06-04';
+	req.query.publish_date = new Date();
 
 	model["Product"].create(req.query)
 		.then(function (row) {
@@ -94,29 +95,32 @@ export function addProduct(req, res) {
 		})
 }
 
+export function editProduct(req, res) {
+	
 
-	/*service.createRow("Product",req.query)
-	.then(function(row) {
-		req.body.product_id=row.id
+	var id=req.query.product_id;
 
-		console.log("=========",req.body)
+	var stat= req.body.status;
+	delete req.body.status;
 
-	service.createRow("ProductMedia",req.body)
-	.then(function(row) {
-		console.log("created row+++++++++++",row);
-		res.status(200).send("Created");
-	    return;
+	req.body.status= status[stat];
+	var bodyParams=req.body;
 
-	}).catch(function(error) {
-		res.status(404).send("Not Api found");
-	    return;
-		
-	});
+			model["Product"].update(bodyParams, {
+				where: {
+					id: id
+				}
+			}).then(function (row) {
+				if (row) {
+					res.status(200).send("Created");
+				} else {
+					res.status(500).send("Internal server error");
+				}
+			}).catch(function (error) {
+				res.status(500).send(error);
+			})
+}
 
 
-	}).catch(function(error) {
-		console.log("err",err);
-		
-	});*/
 		
 

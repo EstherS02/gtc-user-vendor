@@ -39,6 +39,9 @@ export function coupons(req, res) {
 		if (status = statusCode[req.query.status])
 			queryObj['status'] = parseInt(status);
 	}
+	if (typeof req.query.name !== 'undefined') {
+		queryObj['coupon_name'] = { $like: '%' + req.query.name + '%' };
+	}
 	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;

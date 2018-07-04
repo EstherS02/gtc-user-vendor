@@ -20,7 +20,9 @@ export default function(app) {
   app.use('/api/cart', require('./api/cart'));
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
+  app.use('/api/order-history',require('./api/order-history'));
   app.use('/api/product', require('./api/product'));
+  app.use('/api/product-view', require('./api/product-view'));
   app.use('/api/users', require('./api/users'));
   app.use('/api/tickets', require('./api/ticket'));
   app.use('/api/ticket-threads', require('./api/ticket-thread'));
@@ -62,6 +64,8 @@ export default function(app) {
   app.use('/user-profile', require('./hbs-routes/user-profile'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));
   app.use('/vendor-about', require('./hbs-routes/vendor-about'));
+  app.use('/vendor-discussion', require('./hbs-routes/vendor-discussion'));
+  app.use('/vendor-lifestyle', require('./hbs-routes/vendor-lifestyle'));
   app.use('/vendor-support', require('./hbs-routes/vendor-support'));
   app.use('/vendor-shop', require('./hbs-routes/vendor-shop'));
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
@@ -78,7 +82,7 @@ export default function(app) {
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
   app.use('/user-verify', require('./hbs-routes/user-verify'));
   app.use('/order-checkout', require('./hbs-routes/checkout'));
-
+  app.use('/user-join', require('./hbs-routes/user-join'))
 
 
 
