@@ -44,7 +44,24 @@ export function GetProductDetails(req, res) {
     return model["Product"].findOne({
         where: queryObj,
         include: [
-            { model: model["Vendor"] },
+            { model: model["Vendor"],
+            include:[{
+                model: model['Country']
+
+            }, {
+                model: model['VendorPlan'],
+
+            }, {
+                model: model['User'],
+                attributes:['id'],
+                include: [{
+                    model: model['VendorVerification'],
+                    where: {
+                        vendor_verified_status: status['ACTIVE']
+                    }
+                }]
+
+            }] },
             { model: model["Marketplace"] },
             { model: model["MarketplaceType"] },
             { model: model["Category"] },
@@ -79,7 +96,7 @@ export function GetProductDetails(req, res) {
         ]
     }).then(function(product) {
             if (product) {
-
+                    console.log(product)
                 var productsList = JSON.parse(JSON.stringify(product));
 
                 let productReviewsList = _.groupBy(productsList.Reviews, "rating");
@@ -130,7 +147,7 @@ export function GetProductDetails(req, res) {
                 queryObj2.vendor_id         = productsList.vendor_id;
                 queryObj2.status            = status["ACTIVE"];
                 queryObj2.id                = { $ne : [productsList.id]};
-                console.log("productsList.WishList",productsList.WishLists)
+                console.log("productsList.WishList",productsList.Vendor)
                 var result_obj = {
                     title: "Global Trade Connect",
                     product: productsList,
@@ -138,6 +155,7 @@ export function GetProductDetails(req, res) {
                     LoggedInUser: LoggedInUser,
                     rating : productRating,
                     status : status,
+                    VendorDetail:productsList.Vendor,
                     wishList:productsList.WishLists,
                     avgRating : productAvgRating
                 };                 
