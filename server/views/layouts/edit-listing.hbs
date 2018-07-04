@@ -300,6 +300,7 @@
 	$("#editdiscount").click(function (e) {
 
 		if (count < 3) {
+			 $("#val1").hide();
 
 			var domElements = '<div class="row"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
 				'<div class="row form-group"><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
@@ -312,8 +313,8 @@
 				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
 				'<div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
 				'<input type="radio" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" /> Total Value Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$" />$</div>' +
-				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
+				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2" id="val'+count+'" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
+				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
 			$('#discountAppend').append(domElements)
 
