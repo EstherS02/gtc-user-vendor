@@ -133,52 +133,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 
 <section>
-	<div class="banner_bg">
-
-		<div class="container-fluid banner_bg_menu">
-			<div class="">
-				<div class="row prfl-wt-txt" style="top: -58px;">
-					<div class="col-md-2 common_padding1">
-						<a class="navbar-brand float-right" href="javascript:void(0)" style="margin-right: 0px;">
-							<img src="{{product.Vendor.vendor_profile_pic_url}}" style="width:155px; height:155px" />
-						</a>
-					</div>
-					<div class="col-md-6">
-						<span class="prf_landing_cmpy text-capitalize">{{product.Vendor.vendor_name}}</span>
-
-					</div>
-				</div>
-				<div class="row img-wt-menu">
-					<div class="col-md-2">
-					</div>
-					<div class="col-md-10 common_padding1">
-						<nav class="navbar navbar-expand-lg">
-							<div class="collapse navbar-collapse" id="navb" style="position: relative; top: 20px;">
-								<!-- Links -->
-								{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
-								<div class="field-search1 form-inline my-2 my-lg-0">
-									<input type="search" placeholder="Search My store">
-									<div class="right">
-										<select>
-											<option>Options</option>
-										</select>
-										<button>
-											<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
-												<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
-													<circle cx="9.3" cy="9.3" r="7.3"></circle>
-													<path d="M14.2 14.6l6.9 7.6"></path>
-												</g>
-											</svg>
-										</button>
-									</div>
-								</div>
-							</div>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 	<div class="logged_in_cont">
 		<div class="container">
 			<div class="row">
