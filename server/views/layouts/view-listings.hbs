@@ -17,6 +17,9 @@
 	}
 </script>
 <script type="text/javascript">
+    $(document).ready(function () {
+		$("#gtc-cart-alert").hide();
+	})
 	function changeStatus(e) {
 		window.location.href = '/listings/' + e.name + '?status=' + e.value;
 	}
@@ -35,7 +38,12 @@
 			window.location.href = '/listings/' + e.name + '/' + selected;
 		}
 		else {
-			alert("Please select one product to edit");
+            $('#gtc-add-to-cart').prop('disabled', false);
+			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(500);
+			});
 		}
 	}
 
@@ -53,6 +61,12 @@
 					<p class="vend_edit_lists_pstyle">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature
 						products, or import and syncronize them with an outside source. To administer specific details of products, click on
 						the product name or SKU to go to the full edit details page for that specific products.</p>
+						<div class="alert" id="gtc-cart-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="cart-message"></span>
+						</div>
 					<div class="row">
 						<div class="col-md-2">
 							<input style="width: 100%;" type="submit" name={{this.type}} value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add(this);"

@@ -97,51 +97,6 @@ export function addProduct(req, res) {
 
 export function editProduct(req, res) {
 
-	console.log("============================", req.query)
-
-
-	if (req.body.discount_quantity0) {
-
-		if (req.body.discount_type0 == 'percentage_discount') {
-
-			var obj = {
-				quantity: req.body.discount_quantity0,
-				type: 1,
-				percent_discount: req.body.percent_discount_amount0,
-				product_id: req.query.product_id,
-				status:1
-			};
-
-			service.createRow('Discount', obj)
-				.then(function (update) {
-					console.log(update);
-
-				}).catch(function (err) {
-					console.log(err)
-				})
-		}
-		
-		if (req.body.discount_type0 == 'value_discount') {
-
-			var obj = {
-				quantity: req.body.discount_quantity0,
-				type: 2,
-				percent_discount: req.body.value_discount_amount0,
-				product_id: req.query.product_id,
-				status:1
-			};
-
-			service.createRow('Discount', obj)
-				.then(function (update) {
-					console.log(update);
-
-				}).catch(function (err) {
-					console.log(err)
-				})
-		}
-	}
-
-
 	var id = req.query.product_id;
 
 	var stat = req.body.status;

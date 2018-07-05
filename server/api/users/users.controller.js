@@ -290,7 +290,8 @@ export function userProfile(req, res) {
 										if (row) {
 											service.updateRow('Address', shippingUpdate, row.id)
 												.then(function (update) {
-													console.log(updated);
+													res.status(200).send("Updated");
+													return;
 												}).catch(function (err) {
 													res.status(500).send(err);
 													return;
@@ -298,7 +299,8 @@ export function userProfile(req, res) {
 										} else {
 											service.createRow('Address', shippingUpdate)
 												.then(function (update) {
-													console.log(update);
+													res.status(200).send("Updated");
+													return;
 
 												}).catch(function (err) {
 													res.status(500).send(err);
@@ -322,7 +324,8 @@ export function userProfile(req, res) {
 										if (row) {
 											service.updateRow('Address', shippingUpdate, row.id)
 												.then(function (update) {
-													console.log(updated);
+													res.status(200).send("Updated");
+													return;
 												}).catch(function (err) {
 													res.status(500).send(err);
 													return;
@@ -330,7 +333,8 @@ export function userProfile(req, res) {
 										} else {
 											service.createRow('Address', shippingUpdate)
 												.then(function (update) {
-													console.log(update);
+													res.status(200).send("Updated");
+													return;
 
 												}).catch(function (err) {
 													res.status(500).send(err);
