@@ -1,41 +1,3 @@
-<script type="text/javascript">
-
-	$(document).ready(function () {
-		$('#percentage_discount0').click(function () {
-			if ($(this).is(":checked")) {
-				$(".percent_discount_amount0").show();
-				$(".value_discount_amount0").hide();
-			}
-		});
-		$('#value_discount0').click(function () {
-			if ($(this).is(":checked")) {
-				$(".value_discount_amount0").show();
-				$(".percent_discount_amount0").hide();
-			}
-		});
-		$('#value_discount1').click(function () {
-			console.log("-----------------------99999999999----------");
-			if ($(this).is(":checked")) {
-
-				console.log("----------------------------------");
-				$(".value_discount_amount1").css("display","block")
-				$(".percent_discount_amount1").hide();
-			}
-		});
-		$('#value_discount2').click(function () {
-			if ($(this).is(":checked")) {
-				$(".value_discount_amount2").show();
-				$(".percent_discount_amount2").hide();
-			}
-		});
-		$('#percentage_discount1').click(function () {
-			if ($(this).is(":checked")) {
-				$(".percent_discount_amount1").show();
-				$(".value_discount_amount1").hide();
-			}
-		});
-	});
-</script>
 <style>
 	textarea {
 		resize: none;
@@ -47,7 +9,9 @@
 		cursor: pointer;
 	}
 
-	#editdiscount {
+	#editdiscount,
+	#update,
+	#reset {
 		cursor: pointer;
 	}
 
@@ -67,6 +31,23 @@
 		transform: scale(1, 2);
 	}
 </style>
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		$('#percentage_discount0').click(function () {
+			if ($(this).is(":checked")) {
+				$(".percent_discount_amount0").show();
+				$(".value_discount_amount0").hide();
+			}
+		});
+		$('#value_discount0').click(function () {
+			if ($(this).is(":checked")) {
+				$(".value_discount_amount0").show();
+				$(".percent_discount_amount0").hide();
+			}
+		});
+	});
+</script>
 <script>
 	var textarea = null;
 	window.addEventListener("load", function () {
@@ -103,8 +84,12 @@
 			url: '/api/product/edit-product?product_id=' + data,
 			data: input,
 			success: function (data) {
-				alert("Product Updated Successfully");
-				location.reload();
+				$('#gtc-add-to-cart').prop('disabled', false);
+				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-cart-alert .cart-message').text("Product Updated Successfully")
+				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+					$("#gtc-cart-alert").slideUp(500);
+				});
 			},
 			error: function (error) {
 				console.log('error', error);
@@ -112,6 +97,8 @@
 		})
 	}
 	$(document).ready(function () {
+
+		$("#gtc-cart-alert").hide();
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
@@ -163,41 +150,41 @@
 			fasterPreview(this);
 		});
 
-	function uploads(data, callback) {
-      $.ajax({
-        type: 'POST',
-        url: '/api/prod/upload',
-        data: data,
-        cache: false,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        success: function (data, text) {
-          callback(data);
-          
-        },
-        error: function (request, status, error) {
-          console.log('status', status);
-          console.log('error', error);
-        }
-      });
-    }
+		function uploads(data, callback) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/prod/upload',
+				data: data,
+				cache: false,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: function (data, text) {
+					callback(data);
 
-	function uploadMedia(data,id, callback) {
-      $.ajax({
-        type: 'PUT',
-        url: '/api/product-medias/'+id,
-        data: data,
-        success: function (data, text) {
-          callback(data);
-          
-        },
-        error: function (request, status, error) {
-          console.log('status', status);
-          console.log('error', error);
-        }
-      });
-    }
+				},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+		}
+
+		function uploadMedia(data, id, callback) {
+			$.ajax({
+				type: 'PUT',
+				url: '/api/product-medias/' + id,
+				data: data,
+				success: function (data, text) {
+					callback(data);
+
+				},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+		}
 
 		function fasterPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
@@ -215,78 +202,78 @@
 				$('#profile-picture-modal').modal('show');
 			}
 		}
-	
 
 		var data = {{ product.id }};
-	$("#editForm").submit(function (e) {
-	  e.preventDefault();
 
-	  	let input = $("#editForm :input").filter(function (index, element) {
+	$("#editForm").submit(function (e) {
+
+		e.preventDefault();
+
+		let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
 		}).serialize();
+
 		editProduct(data, input);
-	  		
-	  		var productImage = {{{DisplayJSON product.ProductMedia}}}
-	  		var i=0;
-	  		var imageId=[];
-	  		productImage.forEach(function(element) {
-	  			imageId[i] = element.id;
-	  			console.log(imageId);
-	  			i++;
-			});
-	
-		
-		let obj={};
-		
-			if ($("#imageEdit1")[0].files[0]) {
-				var form = new FormData();
-				form.append("file", $("#imageEdit1")[0].files[0]);
-				uploads(form, function (location) {
-					obj={
-						url:location.imageURL
-					}
-					uploadMedia(obj,imageId[0],function(data){
-						console.log("updated Successfully");
-					})
-					 
-				});
-			} 
-			if ($("#imageEdit2")[0].files[0]) {
-				var form = new FormData();
-				form.append("file", $("#imageEdit2")[0].files[0]);
-				uploads(form, function (location) {
-					obj={
-						url:location.imageURL
-					} 
-					uploadMedia(obj,imageId[1],function(data){
-						console.log("updated Successfully");
-					})
-				});
-			} 
-			if ($("#imageEdit3")[0].files[0]) {
-				var form = new FormData();
-				form.append("file", $("#imageEdit3")[0].files[0]);
-				uploads(form, function (location) {
-					obj={
-						url:location.imageURL
-					}
-					uploadMedia(obj,imageId[2],function(data){
-						console.log("updated Successfully");
-					}) 
-				});
-			} 
-			if ($("#imageEdit4")[0].files[0]) {
-				var form = new FormData();
-				form.append("file", $("#imageEdit4")[0].files[0]);
-				uploads(form, function (location) {
-					obj={
-						url:location.imageURL
-					}  
-					uploadMedia(obj,imageId[3],function(data){
-						console.log("updated Successfully");
-					})
-				});
-			} 
+
+		var productImage = {{{ DisplayJSON product.ProductMedia }}}
+	  		var i = 0;
+	        var imageId = [];
+	        productImage.forEach(function (element) {
+	         	imageId[i] = element.id;
+		        console.log(imageId);
+		        i++;
+         	});
+
+	let obj = {};
+
+	if ($("#imageEdit1")[0].files[0]) {
+		var form = new FormData();
+		form.append("file", $("#imageEdit1")[0].files[0]);
+		uploads(form, function (location) {
+			obj = {
+				url: location.imageURL
+			}
+			uploadMedia(obj, imageId[0], function (data) {
+				console.log("updated Successfully");
+			})
+		});
+	}
+	if ($("#imageEdit2")[0].files[0]) {
+		var form = new FormData();
+		form.append("file", $("#imageEdit2")[0].files[0]);
+		uploads(form, function (location) {
+			obj = {
+				url: location.imageURL
+			}
+			uploadMedia(obj, imageId[1], function (data) {
+				console.log("updated Successfully");
+			})
+		});
+	}
+	if ($("#imageEdit3")[0].files[0]) {
+		var form = new FormData();
+		form.append("file", $("#imageEdit3")[0].files[0]);
+		uploads(form, function (location) {
+			obj = {
+				url: location.imageURL
+			}
+			uploadMedia(obj, imageId[2], function (data) {
+				console.log("updated Successfully");
+			})
+		});
+	}
+	if ($("#imageEdit4")[0].files[0]) {
+		var form = new FormData();
+		form.append("file", $("#imageEdit4")[0].files[0]);
+		uploads(form, function (location) {
+			obj = {
+				url: location.imageURL
+			}
+			uploadMedia(obj, imageId[3], function (data) {
+				console.log("updated Successfully");
+			})
+		});
+	} 
 	})
 
 	$("#editForm").validate({
@@ -370,6 +357,12 @@
 				<div class="col-md-8" style="background-color: #fff;">
 					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
+						<div class="alert" id="gtc-cart-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="cart-message"></span>
+						</div>
 						{{#ifCond this.type '==' 'wholesale'}}
 						<section class="box2 list_sec">
 							{{else ifCond this.type '==' 'shop'}}
@@ -633,10 +626,10 @@
 											<hr/>
 											<div class="row" style="margin-bottom: 20px;">
 												<div class="col-md-2 col-5">
-													<input class="list_butt_1" type="submit" value="UPDATE" />
+													<input class="list_butt_1" type="submit" id="update" value="UPDATE" />
 												</div>
 												<div class="col-md-10 col-6">
-													<input class="list_butt_2" type="reset" value="CANCEL" />
+													<input class="list_butt_2" type="reset" id="reset" value="CANCEL" />
 												</div>
 											</div>
 										</div>
