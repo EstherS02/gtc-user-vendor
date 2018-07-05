@@ -9,8 +9,7 @@
 		cursor: pointer;
 	}
 
-	#editdiscount,
-	#update,
+	#editdiscount,#update,
 	#reset {
 		cursor: pointer;
 	}
@@ -31,23 +30,6 @@
 		transform: scale(1, 2);
 	}
 </style>
-<script type="text/javascript">
-
-	$(document).ready(function () {
-		$('#percentage_discount0').click(function () {
-			if ($(this).is(":checked")) {
-				$(".percent_discount_amount0").show();
-				$(".value_discount_amount0").hide();
-			}
-		});
-		$('#value_discount0').click(function () {
-			if ($(this).is(":checked")) {
-				$(".value_discount_amount0").show();
-				$(".percent_discount_amount0").hide();
-			}
-		});
-	});
-</script>
 <script>
 	var textarea = null;
 	window.addEventListener("load", function () {
@@ -86,7 +68,7 @@
 			success: function (data) {
 				$('#gtc-add-to-cart').prop('disabled', false);
 				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-				$('#gtc-cart-alert .cart-message').text("Product Updated Successfully")
+				$('#gtc-cart-alert .cart-message').text('Product Updated Successfully')
 				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
 					$("#gtc-cart-alert").slideUp(500);
 				});
@@ -300,28 +282,44 @@
 			var domElements = '<div class="row"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
 				'<div class="row form-group"><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
 				'<div class="col-md-1 common_padding1" style="margin-right: 5px;">' +
-				'<input class="list_place_1" type="text" name="discount_quantity" id="discount_quantity' + count + '" placeholder="20"/></div>' +
+				'<input class="list_place_1" type="text" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"/></div>' +
 				'<div class="col-md-2 common_padding1" style="margin-right:15px;"><p class="edit-listing-dis">user recieves</p></div>' +
 				'<div class="col-md-7 common_padding1"><div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" checked /> Total Percent Discount</p></div>' +
+				'<input type="radio" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" onclick=testPercent('+count+'); checked /> Total Percent Discount</p></div>' +
 				'<div class="col-md-3 common_padding1 percent_discount_amount' + count + '"><input class="list_place_2" type="text" id="percent_discount_amount' + count + '" name="percent_discount_amount' + count + '" placeholder="20%" />%</div>' +
 				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
 				'<div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" /> Total Value Discount</p></div>' +
+				'<input type="radio" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" onclick=testValue('+count+'); /> Total Value Discount</p></div>' +
 				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
 				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
-			$('#discountAppend').append(domElements)
+			//$('#discountAppend').append(domElements)
+
+			document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
 
 			count = count + 1;
 			if (count == 3) {
 				$(".discount_tier").hide();
 
 			}
-
 		}
 	})
 })
+
+function testValue(count)
+{
+	console.log(count);
+	$(".value_discount_amount"+count).show();
+	$(".percent_discount_amount"+count).hide();
+}
+
+function testPercent(count)
+{
+	console.log(count);
+	$(".value_discount_amount"+count).hide();
+	$(".percent_discount_amount"+count).show();
+}
+
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -573,7 +571,7 @@
 															<div class="row ">
 																<div class="col-md-6 common_padding1">
 																	<p class="edit-listing-dis">
-																		<input type="radio" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked /> Total Percent Discount</p>
+																		<input type="radio" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked onclick=testPercent('0');  /> Total Percent Discount</p>
 																</div>
 																<div class="col-md-3 common_padding1 percent_discount_amount0">
 																	<input class="list_place_2" type="text" name="percent_discount_amount0" placeholder="20%" />%
@@ -586,7 +584,7 @@
 															<div class="row ">
 																<div class="col-md-6 common_padding1">
 																	<p class="edit-listing-dis">
-																		<input type="radio" id="value_discount0" name="discount_type0" value="value_discount" /> Total Value Discount</p>
+																		<input type="radio" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue('0'); /> Total Value Discount</p>
 																</div>
 																<div class="col-md-3 common_padding1 value_discount_amount0" style="display:none">
 																	<input class="list_place_2" type="text" name="value_discount_amount0" placeholder="20$" />$
