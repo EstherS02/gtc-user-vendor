@@ -71,9 +71,9 @@ export function addProduct(req, res) {
 
 	model["Product"].create(req.query)
 		.then(function (row) {
-			req.body.product_id=row.id;
-			if(req.body.url) {
-				model["ProductMedia"].create(req.body)				
+			req.body.product_id = row.id;
+			if (req.body.url) {
+				model["ProductMedia"].create(req.body)
 					.then(function (row) {
 						console.log('Created:::', row);
 						res.status(200).send("Created");
@@ -96,31 +96,75 @@ export function addProduct(req, res) {
 }
 
 export function editProduct(req, res) {
-	
 
-	var id=req.query.product_id;
+	console.log("============================", req.query)
 
-	var stat= req.body.status;
+
+	if (req.body.discount_quantity0) {
+
+		if (req.body.discount_type0 == 'percentage_discount') {
+
+			var obj = {
+				quantity: req.body.discount_quantity0,
+				type: 1,
+				percent_discount: req.body.percent_discount_amount0,
+				product_id: req.query.product_id,
+				status:1
+			};
+
+			service.createRow('Discount', obj)
+				.then(function (update) {
+					console.log(update);
+
+				}).catch(function (err) {
+					console.log(err)
+				})
+		}
+		
+		if (req.body.discount_type0 == 'value_discount') {
+
+			var obj = {
+				quantity: req.body.discount_quantity0,
+				type: 2,
+				percent_discount: req.body.value_discount_amount0,
+				product_id: req.query.product_id,
+				status:1
+			};
+
+			service.createRow('Discount', obj)
+				.then(function (update) {
+					console.log(update);
+
+				}).catch(function (err) {
+					console.log(err)
+				})
+		}
+	}
+
+
+	var id = req.query.product_id;
+
+	var stat = req.body.status;
 	delete req.body.status;
 
-	req.body.status= status[stat];
-	var bodyParams=req.body;
+	req.body.status = status[stat];
+	var bodyParams = req.body;
 
-			model["Product"].update(bodyParams, {
-				where: {
-					id: id
-				}
-			}).then(function (row) {
-				if (row) {
-					res.status(200).send("Created");
-				} else {
-					res.status(500).send("Internal server error");
-				}
-			}).catch(function (error) {
-				res.status(500).send(error);
-			})
+	model["Product"].update(bodyParams, {
+		where: {
+			id: id
+		}
+	}).then(function (row) {
+		if (row) {
+			res.status(200).send("Created");
+		} else {
+			res.status(500).send("Internal server error");
+		}
+	}).catch(function (error) {
+		res.status(500).send(error);
+	})
 }
 
 
-		
+
 

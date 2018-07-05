@@ -3,30 +3,31 @@
 		display: none;
 	}
 
-	#profileImage {
+	#profileImage,#userUpdateBtn,#userCancelBtn {
 		cursor: pointer;
 	}
 </style>
 <script>
 	$(document).ready(function () {
 
+		$("#gtc-cart-alert").hide();
+
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
 
 
-		$('#crop-profile-image').click(function(){
+		$('#crop-profile-image').click(function () {
 			cropper.getCroppedCanvas().toBlob(function (blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-				fileDetails["fileName"] = fileDetails["originalFileName"] + "."+ fileDetails["croppedExtension"]
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
 			});
 
 			$('#UploadedImage').attr('src', cropper.getCroppedCanvas().toDataURL());
 
 			$('#profile-picture-modal').modal('hide');
-			
-		})
 
+		})
 
 		$("#sameAsAddr").change(function () {
 
@@ -39,10 +40,9 @@
 			$("#s_postal_code").val($("#b_postal_code").val());
 		});
 
-		 $("#profileImage").click(function (e) {
+		$("#profileImage").click(function (e) {
 			$("#imageUpload").click();
-		}); 
-
+		});
 
 		$('#profile-picture-modal').on('shown.bs.modal', function () {
 			cropper = new Cropper(cropperInputImage, {
@@ -59,7 +59,7 @@
 
 		function fasterPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
-				
+
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
@@ -69,7 +69,7 @@
 				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
 
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				
+
 				$('#profile-picture-modal').modal('show');
 
 			}
@@ -141,15 +141,20 @@
 					shippingUpdate: JSON.stringify(shippingUpdate)
 				},
 				success: function (updateData) {
-					console.log("success2")
+					$('#gtc-add-to-cart').prop('disabled', false);
+					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-cart-alert .cart-message').text("Product Updated Successfully")
+					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-cart-alert").slideUp(500);
+					});
 				},
 				error: function (error) {
 					console.log("Error", error);
 				}
 			});
-			
+
 			$.ajaxSetup({ async: true });
-			
+
 		});
 	});
 	function change_b_Country(e) {
@@ -186,28 +191,29 @@
 			}
 		});
 	}	
-</script> 
+</script>
 
-<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="margin-right:35px">
-		  <div class="container">
-			  <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-		  </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -221,6 +227,12 @@
 			<div class="row">
 				{{> vendor/navbar}}
 				<div class="col-md-8" style="background-color: #FFF;">
+					<div class="alert" id="gtc-cart-alert">
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="cart-message"></span>
+					</div>
 					<form id="userForm">
 						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
 						<div class="row">
@@ -231,7 +243,7 @@
 										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
 										<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo"	capture>
+										<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" capture>
 									</div>
 								</div>
 								<br/>
@@ -240,7 +252,9 @@
 								<br/>
 								<div class="row">
 									<div class="col-md-4">
-										<p><b>Account Settings</b></p>
+										<p>
+											<b>Account Settings</b>
+										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
@@ -297,7 +311,9 @@
 							<div class="col-md-6">
 								<div class="row">
 									<div class="col-md-4">
-										<p><b>Billing Address</b></p>
+										<p>
+											<b>Billing Address</b>
+										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
@@ -346,8 +362,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%" required
-										/>
+										<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+										 required />
 									</div>
 								</div>
 								<div class="row">
@@ -369,7 +385,9 @@
 								</div>
 								<div class="row">
 									<div class="col-md-4">
-										<p><b>Shipping Address</b></p>
+										<p>
+											<b>Shipping Address</b>
+										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
@@ -419,7 +437,7 @@
 									</div>
 									<div class="col-md-8 common_padding1">
 										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										required />
+										 required />
 									</div>
 								</div>
 								<div class="row">
