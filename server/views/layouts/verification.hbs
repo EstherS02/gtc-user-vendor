@@ -271,8 +271,6 @@
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}
-{{!-- >>>>>>> 03523e7faec319419d69fe606fb45f4c59ce05b9 --}}
-
           </p>
           <br>
           <p style="font-size: 13px; padding-bottom: 20px;">
@@ -330,7 +328,8 @@
               style="object-fit: contain;" /> {{/if}} {{!--
             <img class="verification-id" src="../../img/dashboard-vendor-verification.jpg" /> --}}
           </div>
-          <hr style="margin-top: 25px;">
+          <hr style="margin-top: 25px;" >
+          <div style="display:none">
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">Connect a Social Account
           </h5>
           <p class="verification-incomplete">
@@ -355,6 +354,7 @@
             </button>
           </div>
           <hr style="margin-top: 25px;">
+          </div>
           <div class="col-md-4" style="padding-bottom: 30px;">
             <button class="update-btn" id="uploadDocs" type="submit">Update</button>
             <button class="cancel-btn" type="reset">Cancel</button>

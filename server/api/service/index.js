@@ -3,6 +3,8 @@
 const status = require('../../config/status');
 const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
+const sequelize = require('sequelize');
+
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
 
@@ -242,4 +244,51 @@ export function upsert(modelName, data) {
 				reject(error);
 			})
 	})
+}
+
+export function getCategory(categoryQueryObj,productCountQueryParames){
+	 return new Promise((resolve,reject)=>{
+	 var result = {};
+	 model['Category'].findAll({
+				where: categoryQueryObj,
+				include: [{
+					model: model['SubCategory'],
+					where: categoryQueryObj,
+					attributes: ['id', 'category_id', 'name', 'code'],
+					include: [{
+						model: model['Product'],
+						where: productCountQueryParames,
+						attributes: []
+					}]
+				}, {
+					model: model['Product'],
+					where: productCountQueryParames,
+					attributes: []
+				}],
+				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+				group: ['SubCategories.id']
+			}).then(function(results) {
+				if (results.length > 0) {
+					model['Product'].count({
+						where: productCountQueryParames
+					}).then(function(count) {
+						result.count = count;
+						result.rows = JSON.parse(JSON.stringify(results));
+						
+						resolve(result);
+					}).catch(function(error) {
+						
+						reject(error);
+					});
+				} else {
+					result.count = 0;
+					result.rows = [];
+					resolve(result);
+				}
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				reject(error);
+			})
+			})
+
 }

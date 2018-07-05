@@ -126,7 +126,7 @@ export function vendor(req, res) {
 				required: false
 			},{
 				model:model['VendorRating'],
-				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRating.rating')), 'rating']],
 				group: ['VendorRating.vendor_id'],
 				required:false,
 			}];
