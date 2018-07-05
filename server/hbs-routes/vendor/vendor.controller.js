@@ -124,11 +124,6 @@ export function vendor(req, res) {
 					status: status['ACTIVE']
 				},
 				required: false
-			},{
-				model:model['VendorRating'],
-				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRating.rating')), 'rating']],
-				group: ['VendorRating.vendor_id'],
-				required:false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {

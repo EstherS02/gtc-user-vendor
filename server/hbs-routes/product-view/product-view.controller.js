@@ -181,6 +181,30 @@ export function GetProductDetails(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+                // var result = {};
+            var categoryQueryObj = {};
+            var productCountQueryParames = {};
+
+            categoryQueryObj['status'] = status["ACTIVE"];
+            productCountQueryParames['status'] = status["ACTIVE"];
+            if(vendor_id){
+            productCountQueryParames['vendor_id'] = vendor_id;
+            }
+            if (req.query.marketplace_type) {
+                productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+            }
+            service.getCategory(categoryQueryObj, productCountQueryParames)
+                .then(function(categories) {
+                    // return callback(null, response);
+                     if(categories){
+                        // console.log(response)
+                    result_obj.categories = categories;
+                    }else{
+                        result_obj.categories = [];
+                    }
+                    console.log("response",result_obj.categories)
+                });
+
                 service.findRows(productModel, queryObj2, 0, 9, field, order)
                     .then(function(RelatedProducts) {
                         // console.log(RelatedProducts.rows)
@@ -190,6 +214,7 @@ export function GetProductDetails(req, res) {
                         } else {
                             result_obj.RelatedProducts = [];
                         }
+                        console.log("result_obj",result_obj)
                         res.render('product-view', result_obj);
                     }).catch(function(error) {
                         console.log('Error :::', error);
@@ -420,7 +445,6 @@ export function GetProductReview(req, res) {
             var productCountQueryParames = {};
 
             categoryQueryObj['status'] = status["ACTIVE"];
-            // productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
             productCountQueryParames['status'] = status["ACTIVE"];
             if(vendor_id){
             productCountQueryParames['vendor_id'] = vendor_id;
