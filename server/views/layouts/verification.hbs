@@ -141,13 +141,21 @@
         <div class="col-md-10" style="background-color: #fff;">
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">GTC Store verification</h5>
           <p class="verification-incomplete">
+          {{#if verification}}
             {{#ifCond status.APPROVED "==" verification.vendor_verified_status}}
             <span class="id-verified">
               <i class="fas fa-check-circle"></i>
-            </span>Your Document verification request is approved {{else}}
+            </span>Your Document verification request is approved 
+            {{else}}
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
-            </span>You still have incomplete items to address below {{/ifCond}}
+            </span>You still have incomplete items to address below 
+            {{/ifCond}}
+            {{else}}
+            <span class="exclamation">
+              <i class="fas fa-exclamation-circle"></i>
+            </span>You still have incomplete items to address below 
+            {{/if}}
           </p>
           <p style="font-size: 13px;">
             Global Trade Connects requires all vendor to go through a several step process of documentation submission in order to verify
@@ -155,16 +163,17 @@
             to verify your ownership of this business.
           </p>
           <hr style="margin-top: 25px;">
-          <h5 class="gtc-title" style="padding-top: 20px; float: left;">
+          <h5 class="gtc-title" style="padding-top: 2px; float: left;">
             Personal ID Verification
           </h5>
           <p class="verificationerification-incomplete">
-
+            {{#if verification}}
             {{#ifCond status.WAITING '==' verification.personal_id_verification_file_status }}
             <span class="exclamation">
 
               <i class="fas fa-exclamation-circle"></i>
-            </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond status.APPROVED '==' verification.personal_id_verification_file_status
+            </span>Your Id verification request is awaiting approved {{/ifCond}}
+             {{#ifCond status.APPROVED '==' verification.personal_id_verification_file_status
             }}
             <span class="id-verified">
               <i class="fas fa-check-circle"></i>
@@ -178,6 +187,11 @@
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}
+            {{else}}
+            <span class="exclamation">
+              <i class="fas fa-exclamation-circle"></i>
+            </span>You haven't submitted this yet. 
+            {{/if}}
           </p>
           <br>
           <p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">
@@ -211,7 +225,9 @@
             {{!--
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
-            </span>Your Id verification request is awaiting approved --}} {{#ifCond status.WAITING '==' verification.personal_address_verification_file_status}}
+            </span>Your Id verification request is awaiting approved --}} 
+             {{#if verification}}
+            {{#ifCond status.WAITING '==' verification.personal_address_verification_file_status}}
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond status.APPROVED '==' verification.personal_address_verification_file_status
@@ -229,6 +245,11 @@
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}
+            {{else}}
+            <span class="exclamation">
+              <i class="fas fa-exclamation-circle"></i>
+            </span>You haven't submitted this yet. 
+            {{/if}}
           </p>
           <br>
           <p style="font-size: 13px; padding-bottom: 20px;">
@@ -253,6 +274,7 @@
             Business License / Articles Of Incorporation
           </h5>
           <p class="verification-incomplete">
+          {{#if verification}}
             {{#ifCond status.WAITING '==' verification.business_verification_file_status }}
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
@@ -271,6 +293,11 @@
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}
+            {{else}}
+            <span class="exclamation">
+              <i class="fas fa-exclamation-circle"></i>
+            </span>You haven't submitted this yet. 
+            {{/if}}
           </p>
           <br>
           <p style="font-size: 13px; padding-bottom: 20px;">
@@ -293,6 +320,7 @@
           <hr style="margin-top: 25px;">
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">Upload bill with address</h5>
           <p class="verification-incomplete">
+          {{#if verification}}
             {{#ifCond status.WAITING '==' verification.business_address_verification_file_status }}
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
@@ -308,6 +336,10 @@
             </span>
             {{verification. personal_address_reason_for_reject}} {{/ifCond}} {{#if verification.business_address_verification_file_status
             }} {{else}}
+            <span class="exclamation">
+              <i class="fas fa-exclamation-circle"></i>
+            </span>You haven't submitted this yet. {{/if}}
+            {{else}}
             <span class="exclamation">
               <i class="fas fa-exclamation-circle"></i>
             </span>You haven't submitted this yet. {{/if}}

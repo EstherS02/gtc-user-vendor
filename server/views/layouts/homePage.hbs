@@ -449,7 +449,7 @@
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                     <div class="sm-text">
                                                         {{#if ../LoggedInUser.email}}
-                                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                         {{else}}
                                                         <a href="/login">(Login for Seller Info)</a>
                                                         {{/if}}
@@ -786,7 +786,7 @@
                                                     <div class="sm-text">{{this.category_name}} > {{this.sub_category_name}}</div>
                                                     <div class="sm-text">
                                                         {{#if ../LoggedInUser.email}}
-                                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                        <a >{{this.vendor_name}}</a>
                                                         {{else}}
                                                         <a href="/login">(Login for Seller Info)</a>
                                                         {{/if}}
@@ -881,13 +881,16 @@
                                         <p class="hash_num"># {{SUMFloat @index 1}}</p>
                                     </div>
                                     <div class="feed-product">
+                                        <a href="/vendor/{{this.id}}">
                                         <img src="{{this.url}}">
+                                        </a>
                                     </div>
                                     <div class="product-info">
                                         <div class="row m-l-none m-r-none">
                                             <div class="col-md-12 no-padding">
                                                 <div class="product-title">
-                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
+                                                    <h5 class="no-margins">
+                                                    <a href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a></h5>
                                                     <div class="row no-margins">
                                                         <div class="col-md-4 no-padding">
                                                             <div class="sm-text">Origin</div>

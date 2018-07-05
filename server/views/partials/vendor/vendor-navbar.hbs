@@ -21,7 +21,18 @@
 
 
 </script>
-
+<script>
+var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	$(document).ready(function () {
+		$("#headerSearchForm1").submit(function (e) {
+			e.preventDefault();
+			let formInput = $("#headerSearchForm1 :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput;
+		});
+	});
+</script>
  <div class="banner_bg">
       {{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
       <div class="container-fluid banner_bg_menu">
@@ -124,7 +135,7 @@
                       </li>
                       {{/if}}
                     </ul>
-                    <div class="field-search1 form-inline my-2 my-lg-0">
+                    {{!-- <div class="field-search1 form-inline my-2 my-lg-0">
                       <input type="search" placeholder="Search {{this.VendorDetail.vendor_name}}">
                       <div class="right">
 
@@ -133,7 +144,22 @@
                           </svg>
                         </button>
                       </div>
-                    </div>
+                    </div> --}}
+                    <div class="field-search1 form-inline my-2 my-lg-0">
+						<form id="headerSearchForm1">
+							<input type="search" id="searchKey1" name="keyword" placeholder="Search {{this.VendorDetail.vendor_name}}">
+							<div class="right">
+								<button id="headerSearchSubmit1" name="headerSearchSubmit1">
+									<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
+										<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
+											<circle cx="9.3" cy="9.3" r="7.3"></circle>
+											<path d="M14.2 14.6l6.9 7.6"></path>
+										</g>
+									</svg>
+								</button>
+							</div>
+						</form>
+					</div>
                   </div>
                 </nav>
               </div>

@@ -28,7 +28,12 @@ export function verification(req, res) {
 			verification: function(callback) {
 				service.findOneRow(modelName, queryObj, includeArr)
 					.then(function(response) {
+						if(response){
 						return callback(null, response);
+						}else
+						{
+							return callback(null,null);
+						}
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -36,7 +41,7 @@ export function verification(req, res) {
 			},
 		},
 		function(err, results) {
-			console.log(results);
+			// console.log("results**************************",results);
 			if (!err) {
 				res.render('verification', {
 					title: "Global Trade Connect",
