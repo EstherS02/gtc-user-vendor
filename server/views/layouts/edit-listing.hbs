@@ -4,20 +4,15 @@
 		overflow: hidden;
 		height: auto;
 	}
-
 	.edit-image {
 		cursor: pointer;
 	}
-
-	#editdiscount,#update,
-	#reset {
+	#editdiscount,#update, #reset {
 		cursor: pointer;
 	}
-
 	.upload {
 		display: none;
 	}
-
 	.editpic {
 		padding-top: 10px;
 		padding-right: 10px;
@@ -25,7 +20,6 @@
 		right: 0;
 		top: 0;
 	}
-
 	.edit-image {
 		transform: scale(1, 2);
 	}
@@ -40,8 +34,7 @@
 			}
 		}, false);
 	}, false);
-</script>
-<script>
+
 	function changeCategory(e) {
 		$.ajax({
 			url: '/api/sub-categories?category_id=' + e.value,
@@ -60,6 +53,7 @@
 			}
 		});
 	}
+
 	function editProduct(data, input) {
 		$.ajax({
 			type: 'POST',
@@ -78,10 +72,9 @@
 			}
 		})
 	}
+
 	$(document).ready(function () {
-
 		$("#gtc-cart-alert").hide();
-
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
 
@@ -91,7 +84,6 @@
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
 			});
-
 			$(test).attr('src', cropper.getCroppedCanvas().toDataURL());
 			$('#profile-picture-modal').modal('hide');
 		})
@@ -118,11 +110,11 @@
 			$(".upload4").click();
 		});
 
+
 		$(".upload1").change(function () {
 			fasterPreview(this);
 		});
-
-		$(".upload2").change(function () {
+        $(".upload2").change(function () {
 			fasterPreview(this);
 		});
 		$(".upload3").change(function () {
@@ -159,7 +151,6 @@
 				data: data,
 				success: function (data, text) {
 					callback(data);
-
 				},
 				error: function (request, status, error) {
 					console.log('status', status);
@@ -170,26 +161,21 @@
 
 		function fasterPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
-
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
 				$(test).attr('src',
 					window.URL.createObjectURL(uploader.files[0]));
-
 				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
-
 				$('#profile-picture-modal').modal('show');
 			}
 		}
 
-		var data = {{ product.id }};
+	var data = {{ product.id }};
 
 	$("#editForm").submit(function (e) {
-
-		e.preventDefault();
+        e.preventDefault();
 
 		let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
@@ -274,7 +260,6 @@
 	});
 
 	var count = 1;
-
 	$("#editdiscount").click(function (e) {
 
 		if (count < 3) {
@@ -294,13 +279,11 @@
 				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
 			//$('#discountAppend').append(domElements)
-
 			document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
 
 			count = count + 1;
 			if (count == 3) {
 				$(".discount_tier").hide();
-
 			}
 		}
 	})
@@ -319,7 +302,6 @@ function testPercent(count)
 	$(".value_discount_amount"+count).hide();
 	$(".percent_discount_amount"+count).show();
 }
-
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -351,8 +333,7 @@ function testPercent(count)
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}}
-
-				<div class="col-md-8" style="background-color: #fff;">
+                <div class="col-md-8" style="background-color: #fff;">
 					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
 						<div class="alert" id="gtc-cart-alert">
@@ -379,8 +360,7 @@ function testPercent(count)
 										</div>
 									</section>
 									<div class="row">
-
-										<div class="col-md-4">
+                                        <div class="col-md-4">
 											{{#if product.ProductMedia.[0].url}}
 											<img id="UploadedImage1" src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;"
 											/>
@@ -414,8 +394,7 @@ function testPercent(count)
 													<input class="upload4" id="imageEdit4" type="file" name="file" onclick="this.value=null;" style="display:none">
 												</div>
 												{{/if}}
-
-											</div>
+                                            	</div>
 										</div>
 
 										<div class="col-md-8">
