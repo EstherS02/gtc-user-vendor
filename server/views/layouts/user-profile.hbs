@@ -2,8 +2,9 @@
 	#imageUpload {
 		display: none;
 	}
-
-	#profileImage,#userUpdateBtn,#userCancelBtn {
+	#profileImage,
+	#userUpdateBtn,
+	#userCancelBtn {
 		cursor: pointer;
 	}
 </style>
@@ -11,22 +12,16 @@
 	$(document).ready(function () {
 
 		$("#gtc-cart-alert").hide();
-
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
-
-
 		$('#crop-profile-image').click(function () {
 			cropper.getCroppedCanvas().toBlob(function (blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
 			});
-
 			$('#UploadedImage').attr('src', cropper.getCroppedCanvas().toDataURL());
-
 			$('#profile-picture-modal').modal('hide');
-
 		})
 
 		$("#sameAsAddr").change(function () {
@@ -62,16 +57,11 @@
 
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-
 				$('#UploadedImage').attr('src',
 					window.URL.createObjectURL(uploader.files[0]));
-
 				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
-
 				$('#profile-picture-modal').modal('show');
-
 			}
 		}
 		$("#imageUpload").change(function () {
@@ -143,7 +133,7 @@
 				success: function (updateData) {
 					$('#gtc-add-to-cart').prop('disabled', false);
 					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text("Product Updated Successfully")
+					$('#gtc-cart-alert .cart-message').text("Profile Updated Successfully")
 					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
 						$("#gtc-cart-alert").slideUp(500);
 					});
@@ -152,9 +142,7 @@
 					console.log("Error", error);
 				}
 			});
-
 			$.ajaxSetup({ async: true });
-
 		});
 	});
 	function change_b_Country(e) {
@@ -216,10 +204,7 @@
 	</div>
 </div>
 
-
-
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
-
 
 <section class="showing_categ">
 	<div class="">
@@ -227,14 +212,14 @@
 			<div class="row">
 				{{> vendor/navbar}}
 				<div class="col-md-8" style="background-color: #FFF;">
-					<div class="alert" id="gtc-cart-alert">
-						<button type="button" class="close" data-dismiss="alert">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<span class="cart-message"></span>
-					</div>
 					<form id="userForm">
 						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
+						<div class="alert" id="gtc-cart-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="cart-message"></span>
+						</div>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="row">
