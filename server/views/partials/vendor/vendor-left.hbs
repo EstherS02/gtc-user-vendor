@@ -1,4 +1,5 @@
   <div class="row profile_logged_in_body2_bg_color_1  " >
+  {{#if LoggedInUser.id}}
     <div class="col-md-5 col-5 "  >
       <p class="profile_logged_in_body2_font_1">joined:</p>
     </div>
@@ -63,4 +64,6 @@
       <p class="profile_logged_in_body2_font_1">
         At {{VendorDetail.vendor_name}} ,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans they need to buy a vehicle.
       </p>
+    {{else}} {{/if }}
     </div>
+

@@ -23,7 +23,7 @@ export function vendorLifestyle(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order;
+	var offset, limit, field, order,page;
 	var queryObj = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
@@ -33,11 +33,28 @@ export function vendorLifestyle(req, res) {
 	// 	model:model['Country']
 
 	// }]
+	var queryPaginationObj = {};
+	var queryURI = {};
 
 	offset = 0;
-	limit = 20;
+	limit = 18;
 	field = "id";
-	order = "asc";
+	// order = "asc";
+
+	queryPaginationObj['offset'] = offset;
+	queryPaginationObj['limit'] = limit;
+	queryPaginationObj['field'] = field;
+	order = req.query.order ? req.query.order : "asc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
 
 	async.series({
 		publicLifestyle: function(callback) {
@@ -103,7 +120,8 @@ export function vendorLifestyle(req, res) {
 				});
 		}
 	}, function(err, results) {
-		console.log(results);
+		// console.log(results);
+		queryPaginationObj['maxSize'] = 5;
 
 		if (!err) {
 			res.render('vendor-lifestyle', {
@@ -112,6 +130,8 @@ export function vendorLifestyle(req, res) {
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				publicLifestyle: results.publicLifestyle,
+				queryPaginationObj: queryPaginationObj,
+				queryURI:queryURI,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle'

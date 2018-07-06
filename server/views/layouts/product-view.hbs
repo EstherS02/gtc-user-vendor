@@ -225,8 +225,12 @@
 										<input type="number" min="1" value="1" id="product-quantity" class="geo_textbox" />
 									</div>
 									<div class="col-md-7 col-12 common_padding1" >
+										{{#if LoggedInUser.email}}
 										<a href="javascript:;" id="gtc-add-to-cart" class="com_add_to_cart" > 
 											<i class="fas fa-shopping-bag"></i> ADD TO BAG</a>
+										{{else}}
+											<a href="/login" class="com_add_to_cart">Login </a>
+										{{/if}}
 									</div>
                            		<div class="modal fade"{{!--  id="myModal" --}}>
 									<div class="modal-dialog modal-dialog-centered">
@@ -302,16 +306,19 @@
 					<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare</p>
 			</div>
 			<div class="col-md-4 col-6 common_padding1">
+			<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
 				{{#if LoggedInUser.id}}
-				<p class="text_blue_color" style="font-size: 14px;margin-bottom: 0px;" onclick="wishUpdate()">
+				
 				{{#if wishList}}
 					<input type="hidden" name="wishID" value="{{wishList.[0].id}}">
 					<i class="fa fa-heart" aria-hidden="true"></i>
 					{{else}}
 					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
 					 {{/if}}
-					 Add to Wishlist</p>
+					{{else}}
+					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
 				{{/if}}
+				Add to Wishlist</p>
 
 			</div>
 			<div class="col-md-4 col-6 float-right">
@@ -364,7 +371,7 @@
 					<div class="col-md-7">
 						<div class="row">
 							{{#each product.Reviews}} 
-								{{#ifCond @index '<' 5}}
+								{{#ifCond @index '<' 1}}
 							 	<div class="col-md-2 col-3 product_img common_padding1">
                                     <img width="100%" class="rounded-circle" src="{{ProfilePicture this.User}}" alt="profile-picture"/>
                                 </div> 

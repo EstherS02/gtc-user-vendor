@@ -22,7 +22,7 @@ export function vendorServices(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order;
+	var offset, limit, field, order,page;
 	var queryObj = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['SERVICE'];
@@ -32,11 +32,26 @@ export function vendorServices(req, res) {
 
 	// }]
 
+	var queryPaginationObj = {};
+	var queryURI = {};
 
 	offset = 0;
-	limit = 9;
+	limit = 18;
 	field = "id";
-	order = "asc";
+	order = 0;
+	queryPaginationObj['offset'] = offset;
+	queryPaginationObj['limit'] = limit;
+	queryPaginationObj['field'] = field;
+	order = req.query.order ? req.query.order : "asc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 
 	async.series({
 		publicService: function(callback) {
@@ -66,13 +81,6 @@ export function vendorServices(req, res) {
 					}
 				}]
 
-			}, {
-				model: model['VendorFollower'],
-				where: {
-					user_id: req.user.id,
-					status: 1
-				},
-				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -117,7 +125,8 @@ export function vendorServices(req, res) {
 				});
 		}
 	}, function(err, results) {
-		console.log(JSON.stringify(results.VendorDetail));
+		// console.log(JSON.stringify(results.VendorDetail));
+		queryPaginationObj['maxSize'] = 5;
 
 		if (!err) {
 			res.render('vendor-services', {
@@ -126,6 +135,9 @@ export function vendorServices(req, res) {
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				publicService: results.publicService,
+				queryPaginationObj: queryPaginationObj,
+				queryURI: queryURI,
+				page:page,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services'

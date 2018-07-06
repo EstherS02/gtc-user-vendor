@@ -70,7 +70,6 @@ export function GetProductDetails(req, res) {
                         exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
                     }
                 }],
-                limit:1
             }, {
                 model: model["ProductMedia"],
                 where: {
@@ -80,12 +79,13 @@ export function GetProductDetails(req, res) {
                 }
             }],
             order: [
-                [model["ProductMedia"], 'base_image', 'DESC']
+                [model["ProductMedia"], 'base_image', 'DESC'],
+                [model["Review"], 'rating', 'DESC']
             ]
         }).then(function(product) {
             if (product) {
                 var vendor_id = product.Vendor.id;
-                console.log("vendor_id",vendor_id)
+                // console.log("vendor_id",vendor_id)
 
                 // console.log(product)
                 var productsList = JSON.parse(JSON.stringify(product));
@@ -120,7 +120,7 @@ export function GetProductDetails(req, res) {
 
                 var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
-                productRating = _.orderBy(productRating, ['ratingCount'], ['desc'])
+                productRating = productRating;//_.orderBy(productRating, ['ratingCount'], ['desc'])
 
 
                 var field = 'id';
@@ -171,7 +171,6 @@ export function GetProductDetails(req, res) {
                 service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
                 .then(function(response) {
                     if(response){
-                        // console.log(response)
                     result_obj.VendorDetail = response;
                     }else{
                         result_obj.VendorDetail = [];
@@ -202,7 +201,7 @@ export function GetProductDetails(req, res) {
                     }else{
                         result_obj.categories = [];
                     }
-                    console.log("response",result_obj.categories)
+                    // console.log("response",result_obj.categories)
                 });
 
                 service.findRows(productModel, queryObj2, 0, 9, field, order)
