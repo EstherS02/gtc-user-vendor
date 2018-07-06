@@ -7,6 +7,9 @@
 	#userCancelBtn {
 		cursor: pointer;
 	}
+	.list_butt_2 {
+		cursor: pointer;
+	}
 </style>
 <script>
 	$(document).ready(function () {
@@ -256,16 +259,7 @@
 										/>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
-									</div>
-								</div>
-								<div class="row">
+								{{!-- <div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
@@ -280,8 +274,8 @@
 									<div class="col-md-8 common_padding1">
 										<input readonly type="text" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
 									</div>
-								</div>
-								{{#if vendor}}
+								</div> --}}
+							{{#if LoggedInUser.Vendor}}
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
@@ -292,6 +286,25 @@
 									</div>
 								</div>
 								{{/if}}
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										/>
+									</div>
+								</div>
+								<br/>
+								<br/>
+								<div class="row">
+									<div class="col-md-4">
+										<p></p>
+									</div>
+									<div class="col-md-8 common_padding1">
+										<input readonly class="list_butt_2" onclick="window.location.href='/'" placeholder="Change Password">
+									</div>
+								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="row">
