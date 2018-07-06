@@ -39,7 +39,7 @@ export function vendorWholesale(req, res) {
 
 	offset = 0;
 	limit = 9;
-	field = "id";
+	field = "created_on";
 	order = "asc";
 
 	async.series({

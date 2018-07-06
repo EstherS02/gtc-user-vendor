@@ -22,20 +22,16 @@ export function vendor(req, res) {
 	let user_id = LoggedInUser.id;
 
 	var productModel = "MarketplaceProduct";
-	// var vendorModel = "VendorUserProduct";
-	// var categoryModel = "Category";
 	var offset=0;
 	var limit;
-	var field="id";
+	var field="created_on";
 	var order = "desc"
 	var queryObj = {};
 	var vendor_id = req.params.id;
-	// queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
 
 	async.series({
 		featuredProducts: function(callback) {
-            // queryObj['featured_position'] = position.SignUp;
             queryObj['is_featured_product'] = 1;
             limit = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)

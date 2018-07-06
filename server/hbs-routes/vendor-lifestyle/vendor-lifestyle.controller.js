@@ -38,7 +38,7 @@ export function vendorLifestyle(req, res) {
 
 	offset = 0;
 	limit = 18;
-	field = "id";
+	field = "created_on";
 	// order = "asc";
 
 	queryPaginationObj['offset'] = offset;

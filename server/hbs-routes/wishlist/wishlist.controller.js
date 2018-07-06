@@ -41,6 +41,9 @@ export function wishlist(req, res) {
 		model: model['Product'],
 		include: [{
 			model: model['ProductMedia'],
+			where:{
+				base_image:1
+			}
 		}]
 	}, {
 		model: model['User'],
@@ -51,7 +54,7 @@ export function wishlist(req, res) {
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
-						console.log(category.rows)
+						// console.log(category.rows)
 						return callback(null, category);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -60,6 +63,7 @@ export function wishlist(req, res) {
 			},
 		},
 		function(err, results) {
+			console.log(JSON.stringify(results))
 			if (!err) {
 				res.render('wishlist', {
 					title: "Global Trade Connect",

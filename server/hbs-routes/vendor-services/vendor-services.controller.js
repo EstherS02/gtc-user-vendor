@@ -37,7 +37,7 @@ export function vendorServices(req, res) {
 
 	offset = 0;
 	limit = 18;
-	field = "id";
+	field = "created_on";
 	order = 0;
 	queryPaginationObj['offset'] = offset;
 	queryPaginationObj['limit'] = limit;

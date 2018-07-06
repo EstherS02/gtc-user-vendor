@@ -1,186 +1,60 @@
-  {{> header/defaultHeader LoggedInUser = LoggedInUser}}
-  <section>
-   {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
-    <div class="logged_in_cont" >
-      <div class="container">
-        <div class="row">
-          <div class="col-md-2 col-12"  >
-            {{> vendor/vendor-left VendorDetail = VendorDetail}}
-          </div>
-          <div class="col-md-10 col-12">
-            <div class="row pmp4">
-             <div class="col-md-5 col-12">
-              <h5>PRIVATE WHOLESALE MARKETPLACE</h5>
-            </div>
-            <div class="col-md-2 col-12 common_padding1">
-              <p>Showing 1 - 20 of {{categories.count}}</p>
-            </div>
-            <div class="col-md-2 col-12 common_padding1">
-              <select class="geo_textbox">
-               <option>Sort by Newest</option>
-             </select>
-           </div>
-         </div>
-         <div class="row">
-           <div class="col-md-9 col-12 common_padding1" style="background-color: #fff;">
-            <section class="box3 " style="margin-bottom:0">
-              <div class="container clearfix">
-               <div class="row ">
-                <div class="col-md-12 col-12 wts1 ">
-                 <h6 class="float-left">WTS - Want To Sell</h6>
-                 <p class="float-right see_all"> <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
-                  <small class="pull-right">SEE ALL
-                    <i class="fa fa-caret-right"></i>
-                  </small>
-                </a></p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="box4" style="margin-bottom:20px;">
-          <div class="container clearfix">
-            <div class="row">
-              {{#each wantToSell}}
-              <div class="col-md-4 col-12 common_top">
-                <div class="row">
-                  <div class="col-md-3 col-2">
-                    <img src={{this.product_base_image}} style="width: 30px; height: 70px;">
-                  </div>
-                  <div class="col-md-9 col-10">
-                    <div class="row common_padding">
-                      <div class="col-md-8 col-8">
-                        <p class="wts_header">WTS-<a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></p>
-                      </div>
-                      <div class="col-md-4 col-4">
-                        <p>MOQ: {{this.minimum_order_quantity}}</p>
-                      </div>
-                    </div>
-                    <div class="row common_padding">
-                      <div class="col-md-3 col-3">
-                        <p>Origin</p>
-                      </div>
-                      <div class="col-md-5 col-5">
-                        <p>{{this.country_name}}</p>
-                      </div>
-                      <div class="col-md-4 col-4">
-                        <p>&nbsp;</p>
-                      </div>
-                    </div>
-                    <div class="row common_padding">
-                      <div class="col-md-3 col-3">
-                        <p>Category</p>
-                      </div>
-                      <div class="col-md-5 col-5">
-                        <p>{{this.category_name}} - {{this.sub_category_name}}</p>
-                      </div>
-                      <div class="col-md-4 col-4">
-                        <p>Seller Rating</p>
-                      </div>
-                    </div>
-                    <div class="row common_padding">
-                      <div class="col-md-3 col-3">
-                        <p>Seller</p>
-                      </div>
-                      <div class="col-md-5 col-5">
-                        <p>{{#if ../LoggedInUser.email}}
-                          <a>{{this.vendor_name}}</a>
-                          {{else}}
-                          <a href="/login">(Login for Seller Info)</a>
-                          {{/if}}</p>
-                        </div>
-                        <div class="col-md-4 col-4">
-                          <p>{{ starCount product_rating}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {{/each}}
-              </div>
-            </div>
-          </section>
-          <section class="box3 " style="margin-bottom:0">
-            <div class="container clearfix">
-             <div class="row ">
-              <div class="col-md-12 col-12 wts2 ">
-               <h6 class="float-left">WTB - Want To Buy</h6>
-               <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">
-                <small class="pull-right">SEE ALL
-                  <i class="fa fa-caret-right"></i>
-                </small>
-              </a> </p>
-            </div>
-          </div>
+<script type="text/javascript">
+  function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+      return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+      return uri + separator + key + "=" + value;
+    }
+  }
+
+  $(document).on('change', "#sortListing", function() {
+    var uri = window.location.href;
+    var optionValue = $("#sortListing option:selected").val();
+    var key='order';
+    var value='desc';
+    if(optionValue== 'Oldest'){
+      value='asc';
+    }
+    var queries = updateQueryStringParameter(uri,key,value);
+    window.location.href = queries;
+  });
+</script>
+{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<section>
+ {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+ <div class="logged_in_cont" >
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2 col-12"  >
+        {{> vendor/vendor-left VendorDetail = VendorDetail}}
+      </div>
+      <div class="col-md-10 col-12">
+        <div class="row pmp4">
+         <div class="col-md-5 col-12">
+          <h5>PRIVATE WHOLESALE MARKETPLACE</h5>
         </div>
-      </section>
-      <section class="box4" style="margin-bottom:20px;">
-        <div class="container clearfix">
-          <div class="row">
-            {{#each wantToBuy}}
-            <div class="col-md-4 col-12 common_top">
-              <div class="row">
-                <div class="col-md-3 col-2">
-                  <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
-                </div>
-                <div class="col-md-9 col-10">
-                  <div class="row common_padding">
-                    <div class="col-md-8 col-8">
-                      <p class="wts_header"><a href="#">WTB - <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></a></p>
-                    </div>
-                    <div class="col-md-4 col-4">
-                      <p>MOQ: {{this.minimum_order_quantity}}</p>
-                    </div>
-                  </div>
-                  <div class="row common_padding">
-                    <div class="col-md-3 col-3">
-                      <p>Origin</p>
-                    </div>
-                    <div class="col-md-5 col-5">
-                      <p>{{this.country_name}}</p>
-                    </div>
-                    <div class="col-md-4 col-4">
-                      <p>&nbsp;</p>
-                    </div>
-                  </div>
-                  <div class="row common_padding">
-                    <div class="col-md-3 col-3">
-                      <p>Category</p>
-                    </div>
-                    <div class="col-md-5 col-5">
-                      <p>{{this.category_name}} - {{this.sub_category_name}}</p>
-                    </div>
-                    <div class="col-md-4 col-4">
-                      <p>Seller Rating</p>
-                    </div>
-                  </div>
-                  <div class="row common_padding">
-                    <div class="col-md-3 col-3">
-                      <p>Seller</p>
-                    </div>
-                    <div class="col-md-5 col-5">
-                      <p> {{#if ../LoggedInUser.email}}
-                        <a>{{this.vendor_name}}</a>
-                        {{else}}
-                        <a href="/login">(Login for Seller Info)</a>
-                        {{/if}}</p>
-                      </div>
-                      <div class="col-md-4 col-4">
-                        <p>{{ starCount product_rating}}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {{/each}}
-            </div>
-          </div>
-        </section>
+        <div class="col-md-2 col-12 common_padding1">
+          <p>Showing 1 - 20 of {{categories.count}}</p>
+        </div>
+        <div class="col-md-2 col-12 common_padding1">
+          <select class="geo_textbox" id="sortListing">
+            <option>Select option</option>
+            <option value="Newest">Sort by Newest</option>
+            <option value="Oldest">Sort by order</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+       <div class="col-md-9 col-12 common_padding1" style="background-color: #fff;">
         <section class="box3 " style="margin-bottom:0">
           <div class="container clearfix">
            <div class="row ">
-            <div class="col-md-12 col-12 wts3 ">
-             <h6 class="float-left">WTT - Want To Trade</h6>
-             <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">
+            <div class="col-md-12 col-12 wts1 ">
+             <h6 class="float-left">WTS - Want To Sell</h6>
+             <p class="float-right see_all"> <a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">
               <small class="pull-right">SEE ALL
                 <i class="fa fa-caret-right"></i>
               </small>
@@ -192,16 +66,16 @@
     <section class="box4" style="margin-bottom:20px;">
       <div class="container clearfix">
         <div class="row">
-          {{#each wantToTrade}}
+          {{#each wantToSell}}
           <div class="col-md-4 col-12 common_top">
             <div class="row">
               <div class="col-md-3 col-2">
-                <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+                <img src={{this.product_base_image}} style="width: 30px; height: 70px;">
               </div>
               <div class="col-md-9 col-10">
                 <div class="row common_padding">
                   <div class="col-md-8 col-8">
-                    <p class="wts_header"><a href="#">WTB - <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></a></p>
+                    <p class="wts_header">WTS-<a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></p>
                   </div>
                   <div class="col-md-4 col-4">
                     <p>MOQ: {{this.minimum_order_quantity}}</p>
@@ -234,7 +108,7 @@
                     <p>Seller</p>
                   </div>
                   <div class="col-md-5 col-5">
-                    <p> {{#if ../LoggedInUser.email}}
+                    <p>{{#if ../LoggedInUser.email}}
                       <a>{{this.vendor_name}}</a>
                       {{else}}
                       <a href="/login">(Login for Seller Info)</a>
@@ -248,20 +122,19 @@
               </div>
             </div>
             {{/each}}
-
           </div>
         </div>
       </section>
       <section class="box3 " style="margin-bottom:0">
         <div class="container clearfix">
          <div class="row ">
-          <div class="col-md-12 col-12 wts4 ">
-           <h6 class="float-left">RFQ - Request For Quote</h6>
-           <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">
+          <div class="col-md-12 col-12 wts2 ">
+           <h6 class="float-left">WTB - Want To Buy</h6>
+           <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">
             <small class="pull-right">SEE ALL
               <i class="fa fa-caret-right"></i>
             </small>
-          </a></p>
+          </a> </p>
         </div>
       </div>
     </div>
@@ -269,7 +142,7 @@
   <section class="box4" style="margin-bottom:20px;">
     <div class="container clearfix">
       <div class="row">
-        {{#each requestForQuote}}
+        {{#each wantToBuy}}
         <div class="col-md-4 col-12 common_top">
           <div class="row">
             <div class="col-md-3 col-2">
@@ -328,13 +201,166 @@
         </div>
       </div>
     </section>
+    <section class="box3 " style="margin-bottom:0">
+      <div class="container clearfix">
+       <div class="row ">
+        <div class="col-md-12 col-12 wts3 ">
+         <h6 class="float-left">WTT - Want To Trade</h6>
+         <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">
+          <small class="pull-right">SEE ALL
+            <i class="fa fa-caret-right"></i>
+          </small>
+        </a></p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="box4" style="margin-bottom:20px;">
+  <div class="container clearfix">
+    <div class="row">
+      {{#each wantToTrade}}
+      <div class="col-md-4 col-12 common_top">
+        <div class="row">
+          <div class="col-md-3 col-2">
+            <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+          </div>
+          <div class="col-md-9 col-10">
+            <div class="row common_padding">
+              <div class="col-md-8 col-8">
+                <p class="wts_header"><a href="#">WTB - <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></a></p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>MOQ: {{this.minimum_order_quantity}}</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Origin</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p>{{this.country_name}}</p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>&nbsp;</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Category</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p>{{this.category_name}} - {{this.sub_category_name}}</p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>Seller Rating</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Seller</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p> {{#if ../LoggedInUser.email}}
+                  <a>{{this.vendor_name}}</a>
+                  {{else}}
+                  <a href="/login">(Login for Seller Info)</a>
+                  {{/if}}</p>
+                </div>
+                <div class="col-md-4 col-4">
+                  <p>{{ starCount product_rating}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/each}}
 
+      </div>
+    </div>
+  </section>
+  <section class="box3 " style="margin-bottom:0">
+    <div class="container clearfix">
+     <div class="row ">
+      <div class="col-md-12 col-12 wts4 ">
+       <h6 class="float-left">RFQ - Request For Quote</h6>
+       <p class="float-right see_all"><a class="link" href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">
+        <small class="pull-right">SEE ALL
+          <i class="fa fa-caret-right"></i>
+        </small>
+      </a></p>
+    </div>
   </div>
-  <div class="col-md-3 showing_categ">
-    <p><b>FILTER BY CATEGORY</b></p>
-    <p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
-    {{> vendor/vendor-category  }}
-  </div>
+</div>
+</section>
+<section class="box4" style="margin-bottom:20px;">
+  <div class="container clearfix">
+    <div class="row">
+      {{#each requestForQuote}}
+      <div class="col-md-4 col-12 common_top">
+        <div class="row">
+          <div class="col-md-3 col-2">
+            <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+          </div>
+          <div class="col-md-9 col-10">
+            <div class="row common_padding">
+              <div class="col-md-8 col-8">
+                <p class="wts_header"><a href="#">WTB - <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></a></p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>MOQ: {{this.minimum_order_quantity}}</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Origin</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p>{{this.country_name}}</p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>&nbsp;</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Category</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p>{{this.category_name}} - {{this.sub_category_name}}</p>
+              </div>
+              <div class="col-md-4 col-4">
+                <p>Seller Rating</p>
+              </div>
+            </div>
+            <div class="row common_padding">
+              <div class="col-md-3 col-3">
+                <p>Seller</p>
+              </div>
+              <div class="col-md-5 col-5">
+                <p> {{#if ../LoggedInUser.email}}
+                  <a>{{this.vendor_name}}</a>
+                  {{else}}
+                  <a href="/login">(Login for Seller Info)</a>
+                  {{/if}}</p>
+                </div>
+                <div class="col-md-4 col-4">
+                  <p>{{ starCount product_rating}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="col-md-3 showing_categ">
+  <p><b>FILTER BY CATEGORY</b></p>
+  <p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
+  {{> vendor/vendor-category  }}
+</div>
 </div>
 </div>
 </section>
