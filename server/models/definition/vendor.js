@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         about: {
             type: DataTypes.TEXT,
             field: 'about',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
