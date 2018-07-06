@@ -65,7 +65,7 @@ export function vendorLifestyle(req, res) {
 						vendor_verified_status: status['ACTIVE']
 					}
 				}],
-				attributes:['id']
+				attributes: ['id']
 
 			}, {
 				model: model['VendorFollower'],
@@ -93,54 +93,14 @@ export function vendorLifestyle(req, res) {
 			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			// if (req.query.marketplace) {
-			// 	productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			// }
-			// if (req.query.keyword) {
-			// 	productCountQueryParames['product_name'] = {
-			// 		like: '%' + req.query.keyword + '%'
-			// 	};
-			// }
+			service.getCategory(categoryQueryObj, productCountQueryParames)
+				.then(function(response) {
+					return callback(null, response);
 
-			model['Category'].findAll({
-				where: categoryQueryObj,
-				include: [{
-					model: model['SubCategory'],
-					where: categoryQueryObj,
-					attributes: ['id', 'category_id', 'name', 'code'],
-					include: [{
-						model: model['Product'],
-						where: productCountQueryParames,
-						attributes: []
-					}]
-				}, {
-					model: model['Product'],
-					where: productCountQueryParames,
-					attributes: []
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['SubCategories.id']
-			}).then(function(results) {
-				if (results.length > 0) {
-					model['Product'].count({
-						where: productCountQueryParames
-					}).then(function(count) {
-						result.count = count;
-						result.rows = JSON.parse(JSON.stringify(results));
-						return callback(null, result);
-					}).catch(function(error) {
-						console.log('Error:::', error);
-						return callback(error, null);
-					});
-				} else {
-					result.count = 0;
-					result.rows = [];
-					return callback(null, result);
-				}
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		console.log(results);

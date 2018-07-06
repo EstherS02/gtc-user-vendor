@@ -23,7 +23,7 @@ export function vendorShop(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryPaginationObj = {};
 	var queryObj = {};
 	var queryURI = {};
@@ -64,7 +64,7 @@ export function vendorShop(req, res) {
 				});
 		},
 		VendorDetail: function(callback) {
-		var vendorIncludeArr = [{
+			var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
@@ -72,7 +72,7 @@ export function vendorShop(req, res) {
 
 			}, {
 				model: model['User'],
-				attributes:['id'],
+				attributes: ['id'],
 				include: [{
 					model: model['VendorVerification'],
 					where: {
@@ -87,11 +87,13 @@ export function vendorShop(req, res) {
 					status: 1
 				},
 				required: false
-			},{
-				model:model['VendorRating'],
-				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
 				group: ['VendorRating.vendor_id'],
-				required:false,
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -108,7 +110,7 @@ export function vendorShop(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
+			productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
 			if (req.query.marketplace_type) {
@@ -130,46 +132,6 @@ export function vendorShop(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-
-			// model['Category'].findAll({
-			// 	where: categoryQueryObj,
-			// 	include: [{
-			// 		model: model['SubCategory'],
-			// 		where: categoryQueryObj,
-			// 		attributes: ['id', 'category_id', 'name', 'code'],
-			// 		include: [{
-			// 			model: model['Product'],
-			// 			where: productCountQueryParames,
-			// 			attributes: []
-			// 		}]
-			// 	}, {
-			// 		model: model['Product'],
-			// 		where: productCountQueryParames,
-			// 		attributes: []
-			// 	}],
-			// 	attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-			// 	group: ['SubCategories.id']
-			// }).then(function(results) {
-			// 	if (results.length > 0) {
-			// 		model['Product'].count({
-			// 			where: productCountQueryParames
-			// 		}).then(function(count) {
-			// 			result.count = count;
-			// 			result.rows = JSON.parse(JSON.stringify(results));
-			// 			return callback(null, result);
-			// 		}).catch(function(error) {
-			// 			console.log('Error:::', error);
-			// 			return callback(error, null);
-			// 		});
-			// 	} else {
-			// 		result.count = 0;
-			// 		result.rows = [];
-			// 		return callback(null, result);
-			// 	}
-			// }).catch(function(error) {
-			// 	console.log('Error:::', error);
-			// 	return callback(error, null);
-			// });
 		}
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
@@ -177,14 +139,14 @@ export function vendorShop(req, res) {
 			res.render('vendor-shop', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
-				VendorDetail : results.VendorDetail,
+				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
-				queryURI:queryURI,
+				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'shop'
+				selectedPage: 'shop'
 			});
 		} else {
 			res.render('vendor-shop', err);

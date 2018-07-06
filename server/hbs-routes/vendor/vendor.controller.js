@@ -22,43 +22,22 @@ export function vendor(req, res) {
 	let user_id = LoggedInUser.id;
 
 	var productModel = "MarketplaceProduct";
-	var vendorModel = "VendorUserProduct";
-	var categoryModel = "Category";
-	var offset, limit, field, order,page;
-	var queryPaginationObj = {};
+	// var vendorModel = "VendorUserProduct";
+	// var categoryModel = "Category";
+	var offset=0;
+	var limit;
+	var field="id";
+	var order = "desc"
 	var queryObj = {};
-	var queryURI = {};
 	var vendor_id = req.params.id;
 	// queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	queryPaginationObj['offset'] = offset;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
-	queryPaginationObj['limit'] = limit;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	queryPaginationObj['field'] = field;
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	queryPaginationObj['order'] = order;
-	delete req.query.order;
-
-	page = req.query.page ? parseInt(req.query.page) : 1;
-	queryPaginationObj['page'] = page;
-	queryURI['page'] = page;
-	delete req.query.page;
-
-	offset = (page - 1) * limit;
-	queryPaginationObj['offset'] = offset;
-
 	async.series({
 		featuredProducts: function(callback) {
-            delete queryObj['marketplace_id'];
-            queryObj['featured_position'] = position.SignUp;
+            // queryObj['featured_position'] = position.SignUp;
             queryObj['is_featured_product'] = 1;
-            limit = null;
+            limit = 1;
             service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(featuredProducts) {
                     return callback(null, featuredProducts.rows);
@@ -71,11 +50,12 @@ export function vendor(req, res) {
         topSelling: function(callback) {
             delete queryObj['featured_position'];
             delete queryObj['is_featured_product'];
-            // queryObj['vendor_id'] = vendor_id;
+
+            queryObj['vendor_id'] = vendor_id;
             field = 'product_selling_count';
             order = 'desc';
             limit = 3;
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(servicesProviders) {
                     return callback(null, servicesProviders.rows);
 
@@ -87,11 +67,11 @@ export function vendor(req, res) {
         topRating: function(callback) {
             delete queryObj['featured_position'];
             delete queryObj['is_featured_product'];
-            // queryObj['vendor_id'] = vendor_id;
+            queryObj['vendor_id'] = vendor_id;
             field = 'product_rating';
             order = 'desc';
             limit = 3;
-            service.findRows(vendorModel, queryObj, offset, limit, field, order)
+            service.findRows(productModel, queryObj, offset, limit, field, order)
                 .then(function(servicesProviders) {
                     return callback(null, servicesProviders.rows);
 
@@ -135,18 +115,15 @@ export function vendor(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(results.VendorDetail);
-		queryPaginationObj['maxSize'] = 5;
+		console.log(results.featuredProducts);
 		if (!err) {
 			res.render('vendor', {
 				title: "Global Trade Connect",
-				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
-				marketPlace: marketplace,
-				queryURI:queryURI,
-				marketPlaceType: marketplace_type,
-				publicShop: results.publicShop,
 				categories: results.categories,
+				featuredProducts:results.featuredProducts,
+				topSelling:results.topSelling,
+				topRating:results.topRating,
 				LoggedInUser: LoggedInUser
 				// selectedPage:'shop'
 			});

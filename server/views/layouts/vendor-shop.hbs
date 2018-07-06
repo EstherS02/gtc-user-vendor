@@ -13,10 +13,13 @@
                             <h5>PRODUCT SHOP</h5>
                         </div>
                         <div class="col-md-2 col-12 common_padding1">
-                            <p>Showing 1 - 20 of {{publicShop.count}}</p>
+                             <p class="showing_res1">Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
+                        <b>{{publicShop.count}}</b>
+                    </p>
                         </div>
                         <div class="col-md-2 col-12 common_padding1">
-                            <select class="geo_textbox">
+                            <select class="geo_textbox" onchange="">
                                 <option>Sort by Newest</option>
                             </select>
                         </div>
@@ -117,7 +120,7 @@
             {{/ifCond}}
                             <div class="col-md-6">
                     <p class="showing_res1">Showing
-                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
                         <b>{{publicShop.count}}</b> Products matching
                         {{#if queryPaginationObj.keyword}}
                         <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>

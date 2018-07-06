@@ -97,7 +97,7 @@ export function vendorWholesale(req, res) {
 
 			}, {
 				model: model['User'],
-				attributes:['id'],
+				attributes: ['id'],
 				include: [{
 					model: model['VendorVerification'],
 					where: {
@@ -146,46 +146,14 @@ export function vendorWholesale(req, res) {
 					like: '%' + req.query.keyword + '%'
 				};
 			}
+			service.getCategory(categoryQueryObj, productCountQueryParames)
+				.then(function(response) {
+					return callback(null, response);
 
-			model['Category'].findAll({
-				where: categoryQueryObj,
-				include: [{
-					model: model['SubCategory'],
-					where: categoryQueryObj,
-					attributes: ['id', 'category_id', 'name', 'code'],
-					include: [{
-						model: model['Product'],
-						where: productCountQueryParames,
-						attributes: []
-					}]
-				}, {
-					model: model['Product'],
-					where: productCountQueryParames,
-					attributes: []
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['SubCategories.id']
-			}).then(function(results) {
-				if (results.length > 0) {
-					model['Product'].count({
-						where: productCountQueryParames
-					}).then(function(count) {
-						result.count = count;
-						result.rows = JSON.parse(JSON.stringify(results));
-						return callback(null, result);
-					}).catch(function(error) {
-						console.log('Error:::', error);
-						return callback(error, null);
-					});
-				} else {
-					result.count = 0;
-					result.rows = [];
-					return callback(null, result);
-				}
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
 		marketPlaceTypes: function(callback) {
 			var result = {};
@@ -224,7 +192,7 @@ export function vendorWholesale(req, res) {
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['MarketplaceType.id']
 			}).then(function(results) {
-				console.log("results",results)
+				console.log("results", results)
 				if (results.length > 0) {
 					model['Product'].count({
 						where: productCountQueryParames

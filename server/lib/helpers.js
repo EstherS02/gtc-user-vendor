@@ -320,3 +320,7 @@ Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
         return;
     }
 });
+Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
+    console.log(limit,offset,count)
+    return count-(limit*offset);
+});
