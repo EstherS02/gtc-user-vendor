@@ -245,7 +245,7 @@
 										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
+										<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" />
 
 									</div>
@@ -255,7 +255,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+										<input type="text" id="last_name"name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
 										/>
 									</div>
 								</div>
@@ -314,7 +314,7 @@
 										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_company_name' placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
+										<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required/>
 									</div>
 								</div>
@@ -323,7 +323,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address1' value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+										<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required/>
 									</div>
 								</div>
@@ -332,7 +332,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address2' value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+										<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" />
 									</div>
 								</div>
@@ -360,7 +360,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_city' value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+										<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
 										 required />
 									</div>
 								</div>
@@ -369,7 +369,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_postal_code' value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+										<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required />
 									</div>
 								</div>
@@ -388,7 +388,7 @@
 										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_company_name' value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
+										<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required />
 									</div>
 								</div>
@@ -397,7 +397,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address1' value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
+										<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required/>
 									</div>
 								</div>
@@ -406,7 +406,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address2' value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
+										<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" />
 									</div>
 								</div>
@@ -434,7 +434,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_city' value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
+										<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
 										 required />
 									</div>
 								</div>
@@ -443,7 +443,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_postal_code' value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
+										<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" required />
 									</div>
 								</div>
