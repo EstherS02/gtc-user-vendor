@@ -8,6 +8,56 @@
     $("#img6").hide();
 
     $("#gtc-cart-alert").hide();
+    var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+		var fileDetails = {};
+
+		$('#crop-profile-image').click(function () {
+			cropper.getCroppedCanvas().toBlob(function (blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+			});
+			$(test).attr('src', cropper.getCroppedCanvas().toDataURL());
+			$('#profile-picture-modal').modal('hide');
+		})
+
+   function fasterPreview(uploader) {
+		if (uploader.files && uploader.files[0]) {
+
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$(test).attr('src',
+					window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+			}
+		}
+        var test='#img5';
+    
+    	$("#vendor_icon").change(function () {
+			fasterPreview(this);
+      test='#img5';
+      
+		});
+    $("#vendor_cover_pic").change(function () {
+      test='#img6';
+			fasterPreview(this);
+		});
+
+    $('#profile-picture-modal').on('shown.bs.modal', function () {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+				ready: function () {
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
+		}).on('hidden.bs.modal', function () {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
 
     // on change  for image name display on field
     $('.custom-file-input1').on('change', function () {
@@ -99,9 +149,10 @@
         uploads(form, function (location) {
           console.log(location.imageURL); // this is where you get the return value
           $("#img5_old").hide();
-          $("#img5").attr('src', location.imageURL);
-          $("#vendor_profile_pic_url").val(location.imageURL);
           $("#img5").show();
+         // $("#img5").attr('src', location.imageURL);
+          $("#vendor_profile_pic_url").val(location.imageURL);
+          
         });
       } else {
         ouputPopup("Please select image to upload");
@@ -118,9 +169,10 @@
         uploads(form, function (location) {
           console.log(location.imageURL); // this is where you get the return value
           $("#img6_old").hide();
-          $("#img6").attr('src', location.imageURL);
+            $("#img6").show();
+          //$("#img6").attr('src', location.imageURL);
           $("#vendor_cover_pic_url").val(location.imageURL);
-          $("#img6").show();
+        
         });
       } else {
         ouputPopup("Please select image to upload");
@@ -166,7 +218,7 @@
       data.business_verification_file_link = $('#business_verification_file_link').val();
       data.business_address_verification_file_link = $('#business_address_verification_file_link').val();
       data.vendor_profile_pic_url = $('#vendor_profile_pic_url').val();
-      data.vendor_cover_pic_url = $('#vendor_profile_pic_url').val();
+      data.vendor_cover_pic_url = $('#vendor_cover_pic_url').val();
       data.vendor_name = $('#vendor_name').val();
 
       // data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
@@ -184,7 +236,32 @@
       });
     });
   });
-</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+</script>
+
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="showing_categ">
   <div class="">
     <div class="container">
@@ -236,8 +313,9 @@
             <input class="upload-btn1" type="button" id="vendorIcon" value="SUBMIT">
             <br/>
             <img id="img5" alt="your image" class="verification-id" style="object-fit: contain;" />
-            <input type="hidden" id="vendor_profile_pic_url"> {{#if vendor.vendor_profile_pic_url }}
-            <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" alt="your image" class="verification-id" style="object-fit: contain;"
+            <input type="hidden" id="vendor_profile_pic_url">
+             {{#if vendor.vendor_profile_pic_url }}
+            <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" class="verification-id" style="object-fit: contain;"
             /> {{/if}}
           </div>
 
