@@ -168,6 +168,7 @@ module.exports.initRelations = () => {
     const BusinessHour = model.BusinessHour;
     const Coupon = model.Coupon;
     const DiscussionBoard = model.DiscussionBoard;
+    const DiscussionBoardPost = model.DiscussionBoardPost;
     const Order = model.Order;
     const Product = model.Product;
     const TalkSetting = model.TalkSetting;
@@ -201,6 +202,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(DiscussionBoard, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(DiscussionBoardPost, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

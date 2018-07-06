@@ -143,6 +143,8 @@ module.exports.initRelations = () => {
     const Address = model.Address;
     const Admin = model.Admin;
     const Cart = model.Cart;
+    const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
+    const DiscussionBoardPostLike = model.DiscussionBoardPostLike;
     const Order = model.Order;
     const PaymentSetting = model.PaymentSetting;
     const Review = model.Review;
@@ -160,6 +162,7 @@ module.exports.initRelations = () => {
     const Country = model.Country;
     const State = model.State;
     const Product = model.Product;
+    const DiscussionBoardPost = model.DiscussionBoardPost;
     const Shipping = model.Shipping;
     const TalkSetting = model.TalkSetting;
     const Appclient = model.Appclient;
@@ -173,6 +176,18 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(Admin, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(DiscussionBoardPostComment, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(DiscussionBoardPostLike, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -285,6 +300,22 @@ module.exports.initRelations = () => {
         through: Address,
         foreignKey: 'user_id',
         otherKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(DiscussionBoardPost, {
+        through: DiscussionBoardPostComment,
+        foreignKey: 'user_id',
+        otherKey: 'discussion_board_post_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(DiscussionBoardPost, {
+        through: DiscussionBoardPostLike,
+        foreignKey: 'user_id',
+        otherKey: 'discussion_board_post_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
