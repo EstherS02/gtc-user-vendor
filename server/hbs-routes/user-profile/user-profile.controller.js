@@ -11,6 +11,7 @@ const populate = require('../../utilities/populate');
 
 
 export function userProfile(req, res) {
+
 	var vendorModel = "Vendor";
 	var UserModel = "User"
 	var addressModel= "Address";

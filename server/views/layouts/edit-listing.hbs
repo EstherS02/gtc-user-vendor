@@ -88,6 +88,19 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
+		$('#profile-picture-modal').on('shown.bs.modal', function () {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+				ready: function () {
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
+		}).on('hidden.bs.modal', function () {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
 		var test = "#UploadedImage1";
 
 		$("#edit-image1").click(function (e) {
@@ -109,8 +122,6 @@
 			test = "#UploadedImage4";
 			$(".upload4").click();
 		});
-
-
 		$(".upload1").change(function () {
 			fasterPreview(this);
 		});

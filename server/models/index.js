@@ -32,6 +32,9 @@ function init(sequelize) {
     model.Discount = sequelize.import('./definition/discount.js');
     model.DiscussionBoard = sequelize.import('./definition/discussion-board.js');
     model.DiscussionBoardDetail = sequelize.import('./definition/discussion-board-details.js');
+    model.DiscussionBoardPost = sequelize.import('./definition/discussion-board-post.js');
+    model.DiscussionBoardPostComment = sequelize.import('./definition/discussion-board-post-comment.js');
+    model.DiscussionBoardPostLike = sequelize.import('./definition/discussion-board-post-like.js');
     model.EmailTemplate = sequelize.import('./definition/email-template.js');
     model.FeaturedProduct = sequelize.import('./definition/featured-product.js');
     model.GlobalSetting = sequelize.import('./definition/global-setting.js');
@@ -100,6 +103,9 @@ function init(sequelize) {
     require('./definition/discount.js').initRelations();
     require('./definition/discussion-board.js').initRelations();
     require('./definition/discussion-board-details.js').initRelations();
+    require('./definition/discussion-board-post.js').initRelations();
+    require('./definition/discussion-board-post-comment.js').initRelations();
+    require('./definition/discussion-board-post-like.js').initRelations();
     require('./definition/email-template.js').initRelations();
     require('./definition/featured-product.js').initRelations();
     require('./definition/global-setting.js').initRelations();
