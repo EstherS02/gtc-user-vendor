@@ -9,6 +9,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+const verificationStatus = require('../../config/verification_status');
 
 export function verification(req, res) {
     var LoggedInUser = {};
@@ -63,7 +64,8 @@ export function verification(req, res) {
 					verification: results.verification,
 					vendor:results.vendor,
 					LoggedInUser: LoggedInUser,
-					status:statusCode
+					status:statusCode,
+					verificationStatus: verificationStatus
 				});
 			} else {
 				res.render('verification', err);
