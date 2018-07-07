@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        user_id: {
+        vendor_id: {
             type: DataTypes.BIGINT,
-            field: 'user_id',
+            field: 'vendor_id',
             allowNull: false,
             references: {
-                model: 'user',
+                model: 'vendor',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -30,12 +30,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'personal_id_verification_file_link',
             allowNull: true
         },
-        personal_id_verification_file_status:{
+        personal_id_verification_file_status: {
             type: DataTypes.BIGINT,
             field: 'personal_id_verification_file_status',
             allowNull: true
         },
-        personal_id_reason_for_reject:{
+        personal_id_reason_for_reject: {
             type: DataTypes.TEXT,
             field: 'personal_id_reason_for_reject',
             allowNull: true
@@ -43,14 +43,14 @@ module.exports = (sequelize, DataTypes) => {
         personal_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'personal_address_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
-        personal_address_verification_file_status:{
+        personal_address_verification_file_status: {
             type: DataTypes.BIGINT,
             field: 'personal_address_verification_file_status',
             allowNull: true
         },
-        personal_address_reason_for_reject:{
+        personal_address_reason_for_reject: {
             type: DataTypes.TEXT,
             field: 'personal_address_reason_for_reject',
             allowNull: true
@@ -58,14 +58,14 @@ module.exports = (sequelize, DataTypes) => {
         business_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
-        business_verification_file_status:{
+        business_verification_file_status: {
             type: DataTypes.BIGINT,
             field: 'business_verification_file_status',
             allowNull: true
         },
-        business_id_reason_for_reject:{
+        business_id_reason_for_reject: {
             type: DataTypes.TEXT,
             field: 'business_id_reason_for_reject',
             allowNull: true
@@ -73,19 +73,19 @@ module.exports = (sequelize, DataTypes) => {
         business_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_address_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
-        business_address_verification_file_status:{
+        business_address_verification_file_status: {
             type: DataTypes.BIGINT,
             field: 'business_address_verification_file_status',
             allowNull: true
         },
-        business_address_reason_for_reject:{
+        business_address_reason_for_reject: {
             type: DataTypes.TEXT,
             field: 'business_address_reason_for_reject',
             allowNull: true
         },
-        social_links:{
+        social_links: {
             type: DataTypes.TEXT,
             field: 'social_links',
             allowNull: true
@@ -94,6 +94,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             field: 'uploaded_on',
             allowNull: true
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            field: 'status',
+            allowNull: false
         },
         request_for_vendor_verification: {
             type: DataTypes.INTEGER,
@@ -104,11 +109,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'vendor_verified_status',
             allowNull: true
-        },
-        status: {
-            type: DataTypes.INTEGER,
-            field: 'status',
-            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -141,10 +141,10 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const VendorVerification = model.VendorVerification;
-    const User = model.User;
+    const Vendor = model.Vendor;
 
-    VendorVerification.belongsTo(User, {
-        foreignKey: 'user_id',
+    VendorVerification.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

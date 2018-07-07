@@ -47,24 +47,27 @@ export function create(req, res) {
 			model['User'].create(bodyParams)
 				.then(function(user) {
 					if (user) {
-						const rspUser = plainTextResponse(user);
-						model['Admin'].create({
-							user_id: rspUser.id
-						}).then(function(admin) {
-							if (admin) {
-								delete rspUser.salt;
-								delete rspUser.hashed_pwd;
-								res.status(201).send(rspUser);
+						var rspUser = user.toJSON();
+						var adminBodyParams = {};
+						
+						adminBodyParams['user_id'] = rspUser.id;
+						adminBodyParams['status'] = status["ACTIVE"];
+						model['Admin'].create(adminBodyParams)
+							.then(function(admin) {
+								if (admin) {
+									delete rspUser.salt;
+									delete rspUser.hashed_pwd;
+									res.status(201).send(rspUser);
+									return;
+								} else {
+									res.status(404).send("Not found");
+									return;
+								}
+							}).catch(function(error) {
+								console.log('Error :::', error);
+								res.status(500).send("Internal server error");
 								return;
-							} else {
-								res.status(404).send("Not found");
-								return;
-							}
-						}).catch(function(error) {
-							console.log('Error :::', error);
-							res.status(500).send("Internal server error");
-							return;
-						});
+							});
 					} else {
 						res.status(404).send("Not found");
 						return;
@@ -79,7 +82,7 @@ export function create(req, res) {
 	}).catch(function(error) {
 		res.status(500).send("Internal server error");
 		return;
-	})
+	});
 }
 
 export function me(req, res) {

@@ -74,9 +74,22 @@ belongs to        attribute                                as Attribute
 belongs to        category                                 as Category 
 
 
+City
+----
+belongs to        state                                    as State 
+belongs to        country                                  as Country 
+
+
+Continent
+---------
+has many          country                                  as FkCountry1s 
+belongs to many   currency                                 as CountryCurrencies 
+
+
 Country
 -------
 has many          address                                  as FkAddress2s 
+has many          cities                                   as FkCities2s 
 has many          product                                  as FkProduct7s 
 has many          product_ads_setting                      as FkProductAdsSetting2s 
 has many          state                                    as FkState1s 
@@ -84,10 +97,11 @@ has many          tax                                      as FkTax1s
 has many          timezone                                 as FkTimeZone1s 
 has many          vendor                                   as FkVendor2s 
 has many          vendor_shipping_location                 as FkVendorShippingLocation2s 
-belongs to        region                                   as Region 
+belongs to        continent                                as Continent 
 belongs to        currency                                 as Currency 
 belongs to many   users                                    as AddressUsers 
 belongs to many   state                                    as AddressProvinces 
+belongs to many   state                                    as CityStates 
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
@@ -147,7 +161,7 @@ Currency
 --------
 has many          country                                  as FkCountry2s 
 has many          vendor                                   as FkVendor4s 
-belongs to many   region                                   as CountryRegions 
+belongs to many   continent                                as CountryContinents 
 belongs to many   users                                    as VendorUsers 
 belongs to many   country                                  as VendorBaseLocations 
 belongs to many   timezone                                 as VendorTimezones 
@@ -158,15 +172,25 @@ Discount
 belongs to        product                                  as Product 
 
 
-DiscussionBoard
----------------
-has many          discussion_board_details                 as FkDiscussionBoardDetails1s 
+DiscussionBoardPost
+-------------------
+has many          discussion_board_post_comment            as FkDiscussionBoardPostComment1s 
+has many          discussion_board_post_like               as FkDiscussionBoardPostLike1s 
 belongs to        vendor                                   as Vendor 
+belongs to many   users                                    as DiscussionBoardPostCommentUsers 
+belongs to many   users                                    as DiscussionBoardPostLikeUsers 
 
 
-DiscussionBoardDetail
----------------------
-belongs to        discussion_board                         as DiscussionBoard 
+DiscussionBoardPostComment
+--------------------------
+belongs to        discussion_board_post                    as DiscussionBoardPost 
+belongs to        users                                    as User 
+
+
+DiscussionBoardPostLike
+-----------------------
+belongs to        discussion_board_post                    as DiscussionBoardPost 
+belongs to        users                                    as User 
 
 
 EmailTemplate
@@ -317,15 +341,13 @@ belongs to        attribute                                as Attribute
 belongs to        product                                  as Product 
 
 
-ProductMedia
+ProductMedium
 -------------
 belongs to        product                                  as Product 
 
 
 Region
 ------
-has many          country                                  as FkCountry1s 
-belongs to many   currency                                 as CountryCurrencies 
 
 
 Review
@@ -345,11 +367,13 @@ belongs to many   address                                  as OrderBillingAddres
 State
 -----
 has many          address                                  as FkAddress3s 
+has many          cities                                   as FkCities1s 
 has many          product                                  as FkProduct8s 
 has many          product_ads_setting                      as FkProductAdsSetting3s 
 belongs to        country                                  as Country 
 belongs to many   users                                    as AddressUsers 
 belongs to many   country                                  as AddressCountries 
+belongs to many   country                                  as CityCountries 
 belongs to many   vendor                                   as ProductVendors 
 belongs to many   marketplace                              as ProductMarketplaces 
 belongs to many   marketplace_type                         as ProductMarketplaceTypes 
@@ -442,6 +466,8 @@ User
 has many          address                                  as FkAddress1s 
 has many          admin                                    as FkAdmin1s 
 has many          cart                                     as FkCart1s 
+has many          discussion_board_post_comment            as FkDiscussionBoardPostComment2s 
+has many          discussion_board_post_like               as FkDiscussionBoardPostLike2s 
 has many          orders                                   as FkOrder1s 
 has many          payment_setting                          as FkPaymentSetting1s 
 has many          reviews                                  as FkProductReview2s 
@@ -459,6 +485,8 @@ has many          wish_list                                as FkWishList1s
 belongs to many   country                                  as AddressCountries 
 belongs to many   state                                    as AddressProvinces 
 belongs to many   product                                  as CartProducts 
+belongs to many   discussion_board_post                    as DiscussionBoardPostCommentDiscussionBoardPosts 
+belongs to many   discussion_board_post                    as DiscussionBoardPostLikeDiscussionBoardPosts 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
@@ -490,7 +518,7 @@ Vendor
 ------
 has many          business_hours                           as FkBusinessHours1s 
 has many          coupon                                   as FkCoupon1s 
-has many          discussion_board                         as FkDiscussionBoard1s 
+has many          discussion_board_post                    as FkDiscussionBoardPost1s 
 has many          product                                  as FkProduct1s 
 has many          talk_setting                             as FkTalkSetting1s 
 has many          vendor_follower                          as FkVendorFollower1s 

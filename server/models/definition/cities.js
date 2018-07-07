@@ -1,39 +1,49 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('DiscussionBoard', {
+    return sequelize.define('City', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        vendor_id: {
+        state_id: {
             type: DataTypes.BIGINT,
-            field: 'vendor_id',
+            field: 'state_id',
             allowNull: false,
             references: {
-                model: 'vendor',
+                model: 'state',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        type: {
-            type: DataTypes.INTEGER,
-            field: 'type',
+        country_id: {
+            type: DataTypes.BIGINT,
+            field: 'country_id',
+            allowNull: false,
+            references: {
+                model: 'country',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        latitude: {
+            type: DataTypes.DECIMAL(10, 8),
+            field: 'latitude',
             allowNull: false
         },
-        media_url: {
-            type: DataTypes.TEXT,
-            field: 'media_url',
+        longitude: {
+            type: DataTypes.DECIMAL(11, 8),
+            field: 'longitude',
             allowNull: false
         },
-        message: {
-            type: DataTypes.TEXT,
-            field: 'message',
-            allowNull: true
+        name: {
+            type: DataTypes.STRING(255),
+            field: 'name',
+            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
@@ -41,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         created_by: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(64),
             field: 'created_by',
             allowNull: true
         },
@@ -51,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         last_updated_by: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(64),
             field: 'last_updated_by',
             allowNull: true
         },
@@ -66,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'discussion_board',
+        tableName: 'cities',
         timestamps: false
     });
 };
@@ -75,18 +85,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const DiscussionBoard = model.DiscussionBoard;
-    const DiscussionBoardDetail = model.DiscussionBoardDetail;
-    const Vendor = model.Vendor;
+    const City = model.City;
+    const State = model.State;
+    const Country = model.Country;
 
-    DiscussionBoard.hasMany(DiscussionBoardDetail, {
-        foreignKey: 'discussion_board_id',
+    City.belongsTo(State, {
+        foreignKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    DiscussionBoard.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
+    City.belongsTo(Country, {
+        foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

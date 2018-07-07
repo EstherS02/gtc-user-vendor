@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('AdminUser', {
+    return sequelize.define('Continent', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,45 +9,15 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        user_id: {
-            type: DataTypes.BIGINT,
-            field: 'user_id',
-            allowNull: true
-        },
-        role: {
-            type: DataTypes.INTEGER,
-            field: 'role',
-            allowNull: true
-        },
-        email: {
-            type: DataTypes.STRING(128),
-            field: 'email',
-            allowNull: true
-        },
-        first_name: {
+        name: {
             type: DataTypes.STRING(64),
-            field: 'first_name',
-            allowNull: true
-        },
-        last_name: {
-            type: DataTypes.STRING(64),
-            field: 'last_name',
-            allowNull: true
+            field: 'name',
+            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
-        },
-        email_verified: {
-            type: DataTypes.INTEGER,
-            field: 'email_verified',
-            allowNull: true
-        },
-        last_login_at: {
-            type: DataTypes.DATE,
-            field: 'last_login_at',
-            allowNull: true
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -75,12 +45,31 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'admin_user',
+        tableName: 'continent',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
+
+    const model = require('../index');
+    const Continent = model.Continent;
+    const Country = model.Country;
+    const Currency = model.Currency;
+
+    Continent.hasMany(Country, {
+        foreignKey: 'continent_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Continent.belongsToMany(Currency, {
+        through: Country,
+        foreignKey: 'continent_id',
+        otherKey: 'currency_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
 };

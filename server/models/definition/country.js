@@ -9,17 +9,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        region_id: {
-            type: DataTypes.BIGINT,
-            field: 'region_id',
-            allowNull: false,
-            references: {
-                model: 'region',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
         name: {
             type: DataTypes.STRING(128),
             field: 'name',
@@ -29,6 +18,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(3),
             field: 'code',
             allowNull: false
+        },
+        continent_id: {
+            type: DataTypes.BIGINT,
+            field: 'continent_id',
+            allowNull: false,
+            references: {
+                model: 'continent',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         currency_id: {
             type: DataTypes.BIGINT,
@@ -83,6 +83,7 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const Country = model.Country;
     const Address = model.Address;
+    const City = model.City;
     const Product = model.Product;
     const ProductAdsSetting = model.ProductAdsSetting;
     const State = model.State;
@@ -90,7 +91,7 @@ module.exports.initRelations = () => {
     const Timezone = model.Timezone;
     const Vendor = model.Vendor;
     const VendorShippingLocation = model.VendorShippingLocation;
-    const Region = model.Region;
+    const Continent = model.Continent;
     const Currency = model.Currency;
     const User = model.User;
     const Marketplace = model.Marketplace;
@@ -99,6 +100,12 @@ module.exports.initRelations = () => {
     const SubCategory = model.SubCategory;
 
     Country.hasMany(Address, {
+        foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Country.hasMany(City, {
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -146,8 +153,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Country.belongsTo(Region, {
-        foreignKey: 'region_id',
+    Country.belongsTo(Continent, {
+        foreignKey: 'continent_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -158,7 +165,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Country.belongsToMany(User, {
+    Country.belongsToMany(User, {
         through: Address,
         foreignKey: 'country_id',
         otherKey: 'user_id',
@@ -170,6 +177,14 @@ module.exports.initRelations = () => {
         through: Address,
         foreignKey: 'country_id',
         otherKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Country.belongsToMany(State, {
+        through: City,
+        foreignKey: 'country_id',
+        otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -268,6 +283,6 @@ module.exports.initRelations = () => {
         otherKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

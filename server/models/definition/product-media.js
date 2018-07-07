@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('ProductMedia', {
+    return sequelize.define('ProductMedium', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -33,12 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         base_image: {
             type: DataTypes.INTEGER,
             field: 'base_image',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -75,10 +75,10 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const ProductMedia = model.ProductMedia;
+    const ProductMedium = model.ProductMedium;
     const Product = model.Product;
 
-    ProductMedia.belongsTo(Product, {
+    ProductMedium.belongsTo(Product, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

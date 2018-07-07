@@ -53,23 +53,4 @@ module.exports = (sequelize, DataTypes) => {
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
-    const model = require('../index');
-    const Region = model.Region;
-    const Country = model.Country;
-    const Currency = model.Currency;
-
-    Region.hasMany(Country, {
-        foreignKey: 'region_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Region.belongsToMany(Currency, {
-        through: Country,
-        foreignKey: 'region_id',
-        otherKey: 'currency_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
 };

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         symbol: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.TEXT,
             field: 'symbol',
             allowNull: false
         },
@@ -72,7 +72,7 @@ module.exports.initRelations = () => {
     const Currency = model.Currency;
     const Country = model.Country;
     const Vendor = model.Vendor;
-    const Region = model.Region;
+    const Continent = model.Continent;
     const User = model.User;
     const Timezone = model.Timezone;
 
@@ -88,10 +88,10 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Currency.belongsToMany(Region, {
+    Currency.belongsToMany(Continent, {
         through: Country,
         foreignKey: 'currency_id',
-        otherKey: 'region_id',
+        otherKey: 'continent_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

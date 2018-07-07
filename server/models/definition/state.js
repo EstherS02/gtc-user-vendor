@@ -72,6 +72,7 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const State = model.State;
     const Address = model.Address;
+    const City = model.City;
     const Product = model.Product;
     const ProductAdsSetting = model.ProductAdsSetting;
     const Country = model.Country;
@@ -84,6 +85,12 @@ module.exports.initRelations = () => {
 
     State.hasMany(Address, {
         foreignKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.hasMany(City, {
+        foreignKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -106,7 +113,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*State.belongsToMany(User, {
+    State.belongsToMany(User, {
         through: Address,
         foreignKey: 'province_id',
         otherKey: 'user_id',
@@ -117,6 +124,14 @@ module.exports.initRelations = () => {
     State.belongsToMany(Country, {
         through: Address,
         foreignKey: 'province_id',
+        otherKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    State.belongsToMany(Country, {
+        through: City,
+        foreignKey: 'state_id',
         otherKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -184,6 +199,6 @@ module.exports.initRelations = () => {
         otherKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };
