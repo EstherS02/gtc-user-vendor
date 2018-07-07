@@ -198,7 +198,7 @@
         }
       });
     }
-
+    
     function ouputPopup(data) {
       $('#gtc-add-to-cart').prop('disabled', false);
       $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
@@ -237,20 +237,34 @@
         });
       }
 
+     $("#verificationForm").validate({
+		rules: {
+			vendor_name: "required"
+     // vendor_icon:"required",
+      //vendor_cover_pic:"required"
+		},
+		messages: {
+			vendor_name: "Please enter company name"
+     // vendor_icon:"Please select company icon",
+     // vendor_cover_pic:"Please select cover picture"
+		}
+	});
+
+
     });
 
-    $("#verificationForm").validate({
-      rules: {
-       vendor_name: "required",
-       vendor_icon:"required",
-       vendor_cover_pic:"required"
-     },
-     messages: {
-       vendor_name: "Please enter company name",
-       vendor_icon:"Please select company icon",
-       vendor_cover_pic:"Please select cover picture"
-     }
-   });
+   // $("#verificationForm").validate({
+	//	rules: {
+	//		vendor_name: "required"
+     // vendor_icon:"required",
+      //vendor_cover_pic:"required"
+	//	},
+	//	messages: {
+		//	vendor_name: "Please enter company name"
+     // vendor_icon:"Please select company icon",
+     // vendor_cover_pic:"Please select cover picture"
+		//}
+	//});
 
   });
 </script>
@@ -321,32 +335,33 @@
               </div>
             </div>
 
-            <h5 class="gtc-title" style="padding-top: 2px;">Vendor Icon</h5>
-            <div class="col-md-8">
-              <div class="custom-file">
-                <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade" required>
-                <label for="vendor_icon" class="custom-file-label">Browse...
-                </label>
-              </div>
-              <input class="upload-btn1" type="button" id="vendorIcon" value="SUBMIT">
-              <br/>
-              <img id="img5" alt="your image" class="verification-id" style="object-fit: contain;" />
-              <input type="hidden" id="vendor_profile_pic_url">
-              {{#if vendor.vendor_profile_pic_url }}
-              <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" class="verification-id" style="object-fit: contain;"
-              /> {{/if}}
+          <h5 class="gtc-title" style="padding-top: 2px;">Vendor Icon</h5>
+          <div class="col-md-8">
+
+            <div class="custom-file">
+              <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade">
+              <label for="vendor_icon" class="custom-file-label">Browse...
+              </label>
             </div>
             <br/>
+            <img id="img5" alt="your image" class="verification-id" style="object-fit: contain;" />
+            <input type="hidden" id="vendor_profile_pic_url">
+             {{#if vendor.vendor_profile_pic_url }}
+            <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" class="verification-id" style="object-fit: contain;"
+            /> {{/if}}
+          </div>
+<br/>
+<br/>
+          <h5 class="gtc-title" style="padding-top: 2px;">Vendor Cover Picture</h5>
+          <div class="col-md-8">
+            <div class="custom-file">
+              <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade">
+              <label for="vendor_cover_pic" class="custom-file-label">Browse...
+              </label>
+            </div>
+            <input class="upload-btn1" type="button" id="coverPic" value="SUBMIT">
             <br/>
-            <h5 class="gtc-title" style="padding-top: 2px;">Vendor Cover Picture</h5>
-            <div class="col-md-8">
-              <div class="custom-file">
-                <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade" required>
-                <label for="vendor_cover_pic" class="custom-file-label">Browse...
-                </label>
-              </div>
-              <input class="upload-btn1" type="button" id="coverPic" value="SUBMIT">
-              <br/>
+           
               <img id="img6" alt="your image" class="verification-id" style="object-fit: contain;" />
               <input type="hidden" id="vendor_cover_pic_url"> {{#if vendor.vendor_cover_pic_url }}
               <img id="img6_old" src="{{vendor.vendor_cover_pic_url}}" alt="your image" class="verification-id" style="object-fit: contain;"/> {{/if}}

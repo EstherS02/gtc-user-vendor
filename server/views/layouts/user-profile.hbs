@@ -2,11 +2,13 @@
 	#imageUpload {
 		display: none;
 	}
+
 	#profileImage,
 	#userUpdateBtn,
 	#userCancelBtn {
 		cursor: pointer;
 	}
+
 	.list_butt_2 {
 		cursor: pointer;
 	}
@@ -70,6 +72,7 @@
 		$("#imageUpload").change(function () {
 			fasterPreview(this);
 		});
+
 		$("#userForm").submit(function (e) {
 
 			e.preventDefault();
@@ -124,28 +127,57 @@
 				})
 			}
 
-			$.ajax({
-				url: '/api/users/user-profile',
-				type: 'PUT',
-				data: {
-					userUpdate: JSON.stringify(userUpdate),
-					vendorUpdate: JSON.stringify(vendorUpdate),
-					billingUpdate: JSON.stringify(billingUpdate),
-					shippingUpdate: JSON.stringify(shippingUpdate)
-				},
-				success: function (updateData) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text("Profile Updated Successfully")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-				},
-				error: function (error) {
-					console.log("Error", error);
-				}
-			});
+			if ($('#userForm').valid()) {
+
+				$.ajax({
+					url: '/api/users/user-profile',
+					type: 'PUT',
+					data: {
+						userUpdate: JSON.stringify(userUpdate),
+						vendorUpdate: JSON.stringify(vendorUpdate),
+						billingUpdate: JSON.stringify(billingUpdate),
+						shippingUpdate: JSON.stringify(shippingUpdate)
+					},
+					success: function (updateData) {
+						$('#gtc-add-to-cart').prop('disabled', false);
+						$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-cart-alert .cart-message').text("Profile Updated Successfully")
+						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-cart-alert").slideUp(500);
+						});
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				});
+			}
+
 			$.ajaxSetup({ async: true });
+		});
+
+		$("#userForm").validate({
+			rules: {
+				first_name: "required",
+				b_company_name: "required",
+				b_address1: "required",
+				b_city: "required",
+				b_postal_code: "required",
+				s_company_name: "required",
+				s_address1: "required",
+				s_city: "required",
+				s_postal_code: "required"
+			},
+			messages: {
+				first_name: "Please enter first name",
+				b_company_name: "Please enter company",
+				b_address1: "Please enter billing address",
+				b_city: "Please enter billing city",
+				b_postal_code: "Please enter postal code",
+				s_company_name: "Please enter shipping address",
+				s_address1: "Please enter shipping address",
+				s_city: "Please enter shipping city",
+                s_postal_code: "Please enter postal code"
+			}
 		});
 	});
 	function change_b_Country(e) {
@@ -255,11 +287,12 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id="last_name"name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+										<input type="text" id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" />
 									</div>
 								</div>
-								{{!-- <div class="row">
+								{{!--
+								<div class="row">
 									<div class="col-md-4">
 										<p></p>
 									</div>
@@ -274,8 +307,7 @@
 									<div class="col-md-8 common_padding1">
 										<input readonly type="text" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
 									</div>
-								</div> --}}
-							{{#if LoggedInUser.Vendor}}
+								</div> --}} {{#if LoggedInUser.Vendor}}
 								<div class="row">
 									<div class="col-md-4">
 										<p></p>
@@ -314,8 +346,8 @@
 										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required/>
+										<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
 									</div>
 								</div>
 								<div class="row">
@@ -323,8 +355,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required/>
+										<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
 									</div>
 								</div>
 								<div class="row">
@@ -332,8 +364,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -360,8 +392,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 required />
+										<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" required />
 									</div>
 								</div>
 								<div class="row">
@@ -369,8 +401,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required />
+										<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
 									</div>
 								</div>
 								<div class="row" style="margin-bottom: 20px;">
@@ -388,8 +420,8 @@
 										</p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required />
+										<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
 									</div>
 								</div>
 								<div class="row">
@@ -397,8 +429,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required/>
+										<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
 									</div>
 								</div>
 								<div class="row">
@@ -406,8 +438,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+										<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" />
 									</div>
 								</div>
 								<div class="row">
@@ -434,8 +466,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1" style="width: 80%"
-										 required />
+										<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
+										 style="width: 80%" required />
 									</div>
 								</div>
 								<div class="row">
@@ -443,8 +475,8 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required />
+										<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
+										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
 									</div>
 								</div>
 							</div>
