@@ -222,6 +222,7 @@
       data.vendor_name = $('#vendor_name').val();
 
       // data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
+      if ($('#verificationForm').valid()) {
       $.ajax({
         type: 'POST',
         url: '/api/verification/store',
@@ -234,7 +235,23 @@
           console.log("Error", error);
         }
       });
+		 }
+
     });
+
+    $("#verificationForm").validate({
+		rules: {
+			vendor_name: "required",
+      vendor_icon:"required",
+      vendor_cover_pic:"required"
+		},
+		messages: {
+			vendor_name: "Please enter company name",
+      vendor_icon:"Please select company icon",
+      vendor_cover_pic:"Please select cover picture"
+		}
+	});
+
   });
 </script>
 
@@ -268,6 +285,7 @@
       <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-10" style="background-color: #fff;">
+          <form role="form" id="verificationForm">
           <h5 class="gtc-title" style="padding-top: 20px; float: left;">GTC Store verification</h5>
           <p class="verification-incomplete">
             {{#if verification.vendor_verified_status}} {{#ifCond status.APPROVED "==" verification.vendor_verified_status}}
@@ -298,7 +316,7 @@
 
           <div class="col-md-8">
             <div class="row form-group">
-              <input id="vendor_name" type="text" value="{{vendor.vendor_name}}" class="col-md-12 form-control">
+              <input id="vendor_name" name="vendor_name" type="text" value="{{vendor.vendor_name}}" class="col-md-12 form-control" required>
             </div>
           </div>
 
@@ -306,7 +324,7 @@
           <div class="col-md-8">
 
             <div class="custom-file">
-              <input id="vendor_icon" type="file" class="custom-file-input file-uploade">
+              <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade" required>
               <label for="vendor_icon" class="custom-file-label">Browse...
               </label>
             </div>
@@ -318,11 +336,12 @@
             <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" class="verification-id" style="object-fit: contain;"
             /> {{/if}}
           </div>
-
+<br/>
+<br/>
           <h5 class="gtc-title" style="padding-top: 2px;">Vendor Cover Picture</h5>
           <div class="col-md-8">
             <div class="custom-file">
-              <input id="vendor_cover_pic" type="file" class="custom-file-input file-uploade">
+              <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade" required>
               <label for="vendor_cover_pic" class="custom-file-label">Browse...
               </label>
             </div>
@@ -537,6 +556,7 @@
             <button class="update-btn" id="uploadDocs" type="submit">Update</button>
             <button class="cancel-btn" type="reset">Cancel</button>
           </div>
+          </form>
         </div>
 </section>
 {{> footer/footer}}

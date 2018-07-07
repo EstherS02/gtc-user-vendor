@@ -192,7 +192,9 @@
 			return $(element).val() != '';
 		}).serialize();
 
-		editProduct(data, input);
+		if ($('#editForm').valid()) {
+          		editProduct(data, input);
+		 }
 
 		var productImage = {{{ DisplayJSON product.ProductMedia }}}
 	  		var i = 0;
@@ -289,8 +291,8 @@
 				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
 				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
-			//$('#discountAppend').append(domElements)
-			document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
+			$('#discountAppend').append(domElements)
+		//	document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
 
 			count = count + 1;
 			if (count == 3) {
