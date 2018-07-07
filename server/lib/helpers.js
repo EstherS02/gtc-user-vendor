@@ -167,29 +167,8 @@ Handlebars.registerHelper("setChecked", function(value, currentValue) {
 });
 
 Handlebars.registerHelper("days", function(value) {
-    switch (value) {
-        case 0:
-            return 'Sunday';
-            break;
-        case 1:
-            return 'Monday';
-            break;
-        case 2:
-            return 'Tuesday';
-            break;
-        case 3:
-            return 'Wednesday';
-            break;
-        case 4:
-            return 'Thursday';
-            break;
-        case 5:
-            return 'Friday';
-            break;
-        case 6:
-            return 'Saturday';
-            break;
-    }
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    return days[value];
 });
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
@@ -328,11 +307,7 @@ Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
     if (plan == 1) {
         return context;
     } else if (plan == 2) {
-        if (context == 'SHOP') {
-            return context;
-        } else if (context == 'SERVICES') {
-            return context;
-        } else if (context == 'LIFESTYLE') {
+        if (context == 'SHOP'|| context == 'SERVICES'|| context == 'LIFESTYLE') {
             return context;
         } else {
             return ret;
@@ -341,16 +316,40 @@ Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
     } else if (plan == 3) {
         if (context == 'SERVICES') {
             return context;
-        } else {
-            return;
         }
     } else if (plan == 4) {
         if (context == 'LIFESTYLE') {
             return context;
-        } else {
-            return;
         }
     } else {
         return;
+    }
+});
+Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
+    console.log(limit,offset,count)
+    return count-(limit*offset);
+});
+Handlebars.registerHelper('bgColor', function(type, option) {
+    if(type == 1){
+        return 'pmp4';
+    }
+    else if(type == 2){
+        return 'pmp1';
+    }else if(type == 3){
+        return 'pmp2';
+    }else {
+        return 'pmp3';
+    }
+});
+Handlebars.registerHelper('navbarSetting', function(user, type, options) {
+    if(type == "wholesale"){
+        if(user){
+            return options.fn(this);
+        }else
+        {
+           return options.inverse(this);     
+        }
+    }else{
+        return options.fn(this);
     }
 });

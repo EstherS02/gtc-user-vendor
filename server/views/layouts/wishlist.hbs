@@ -140,7 +140,7 @@
 								{{#each wishlist}}
 								<tr>
 									<td><input type="checkbox" value="{{this.id}}"></td>
-									<td class="text_blue_color"><img src="{{this.Product.ProductMedia.url}}" style="width: 15px;" /> <a href="#">{{this.Product.product_name}}</a></td>
+									<td class="text_blue_color"><img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" /> <a href="#">{{this.Product.product_name}}</a></td>
 									<td class="text_blue_color"><a href="#">{{this.User.first_name}} {{this.User.last_name}}</a></td>
 									{{#if this.Product.quantity_available}}
 									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>

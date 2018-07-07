@@ -71,9 +71,9 @@ export function addProduct(req, res) {
 
 	model["Product"].create(req.query)
 		.then(function (row) {
-			req.body.product_id=row.id;
-			if(req.body.url) {
-				model["ProductMedia"].create(req.body)				
+			req.body.product_id = row.id;
+			if (req.body.url) {
+				model["ProductMedia"].create(req.body)
 					.then(function (row) {
 						console.log('Created:::', row);
 						res.status(200).send("Created");
@@ -96,31 +96,30 @@ export function addProduct(req, res) {
 }
 
 export function editProduct(req, res) {
-	
 
-	var id=req.query.product_id;
+	var id = req.query.product_id;
 
-	var stat= req.body.status;
+	var stat = req.body.status;
 	delete req.body.status;
 
-	req.body.status= status[stat];
-	var bodyParams=req.body;
+	req.body.status = status[stat];
+	var bodyParams = req.body;
 
-			model["Product"].update(bodyParams, {
-				where: {
-					id: id
-				}
-			}).then(function (row) {
-				if (row) {
-					res.status(200).send("Created");
-				} else {
-					res.status(500).send("Internal server error");
-				}
-			}).catch(function (error) {
-				res.status(500).send(error);
-			})
+	model["Product"].update(bodyParams, {
+		where: {
+			id: id
+		}
+	}).then(function (row) {
+		if (row) {
+			res.status(200).send("Created");
+		} else {
+			res.status(500).send("Internal server error");
+		}
+	}).catch(function (error) {
+		res.status(500).send(error);
+	})
 }
 
 
-		
+
 

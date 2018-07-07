@@ -11,15 +11,15 @@ import series from 'async/series';
 var async = require('async');
 
 export function vendorSupport(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
-    let user_id = LoggedInUser.id;
-var vendor_id = req.params.id;
-    
-async.series({
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+	var vendor_id = req.params.id;
+
+	async.series({
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -29,7 +29,7 @@ async.series({
 
 			}, {
 				model: model['User'],
-				attributes:['id'],
+				attributes: ['id'],
 				include: [{
 					model: model['VendorVerification'],
 					where: {
@@ -59,9 +59,9 @@ async.series({
 		if (!err) {
 			res.render('vendor-support', {
 				title: "Global Trade Connect",
-				VendorDetail : results.VendorDetail,
+				VendorDetail: results.VendorDetail,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'support'
+				selectedPage: 'support'
 			});
 		} else {
 			res.render('vendor-support', err);
