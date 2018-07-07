@@ -36,28 +36,37 @@
         var test='#img5';
     
     	$("#vendor_icon").change(function () {
+        test='#img5'; 
 			fasterPreview(this);
-      test='#img5'; 
 		});
+
     $("#vendor_cover_pic").change(function () {
       test='#img6';
 			fasterPreview(this);
 		});
 
     $('#profile-picture-modal').on('shown.bs.modal', function () {
-			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
+      if(test=='#img5'){
+        cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 8 / 8,
 				ready: function () {
 					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
 				}
 			});
+      }
+      else{
+          cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 50 / 20,
+				ready: function () {
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
+      }	
 		}).on('hidden.bs.modal', function () {
 			cropBoxData = cropper.getCropBoxData();
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
-
     // on change  for image name display on field
     $('.custom-file-input1').on('change', function () {
       let fileName = $(this).val().split('\\').pop();
@@ -158,8 +167,6 @@
       }
     });
     // End upload profile pic image
-
-
     // upload cover pic image
     $("#coverPic").click(function (e) {
       var form = new FormData();
@@ -206,8 +213,8 @@
         $("#gtc-cart-alert").slideUp(500);
       });
     }
-
     $("#uploadDocs").click(function (e) {
+
       // console.log(form);
       // alert("hai");
       var data = {};
@@ -221,21 +228,28 @@
       data.vendor_name = $('#vendor_name').val();
 
       // data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
-     // if ($('#verificationForm').valid()) {
+      if ($('#verificationForm').valid()) {
       $.ajax({
         type: 'POST',
         url: '/api/verification/store',
         data: data,
         success: function (data) {
           ouputPopup("Verification Request sent");
-
         },
         error: function (error) {
           console.log("Error", error);
         }
       });
-		// }
+		}
     });
+    $("#verificationForm").validate({
+		rules: {
+			vendor_name: "required"
+		},
+		messages: {
+			vendor_name: "Please enter vendor name"
+		}
+	});
   });
 </script>
 
@@ -268,9 +282,9 @@
     <div class="container">
       <div class="row">
         {{> vendor/navbar}}
-        <div class="col-md-10" style="background-color: #fff;">
-          
-          <h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
+        <div class="col-md-10" style="background-color: #fff;">       
+<form role="form" id="verificationForm">
+            <h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
           <p class="verification-incomplete">
             {{#if verification.vendor_verified_status}} {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
             <span class="id-verified">
@@ -548,7 +562,7 @@
             <button class="update-btn" id="uploadDocs" type="submit">Update</button>
             <button class="cancel-btn" type="reset">Cancel</button>
           </div>
-          
+          </form>
         </div>
 </section>
 {{> footer/footer}}
