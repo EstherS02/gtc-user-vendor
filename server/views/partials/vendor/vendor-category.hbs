@@ -21,7 +21,7 @@
       {{/each}}
     </ul>
   </div>
-  {{#ifCond selectedPage '==' 'wholesale'}}
+  {{#if marketPlaceTypes}}
   <p style="margin-top: 20px;"><b>FILTER BY TYPE</b></p>
   <p class="cat_bg_title">ALL TYPES ({{marketPlaceTypes.count}})</p>
   <div class="list-group panel ">
@@ -35,4 +35,4 @@
       {{/each}}
     </ul>
   </div>
-  {{/ifCond}}
+  {{/if}}
