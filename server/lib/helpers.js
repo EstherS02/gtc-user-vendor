@@ -324,3 +324,27 @@ Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
     console.log(limit,offset,count)
     return count-(limit*offset);
 });
+Handlebars.registerHelper('bgColor', function(type, option) {
+    if(type == 1){
+        return 'pmp4';
+    }
+    else if(type == 2){
+        return 'pmp1';
+    }else if(type == 3){
+        return 'pmp2';
+    }else {
+        return 'pmp3';
+    }
+});
+Handlebars.registerHelper('navbarSetting', function(user, type, options) {
+    if(type == "wholesale"){
+        if(user){
+            return options.fn(this);
+        }else
+        {
+           return options.inverse(this);     
+        }
+    }else{
+        return options.fn(this);
+    }
+});

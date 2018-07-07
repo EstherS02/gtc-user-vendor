@@ -27,7 +27,6 @@ export function GetProductDetails(req, res) {
 
     if (req.params.product_slug)
         queryObj['product_slug'] = req.params.product_slug;
-
     queryObj['status'] = status["ACTIVE"];
     var wishQueryObj = {};
     if (LoggedInUser.id) {
@@ -226,8 +225,18 @@ export function GetProductDetails(req, res) {
         // console.log("results**************",results)
         var productsList = JSON.parse(JSON.stringify(results.Product));
                 let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
-        console.log("results**************",results.AllReviews.rows)
-
+        console.log("results**************",productsList)
+        var selectedPage;
+        if(productsList.Marketplace.id == 1){
+            selectedPage = "wholesale";
+        }else if(productsList.Marketplace.id == 2){
+            selectedPage = "shop";
+        }else if(productsList.Marketplace.id == 3){
+            selectedPage = "services";
+        }else{
+            selectedPage = "lifestyle";
+        }
+        console.log("selectedPage*************",selectedPage)
       if (!err) {
             var productRating = [{
                 starCount: 5,
@@ -269,6 +278,7 @@ export function GetProductDetails(req, res) {
                     RelatedProducts:results.RelatedProducts.rows,
                     marketPlaceTypes: results.marketPlaceTypes,
                     marketplace: marketplace,
+                    selectedPage: selectedPage,
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser
             });

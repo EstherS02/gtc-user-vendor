@@ -1,5 +1,6 @@
 <script type="text/javascript">
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+
 	$("body").on("click", "#followVendor", function() {
 		if(vendorInfo.user_id){
 			var  dataItem = {};
@@ -23,17 +24,20 @@
 </script>
 <script>
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	// var marketplacetype = {{{ DisplayJSON selectedPage}}}
+
 	$(document).ready(function () {
 		$("#headerSearchForm1").submit(function (e) {
 			e.preventDefault();
 			let formInput = $("#headerSearchForm1 :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
-			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput;
+			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketplacetype;
 		});
 	});
 </script>
-{{#if LoggedInUser.id}}
+{{#navbarSetting LoggedInUser.id selectedPage}}
+ 
 <div class="banner_bg">
 	{{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
 	<div class="container-fluid banner_bg_menu">
@@ -44,7 +48,7 @@
 						<img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
 					</div>
 					<div class="col-md-6">
-						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}}</span>
+						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}} </span>
 
 					</div>
 				</div>
@@ -96,7 +100,7 @@
 											{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 										</a>
 									</li>
-
+									{{#if LoggedInUser.id}}
 									<li class="nav-item" {{#ifCond selectedPage '==' 'discussion'}} style="background-color: #084681;" {{/ifCond}} >
 										<a class="nav-link" href="/vendor-discussion/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'discussion'}} style="color: #fff" {{/ifCond}}>
 											DISCUSSION BOARD
@@ -112,6 +116,7 @@
 											SUPPORT
 										</a>
 									</li>
+									{{/if}}
 									{{#if LoggedInUser.Vendor.id}}
 									<li class="nav-item dropdown">
 										<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
@@ -189,4 +194,4 @@
 		</div>
 	</div>
 </div>
-{{/if}}
+{{/navbarSetting}}
