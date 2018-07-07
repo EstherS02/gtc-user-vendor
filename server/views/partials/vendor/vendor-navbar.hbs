@@ -25,6 +25,7 @@
 <script>
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
 	// var marketplacetype = {{{ DisplayJSON selectedPage}}}
+	var marketPlaceType = {{{DisplayJSON queryURI}}}
 
 	$(document).ready(function () {
 		$("#headerSearchForm1").submit(function (e) {
@@ -32,7 +33,8 @@
 			let formInput = $("#headerSearchForm1 :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
-			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketplacetype;
+			console.log()
+			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
 		});
 	});
 </script>

@@ -1,4 +1,6 @@
 <script type="text/javascript">
+
+    var marketPlaceType = {{{DisplayJSON queryURI}}}
   function updateQueryStringParameter(uri, key, value) {
     var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
     var separator = uri.indexOf('?') !== -1 ? "&" : "?";

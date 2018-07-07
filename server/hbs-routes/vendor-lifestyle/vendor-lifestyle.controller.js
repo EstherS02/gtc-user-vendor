@@ -25,8 +25,10 @@ export function vendorLifestyle(req, res) {
 	var categoryModel = "Category";
 	var offset, limit, field, order,page;
 	var queryObj = {};
+	var queryURI = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
+	queryURI['marketplace_id'] = marketplace['LIFESTYLE'];
 	queryObj['vendor_id'] = vendor_id;
 	queryObj['status'] = status["ACTIVE"];
 	// var vevndorIncludeArr = [{
@@ -34,20 +36,22 @@ export function vendorLifestyle(req, res) {
 
 	// }]
 	var queryPaginationObj = {};
-	var queryURI = {};
+	// var queryURI = {};
 
-	offset = 0;
-	limit = 18;
-	field = "created_on";
-	// order = "asc";
-
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 20;
 	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
+	delete req.query.field;
 	order = req.query.order ? req.query.order : "asc";
 	queryPaginationObj['order'] = order;
+	queryURI['order'] = order;
 	delete req.query.order;
-	
+
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;

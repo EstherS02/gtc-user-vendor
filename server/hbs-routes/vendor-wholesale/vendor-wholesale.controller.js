@@ -23,7 +23,7 @@ export function vendorWholesale(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order;
+	var offset, limit, field, order,page;
 	var queryObj = {};
 	var vendor_id;
 	queryObj['marketplace_id'] = marketplace['WHOLESALE'];
@@ -36,11 +36,20 @@ export function vendorWholesale(req, res) {
 	} else {
 		vendor_id = 0;
 	}
+	var queryURI = {};
+	queryURI['marketplace_id'] = marketplace['WHOLESALE'];
+	field = req.query.field ? req.query.field : "created_on";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	queryURI['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryURI['page'] = page;
 
 	offset = 0;
 	limit = 9;
-	field = "created_on";
-	order = "asc";
+	// field = "created_on";
+	// order = "asc";
 
 	async.series({
 		wantToSell: function(callback) {
@@ -226,6 +235,7 @@ export function vendorWholesale(req, res) {
 				wantToSell: results.wantToSell,
 				wantToBuy: results.wantToBuy,
 				wantToTrade: results.wantToTrade,
+				queryURI:queryURI,
 				requestForQuote: results.requestForQuote,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
