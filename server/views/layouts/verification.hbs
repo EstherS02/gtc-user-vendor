@@ -37,8 +37,7 @@
     
     	$("#vendor_icon").change(function () {
 			fasterPreview(this);
-      test='#img5';
-      
+      test='#img5'; 
 		});
     $("#vendor_cover_pic").change(function () {
       test='#img6';
@@ -237,20 +236,34 @@
       });
 		 }
 
-    });
-
-    $("#verificationForm").validate({
+     $("#verificationForm").validate({
 		rules: {
-			vendor_name: "required",
-      vendor_icon:"required",
-      vendor_cover_pic:"required"
+			vendor_name: "required"
+     // vendor_icon:"required",
+      //vendor_cover_pic:"required"
 		},
 		messages: {
-			vendor_name: "Please enter company name",
-      vendor_icon:"Please select company icon",
-      vendor_cover_pic:"Please select cover picture"
+			vendor_name: "Please enter company name"
+     // vendor_icon:"Please select company icon",
+     // vendor_cover_pic:"Please select cover picture"
 		}
 	});
+
+
+    });
+
+   // $("#verificationForm").validate({
+	//	rules: {
+	//		vendor_name: "required"
+     // vendor_icon:"required",
+      //vendor_cover_pic:"required"
+	//	},
+	//	messages: {
+		//	vendor_name: "Please enter company name"
+     // vendor_icon:"Please select company icon",
+     // vendor_cover_pic:"Please select cover picture"
+		//}
+	//});
 
   });
 </script>
@@ -324,7 +337,7 @@
           <div class="col-md-8">
 
             <div class="custom-file">
-              <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade" required>
+              <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade">
               <label for="vendor_icon" class="custom-file-label">Browse...
               </label>
             </div>
@@ -341,7 +354,7 @@
           <h5 class="gtc-title" style="padding-top: 2px;">Vendor Cover Picture</h5>
           <div class="col-md-8">
             <div class="custom-file">
-              <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade" required>
+              <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade">
               <label for="vendor_cover_pic" class="custom-file-label">Browse...
               </label>
             </div>
