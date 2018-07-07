@@ -344,7 +344,7 @@
 					<span class="product_rating_star" style="font-size:20px; font-weight: bold;">{{avgRating}}</span>
 					<span style="font-size: 12px;">Based on</span>
 					<span style="font-size: 12px;" class="text_blue_color">
-						<b>{{product.Reviews.length}} Reviews</b>
+						<b>{{productReviewsList.count}} Reviews</b>
 					</span>
 				</p>
 
@@ -370,7 +370,7 @@
 					</div>
 					<div class="col-md-7">
 						<div class="row">
-							{{#each product.Reviews}} 
+							{{#each productReviewsList.rows}} 
 								{{#ifCond @index '<' 1}}
 							 	<div class="col-md-2 col-3 product_img common_padding1">
                                     <img width="100%" class="rounded-circle" src="{{ProfilePicture this.User}}" alt="profile-picture"/>
@@ -394,7 +394,7 @@
                                     <!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
                                 </div>
                                 <div class="col-md-6 col-6">
-                                	{{#ifCond product.Reviews.length '>' 0}}
+                                	{{#ifCond productReviewsList.count '>' 0}}
                                     	<a class="product_buttion" href="/product/{{product.product_name}}/{{product.id}}/allReviews" style="background-color: #154881;padding: 3px 6px;">See All Reviews</a>
                                     {{/ifCond}}
                                 </div>
@@ -551,27 +551,6 @@
 			</p>
 			<p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
 			{{> vendor/vendor-category }}
-				
-			<p style="margin-top: 20px;">
-				<b>FILTER BY TYPE</b>
-			</p>
-			<p class="cat_bg_title">ALL TYPES (293)</p>
-			<div class="list-group panel ">
-				<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-					<span class="hidden-sm-down">WTB - Want to Buy (293)</span>
-				</a>
-				<a href="#" class="list-group-item collapsed" data-toggle="#sidebar">
-					<span class="hidden-sm-down">WTS - Want to Sell (293)</span>
-				</a>
-				<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-					<span class="hidden-sm-down">WTS - Want to Sell (293)</span>
-				</a>
-				<a href="#" class="list-group-item collapsed" data-parent="#sidebar">
-					<span class="hidden-sm-down">WTS - Want to Sell (293)</span>
-				</a>
-			</div>
-
-
 		</div>
 	</div>
 	</div>

@@ -38,12 +38,14 @@ export function GetProductDetails(req, res) {
             }
         }
     }
-
-    //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
-
-    return model["Product"].findOne({
-            where: queryObj,
-            include: [{
+    var sub_category,vendor_id,marketplace_id;
+    var productModel = 'MarketplaceProduct';
+    var order = "desc";
+    var field = "created_on";
+    var product_id;
+    async.series({
+        Product: function(callback) {
+           var includeArr1= [{
                 model: model["Vendor"]
             }, {
                 model: model["Marketplace"]
@@ -61,92 +63,46 @@ export function GetProductDetails(req, res) {
                 model: model["WishList"],
                 where: wishQueryObj,
                 required: false
-            }, {
-                model: model["Review"],
-                
-                include: [{
-                    model: model["User"],
-                    attributes: {
-                        exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-                    }
-                }],
-            }, {
+            },{
                 model: model["ProductMedia"],
                 where: {
                     status: {
                         '$eq': status["ACTIVE"]
                     }
                 }
-            }],
-            order: [
-                [model["ProductMedia"], 'base_image', 'DESC'],
-                [model["Review"], 'rating', 'DESC']
-            ]
-        }).then(function(product) {
-            if (product) {
-                var vendor_id = product.Vendor.id;
-                // console.log("vendor_id",vendor_id)
-
-                // console.log(product)
-                var productsList = JSON.parse(JSON.stringify(product));
-
-                let productReviewsList = _.groupBy(productsList.Reviews, "rating");
-
-                var productRating = [{
-                    starCount: 5,
-                    ratingCount: 0
-                }, {
-                    starCount: 4,
-                    ratingCount: 0
-                }, {
-                    starCount: 3,
-                    ratingCount: 0
-                }, {
-                    starCount: 2,
-                    ratingCount: 0
-                }, {
-                    starCount: 1,
-                    ratingCount: 0
-                }];
-
-                var total = 0;
-                var rating = productsList.Reviews;
-
-                for (let key in rating) {
-                    total = total + rating[key].rating;
-                    if (rating[key].rating <= 5)
-                        productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
+            }];
+            service.findOneRow('Product', queryObj, includeArr1)
+                .then(function(product) {
+                    sub_category = product.sub_category_id;
+                    marketplace_id = product.marketplace_id;
+                    vendor_id = product.vendor_id;
+                    return callback(null, product);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        AllReviews: function(callback) {
+            var reviewModel = "Review";
+            var queryObj1 = {
+                product_id: req.params.product_id,
+                status: status["ACTIVE"]
+            }
+            var includeArr2 = [{
+                model: model["User"],
+                attributes: {
+                    exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
                 }
-
-                var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
-
-                productRating = productRating;//_.orderBy(productRating, ['ratingCount'], ['desc'])
-
-
-                var field = 'id';
-                var order = 'desc';
-                var productModel = 'MarketplaceProduct';
-                var queryObj2 = {}
-
-                queryObj2.sub_category_id = productsList.sub_category_id;
-                queryObj2.vendor_id = productsList.vendor_id;
-                queryObj2.status = status["ACTIVE"];
-                queryObj2.id = {
-                    $ne: [productsList.id]
-                };
-                // console.log("productsList.WishList", productsList.WishLists)
-                var result_obj = {
-                    title: "Global Trade Connect",
-                    product: productsList,
-                    productReviewsList: productReviewsList,
-                    LoggedInUser: LoggedInUser,
-                    rating: productRating,
-                    status: status,
-                    VendorDetail: productsList.Vendor,
-                    wishList: productsList.WishLists,
-                    avgRating: productAvgRating
-                };
-                var vendorIncludeArr = [{
+            }];
+            service.findAllRows(reviewModel, includeArr2, queryObj1, null, null, 'rating', 'desc')
+                .then(function(AllReviews) {
+                    return callback(null, AllReviews);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                });
+        },
+        VendorDetail: function(callback) {
+        var vendorIncludeArr = [{
                 model: model['Country']
 
             }, {
@@ -168,19 +124,34 @@ export function GetProductDetails(req, res) {
                 group: ['VendorRating.vendor_id'],
                 required:false,
             }];
-                service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
+            service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
                 .then(function(response) {
-                    if(response){
-                    result_obj.VendorDetail = response;
-                    }else{
-                        result_obj.VendorDetail = [];
-                    }
+                    return callback(null, response);
 
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-                // var result = {};
+        },
+        RelatedProducts: function(callback) {
+            var queryObj2 = {
+                sub_category_id: sub_category,
+                vendor_id: vendor_id,
+                id: {
+                    $ne: req.params.product_id
+                }
+            };
+            includeArr = [];
+            service.findAllRows(productModel, includeArr, queryObj2, 0, 9, field, order)
+                .then(function(RelatedProducts) {
+                    return callback(null, RelatedProducts);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        categories: function(callback) {
+            var result = {};
             var categoryQueryObj = {};
             var productCountQueryParames = {};
 
@@ -192,43 +163,122 @@ export function GetProductDetails(req, res) {
             if (req.query.marketplace_type) {
                 productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
             }
-            service.getCategory(categoryQueryObj, productCountQueryParames)
-                .then(function(categories) {
-                    // return callback(null, response);
-                     if(categories){
-                        // console.log(response)
-                    result_obj.categories = categories;
-                    }else{
-                        result_obj.categories = [];
-                    }
-                    // console.log("response",result_obj.categories)
-                });
-
-                service.findRows(productModel, queryObj2, 0, 9, field, order)
-                    .then(function(RelatedProducts) {
-                        // console.log(RelatedProducts.rows)
-                        // console.log("-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts-RelatedProducts")
-                        if (RelatedProducts) {
-                            result_obj.RelatedProducts = RelatedProducts.rows;
-                        } else {
-                            result_obj.RelatedProducts = [];
-                        }
-                        console.log("result_obj",result_obj)
-                        res.render('product-view', result_obj);
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        res.render('product-view', result_obj);
-                    });
-            } else {
-                res.render('product-view', {
-                    title: "Global Trade Connect"
-                });
+            if (req.query.location) {
+                productCountQueryParames['product_location'] = req.query.location;
             }
-        })
-        .catch(function(error) {
-            console.log('Error:::', error);
-            res.render('product-view', error);
-        });
+            if (req.query.keyword) {
+                productCountQueryParames['product_name'] = {
+                    like: '%' + req.query.keyword + '%'
+                };
+            }
+            service.getCategory(categoryQueryObj, productCountQueryParames)
+                .then(function(response) {
+                    return callback(null, response);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
+        marketPlaceTypes: function(callback) {
+            if(marketplace_id == marketplace['WHOLESALE']){
+            var result = {};
+            var marketplaceTypeQueryObj = {};
+            var productCountQueryParames = {};
+
+            marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+            productCountQueryParames['vendor_id'] = vendor_id;
+            marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
+
+            productCountQueryParames['status'] = status["ACTIVE"];
+            productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+            if (req.query.location) {
+                productCountQueryParames['product_location'] = req.query.location;
+            }
+            if (req.query.category) {
+                productCountQueryParames['product_category_id'] = req.query.category;
+            }
+            if (req.query.sub_category) {
+                productCountQueryParames['sub_category_id'] = req.query.sub_category;
+            }
+            if (req.query.keyword) {
+                productCountQueryParames['product_name'] = {
+                    like: '%' + req.query.keyword + '%'
+                };
+            }
+            // console.log(productCountQueryParames , marketplaceTypeQueryObj)
+            service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
+                .then(function(response) {
+                    return callback(null, response);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+            }else{
+                return callback(null);
+
+            }
+            
+        }
+
+    }, function(err, results) {
+        // console.log("results**************",results)
+        var productsList = JSON.parse(JSON.stringify(results.Product));
+                let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
+        console.log("results**************",results.AllReviews.rows)
+
+      if (!err) {
+            var productRating = [{
+                starCount: 5,
+                ratingCount: 0
+            }, {
+                starCount: 4,
+                ratingCount: 0
+            }, {
+                starCount: 3,
+                ratingCount: 0
+            }, {
+                starCount: 2,
+                ratingCount: 0
+            }, {
+                starCount: 1,
+                ratingCount: 0
+            }];
+
+            var total = 0;
+            var rating = results.AllReviews.rows;
+
+            for (let key in rating) {
+                total = total + rating[key].rating;
+                if (rating[key].rating <= 5)
+                    productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
+            }
+            var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
+
+            res.render('product-view', {
+                    product: productsList,
+                    productReviewsList: results.AllReviews,
+                    LoggedInUser: LoggedInUser,
+                    rating: productRating,
+                    status: status,
+                    VendorDetail: results.VendorDetail,
+                    wishList: productsList.WishLists,
+                    avgRating: productAvgRating,
+                    categories:results.categories,
+                    RelatedProducts:results.RelatedProducts.rows,
+                    marketPlaceTypes: results.marketPlaceTypes,
+                    marketplace: marketplace,
+                title: "Global Trade Connect",
+                LoggedInUser: LoggedInUser
+            });
+        } else {
+            res.render('product-view', {
+                title: "Global Trade Connect"
+            });
+        }
+    });
+    //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
 }
 
 
@@ -503,7 +553,7 @@ export function GetProductReview(req, res) {
             }
             var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
-            productRating = _.orderBy(productRating, ['ratingCount'], ['desc'])
+            productRating = productRating//_.orderBy(productRating, ['ratingCount'], ['desc'])
 
             res.render('product-review', {
                 title: "Global Trade Connect",
