@@ -55,7 +55,7 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
                 client: client
             };
 
-            var accessToken = jwt.sign(tokenPayload, config.secrets.adminAccessToken, {
+            var accessToken = jwt.sign(tokenPayload, config.secrets.accessToken, {
                 expiresIn: config.token.expiresInMinutes * 60
             });
 
@@ -76,7 +76,7 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
                         email: user.email,
                         client: client
                     };
-                    var refreshToken = jwt.sign(refreshTokenPayload, config.secrets.adminRefreshToken);
+                    var refreshToken = jwt.sign(refreshTokenPayload, config.secrets.refreshToken);
 
                     var token = {
                         client_id: client.id,
@@ -138,7 +138,7 @@ server.exchange(oauth2orize.exchange.password(function(client, email, password,
  */
 server.exchange(oauth2orize.exchange.refreshToken(function(client,
     refreshToken, scope, done) {
-    jwt.verify(refreshToken, config.secrets.adminRefreshToken, function(err,
+    jwt.verify(refreshToken, config.secrets.refreshToken, function(err,
         tokenPayload) {
         if (err) {
             return done(err);
@@ -167,7 +167,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client,
                             client: client
                         };
                         var accessToken = jwt.sign(newTokenPayload,
-                            config.secrets.adminAccessToken, {
+                            config.secrets.accessToken, {
                                 expiresIn: config.token.expiresInMinutes * 60
                             });
                         var token = {

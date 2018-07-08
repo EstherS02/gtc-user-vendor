@@ -49,9 +49,7 @@ var all = {
         refTokenKey: process.env.REFRESH_TOKEN_KEY_SECRET,
         globalAccessToken: process.env.GLOBAL_ACCESS_TOKEN_SECRET,
         accessToken: process.env.ACCESS_TOKEN_SECRET,
-        refreshToken: process.env.REFRESH_TOKEN_SECRET,
-        adminAccessToken: process.env.ADMIN_ACCESS_TOKEN_SECRET,
-        adminRefreshToken: process.env.ADMIN_REFRESH_TOKEN_SECRET
+        refreshToken: process.env.REFRESH_TOKEN_SECRET
     },
 
     //Email

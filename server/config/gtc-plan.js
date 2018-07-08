@@ -1,0 +1,8 @@
+module.exports = {
+    "STARTER_SELLER": 1,
+    "SERVICE_PROVIDER": 2,
+    "LIFESTYLE_PROVIDER": 3,
+    "PUBLIC_SELLER_PRICING_GUIDE": 4,
+    "BULK_BUYER": 5,
+    "WHOLESALE_PRICING_GUIDE": 6
+};

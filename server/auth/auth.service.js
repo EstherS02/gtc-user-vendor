@@ -1,12 +1,16 @@
 'use strict';
 
 const passport = require('passport');
+const moment = require('moment');
 const config = require('../config/environment');
 const expressJwt = require('express-jwt');
 const compose = require('composable-middleware');
 const _ = require('lodash');
 const model = require('../sqldb/model-connect');
+const planPermissions = require('../config/plan-marketplace-permission.js');
 const status = require('../config/status');
+const roles = require('../config/roles');
+const service = require('../api/service');
 
 var validateJwt = expressJwt({
     secret: config.secrets.accessToken,
@@ -111,25 +115,205 @@ function isAuthenticated() {
 function isAuthenticatedUser() {
     return compose()
         .use(function(req, res, next) {
-            console.log('req.query.hasOwnProperty', req.query.hasOwnProperty('access_token'));
-            console.log('req.query', req.query);
+            if (req.query && req.query.hasOwnProperty('access_token')) {
+                req.headers.authorization = 'Bearer ' + req.query.access_token;
+            }
+            validateJwt(req, res, next);
+        })
+        .use(function(req, res, next) {
+            var queryObj = {};
+
+            queryObj['status'] = status["ACTIVE"];
+            queryObj['id'] = req.user.userId;
+
+            model['User'].findOne({
+                where: queryObj,
+                attributes: {
+                    exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+                }
+            }).then(function(userObj) {
+                if (userObj) {
+                    const user = userObj.toJSON();
+                    req.user = user;
+                    return next();
+                }
+            }).catch(function(error) {
+                console.log('Error::::', error);
+                return next(error);
+            });
         });
 }
 
-function plainTextResponse(response) {
-    return response.get({
-        plain: true
-    });
-}
-
-function hasPermission(withAction) {
-    console.log('withAction', withAction);
-    if (!withAction) throw new Error('Required action needs to be set');
+function hasRole(roleRequired) {
+    if (!roleRequired) throw new Error('Required role needs to be set');
+    const vendorIncludeArray = [{
+        model: model["Country"],
+        where: {
+            status: status['ACTIVE']
+        },
+        attributes: ['id', 'name', 'code', 'continent_id', 'currency_id', 'status']
+    }, {
+        model: model["Currency"],
+        where: {
+            status: status['ACTIVE']
+        },
+        attributes: ['id', 'name', 'symbol', 'code', 'decimal_points', 'status']
+    }, {
+        model: model["Timezone"],
+        where: {
+            status: status['ACTIVE']
+        },
+        attributes: ['id', 'country_id', 'timezone', 'timezone_abbreviation', 'status']
+    }, {
+        model: model["VendorPlan"],
+        where: {
+            status: status['ACTIVE']
+        },
+        attributes: ['id', 'vendor_id', 'plan_id', 'start_date', 'end_date', 'status'],
+        include: [{
+            model: model["Plan"],
+            where: {
+                status: status['ACTIVE']
+            },
+            attributes: ['id', 'name', 'cost', 'description', 'duration', 'duration_unit', 'status']
+        }],
+        required: false
+    }];
 
     return compose()
-        .use(isAuthenticated())
+        .use(isAuthenticatedUser())
         .use(function(req, res, next) {
-            return;
+            var queryObj = {};
+
+            queryObj['user_id'] = req.user.id;
+            queryObj['status'] = status['ACTIVE'];
+
+            if (roleRequired === roles['ADMIN']) {
+                // only allow admin
+                if (req.user.role === roles['ADMIN']) {
+                    service.findOneRow('Admin', queryObj)
+                        .then(function(result) {
+                            if (result) {
+                                req.user['Admin'] = result;
+                                return next();
+                            } else {
+                                return res.status(403).send("Forbidden");
+                            }
+                        }).catch(function(error) {
+                            console.log('Error::::', error);
+                            return next(error);
+                        });
+                } else {
+                    return res.status(403).send("Forbidden");
+                }
+            } else if (roleRequired === roles['VENDOR']) {
+                // allows admin and vendor
+                if (req.user.role === roles['ADMIN']) {
+                    service.findOneRow('Admin', queryObj)
+                        .then(function(result) {
+                            if (result) {
+                                req.user['Admin'] = result;
+                                return next();
+                            } else {
+                                return res.status(403).send("Forbidden");
+                            }
+                        }).catch(function(error) {
+                            console.log('Error::::', error);
+                            return next(error);
+                        });
+                } else if (req.user.role === roles['VENDOR']) {
+                    service.findOneRow('Vendor', queryObj, vendorIncludeArray)
+                        .then(function(result) {
+                            if (result) {
+                                req.user['Vendor'] = result;
+                                return next();
+                            } else {
+                                return res.status(403).send("Forbidden");
+                            }
+                        }).catch(function(error) {
+                            console.log('Error::::', error);
+                            return next(error);
+                        });
+                } else {
+                    return res.status(403).send("Forbidden");
+                }
+            } else if (req.user.role === roles['USER']) {
+                // allows admin, vendor admin user
+                if (req.user.role === roles['ADMIN']) {
+                    service.findOneRow('Admin', queryObj)
+                        .then(function(result) {
+                            if (result) {
+                                req.user['Admin'] = result;
+                                return next();
+                            } else {
+                                return res.status(403).send("Forbidden");
+                            }
+                        }).catch(function(error) {
+                            console.log('Error::::', error);
+                            return next(error);
+                        });
+                } else if (req.user.role === roles['VENDOR']) {
+                    service.findOneRow('Vendor', queryObj, vendorIncludeArray)
+                        .then(function(result) {
+                            if (result) {
+                                req.user['Vendor'] = result;
+                                return next();
+                            } else {
+                                return res.status(403).send("Forbidden");
+                            }
+                        }).catch(function(error) {
+                            console.log('Error::::', error);
+                            return next(error);
+                        });
+                } else if (req.user.role === roles['USER']) {
+                    return next();
+                } else {
+                    return res.status(403).send("Forbidden");
+                }
+            } else {
+                return res.status(403).send("Forbidden");
+            }
+        });
+}
+
+function hasPermission() {
+    return compose()
+        .use(function(req, res, next) {
+            if (req.user.role === roles['ADMIN']) {
+                return next();
+            } else if (req.user.role === roles['VENDOR']) {
+                var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+                if (vendorCurrentPlan) {
+                    const currentDate = moment().format('YYYY-MM-DD');
+                    const planStartDate = moment(vendorCurrentPlan.start_date).format('YYYY-MM-DD');
+                    const planEndDate = moment(vendorCurrentPlan.end_date).format('YYYY-MM-DD');
+                    if (currentDate >= planStartDate && currentDate <= planEndDate) {
+                        req.checkBody('marketplace_id', 'Missing Query Param').notEmpty();
+                        var errors = req.validationErrors();
+                        if (errors) {
+                            res.status(400).send('Missing Query Params');
+                            return;
+                        }
+                        var actionsValues = planPermissions[vendorCurrentPlan.plan_id][req.body.marketplace_id];
+                        if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
+                            if (getIndexOfAction(actionsValues, '*') > -1) {
+                                return next();
+                            } else {
+                                res.send(403, "Forbidden");
+                                return;
+                            }
+                        } else {
+                            return res.status(403).send("Forbidden");
+                        }
+                    } else {
+                        return res.status(403).send("Sorry your plan expired.");
+                    }
+                } else {
+                    return res.status(403).send("Please buy a plan to proceed");
+                }
+            } else {
+                return res.status(403).send("Forbidden");
+            }
         });
 }
 
@@ -148,6 +332,13 @@ function getIndexOfAction(array, value) {
     }
 }
 
+function plainTextResponse(response) {
+    return response.get({
+        plain: true
+    });
+}
+
 exports.isAuthenticated = isAuthenticated;
 exports.isAuthenticatedUser = isAuthenticatedUser;
+exports.hasRole = hasRole;
 exports.hasPermission = hasPermission;
