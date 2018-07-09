@@ -86,11 +86,6 @@ img {
   cursor: pointer;
 }
 
-.acc_button {
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-
 a {
     color: #4178bb;
     text-decoration: none;
@@ -734,20 +729,6 @@ a {
 {
   padding: 1rem 6rem;
 }
-.box1
-{
-  background-image:url(../img/signup-hero-home.jpg);
-  background-repeat: no-repeat;
-}
-.ts2
-{
-  background-color: #6a8fbb;
-  padding-top: 0px;
-  font-family: sans-serif;
-}
-.ts2 h6{
-  font-size: 25px;
-}
 
 .geo_button
 {
@@ -1055,3 +1036,154 @@ p.p1 {
     border-radius: 20px;
 
 }
+
+.gtc-box-title {
+  color: #ffffff;
+  margin-bottom: 0;
+  padding: 15px 15px 7px;
+  min-height: 48px;
+}
+
+.marketplace-category-header-box {
+  background: #4177b1;
+  height: 48px;
+}
+
+.m-t-n-marketplace-category {
+  margin-top: -48px;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.common_bottom {
+  margin-bottom: 20px;
+}
+
+.common_bottom_extra {
+  margin-bottom: 35px;
+}
+
+.ten_padding {
+  padding: 10px;
+}
+
+.text_lowercase{
+  text-transform: lowercase;
+}
+
+
+.img_fixed_height{
+  min-width: 60px;
+  height: 60px;
+  max-width: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.header_title{
+  font-size: 11px;
+}
+
+.full_view_pad_eighty{
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.custom_doller_value{
+  float:right;
+  font-size: 15px !important;
+}
+
+
+/* Media Queries for all screen sizes */
+
+@media screen and (max-width: 576px) {
+  .full_view_pad {
+      padding-left: 20px;
+      padding-right: 20px;
+  }
+
+  .box1 {
+      background-image: none;
+  }
+}
+
+@media screen and (min-width: 577px) and (max-width: 768px) {
+  .full_view_pad {
+      padding-left: 50px;
+      padding-right: 50px;
+  }
+
+  .box1 {
+      background-image: none;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .full_view_pad {
+      padding-left: 65px;
+      padding-right: 65px;
+  }
+
+  .box1 {
+      background-image: none;
+  }
+}
+
+@media screen and (min-width: 993px) and (max-width: 1200px) {
+  .full_view_pad {
+      padding-left: 50px;
+      padding-right: 50px;
+  }
+}
+
+@media screen and (min-width: 1201px) and (max-width: 1490px) {
+  .full_view_pad {
+      padding-left: 50px;
+      padding-right: 50px;
+  }
+}
+
+@media screen and (min-width: 1491px) and (max-width: 1824px) {
+  .full_view_pad {
+      padding-left: 100px;
+      padding-right: 100px;
+  }
+}
+
+@media screen and (min-width: 1825px) {
+  .full_view_pad {
+      padding-left: 120px;
+      padding-right: 120px;
+  }
+}
+
+.marketplace-header-box {
+  background: #638ac5;
+  height: 78px;
+}
+
+
+.m-t-n-marketplace {
+  margin-top: -78px;
+}
+
+.gtc-box-market-title {
+  color: #ffffff;
+  margin-bottom: 0;
+  padding: 35px 15px 15px;
+  min-height: 78px;
+}
+
+.search_prod{
+    background-color: #868686;
+    border: none;
+    color: #fff;
+    padding: 7px;
+    font-family: 'Oswald', sans-serif;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+    
