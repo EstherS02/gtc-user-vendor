@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        event: {
+        notification_id: {
             type: DataTypes.TEXT,
-            field: 'event',
+            field: 'notification_id',
             allowNull: false
         },
         enabled: {
@@ -72,9 +72,15 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const VendorNotificationSetting = model.VendorNotificationSetting;
     const Vendor = model.Vendor;
+    const Notification = model.Notification;
 
     VendorNotificationSetting.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    VendorNotificationSetting.belongsTo(Notification, {
+        foreignKey: 'notification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

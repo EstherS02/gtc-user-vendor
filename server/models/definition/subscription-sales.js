@@ -1,23 +1,47 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Region', {
+    return sequelize.define('SubscriptionSales', {
+        sales_count: {
+            type: DataTypes.BIGINT,
+            field: 'sales_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        name: {
+        product_name: {
             type: DataTypes.STRING(128),
-            field: 'name',
+            field: 'product_name',
+            allowNull: true
+        },
+        vendor_name: {
+            type: DataTypes.STRING(64),
+            field: 'vendor_name',
             allowNull: false
+        },
+        owner_name: {
+            type: DataTypes.STRING(64),
+            field: 'owner_name',
+            allowNull: false
+        },
+        publish_date: {
+            type: DataTypes.DATEONLY,
+            field: 'publish_date',
+            allowNull: true
+        },
+        sku: {
+            type: DataTypes.INTEGER,
+            field: 'sku',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -45,31 +69,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'region',
+        tableName: 'subscription_sales',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-
-    const model = require('../index');
-    const Region = model.Region;
-    const Country = model.Country;
-    const Currency = model.Currency;
-
-    Region.hasMany(Country, {
-        foreignKey: 'region_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Region.belongsToMany(Currency, {
-        through: Country,
-        foreignKey: 'region_id',
-        otherKey: 'currency_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
 };

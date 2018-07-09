@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'NO ACTION'
         },
         from_day: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.SMALLINT,
             field: 'from_day',
             allowNull: false
         },
         to_day: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.SMALLINT,
             field: 'to_day',
             allowNull: false
         },

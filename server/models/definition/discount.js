@@ -38,12 +38,12 @@ module.exports = (sequelize, DataTypes) => {
         quantity: {
             type: DataTypes.INTEGER,
             field: 'quantity',
-            allowNull: true
+            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: true
+            allowNull: false
         },
         created_by: {
             type: DataTypes.STRING(64),

@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Tax', {
+    return sequelize.define('DiscussionBoardDetail', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,31 +9,31 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
-            type: DataTypes.STRING(128),
-            field: 'name',
-            allowNull: false
-        },
-        tax_code: {
-            type: DataTypes.STRING(10),
-            field: 'tax_code',
-            allowNull: false
-        },
-        tax_rate: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'tax_rate',
-            allowNull: true
-        },
-        country_id: {
+        discussion_board_id: {
             type: DataTypes.BIGINT,
-            field: 'country_id',
+            field: 'discussion_board_id',
             allowNull: false,
             references: {
-                model: 'country',
+                model: 'discussion_board',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        type: {
+            type: DataTypes.INTEGER,
+            field: 'type',
+            allowNull: false
+        },
+        comment_text: {
+            type: DataTypes.TEXT,
+            field: 'comment_text',
+            allowNull: true
+        },
+        comment_image_url: {
+            type: DataTypes.TEXT,
+            field: 'comment_image_url',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'tax',
+        tableName: 'discussion_board_details',
         timestamps: false
     });
 };
@@ -75,39 +75,13 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Tax = model.Tax;
-    const OrderItem = model.OrderItem;
-    const Country = model.Country;
-    const Order = model.Order;
-    const Product = model.Product;
-    const Coupon = model.Coupon;
+    const DiscussionBoardDetail = model.DiscussionBoardDetail;
+    const DiscussionBoard = model.DiscussionBoard;
 
-    Tax.hasMany(OrderItem, {
-        foreignKey: 'tax_id',
+    DiscussionBoardDetail.belongsTo(DiscussionBoard, {
+        foreignKey: 'discussion_board_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Tax.belongsTo(Country, {
-        foreignKey: 'country_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Tax.belongsToMany(Order, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Tax.belongsToMany(Product, {
-        through: OrderItem,
-        foreignKey: 'tax_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-    
 };
