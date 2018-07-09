@@ -51,9 +51,9 @@ function isAuthenticated() {
         .use(function(req, res, next) {
             let queryObj = {};
 
-            queryObj['status'] = {
-                '$eq': status["ACTIVE"]
-            }
+            // queryObj['status'] = {
+            //     '$eq': status["ACTIVE"]
+            // }
 
             queryObj['id'] = req.user.userId;
 
@@ -84,7 +84,7 @@ function isAuthenticated() {
                             }, {
                                 model: model['Timezone']
                             }, {
-                                model: model['VendorPlan']
+                                model: model['VendorPlan'],
                             }]
                         }).then(function(vendorObj) {
                             if (vendorObj) {

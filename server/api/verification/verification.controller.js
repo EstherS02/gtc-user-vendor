@@ -15,6 +15,7 @@ export function storeData(req, res) {
 	var bodyParam = {}, vendorParam = {};
 	var modelName = "VendorVerification";
 	var vendorModel = "Vendor";
+
 	if (req.body.personal_id_verification_file_link) {
 		bodyParam.personal_id_verification_file_type = req.body.personal_id_verification_file_type;
 		bodyParam.personal_id_verification_file_status = verificationStatus['WAITING'];
@@ -77,8 +78,8 @@ export function storeData(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
-		vendor: function (callback) {
+		}	
+		/*vendor: function (callback) {
 			service.findOneRow(vendorModel, queryObj, includeArr)
 				.then(function (results) {
 
@@ -104,7 +105,7 @@ export function storeData(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		}*/
 	}, function (err, results) {
 		if (!err) {
 			res.status(200).send("Updated");

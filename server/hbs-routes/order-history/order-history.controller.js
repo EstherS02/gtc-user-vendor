@@ -112,6 +112,13 @@ export function orderHistory(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+	if (req.query.keyword) {
+		queryPaginationObj.keyword = req.query.keyword;
+		queryURI['keyword'] = req.query.keyword;
+		productQueryObj['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
 	var field = "id";
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
@@ -119,7 +126,7 @@ export function orderHistory(req, res) {
 	// End pagination
 
 	var modelName = "OrderItem";
-	orderQueryObj['user_id'] = 30;//user_id;
+	orderQueryObj['user_id'] = user_id;
 	var includeArr = [{
 		model: model["Order"],
 		where: orderQueryObj,

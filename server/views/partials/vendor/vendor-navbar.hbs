@@ -39,7 +39,7 @@
 	});
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
- 
+
 <div class="banner_bg">
 	{{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
 	<div class="container-fluid banner_bg_menu">
@@ -73,6 +73,14 @@
 									</li>
 									<li class=" nav-item">
 										{{#if LoggedInUser.Vendor.id}}
+										{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
+										{{else}}
+										{{#if VendorDetail.VendorFollowers}}
+										<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+										{{else}}
+										<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+										{{/if}}
+										{{/ifCond}}
 										{{else}}
 										{{#if VendorDetail.VendorFollowers}}
 										<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>

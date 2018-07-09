@@ -1,4 +1,4 @@
-<script type="text/javascript"> 
+x<script type="text/javascript"> 
 	$(function () {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -10,7 +10,7 @@
 			format: 'yyyy-mm-dd',
 			autohide: true, 
     		// endDate: new Date(),
-    		"endDate": {greaterStart: "#from_date"},
+    		"endDate": {greaterStart: "#from"},
     		onSelect: $('#selectDate').val("")
 
     	});
@@ -85,7 +85,7 @@
 				<div class="col-md-10" style="background-color: #fff;">
 					<h5 style="padding-top: 20px;">Order History</h5>
 					<div class="row">
-						<div class="col-md-7">
+						<div class="col-md-9">
 							<form id="searchOrder">
 								Date Range
 								<input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
@@ -108,22 +108,17 @@
 								
 								<input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
 							</form>
-
 						</div>
-						<div class="col-md-2">
-						<select class="vend_edit_lists_buttonstyle float-right" id="statusSelected" name="statusSelected">
+						<div class="col-md-3">
+						<select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
 									<option value="">STATUS</option>
 									<option value="INACTIVE">InActive</option>
 									<option value="NEWORDER"> New Order</option>
 									<option value="CANCLEORDER"> Cancel Order</option>
 									<option value="FAILEDORDER"> Failed Order</option>
 								</select> 
-								</div>
-								<div class="col-md-1">
 								<input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
-								</div>
-								<div class="col-md-2">
-							<input style="width: 100%;" type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" />
+							<input  type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " />
 						</div>
 					</div>
 					<div class="row" style="padding-top: 10px">
@@ -131,7 +126,9 @@
 							
 						</div>
 						<div class="col-md-4">
-							<input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" />
+						<form>
+							<input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
+							</form>
 							<select style="width: 35%" class="vend_edit_lists_buttonstyle float-right">
 								<option>EXPORT TO</option>
 							</select>
@@ -169,10 +166,10 @@
 							<tbody>
 								{{#each OrderItems}}
 								<tr>
-									<td><input type="checkbox" value="{{this.Order.id}}"></td>
+									<td><input type="checkbox" value="{{this.id}}"></td>
 									<td>{{this.Order.invoice_id}}</td>
 									<td><a href="/product/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a></td>
-									<td class="text_blue_color"><a href="/vendor-about">{{this.Product.Vendor.vendor_name}}</a></td>
+									<td class="text_blue_color"><a href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a></td>
 									<td>{{objectKey  ../marketPlace this.Product.marketplace_id }}
 
 									</td>

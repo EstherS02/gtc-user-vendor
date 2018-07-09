@@ -11,12 +11,12 @@ const service = require('../service');
 export function workingHours(req,res){
 	const data = req.body;
 	console.log(data);
-	data['vendor_id'] = 29;
+	data['vendor_id'] = req.user.Vendor.id;
 	data['status'] = 1;
 	const modelName = 'BusinessHour';
 	var includeArr = [];
 	var queryObj = {
-		vendor_id :29,
+		vendor_id :req.user.Vendor.id,
 		from_day:req.body.from_day,
 		to_day:req.body.to_day,
 		// start_time:req.body.start_time,

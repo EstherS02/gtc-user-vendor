@@ -45,7 +45,6 @@ export function verification(req, res) {
 				service.findOneRow(vendorModel,queryObj,includeArr)
 				.then(function(response){
 					if(response){
-						console.log("**********************************************",response);
 						return callback(null, response);
 						}else
 						{

@@ -37,6 +37,13 @@ export function orderHistory(req, res) {
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	delete req.query.page;
+	if (req.query.keyword) {
+		queryPaginationObj.keyword = req.query.keyword;
+		queryURI['keyword'] = req.query.keyword;
+		productQueryObj['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
 	var field = "id";
 	offset = (page - 1) * limit;
 	var maxSize;
