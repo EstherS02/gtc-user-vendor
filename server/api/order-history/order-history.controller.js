@@ -12,7 +12,7 @@ export function updateStatus(req, res) {
 	// console.log(req.body);
 	var id = JSON.parse(req.body.id);
 	var status =  req.body.status;
-	var modelName = "Order";
+	var modelName = "OrderItem";
 	var bodyParams={};
 	console.log(id);
 	bodyParams.status = statusCode["INACTIVE"];
