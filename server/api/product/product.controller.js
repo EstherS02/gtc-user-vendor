@@ -171,6 +171,21 @@ export function editProduct(req, res) {
     })
 }
 
+export function discount(req,res){
+    var arrayEle =JSON.parse(req.body.data);
+    arrayEle.forEach(function(element){
+
+        service.createRow('Discount', element)
+        .then(function(discount) {
+            return res.status(201).send(discount);
+        })
+        .catch(function(error) {
+            console.log('Error:::', error);
+            return res.status(500).send("Internal server error.");
+        }) 
+    });
+}
+
 function string_to_slug(str) {
     str = str.replace(/^\s+|\s+$/g, ''); // trim
     str = str.toLowerCase();

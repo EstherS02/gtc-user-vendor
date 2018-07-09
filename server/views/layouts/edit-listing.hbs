@@ -51,8 +51,7 @@
 				for (var i = 0; i < result.rows.length; i++) {
 					var options;
 					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-
-					$("#sub_category").append(options)
+                    $("#sub_category").append(options)
 				}
 			},
 			error: function (error) {
@@ -108,7 +107,6 @@
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
 		var test = "#UploadedImage1";
 
 		$("#edit-image1").click(function (e) {
@@ -210,9 +208,7 @@
 		});
 		var amtArr = temp2.filter(function (v) { return v !== '' });
 
-
 		var j = 0; discountArr = [];
-
 		quantArr.forEach(function (element) {
 
 			let discount = {};
@@ -227,28 +223,26 @@
 				discount.type = 2;
 				discount.value_discount = amtArr[j];
 			}
-			prdDiscount(discount, function (data) {
-				console.log("updated Successfully");
-			})
+				discountArr.push(discount);
 			j++;
 		})
 
-		function prdDiscount(discount, callback) {
+	var dataFormate = {};
+	dataFormate.data = JSON.stringify(discountArr);
+	
 			$.ajax({
 				type: 'POST',
-				url: '/api/discounts',
-				data: discount,
+				url: '/api/product/discount',
+				data: dataFormate,
 				success: function (data, text) {
-					callback(data);
-
+					console.log("discount updated");
 				},
 				error: function (request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});
-		}
-       
+
 	   let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
 		}).serialize();
@@ -363,7 +357,6 @@
 })
 
 	function testValue(count) {
-	
 		$(".value_discount_amount" + count).show();
 		$(".percent_discount_amount" + count).hide();
 	}
