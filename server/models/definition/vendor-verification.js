@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         personal_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'personal_address_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
         personal_address_verification_file_status:{
             type: DataTypes.BIGINT,
@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
         business_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
         business_verification_file_status:{
             type: DataTypes.BIGINT,
@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         business_address_verification_file_link: {
             type: DataTypes.TEXT,
             field: 'business_address_verification_file_link',
-            allowNull: false
+            allowNull: true
         },
         business_address_verification_file_status:{
             type: DataTypes.BIGINT,

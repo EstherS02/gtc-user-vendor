@@ -4,15 +4,21 @@
 		overflow: hidden;
 		height: auto;
 	}
+
 	.edit-image {
 		cursor: pointer;
 	}
-	#editdiscount,#update, #reset {
+
+	#editdiscount,
+	#update,
+	#reset {
 		cursor: pointer;
 	}
+
 	.upload {
 		display: none;
 	}
+
 	.editpic {
 		padding-top: 10px;
 		padding-right: 10px;
@@ -20,6 +26,7 @@
 		right: 0;
 		top: 0;
 	}
+
 	.edit-image {
 		transform: scale(1, 2);
 	}
@@ -44,8 +51,7 @@
 				for (var i = 0; i < result.rows.length; i++) {
 					var options;
 					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-
-					$("#sub_category").append(options)
+                    $("#sub_category").append(options)
 				}
 			},
 			error: function (error) {
@@ -74,6 +80,7 @@
 	}
 
 	$(document).ready(function () {
+
 		$("#gtc-cart-alert").hide();
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
@@ -100,7 +107,6 @@
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
 		var test = "#UploadedImage1";
 
 		$("#edit-image1").click(function (e) {
@@ -125,7 +131,7 @@
 		$(".upload1").change(function () {
 			fasterPreview(this);
 		});
-        $(".upload2").change(function () {
+		$(".upload2").change(function () {
 			fasterPreview(this);
 		});
 		$(".upload3").change(function () {
@@ -183,27 +189,75 @@
 			}
 		}
 
-	var data = {{ product.id }};
+		var data = {{ product.id }};
 
 	$("#editForm").submit(function (e) {
-        e.preventDefault();
+		e.preventDefault();
 
-		let input = $("#editForm :input").filter(function (index, element) {
+		var temp1 = $.map($('.quantity'), function (el) {
+			return el.value;
+		});
+		var quantArr = temp1.filter(function (v) { return v !== '' });
+
+		var typeArr = $.map($('.discount_type:radio:checked'), function (el) {
+			return el.value;
+		});
+
+		var temp2 = $.map($('.discount_amount'), function (el) {
+			return el.value;
+		});
+		var amtArr = temp2.filter(function (v) { return v !== '' });
+
+		var j = 0; discountArr = [];
+		quantArr.forEach(function (element) {
+
+			let discount = {};
+			discount.product_id=data;
+			discount.status=1;
+			discount.quantity = quantArr[j];
+			if (typeArr[j] == 'percentage_discount') {
+				discount.type = 1;
+				discount.percent_discount = amtArr[j];
+			}
+			else {
+				discount.type = 2;
+				discount.value_discount = amtArr[j];
+			}
+				discountArr.push(discount);
+			j++;
+		})
+
+	var dataFormate = {};
+	dataFormate.data = JSON.stringify(discountArr);
+	
+			$.ajax({
+				type: 'POST',
+				url: '/api/product/discount',
+				data: dataFormate,
+				success: function (data, text) {
+					console.log("discount updated");
+				},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+
+	   let input = $("#editForm :input").filter(function (index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
 		if ($('#editForm').valid()) {
-          		editProduct(data, input);
-		 }
+			editProduct(data, input);
+		}
 
-		var productImage = {{{ DisplayJSON product.ProductMedia }}}
+		var productImage = {{{ DisplayJSON product.ProductMedia }}};
 	  		var i = 0;
 	        var imageId = [];
 	        productImage.forEach(function (element) {
-	         	imageId[i] = element.id;
-		        console.log(imageId);
-		        i++;
-         	});
+		       imageId[i] = element.id;
+		       i++;
+	        });
 
 	let obj = {};
 
@@ -278,21 +332,21 @@
 		if (count < 3) {
 
 			var domElements = '<div class="row"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
-				'<div class="row form-group"><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
+				'<div class="row form-group"'+'style="padding-left: 10px;"'+'><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
 				'<div class="col-md-1 common_padding1" style="margin-right: 5px;">' +
-				'<input class="list_place_1" type="text" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"/></div>' +
+				'<input class="list_place_1 quantity" type="text" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"/></div>' +
 				'<div class="col-md-2 common_padding1" style="margin-right:15px;"><p class="edit-listing-dis">user recieves</p></div>' +
 				'<div class="col-md-7 common_padding1"><div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" onclick=testPercent('+count+'); checked /> Total Percent Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 percent_discount_amount' + count + '"><input class="list_place_2" type="text" id="percent_discount_amount' + count + '" name="percent_discount_amount' + count + '" placeholder="20%" />%</div>' +
+				'<input type="radio" class="discount_type" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" onclick=testPercent(' + count + '); checked /> Total Percent Discount</p></div>' +
+				'<div class="col-md-3 common_padding1 percent_discount_amount' + count + '"><input class="list_place_2 discount_amount" type="text" id="percent_discount_amount' + count + '" name="percent_discount_amount' + count + '" placeholder="20%" />%</div>' +
 				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
 				'<div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" onclick=testValue('+count+'); /> Total Value Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
+				'<input type="radio" class="discount_type" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" onclick=testValue(' + count + '); /> Total Value Discount</p></div>' +
+				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2 discount_amount" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
 				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
 
 			$('#discountAppend').append(domElements)
-		//	document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
+			//	document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
 
 			count = count + 1;
 			if (count == 3) {
@@ -302,19 +356,15 @@
 	})
 })
 
-function testValue(count)
-{
-	console.log(count);
-	$(".value_discount_amount"+count).show();
-	$(".percent_discount_amount"+count).hide();
-}
+	function testValue(count) {
+		$(".value_discount_amount" + count).show();
+		$(".percent_discount_amount" + count).hide();
+	}
 
-function testPercent(count)
-{
-	console.log(count);
-	$(".value_discount_amount"+count).hide();
-	$(".percent_discount_amount"+count).show();
-}
+	function testPercent(count) {
+		$(".value_discount_amount" + count).hide();
+		$(".percent_discount_amount" + count).show();
+	}
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -346,7 +396,7 @@ function testPercent(count)
 		<div class="container">
 			<div class="row">
 				{{> vendor/navbar}}
-                <div class="col-md-8" style="background-color: #fff;">
+				<div class="col-md-8" style="background-color: #fff;">
 					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
 						<div class="alert" id="gtc-cart-alert">
@@ -373,7 +423,7 @@ function testPercent(count)
 										</div>
 									</section>
 									<div class="row">
-                                        <div class="col-md-4">
+										<div class="col-md-4">
 											{{#if product.ProductMedia.[0].url}}
 											<img id="UploadedImage1" src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;"
 											/>
@@ -407,7 +457,7 @@ function testPercent(count)
 													<input class="upload4" id="imageEdit4" type="file" name="file" onclick="this.value=null;" style="display:none">
 												</div>
 												{{/if}}
-                                            	</div>
+											</div>
 										</div>
 
 										<div class="col-md-8">
@@ -554,7 +604,7 @@ function testPercent(count)
 															<p>For</p>
 														</div>
 														<div class="col-md-1 common_padding1" style="margin-right: 5px;">
-															<input class="list_place_1" type="text" name="discount_quantity0" id="discount_quantity0" placeholder="20" />
+															<input class="list_place_1 quantity" type="text" name="discount_quantity0" id="discount_quantity0" placeholder="20" />
 														</div>
 														<div class="col-md-2 common_padding1" style="margin-right:15px;">
 															<p class="edit-listing-dis">user recieves</p>
@@ -563,10 +613,11 @@ function testPercent(count)
 															<div class="row ">
 																<div class="col-md-6 common_padding1">
 																	<p class="edit-listing-dis">
-																		<input type="radio" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked onclick=testPercent('0');  /> Total Percent Discount</p>
+																		<input type="radio" class="discount_type" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked
+																		 onclick=testPercent( '0'); /> Total Percent Discount</p>
 																</div>
 																<div class="col-md-3 common_padding1 percent_discount_amount0">
-																	<input class="list_place_2" type="text" name="percent_discount_amount0" placeholder="20%" />%
+																	<input class="list_place_2 discount_amount" type="text" name="percent_discount_amount0" placeholder="20%" />%
 																</div>
 																<div class="col-md-1 common_padding1 percent_discount_amount0">
 																	<p class="list_edit">
@@ -576,10 +627,10 @@ function testPercent(count)
 															<div class="row ">
 																<div class="col-md-6 common_padding1">
 																	<p class="edit-listing-dis">
-																		<input type="radio" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue('0'); /> Total Value Discount</p>
+																		<input type="radio" class="discount_type" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue('0'); /> Total Value Discount</p>
 																</div>
 																<div class="col-md-3 common_padding1 value_discount_amount0" style="display:none">
-																	<input class="list_place_2" type="text" name="value_discount_amount0" placeholder="20$" />$
+																	<input class="list_place_2 discount_amount" type="text" name="value_discount_amount0" placeholder="20$" />$
 																</div>
 																<div class="col-md-1 common_padding1 value_discount_amount0" style="display:none">
 																	<p class="list_edit">
