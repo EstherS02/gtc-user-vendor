@@ -37,7 +37,7 @@ function limitExceeds() {
                             const maximumProductLimit = planLimit.maximum_product;
                             service.countRows(productModelName, queryObjProduct)
                                 .then(function(existingProductCount) {
-                                    if (existingProductCount <= maximumProductLimit) {
+                                    if (existingProductCount < maximumProductLimit) {
                                         return next();
                                     } else {
                                         return res.status(403).send("Limit exceeded to add product.");
