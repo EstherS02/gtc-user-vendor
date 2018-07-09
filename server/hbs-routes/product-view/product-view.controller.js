@@ -27,7 +27,6 @@ export function GetProductDetails(req, res) {
 
     if (req.params.product_slug)
         queryObj['product_slug'] = req.params.product_slug;
-
     queryObj['status'] = status["ACTIVE"];
     var wishQueryObj = {};
     if (LoggedInUser.id) {
@@ -43,6 +42,7 @@ export function GetProductDetails(req, res) {
     var order = "desc";
     var field = "created_on";
     var product_id;
+    var queryURI = {};
     async.series({
         Product: function(callback) {
            var includeArr1= [{
@@ -223,11 +223,23 @@ export function GetProductDetails(req, res) {
         }
 
     }, function(err, results) {
+        queryURI['marketplace_id'] = results.Product.Marketplace.id;
         // console.log("results**************",results)
         var productsList = JSON.parse(JSON.stringify(results.Product));
-                let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
-        console.log("results**************",results.AllReviews.rows)
 
+                let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
+        // console.log("results**************",productsList)
+        var selectedPage;
+        if(productsList.Marketplace.id == 1){
+            selectedPage = "wholesale";
+        }else if(productsList.Marketplace.id == 2){
+            selectedPage = "shop";
+        }else if(productsList.Marketplace.id == 3){
+            selectedPage = "services";
+        }else{
+            selectedPage = "lifestyle";
+        }
+        // console.log("selectedPage*************",selectedPage)
       if (!err) {
             var productRating = [{
                 starCount: 5,
@@ -265,10 +277,12 @@ export function GetProductDetails(req, res) {
                     VendorDetail: results.VendorDetail,
                     wishList: productsList.WishLists,
                     avgRating: productAvgRating,
+                    queryURI:queryURI,
                     categories:results.categories,
                     RelatedProducts:results.RelatedProducts.rows,
                     marketPlaceTypes: results.marketPlaceTypes,
                     marketplace: marketplace,
+                    selectedPage: selectedPage,
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser
             });
@@ -334,7 +348,7 @@ export function GetProductReview(req, res) {
     queryPaginationObj['page'] = page;
     delete req.query.page;
     var field = "id";
-
+    var queryURI = {};
     offset = (page - 1) * limit;
     queryPaginationObj['offset'] = offset;
     var maxSize;
@@ -520,7 +534,8 @@ export function GetProductReview(req, res) {
         }
 
     }, function(err, results) {
-        console.log("results**************",results)
+         queryURI['marketplace_id'] = results.Product.marketplace_id;
+        // console.log("results**************",results)
         if (!err) {
             maxSize = results.Review.count / limit;
             if (results.Review.count % limit)
@@ -567,6 +582,7 @@ export function GetProductReview(req, res) {
                 ratingCount: results.Review.count,
                 VendorDetail:results.VendorDetail,
                 categories:results.categories,
+                queryURI:queryURI,
 
                 // pagination
                 page: page,

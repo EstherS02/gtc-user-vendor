@@ -29,6 +29,7 @@ export function vendorShop(req, res) {
 	var queryURI = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['PUBLIC'];
+	queryURI['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;

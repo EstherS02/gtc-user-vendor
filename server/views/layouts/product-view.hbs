@@ -133,7 +133,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 
 <section>
-{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 	<div class="logged_in_cont">
 		<div class="container">
 			<div class="row">
@@ -142,10 +142,10 @@
 				</div>
 				<div class="col-md-10 col-12">
 					<div class="alert" id="gtc-cart-alert">
-       		 			<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
 						<span class="cart-message"></span>
-    				</div>
-					<div class="row pmp4">
+					</div>
+					<div class="row {{#bgColor product.Marketplace.id}}{{/bgColor}}" style="color:#fff">
 						<div class="col-md-12 col-12">
 							<h3>{{product.Marketplace.name}}</h3>
 						</div>
@@ -158,405 +158,396 @@
 									<div class="row">
 										<div class="row">
 											{{#each product.ProductMedia}} 
-												{{#if @first}} 
-												{{else}} 
+											{{#if @first}} 
+											{{else}} 
 											{{#ifCond @index '<' 4}}
 											<div class="col-md-4 col-4">
 												<img src="{{this.url}}" alt="logo" style="width: 100%" />
 											</div>
-                                        	{{/ifCond}}
+											{{/ifCond}}
 											{{/if}}
 											{{/each}}
-                                </div>
-							</div>
-						</div>
-						<div class="col-md-8">
-                       	<div class="col-md-12">
-							<div class="row">
-                            <div class="col-md-6 common_padding1">
-                            <div class="row">
-                            <!--new end-->
-								<div class="col-md-4 col-3">
-									<p class="product_view_ven">Origin</p>
-								</div>
-								<div class="col-md-8 col-9">
-									<p class="product_view_ven">{{product.Country.name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 col-3">
-									<p class="product_view_ven">Category</p>
-								</div>
-								<div class="col-md-8 col-9">
-									<p class="product_view_ven">{{product.Category.name}} > {{product.SubCategory.name}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 col-3">
-									<p class="product_view_ven">SKU</p>
-								</div>
-								<div class="col-md-8 col-9">
-									<p class="product_view_ven">{{product.sku}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 col-3">
-									<p class="product_view_ven">MOQ</p>
-								</div>
-								<div class="col-md-8 col-9">
-									<p class="product_view_ven">{{product.moq}}</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-4 col-3">
-									<p class="product_view_ven">Availability</p>
-								</div>
-								<div class="col-md-8 col-9">
-									<p class="text_green_color product_view_ven">{{product.quantity_available}} in stock</p>
-								</div>
-                          	</div>
-                             </div>
-                             	<div class="col-md-6">
-                             		<div class="row">
-                             		<div class="col-md-2 col-12" >
-										<p class="com_product_stock">Qty:</p>
+										</div>
 									</div>
-									<div class="col-md-3 col-12 common_padding1">
-										<input type="number" min="1" value="1" id="product-quantity" class="geo_textbox" />
-									</div>
-									<div class="col-md-7 col-12 common_padding1" >
-										{{#if LoggedInUser.email}}
-										<a href="javascript:;" id="gtc-add-to-cart" class="com_add_to_cart" > 
-											<i class="fas fa-shopping-bag"></i> ADD TO BAG</a>
-										{{else}}
-											<a href="/login" class="com_add_to_cart">Login </a>
+								</div>
+								<div class="col-md-8">
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-6 common_padding1">
+												<div class="row">
+													<!--new end-->
+													<div class="col-md-4 col-3">
+														<p class="product_view_ven">Origin</p>
+													</div>
+													<div class="col-md-8 col-9">
+														<p class="product_view_ven">{{product.Country.name}}</p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4 col-3">
+														<p class="product_view_ven">Category</p>
+													</div>
+													<div class="col-md-8 col-9">
+														<p class="product_view_ven">{{product.Category.name}} > {{product.SubCategory.name}}</p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4 col-3">
+														<p class="product_view_ven">SKU</p>
+													</div>
+													<div class="col-md-8 col-9">
+														<p class="product_view_ven">{{product.sku}}</p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4 col-3">
+														<p class="product_view_ven">MOQ</p>
+													</div>
+													<div class="col-md-8 col-9">
+														<p class="product_view_ven">{{product.moq}}</p>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4 col-3">
+														<p class="product_view_ven">Availability</p>
+													</div>
+													<div class="col-md-8 col-9">
+														<p class="text_green_color product_view_ven">{{product.quantity_available}} in stock
+														</p>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="row">
+													<div class="col-md-2 col-12" >
+														<p class="com_product_stock">Qty:</p>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="number" min="1" value="1" id="product-quantity" class="geo_textbox" />
+													</div>
+													<div class="col-md-7 col-12 common_padding1" >
+														{{#if LoggedInUser.email}}
+														<a href="javascript:;" id="gtc-add-to-cart" class="com_add_to_cart" > 
+															<i class="fas fa-shopping-bag"></i> ADD TO BAG
+														</a>
+														{{else}}
+														<a href="/login" class="com_add_to_cart">Login </a>
+														{{/if}}
+													</div>
+													<div class="modal fade"{{!--  id="myModal" --}}>
+														<div class="modal-dialog modal-dialog-centered">
+															<div class="modal-content">
+																<div class="col-md-12">
+																	<div class="row modal_geo_bgimg1">
+																		<h1>LIKE WHAT YOU SEE?</h1>
+																		<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.
+																		</p>
+																		<p class="modal_why_geo_p">If you'd like uniterupted access to our wholesale marketplace, we need you to create an
+																			account with Global Trade Connect
+																		</p>
+																		<div class="col-md-5 common_padding1">
+																			<a href="#">
+																				<img src="../../img/login-facebook.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
+																			</a>
+																			<a href="#">
+																				<img src="../../img/login-google.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
+																			</a>
+																			<a href="#">
+																				<img src="../../img/login-twitter.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
+																			</a>
+																			<a href="#">
+																				<img src="../../img/login-linkedin.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
+																			</a>
+																		</div>
+																		<div class="col-md-6">
+																			<input type="text" placeholder="Create a Username" class="modal_acc_textbox" />
+																			<input type="text" placeholder="Create a Password" class="modal_acc_textbox" />
+																			<input type="text" placeholder="Confirm Password" class="modal_acc_textbox" />
+																			<br/>
+																			<label class="modal_login-checkbox">
+																				<input type="checkbox">
+																				<i></i> Accept terms and conditions</label>
+																				<input type="submit" value="CREATE ACCOUNT" class="modal_acc_button" />
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										{{#if product.MarketplaceType}}
+										<div class="row">
+											<div class="col-md-12 col-9">
+												<p class="list_wts">{{product.MarketplaceType.name}}</p>
+											</div>
+										</div>
 										{{/if}}
-									</div>
-                           		<div class="modal fade"{{!--  id="myModal" --}}>
-									<div class="modal-dialog modal-dialog-centered">
-										<div class="modal-content">
-											<div class="col-md-12">
-												<div class="row modal_geo_bgimg1">
-													<h1>LIKE WHAT YOU SEE?</h1>
-													<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
-													<p class="modal_why_geo_p">If you'd like uniterupted access to our wholesale marketplace, we need you to create an
-											 account with Global Trade Connect</p>
-												<div class="col-md-5 common_padding1">
-													<a href="#">
-														<img src="../../img/login-facebook.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-													</a>
-													<a href="#">
-														<img src="../../img/login-google.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-													</a>
-													<a href="#">
-														<img src="../../img/login-twitter.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-													</a>
-													<a href="#">
-														<img src="../../img/login-linkedin.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-													</a>
+										<div class="row">
+											<div class="col-md-12 col-9">
+												<p class="list_iphone">{{product.product_name}}</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12 col-9">
+												<p class="list_doll">${{product.price}}
+													<!-- <sup>00 / 10</sup> -->
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12 col-9">
+												<p class="list_add">This Product has discount on bulk orders.</p>
+											</div>
+										</div>
+										<hr style="margin-top: 3px; margin-bottom: 3px;" />
+										<div class="row">
+											<div class="col-md-4 col-6">
+												<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;">
+													<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare
+												</p>
+											</div>
+											<div class="col-md-4 col-6 common_padding1">
+												<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
+													{{#if LoggedInUser.id}}
+
+													{{#if wishList}}
+													<input type="hidden" name="wishID" value="{{wishList.[0].id}}">
+													<i class="fa fa-heart" aria-hidden="true"></i>
+													{{else}}
+													<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
+													{{/if}}
+													{{else}}
+													<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
+													{{/if}}
+													Add to Wishlist
+												</p>
+											</div>
+											<div class="col-md-4 col-6 float-right">
+												<img src="../../img/social-icons/linked-in.png" style="width: 15%;" alt="geo">
+												<img src="../../img/social-icons/pintrest.png" style="width: 15%;" alt="geo">
+												<img src="../../img/social-icons/twitter.png" style="width: 15%;" alt="geo">
+												<img src="../../img/social-icons/plus.png" style="width: 15%;" alt="geo">
+											</div>
+										</div>
+										<hr style="margin-top: 3px; margin-bottom: 3px;" />
+										<div class="row">
+											<div class="col-md-12 col-12">
+												<p style="font-size: 10px;margin-top: 10px;margin-bottom: 10px;">{{product.description}}
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-1 col-1">
+												<i class="fas fa-question-circle review_help_icon"></i>
+											</div>
+											<div class="col-md-11 col-10 product_submit">
+												<p class="review_help_title">Product Rating
+													<span class="product_rating_star" style="font-size:20px; font-weight: bold;">{{avgRating}}</span>
+													<span style="font-size: 12px;">Based on</span>
+													<span style="font-size: 12px;" class="text_blue_color">
+														<b>{{productReviewsList.count}} Reviews</b>
+													</span>
+												</p>
+												<div class="row">
+													<div class="col-md-5">
+														<div class="row">
+															{{#each rating}} 
+															<div class="col-md-8 col-7 com_pad">
+																<p class="product_rating_star1" style="font-size: 11px;">
+																	{{starCount this.starCount}}
+																</p>
+															</div>
+															<div class="col-md-4 col-5 common_padding1">
+																<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
+															</div>
+															{{/each}}
+														</div>
+														<div class="row">
+															<div class="col-md-12">
+																<button class="product_buttion">Submit Your Own Review</button>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-7">
+														<div class="row">
+															{{#each productReviewsList.rows}} 
+															{{#ifCond @index '<' 1}}
+															<div class="col-md-2 col-3 product_img common_padding1">
+																<img width="100%" class="rounded-circle" src="{{ProfilePicture this.User}}" alt="profile-picture"/>
+															</div> 
+															<div class="col-md-10 col-9 product_great_bg">
+																<p class="product_great">{{this.title}}</p>
+																<p class="product_star">
+																	{{starCount this.rating '#fab547 '}}
+																	<span class="product_ago"> {{FormatDate this.created_on}} </span>
+																</p>
+																<p class="product_we">{{this.comment}}</p>
+																<p class="text_blue_color" style="font-size: 12px;">- {{this.User.first_name}} {{this.User.last_name}}
+																</p>
+															</div>
+															{{/ifCond}}
+															{{/each}}
+														</div>
+														<div class="row">
+															<div class="col-md-6 col-6">
+																<!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
+															</div>
+															<div class="col-md-6 col-6">
+																{{#ifCond productReviewsList.count '>' 0}}
+																<a class="product_buttion" href="/product/{{product.product_name}}/{{product.id}}/allReviews" style="background-color: #154881;padding: 3px 6px;">See All Reviews</a>
+																{{/ifCond}}
+															</div>
+														</div>
+													</div>
 												</div>
-												<div class="col-md-6">
-													<input type="text" placeholder="Create a Username" class="modal_acc_textbox" />
-													<input type="text" placeholder="Create a Password" class="modal_acc_textbox" />
-													<input type="text" placeholder="Confirm Password" class="modal_acc_textbox" />
-													<br/>
-													<label class="modal_login-checkbox">
-														<input type="checkbox">
-														<i></i> Accept terms and conditions</label>
-													<input type="submit" value="CREATE ACCOUNT" class="modal_acc_button" />
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12 product_hr">
+												<hr>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-1 col-2">
+												<i class="fas fa-question-circle review_help_icon"></i>
+											</div>
+											<div class="col-md-11 col-10 product_submit">
+												<form name="reviewForm" id="reviewForm" onsubmit="return false">
+													<p class="review_help_title">Submit A Review Of This Product</p>
+													<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,please fill out the following it will be sent directly to the vendor.
+													</p>
+													<div>
+														<span class="product_submit_para">Please provide rating for this product</span>
+														<select id="review-stars" style="display:none !important;">
+															<option value=""></option>
+															<option value="1">1</option>
+															<option value="2">2</option>
+															<option value="3">3</option>
+															<option value="4">4</option>
+															<option value="5">5</option>
+														</select>
+													</div>
+													<div class="product_table_bg">
+														<div class="row">
+															<div class="col-md-10">
+																<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-10">
+																<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
+																required></textarea>
+															</div>
+															<div class="col-md-2">
+																<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
+															</div>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
+										<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
+										</div>
+									</div>
+								</div>
+								<section class="box3" style="margin-bottom:0; padding-left: 0px; padding-right: 0px;">
+									<div class="container clearfix">
+										<div class="row ">
+											<div class="col-md-12 col-12 wts4 ">
+												<h6 class="float-left">Related Product for this Vendor</h6>
+											</div>
+										</div>
+									</div>
+								</section>
+								<section class="box4" style="margin-bottom:20px;">
+									<div class="container clearfix">
+										<div class="row">
+											{{#ifCond RelatedProducts.length '==' 0}}
+											<div class="col-md-12 text-center list_add"> 
+												No Related Products
+											</div>
+											{{/ifCond}}
+											{{#each RelatedProducts}}
+											<div class="col-md-4 col-12 common_top">
+												<div class="row">
+													<div class="col-md-3 col-2">
+														<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
+													</div>
+													<div class="col-md-9 col-10">
+														<div class="row common_padding">
+															<div class="col-md-8 col-8">
+																<p class="wts_header">
+																	<a href="#">{{this.product_name}}</a>
+																</p>
+															</div>
+															<div class="col-md-4 col-4">
+																<p>											
+																	{{#if minimum_order_quantity}}	
+																	MOQ:{{this.minimum_order_quantity}}
+																	{{else}}
+																	${{product_price}}
+																	{{/if}}
+																</p>
+															</div>
+														</div>
+														<div class="row common_padding">
+															<div class="col-md-3 col-3">
+																<p>Origin</p>
+															</div>
+															<div class="col-md-5 col-5">
+																<p>{{this.country_name}}</p>
+															</div>
+															<div class="col-md-4 col-4">
+																<p>&nbsp;</p>
+															</div>
+														</div>
+														<div class="row common_padding">
+															<div class="col-md-3 col-3">
+																<p>Category</p>
+															</div>
+															<div class="col-md-5 col-5">
+																<p>{{this.category_name}} > {{this.sub_category_name}}</p>
+															</div>
+															<div class="col-md-4 col-4">
+																<p>Seller Rating</p>
+															</div>
+														</div>
+														<div class="row common_padding">
+															<div class="col-md-3 col-3">
+																<p>Seller</p>
+															</div>
+															<div class="col-md-5 col-5">
+																<p>
+																	{{#if ../LoggedInUser.email}}	
+																	<a>{{this.vendor_name}}</a>
+																	{{else}}
+																	<a href="/login">(Login for Seller Info)</a>
+																	{{/if}}
+																</p>
+															</div>
+															<div class="sm-text col-md-4 col-4">
+																{{ starCount product_rating}}
+															</div>
+														</div>
+													</div>
 												</div>
+											</div>
+											{{/each}}
 										</div>
 									</div>
-								</div>
+								</section>
+							</div>
+							<div class="col-md-3 showing_categ">
+								<p><b>FILTER BY CATEGORY</b></p>
+								<p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
+								{{> vendor/vendor-category }}
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
-		</div>
-		{{#if product.MarketplaceType}}
-		<div class="row">
-			<div class="col-md-12 col-9">
-				<p class="list_wts">{{product.MarketplaceType.name}}</p>
-			</div>
-		</div>
-		{{/if}}
-		<div class="row">
-			<div class="col-md-12 col-9">
-				<p class="list_iphone">{{product.product_name}}</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 col-9">
-				<p class="list_doll">${{product.price}}
-					<!-- <sup>00 / 10</sup> -->
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 col-9">
-				<p class="list_add">This Product has discount on bulk orders.</p>
-			</div>
-		</div>
-		<hr style="margin-top: 3px; margin-bottom: 3px;" />
-		<div class="row">
-			<div class="col-md-4 col-6">
-				<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;">
-					<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare</p>
-			</div>
-			<div class="col-md-4 col-6 common_padding1">
-			<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
-				{{#if LoggedInUser.id}}
-				
-				{{#if wishList}}
-					<input type="hidden" name="wishID" value="{{wishList.[0].id}}">
-					<i class="fa fa-heart" aria-hidden="true"></i>
-					{{else}}
-					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
-					 {{/if}}
-					{{else}}
-					<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
-				{{/if}}
-				Add to Wishlist</p>
-
-			</div>
-			<div class="col-md-4 col-6 float-right">
-				<img src="../../img/social-icons/linked-in.png" style="width: 15%;" alt="geo">
-				<img src="../../img/social-icons/pintrest.png" style="width: 15%;" alt="geo">
-				<img src="../../img/social-icons/twitter.png" style="width: 15%;" alt="geo">
-				<img src="../../img/social-icons/plus.png" style="width: 15%;" alt="geo">
-			</div>
-		</div>
-		<hr style="margin-top: 3px; margin-bottom: 3px;" />
-		<div class="row">
-
-			<div class="col-md-12 col-12">
-				<p style="font-size: 10px;margin-top: 10px;margin-bottom: 10px;">{{product.description}}</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-1 col-1">
-				<i class="fas fa-question-circle review_help_icon"></i>
-			</div>
-			<div class="col-md-11 col-10 product_submit">
-				<p class="review_help_title">Product Rating
-					<span class="product_rating_star" style="font-size:20px; font-weight: bold;">{{avgRating}}</span>
-					<span style="font-size: 12px;">Based on</span>
-					<span style="font-size: 12px;" class="text_blue_color">
-						<b>{{productReviewsList.count}} Reviews</b>
-					</span>
-				</p>
-
-				<div class="row">
-					<div class="col-md-5">
-						<div class="row">
-							{{#each rating}} 
-								<div class="col-md-8 col-7 com_pad">
-									<p class="product_rating_star1" style="font-size: 11px;">
-									{{starCount this.starCount}}
-									</p>
-								</div>
-								<div class="col-md-4 col-5 common_padding1">
-									<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
-								</div>
-							{{/each}}
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<button class="product_buttion">Submit Your Own Review</button>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-7">
-						<div class="row">
-							{{#each productReviewsList.rows}} 
-								{{#ifCond @index '<' 1}}
-							 	<div class="col-md-2 col-3 product_img common_padding1">
-                                    <img width="100%" class="rounded-circle" src="{{ProfilePicture this.User}}" alt="profile-picture"/>
-                                </div> 
-                                <div class="col-md-10 col-9 product_great_bg">
-                                    <p class="product_great">{{this.title}}</p>
-                                    <p class="product_star">
-                                        {{starCount this.rating '#fab547 '}}
-                                        <span class="product_ago"> {{FormatDate this.created_on}} </span>
-                                    </p>
-                                    <p class="product_we">{{this.comment}}</p>
-									<p class="text_blue_color" style="font-size: 12px;">- {{this.User.first_name}} {{this.User.last_name}}</p>
-                                </div>
-								
-                                {{/ifCond}}
-                            {{/each}}
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-6">
-                                    <!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
-                                </div>
-                                <div class="col-md-6 col-6">
-                                	{{#ifCond productReviewsList.count '>' 0}}
-                                    	<a class="product_buttion" href="/product/{{product.product_name}}/{{product.id}}/allReviews" style="background-color: #154881;padding: 3px 6px;">See All Reviews</a>
-                                    {{/ifCond}}
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 product_hr">
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                    <div class="col-md-1 col-2">
-                        <i class="fas fa-question-circle review_help_icon"></i>
-                    </div>
-                    <div class="col-md-11 col-10 product_submit">
-                    <form name="reviewForm" id="reviewForm" onsubmit="return false">
-                        <p class="review_help_title">Submit A Review Of This Product</p>
-                        <p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
-							 please fill out the following it will be sent directly to the vendor.</p>
-								<div>
-									<span class="product_submit_para">Please provide rating for this product</span>
-									<select id="review-stars" style="display:none !important;">
-										<option value=""></option>
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-									</select>
-								</div>
-								<div class="product_table_bg">
-									<div class="row">
-										<div class="col-md-10">
-											<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-10">
-											<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
-											 required></textarea>
-										</div>
-										<div class="col-md-2">
-											<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
-										</div>
-									</div>
-								</div>
-								</form>
-						</div>
-					</div>
-
-					<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
-					</div>
-
-				</div>
-
-			</div>
-
-			<section class="box3" style="margin-bottom:0; padding-left: 0px; padding-right: 0px;">
-				<div class="container clearfix">
-					<div class="row ">
-						<div class="col-md-12 col-12 wts4 ">
-							<h6 class="float-left">Related Product for this Vendor</h6>
-
-						</div>
-					</div>
-				</div>
-			</section>
-			<section class="box4" style="margin-bottom:20px;">
-				<div class="container clearfix">
-					<div class="row">
-						{{#ifCond RelatedProducts.length '==' 0}}
-						<div class="col-md-12 text-center list_add"> 
-							No Related Products
-						</div>
-						{{/ifCond}}
-						{{#each RelatedProducts}}
-						<div class="col-md-4 col-12 common_top">
-							<div class="row">
-								<div class="col-md-3 col-2">
-									<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
-								</div>
-								<div class="col-md-9 col-10">
-									<div class="row common_padding">
-										<div class="col-md-8 col-8">
-											<p class="wts_header">
-												<a href="#">{{this.product_name}}</a>
-											</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>											
-												{{#if minimum_order_quantity}}	
-                                                MOQ:{{this.minimum_order_quantity}}
-                                                {{else}}
-                                                ${{product_price}}
-                                                {{/if}}
-											</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>{{this.country_name}}</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>&nbsp;</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Category</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>{{this.category_name}} > {{this.sub_category_name}}</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<p>Seller Rating</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-3 col-3">
-											<p>Seller</p>
-										</div>
-										<div class="col-md-5 col-5">
-											<p>
-												{{#if ../LoggedInUser.email}}	
-                                                <a>{{this.vendor_name}}</a>
-                                                {{else}}
-                                                <a href="/login">(Login for Seller Info)</a>
-                                                {{/if}}
-                                            </p>
-										</div>
-										<div class="sm-text col-md-4 col-4">
-											{{ starCount product_rating}}
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						{{/each}}
-					</div>
-				</div>
-			</section>
-
-		</div>
-		<div class="col-md-3 showing_categ">
-			<p>
-				<b>FILTER BY CATEGORY</b>
-			</p>
-			<p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
-			{{> vendor/vendor-category }}
-		</div>
-	</div>
-	</div>
-
-	</div>
-	</div>
-</section>
-
-{{> footer/footer}}
+		</section>
+		{{> footer/footer}}
