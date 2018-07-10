@@ -3,6 +3,15 @@
 		$('.multiSelect').select2();
 	});
 </script>
+<script type="text/javascript"> 
+	$(function () {
+		$("#inputExpiryDate").datepicker({
+			format: 'dd-mm-yyyy',
+			autohide: true, 
+
+		});
+	});
+</script>
 <script type="text/javascript">
 	$(document).ready(function() {
 
@@ -390,7 +399,7 @@
 								<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}">
 							</div>
 							<div class="col-md-12">
-								<input type="date" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"/>
+								<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"/>
 								<span class="vend_edit_list_spanstyle"> Expiry Date</span>
 							</div>
 							<div class="col-md-12">

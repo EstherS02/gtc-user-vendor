@@ -1,26 +1,3 @@
-<script type="text/javascript">
-$(document).ready(function() {
-    $.ajax({
-        type: 'GET',
-        url: '/api/categories',
-        success: function(data, text) {
-            var Category = '';
-            Category = data.rows;
-            var len = Category.length;
-            var domElements = '';
-            var i = 0;
-            Category.forEach(function(element) {
-                if (i <= 7) {
-                    domElements = domElements + '<p class="footer_help_para"><a href="/search?category=' + element['id'] + '">' + element['name'] + '</a></p>';
-                    i++;
-                }
-            });
-            $('#appendOn').append(domElements);
-        },
-        error: function(request, status, error) {}
-    });
-});
-</script>
 <section id = "footerFunction">
     <div class="jumbotron  footer_bg" style="margin-bottom:0">
         <div class="container">
@@ -35,62 +12,55 @@ $(document).ready(function() {
                         <i class="fab fa-instagram social_foot"></i>
                         <i class="fab fa-linkedin-in social_foot"></i>
                         <p class="copyright_con">&copy; Globaltradeconnect - All Right Reserved
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-2 help_f">
-                    <p class="footer_help">HELP CENTER</p>
-                    <p class="footer_help_para">Customer Service</p>
-                    <p class="footer_help_para">Reund Policy</p>
-                    <p class="footer_help_para">FAQs</p>
-                    <p class="footer_help_para">Terms &amp; Conditions </p>
-                    <p class="footer_help_para">Privancy Policy</p>
-                    <p class="footer_help_para">Blog</p>
-                </div>
-                <div class="col-md-2 help_f">
-                    <p class="footer_help">ACCOUNT CENTER</p>
-                    {{#if LoggedInUser.id}}
-                    <p class="footer_help_para"><a href="/user-profile">My Account</a></p>
-                    {{else}}
-                    <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
-                    {{/if}}
-                    <p class="footer_help_para"><a href="/order-track">Track Your Order</a></p>
-                    <p class="footer_help_para"><a href="/wishlist">Wishlist</a></p>
-                    <p class="footer_help_para"><a href="/cart">Shopping Cart</a></p>
+                    <div class="col-md-2 help_f">
+                        <p class="footer_help">HELP CENTER</p>
+                        <p class="footer_help_para">Customer Service</p>
+                        <p class="footer_help_para">Reund Policy</p>
+                        <p class="footer_help_para">FAQs</p>
+                        <p class="footer_help_para">Terms &amp; Conditions </p>
+                        <p class="footer_help_para">Privancy Policy</p>
+                        <p class="footer_help_para">Blog</p>
+                    </div>
+                    <div class="col-md-2 help_f">
+                        <p class="footer_help">ACCOUNT CENTER</p>
+                        {{#if LoggedInUser.id}}
+                        <p class="footer_help_para"><a href="/user-profile">My Account</a></p>
+                        {{else}}
+                        <p class="footer_help_para"><a href="/login">Singn Up / Singn in</a></p>
+                        {{/if}}
+                        <p class="footer_help_para"><a href="/order-track">Track Your Order</a></p>
+                        <p class="footer_help_para"><a href="/wishlist">Wishlist</a></p>
+                        <p class="footer_help_para"><a href="/cart">Shopping Cart</a></p>
 
-                </div>
-                <div class="col-md-2 help_f">
-                    <p class="footer_help">QUICK JUMP</p>
-                    <p class="footer_help_para"><a href="/search?field=product_rating&order=desc">Top Rated Products </a></p>
-                    <p class="footer_help_para"><a href="">Sales Products</a></p>
-                    <p class="footer_help_para"><a href="/search?field=created_on&order=desc">Recent Products</a></p>
-                    <p class="footer_help_para"><a href="/search?is_featured_product=1">Featured Products</a></p>
-                    <p class="footer_help_para"><a href="/search?field=product_selling_count&order=desc">Best Selling Products</a></p>
-                </div>
-                <div class="col-md-2 help_f">
-                    <p class="footer_help">START SHOPPING</p>
-                    <p class="footer_help_para"><a href="/shop">Shop Online</a></p>
-                    <p class="footer_help_para"><a href="">Geo-Locate/Map Search</a></p>
-                    <p class="footer_help_para"><a href="/wholesale">Wholesale Market</a></p>
-                    <p class="footer_help_para"><a href="/services">Service Market</a></p>
-                    <p class="footer_help_para"><a href="/lifestyle">Life Style Sub Scriptions</a></p>
-                    <p class="footer_help_para"><a href="/directory">Company Directory</a></p>
-                    <p class="footer_help_para"><a href="/products">Product Directory</a></p>
-                </div>
-                <div class="col-md-2 help_f">
-                    <p class="footer_help">SEARCH BY CATEGORY</p>
-                    <span id="appendOn"></span>
-                    <!--<div class="col-md-2" >
-                		<p class="footer_help_para"> Health &empty; Beauty</p>
-                		<p class="footer_help_para"> Home Appliances</p>
-                		<p class="footer_help_para">  Industral supplies</p>
-                		<p class="footer_help_para"> Jewelry &empty; watches</p>
-                		<p class="footer_help_para"> Office Supplies</p>
-                		<p class="footer_help_para"> Sports &emp Entertainment</p>
-                		<p class="footer_help_para"> Telecimmunications</p>
-                		<p class="footer_help_para"> Toys</p>
-                		</div>-->
+                    </div>
+                    <div class="col-md-2 help_f">
+                        <p class="footer_help">QUICK JUMP</p>
+                        <p class="footer_help_para"><a href="/search?field=product_rating&order=desc">Top Rated Products </a></p>
+                        <p class="footer_help_para"><a href="">Sales Products</a></p>
+                        <p class="footer_help_para"><a href="/search?field=created_on&order=desc">Recent Products</a></p>
+                        <p class="footer_help_para"><a href="/search?is_featured_product=1">Featured Products</a></p>
+                        <p class="footer_help_para"><a href="/search?field=product_selling_count&order=desc">Best Selling Products</a></p>
+                    </div>
+                    <div class="col-md-2 help_f">
+                        <p class="footer_help">START SHOPPING</p>
+                        <p class="footer_help_para"><a href="/shop">Shop Online</a></p>
+                        <p class="footer_help_para"><a href="">Geo-Locate/Map Search</a></p>
+                        <p class="footer_help_para"><a href="/wholesale">Wholesale Market</a></p>
+                        <p class="footer_help_para"><a href="/services">Service Market</a></p>
+                        <p class="footer_help_para"><a href="/lifestyle">Life Style Sub Scriptions</a></p>
+                        <p class="footer_help_para"><a href="/directory">Company Directory</a></p>
+                        <p class="footer_help_para"><a href="/products">Product Directory</a></p>
+                    </div>
+                    <div class="col-md-2 help_f">
+                        <p class="footer_help">SEARCH BY CATEGORY</p>
+                        <span id="appendOn"></span>
+                        {{#each_limit category 7}}
+                        <p class="footer_help_para"><a href="/search?category={{this.id}}">{{this.name}}</a></p>
+                        {{/each_limit}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
