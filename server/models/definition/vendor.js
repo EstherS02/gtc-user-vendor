@@ -150,17 +150,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        country_id: {
-            type: DataTypes.BIGINT,
-            field: 'country_id',
-            allowNull: false,
-            references: {
-                model: 'country',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
         city: {
             type: DataTypes.STRING(128),
             field: 'city',

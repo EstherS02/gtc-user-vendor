@@ -45,14 +45,13 @@
 		$('#profile-picture-modal').modal('hide');
 		})
 
-         $("#productForm").submit(function (e) {
+         $("#vendorForm").submit(function (e) {
             e.preventDefault();
-            let input = $("#productForm :input").filter(function (index, element) {
+            let input = $("#vendorForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
-           console.log("===========================================",input);
            $.ajax({
-            url: '/api/vendor/starter-seller,
+            url: '/api/vendor/starter-seller',
             type: 'POST',
             data: input,
             success: function (result) {
@@ -67,6 +66,7 @@
 
       $("#country").change(function(){
           var country_id = $('#country').val();
+
          $.ajax({
             url: '/api/states?country_id=' + country_id,
             type: 'GET',
@@ -129,19 +129,19 @@
                                 <div class="row">
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <input type="text" name="address1" id="address1" placeholder="Address Line1" class="form-control" required/>
+                                            <input type="text" name="address_line1" id="address1" placeholder="Address Line1" class="form-control" required/>
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6">
                                         <div class="form-group">
-                                            <input type="text" name="address2" id="address2" placeholder="Address Line2" class="form-control" required/>
+                                            <input type="text" name="address_line2" id="address2" placeholder="Address Line2" class="form-control" required/>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-4 col-md-4">
                                         <div class="form-group">
-                                            <select class="form-control" id="country" name="product_location" required>
+                                            <select class="form-control" id="country" name="base_location" required>
                                                 <option disabled selected>Base Location</option>
                                                 {{#each country}}
                                                 <option value="{{this.id}}">{{ this.name}}</option>
@@ -151,7 +151,7 @@
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-4">
                                         <div class="form-group">
-                                            <select class="form-control " name="state_id" id="state" value="" required>
+                                            <select class="form-control " name="province_id" id="state" value="" required>
                                                 <option disabled selected>Province</option>
                                             </select>
                                         </div>
@@ -165,7 +165,7 @@
                                  <div class="row">
                                     <div class="col-xs-6 col-sm-4 col-md-6">
                                         <div class="form-group">
-                                            <select class="form-control " id="currency" name="currency" required>
+                                            <select class="form-control " id="currency" name="currency_id" required>
                                                 <option disabled selected>Currency</option>
                                                 {{#each currency}}
                                                 <option value="{{this.id}}">{{ this.name}}</option>
@@ -175,7 +175,7 @@
                                     </div>
                                     <div class="col-xs-6 col-sm-4 col-md-6">
                                         <div class="form-group">
-                                            <select class="form-control" name="timezone" id="timezone" value="" required>
+                                            <select class="form-control" name="timezone_id" id="timezone_id" value="" required>
                                                 <option disabled selected>TimeZone</option>
                                                 {{#each timezone}}
                                                 <option value="{{this.id}}">{{ this.timezone}}</option>
@@ -191,7 +191,7 @@
                                         </label>
                                         <br>
                                         <div class="form-group">
-                                            <textarea id="description" name="description" class="form-control" required></textarea>
+                                            <textarea id="about" name="about" class="form-control" required></textarea>
                                         </div>
                                     </div>
                                 </div>
