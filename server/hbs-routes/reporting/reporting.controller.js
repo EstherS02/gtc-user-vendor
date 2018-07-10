@@ -8,6 +8,7 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
+const orderStatus = require('../../config/order_status');
 import series from 'async/series';
 var async = require('async');
 
@@ -21,7 +22,8 @@ export function reporting(req, res) {
 
     res.render('reporting', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        selectedPage:'reporting'
     });
 }
 
@@ -201,13 +203,20 @@ export function salesHistory(req, res) {
     page = req.query.page ? parseInt(req.query.page) : 1;
     queryPaginationObj['page'] = page;
     delete req.query.page;
+    if (req.query.keyword) {
+        queryPaginationObj.keyword = req.query.keyword;
+        queryURI['keyword'] = req.query.keyword;
+        productQueryObj['product_name'] = {
+            like: '%' + req.query.keyword + '%'
+        };
+    }
     var field = "id";
     offset = (page - 1) * limit;
     queryPaginationObj['offset'] = offset;
     var maxSize;
     // End pagination
     var modelName = "OrderItem";
-    productQueryObj['vendor_id'] = 28; //req.user.Vendor.id;
+    productQueryObj['vendor_id'] = req.user.Vendor.id;
     console.log("productQueryObj", productQueryObj)
     var includeArr = [{
         model: model["Order"],
@@ -258,6 +267,7 @@ export function salesHistory(req, res) {
                     queryUrl: queryUrl,
                     selectedPage: 'sales-history',
                     totalTransaction : (total_transaction).toFixed(2),
+                    orderStatus: orderStatus,
                     // pagination
                     page: page,
                     maxSize: maxSize,

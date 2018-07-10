@@ -126,13 +126,19 @@ x<script type="text/javascript">
 							
 						</div>
 						<div class="col-md-4">
-						<form>
-							<input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
-							</form>
-							<select style="width: 35%" class="vend_edit_lists_buttonstyle float-right">
-								<option>EXPORT TO</option>
-							</select>
-						</div>
+              <div class="row">
+              <div class="col-md-6">
+              <form>
+              <input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
+              </form>
+              </div>
+              <div class="col-md-6">
+              <select  class="vend_edit_lists_buttonstyle ">
+                <option>EXPORT TO</option>
+              </select>
+              </div>
+              </div>
+            </div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
@@ -175,7 +181,7 @@ x<script type="text/javascript">
 									</td>
 									<td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
 									<td>PayPal</td>
-									<td class="text_green_color">{{objectKey ../statusCode this.Order.status}}</td>
+									<td class="text_green_color">{{objectKey ../orderStatus this.status}}</td>
 									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
 									<td>${{this.final_price}} CAD</td>
 								</tr>

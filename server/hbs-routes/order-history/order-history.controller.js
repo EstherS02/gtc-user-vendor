@@ -8,12 +8,12 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
+const orderStatus = require('../../config/order_status');
 import series from 'async/series';
 var async = require('async');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
-	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -179,6 +179,7 @@ export function orderHistory(req, res) {
 					marketPlace: marketPlace,
 					statusCode : statusCode,
                     totalTransaction : (total_transaction).toFixed(2),
+                    orderStatus: orderStatus,
 					// pagination
 					page: page,
 					maxSize:maxSize,
