@@ -129,6 +129,48 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },*/
+        address_line1: {
+            type: DataTypes.STRING(255),
+            field: 'address_line1',
+            allowNull: false
+        },
+        address_line2: {
+            type: DataTypes.STRING(255),
+            field: 'address_line2',
+            allowNull: true
+        },
+        province_id: {
+            type: DataTypes.BIGINT,
+            field: 'province_id',
+            allowNull: false,
+            references: {
+                model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        country_id: {
+            type: DataTypes.BIGINT,
+            field: 'country_id',
+            allowNull: false,
+            references: {
+                model: 'country',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        postal_code: {
+            type: DataTypes.INTEGER,
+            field: 'postal_code',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
