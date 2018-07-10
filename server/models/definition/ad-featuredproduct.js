@@ -1,23 +1,52 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Region', {
+    return sequelize.define('AdFeaturedproduct', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        name: {
+        product_name: {
             type: DataTypes.STRING(128),
-            field: 'name',
+            field: 'product_name',
             allowNull: false
+        },
+        type: {
+            type: DataTypes.INTEGER,
+            field: 'type',
+            allowNull: false
+        },
+        position: {
+            type: DataTypes.STRING(45),
+            field: 'position',
+            allowNull: true
+        },
+        start_date: {
+            type: DataTypes.DATEONLY,
+            field: 'start_date',
+            allowNull: false
+        },
+        end_date: {
+            type: DataTypes.DATEONLY,
+            field: 'end_date',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        impression: {
+            type: DataTypes.INTEGER,
+            field: 'impression',
+            allowNull: true
+        },
+        clicks: {
+            type: DataTypes.INTEGER,
+            field: 'clicks',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -45,31 +74,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'region',
+        tableName: 'ad_featuredproduct',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-
-    const model = require('../index');
-    const Region = model.Region;
-    const Country = model.Country;
-    const Currency = model.Currency;
-
-    Region.hasMany(Country, {
-        foreignKey: 'region_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Region.belongsToMany(Currency, {
-        through: Country,
-        foreignKey: 'region_id',
-        otherKey: 'currency_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
 };

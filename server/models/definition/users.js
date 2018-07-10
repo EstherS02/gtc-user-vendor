@@ -156,6 +156,7 @@ module.exports.initRelations = () => {
     const UserToken = model.UserToken;
     const Vendor = model.Vendor;
     const VendorFollower = model.VendorFollower;
+    const VendorVerification = model.VendorVerification;
     const VendorRating = model.VendorRating;
     const WishList = model.WishList;
     const Country = model.Country;
@@ -180,12 +181,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.hasMany(Cart, {
-        foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     User.hasMany(DiscussionBoardPostComment, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -193,6 +188,12 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(DiscussionBoardPostLike, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(Cart, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -275,7 +276,12 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
+    
+    User.hasOne(VendorVerification, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
     User.hasMany(WishList, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -298,14 +304,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.belongsToMany(Product, {
-        through: Cart,
-        foreignKey: 'user_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     User.belongsToMany(DiscussionBoardPost, {
         through: DiscussionBoardPostComment,
         foreignKey: 'user_id',
@@ -318,6 +316,14 @@ module.exports.initRelations = () => {
         through: DiscussionBoardPostLike,
         foreignKey: 'user_id',
         otherKey: 'discussion_board_post_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Product, {
+        through: Cart,
+        foreignKey: 'user_id',
+        otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

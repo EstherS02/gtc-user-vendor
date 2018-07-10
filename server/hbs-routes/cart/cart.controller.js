@@ -36,33 +36,36 @@ export function cart(req, res) {
             return model["Cart"].findAndCountAll({
                 where: queryObj,
                 include: [{
-                        model: model["User"],
-                        attributes: {
-                            exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-                        }
-                    },
-                    {
-                        model: model["Product"],
-                        include: [
-                            { model: model["Vendor"]},
-                            { model: model["Category"]},
-                            { model: model["SubCategory"]},
-                            { model: model["Marketplace"]},
-                            { model: model["MarketplaceType"]},
-                            { model: model["Country"]},
-                            { model: model["State"]},
-                            {  
-                                model: model["ProductMedia"],
-                                where: {
-                                    base_image: 1,
-                                    status : {
-                                        '$eq': status["ACTIVE"]
-                                    }
-                                }
-                            }
-                        ]
+                    model: model["User"],
+                    attributes: {
+                        exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
                     }
-                ]
+                }, {
+                    model: model["Product"],
+                    include: [{
+                        model: model["Vendor"]
+                    }, {
+                        model: model["Category"]
+                    }, {
+                        model: model["SubCategory"]
+                    }, {
+                        model: model["Marketplace"]
+                    }, {
+                        model: model["MarketplaceType"]
+                    }, {
+                        model: model["Country"]
+                    }, {
+                        model: model["State"]
+                    }, {
+                        model: model["ProductMedia"],
+                        where: {
+                            base_image: 1,
+                            status: {
+                                '$eq': status["ACTIVE"]
+                            }
+                        }
+                    }]
+                }]
             }).then(function(data) {
                 var result = JSON.parse(JSON.stringify(data));
                 return cb(null, result)
@@ -87,6 +90,16 @@ export function cart(req, res) {
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return cb(error);
+                });
+        },
+        category: function(callback) {
+            service.findRows("Category", {}, 0, null, 'id', 'asc')
+                .then(function(category) {
+                    return callback(null, category.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
                 });
         }
     }, function(err, results) {
@@ -126,16 +139,16 @@ export function cart(req, res) {
             console.log(totalPrice)
 
             var coupon_data = [];
-            if(typeof(req.cookies.check_promo_code) != 'undefined') {
+            if (typeof(req.cookies.check_promo_code) != 'undefined') {
                 let default_promo_obj = req.cookies.check_promo_code;
                 var obj_key = -1;
-                for(let key in default_promo_obj) {
-                    if(default_promo_obj[key].user_id == user_id) {
+                for (let key in default_promo_obj) {
+                    if (default_promo_obj[key].user_id == user_id) {
                         obj_key = key;
                     }
                 }
 
-                if(obj_key > -1) {
+                if (obj_key > -1) {
                     coupon_data.push(req.cookies.check_promo_code[obj_key]);
                 }
             }
@@ -147,36 +160,37 @@ export function cart(req, res) {
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
                 LoggedInUser: LoggedInUser,
+                category: results.category,
                 couponData: [],
-                couponUpdateError : "",
-                couponUpdateErrorMessage : ""
+                couponUpdateError: "",
+                couponUpdateErrorMessage: ""
             }
             console.log(coupon_data)
-            if(coupon_data.length > 0) {
+            if (coupon_data.length > 0) {
                 var original_price = coupon_data[0].original_price;
-                if(parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
+                if (parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
                     req.body.coupon_code = coupon_data[0].coupon_code;
-                    cartObj.callApplyCoupon(req,res, function(return_val) {
-                        if(typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPILED') {
+                    cartObj.callApplyCoupon(req, res, function(return_val) {
+                        if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPILED') {
                             console.log("====================");
                             console.log(return_val.coupon_data);
                             result_obj['couponData'] = [return_val.coupon_data];
-                            return res.status(200).render('cart', result_obj);    
+                            return res.status(200).render('cart', result_obj);
                         } else {
                             console.log("ssss====================");
                             result_obj['couponUpdateError'] = return_val.message;
                             result_obj['couponUpdateErrorMessage'] = return_val.message_details;
-                            return res.status(200).render('cart', result_obj);    
+                            return res.status(200).render('cart', result_obj);
                         }
                     })
                 } else {
                     result_obj['couponData'] = coupon_data;
-                    return res.status(200).render('cart', result_obj);    
+                    return res.status(200).render('cart', result_obj);
                 }
             } else {
                 return res.status(200).render('cart', result_obj);
             }
-              /* return res.status(200).send({
+            /* return res.status(200).send({
                  title : "Global Trade Connect",
                  seperatedItemsList : seperatedItems,
                  cartItems: results.cartItems.rows,

@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: false
+            allowNull: true
         },
         contact_email: {
             type: DataTypes.STRING(128),
@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        about: {
+            type: DataTypes.TEXT,
+            field: 'about',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -113,6 +118,48 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        /*vendor_verification_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_verification_id',
+            allowNull: true,
+            references: {
+                model: 'vendor-verifications',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },*/
+        address_line1: {
+            type: DataTypes.STRING(255),
+            field: 'address_line1',
+            allowNull: false
+        },
+        address_line2: {
+            type: DataTypes.STRING(255),
+            field: 'address_line2',
+            allowNull: true
+        },
+        province_id: {
+            type: DataTypes.BIGINT,
+            field: 'province_id',
+            allowNull: false,
+            references: {
+                model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        postal_code: {
+            type: DataTypes.INTEGER,
+            field: 'postal_code',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -151,7 +198,9 @@ module.exports.initRelations = () => {
     const Vendor = model.Vendor;
     const BusinessHour = model.BusinessHour;
     const Coupon = model.Coupon;
+    const DiscussionBoard = model.DiscussionBoard;
     const DiscussionBoardPost = model.DiscussionBoardPost;
+    const Order = model.Order;
     const Product = model.Product;
     const TalkSetting = model.TalkSetting;
     const VendorFollower = model.VendorFollower;
@@ -159,7 +208,7 @@ module.exports.initRelations = () => {
     const VendorPlan = model.VendorPlan;
     const VendorRating = model.VendorRating;
     const VendorShippingLocation = model.VendorShippingLocation;
-    const VendorVerification = model.VendorVerification;
+   // const VendorVerification = model.VendorVerification;
     const User = model.User;
     const Country = model.Country;
     const Currency = model.Currency;
@@ -178,6 +227,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(Coupon, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(DiscussionBoard, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -231,11 +286,17 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Vendor.hasMany(VendorVerification, {
+    // Vendor.hasMany(Order, {
+    //     foreignKey: 'vendor_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
+
+   /* Vendor.hasMany(VendorVerification, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     Vendor.belongsTo(User, {
         foreignKey: 'user_id',
@@ -260,6 +321,12 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+   /* Vendor.belongsTo(VendorVerification, {
+        foreignKey: 'vendor_verification_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });*/
 
     Vendor.belongsToMany(Timezone, {
         through: BusinessHour,

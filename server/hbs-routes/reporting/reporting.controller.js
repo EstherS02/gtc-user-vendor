@@ -8,6 +8,7 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
+const orderStatus = require('../../config/order_status');
 import series from 'async/series';
 var async = require('async');
 
@@ -18,11 +19,33 @@ export function reporting(req, res) {
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
+    async.series({
+            category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
 
-    res.render('reporting', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
-    });
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
+
+        },
+        function(err, results) {
+            if (!err) {
+                res.render('reporting', {
+                    title: "Global Trade Connect",
+                    products: results.products,
+                    marketPlace: marketPlace,
+                    LoggedInUser: LoggedInUser,
+                    category: results.category,
+                    selectedPage: 'reporting'
+                });
+            } else {
+                res.render('reporting', err);
+            }
+        });
 }
 
 export function performance(req, res) {
@@ -42,29 +65,40 @@ export function performance(req, res) {
     let user_id = LoggedInUser.id;
 
     async.series({
-        products: function (callback) {
-            queryObj['vendor_id'] = LoggedInUser.Vendor.id;
-            service.findRows(productModel, queryObj, offset, limit, field, order)
-                .then(function (products) {
-                    return callback(null, products.rows);
+            products: function(callback) {
+                queryObj['vendor_id'] = LoggedInUser.Vendor.id;
+                service.findRows(productModel, queryObj, offset, limit, field, order)
+                    .then(function(products) {
+                        return callback(null, products.rows);
 
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        }
-    },
-        function (err, results) {
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            },
+            category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
+
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
+
+        },
+        function(err, results) {
             if (!err) {
                 res.render('performance', {
                     title: "Global Trade Connect",
                     products: results.products,
-                    marketPlace:marketPlace,
-                    LoggedInUser:LoggedInUser,
+                    marketPlace: marketPlace,
+                    LoggedInUser: LoggedInUser,
+                    category: results.category,
                     selectedPage: 'performance'
                 });
-            }
-            else {
+            } else {
                 res.render('performance', err);
             }
         });
@@ -78,12 +112,41 @@ export function accounting(req, res) {
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
+    async.series({
+            category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
 
-    res.render('accounting', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser,
-        selectedPage: 'accounting'
-    });
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
+        },
+        function(err, results) {
+
+            if (!err) {
+                console.log("start_date", queryURI['start_date']);
+                res.render('sales-history', {
+                    title: "Global Trade Connect",
+                    category: results.category,
+                    queryUrl: queryUrl,
+                    selectedPage: 'accounting',
+                    orderStatus: orderStatus,
+                    // pagination
+                    // page: page,
+                    // maxSize: maxSize,
+                    // pageSize: limit,
+                    // queryPaginationObj:queryPaginationObj,
+                    // collectionSize: results.orderHistory.count
+                    // End pagination
+                });
+            } else {
+                res.render('accounting', err);
+            }
+        });
+
 }
 
 export function tax(req, res) {
@@ -93,12 +156,40 @@ export function tax(req, res) {
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
+    async.series({
+            category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
 
-    res.render('tax', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser,
-        selectedPage: 'tax'
-    });
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
+        },
+        function(err, results) {
+
+            if (!err) {
+                console.log("start_date", queryURI['start_date']);
+                res.render('sales-history', {
+                    title: "Global Trade Connect",
+                    category: results.category,
+                    queryUrl: queryUrl,
+                    selectedPage: 'tax',
+                    orderStatus: orderStatus,
+                    // pagination
+                    // page: page,
+                    // maxSize: maxSize,
+                    // pageSize: limit,
+                    // queryPaginationObj:queryPaginationObj,
+                    // collectionSize: results.orderHistory.count
+                    // End pagination
+                });
+            } else {
+                res.render('tax', err);
+            }
+        });
 }
 
 // salesHistory
@@ -201,13 +292,20 @@ export function salesHistory(req, res) {
     page = req.query.page ? parseInt(req.query.page) : 1;
     queryPaginationObj['page'] = page;
     delete req.query.page;
+    if (req.query.keyword) {
+        queryPaginationObj.keyword = req.query.keyword;
+        queryURI['keyword'] = req.query.keyword;
+        productQueryObj['product_name'] = {
+            like: '%' + req.query.keyword + '%'
+        };
+    }
     var field = "id";
     offset = (page - 1) * limit;
     queryPaginationObj['offset'] = offset;
     var maxSize;
     // End pagination
     var modelName = "OrderItem";
-    productQueryObj['vendor_id'] = 28; //req.user.Vendor.id;
+    productQueryObj['vendor_id'] = req.user.Vendor.id;
     console.log("productQueryObj", productQueryObj)
     var includeArr = [{
         model: model["Order"],
@@ -221,27 +319,37 @@ export function salesHistory(req, res) {
         }]
     }];
     async.series({
-        orderHistory: function (callback) {
-            service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
-                .then(function (results) {
-                    return callback(null, results);
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-        }
-    },
-        function (err, results) {
+            orderHistory: function(callback) {
+                service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
+                    .then(function(results) {
+                        return callback(null, results);
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            },
+            category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
+
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
+        },
+        function(err, results) {
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
 
             var total_transaction = 0.00;
-            if(results.orderHistory.count > 0) {
+            if (results.orderHistory.count > 0) {
                 results.orderHistory.rows.forEach((value, index) => {
-                    total_transaction += parseFloat(value.final_price);                    
+                    total_transaction += parseFloat(value.final_price);
                     results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
-                });    
+                });
             }
 
             queryPaginationObj['maxSize'] = maxSize;
@@ -253,16 +361,18 @@ export function salesHistory(req, res) {
                     count: results.orderHistory.count,
                     queryURI: queryURI,
                     LoggedInUser: LoggedInUser,
-                    statusCode : statusCode,
+                    statusCode: statusCode,
                     marketPlace: marketPlace,
+                    category: results.category,
                     queryUrl: queryUrl,
                     selectedPage: 'sales-history',
-                    totalTransaction : (total_transaction).toFixed(2),
+                    totalTransaction: (total_transaction).toFixed(2),
+                    orderStatus: orderStatus,
                     // pagination
                     page: page,
                     maxSize: maxSize,
                     pageSize: limit,
-                    queryPaginationObj:queryPaginationObj,
+                    queryPaginationObj: queryPaginationObj,
                     collectionSize: results.orderHistory.count
                     // End pagination
                 });

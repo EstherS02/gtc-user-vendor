@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         maximum_product: {
             type: DataTypes.INTEGER,
             field: 'maximum_product',
-            allowNull: false
+            allowNull: true
         },
         maximum_subscription: {
             type: DataTypes.INTEGER,

@@ -8,9 +8,8 @@ var auth = require('../../auth/auth.service');
 
 
 /* Handlebars routes */
-var controller = require('./order-history.controller');
+var controller = require('./refund.controller');
 
-router.get('/',auth.isAuthenticated(), controller.orderHistory);
-
+router.get('/:id',auth.isAuthenticated(), controller.refund);
 
 module.exports = router;

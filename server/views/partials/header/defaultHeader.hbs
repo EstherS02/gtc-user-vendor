@@ -13,25 +13,6 @@
 		});
 	}
 </script>
-<script type="text/javascript">
-	$(document).ready(function () {
-		$.ajax({
-			type: 'GET',
-			url: '/api/categories',
-			success: function (data, text) {
-				var Category = '';
-				Category = data.rows;
-				var len = Category.length;
-				var domElements = '';
-				Category.forEach(function (element) {
-					domElements = domElements + '<option value="' + element['id'] + '">' + element['name'] + '</option>';
-				});
-				$('#headercategory').append(domElements);
-			},
-			error: function (request, status, error) { }
-		});
-	});
-</script>
 <script>
 	$(document).ready(function () {
 		$('#headerSearchSubmit').prop('disabled', true);
@@ -47,8 +28,6 @@
 		});
 	});
 </script>
-
-
 <div class="sticky-top topbar">
 	<div class="container-fluid">
 		<div class="row">
@@ -57,9 +36,11 @@
 			<div class="col-md-6 col-lg-6 col-xl-6" style="padding: 0px;">
 				<div class="social-links">
 					<a href="/geo-locate" class="active1">
-						<img src="img/Icons/icons-03.png" style="width: 2%;" alt="geo" /> Geo Locate</a>
+						<img src="img/Icons/icons-03.png" style="width: 2%;" alt="geo" /> Geo Locate
+					</a>
 					<a href="/order-track" class="font_icon">
-						<img src="img/Icons/icon-4-01.png" style="width: 2%;" alt="geo" /> Track your Order</a>
+						<img src="img/Icons/icon-4-01.png" style="width: 2%;" alt="geo" /> Track your Order
+					</a>
 
 					{{#if LoggedInUser.email}}
 					<a href="javascript:;" data-toggle="dropdown" style="color: #D36988;">
@@ -90,12 +71,15 @@
 					{{/if}}
 
 					<a href="/compare" class="font_icon">
-						<img src="img/Icons/icon-2-01.png" style="width: 2%;" alt="geo" /> Compare</a>
+						<img src="img/Icons/icon-2-01.png" style="width: 2%;" alt="geo" /> Compare
+					</a>
 					<a href="/wishlist" class="font_icon">
-						<img src="img/Icons/icon-6-01.png" style="width: 2%;" alt="geo" /> Wishlist</a>
+						<img src="img/Icons/icon-6-01.png" style="width: 2%;" alt="geo" /> Wishlist
+					</a>
 					<a href="/cart" class="font_icon" tyle="color: #fff;">
 						<span class="badge">0</span>
-						<img src="img/Icons/icons-01.png" style="width: 2%;" alt="geo" /> Cart</a>
+						<img src="img/Icons/icons-01.png" style="width: 2%;" alt="geo" /> Cart
+					</a>
 				</div>
 			</div>
 		</div>
@@ -119,35 +103,30 @@
 								DIRECTORY
 							</a>
 						</li>
-
 						<!-- Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="/wholesale">
 								WHOLESALE
 							</a>
 						</li>
-
 						<!-- Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="/shop">
 								SHOP
 							</a>
 						</li>
-
 						<!-- Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="/services">
 								SERVICES
 							</a>
 						</li>
-
 						<!-- Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="/lifestyle">
 								LIFESTYLE
 							</a>
 						</li>
-
 						<!-- Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="/products">
@@ -155,35 +134,15 @@
 							</a>
 						</li>
 					</ul>
-
-					{{!-- <div class="field-search_lfs form-inline my-2 my-lg-0">
-						<select class="search_lfs">
-							<option>SEARCH DIRECTORY</option>
-						</select>
-						<form id="headerSearchForm">
-						<input type="search" id="searchKey" name="keyword" placeholder="Search My store">
-						<div class="right">
-							<select id="headercategory" name="category" style="width:124px;">
-									<option disabled selected>Category</option>
-								</select>
-							<button id="headerSearchSubmit" name="headerSearchSubmit">
-								<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
-									<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
-										<circle cx="9.3" cy="9.3" r="7.3"></circle>
-										<path d="M14.2 14.6l6.9 7.6"></path>
-									</g>
-								</svg>
-							</button>
-						</div>
-						</form>
-					</div> --}}
-
 					<div class="field-search form-inline my-2 my-lg-0">
 						<form id="headerSearchForm">
 							<input type="search" id="searchKey" name="keyword" placeholder="Search My store">
 							<div class="right">
 								<select id="headercategory" name="category" style="width:124px;">
 									<option disabled selected>Category</option>
+									{{#each category}}
+									<option value={{this.id}}>{{this.name}}</option>
+									{{/each}}
 								</select>
 								<button id="headerSearchSubmit" name="headerSearchSubmit">
 									<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
@@ -200,5 +159,4 @@
 			</nav>
 		</div>
 	</div>
-</div>
 </div>

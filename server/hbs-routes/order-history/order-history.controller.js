@@ -8,12 +8,12 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
+const orderStatus = require('../../config/order_status');
 import series from 'async/series';
 var async = require('async');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
-	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -112,6 +112,13 @@ export function orderHistory(req, res) {
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+	if (req.query.keyword) {
+		queryPaginationObj.keyword = req.query.keyword;
+		queryURI['keyword'] = req.query.keyword;
+		productQueryObj['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
 	var field = "id";
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
@@ -119,27 +126,34 @@ export function orderHistory(req, res) {
 	// End pagination
 
 	var modelName = "OrderItem";
-	orderQueryObj['user_id'] = 30;//user_id;
+	orderQueryObj['user_id'] = user_id;
 	var includeArr = [{
 		model: model["Order"],
 		where: orderQueryObj,
-		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price','status']
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price', 'status']
 	}, {
 		model: model['Product'],
 		where: productQueryObj,
 		include: [{
 			model: model['Vendor'],
-		}
-		]
+		}]
 
 	}];
-	// console.log(orderQueryObj);
-
 	async.series({
 			orderHistory: function(callback) {
 				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
 					.then(function(results) {
 						return callback(null, results);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			category: function(callback) {
+				service.findRows("Category", {}, 0, null, 'id', 'asc')
+					.then(function(category) {
+						return callback(null, category.rows);
+
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -150,19 +164,19 @@ export function orderHistory(req, res) {
 			maxSize = results.orderHistory.count / limit;
 			if (results.orderHistory.count % limit)
 				maxSize++;
-				queryPaginationObj['maxSize'] = maxSize;
-			console.log("start_date", queryPaginationObj,queryURI);
+			queryPaginationObj['maxSize'] = maxSize;
+			console.log("start_date", queryPaginationObj, queryURI);
 
-            var total_transaction = 0.00;
-            if(results.orderHistory.count > 0) {
-                results.orderHistory.rows.forEach((value, index) => {
-                    total_transaction += parseFloat(value.final_price);                    
-                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
-                });    
-            }
+			var total_transaction = 0.00;
+			if (results.orderHistory.count > 0) {
+				results.orderHistory.rows.forEach((value, index) => {
+					total_transaction += parseFloat(value.final_price);
+					results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+				});
+			}
 
 			if (!err) {
-				
+
 				res.render('order-history', {
 					title: "Global Trade Connect",
 					OrderItems: results.orderHistory.rows,
@@ -170,13 +184,15 @@ export function orderHistory(req, res) {
 					queryURI: queryURI,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
-					statusCode : statusCode,
-                    totalTransaction : (total_transaction).toFixed(2),
+					statusCode: statusCode,
+					category: results.category,
+					totalTransaction: (total_transaction).toFixed(2),
+					orderStatus: orderStatus,
 					// pagination
 					page: page,
-					maxSize:maxSize,
+					maxSize: maxSize,
 					pageSize: limit,
-					queryPaginationObj:queryPaginationObj,
+					queryPaginationObj: queryPaginationObj,
 					collectionSize: results.orderHistory.count
 					// End pagination
 				});

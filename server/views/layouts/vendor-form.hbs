@@ -1,0 +1,242 @@
+<script>
+    $(document).ready(function(){  
+        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+        var fileDetails = {};
+        var imagesPreview = function(uploader, placeToInsertImagePreview) {
+       if (uploader.files && uploader.files[0]) {
+              $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+            }
+    };
+    $('#icon').on('change', function() {
+       imagesPreview(this);
+       test='div.icon'
+    });
+
+    $('#cover_pic').on('change', function() {
+       imagesPreview(this);
+       test='div.cov_pic'
+    });
+
+    $('#profile-picture-modal').on('shown.bs.modal', function () {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+                //setSelect: [0,0,1,1],
+                 maxContainerWidth: 800,
+                 maxContainerHeight: 600,
+				ready: function () {
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
+		}).on('hidden.bs.modal', function () {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
+        $('#crop-profile-image').click(function () {
+			cropper.getCroppedCanvas().toBlob(function (blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+			});
+        $($.parseHTML('<img>')).attr('src', cropper.getCroppedCanvas().toDataURL()).appendTo(test);
+		$('#profile-picture-modal').modal('hide');
+		})
+
+         $("#vendorForm").submit(function (e) {
+            e.preventDefault();
+            let input = $("#vendorForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+           $.ajax({
+            url: '/api/vendor/starter-seller',
+            type: 'POST',
+            data: input,
+            success: function (result) {
+                 console.log("result", result);
+            },
+            error: function (error) {
+                console.log("Error", error);
+            }
+        });
+
+         })
+
+      $("#country").change(function(){
+          var country_id = $('#country').val();
+
+         $.ajax({
+            url: '/api/states?country_id=' + country_id,
+            type: 'GET',
+            success: function (result) {
+                $("#state").empty();
+                for (var i = 0; i < result.rows.length; i++) {
+                    var options;
+                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                    $("#state").append(options)
+                }
+            },
+            error: function (error) {
+                console.log("Error", error);
+            }
+        });
+});
+});
+</script>
+{{> header/defaultHeader LoggedInUser = LoggedInUser}} 
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
+<section class="showing_categ">
+    <div class="">
+        <div class="container">
+            <div class="row">
+                {{> vendor/navbar}}
+                <div class="col-md-8" style="background-color: #fff;">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
+                            <form role="form" id="vendorForm">
+                                <div class="form-group product-heading">
+                                    <p>Vendor Form</p>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" name="vendor_name" id="vendor_name" class="form-control input-lg" placeholder="Vendor Name" tabindex="1"
+                                        required />
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="address_line1" id="address1" placeholder="Address Line1" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="address_line2" id="address2" placeholder="Address Line2" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <select class="form-control" id="country" name="base_location" required>
+                                                <option disabled selected>Base Location</option>
+                                                {{#each country}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <select class="form-control " name="province_id" id="state" value="" required>
+                                                <option disabled selected>Province</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                        <div class="form-group">
+                                            <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row">
+                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <div class="form-group">
+                                            <select class="form-control " id="currency" name="currency_id" required>
+                                                <option disabled selected>Currency</option>
+                                                {{#each currency}}
+                                                <option value="{{this.id}}">{{ this.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <div class="form-group">
+                                            <select class="form-control" name="timezone_id" id="timezone_id" value="" required>
+                                                <option disabled selected>TimeZone</option>
+                                                {{#each timezone}}
+                                                <option value="{{this.id}}">{{ this.timezone}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                             <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
+                                            <h6>About:</h6>
+                                        </label>
+                                        <br>
+                                        <div class="form-group">
+                                            <textarea id="about" name="about" class="form-control" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
+                                            <h6>Vendor Icon:</h6>
+                                        </label>
+                                        <br>
+                                        <div class="form-group">
+                                            <input id="icon" type="file" name="icon" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="icon"></div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
+                                            <h6>Vendor Cover Picture:</h6>
+                                        </label>
+                                        <br>
+                                        <div class="form-group">
+                                            <input id="cover_pic" type="file" name="cover_pic" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cov_pic"></div>
+                                <hr class="colorgraph">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{> footer/footer}}

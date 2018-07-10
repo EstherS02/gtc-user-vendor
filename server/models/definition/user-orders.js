@@ -1,23 +1,57 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Region', {
+    return sequelize.define('UserOrder', {
+        order_count: {
+            type: DataTypes.BIGINT,
+            field: 'order_count',
+            allowNull: true
+        },
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        name: {
+        role: {
+            type: DataTypes.INTEGER,
+            field: 'role',
+            allowNull: true
+        },
+        email: {
             type: DataTypes.STRING(128),
-            field: 'name',
-            allowNull: false
+            field: 'email',
+            allowNull: true
+        },
+        first_name: {
+            type: DataTypes.STRING(64),
+            field: 'first_name',
+            allowNull: true
+        },
+        last_name: {
+            type: DataTypes.STRING(64),
+            field: 'last_name',
+            allowNull: true
+        },
+        provider: {
+            type: DataTypes.INTEGER,
+            field: 'provider',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
-            allowNull: false
+            allowNull: true
+        },
+        email_verified: {
+            type: DataTypes.INTEGER,
+            field: 'email_verified',
+            allowNull: true
+        },
+        last_login_at: {
+            type: DataTypes.DATE,
+            field: 'last_login_at',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -45,31 +79,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'region',
+        tableName: 'user_orders',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-
-    const model = require('../index');
-    const Region = model.Region;
-    const Country = model.Country;
-    const Currency = model.Currency;
-
-    Region.hasMany(Country, {
-        foreignKey: 'region_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Region.belongsToMany(Currency, {
-        through: Country,
-        foreignKey: 'region_id',
-        otherKey: 'currency_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
 };

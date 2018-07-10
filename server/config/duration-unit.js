@@ -1,4 +1,4 @@
 module.exports = {
-	"DAYS": 1,
-	"MO": 2
+    "DAYS": 1,
+    "MONTHS": 2
 };

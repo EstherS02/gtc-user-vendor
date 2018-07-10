@@ -2,12 +2,122 @@
 
 const crypto = require('crypto');
 const uuid = require('node-uuid');
+const moment = require('moment');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const plans = require('../../config/gtc-plan');
+const durationUnit = require('../../config/duration-unit');
+const service = require('../service');
+
+export function createStarterSeller(req, res) {
+
+    var queryObj = {};
+    var bodyParams = {};
+    var PlanModelName = "Plan";
+    var userModelName = "User";
+    var vendorModelName = "Vendor";
+    var vendorPlanModelName = "VendorPlan";
+
+    req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
+    req.checkBody('base_location', 'Missing Query Param').notEmpty();
+    req.checkBody('currency_id', 'Missing Query Param').notEmpty();
+    req.checkBody('timezone_id', 'Missing Query Param').notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors) {
+        res.status(400).send('Missing Query Params');
+        return;
+    }
+
+    bodyParams = req.body;
+    bodyParams['user_id'] = req.user.id;
+    bodyParams['status'] = status['ACTIVE'];
+    bodyParams['created_on'] = new Date();
+
+    queryObj['user_id'] = req.user.id;
+
+    if (req.user.email_verified == 0) {
+        return res.status(400).send("Your email address not verified.");
+    }
+    if (req.user.status != status['ACTIVE']) {
+        return res.status(400).send("Your account is not ACTIVE mode.");
+    }
+
+    service.findOneRow(vendorModelName, queryObj)
+        .then(function(vendor) {
+            if (!vendor) {
+                var planQueryObj = {};
+                planQueryObj['status'] = status['ACTIVE'];
+                planQueryObj['id'] = plans['STARTER_SELLER'];
+
+                service.findOneRow(PlanModelName, planQueryObj)
+                    .then(function(planRow) {
+                        if (planRow) {
+                            service.createRow(vendorModelName, bodyParams)
+                                .then(function(vendorRow) {
+                                    if (vendorRow) {
+                                        service.updateRow(userModelName, {
+                                            role: roles['VENDOR']
+                                        }, req.user.id).then(function(userRow) {
+                                            if (userRow) {
+                                                var verndorPlanObj = {};
+                                                verndorPlanObj['vendor_id'] = vendorRow.id;
+                                                verndorPlanObj['plan_id'] = planRow.id;
+                                                verndorPlanObj['status'] = status['ACTIVE'];
+                                                verndorPlanObj['start_date'] = new Date();
+                                                if (planRow.duration_unit == durationUnit['DAYS']) {
+                                                    verndorPlanObj['end_date'] = moment().add(planRow.duration, 'days').format('YYYY-MM-DD');
+                                                }
+                                                if (planRow.duration_unit == durationUnit['MONTHS']) {
+                                                    var totalDays = planRow.duration * 28;
+                                                    verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
+                                                }
+
+                                                service.createRow(vendorPlanModelName, verndorPlanObj)
+                                                    .then(function(vendorPlanRow) {
+                                                        if (vendorRow) {
+                                                            return res.status(201).send("Vendor created successfully.");
+                                                        } else {
+                                                            return res.status(400).send("Failed to create vendor plan.");
+                                                        }
+                                                    }).catch(function(error) {
+                                                        console.log('Error:::', error);
+                                                        return res.status(500).send("Internal server error");
+                                                    });
+                                            } else {
+                                                return res.status(400).send("Failed to update user role.");
+                                            }
+                                        }).catch(function(error) {
+                                            console.log('Error:::', error);
+                                            return res.status(500).send("Internal server error");
+                                        });
+                                    } else {
+                                        return res.status(400).send("Failed to create vendor.");
+                                    }
+                                }).catch(function(error) {
+                                    console.log('Error:::', error);
+                                    return res.status(500).send("Internal server error");
+                                });
+                        } else {
+                            return res.status(404).send("Plan not found.");
+                        }
+                    }).catch(function(error) {
+                        console.log('Error:::', error);
+                        return res.status(500).send("Internal server error");
+                    });
+            } else {
+                return res.status(409).send("Duplicate user");
+            }
+        })
+        .catch(function(error) {
+            console.log('Error:::', error);
+            return res.status(500).send("Internal server error");
+        });
+}
 
 export function create(req, res) {
     var queryObj = {};

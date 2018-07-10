@@ -56,7 +56,7 @@
         <div class="col-md-10" style="background-color: #fff;">
           <h5 style="padding-top: 20px;">Order History</h5>
           <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-9">
               <form id="searchOrder">
                 Date Range
                 <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
@@ -76,17 +76,20 @@
                   <option value = "{{this}}">{{@key}}</option>
                   {{/each}}
                 </select>
-                <select class="vend_edit_lists_buttonstyle" name="status">
+                
+                <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
+              </form>
+            </div>
+            <div class="col-md-3">
+            <select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
                   <option value="">STATUS</option>
+                  <option value="INACTIVE">InActive</option>
                   <option value="NEWORDER"> New Order</option>
                   <option value="CANCLEORDER"> Cancel Order</option>
                   <option value="FAILEDORDER"> Failed Order</option>
                 </select> 
-                <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle" style="height: 27px;"/>
-              </form>
-            </div>
-            <div class="col-md-2">
-              <input style="width: 100%;" type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle float-right" />
+                <input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
+              <input  type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " />
             </div>
           </div>
           <div class="row" style="padding-top: 10px">
@@ -94,10 +97,18 @@
               
             </div>
             <div class="col-md-4">
-              <input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle" />
-              <select style="width: 35%" class="vend_edit_lists_buttonstyle float-right">
+              <div class="row">
+              <div class="col-md-6">
+              <form>
+              <input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
+              </form>
+              </div>
+              <div class="col-md-6">
+              <select  class="vend_edit_lists_buttonstyle ">
                 <option>EXPORT TO</option>
               </select>
+              </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -147,7 +158,7 @@
                 </tr>
                 {{/each}}
                 <tr>
-                  <td colspan="8"></td>
+                  <td colspan="10"></td>
                   <td class="text_blue_color">Total Transaction</td>
                   <td>${{totalTransaction}} CAD</td>
                 </tr>

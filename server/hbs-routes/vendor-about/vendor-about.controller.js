@@ -39,12 +39,12 @@ export function vendorAbout(req, res) {
 					where: {
 						vendor_verified_status: status['ACTIVE']
 					}
-				}]
-
+				}],
+				required: false
 			}, {
 				model: model['VendorFollower'],
 				where: {
-					user_id: req.user.id,
+					// user_id: vendor_id,
 					status: 1
 				},
 				required: false
@@ -61,7 +61,7 @@ export function vendorAbout(req, res) {
 		Follower: function(callback) {
 			var queryObj = {
 				status: 1,
-				vendor_id: 28
+				vendor_id: vendor_id
 
 			};
 			var includeArr = [{
@@ -82,7 +82,8 @@ export function vendorAbout(req, res) {
 		}
 
 	}, function(err, results) {
-		// console.log(results);
+		console.log(LoggedInUser);
+		console.log("results.VendorDetail***********",results)
 		if (!err) {
 			res.render('vendor-about', {
 				title: "Global Trade Connect",

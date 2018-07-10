@@ -123,6 +123,16 @@ export function directory(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        category: function(callback) {
+            service.findRows("Category", {}, 0, null, 'id', 'asc')
+                .then(function(category) {
+                    return callback(null, category.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
         }
     }, function (err, results) {
         if (!err) {
@@ -136,6 +146,7 @@ export function directory(req, res) {
                 servicesProviders: results.servicesProviders,
                 subscriptionProviders: results.subscriptionProviders,
                 depart:results.depart,
+                category:results.category,
                 LoggedInUser: LoggedInUser
             });
         }

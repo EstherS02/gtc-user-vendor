@@ -15,6 +15,7 @@ export function storeData(req, res) {
 	var bodyParam = {}, vendorParam = {};
 	var modelName = "VendorVerification";
 	var vendorModel = "Vendor";
+
 	if (req.body.personal_id_verification_file_link) {
 		bodyParam.personal_id_verification_file_type = req.body.personal_id_verification_file_type;
 		bodyParam.personal_id_verification_file_status = verificationStatus['WAITING'];
@@ -45,6 +46,8 @@ export function storeData(req, res) {
 	bodyParam.request_for_vendor_verification = 1;
 	bodyParam.vendor_verified_status = verificationStatus['WAITING'];
 	bodyParam.user_id = req.user.id;
+
+	console.log("===================",vendorParam);
 
 	var queryObj = {
 		user_id: req.user.id
@@ -77,7 +80,7 @@ export function storeData(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
+		},	
 		vendor: function (callback) {
 			service.findOneRow(vendorModel, queryObj, includeArr)
 				.then(function (results) {
