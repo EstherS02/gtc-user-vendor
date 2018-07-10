@@ -87,7 +87,7 @@ export default function(app) {
 
 
   //should be last route
-  app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
+  app.use('/:marketPlaceType(shop|wholesale|services|lifestyle|product)', require('./hbs-routes/product-view'));
   
   
   
