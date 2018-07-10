@@ -37,7 +37,7 @@ export function GetProductDetails(req, res) {
             }
         }
     }
-    var sub_category,vendor_id,marketplace_id;
+    var sub_category, vendor_id, marketplace_id;
     var productModel = 'MarketplaceProduct';
     var order = "desc";
     var field = "created_on";
@@ -45,7 +45,7 @@ export function GetProductDetails(req, res) {
     var queryURI = {};
     async.series({
         Product: function(callback) {
-           var includeArr1= [{
+            var includeArr1 = [{
                 model: model["Vendor"]
             }, {
                 model: model["Marketplace"]
@@ -63,7 +63,7 @@ export function GetProductDetails(req, res) {
                 model: model["WishList"],
                 where: wishQueryObj,
                 required: false
-            },{
+            }, {
                 model: model["ProductMedia"],
                 where: {
                     status: {
@@ -102,7 +102,7 @@ export function GetProductDetails(req, res) {
                 });
         },
         VendorDetail: function(callback) {
-        var vendorIncludeArr = [{
+            var vendorIncludeArr = [{
                 model: model['Country']
 
             }, {
@@ -110,7 +110,7 @@ export function GetProductDetails(req, res) {
 
             }, {
                 model: model['User'],
-                attributes:['id'],
+                attributes: ['id'],
                 include: [{
                     model: model['VendorVerification'],
                     where: {
@@ -118,11 +118,13 @@ export function GetProductDetails(req, res) {
                     }
                 }]
 
-            },{
-                model:model['VendorRating'],
-                attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+            }, {
+                model: model['VendorRating'],
+                attributes: [
+                    [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+                ],
                 group: ['VendorRating.vendor_id'],
-                required:false,
+                required: false,
             }];
             service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
                 .then(function(response) {
@@ -157,8 +159,8 @@ export function GetProductDetails(req, res) {
 
             categoryQueryObj['status'] = status["ACTIVE"];
             productCountQueryParames['status'] = status["ACTIVE"];
-            if(vendor_id){
-            productCountQueryParames['vendor_id'] = vendor_id;
+            if (vendor_id) {
+                productCountQueryParames['vendor_id'] = vendor_id;
             }
             if (req.query.marketplace_type) {
                 productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
@@ -181,45 +183,55 @@ export function GetProductDetails(req, res) {
                 });
         },
         marketPlaceTypes: function(callback) {
-            if(marketplace_id == marketplace['WHOLESALE']){
-            var result = {};
-            var marketplaceTypeQueryObj = {};
-            var productCountQueryParames = {};
+            if (marketplace_id == marketplace['WHOLESALE']) {
+                var result = {};
+                var marketplaceTypeQueryObj = {};
+                var productCountQueryParames = {};
 
-            marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-            productCountQueryParames['vendor_id'] = vendor_id;
-            marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
+                marketplaceTypeQueryObj['status'] = status["ACTIVE"];
+                productCountQueryParames['vendor_id'] = vendor_id;
+                marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
-            productCountQueryParames['status'] = status["ACTIVE"];
-            productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
-            if (req.query.location) {
-                productCountQueryParames['product_location'] = req.query.location;
+                productCountQueryParames['status'] = status["ACTIVE"];
+                productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+                if (req.query.location) {
+                    productCountQueryParames['product_location'] = req.query.location;
+                }
+                if (req.query.category) {
+                    productCountQueryParames['product_category_id'] = req.query.category;
+                }
+                if (req.query.sub_category) {
+                    productCountQueryParames['sub_category_id'] = req.query.sub_category;
+                }
+                if (req.query.keyword) {
+                    productCountQueryParames['product_name'] = {
+                        like: '%' + req.query.keyword + '%'
+                    };
+                }
+                // console.log(productCountQueryParames , marketplaceTypeQueryObj)
+                service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
+                    .then(function(response) {
+                        return callback(null, response);
+
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            } else {
+                return callback(null);
+
             }
-            if (req.query.category) {
-                productCountQueryParames['product_category_id'] = req.query.category;
-            }
-            if (req.query.sub_category) {
-                productCountQueryParames['sub_category_id'] = req.query.sub_category;
-            }
-            if (req.query.keyword) {
-                productCountQueryParames['product_name'] = {
-                    like: '%' + req.query.keyword + '%'
-                };
-            }
-            // console.log(productCountQueryParames , marketplaceTypeQueryObj)
-            service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
-                .then(function(response) {
-                    return callback(null, response);
+
+        },
+        category: function(callback) {
+            service.findRows("Category", {}, 0, null, 'id', 'asc')
+                .then(function(category) {
+                    return callback(null, category.rows);
 
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-            }else{
-                return callback(null);
-
-            }
-            
         }
 
     }, function(err, results) {
@@ -227,20 +239,20 @@ export function GetProductDetails(req, res) {
         // console.log("results**************",results)
         var productsList = JSON.parse(JSON.stringify(results.Product));
 
-                let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
+        let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
         // console.log("results**************",productsList)
         var selectedPage;
-        if(productsList.Marketplace.id == 1){
+        if (productsList.Marketplace.id == 1) {
             selectedPage = "wholesale";
-        }else if(productsList.Marketplace.id == 2){
+        } else if (productsList.Marketplace.id == 2) {
             selectedPage = "shop";
-        }else if(productsList.Marketplace.id == 3){
+        } else if (productsList.Marketplace.id == 3) {
             selectedPage = "services";
-        }else{
+        } else {
             selectedPage = "lifestyle";
         }
         // console.log("selectedPage*************",selectedPage)
-      if (!err) {
+        if (!err) {
             var productRating = [{
                 starCount: 5,
                 ratingCount: 0
@@ -269,20 +281,21 @@ export function GetProductDetails(req, res) {
             var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
             res.render('product-view', {
-                    product: productsList,
-                    productReviewsList: results.AllReviews,
-                    LoggedInUser: LoggedInUser,
-                    rating: productRating,
-                    status: status,
-                    VendorDetail: results.VendorDetail,
-                    wishList: productsList.WishLists,
-                    avgRating: productAvgRating,
-                    queryURI:queryURI,
-                    categories:results.categories,
-                    RelatedProducts:results.RelatedProducts.rows,
-                    marketPlaceTypes: results.marketPlaceTypes,
-                    marketplace: marketplace,
-                    selectedPage: selectedPage,
+                product: productsList,
+                productReviewsList: results.AllReviews,
+                LoggedInUser: LoggedInUser,
+                rating: productRating,
+                status: status,
+                VendorDetail: results.VendorDetail,
+                wishList: productsList.WishLists,
+                avgRating: productAvgRating,
+                queryURI: queryURI,
+                categories: results.categories,
+                RelatedProducts: results.RelatedProducts.rows,
+                marketPlaceTypes: results.marketPlaceTypes,
+                marketplace: marketplace,
+                selectedPage: selectedPage,
+                category: results.category,
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser
             });
@@ -294,32 +307,6 @@ export function GetProductDetails(req, res) {
     });
     //includeArr = populate.populateData("Vendor,Marketplace,MarketplaceType,Category,SubCategory,Country,State")
 }
-
-
-// export function productView(req, res) {
-//     //old code
-
-//     let searchObj = {}
-
-//     if (req.params.product_id)
-//         searchObj["id"] = req.params.product_id;
-
-//     if (req.params.product_slug)
-//         searchObj["product_slug"] = req.params.product_slug;
-
-//     service.findOneRow('Product', searchObj)
-//         .then(function(productDetails) {
-//             res.render('productView', {
-//                 title: 'Global Trade Connect',
-//                 productDetails: productDetails
-//             });
-//         }).catch(function(error) {
-//             console.log('Error :::', error);
-//             res.render('productView', error)
-//         });
-// }
-
-
 
 export function GetProductReview(req, res) {
     var queryObj = {};
@@ -433,7 +420,7 @@ export function GetProductReview(req, res) {
                 });
         },
         VendorDetail: function(callback) {
-        var vendorIncludeArr = [{
+            var vendorIncludeArr = [{
                 model: model['Country']
 
             }, {
@@ -441,7 +428,7 @@ export function GetProductReview(req, res) {
 
             }, {
                 model: model['User'],
-                attributes:['id'],
+                attributes: ['id'],
                 include: [{
                     model: model['VendorVerification'],
                     where: {
@@ -449,11 +436,13 @@ export function GetProductReview(req, res) {
                     }
                 }]
 
-            },{
-                model:model['VendorRating'],
-                attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
+            }, {
+                model: model['VendorRating'],
+                attributes: [
+                    [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+                ],
                 group: ['VendorRating.vendor_id'],
-                required:false,
+                required: false,
             }];
             service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
                 .then(function(response) {
@@ -509,8 +498,8 @@ export function GetProductReview(req, res) {
 
             categoryQueryObj['status'] = status["ACTIVE"];
             productCountQueryParames['status'] = status["ACTIVE"];
-            if(vendor_id){
-            productCountQueryParames['vendor_id'] = vendor_id;
+            if (vendor_id) {
+                productCountQueryParames['vendor_id'] = vendor_id;
             }
             if (req.query.marketplace_type) {
                 productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
@@ -531,10 +520,20 @@ export function GetProductReview(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        category: function(callback) {
+            service.findRows("Category", {}, 0, null, 'id', 'asc')
+                .then(function(category) {
+                    return callback(null, category.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
         }
 
     }, function(err, results) {
-         queryURI['marketplace_id'] = results.Product.marketplace_id;
+        queryURI['marketplace_id'] = results.Product.marketplace_id;
         // console.log("results**************",results)
         if (!err) {
             maxSize = results.Review.count / limit;
@@ -568,7 +567,7 @@ export function GetProductReview(req, res) {
             }
             var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
-            productRating = productRating//_.orderBy(productRating, ['ratingCount'], ['desc'])
+            productRating = productRating //_.orderBy(productRating, ['ratingCount'], ['desc'])
 
             res.render('product-review', {
                 title: "Global Trade Connect",
@@ -580,9 +579,10 @@ export function GetProductReview(req, res) {
                 RelatedProducts: results.RelatedProducts.rows,
                 queryPaginationObj: queryPaginationObj,
                 ratingCount: results.Review.count,
-                VendorDetail:results.VendorDetail,
-                categories:results.categories,
-                queryURI:queryURI,
+                VendorDetail: results.VendorDetail,
+                categories: results.categories,
+                queryURI: queryURI,
+                category: results.category,
 
                 // pagination
                 page: page,

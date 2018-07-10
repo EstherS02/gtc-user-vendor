@@ -50,7 +50,7 @@
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
-{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 	
 	<div class="logged_in_cont" >
 		<div class="container">
@@ -74,7 +74,7 @@
 										</div>
 										<div class="col-md-7 col-7 product_iphone common_padding1">
 											<p class="product_iphone_header">
-											{{product.product_name}}
+												{{product.product_name}}
 											</p>
 											<p class="product_rating">Product Rating</p>
 											<p class="product_rating_star">{{starCount AvgRating}}
@@ -116,7 +116,8 @@
 											<form name="reviewForm" id="reviewForm" onsubmit="return false">
 												<p class="review_help_title">Submit A Review Of This Product</p>
 												<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
-												please fill out the following it will be sent directly to the vendor.</p>
+													please fill out the following it will be sent directly to the vendor.
+												</p>
 												<div>
 													<span class="product_submit_para">Please provide rating for this product</span>
 													<select id="review-stars" style="display:none !important;">
@@ -149,7 +150,7 @@
 									</div>
 									<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 									</div>
-									
+
 									{{#each Reviews}}
 									<div class="row">
 										<div class="col-md-2 product_img">
@@ -163,7 +164,7 @@
 												<span class="product_ago">
 													{{FormatDate this.created_on}}
 												</span>
-											 </p>
+											</p>
 											<p class="product_we">{{this.comment}}</p>
 										</div>
 										<div class="col-md-12 product_hr">
@@ -213,8 +214,8 @@
 														<div class="row common_padding">
 															<div class="col-md-9">
 																<p class="wts_header">
-																<a href="product/{{this.product_slug}}/{{this.id}}/allReviews">{{this.product_name}} of Interest
-																</a>
+																	<a href="product/{{this.product_slug}}/{{this.id}}/allReviews">{{this.product_name}} of Interest
+																	</a>
 																</p>
 															</div>
 															<div class="col-md-3">
@@ -253,21 +254,14 @@
 							</div>
 						</div>
 						<div class="col-md-3 showing_categ">
-							{{!-- <div class="col-md-3 col-12 showing_categ"> --}}
-                            <p><b>FILTER BY CATEGORY</b></p>
-                            <p class="cat_bg_title_shp">ALL CATEGORIES ({{categories.count}})</p>
-                            {{> vendor/vendor-category }}
-                        {{!-- </div> --}}
-
+							<p><b>FILTER BY CATEGORY</b></p>
+							<p class="cat_bg_title_shp">ALL CATEGORIES ({{categories.count}})</p>
+							{{> vendor/vendor-category }}
 						</div>
 					</div>
 				</div>
-			</section>
-			{{> footer/footer}}
-			<script>
-				$(window).scroll(function(){
-					$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-				});
-			</script>
-		</body>
-	</html>
+			</div>
+		</div>
+	</div>
+</section>
+{{> footer/footer}}
