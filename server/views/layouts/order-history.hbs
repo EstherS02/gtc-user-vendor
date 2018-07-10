@@ -64,6 +64,11 @@ x<script type="text/javascript">
 			alert("Select checkboxe and status before you update");
 		}
 	}
+
+	function refund(e) {
+		console.log("********************************************",e.value);
+	}
+
 </script>
 <script type="text/javascript">
 	function selectDatefun(){
@@ -182,7 +187,7 @@ x<script type="text/javascript">
 									<td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
 									<td>PayPal</td>
 									<td class="text_green_color">{{objectKey ../orderStatus this.status}}</td>
-									<td class="text_blue_color"><i class="fas fa-credit-card"></i> Request Refund</td>
+									<td class="text_blue_color" value="{{this.id}}" onclick="refund(this);" ><i class="fas fa-credit-card"></i> Request Refund</td>
 									<td>${{this.final_price}} CAD</td>
 								</tr>
 								{{/each}}
