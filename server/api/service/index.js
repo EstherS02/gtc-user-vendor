@@ -5,7 +5,6 @@ const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
 
-
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
     return new Promise((resolve, reject) => {
         model[modelName].findAndCountAll({
@@ -157,10 +156,6 @@ export function createBulkRow(modelName, bodyParams) {
 }
 
 export function updateRow(modelName, bodyParams, id) {
-    console.log(modelName);
-    console.log(bodyParams);
-    console.log(id);
-
     return new Promise((resolve, reject) => {
         model[modelName].update(bodyParams, {
             where: {
@@ -221,30 +216,6 @@ export function destroyRow(modelName, id) {
         });
     });
 }
-
-/*export function upsert(modelName, queryObj, includeArr, data) {
-    console.log('data', data);
-    this.findOneRow(modelName, queryObj, includeArr)
-        .then(function(results) {
-            if (results) {
-                console.log('new', results)
-                var id = results;
-                data.last_updated_on = new Date();
-
-                // res.status(200).send(results);
-                this.updateRow(modelName, data, id).then(function(response) {
-                    console.log("Update", response)
-                    return;
-                });
-            } else {
-                data.created_on = new Date();
-                this.createRow(modelName, data).then(function(response) {
-                    console.log("News", response)
-                    return;
-                });
-            }
-        });
-}*/
 
 export function upsert(modelName, data) {
     return new Promise((resolve, reject) => {
