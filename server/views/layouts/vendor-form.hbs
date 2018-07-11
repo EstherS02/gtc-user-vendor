@@ -47,7 +47,34 @@
 
          $("#vendorForm").submit(function (e) {
             e.preventDefault();
-            let input = $("#vendorForm :input").filter(function (index, element) {
+
+            
+            var image = $("#icon")[0].files[0];
+			var vendor_pic_url;
+			var form = new FormData();
+			
+			form.append("file", cropperOutputImage, fileDetails["fileName"]);
+            if (image) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/vendors/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+                        console.log("================================",data.imageURL);
+						//userUpdate.user_pic_url = data.imageURL;
+
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				})
+			}
+
+           /* let input = $("#vendorForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
            $.ajax({
@@ -60,7 +87,7 @@
             error: function (error) {
                 console.log("Error", error);
             }
-        });
+        });*/
 
          })
 
