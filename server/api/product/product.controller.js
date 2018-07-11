@@ -5,6 +5,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 const marketplace = require('../../config/marketplace.js');
+const marketplaceType = require('../../config/marketplace_type.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 
@@ -22,7 +23,7 @@ export function featureMany(req, res) {
     }
     model["FeaturedProduct"].bulkCreate(arr, {
             ignoreDuplicates: true
-        })
+        }) 
         .then(function(row) {
             res.status(201).send("Created");
             return;
@@ -66,6 +67,14 @@ export function create(req, res) {
     bodyParams = req.body;
     if (req.user.role === roles['VENDOR']) {
         bodyParams['vendor_id'] = req.user.Vendor.id;
+    }
+    if (bodyParams['marketplace_id'] == marketplace['WHOLESALE']) {
+        if (Object.values(marketplaceType).indexOf(bodyParams['marketplace_type_id']) == -1) {
+            return res.status(404).send("Marketplace Type not found");
+        }
+    } else {
+        delete bodyParams['marketplace_type_id'];
+        delete bodyParams['moq'];
     }
     bodyParams['product_slug'] = string_to_slug(req.body.product_name);
     bodyParams['quantity_available'] = req.body.sku;
