@@ -8,6 +8,7 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
+const orderStatus = require('../../config/order_status');
 import series from 'async/series';
 var async = require('async');
 
@@ -131,13 +132,12 @@ export function orderHistory(req, res) {
 		model: model["Order"],
 		where: orderQueryObj,
 		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price','status']
-	// }, {
-	// 	model: model['Product'],
-	// 	where: productQueryObj,
-	// 	include: [{
-	// 		model: model['Vendor'],
-	// 	}
-	// 	]
+	}, {
+		model: model['Product'],
+		where: productQueryObj,
+		include: [{
+			model: model['Vendor'],
+		}]
 
 	}];
 	// console.log(orderQueryObj);
@@ -179,6 +179,7 @@ export function orderHistory(req, res) {
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
 					statusCode : statusCode,
+					orderStatus: orderStatus,
                     totalTransaction : (total_transaction).toFixed(2),
 					// pagination
 					page: page,
