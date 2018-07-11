@@ -11,16 +11,35 @@ import series from 'async/series';
 var async = require('async');
 
 export function gtcMail(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    res.render('gtc-mail', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
-    });
+	let user_id = LoggedInUser.id;
+	async.series({
+			category: function(callback) {
+				service.findRows("Category", {}, 0, null, 'id', 'asc')
+					.then(function(category) {
+						return callback(null, category.rows);
 
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
+
+		},
+		function(err, results) {
+			if (!err) {
+				res.render('gtc-mail', {
+					title: "Global Trade Connect",
+					LoggedInUser: LoggedInUser,
+					category: results.category,
+					selectedPage: 'gtc-mail'
+				});
+			} else {
+				res.render('gtc-mail', err);
+			}
+		});
 }

@@ -14,6 +14,7 @@ var async = require('async');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
+	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -130,7 +131,7 @@ export function orderHistory(req, res) {
 	var includeArr = [{
 		model: model["Order"],
 		where: orderQueryObj,
-		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price', 'status']
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price','status']
 	}, {
 		model: model['Product'],
 		where: productQueryObj,
@@ -139,6 +140,8 @@ export function orderHistory(req, res) {
 		}]
 
 	}];
+	// console.log(orderQueryObj);
+
 	async.series({
 			orderHistory: function(callback) {
 				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
@@ -148,35 +151,26 @@ export function orderHistory(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
-			category: function(callback) {
-				service.findRows("Category", {}, 0, null, 'id', 'asc')
-					.then(function(category) {
-						return callback(null, category.rows);
-
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
 			}
 		},
 		function(err, results) {
+			console.l
 			maxSize = results.orderHistory.count / limit;
 			if (results.orderHistory.count % limit)
 				maxSize++;
-			queryPaginationObj['maxSize'] = maxSize;
-			console.log("start_date", queryPaginationObj, queryURI);
+				queryPaginationObj['maxSize'] = maxSize;
+			console.log("start_date", queryPaginationObj,queryURI);
 
-			var total_transaction = 0.00;
-			if (results.orderHistory.count > 0) {
-				results.orderHistory.rows.forEach((value, index) => {
-					total_transaction += parseFloat(value.final_price);
-					results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
-				});
-			}
+            var total_transaction = 0.00;
+            if(results.orderHistory.count > 0) {
+                results.orderHistory.rows.forEach((value, index) => {
+                    total_transaction += parseFloat(value.final_price);                    
+                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+                });    
+            }
 
 			if (!err) {
-
+				
 				res.render('order-history', {
 					title: "Global Trade Connect",
 					OrderItems: results.orderHistory.rows,
@@ -184,15 +178,14 @@ export function orderHistory(req, res) {
 					queryURI: queryURI,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
-					statusCode: statusCode,
-					category: results.category,
-					totalTransaction: (total_transaction).toFixed(2),
+					statusCode : statusCode,
 					orderStatus: orderStatus,
+                    totalTransaction : (total_transaction).toFixed(2),
 					// pagination
 					page: page,
-					maxSize: maxSize,
+					maxSize:maxSize,
 					pageSize: limit,
-					queryPaginationObj: queryPaginationObj,
+					queryPaginationObj:queryPaginationObj,
 					collectionSize: results.orderHistory.count
 					// End pagination
 				});
