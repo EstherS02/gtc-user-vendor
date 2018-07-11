@@ -15,8 +15,6 @@ const service = require('../service');
 
 export function createStarterSeller(req, res) {
 
-    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&",req.body);
-
     var queryObj = {};
     var bodyParams = {};
     var PlanModelName = "Plan";
