@@ -1,34 +1,4 @@
-<script type="text/javascript">
-    const auth = Auth();
 
-    $(document).ready(function() {
-        $('#btnLogin').prop('disabled', true);
-
-        $('#inputEmail, #inputPassword').keyup(function() {
-            if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '') {
-                $('#btnLogin').prop('disabled', false);
-            } else {
-                $('#btnLogin').prop('disabled', true);
-            }
-        });
-
-        $('#loginForm').submit(function(event) {
-            event.preventDefault();
-
-            auth.login({
-                email: $('#inputEmail').val(),
-                password: $('#inputPassword').val()
-            }).then(function(user) {
-                window.location = "/";
-            }).catch(function(error) {
-                console.log('Error:::', error.responseText)
-                $("#loginErrorMessage").after(function() {
-                    return '<small class="error">' + error.responseText + '</small>';
-                });
-            });
-        });
-    });
-</script>
 
 <section>
     <div class="sticky-top topbar">
@@ -44,11 +14,11 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <p>Returning User? Sign in:</p>
-                                <input type="email" placeholder="Email" class="acc_textbox" id="inputEmail" name="email">
+                                <input type="email" placeholder="Email" class="acc_textbox" id="loginInputEmail" name="email">
                             </div>
                             <div class="col-md-4 forgot_password">
                                 <p style="float: right!important;color: #d0d0d0; font-size: x-small; font-weight:400;">Forgot Password?</p>
-                                <input type="password" placeholder="Password" class="acc_textbox" id="inputPassword" name="password">
+                                <input type="password" placeholder="Password" class="acc_textbox" id="loginInputPassword" name="password">
                             </div>
                             <div class="col-md-4">
                                 <button class="btn login_head_ban" type="submit" id="btnLogin">LOG IN</button>

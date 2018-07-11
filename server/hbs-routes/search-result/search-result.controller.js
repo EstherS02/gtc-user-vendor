@@ -182,6 +182,38 @@ export function index(req, res) {
 					like: '%' + req.query.keyword + '%'
 				};
 			}
+
+			// model['MarketplaceType'].findAll({
+			// 	where: marketplaceTypeQueryObj,
+			// 	include: [{
+			// 		model: model['Product'],
+			// 		where: productCountQueryParames,
+			// 		attributes: [],
+			// 		required: false
+			// 	}],
+			// 	attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+			// 	group: ['MarketplaceType.id']
+			// }).then(function(results) {
+			// 	if (results.length > 0) {
+			// 		model['Product'].count({
+			// 			where: productCountQueryParames
+			// 		}).then(function(count) {
+			// 			result.count = count;
+			// 			result.rows = JSON.parse(JSON.stringify(results));
+			// 			return callback(null, result);
+			// 		}).catch(function(error) {
+			// 			console.log('Error:::', error);
+			// 			return callback(error, null);
+			// 		});
+			// 	} else {
+			// 		result.count = 0;
+			// 		result.rows = [];
+			// 		return callback(null, result);
+			// 	}
+			// }).catch(function(error) {
+			// 	console.log('Error:::', error);
+			// 	return callback(error, null);
+			// });
 			service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
                     .then(function(response) {
                         return callback(null, response);
@@ -272,6 +304,42 @@ export function index(req, res) {
 				};
 			}
 
+			// model['Category'].findAll({
+			// 	where: categoryQueryObj,
+			// 	include: [{
+			// 		model: model['SubCategory'],
+			// 		where: categoryQueryObj,
+			// 		attributes: ['id', 'category_id', 'name', 'code'],
+			// 		required: false
+			// 	}, {
+			// 		model: model['Product'],
+			// 		where: productCountQueryParames,
+			// 		attributes: [],
+			// 		required: false
+			// 	}],
+			// 	attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+			// 	group: ['SubCategories.id']
+			// }).then(function(results) {
+			// 	if (results.length > 0) {
+			// 		model['Product'].count({
+			// 			where: productCountQueryParames
+			// 		}).then(function(count) {
+			// 			result.count = count;
+			// 			result.rows = JSON.parse(JSON.stringify(results));
+			// 			return callback(null, result);
+			// 		}).catch(function(error) {
+			// 			console.log('Error:::', error);
+			// 			return callback(error, null);
+			// 		});
+			// 	} else {
+			// 		result.count = 0;
+			// 		result.rows = [];
+			// 		return callback(null, result);
+			// 	}
+			// }).catch(function(error) {
+			// 	console.log('Error:::', error);
+			// 	return callback(error, null);
+			// });
 			service.getCategory(categoryQueryObj, productCountQueryParames)
                 .then(function(response) {
                     return callback(null, response);
