@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: true
+            allowNull: false
         },
         contact_email: {
             type: DataTypes.STRING(128),
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         base_location: {
             type: DataTypes.BIGINT,
             field: 'base_location',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'country',
                 key: 'id'
@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_profile_pic_url: {
             type: DataTypes.TEXT,
             field: 'vendor_profile_pic_url',
-            allowNull: true
+            allowNull: false
         },
         facebook_url: {
             type: DataTypes.TEXT,
@@ -99,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
         currency_id: {
             type: DataTypes.BIGINT,
             field: 'currency_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'currency',
                 key: 'id'
@@ -129,15 +129,10 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },*/
-        address_line1: {
+        address: {
             type: DataTypes.STRING(255),
-            field: 'address_line1',
+            field: 'address',
             allowNull: false
-        },
-        address_line2: {
-            type: DataTypes.STRING(255),
-            field: 'address_line2',
-            allowNull: true
         },
         province_id: {
             type: DataTypes.BIGINT,
@@ -154,11 +149,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(128),
             field: 'city',
             allowNull: false
-        },
-        postal_code: {
-            type: DataTypes.INTEGER,
-            field: 'postal_code',
-            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
