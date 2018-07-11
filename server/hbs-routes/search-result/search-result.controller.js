@@ -28,6 +28,9 @@ export function index(req, res) {
 	var offset, limit, field, order;
 	var productEndPoint = "MarketplaceProduct";
 
+	if (req.user)
+		LoggedInUser = req.user;
+
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
@@ -309,7 +312,8 @@ export function index(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				locations: results.locations,
 				categories: results.categories,
-				category: results.category
+				category: results.category,
+				LoggedInUser:LoggedInUser
 			});
 		} else {
 			res.render('search', error);
