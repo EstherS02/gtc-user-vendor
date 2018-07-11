@@ -40,7 +40,9 @@ export function coupons(req, res) {
 			queryObj['status'] = parseInt(status);
 	}
 	if (typeof req.query.name !== 'undefined') {
-		queryObj['coupon_name'] = { $like: '%' + req.query.name + '%' };
+		queryObj['coupon_name'] = {
+			$like: '%' + req.query.name + '%'
+		};
 	}
 	//pagination 
 	var page;
@@ -73,12 +75,23 @@ export function coupons(req, res) {
 						return callback(null);
 					});
 			},
+			category: function(callback) {
+				service.findRows("Category", {}, 0, null, 'id', 'asc')
+					.then(function(category) {
+						return callback(null, category.rows);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
+
 		},
 		function(err, results) {
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
-				if(results.Coupons.count%limit)
-            	maxSize++;
+				if (results.Coupons.count % limit)
+					maxSize++;
 				res.render('view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
@@ -86,6 +99,7 @@ export function coupons(req, res) {
 					statusCode: statusCode,
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
+					category: results.category,
 					// pagination
 					page: page,
 					maxSize: maxSize,
@@ -139,6 +153,16 @@ export function addCoupon(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		category: function(callback) {
+			service.findRows("Category", {}, 0, null, 'id', 'asc')
+				.then(function(category) {
+					return callback(null, category.rows);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(err, results) {
 		if (!err) {
@@ -146,6 +170,7 @@ export function addCoupon(req, res) {
 				title: "Global Trade Connect",
 				products: results.products,
 				categories: results.categories,
+				category: results.category,
 				LoggedInUser: LoggedInUser
 			});
 		} else {
@@ -170,7 +195,7 @@ export function editCoupons(req, res) {
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = req.user.Vendor.id;
 	queryObj['status'] = status["ACTIVE"];
-	var coupon_id=0;
+	var coupon_id = 0;
 
 	field = "id";
 	order = "asc";
@@ -179,9 +204,9 @@ export function editCoupons(req, res) {
 		coupon: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
 				.then(function(coupon) {
-					if(coupon){
-					coupon_id =req.query.id;
-				}
+					if (coupon) {
+						coupon_id = req.query.id;
+					}
 					return callback(null, coupon);
 				}).catch(function(error) {
 					console.log('Error:::', error);
@@ -311,6 +336,16 @@ export function editCoupons(req, res) {
 					console.log('Error:::', error);
 					return callback(null);
 				});
+		},
+		category: function(callback) {
+			service.findRows("Category", {}, 0, null, 'id', 'asc')
+				.then(function(category) {
+					return callback(null, category.rows);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -324,6 +359,7 @@ export function editCoupons(req, res) {
 				existingCouponExcludeProducts: results.couponExcludeProducts,
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
+				category: results.category,
 				LoggedInUser: LoggedInUser
 			});
 
