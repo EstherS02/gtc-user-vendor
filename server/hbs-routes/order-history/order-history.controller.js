@@ -14,6 +14,7 @@ var async = require('async');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
+	// console.log(req.user.Vendor.id)
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -136,8 +137,7 @@ export function orderHistory(req, res) {
 		where: productQueryObj,
 		include: [{
 			model: model['Vendor'],
-		}
-		]
+		}]
 
 	}];
 	// console.log(orderQueryObj);
@@ -154,6 +154,7 @@ export function orderHistory(req, res) {
 			}
 		},
 		function(err, results) {
+			console.l
 			maxSize = results.orderHistory.count / limit;
 			if (results.orderHistory.count % limit)
 				maxSize++;
@@ -178,8 +179,8 @@ export function orderHistory(req, res) {
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
 					statusCode : statusCode,
+					orderStatus: orderStatus,
                     totalTransaction : (total_transaction).toFixed(2),
-                    orderStatus: orderStatus,
 					// pagination
 					page: page,
 					maxSize:maxSize,

@@ -86,12 +86,23 @@ export function listings(req, res) {
 					return callback(null);
 				});
 		},
+		category: function(callback) {
+                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                    .then(function(category) {
+                        return callback(null, category.rows);
+
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            }
 	}, function (err, results) {
 		if (!err) {
 			res.render('view-listings', {
 				title: "Global Trade Connect",
 				products: results.products.rows,
 				collectionSize: results.products.count,
+				category:results.category,
 				page: page,
 				pageSize: limit,
 				offset: offset,

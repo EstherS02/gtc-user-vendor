@@ -48,8 +48,10 @@ export default function(app) {
   app.use('/services', require('./hbs-routes/services'));
   app.use('/lifestyle', require('./hbs-routes/lifestyle'));
   app.use('/products', require('./hbs-routes/products'));
+  app.use('/refund', require('./hbs-routes/refund'));
   app.use('/geo-locate', require('./hbs-routes/geo-locate'));
   app.use('/vendor', require('./hbs-routes/vendor'));
+  app.use('/vendor-form',require('./hbs-routes/vendor-form'));
   app.use('/reviews', require('./hbs-routes/reviews'));
   app.use('/notifications', require('./hbs-routes/notifications'));
   app.use('/listings', require('./hbs-routes/listings'));
@@ -87,7 +89,7 @@ export default function(app) {
 
 
   //should be last route
-  app.use('/:marketPlaceType', require('./hbs-routes/product-view'));
+  app.use('/:marketPlaceType(shop|wholesale|services|lifestyle|product)', require('./hbs-routes/product-view'));
   
   
   

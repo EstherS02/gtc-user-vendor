@@ -155,9 +155,6 @@ export function homePage(req, res) {
         },
     }, function(err, results) {
         if (!err) {
-
-            
-
             res.render('homePage', {
                 title: "Global Trade Connect",
                 marketPlace: marketplace,

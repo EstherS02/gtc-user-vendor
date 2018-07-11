@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_name: {
             type: DataTypes.STRING(64),
             field: 'vendor_name',
-            allowNull: true
+            allowNull: false
         },
         contact_email: {
             type: DataTypes.STRING(128),
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         base_location: {
             type: DataTypes.BIGINT,
             field: 'base_location',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'country',
                 key: 'id'
@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         vendor_profile_pic_url: {
             type: DataTypes.TEXT,
             field: 'vendor_profile_pic_url',
-            allowNull: true
+            allowNull: false
         },
         facebook_url: {
             type: DataTypes.TEXT,
@@ -99,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
         currency_id: {
             type: DataTypes.BIGINT,
             field: 'currency_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'currency',
                 key: 'id'
@@ -129,6 +129,27 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },*/
+        address: {
+            type: DataTypes.STRING(255),
+            field: 'address',
+            allowNull: false
+        },
+        province_id: {
+            type: DataTypes.BIGINT,
+            field: 'province_id',
+            allowNull: false,
+            references: {
+                model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',

@@ -55,26 +55,24 @@ var all = {
     //Email
     email: {
         templates: {
-            userCreate: 'user Create'
-        },
-        smtp: {
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            tls: {
-                rejectUnauthorized: false
-            },
-            auth: {
-                user: process.env.SMTP_AUTH_USER,
-                pass: process.env.SMTP_AUTH_PASS
-            }
-        },
-        ses: {
-            accessKeyId: process.env.SES_ACCESS_KEY_ID,
-            secretAccessKey: process.env.SES_SECRET_ACCESS_KEY
-        },
-        smtpfrom: process.env.SMTP_FROM,
-        sesfrom: process.env.SES_TRANSPORTER_FROM,
+            userCreate: 'USER-CREATE'
+        }
+    },
+
+    sesTransporter: {
+        accessKeyId: process.env.SES_ACCESS_KEY_ID,
+        secretAccessKey: process.env.SES_SECRET_ACCESS_KEY,
+        from: process.env.SES_TRANSPORTER_FROM
+    },
+
+    smtpTransport: {
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
         from: process.env.SMTP_FROM,
+        auth: {
+            user: process.env.SMTP_AUTH_USER,
+            pass: process.env.SMTP_AUTH_PASS
+        }
     },
 
     googleLogin: {

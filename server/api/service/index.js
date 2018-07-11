@@ -245,12 +245,14 @@ export function getCategory(categoryQueryObj, productCountQueryParames) {
                 include: [{
                     model: model['Product'],
                     where: productCountQueryParames,
-                    attributes: []
+                    attributes: [],
+                    required: false
                 }]
             }, {
                 model: model['Product'],
                 where: productCountQueryParames,
-                attributes: []
+                attributes: [],
+                required: false
             }],
             attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
             group: ['SubCategories.id']
@@ -293,17 +295,14 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
             attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
             group: ['MarketplaceType.id']
         }).then(function(results) {
-            // console.log("results", results)
             if (results.length > 0) {
                 model['Product'].count({
                     where: productCountQueryParames
                 }).then(function(count) {
                     result.count = count;
                     result.rows = JSON.parse(JSON.stringify(results));
-                    // return callback(null, result);
                     resolve(result);
                 }).catch(function(error) {
-                    // console.log('Error:::', error);
                     reject(error);
                 });
             } else {

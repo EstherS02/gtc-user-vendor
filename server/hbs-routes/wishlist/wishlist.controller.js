@@ -61,6 +61,16 @@ export function wishlist(req, res) {
 						return callback(null);
 					});
 			},
+			category: function(callback) {
+            service.findRows("Category", {}, 0, null, 'id', 'asc')
+                .then(function(category) {
+                    return callback(null, category.rows);
+
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
 		},
 		function(err, results) {
 			console.log(JSON.stringify(results))
@@ -69,6 +79,7 @@ export function wishlist(req, res) {
 					title: "Global Trade Connect",
 					wishlist: results.wishlist.rows,
 					count: results.wishlist.count,
+					category:results.category,
 					LoggedInUser: LoggedInUser
 				});
 			} else {

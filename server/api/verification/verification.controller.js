@@ -47,6 +47,8 @@ export function storeData(req, res) {
 	bodyParam.vendor_verified_status = verificationStatus['WAITING'];
 	bodyParam.user_id = req.user.id;
 
+	console.log("===================",vendorParam);
+
 	var queryObj = {
 		user_id: req.user.id
 	};
@@ -78,8 +80,8 @@ export function storeData(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}	
-		/*vendor: function (callback) {
+		},	
+		vendor: function (callback) {
 			service.findOneRow(vendorModel, queryObj, includeArr)
 				.then(function (results) {
 
@@ -105,7 +107,7 @@ export function storeData(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}*/
+		}
 	}, function (err, results) {
 		if (!err) {
 			res.status(200).send("Updated");
