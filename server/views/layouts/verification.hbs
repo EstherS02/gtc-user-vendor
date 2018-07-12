@@ -4,69 +4,9 @@
     $("#img2").hide();
     $("#img3").hide();
     $("#img4").hide();
-    $("#img5").hide();
-    $("#img6").hide();
 
     $("#gtc-cart-alert").hide();
-    var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {};
 
-		$('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
-				cropperOutputImage = blob;
-				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-			});
-			$(test).attr('src', cropper.getCroppedCanvas().toDataURL());
-			$('#profile-picture-modal').modal('hide');
-		})
-
-   function fasterPreview(uploader) {
-		if (uploader.files && uploader.files[0]) {
-
-				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-				$(test).attr('src',
-					window.URL.createObjectURL(uploader.files[0]));
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
-			}
-		}
-        var test='#img5';
-    
-    	$("#vendor_icon").change(function () {
-        test='#img5'; 
-			fasterPreview(this);
-		});
-
-    $("#vendor_cover_pic").change(function () {
-      test='#img6';
-			fasterPreview(this);
-		});
-
-    $('#profile-picture-modal').on('shown.bs.modal', function () {
-      if(test=='#img5'){
-        cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 8 / 8,
-				ready: function () {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-				}
-			});
-      }
-      else{
-          cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 50 / 20,
-				ready: function () {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-				}
-			});
-      }	
-		}).on('hidden.bs.modal', function () {
-			cropBoxData = cropper.getCropBoxData();
-			canvasData = cropper.getCanvasData();
-			cropper.destroy();
-		});
     // on change  for image name display on field
     $('.custom-file-input1').on('change', function () {
       let fileName = $(this).val().split('\\').pop();
@@ -149,43 +89,6 @@
     });
     // End upload Bussiness address proof image
 
-    // upload profile pic image
-    $("#vendorIcon").click(function (e) {
-      var form = new FormData();
-      form.append("file", $("#vendor_icon")[0].files[0]);
-      if ($("#vendor_icon")[0].files[0]) {
-        uploads(form, function (location) {
-          console.log(location.imageURL); // this is where you get the return value
-          $("#img5_old").hide();
-          $("#img5").show();
-         // $("#img5").attr('src', location.imageURL);
-          $("#vendor_profile_pic_url").val(location.imageURL);
-          
-        });
-      } else {
-        ouputPopup("Please select image to upload");
-      }
-    });
-    // End upload profile pic image
-    // upload cover pic image
-    $("#coverPic").click(function (e) {
-      var form = new FormData();
-      form.append("file", $("#vendor_cover_pic")[0].files[0]);
-      if ($("#vendor_cover_pic")[0].files[0]) {
-        uploads(form, function (location) {
-          console.log(location.imageURL); // this is where you get the return value
-          $("#img6_old").hide();
-            $("#img6").show();
-          //$("#img6").attr('src', location.imageURL);
-          $("#vendor_cover_pic_url").val(location.imageURL);
-        
-        });
-      } else {
-        ouputPopup("Please select image to upload");
-      }
-    });
-    // End cover pic image
-
     function uploads(data, callback) {
       $.ajax({
         type: 'POST',
@@ -223,12 +126,8 @@
       data.personal_address_verification_file_link = $('#personal_address_verification_file_link').val();
       data.business_verification_file_link = $('#business_verification_file_link').val();
       data.business_address_verification_file_link = $('#business_address_verification_file_link').val();
-      data.vendor_profile_pic_url = $('#vendor_profile_pic_url').val();
-      data.vendor_cover_pic_url = $('#vendor_cover_pic_url').val();
-      data.vendor_name = $('#vendor_name').val();
-
+  
       // data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
-      if ($('#verificationForm').valid()) {
       $.ajax({
         type: 'POST',
         url: '/api/verification/store',
@@ -240,42 +139,9 @@
           console.log("Error", error);
         }
       });
-		}
     });
-    $("#verificationForm").validate({
-		rules: {
-			vendor_name: "required"
-		},
-		messages: {
-			vendor_name: "Please enter vendor name"
-		}
-	});
   });
 </script>
-
-<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
- aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body" style="margin-right:35px">
-				<div class="container">
-					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-			</div>
-		</div>
-	</div>
-</div>
-
  {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section class="showing_categ">
   <div class="">
@@ -308,49 +174,6 @@
             their ownership of the business they are representing. Please submit the following 4 peices of documentation
             to verify your ownership of this business.
           </p>
-          <hr style="margin-top: 25px;">
-
-          <h5 class="gtc-title" style="padding-top: 2px; padding-left:5px;float: left; margin-right:25px;">Vendor Name</h5>
-
-          <div class="col-md-8">
-            <div class="row form-group">
-              <input id="vendor_name" name="vendor_name" type="text" value="{{vendor.vendor_name}}" class="col-md-12 form-control" required>
-            </div>
-          </div>
-
-          <h5 class="gtc-title" style="padding-top: 2px; padding-left:5px;">Vendor Icon</h5>
-          <div class="col-md-8">
-
-            <div class="custom-file">
-              <input id="vendor_icon" name="vendor_icon" type="file" class="custom-file-input file-uploade">
-              <label for="vendor_icon" class="custom-file-label">Browse...
-              </label>
-            </div>
-            <input class="upload-btn1" type="button" id="vendorIcon" value="SUBMIT">
-            <br/>
-            <img id="img5" alt="your image" class="verification-id" style="object-fit: contain;" />
-            <input type="hidden" id="vendor_profile_pic_url">
-             {{#if vendor.vendor_profile_pic_url }}
-            <img id="img5_old" src="{{vendor.vendor_profile_pic_url}}" class="verification-id" style="object-fit: contain;"
-            /> {{/if}}
-          </div>
-<br/>
-<br/>
-          <h5 class="gtc-title" style="padding-top: 2px; padding-left:5px;">Vendor Cover Picture</h5>
-          <div class="col-md-8">
-            <div class="custom-file">
-              <input id="vendor_cover_pic" name="vendor_cover_pic" type="file" class="custom-file-input file-uploade">
-              <label for="vendor_cover_pic" class="custom-file-label">Browse...
-              </label>
-            </div>
-            <input class="upload-btn1" type="button" id="coverPic" value="SUBMIT">
-            <br/>
-            <img id="img6" alt="your image" class="verification-id" style="object-fit: contain;" />
-            <input type="hidden" id="vendor_cover_pic_url"> {{#if vendor.vendor_cover_pic_url }}
-            <img id="img6_old" src="{{vendor.vendor_cover_pic_url}}" alt="your image" class="verification-id" style="object-fit: contain;"
-            /> {{/if}}
-          </div>
-
           <hr style="margin-top: 25px;">
           <div class="row">
           <h5 class="gtc-title" style="padding-top: 2px; padding-left: 20px; float: left;">

@@ -160,10 +160,14 @@
 				first_name: "required",
 				b_company_name: "required",
 				b_address1: "required",
+				b_country:"required",
+				b_state: "required",
 				b_city: "required",
 				b_postal_code: "required",
 				s_company_name: "required",
 				s_address1: "required",
+				s_country: "required",
+				b_state : "required",
 				s_city: "required",
 				s_postal_code: "required"
 			},
@@ -171,10 +175,14 @@
 				first_name: "Please enter first name",
 				b_company_name: "Please enter company",
 				b_address1: "Please enter billing address",
+				b_country: "Please select country",
+				b_state: "Please select state",
 				b_city: "Please enter billing city",
 				b_postal_code: "Please enter postal code",
 				s_company_name: "Please enter shipping address",
 				s_address1: "Please enter shipping address",
+				s_country: "Please select country",
+				s_state: "Please select state",
 				s_city: "Please enter shipping city",
                 s_postal_code: "Please enter postal code"
 			}
@@ -334,7 +342,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input readonly class="list_butt_2" onclick="window.location.href='/'" placeholder="Change Password">
+										<input readonly class="list_butt_2" placeholder="Change Password">
 									</div>
 								</div>
 							</div>
@@ -372,8 +380,12 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="country" onChange="change_b_Country(this);" required>
+									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" onChange="change_b_Country(this);" required>
+										{{#if billingAddress.country_id}}
 										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+                                        {{else}}
+										<option disabled selected>Country</option>
+										{{/if}}
 										{{#each country}}
 										<option value="{{this.id}}">{{ this.name}}</option>
 										{{/each}}
@@ -383,8 +395,12 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" value="" required>
+									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" style="width:200px;" value="" required>
+                                        {{#if billingAddress.province_id}}
 										<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+										{{else}}
+										<option disabled selected>Province/State</option>
+										{{/if}}
 									</select>
 								</div>
 								<div class="row">
@@ -446,8 +462,12 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" onChange="change_s_Country(this);" required>
+									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" onChange="change_s_Country(this);" required>
+										{{#if shippingAddress.country_id}}
 										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+                                        {{else}}
+										<option disabled selected>Country</option>
+										{{/if}}
 										{{#each country}}
 										<option value="{{this.id}}">{{ this.name}}</option>
 										{{/each}}
@@ -457,8 +477,12 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state" required>
+									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state" style="width:200px;" required>
+										{{#if shippingAddress.province_id}}
 										<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+										{{else}}
+										<option disabled selected>Province/State</option>
+										{{/if}}
 									</select>
 								</div>
 								<div class="row">

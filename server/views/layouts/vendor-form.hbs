@@ -23,6 +23,8 @@
             if (test == 'div.icon') {
                 cropper = new Cropper(cropperInputImage, {
                     aspectRatio: 16 / 16,
+                    minCropBoxHeight: 280,
+				    minCropBoxWidth: 1364,
                     ready: function () {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
@@ -31,6 +33,8 @@
             else {
                 cropper = new Cropper(cropperInputImage, {
                     aspectRatio: 16 / 9,
+                    minCropBoxHeight: 280,
+				    minCropBoxWidth: 1364,
                     ready: function () {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
@@ -91,13 +95,7 @@
                     type: 'POST',
                     data: formInput,
                     success: function (result) {
-                        $('#gtc-add-to-cart').prop('disabled', false);
-                        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                        $('#gtc-cart-alert .cart-message').text('Vendor Request Sent');
-                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                            $("#gtc-cart-alert").slideUp(500);
-                        });
-                        $("#vendorForm")[0].reset();
+                        window.location.href = '/vendor-landing';
                     },
                     error: function (error) {
                         $('#gtc-add-to-cart').prop('disabled', false);
