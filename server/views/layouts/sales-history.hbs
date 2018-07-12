@@ -50,7 +50,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
   <div class="" >
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         {{> vendor/navbar}}
         <div class="col-md-10" style="background-color: #fff;">
@@ -153,7 +153,7 @@
                   <td>PayPal</td>
                   <td class="text_green_color">{{objectKey ../statusCode this.status}}</td>
                   <td> <td>
-                  <td class="text_blue_color"><a href="#"><i class="fas fa-credit-card"></i> Request Refund</a></td>
+                  <td class="text_blue_color"><a href="#"><i class="fas fa-credit-card"></i> Issue Refund</a></td>
                   <td>${{this.final_price}} CAD</td>
                 </tr>
                 {{/each}}

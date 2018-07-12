@@ -73,7 +73,7 @@ export function listings(req, res) {
 			'$ne': status["DELETED"]
 		}
 	}
-
+	console.log(queryParams)
 	async.series({
 		products: function (callback) {
 
@@ -97,6 +97,7 @@ export function listings(req, res) {
                     });
             }
 	}, function (err, results) {
+		console.log(results.products.rows)
 		if (!err) {
 			res.render('view-listings', {
 				title: "Global Trade Connect",

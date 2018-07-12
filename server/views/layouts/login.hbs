@@ -34,33 +34,6 @@
             });
         });
     });
-    // $(document).ready(function() {
-    //     $('#btnSignup').prop('disabled', true);
-
-    //     $('#inputEmail, #inputPassword').keyup(function() {
-    //         if ($('#inputEmail').val() != '' && $('#inputPassword').val() != '' && $('#inputTerms:checkbox:checked')) {
-    //             $('#btnSignup').prop('disabled', false);
-    //         } else {
-    //             $('#btnSignup').prop('disabled', true);
-    //         }
-    //     });
-
-    //     $('#signUpForm').submit(function(event) {
-    //         event.preventDefault();
-
-    //         auth.login({
-    //             email: $('#inputEmail').val(),
-    //             password: $('#inputPassword').val()
-    //         }).then(function(user) {
-    //             window.location = "/";
-    //         }).catch(function(error) {
-    //             console.log('Error:::', error.responseText)
-    //             $("#signUpErrorMessage").after(function() {
-    //                 return '<small class="error">' + error.responseText + '</small>';
-    //             });
-    //         });
-    //     });
-    // });
 </script>
 
 {{> header/website-login-header}}
@@ -80,12 +53,11 @@
                         <small id="signUpErrorLog" class="error"></small>
                     </div>
                     <div class="row">
-
                         <div class="col-md-4">
                             <a id="gtc-fb-login"><img src="../img/login-facebook.png" alt="facebook" style="margin-bottom: 5px; width: 100%;" /></a>
                             <a id="gtc-google-login"><img src="../img/login-google.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
-                            <a id="gtc-linkedin-login"><img src="../img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
-                            <a id="gtc-twitter-login"><img src="../img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a> 
+                            <a id="gtc-twitter-login"><img src="../img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
+                            <a id="gtc-linkedin-login"><img src="../img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a> 
                         </div>
 
                         <Div class="col-md-0">
@@ -95,12 +67,6 @@
                         </Div>    
 
                         <div class="col-md-6">
-                       {{!--  <input type="text" placeholder="Create a Username" class="acc_textbox" />
-                        <input type="text" placeholder="Create a Password" class="acc_textbox" />
-                        <input type="text" placeholder="Confirm Password" class="acc_textbox" /><br/>
-                        <!--<input type="checkbox"> Accept terms and conditions-->
-                        <label class="login-checkbox"><input type="checkbox"><i></i> Accept terms and conditions</label>
-                        <input type="submit" value="CREATE ACCOUNT" class="acc_button" /> --}}
                         <form id="signUpForm" method="post">
                             <div  id="signUpErrorLog"></div>
 

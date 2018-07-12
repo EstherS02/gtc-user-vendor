@@ -17,7 +17,7 @@ export function billingSettings(req, res) {
     LoggedInUser = req.user;
     
     let user_id = LoggedInUser.id;
-
+    console.log(LoggedInUser);
     async.series({
             category: function(callback) {
                 service.findRows("Category", {}, 0, null, 'id', 'asc')
