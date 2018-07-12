@@ -16,7 +16,6 @@ export default function(app) {
   app.use('/api/auth/twitter', require('./api/social-login-auth'));
   app.use('/api/admin-auth', require('./api/admin-auth'));
   app.use('/api/auth', require('./api/auth'));
-
   app.use('/api/cart', require('./api/cart'));
   app.use('/api/appclients', require('./api/appclients'));
   app.use('/api/admin', require('./api/admin'));
@@ -37,7 +36,6 @@ export default function(app) {
   app.post('/auth/fb', controller.facebookLogin);
   app.post('/auth/linkedin', controller.linkedInLogin);
   app.post('/auth/twitter', controller.twitterLogin);
-
 
   /* Handlerbars routes */
   app.use('/', require('./hbs-routes/homePage'));
@@ -73,7 +71,7 @@ export default function(app) {
   app.use('/vendor-services', require('./hbs-routes/vendor-services'));
   app.use('/vendor-wholesale', require('./hbs-routes/vendor-wholesale'));
   app.use('/order-history', require('./hbs-routes/order-history'));
-  // app.use('/vendor-order-history', require('./hbs-routes/vendor-order-history'));
+  app.use('/vendor-landing', require('./hbs-routes/vendor-landing'));
   app.use('/order-track', require('./hbs-routes/order-track'));
   app.use('/compare', require('./hbs-routes/compare'));
   app.use('/shipping-settings', require('./hbs-routes/shipping-settings'));

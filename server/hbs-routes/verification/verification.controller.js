@@ -19,10 +19,13 @@ export function verification(req, res) {
     let user_id = LoggedInUser.id;
 
 	var modelName = "VendorVerification";
-	var vendorModel= "Vendor"
 	var queryObj = {};
+
+	let vendor_id = LoggedInUser.Vendor.id;
+
+
 	queryObj = {
-		user_id :user_id
+		vendor_id :vendor_id
 	};
 	var includeArr = [];
 
@@ -40,28 +43,13 @@ export function verification(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
-			vendor:function(callback){
-				service.findOneRow(vendorModel,queryObj,includeArr)
-				.then(function(response){
-					if(response){
-						return callback(null, response);
-						}else
-						{
-							return callback(null,null);
-						}
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-				}	
+			}	
 		},
 		function(err, results) {
 			if (!err) {
 				res.render('verification', {
 					title: "Global Trade Connect",
 					verification: results.verification,
-					vendor:results.vendor,
 					LoggedInUser: LoggedInUser,
 					status:statusCode,
 					verificationStatus: verificationStatus
