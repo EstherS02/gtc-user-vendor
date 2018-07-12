@@ -32,7 +32,6 @@ export function notifications(req, res) {
 	}];
 	service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
 		.then(function(results) {
-			// console.log(results.rows);
 			res.render('notifications', {
 				title: "Global Trade Connect",
 				count: results.count,
@@ -44,7 +43,7 @@ export function notifications(req, res) {
 			});
 		});
 	}else {
-		res.render('notifications');
+		res.render('homePage');
 	}
 }
 

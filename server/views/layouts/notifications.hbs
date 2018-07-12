@@ -18,16 +18,20 @@
 	}
 	var oldArray = [];
 	$(document).ready(function() {
-		var checkboxes = document.getElementsByTagName('input');
-		$(':checkbox:checked').each(function(i) {
+	$("#updateBtn").prop("disabled", true);
+
+		var checkboxes = document.getElementsByTagName("input");
+		$(":checkbox:checked").each(function(i) {
 			oldArray.push($(this).val());
 		});
 	});
 
 	function updateNotification(e) {
 		var chkArray = [];
-		$(':checkbox:checked').each(function(i) {
+		$(":checkbox:checked").each(function(i) {
+			if($(this).val() != "on"){
 			chkArray.push($(this).val());
+			}	
 		});
 		var a = oldArray.diff(chkArray);
 		var formData = {};
@@ -37,7 +41,7 @@
 		if(a){
 		$.ajax({
 				type: 'POST',
-				url: '/api/notification/addSettings',
+				url: "/api/notification/addSettings",
 				data: formData,
 				success: function(data, text) {
 					location.reload();
@@ -55,6 +59,10 @@
 			.concat(a.filter(x => !this.includes(x)))
 	};
 
+	$('#checkboxVal,#checkboxVal1').change(function() {
+                    // $('#updateBtn').prop('disabled', false);
+                    alert("hai");
+        });
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 {{> vendor/header}}
@@ -80,9 +88,9 @@
 								{{#each notification}}
 								<tr>
 									{{#if this.VendorNotificationSettings}}
-									<td><input type="checkbox" value="{{this.id}}" ></td>
+									<td><input type="checkbox" value="{{this.id}}" id="checkboxVal" ></td>
 									{{else}}
-									<td><input type="checkbox" value="{{this.id}}" checked ></td>
+									<td><input type="checkbox" value="{{this.id}}" checked  ></td>
 									{{/if}}
 									<td>
 									{{#if this.VendorNotificationSettings}}
@@ -98,7 +106,7 @@
 								{{/each}}
 							</tbody>
 						</table>
-						<button class="btn btn-sm"   onclick="updateNotification(this)" style="margin-left:10px"> update</button>
+						<button class="btn btn-sm "  id= "updateBtn"style="margin-left:10px"> update</button>
 					</div>
 					<div class="row">
 						<div class="col-md-6">

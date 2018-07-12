@@ -6,6 +6,8 @@ const service = require('../service');
 var async = require('async');
 
 export function notificationSetting(req, res) {
+
+	console.log("******************************************0")
 	var data = JSON.parse(req.body.data);
 	var i;
 	var modelName = "VendorNotificationSetting";

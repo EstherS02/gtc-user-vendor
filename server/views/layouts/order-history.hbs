@@ -65,9 +65,10 @@
 	// 	}
 	// }
 
-	function refund(e) {
-		
-	}
+	// function refund(e) {
+	// 	alert("hai");
+	// }
+
 
 </script>
 <script type="text/javascript">
@@ -189,7 +190,7 @@
 				  				<td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
 				  				<td>PayPal</td>
 				  				<td class="text_green_color">{{objectKey ../orderStatus this.status}}</td>
-				  				<td class="text_blue_color" value="{{this.id}}" onclick="refund(this);" ><i class="fas fa-credit-card"></i> Request Refund</td>
+				  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
 				  				<td>${{this.final_price}} CAD</td>
 				  			</tr>
 				  			{{/each}}

@@ -20,7 +20,15 @@ order = "asc";
 if (req.user)
  LoggedInUser = req.user;
 
-productIncludeArr = populate.populateData('Product,Product.ProductMedia');
+var productIncludeArr =[{
+	model:model['Product'],
+	include: [{
+		model: model['ProductMedia'],
+		attribute:['url']
+	}]
+}] 
+// populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Category,
+	// Product.SubCategory,Order,Order.User');
 
 if (req.params.id)
  searchObj["id"] = req.params.id;
@@ -37,6 +45,7 @@ if (req.params.id)
 				});
 		},
     }, function (err, results) {
+    	console.log(results.item.Order);
 		if (!err) {
 			res.render('refund', {
 				title: "Global Trade Connect",
