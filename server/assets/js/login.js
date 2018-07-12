@@ -33,7 +33,8 @@
                         url: "/auth/google",
                         data: newGoogleUser,
                         success: function(result) {
-                            window.location.reload();
+                            // window.location.reload();
+                             window.location.href = "/";
                             //localStorage.setItem("access_token", result.access_token);
                             /* auth.getCurrentUser().then(function(data) {
                                  if (data) {
@@ -84,7 +85,8 @@
                         data: linkedInUser,
                         success: function(result) {
                             localStorage.setItem("access_token", result.access_token);
-                            window.location.reload();
+                            // window.location.reload();
+                             window.location.href = "/";
                             /* auth.getCurrentUser().then(function(data) {
                                  if (data) {
                                      $('#loginBanner').hide();
@@ -167,7 +169,8 @@
                             data: fbUser,
                             success: function(result) {
                                 localStorage.setItem("access_token", result.access_token);
-                                window.location.reload();
+                                // window.location.reload();
+                                window.location.href = "/";
                                 /*auth.getCurrentUser().then(function(data) {
                                     if (data) {
                                         $('#loginBanner').hide();
@@ -221,7 +224,8 @@
                 data: twitterUser,
                 success: function(result) {
                     localStorage.setItem("access_token", result.access_token);
-                    window.location.reload();
+                    // window.location.reload();
+                     window.location.href = "/";
                     /* auth.getCurrentUser().then(function(data) {
                          if (data) {
                              $('#loginBanner').hide();
