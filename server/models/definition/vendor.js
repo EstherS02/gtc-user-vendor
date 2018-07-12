@@ -275,7 +275,7 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-    User.hasOne(VendorVerification, {
+    Vendor.hasOne(VendorVerification, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
