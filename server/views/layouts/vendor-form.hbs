@@ -1,139 +1,179 @@
 <script>
-    $(document).ready(function(){  
-        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+    $(document).ready(function () {
+        $("#gtc-cart-alert").hide();
+        var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
+        var cropperOutputImage;
         var fileDetails = {};
-        var imagesPreview = function(uploader, placeToInsertImagePreview) {
-       if (uploader.files && uploader.files[0]) {
-              $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
+        var imagesPreview = function (uploader, placeToInsertImagePreview) {
+            if (uploader.files && uploader.files[0]) {
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
             }
-    };
-    $('#icon').on('change', function() {
-       imagesPreview(this);
-       test='div.icon'
-    });
-
-    $('#cover_pic').on('change', function() {
-       imagesPreview(this);
-       test='div.cov_pic'
-    });
-
-    $('#profile-picture-modal').on('shown.bs.modal', function () {
-			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
-                //setSelect: [0,0,1,1],
-                 maxContainerWidth: 800,
-                 maxContainerHeight: 600,
-				ready: function () {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-				}
-			});
-		}).on('hidden.bs.modal', function () {
-			cropBoxData = cropper.getCropBoxData();
-			canvasData = cropper.getCanvasData();
-			cropper.destroy();
-		});
-
+        };
+        $('#icon').on('change', function () {
+            imagesPreview(this);
+            test = 'div.icon';
+        });
+        $('#cover_pic').on('change', function () {
+            imagesPreview(this);
+            test = 'div.cov_pic';
+        });
+        $('#profile-picture-modal').on('shown.bs.modal', function () {
+            if (test == 'div.icon') {
+                cropper = new Cropper(cropperInputImage, {
+                    aspectRatio: 16 / 16,
+                    ready: function () {
+                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+                    }
+                });
+            }
+            else {
+                cropper = new Cropper(cropperInputImage, {
+                    aspectRatio: 16 / 9,
+                    ready: function () {
+                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+                    }
+                });
+            }
+        }).on('hidden.bs.modal', function () {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
         $('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
-				cropperOutputImage = blob;
-				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-			});
-        $($.parseHTML('<img>')).attr('src', cropper.getCroppedCanvas().toDataURL()).appendTo(test);
-		$('#profile-picture-modal').modal('hide');
-		})
-
-         $("#vendorForm").submit(function (e) {
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                cropperOutputImage = blob;
+                fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+                fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+                imgUp(cropperOutputImage, fileDetails["fileName"]);
+            });
+            var temp = $($.parseHTML('<img>')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            $(test).html(temp);
+            $('#profile-picture-modal').modal('hide');
+        })
+        function imgUp(crop, file_name) {
+            var form = new FormData();
+            form.append("file", crop, file_name);
+            $.ajax({
+                type: 'POST',
+                url: '/api/vendors/upload',
+                data: form,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (test == 'div.icon') {
+                        vendor_profile_pic_url = data.imageURL;
+                        console.log('vendor_profile_pic_url', vendor_profile_pic_url);
+                    } else {
+                        vendor_cover_pic_url = data.imageURL;
+                        console.log('vendor_cover_pic_url', vendor_cover_pic_url);
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);
+                }
+            })
+        }
+        $("#vendorForm").submit(function (e) {
             e.preventDefault();
-
-            
-            var image = $("#icon")[0].files[0];
-			var vendor_pic_url;
-			var form = new FormData();
-			
-			form.append("file", cropperOutputImage, fileDetails["fileName"]);
-            if (image) {
-				$.ajax({
-					type: 'POST',
-					url: '/api/vendors/upload',
-					data: form,
-					cache: false,
-					dataType: 'json',
-					processData: false,
-					contentType: false,
-					success: function (data) {
-                        console.log("================================",data.imageURL);
-						//userUpdate.user_pic_url = data.imageURL;
-
-					},
-					error: function (error) {
-						console.log("Error", error);
-					}
-				})
-			}
-
-           /* let input = $("#vendorForm :input").filter(function (index, element) {
+            let input = $("#vendorForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
-           $.ajax({
-            url: '/api/vendor/starter-seller',
-            type: 'POST',
-            data: input,
-            success: function (result) {
-                 console.log("result", result);
-            },
-            error: function (error) {
-                console.log("Error", error);
+
+            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url' + vendor_cover_pic_url
+
+            if ($('#vendorForm').valid()) {
+                $.ajax({
+                    url: '/api/vendor/starter-seller',
+                    type: 'POST',
+                    data: formInput,
+                    success: function (result) {
+                        $('#gtc-add-to-cart').prop('disabled', false);
+                        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+                        $('#gtc-cart-alert .cart-message').text('Vendor Request Sent');
+                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                            $("#gtc-cart-alert").slideUp(500);
+                        });
+                        $("#vendorForm")[0].reset();
+                    },
+                    error: function (error) {
+                        $('#gtc-add-to-cart').prop('disabled', false);
+                        $('#gtc-cart-alert').addClass('alert-danger');
+                        $('#gtc-cart-alert .cart-message').text("Your email address not verified yet. Please check your mail to verify.");
+                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                            $("#gtc-cart-alert").slideUp(500);
+                        });
+                    }
+                });
             }
-        });*/
+        })
+        $("#country").change(function () {
+            var country_id = $('#country').val();
 
-         })
-
-      $("#country").change(function(){
-          var country_id = $('#country').val();
-
-         $.ajax({
-            url: '/api/states?country_id=' + country_id,
-            type: 'GET',
-            success: function (result) {
-                $("#state").empty();
-                for (var i = 0; i < result.rows.length; i++) {
-                    var options;
-                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                    $("#state").append(options)
+            $.ajax({
+                url: '/api/states?country_id=' + country_id,
+                type: 'GET',
+                success: function (result) {
+                    $("#state").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var options;
+                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                        $("#state").append(options)
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);
                 }
+            });
+        });
+        $("#vendorForm").validate({
+            rules: {
+                vendor_name: "required",
+                address: "required",
+                base_location: "required",
+                province_id: "required",
+                city: "required",
+                currency_id: "required",
+                about: "required",
+                icon: "required"
             },
-            error: function (error) {
-                console.log("Error", error);
+            messages: {
+                vendor_name: "Please enter vendor name",
+                address: "Please enter vendor address",
+                base_location: "Please select base location",
+                province_id: "Please select province",
+                city: "Please enter city",
+                currency_id: "Please select currency",
+                about: "Please enter vendor details",
+                icon: "Please choose vendor icon"
             }
         });
-});
-});
-</script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}} 
+    });
+</script> {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
- aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body" style="margin-right:35px">
-				<div class="container">
-					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-			</div>
-		</div>
-	</div>
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-right:35px">
+                <div class="container">
+                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+            </div>
+        </div>
+    </div>
 </div>
 <section class="showing_categ">
     <div class="">
@@ -147,21 +187,36 @@
                                 <div class="form-group product-heading">
                                     <p>Vendor Form</p>
                                 </div>
-                                <br>
-                                <br>
-                                <div class="form-group">
-                                    <input type="text" name="vendor_name" id="vendor_name" class="form-control input-lg" placeholder="Vendor Name" tabindex="1"
-                                        required />
+                                <div class="alert" id="gtc-cart-alert">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <span class="cart-message"></span>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
+                                            <h6>
+                                                <small>Vendor Name:</small>
+                                            </h6>
+                                        </label>
+                                        <br>
                                         <div class="form-group">
-                                            <input type="text" name="address_line1" id="address1" placeholder="Address Line1" class="form-control" required/>
+                                            <input type="text" name="vendor_name" id="vendor_name" class="form-control input-lg" placeholder="Vendor Name" tabindex="1"
+                                                required />
                                         </div>
                                     </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <label>
+                                            <h6>
+                                                <small>Address:</small>
+                                            </h6>
+                                        </label>
+                                        <br>
                                         <div class="form-group">
-                                            <input type="text" name="address_line2" id="address2" placeholder="Address Line2" class="form-control" required/>
+                                            <input type="text" name="address" id="address" placeholder="Address" class="form-control" required/>
                                         </div>
                                     </div>
                                 </div>
@@ -189,8 +244,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                 <div class="row">
+                                <div class="row">
                                     <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <label>
+                                            <h6>
+                                                <small>Currency:</small>
+                                            </h6>
+                                        </label>
+                                        <br/>
                                         <div class="form-group">
                                             <select class="form-control " id="currency" name="currency_id" required>
                                                 <option disabled selected>Currency</option>
@@ -201,8 +262,13 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-6 col-sm-4 col-md-6">
+                                        <label>
+                                            <h6>
+                                                <small>TimeZone:</small>
+                                            </h6>
+                                        </label>
                                         <div class="form-group">
-                                            <select class="form-control" name="timezone_id" id="timezone_id" value="" required>
+                                            <select class="form-control" name="timezone_id" id="timezone_id" value="">
                                                 <option disabled selected>TimeZone</option>
                                                 {{#each timezone}}
                                                 <option value="{{this.id}}">{{ this.timezone}}</option>
@@ -211,21 +277,25 @@
                                         </div>
                                     </div>
                                 </div>
-                             <div class="row">
+                                <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
-                                            <h6>About:</h6>
+                                            <h6>
+                                                <small>About:</small>
+                                            </h6>
                                         </label>
                                         <br>
                                         <div class="form-group">
-                                            <textarea id="about" name="about" class="form-control" required></textarea>
+                                            <textarea id="about" name="about" class="form-control"></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
-                                            <h6>Vendor Icon:</h6>
+                                            <h6>
+                                                <small>Vendor Icon:</small>
+                                            </h6>
                                         </label>
                                         <br>
                                         <div class="form-group">
@@ -238,11 +308,13 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
-                                            <h6>Vendor Cover Picture:</h6>
+                                            <h6>
+                                                <small>Vendor Cover Picture:</small>
+                                            </h6>
                                         </label>
                                         <br>
                                         <div class="form-group">
-                                            <input id="cover_pic" type="file" name="cover_pic" class="form-control" required>
+                                            <input id="cover_pic" type="file" name="cover_pic" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -253,7 +325,7 @@
                                         <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
                                     </div>
                                     <div class="col-xs-12 col-md-6">
-                                        <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
+                                        <button type="reset" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
                                     </div>
                                 </div>
                             </form>

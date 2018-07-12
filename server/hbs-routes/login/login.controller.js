@@ -1,7 +1,17 @@
 'use strict';
 
 export function index(req, res) {
-	res.render('login', {
-		title: "Global Trade Connect"
-	});
+	
+	var LoggedInUser = {};
+
+	if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable){
+		LoggedInUser = req.gtcGlobalUserObj;
+		
+		res.redirect('/')
+	}else{
+		res.render('login', {
+			title: "Global Trade Connect",
+			LoggedInUser: LoggedInUser
+		});
+	}
 }
