@@ -116,10 +116,8 @@
         $("#gtc-cart-alert").slideUp(500);
       });
     }
-    $("#uploadDocs").click(function (e) {
-
-      // console.log(form);
-      // alert("hai");
+    $("#verificationForm").submit(function (e) {
+      e.preventDefault();
       var data = {};
       data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
       data.personal_id_verification_file_link = $('#personal_id_verification_file_link').val();
@@ -127,7 +125,6 @@
       data.business_verification_file_link = $('#business_verification_file_link').val();
       data.business_address_verification_file_link = $('#business_address_verification_file_link').val();
   
-      // data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
       $.ajax({
         type: 'POST',
         url: '/api/verification/store',
@@ -142,7 +139,7 @@
     });
   });
 </script>
- {{> header/defaultHeader LoggedInUser = LoggedInUser}}
+ {{> header/defaultHeader LoggedInUser = LoggedInUser}}{{> vendor/header}}
 <section class="showing_categ">
   <div class="">
     <div class="container">

@@ -8,7 +8,7 @@ const addressCode = require('../../config/address');
 const service = require('../../api/service');
 const async = require('async');
 const populate = require('../../utilities/populate');
-
+const vendorPlan = require('../../config/gtc-plan');
 
 export function userProfile(req, res) {
 
@@ -89,7 +89,8 @@ export function userProfile(req, res) {
 				shippingAddress:results.shippingAddress,
 				billingAddress:results.billingAddress,
 				country: results.country,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				vendorPlan:vendorPlan
 			});
 		} else {
 			res.render('user-profile', err);

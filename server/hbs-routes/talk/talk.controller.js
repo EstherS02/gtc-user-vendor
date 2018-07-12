@@ -8,6 +8,7 @@ const dayCode = require('../../config/days');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function talk(req, res) {
 	var modelName = 'TalkSetting';
@@ -65,7 +66,8 @@ export function talk(req, res) {
 				busiHours: results.busiHours,
 				timeZone: results.timeZone,
 				dayCode: dayCode,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				vendorPlan:vendorPlan
 			});
 		} else {
 			res.render('services', error);

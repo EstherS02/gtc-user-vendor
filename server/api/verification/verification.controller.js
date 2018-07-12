@@ -37,7 +37,7 @@ export function storeData(req, res) {
 
 	bodyParam.request_for_vendor_verification = 1;
 	bodyParam.vendor_verified_status = verificationStatus['WAITING'];
-	bodyParam.vendor_id = req.vendor_id;
+	bodyParam.vendor_id = vendor_id;
 
 
 	var queryObj = {

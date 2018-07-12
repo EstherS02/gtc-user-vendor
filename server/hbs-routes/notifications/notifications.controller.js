@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function notifications(req, res) {
 	var LoggedInUser = {};
@@ -37,7 +38,8 @@ export function notifications(req, res) {
 				title: "Global Trade Connect",
 				count: results.count,
 				notification: results.rows,
-				LoggedInUser:LoggedInUser
+				LoggedInUser:LoggedInUser,
+				vendorPlan:vendorPlan
 			}).catch(function(error) {
 				console.log('Error:::', error);
             	res.render('notifications', error);

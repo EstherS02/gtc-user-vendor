@@ -7,6 +7,7 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
 const populate = require('../../utilities/populate');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function listings(req, res) {
 
@@ -111,7 +112,8 @@ export function listings(req, res) {
 				statusCode: status,
 				LoggedInUser: LoggedInUser,
 				type: type,
-				selectedPage: type
+				selectedPage: type,
+				vendorPlan:vendorPlan
 			});
 		}
 		else {
@@ -199,7 +201,8 @@ export function editListings(req, res) {
 				subCategory: results.subCategory,
 				LoggedInUser: LoggedInUser,
 				marketplaceType:results.marketplaceType,
-				type: type
+				type: type,
+				vendorPlan:vendorPlan
 			});
 		}
 		else {

@@ -10,6 +10,7 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 const verificationStatus = require('../../config/verification_status');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function verification(req, res) {
     var LoggedInUser = {};
@@ -52,7 +53,8 @@ export function verification(req, res) {
 					verification: results.verification,
 					LoggedInUser: LoggedInUser,
 					status:statusCode,
-					verificationStatus: verificationStatus
+					verificationStatus: verificationStatus,
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('verification', err);

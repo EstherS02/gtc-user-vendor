@@ -12,6 +12,7 @@ const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function coupons(req, res) {
 	var LoggedInUser = {};
@@ -104,8 +105,9 @@ export function coupons(req, res) {
 					page: page,
 					maxSize: maxSize,
 					pageSize: limit,
-					collectionSize: results.count
+					collectionSize: results.count,
 					// End pagination
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('view-coupons', err);
@@ -171,7 +173,8 @@ export function addCoupon(req, res) {
 				products: results.products,
 				categories: results.categories,
 				category: results.category,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				vendorPlan:vendorPlan
 			});
 		} else {
 			res.render('services', err);
@@ -360,7 +363,8 @@ export function editCoupons(req, res) {
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				vendorPlan:vendorPlan
 			});
 
 		} else {

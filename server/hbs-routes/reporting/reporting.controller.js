@@ -9,8 +9,8 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
 const orderStatus = require('../../config/order_status');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function reporting(req, res) {
     var LoggedInUser = {};
@@ -40,7 +40,8 @@ export function reporting(req, res) {
                     marketPlace: marketPlace,
                     LoggedInUser: LoggedInUser,
                     category: results.category,
-                    selectedPage: 'reporting'
+                    selectedPage: 'reporting',
+                    vendorPlan:vendorPlan
                 });
             } else {
                 res.render('reporting', err);
@@ -96,7 +97,8 @@ export function performance(req, res) {
                     marketPlace: marketPlace,
                     LoggedInUser: LoggedInUser,
                     category: results.category,
-                    selectedPage: 'performance'
+                    selectedPage: 'performance',
+                    vendorPlan:vendorPlan
                 });
             } else {
                 res.render('performance', err);
@@ -134,6 +136,7 @@ export function accounting(req, res) {
                     queryUrl: queryUrl,
                     selectedPage: 'accounting',
                     orderStatus: orderStatus,
+                    vendorPlan:vendorPlan
                     // pagination
                     // page: page,
                     // maxSize: maxSize,
@@ -178,6 +181,7 @@ export function tax(req, res) {
                     queryUrl: queryUrl,
                     selectedPage: 'tax',
                     orderStatus: orderStatus,
+                    vendorPlan:vendorPlan
                     // pagination
                     // page: page,
                     // maxSize: maxSize,
@@ -373,8 +377,9 @@ export function salesHistory(req, res) {
                     maxSize: maxSize,
                     pageSize: limit,
                     queryPaginationObj: queryPaginationObj,
-                    collectionSize: results.orderHistory.count
+                    collectionSize: results.orderHistory.count,
                     // End pagination
+                    vendorPlan:vendorPlan
                 });
             } else {
                 res.render('sales-history', err);

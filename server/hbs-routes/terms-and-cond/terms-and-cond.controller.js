@@ -9,6 +9,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function termsAndCond(req, res) {
     var LoggedInUser = {};
@@ -20,7 +21,8 @@ export function termsAndCond(req, res) {
 
     res.render('terms-and-cond', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        vendorPlan:vendorPlan
     });
 
 }

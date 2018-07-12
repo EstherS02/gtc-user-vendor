@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function AddProduct(req, res) {
 
@@ -70,6 +71,7 @@ export function AddProduct(req, res) {
                 country: results.country,
                 marketplaceType:results.marketplaceType,
                 LoggedInUser: LoggedInUser,
+                vendorPlan:vendorPlan,
                 type:type
             });
         }

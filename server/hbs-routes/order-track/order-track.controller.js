@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function orderTrack(req, res) {
 	var LoggedInUser = {};
@@ -35,7 +35,8 @@ export function orderTrack(req, res) {
 				res.render('order-track', {
 					title: "Global Trade Connect",
 					category: results.category,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('wishlist', err);
