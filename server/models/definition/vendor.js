@@ -280,19 +280,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    // Vendor.hasMany(Order, {
-    //     foreignKey: 'vendor_id',
-    //     onDelete: 'NO ACTION',
-    //     onUpdate: 'NO ACTION'
-    // });
-
-   /* Vendor.hasMany(VendorVerification, {
-        foreignKey: 'vendor_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
     Vendor.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -316,12 +303,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-   /* Vendor.belongsTo(VendorVerification, {
-        foreignKey: 'vendor_verification_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Vendor.belongsToMany(Timezone, {
         through: BusinessHour,

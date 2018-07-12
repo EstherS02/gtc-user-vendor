@@ -6,6 +6,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function vendorForm(req,res){
 	var LoggedInUser = {};
@@ -22,7 +23,7 @@ export function vendorForm(req,res){
 
 	if (req.user)
         LoggedInUser = req.user;
-        
+        console.log(LoggedInUser)
         async.series({
 			country: function (callback) {
 				service.findRows(countryModel, queryObj, offset, limit, field, order)
@@ -62,7 +63,8 @@ export function vendorForm(req,res){
 				LoggedInUser: LoggedInUser,
 				country: results.country,
 				currency: results.currency,
-				timezone: results.timezone
+				timezone: results.timezone,
+				vendorPlan:vendorPlan
 			});
 		} else {
 			res.render('vendor-form', err);

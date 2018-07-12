@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function shippingSettings(req, res) {
 	var LoggedInUser = {};
@@ -61,7 +61,8 @@ export function shippingSettings(req, res) {
 					title: "Global Trade Connect",
 					Countries: results.Countries.rows,
 					LoggedInUser:LoggedInUser,
-					vendorCountry:results.vendorCountries
+					vendorCountry:results.vendorCountries,
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('shipping-settings', err);

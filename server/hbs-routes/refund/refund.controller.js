@@ -5,6 +5,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const populate = require('../../utilities/populate');
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function refund(req, res) {
     
@@ -50,7 +51,8 @@ if (req.params.id)
 			res.render('refund', {
 				title: "Global Trade Connect",
 				item: results.item,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				vendorPlan:vendorPlan
 			});
 		}
 		else {

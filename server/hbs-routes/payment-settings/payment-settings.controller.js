@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function paymentSettings(req, res) {
     var LoggedInUser = {};
@@ -20,7 +20,8 @@ export function paymentSettings(req, res) {
 
     res.render('payment-settings', {
         title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
+        LoggedInUser: LoggedInUser,
+        vendorPlan:vendorPlan
     });
 
 }

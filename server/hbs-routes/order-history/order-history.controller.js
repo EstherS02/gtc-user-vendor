@@ -9,8 +9,8 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../config/marketplace');
 const orderStatus = require('../../config/order_status');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
@@ -186,8 +186,9 @@ export function orderHistory(req, res) {
 					maxSize:maxSize,
 					pageSize: limit,
 					queryPaginationObj:queryPaginationObj,
-					collectionSize: results.orderHistory.count
+					collectionSize: results.orderHistory.count,
 					// End pagination
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('order-history', err);

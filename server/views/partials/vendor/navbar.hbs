@@ -22,7 +22,7 @@
 			</ul>
 		</li>
 
-		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 1}}
+		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
@@ -41,7 +41,7 @@
 				</li>
 			</ul>
 		</li>
-		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 2}}
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}}
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
@@ -58,7 +58,7 @@
 			</ul>
 		</li>
 
-		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 3}}
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}}
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
@@ -69,7 +69,7 @@
 			</ul>
 		</li>
 
-		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 4}}
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}}
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
@@ -80,14 +80,11 @@
 			</ul>
 		</li>
 
-		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' 5}}
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
 			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
-				<li class="list-group-item">
-					<a href="/listings/wholesale" {{#ifCond selectedPage '==' 'wholesale'}} style="color:#234267" {{/ifCond}}>Wholesale Listings</a>
-				</li>
 				<li class="list-group-item">
 					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>

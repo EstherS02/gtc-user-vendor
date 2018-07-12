@@ -7,14 +7,13 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function socialProfile(req, res) {
     var LoggedInUser = {};
    
     var vendorModel = "Vendor";
-   console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
     if(req.user)
     LoggedInUser = req.user;
@@ -39,7 +38,8 @@ export function socialProfile(req, res) {
             res.render('social-profile', {
 				title: "Global Trade Connect",
                 vendorInfo:results.vendorInfo,
-                LoggedInUser: LoggedInUser
+                LoggedInUser: LoggedInUser,
+                vendorPlan:vendorPlan
 			});
         }
         else {

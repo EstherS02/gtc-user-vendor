@@ -64,7 +64,8 @@ function isGlobalObj() {
 								{ model: model['Country'] },
 								{ model: model['Currency'] },
 								{ model: model['Timezone'] },
-								{ model: model['VendorPlan']}
+								{ model: model['VendorPlan']},
+								{ model: model['VendorVerification']}
 							]
 						}).then(function(vendorObj) {
 							if (vendorObj) {

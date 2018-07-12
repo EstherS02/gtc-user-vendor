@@ -85,7 +85,11 @@ function isAuthenticated() {
                                 model: model['Timezone']
                             }, {
                                 model: model['VendorPlan'],
-                            }]
+                            },{
+                                model: model['VendorVerification'],
+                                required: false
+                            }
+                        ]
                         }).then(function(vendorObj) {
                             if (vendorObj) {
                                 req.user['Vendor'] = vendorObj.toJSON();
@@ -177,6 +181,14 @@ function hasRole(roleRequired) {
             },
             attributes: ['id', 'name', 'cost', 'description', 'duration', 'duration_unit', 'status']
         }],
+        required: false
+    },
+    {
+        model: model["VendorVerification"],
+        where: {
+            status: status['ACTIVE']
+        },
+        attributes: ['id', 'vendor_verified_status', 'status'],
         required: false
     }];
 

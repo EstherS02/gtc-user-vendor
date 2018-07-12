@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
@@ -136,8 +136,9 @@ export function reviews(req, res) {
 					maxSize:maxSize,
 					pageSize: limit,
 					queryPaginationObj:queryPaginationObj,
-					collectionSize: results.Reviews.count
+					collectionSize: results.Reviews.count,
 					// End pagination
+					vendorPlan :vendorPlan
 				});
 			} else {
 				res.render('reviews', err);

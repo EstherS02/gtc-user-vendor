@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function wishlist(req, res) {
 
@@ -80,7 +80,8 @@ export function wishlist(req, res) {
 					wishlist: results.wishlist.rows,
 					count: results.wishlist.count,
 					category:results.category,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('wishlist', err);

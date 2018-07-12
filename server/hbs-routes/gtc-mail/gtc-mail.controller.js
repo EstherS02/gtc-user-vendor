@@ -7,8 +7,8 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function gtcMail(req, res) {
 	var LoggedInUser = {};
@@ -36,7 +36,8 @@ export function gtcMail(req, res) {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					category: results.category,
-					selectedPage: 'gtc-mail'
+					selectedPage: 'gtc-mail',
+					vendorPlan:vendorPlan
 				});
 			} else {
 				res.render('gtc-mail', err);
