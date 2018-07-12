@@ -31,7 +31,7 @@ export function listings(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
-	queryParams['user_id'] = LoggedInUser.id;
+	queryParams['vendor_id'] = LoggedInUser.Vendor.id;
 
 	type = req.params.type;
 

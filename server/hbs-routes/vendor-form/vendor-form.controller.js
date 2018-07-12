@@ -23,7 +23,7 @@ export function vendorForm(req,res){
 
 	if (req.user)
         LoggedInUser = req.user;
-        
+        console.log(LoggedInUser)
         async.series({
 			country: function (callback) {
 				service.findRows(countryModel, queryObj, offset, limit, field, order)
