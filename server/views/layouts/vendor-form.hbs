@@ -1,4 +1,8 @@
-<script>
+<style>
+    .fas{
+        cursor: pointer;
+    }
+</style><script>
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
         var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
@@ -52,7 +56,12 @@
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
                 imgUp(cropperOutputImage, fileDetails["fileName"]);
             });
-            var temp = $($.parseHTML('<img>')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            if(test== 'div.icon'){
+               var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            }
+            else{
+                var temp = $($.parseHTML('<img style="width:400px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            }
             $(test).html(temp);
             $('#profile-picture-modal').modal('hide');
         })
@@ -195,7 +204,8 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
                                             <h6>
-                                                <small>Vendor Name:</small>
+                                                <small>Vendor Name:
+                                               <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The Company Name"></i></small>
                                             </h6>
                                         </label>
                                         <br>
@@ -209,7 +219,9 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
                                             <h6>
-                                                <small>Address:</small>
+                                                <small>Address:
+                                                    <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The physical location of your business"></i>
+                                                </small>
                                             </h6>
                                         </label>
                                         <br>
@@ -246,7 +258,9 @@
                                     <div class="col-xs-6 col-sm-4 col-md-6">
                                         <label>
                                             <h6>
-                                                <small>Currency:</small>
+                                                <small>Currency:
+                                                    <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="This controls what currency your product will be displayed in"></i>
+                                                </small>
                                             </h6>
                                         </label>
                                         <br/>
@@ -292,8 +306,10 @@
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <label>
                                             <h6>
-                                                <small>Vendor Icon:</small>
-                                            </h6>
+                                                <small>Vendor Icon:
+                                                <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The Company Logo"></i>
+                                           </small>
+                                           </h6>
                                         </label>
                                         <br>
                                         <div class="form-group">

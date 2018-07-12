@@ -15,6 +15,8 @@ export function storeData(req, res) {
 	var bodyParam = {}, vendorParam = {};
 	var modelName = "VendorVerification";
 
+	let vendor_id= req.user.Vendor.id;
+
 	if (req.body.personal_id_verification_file_link) {
 		bodyParam.personal_id_verification_file_type = req.body.personal_id_verification_file_type;
 		bodyParam.personal_id_verification_file_status = verificationStatus['WAITING'];
@@ -35,11 +37,11 @@ export function storeData(req, res) {
 
 	bodyParam.request_for_vendor_verification = 1;
 	bodyParam.vendor_verified_status = verificationStatus['WAITING'];
-	bodyParam.user_id = req.user.id;
+	bodyParam.vendor_id = req.vendor_id;
 
 
 	var queryObj = {
-		user_id: req.user.id
+		vendor_id: vendor_id
 	};
 	var includeArr = [];
 
@@ -80,7 +82,7 @@ export function storeData(req, res) {
 		}
 	});
 }
-
+/*
 export function addVendor(req, res) {
 
 	var bodyParams = {};
@@ -138,4 +140,4 @@ export function addVendor(req, res) {
 		return;
 	});
 }
-
+*/

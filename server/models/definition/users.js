@@ -156,7 +156,7 @@ module.exports.initRelations = () => {
     const UserToken = model.UserToken;
     const Vendor = model.Vendor;
     const VendorFollower = model.VendorFollower;
-    const VendorVerification = model.VendorVerification;
+    //const VendorVerification = model.VendorVerification;
     const VendorRating = model.VendorRating;
     const WishList = model.WishList;
     const Country = model.Country;
@@ -272,12 +272,6 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(VendorRating, {
-        foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-    
-    User.hasOne(VendorVerification, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
