@@ -40,14 +40,15 @@
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
 
-<div class="banner_bg">
-	{{!--style="background-image: url({{VendorDetail.vendor_cover_pic_url}});height: 280px;"  --}}
-	<div class="container-fluid banner_bg_menu">
+
+<div class="banner_bg" {{#if VendorDetail.vendor_cover_pic_url}} style="background-image: url({{VendorDetail.vendor_cover_pic_url}});" {{/if}}>
+	{{!--  --}}
+	<div class="container-fluid banner_bg_menu banner_bg_menu_shadow">
 		<div class="">
 			<div class="row prfl-wt-txt" style="top: -58px;">
 				<div class="col-md-2 common_padding1">
 					<a class="navbar-brand float-right" href="/vendor/{{this.VendorDetail.id}}" style="margin-right: 0px;">
-						<img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px/></a>
+						<img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px class="img-border"/></a>
 					</div>
 					<div class="col-md-6">
 						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}} </span>
@@ -65,7 +66,7 @@
 								{{!-- {{> vendor/vendor-navbar VendorDetail = VendorDetail}} --}}
 								<ul class="navbar-nav mr-auto">
 									<li class=" nav-item"> {{!-- gtc-follow-img --}}
-										{{#if VendorDetail.User.VendorVerification}}
+										{{#if VendorDetail.VendorVerification}}
 										<a href="#"><img src="../img/gtc-verified.png" alt="GTC Verified" style="width: 80px; margin-top: 5px;"/></a>
 										{{else}}
 										<a href="#"><img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified" style="width: 80px; margin-top: 5px;"/></a>
@@ -73,8 +74,7 @@
 									</li>
 									<li class=" nav-item">
 										{{#if LoggedInUser.Vendor.id}}
-										{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
-										{{else}}
+										{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
 										{{#if VendorDetail.VendorFollowers}}
 										<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
 										{{else}}

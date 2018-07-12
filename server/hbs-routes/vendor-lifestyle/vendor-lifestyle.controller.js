@@ -23,7 +23,7 @@ export function vendorLifestyle(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
 	var vendor_id = req.params.id;
@@ -79,14 +79,10 @@ export function vendorLifestyle(req, res) {
 				model: model['VendorPlan'],
 
 			}, {
-				model: model['User'],
-				include: [{
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: status['ACTIVE']
-					}
-				}],
-				attributes: ['id']
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				}
 
 			}, {
 				model: model['VendorFollower'],
@@ -135,7 +131,7 @@ export function vendorLifestyle(req, res) {
 				marketPlaceType: marketplace_type,
 				publicLifestyle: results.publicLifestyle,
 				queryPaginationObj: queryPaginationObj,
-				queryURI:queryURI,
+				queryURI: queryURI,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle'

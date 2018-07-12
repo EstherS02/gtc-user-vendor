@@ -1190,5 +1190,18 @@ p.p1 {
 .vend_edit_lists_buttonstyle{
       padding: 6px 0px!important;
 }
+.banner_bg{
+background-repeat:no-repeat;
+background-size:cover;
+background-position:center;
+}
+.img-border{
+  /*border: 1px solid #2668af!important;*/
+  /*border-style: ridge !important;*/
+  box-shadow: 0px 0px 2px 2px #f1f1f1;
+}
+.banner_bg_menu_shadow{
+  box-shadow: 0px 0px 2px 2px #f1f1f1 ;
 
+}
     

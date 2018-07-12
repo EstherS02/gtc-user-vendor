@@ -28,15 +28,10 @@ export function vendorSupport(req, res) {
 				model: model['VendorPlan'],
 
 			}, {
-				model: model['User'],
-				attributes: ['id'],
-				include: [{
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: status['ACTIVE']
-					}
-				}]
-
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				}
 			}, {
 				model: model['VendorFollower'],
 				where: {

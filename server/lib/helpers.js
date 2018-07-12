@@ -304,7 +304,7 @@ Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
 Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
     var ret = '';
     var option;
-    if (plan == 1) {
+    if (plan == 1 || plan == 6 ||plan == 5) {
         return context;
     } else if (plan == 2) {
         if (context == 'SHOP'|| context == 'SERVICES'|| context == 'LIFESTYLE') {

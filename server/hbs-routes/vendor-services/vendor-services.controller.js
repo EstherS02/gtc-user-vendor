@@ -83,15 +83,10 @@ export function vendorServices(req, res) {
 				model: model['VendorPlan'],
 
 			}, {
-				model: model['User'],
-				attributes:['id'],
-				include: [{
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: status['ACTIVE']
-					}
-				}]
-
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				}
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {

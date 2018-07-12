@@ -109,14 +109,10 @@ export function GetProductDetails(req, res) {
                 model: model['VendorPlan'],
 
             }, {
-                model: model['User'],
-                attributes: ['id'],
-                include: [{
-                    model: model['VendorVerification'],
-                    where: {
-                        vendor_verified_status: status['ACTIVE']
-                    }
-                }]
+                model: model['VendorVerification'],
+                where: {
+                    vendor_verified_status: status['ACTIVE']
+                }
 
             }, {
                 model: model['VendorRating'],
@@ -400,25 +396,6 @@ export function GetProductReview(req, res) {
                     console.log('Error :::', error);
                 });
         },
-        AllReviews: function(callback) {
-            var reviewModel = "Review";
-            var queryObj1 = {
-                product_id: req.params.product_id,
-                status: status["ACTIVE"]
-            }
-            var includeArr2 = [{
-                model: model["User"],
-                attributes: {
-                    exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-                }
-            }];
-            service.findAllRows(reviewModel, includeArr2, queryObj1, null, null, field, order)
-                .then(function(AllReviews) {
-                    return callback(null, AllReviews);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                });
-        },
         VendorDetail: function(callback) {
             var vendorIncludeArr = [{
                 model: model['Country']
@@ -427,15 +404,7 @@ export function GetProductReview(req, res) {
                 model: model['VendorPlan'],
 
             }, {
-                model: model['User'],
-                attributes: ['id'],
-                include: [{
                     model: model['VendorVerification'],
-                    where: {
-                        vendor_verified_status: status['ACTIVE']
-                    }
-                }]
-
             }, {
                 model: model['VendorRating'],
                 attributes: [
@@ -534,7 +503,6 @@ export function GetProductReview(req, res) {
 
     }, function(err, results) {
         queryURI['marketplace_id'] = results.Product.marketplace_id;
-        // console.log("results**************",results)
         if (!err) {
             maxSize = results.Review.count / limit;
             if (results.Review.count % limit)
@@ -558,7 +526,7 @@ export function GetProductReview(req, res) {
             }];
 
             var total = 0;
-            var rating = results.AllReviews.rows;
+            var rating = results.Review.rows;
 
             for (let key in rating) {
                 total = total + rating[key].rating;

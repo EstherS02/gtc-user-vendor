@@ -68,40 +68,33 @@ export function vendorShop(req, res) {
 				});
 		},
 		VendorDetail: function(callback) {
-			// var vendorIncludeArr = [{
-			// 	model: model['Country']
+			var vendorIncludeArr = [{
+				model: model['Country']
 
-			// }, {
-			// 	model: model['VendorPlan'],
+			}, {
+				model: model['VendorPlan'],
 
-			// }, {
-			// 	model: model['User'],
-			// 	attributes: ['id'],
-			// 	include: [{
-			// 		model: model['VendorVerification'],
-			// 		where: {
-			// 			vendor_verified_status: status['ACTIVE']
-			// 		}
-			// 	}]
-
-			// }, {
-			// 	model: model['VendorFollower'],
-			// 	where: {
-			// 		user_id: req.user.id,
-			// 		status: 1
-			// 	},
-			// 	required: false
-			// }, {
-			// 	model: model['VendorRating'],
-			// 	attributes: [
-			// 		[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
-			// 	],
-			// 	group: ['VendorRating.vendor_id'],
-			// 	required: false,
-			// }];
-			// var vendorIncludeArr = populate.populateData('Country,VendorPlan,User,User.VendorVerification');
-			var vendorIncludeArr = populate.populateData('User,User.Vendor');
-			service.findIdRow('VendorVerification', 1, vendorIncludeArr)
+			}, {
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				}
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
+			}];
+			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
 					console.log(response.User)
 					return callback(null, response);
@@ -149,7 +142,7 @@ export function vendorShop(req, res) {
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				queryPaginationObj: queryPaginationObj,
-				queryURI:queryURI,
+				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				categories: results.categories,

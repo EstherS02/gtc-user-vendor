@@ -23,7 +23,7 @@ export function vendorWholesale(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryObj = {};
 	var vendor_id;
 	queryObj['marketplace_id'] = marketplace['WHOLESALE'];
@@ -103,17 +103,11 @@ export function vendorWholesale(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-
 			}, {
-				model: model['User'],
-				attributes: ['id'],
-				include: [{
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: status['ACTIVE']
-					}
-				}]
-
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				}
 			}, {
 				model: model['VendorFollower'],
 				where: {
@@ -235,7 +229,7 @@ export function vendorWholesale(req, res) {
 				wantToSell: results.wantToSell,
 				wantToBuy: results.wantToBuy,
 				wantToTrade: results.wantToTrade,
-				queryURI:queryURI,
+				queryURI: queryURI,
 				requestForQuote: results.requestForQuote,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,

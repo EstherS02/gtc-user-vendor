@@ -71,15 +71,10 @@ export function vendorDiscussion(req, res) {
 				model: model['VendorPlan'],
 
 			}, {
-				model: model['User'],
-				attributes:['id'],
-				include: [{
 					model: model['VendorVerification'],
 					where: {
 						vendor_verified_status: status['ACTIVE']
 					}
-				}]
-
 			},{
 				model:model['VendorRating'],
 				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
@@ -117,6 +112,7 @@ export function vendorDiscussion(req, res) {
 		// 		});
 		// }
 	}, function(err, results) {
+		console.log(results.VendorDetail)
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
 			res.render('vendor-discussion', {
