@@ -81,12 +81,13 @@ export function vendorServices(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-
+				required:false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
-				}
+				},
+				required:false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {

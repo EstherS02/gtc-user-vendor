@@ -26,7 +26,7 @@ export function vendorSupport(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-
+				required:false
 			}, {
 				model: model['VendorVerification'],
 				where: {

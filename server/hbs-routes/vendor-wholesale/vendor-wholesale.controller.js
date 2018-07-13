@@ -103,11 +103,13 @@ export function vendorWholesale(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
+				required:false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
-				}
+				},
+				required:false
 			}, {
 				model: model['VendorFollower'],
 				where: {
