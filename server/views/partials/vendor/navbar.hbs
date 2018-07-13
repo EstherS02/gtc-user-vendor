@@ -1,9 +1,16 @@
+
+<script type="text/javascript">
+    $(document).ready(function(){
+            var pathArray = window.location.pathname.split('/');
+            
+    });
+</script>
 <div class="col-md-2 showing_categ" style="font-size:12px">
 	{{#if LoggedInUser.Vendor}}
 	<ul class="list-group list-group-flush list-unstyled components">
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#reporting" {{#if selectedPage}} aria-expanded="true" {{/if}}>Reporting</a>
-			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="reporting">
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "reporting"}}show{{/ifCond}}{{/if}}" id="reporting">
 				<li class="list-group-item">
 					<a href="/reporting/performance" {{#ifCond selectedPage '==' 'performance'}} style="color:#234267" {{/ifCond}}>Performance</a>
 				</li>
@@ -26,7 +33,7 @@
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
-			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
 				<li class="list-group-item">
 					<a href="/listings/wholesale" {{#ifCond selectedPage '==' 'wholesale'}} style="color:#234267" {{/ifCond}}>Wholesale Listings</a>
 				</li>
@@ -45,7 +52,7 @@
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
-			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
+			<ul class="list-group collapse list-group-flush  {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
 				<li class="list-group-item">
 					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>
@@ -84,7 +91,7 @@
 
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
-			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
 				<li class="list-group-item">
 					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
 				</li>
@@ -99,36 +106,36 @@
 		{{/ifCond}}
 
 		<li class="list-group-item">
-			<a href="/coupons">Edit/Add Coupons</a>
+			<a href="/coupons"  {{#ifCond selectedPage '==' 'coupons'}} style="color:#234267" {{/ifCond}}>Edit/Add Coupons</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/reviews">See My Reviews</a>
+			<a href="/reviews" {{#ifCond selectedPage '==' 'reviews'}} style="color:#234267" {{/ifCond}}>See My Reviews</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/promote-store">Store Branding</a>
+			<a href="/promote-store" {{#ifCond selectedPage '==' 'promote-store'}} style="color:#234267" {{/ifCond}}>Store Branding</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/notifications">Notification Settings</a>
+			<a href="/notifications" {{#ifCond selectedPage '==' 'notifications'}} style="color:#234267" {{/ifCond}}>Notification Settings</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/social-profile">Social Profiles Settings</a>
+			<a href="/social-profile" {{#ifCond selectedPage '==' 'social-profile'}} style="color:#234267" {{/ifCond}}>Social Profiles Settings</a>
 		</li>
-		<li class="list-group-item">
+		<li class="list-group-item" {{#ifCond selectedPage '==' 'shipping-settings'}} style="color:#234267" {{/ifCond}}>
 			<a href="/shipping-settings">Shipping Settings</a>
 		</li>
 		{{!-- <li class="list-group-item">
 			<a href="#">Subscription Settings</a>
 		</li> --}}
-		<li class="list-group-item">
+		<li class="list-group-item" {{#ifCond selectedPage '==' 'payment-settings'}} style="color:#234267" {{/ifCond}}>
 			<a href="/payment-settings">Payment Settings</a>
 		</li>
 		{{#ifCond LoggedInUser.Vendor.VendorVerification.vendor_verified_status '!=' 2 }}
-		<li class="list-group-item">
+		<li class="list-group-item"  {{#ifCond selectedPage '==' 'verification'}} style="color:#234267" {{/ifCond}}>
 			<a href="/verification">Get GTC Verified</a>
 		</li>
 		{{/ifCond}}
 		<li class="list-group-item">
-			<a href="/gtc-talk">GTC Talk Settings</a>
+			<a href="/gtc-talk" {{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>GTC Talk Settings</a>
 		</li>
 		<li class="list-group-item">
 			<b>
@@ -160,20 +167,20 @@
 	<hr/> {{/if}}
 	<ul class="list-group list-group-flush">
 		<li class="list-group-item">
-			<a href="/order-history">Personal Order History</a>
+			<a href="/order-history"{{#ifCond selectedPage '==' 'order-history'}} style="color:#234267" {{/ifCond}}>Personal Order History</a>
 		</li>
 		<li class="list-group-item">
-			<a href="#">My Dowloads</a>
+			<a href="#"{{#ifCond selectedPage '==' 'my-downloads'}} style="color:#234267" {{/ifCond}}>My Dowloads</a>
 		</li>
 
 		<li class="list-group-item">
-			<a href="/wishlist">Wishlist</a>
+			<a href="/wishlist"{{#ifCond selectedPage '==' 'wishlist'}} style="color:#234267" {{/ifCond}}>Wishlist</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/billing-settings">Billing Settings</a>
+			<a href="/billing-settings"{{#ifCond selectedPage '==' 'billing-settings'}} style="color:#234267" {{/ifCond}}>Billing Settings</a>
 		</li>
 		<li class="list-group-item">
-			<a href="/user-profile">Profile Settings</a>
+			<a href="/user-profile"{{#ifCond selectedPage '==' 'user-profile'}} style="color:#234267" {{/ifCond}}>Profile Settings</a>
 		</li>
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#gtc-mail">GTC Mail</a>
@@ -195,14 +202,14 @@
 				</li>
 			</ul>
 		</li>
+		{{!-- <li class="list-group-item">
+			<a href="#"{{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>Discussion Board</a>
+		</li> --}}
 		<li class="list-group-item">
-			<a href="#">Discussion Board</a>
+			<a href="#{{#ifCond selectedPage '==' 'contact'}} style="color:#234267" {{/ifCond}}">Contact</a>
 		</li>
 		<li class="list-group-item">
-			<a href="#">Contact</a>
-		</li>
-		<li class="list-group-item">
-			<a href="#">Feed</a>
+			<a href="#"{{#ifCond selectedPage '==' 'feed'}} style="color:#234267" {{/ifCond}}>Feed</a>
 		</li>
 		<li class="list-group-item">
 			<a data-toggle="collapse" href="#support">Support</a>

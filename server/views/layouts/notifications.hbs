@@ -59,10 +59,12 @@
 			.concat(a.filter(x => !this.includes(x)))
 	};
 
-	$('#checkboxVal,#checkboxVal1').change(function() {
-                    // $('#updateBtn').prop('disabled', false);
-                    alert("hai");
-        });
+	$(document).ready(function() {
+
+	$('#CheckBoxList').on('change', 'input[type=checkbox]', function() {
+		$('#updateBtn').prop('disabled', false);
+	});
+});
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 {{> vendor/header}}
@@ -84,11 +86,11 @@
 									<th>Description</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody id="CheckBoxList">
 								{{#each notification}}
 								<tr>
 									{{#if this.VendorNotificationSettings}}
-									<td><input type="checkbox" value="{{this.id}}" id="checkboxVal" ></td>
+									<td><input type="checkbox" value="{{this.id}}"></td>
 									{{else}}
 									<td><input type="checkbox" value="{{this.id}}" checked  ></td>
 									{{/if}}

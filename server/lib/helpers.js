@@ -342,6 +342,9 @@ Handlebars.registerHelper('bgColor', function(type, option) {
     }
 });
 Handlebars.registerHelper('navbarSetting', function(user, type, options) {
+
+
+    
     if(type == "wholesale"){
         if(user){
             return options.fn(this);
