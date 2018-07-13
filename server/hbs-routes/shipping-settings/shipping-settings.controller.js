@@ -62,7 +62,7 @@ export function shippingSettings(req, res) {
 					Countries: results.Countries.rows,
 					LoggedInUser:LoggedInUser,
 					vendorCountry:results.vendorCountries,
-					selectedPage:'shipping-settings',
+					selectedPage:"shipping-settings",
 					vendorPlan:vendorPlan
 				});
 			} else {
