@@ -122,9 +122,11 @@
 		<li class="list-group-item">
 			<a href="/payment-settings">Payment Settings</a>
 		</li>
+		{{#ifCond LoggedInUser.Vendor.VendorVerification.vendor_verified_status '!=' 2 }}
 		<li class="list-group-item">
 			<a href="/verification">Get GTC Verified</a>
 		</li>
+		{{/ifCond}}
 		<li class="list-group-item">
 			<a href="/gtc-talk">GTC Talk Settings</a>
 		</li>
