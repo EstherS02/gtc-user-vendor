@@ -129,9 +129,11 @@
 		<li class="list-group-item" {{#ifCond selectedPage '==' 'payment-settings'}} style="color:#234267" {{/ifCond}}>
 			<a href="/payment-settings">Payment Settings</a>
 		</li>
-		<li class="list-group-item" {{#ifCond selectedPage '==' 'verification'}} style="color:#234267" {{/ifCond}}>
+		{{#ifCond LoggedInUser.Vendor.VendorVerification.vendor_verified_status '!=' 2 }}
+		<li class="list-group-item"  {{#ifCond selectedPage '==' 'verification'}} style="color:#234267" {{/ifCond}}>
 			<a href="/verification">Get GTC Verified</a>
 		</li>
+		{{/ifCond}}
 		<li class="list-group-item">
 			<a href="/gtc-talk" {{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>GTC Talk Settings</a>
 		</li>
