@@ -276,6 +276,8 @@ export function addProduct(req, res) {
                 });
         }
     }, function (err, results) {
+		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
         if (!err) {
             res.render('add-product', {
                 title: "Global Trade Connect",
@@ -284,7 +286,8 @@ export function addProduct(req, res) {
                 marketplaceType:results.marketplaceType,
                 LoggedInUser: LoggedInUser,
                 vendorPlan:vendorPlan,
-                type:type
+				type:type,
+				dropDownUrl:dropDownUrl,
             });
         }
         else {
