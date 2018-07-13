@@ -71,15 +71,11 @@ export function vendorDiscussion(req, res) {
 				model: model['VendorPlan'],
 
 			}, {
-					model: model['VendorVerification'],
-					where: {
-						vendor_verified_status: status['ACTIVE']
-					}
-			},{
-				model:model['VendorRating'],
-				attributes:[ [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']],
-				group: ['VendorRating.vendor_id'],
-				required:false,
+				model: model['VendorVerification'],
+				where: {
+					vendor_verified_status: status['ACTIVE']
+				},
+				required:false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {

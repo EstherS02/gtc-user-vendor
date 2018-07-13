@@ -8,6 +8,8 @@ const service = require('../../api/service');
 const async = require('async');
 const populate = require('../../utilities/populate');
 const vendorPlan = require('../../config/gtc-plan');
+var url = require('url');
+
 
 export function listings(req, res) {
 
@@ -98,7 +100,10 @@ export function listings(req, res) {
                     });
             }
 	}, function (err, results) {
-		console.log(results.products.rows)
+		// console.log(results.products.rows)
+		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','').trim();
+
 		if (!err) {
 			res.render('view-listings', {
 				title: "Global Trade Connect",
@@ -113,7 +118,8 @@ export function listings(req, res) {
 				LoggedInUser: LoggedInUser,
 				type: type,
 				selectedPage: type,
-				vendorPlan:vendorPlan
+				vendorPlan:vendorPlan,
+				dropDownUrl:dropDownUrl
 			});
 		}
 		else {
@@ -192,6 +198,8 @@ export function editListings(req, res) {
                 });
         }
 	}, function (err, results) {
+		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
 		if (!err) {
 			res.render('edit-listing', {
 				title: "Global Trade Connect",
@@ -202,7 +210,8 @@ export function editListings(req, res) {
 				LoggedInUser: LoggedInUser,
 				marketplaceType:results.marketplaceType,
 				type: type,
-				vendorPlan:vendorPlan
+				vendorPlan:vendorPlan,
+				dropDownUrl:dropDownUrl
 			});
 		}
 		else {

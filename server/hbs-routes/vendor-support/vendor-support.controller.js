@@ -31,14 +31,8 @@ export function vendorSupport(req, res) {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
-				}
-			}, {
-				model: model['VendorFollower'],
-				where: {
-					user_id: req.user.id,
-					status: 1
 				},
-				required: false
+				required:false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -50,7 +44,6 @@ export function vendorSupport(req, res) {
 				});
 		}
 	}, function(err, results) {
-
 		if (!err) {
 			res.render('vendor-support', {
 				title: "Global Trade Connect",

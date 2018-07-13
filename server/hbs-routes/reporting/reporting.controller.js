@@ -33,6 +33,8 @@ export function reporting(req, res) {
 
         },
         function(err, results) {
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             if (!err) {
                 res.render('reporting', {
                     title: "Global Trade Connect",
@@ -41,7 +43,8 @@ export function reporting(req, res) {
                     LoggedInUser: LoggedInUser,
                     category: results.category,
                     selectedPage: 'reporting',
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan,
+                    dropDownUrl: dropDownUrl,
                 });
             } else {
                 res.render('reporting', err);
@@ -90,6 +93,8 @@ export function performance(req, res) {
 
         },
         function(err, results) {
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             if (!err) {
                 res.render('performance', {
                     title: "Global Trade Connect",
@@ -98,7 +103,8 @@ export function performance(req, res) {
                     LoggedInUser: LoggedInUser,
                     category: results.category,
                     selectedPage: 'performance',
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan,
+                    dropDownUrl: dropDownUrl,
                 });
             } else {
                 res.render('performance', err);
@@ -128,6 +134,8 @@ export function accounting(req, res) {
         },
         function(err, results) {
 
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             if (!err) {
                 console.log("start_date", queryURI['start_date']);
                 res.render('sales-history', {
@@ -136,7 +144,9 @@ export function accounting(req, res) {
                     queryUrl: queryUrl,
                     selectedPage: 'accounting',
                     orderStatus: orderStatus,
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan,
+                    LoggedInUser: LoggedInUser,
+                    dropDownUrl: dropDownUrl,
                     // pagination
                     // page: page,
                     // maxSize: maxSize,
@@ -154,6 +164,7 @@ export function accounting(req, res) {
 
 export function tax(req, res) {
     var LoggedInUser = {};
+    var queryURI = {};
 
     if (req.user)
         LoggedInUser = req.user;
@@ -172,16 +183,20 @@ export function tax(req, res) {
             }
         },
         function(err, results) {
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 
             if (!err) {
                 console.log("start_date", queryURI['start_date']);
                 res.render('sales-history', {
                     title: "Global Trade Connect",
                     category: results.category,
-                    queryUrl: queryUrl,
+                    queryURI: queryURI,
                     selectedPage: 'tax',
                     orderStatus: orderStatus,
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan,
+                    LoggedInUser: LoggedInUser,
+                    dropDownUrl: dropDownUrl,
                     // pagination
                     // page: page,
                     // maxSize: maxSize,
@@ -344,6 +359,8 @@ export function salesHistory(req, res) {
             }
         },
         function(err, results) {
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
@@ -379,7 +396,8 @@ export function salesHistory(req, res) {
                     queryPaginationObj: queryPaginationObj,
                     collectionSize: results.orderHistory.count,
                     // End pagination
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan,
+                    dropDownUrl: dropDownUrl
                 });
             } else {
                 res.render('sales-history', err);
