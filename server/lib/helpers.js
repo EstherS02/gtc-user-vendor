@@ -102,7 +102,10 @@ Handlebars.registerHelper('formatTime', function(date, format) {
 });
 
 Handlebars.registerHelper('progressBar', function(value, total) {
-    var rating = (value / total) * 60;
+    var rating=0;
+    if(total != 0){
+     rating = (value / total) * 100;
+    }
     return rating;
 });
 
@@ -342,9 +345,6 @@ Handlebars.registerHelper('bgColor', function(type, option) {
     }
 });
 Handlebars.registerHelper('navbarSetting', function(user, type, options) {
-
-
-    
     if(type == "wholesale"){
         if(user){
             return options.fn(this);

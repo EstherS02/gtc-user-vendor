@@ -187,6 +187,7 @@ export function orderHistory(req, res) {
 					pageSize: limit,
 					queryPaginationObj:queryPaginationObj,
 					collectionSize: results.orderHistory.count,
+					selectedPage:"order-history",
 					// End pagination
 					vendorPlan:vendorPlan
 				});

@@ -39,6 +39,7 @@ export function socialProfile(req, res) {
 				title: "Global Trade Connect",
                 vendorInfo:results.vendorInfo,
                 LoggedInUser: LoggedInUser,
+                selectedPage:'social-profile',
                 vendorPlan:vendorPlan
 			});
         }

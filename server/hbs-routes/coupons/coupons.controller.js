@@ -101,6 +101,7 @@ export function coupons(req, res) {
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
 					category: results.category,
+					selectedPage:'coupons',
 					// pagination
 					page: page,
 					maxSize: maxSize,
@@ -174,7 +175,8 @@ export function addCoupon(req, res) {
 				categories: results.categories,
 				category: results.category,
 				LoggedInUser: LoggedInUser,
-				vendorPlan:vendorPlan
+				vendorPlan:vendorPlan,
+				selectedPage:'coupons',
 			});
 		} else {
 			res.render('services', err);
@@ -364,7 +366,8 @@ export function editCoupons(req, res) {
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
 				LoggedInUser: LoggedInUser,
-				vendorPlan:vendorPlan
+				vendorPlan:vendorPlan,
+				selectedPage:'coupons',
 			});
 
 		} else {

@@ -59,7 +59,7 @@ export function talk(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			console.log('results', results);
+			// console.log('results', results);
 			res.render('talk', {
 				title: "Global Trade Connect",
 				talk: results.talk,
@@ -67,6 +67,7 @@ export function talk(req, res) {
 				timeZone: results.timeZone,
 				dayCode: dayCode,
 				LoggedInUser: LoggedInUser,
+				selectedPage:'gtc-talk',
 				vendorPlan:vendorPlan
 			});
 		} else {

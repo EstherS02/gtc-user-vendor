@@ -130,7 +130,7 @@
 			<a href="/payment-settings">Payment Settings</a>
 		</li>
 		{{#ifCond LoggedInUser.Vendor.VendorVerification.vendor_verified_status '!=' 2 }}
-		<li class="list-group-item"  {{#ifCond selectedPage '==' 'verification'}} style="color:#234267" {{/ifCond}}>
+		<li class="list-group-item"  {{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>
 			<a href="/verification">Get GTC Verified</a>
 		</li>
 		{{/ifCond}}

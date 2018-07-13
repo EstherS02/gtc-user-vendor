@@ -48,7 +48,7 @@
 			<div class="row prfl-wt-txt" style="top: -58px;">
 				<div class="col-md-2 common_padding1">
 					<a class="navbar-brand float-right" href="/vendor/{{this.VendorDetail.id}}" style="margin-right: 0px;">
-						<img src="{{this.VendorDetail.vendor_profile_pic_url}}" width=154px height=154px class="img-border"/></a>
+						<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/images/products/vendor7.jpg" {{/if}} width=154px height=154px class="img-border"/></a>
 					</div>
 					<div class="col-md-6">
 						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}} </span>

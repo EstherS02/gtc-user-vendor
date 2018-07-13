@@ -90,6 +90,7 @@ export function userProfile(req, res) {
 				billingAddress:results.billingAddress,
 				country: results.country,
 				LoggedInUser: LoggedInUser,
+				selectedPage:'user-profile',
 				vendorPlan:vendorPlan
 			});
 		} else {

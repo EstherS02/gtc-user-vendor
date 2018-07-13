@@ -38,6 +38,7 @@ export function notifications(req, res) {
 				count: results.count,
 				notification: results.rows,
 				LoggedInUser:LoggedInUser,
+				selectedPage:'notifications',
 				vendorPlan:vendorPlan
 			}).catch(function(error) {
 				console.log('Error:::', error);
