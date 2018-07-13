@@ -1,4 +1,20 @@
+ <script>
+    function addProduct() {
+      location.href = 'add-product/shop';
+    }
+    
+    function skip(){
+       location.href = 'reporting'; 
+    }
+  </script>
+  <style>
+      #addProduct{
+          cursor: pointer;
+      }
+  </style>
+
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+
 <section class="showing_categ">
     <div class="">
         <div class="container">
@@ -38,9 +54,9 @@
 
                     </div>
                     <p class="ven_cnt_h1_title">or</p>
-                    <input class="list_butt_2" type="submit" value="ADD YOUR FIRST PRODUCT" />
+                    <input class="list_butt_2" type="submit" id="addProduct" onclick="addProduct(); return false;" value="ADD YOUR FIRST PRODUCT" />
                     <p class="ven_cnt_h1_title">
-                        <a href="#" class="text_blue_color">Skip this step</a>
+                        <a href="javascript:void(0)" onclick="skip(); return false;" class="text_blue_color">Skip this step</a>
                     </p>
                     <p class="ven_cnt_h1_title">Please note: Global Trade Connect is not responsible for any information not imported and it is recommend
                         <br/>that they check the products to ensure the information has been relayed properly</p>

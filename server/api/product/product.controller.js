@@ -125,6 +125,20 @@ export function featureOne(req, res) {
 
 export function addProduct(req, res) {
 
+    if(req.query.marketplace == 'Private Wholesale Marketplace')
+    req.query.marketplace_id = marketplace.WHOLESALE;
+
+    if(req.query.marketplace == 'Public Marketplace')
+    req.query.marketplace_id = marketplace.PUBLIC;
+
+    if(req.query.marketplace == 'Services Marketplace')
+    req.query.marketplace_id = marketplace.SERVICE;
+
+    if(req.query.marketplace == 'Lifestyle Marketplace')
+    req.query.marketplace_id = marketplace.LIFESTYLE;
+
+    delete req.query.marketplace;
+
     req.query.vendor_id = req.user.Vendor.id;
     req.query.status = 1;
     req.query.publish_date = new Date();
