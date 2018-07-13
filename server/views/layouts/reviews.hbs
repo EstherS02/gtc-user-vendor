@@ -1,7 +1,7 @@
 {{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <section class="showing_categ">
 	<div class="" >
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				{{> vendor/navbar}} 
 				<div class="col-md-8" style="background-color: #fff;">
@@ -26,7 +26,7 @@
 									</div>
 									<div class="col-md-6 common_padding1">
 										<p style="font-size: 11px;"><span class="text_blue_color">{{this.created_by}}</span> reviewed {{../LoggedInUser.Vendor.vendor_name}} - {{this.rating}}&nbsp;star</p>
-										<p>{{formatTime this.created_on "MMM D YY"}}
+										<p>{{formatTime this.created_on "MMM D, YY"}}
 										</p>
 									</div>
 									<div class="col-md-3">
@@ -56,31 +56,31 @@
 							{{!-- Pagination Ends --}}
 						</div>
 						<div class="col-md-3" style="padding-top: 20px;">
-							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.Rating.avg}} {{starCount this.Rating.avg}}</p>
+							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.avgRating}} &nbsp;&nbsp;{{starCount this.avgRating}}</p>
 							<div style="border: 1px solid #E6E6E6; padding: 10px;">
-								<p class="text_blue_color" style="font-size: 8px">{{this.Rating.avg}} of 5 start based on {{this.Rating.count}}reviews</p>
-								<hr class="review-hr" />
-								<div class="xyz">
-									<p class="text_blue_color p1">5 Stars</p>  <p class = "p1" style="border-bottom: 2px solid #3E78B6; width:{{progressBar this.Rating.star5 this.Rating.count}}%"></p><p class = "p1"> {{this.Rating.star5}}</p>
-								</div>
-								<div class="xyz">
-									<p class="text_blue_color p1">4 Stars</p>  <p class="p1" style="border-top: 2px solid #3E78B6; width:{{progressBar this.Rating.star4 this.Rating.count}}%"></p><p class="p1"><b>{{this.Rating.star4}}</b></p>
-								</div>
-								<div class="xyz">
-									<p class="text_blue_color p1">3 Stars  </p><p class="p1" style="border-bottom: 2px solid #3E78B6; width:{{progressBar this.Rating.star3 this.Rating.count}}%">&nbsp;&nbsp;&nbsp;</p><p class="p1"> {{this.Rating.star3}}</p>
-								</div>
-								<div class="xyz">
-									<p class="text_blue_color p1">2 Stars</p><p class="p1" style="border-bottom: 2px solid #3E78B6; width:{{progressBar this.Rating.star2 this.Rating.count}}%">&nbsp;&nbsp;&nbsp;</p>  <p class="p1">{{this.Rating.star2}}</p>
-								</div>
-								<div class="xyz">
-									<p class="text_blue_color p1">1 Stars </p><p class="p1" style="border-bottom: 2px solid #3E78B6; width:{{progressBar this.Rating.star1 this.Rating.count}}%">&nbsp;&nbsp;&nbsp;</p>  <p class="p1">{{this.Rating.star1}}</p>
-									<div>
+								<p class="text_blue_color" style="font-size: 8px">{{this.avgRating}} of 5 start based on {{this.ratingCount}} reviews</p>
+								<hr style="    margin-top: 10px;" />
+								<div class="row rating-row">
+									{{#each Ratings}}
+									<div class="side">
+										<div> {{this.starCount}} star</div>
 									</div>
+									<div class="middle">
+										<div class="bar-container">
+											<div style="width: {{progressBar this.ratingCount ../ratingCount}}%" class="bar-select"></div>
+										</div>
+									</div>
+									<div class="side right">
+										<div>{{this.ratingCount}}</div>
+									</div>
+									{{/each}}
 								</div>
 							</div>
-						</div>		
+						</div>
 					</div>
-				</div>
+				</div>		
 			</div>
-		</section>
-		{{> footer/footer}}
+		</div>
+	</div>
+</section>
+{{> footer/footer}}

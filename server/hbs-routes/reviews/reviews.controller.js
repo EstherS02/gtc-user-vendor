@@ -34,7 +34,7 @@ export function reviews(req, res) {
 	queryObj = {
 		vendor_id: vendor_id,
 	};
-	
+
 	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -42,7 +42,7 @@ export function reviews(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
-	
+
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	delete req.query.page;
@@ -63,8 +63,8 @@ export function reviews(req, res) {
 						model: model['User']
 					}]
 				}).then(function(Reviews) {
-					maxSize = Reviews.count/limit;
-					console.log('max',maxSize);
+					maxSize = Reviews.count / limit;
+					console.log('max', maxSize);
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -87,36 +87,36 @@ export function reviews(req, res) {
 					attributes: ['rating'],
 					raw: true
 				}).then(function(Rating) {
-					var rating = Rating.rows;
-					for (let elem in rating) {
-						total = total + rating[elem].rating;
-						switch (rating[elem].rating) {
-							case 1:
-								star1 = star1 + 1;
-								break;
-							case 2:
-								star2 = star2 + 1;
-								break;
-							case 3:
-								star3 = star3 + 1;
-								break;
-							case 4:
-								star4 = star4 + 1;
-								break;
-							case 5:
-								star5 = star5 + 1;
-								break;
-						}
+					var productRating = [{
+						starCount: 5,
+						ratingCount: 0
+					}, {
+						starCount: 4,
+						ratingCount: 0
+					}, {
+						starCount: 3,
+						ratingCount: 0
+					}, {
+						starCount: 2,
+						ratingCount: 0
+					}, {
+						starCount: 1,
+						ratingCount: 0
+					}];
+
+					var total = 0;
+					var rating = Rating.rows;;
+
+					for (let key in rating) {
+						total = total + rating[key].rating;
+						if (rating[key].rating <= 5)
+							productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
 					}
-					var avg = total / Rating.count;
-					Rating.avg = avg;
-					Rating.star5 = star5;
-					Rating.star4 = star4;
-					Rating.star3 = star3;
-					Rating.star2 = star2;
-					Rating.star1 = star1;
-					Rating.total = total;
-					// console.log(Rating);
+					var avgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
+					Rating.productRating = productRating;
+					Rating.avgRating = avgRating;
+
+					// productRating = productRating
 					return callback(null, Rating);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -129,16 +129,19 @@ export function reviews(req, res) {
 				res.render('reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
-					Rating: results.Rating,
+					Ratings: results.Rating.productRating,
+					ratingCount: results.Rating.count,
+					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
 					// pagination
 					page: page,
-					maxSize:maxSize,
+					maxSize: maxSize,
 					pageSize: limit,
-					queryPaginationObj:queryPaginationObj,
+					queryPaginationObj: queryPaginationObj,
 					collectionSize: results.Reviews.count,
+					selectedPage: 'reviews',
 					// End pagination
-					vendorPlan :vendorPlan
+					vendorPlan: vendorPlan
 				});
 			} else {
 				res.render('reviews', err);

@@ -11,17 +11,18 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function promoteStore(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    res.render('promote-store', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser,
-        vendorPlan:vendorPlan
-    });
+	let user_id = LoggedInUser.id;
+
+	res.render('promote-store', {
+		title: "Global Trade Connect",
+		LoggedInUser: LoggedInUser,
+		selectedPage: 'promote-store',
+		vendorPlan: vendorPlan
+	});
 
 }

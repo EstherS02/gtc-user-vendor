@@ -1204,4 +1204,57 @@ background-position:center;
   box-shadow: 0px 0px 2px 2px #f1f1f1 ;
 
 }
+/* Three column layout */
+.side {
+    float: left;
+    width: 20%;
+    margin-top:5px;
+}
+
+.middle {
+    margin-top:10px;
+    float: left;
+    width: 60%;
+}
+
+/* Place text to the right */
+.right {
+    text-align: right;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.rating-row{
+  margin:0px !important;
+}
+
+/* The bar container */
+.bar-container {
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+    color: white;
+    border-radius: 5px;
+}
+.bar-select{
+  border-radius: 5px 0px 0px 5px;
+  height: 5px; 
+  background-color: #3E78B6;
+}
+
+/* Individual bars */
+/*.bar-5 {}*/
+/* Responsive layout - make the columns stack on top of each other instead of next to each other */
+@media (max-width: 400px) {
+    .side, .middle {
+        width: 100%;
+    }
+    .right {
+        display: none;
+    }
+}
     
