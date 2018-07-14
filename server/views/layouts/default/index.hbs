@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <script type="text/javascript">
         window.FontAwesomeConfig = {
@@ -8,29 +7,29 @@
         };
     </script>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Trade Connect</title>
-    <base href="/">
     <link rel="stylesheet" href="css/gtc-custom-fonts.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/fontawesome/css/fontawesome-all.min.css">
+    <link rel="stylesheet" type="text/css" href="gtc-assets/plugins/bootstrap-4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/gtc-style.css">
     <link rel="stylesheet" href="css/gtc-custom-style.css">
+    <link rel="stylesheet" type="text/css" href="gtc-assets/css/theme.css">
+    <link rel="stylesheet" type="text/css" href="gtc-assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive-new.css">
     <link rel="stylesheet" href="plugins/jquery-ui/css/jquery-ui.min.css">
-    <link rel="stylesheet" href="plugins/select2/css/select2.min.css" />
-    <link rel="stylesheet" href="plugins/datepicker/css/datepicker.min.css"  />
-    <link rel="stylesheet" href="plugins/jquery-bar-rating/themes/fontawesome-stars.css" />
-    <link rel="stylesheet" href="plugins/cropperjs/cropper.min.css"  />
+    <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="plugins/datepicker/css/datepicker.min.css">
+    <link rel="stylesheet" href="plugins/jquery-bar-rating/themes/fontawesome-stars.css">
+    <link rel="stylesheet" href="plugins/cropperjs/cropper.min.css">
 
-    
     <script src="https://apis.google.com/js/api:client.js"></script>
-    <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="gtc-assets/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="gtc-assets/js/popper.min.js"></script>
+    <script type="text/javascript" src="gtc-assets/plugins/bootstrap-4/js/bootstrap.min.js"></script>
     <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="auth.service.js"></script>
-    <!--<script type="text/javascript" src="intercept.js"></script> -->
     <script src="plugins/jquery-ui/js/jquery-ui.min.js"></script>
     <script type="text/javascript">
         $(window).scroll(function () {
@@ -44,13 +43,9 @@
     <script src="plugins/cropperjs/cropper.min.js"></script>
     <script src="plugins/notifyjs/notify.min.js"></script>
 </head>
-
 <body>
+    {{> environment}}
 
-    {{> environment}} 
-    
     {{{body}}}
-
 </body>
-
 </html>

@@ -154,6 +154,7 @@ export function homePage(req, res) {
                 });
         },
     }, function(err, results) {
+        console.log("LoggedInUser", LoggedInUser)
         if (!err) {
             res.render('homePage', {
                 title: "Global Trade Connect",
