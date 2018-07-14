@@ -59,7 +59,6 @@ export default function(app) {
   app.use('/wishlist', require('./hbs-routes/wishlist'));
   app.use('/gtc-talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
-  app.use('/add-product', require('./hbs-routes/add-product'));
   app.use('/login', require('./hbs-routes/login'));
   app.use('/user-profile', require('./hbs-routes/user-profile'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));

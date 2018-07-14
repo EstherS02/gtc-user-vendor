@@ -134,7 +134,8 @@ export function editListings(req, res) {
 	var productModel = "Product";
 	var categoryModel = "Category";
 	var subCategoryModel = "SubCategory";
-    var marketplaceTypeModel = "MarketplaceType";
+	var marketplaceTypeModel = "MarketplaceType";
+	var featureModel = "MarketplaceProduct";
 	var productIncludeArr = [];
 
 	var offset, limit, field, order;
@@ -196,7 +197,17 @@ export function editListings(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        }
+		},
+		feature: function(callback){
+            service.findOneRow(featureModel, searchObj)
+			.then(function (feature) {
+				return callback(null, feature);
+
+			}).catch(function (error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		}
 	}, function (err, results) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
@@ -211,6 +222,7 @@ export function editListings(req, res) {
 				marketplaceType:results.marketplaceType,
 				type: type,
 				vendorPlan:vendorPlan,
+				feature:results.feature,
 				dropDownUrl:dropDownUrl
 			});
 		}
