@@ -243,7 +243,7 @@ export function googleLogin(req, res, next) {
 								res.cookie("gtc_refresh_token", encryptedRefToken);
 								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).json({
-									'status' : 200,
+									'status': 200,
 									'message': 'ok',
 									'messageDetails': 'successful'
 								});
@@ -265,7 +265,7 @@ export function googleLogin(req, res, next) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
 											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).json({
-												'status' : 200,
+												'status': 200,
 												'message': 'ok',
 												'messageDetails': 'successful'
 											});
@@ -316,7 +316,7 @@ export function googleLogin(req, res, next) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
 												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).json({
-													'status' : 200,
+													'status': 200,
 													'message': 'ok',
 													'messageDetails': 'successful'
 												});
@@ -638,7 +638,7 @@ export function linkedInLogin(req, res, next) {
 };
 
 export function twitterLogin(req, res, next) {
-	
+
 	var queryObj = {};
 
 	req.checkBody('first_name', 'Missing Query Param').notEmpty();
