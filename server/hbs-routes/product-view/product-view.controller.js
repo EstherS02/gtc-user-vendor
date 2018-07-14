@@ -14,9 +14,7 @@ const _ = require('lodash');
 
 
 export function GetProductDetails(req, res) {
-
-    console.log("*********************************",req.url);
-    return;
+    
     var queryObj = {};
     var includeArr = [];
     var LoggedInUser = {};
