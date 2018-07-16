@@ -102,6 +102,10 @@ export function index(req, res) {
 		queryURI['vendor_id'] = req.query.vendor_id;
 		queryParameters['vendor_id'] = req.query.vendor_id;
 	}
+	if (req.query.field) {
+		queryURI['field'] = req.query.field;
+		queryParameters['field'] = req.query.field;
+	}
 	queryParameters['status'] = status["ACTIVE"];
 
 	async.series({
@@ -144,7 +148,8 @@ export function index(req, res) {
 		topProducts: function(callback) {
 			var topOffset = 0;
 			var topLimit = 3;
-			var topOrderField = "created_on";
+			var topOrderField;
+			topOrderField = req.query.field ? req.query.field : "created_on";
 			var topOrderType = "DESC";
 
 			queryParameters['is_featured_product'] = 1;

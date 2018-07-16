@@ -27,6 +27,11 @@
 	function globalSearch() {
 		window.location.href = window.location.origin + "/search";
 	}
+	function sortSearch(e) {
+				var url = window.location.href;
+				var uri = updateQueryStringParameter(url, 'field', e.value)
+				window.location.href = uri;
+		}
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 <section>
@@ -83,8 +88,10 @@
 							<p class="float-right">Sort by</p>
 						</div>
 						<div class="col-md-6">
-							<select class="geo_textbox">
-								<option>Alphabetical</option>
+							<select class="geo_textbox" name="order" onchange="sortSearch(this)" id="sortValue" >
+								{{!-- <option disabled="">Alphabetical</option> --}}
+								<option value="created_on">Date</option>
+								<option value="product_name">Alphabetical</option>
 							</select>
 						</div>
 					</div>
