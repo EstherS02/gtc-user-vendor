@@ -31,6 +31,7 @@ export default function(app) {
   app.use('/api/coupon', require('./api/coupon'));
   app.use('/api/notification',require("./api/notification"));
   app.use('/api/verification', require('./api/verification'));
+  app.use('/api/shipping-setting', require('./api/shipping-setting'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
