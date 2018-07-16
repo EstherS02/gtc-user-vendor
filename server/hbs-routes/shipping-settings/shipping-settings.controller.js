@@ -27,7 +27,7 @@ export function shippingSettings(req, res) {
 
 	async.series({
 			Countries: function(callback) {
-				service.findRows(modelName, {}, 0, null, 'id', 'desc', [])
+				service.findRows(modelName, {}, 0, null, 'id', 'asc', [])
 					.then(function(results) {
 						return callback(null, results);
 					}).catch(function(error) {
@@ -36,14 +36,17 @@ export function shippingSettings(req, res) {
 					});
 			},
 			vendorCountries: function(callback) {
-				service.findRows(vendorModelName, queryObj, 0, null, 'id', 'desc', [])
+				service.findRows(vendorModelName, queryObj, 0, null, 'country_id', 'asc', [])
 					.then(function(results) {
 						var vendorCountriesID = [];
+						var vendorCountries = {};
 					if (results.rows.length > 0) {
 						for (var i = 0; i < results.rows.length; i++) {
 							vendorCountriesID.push(results.rows[i].country_id);
 						}
-						return callback(null, vendorCountriesID);
+						vendorCountries.vendorCountriesID = vendorCountriesID;
+						vendorCountries.count = results.count;
+						return callback(null, vendorCountries);
 					} else {
 						return callback(null, vendorCountriesID);
 					}
@@ -55,11 +58,11 @@ export function shippingSettings(req, res) {
 			}
 		},
 		function(err, results) {
-			console.log(results.vendorCountries)
+			// console.log(results.vendorCountries)
 			if (!err) {
 				res.render('shipping-settings', {
 					title: "Global Trade Connect",
-					Countries: results.Countries.rows,
+					Countries: results.Countries,
 					LoggedInUser:LoggedInUser,
 					vendorCountry:results.vendorCountries,
 					selectedPage:"shipping-settings",
