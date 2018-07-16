@@ -256,7 +256,7 @@
 			editProduct(data, input);
 		}
 
-		var productImage = {{{ DisplayJSON product.ProductMedia }}};
+	var productImage = {{{ DisplayJSON product.ProductMedia }}};
 	var i = 0;
 	var imageId = [];
 	productImage.forEach(function (element) {
@@ -359,7 +359,18 @@
 			}
 		}
 	})
-})
+
+	$('input:checkbox:not("#feature_indefinitely")').change(function () {
+		recalculate();
+	});
+	function recalculate() {
+		var sum = 0;
+		$("input:checkbox:not('#feature_indefinitely'):checked").each(function () {
+			sum += parseInt($(this).val());
+		});
+		$('#totalFees').html(sum);
+	}
+	});
 
 	function testValue(count) {
 		$(".value_discount_amount" + count).show();
@@ -370,6 +381,7 @@
 		$(".value_discount_amount" + count).hide();
 		$(".percent_discount_amount" + count).show();
 	}
+
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -684,135 +696,137 @@
 					</form>
 				</div>
 				<div class="col-md-2">
-					<div class= "list_bg">
-					<p class="list_fe">FEATURE THIS PRODUCT!</p>
-					<div class="list-padding">
-					<div class="row ">
-						<div class="col-md-6">
-							<img src="{{feature.product_base_image}}" alt="logo" style="width: 100%" />
-						</div>
-						<div class="col-md-6">
-						</div>
-					</div>
-					<p class="list_ip">{{feature.product_name}}</p>
-					<div class="row">
-						<div class="col-md-6 list_rup">
-							${{feature.product_price}}
-						</div>
-						{{!--
-						<div class="col-md-6">
-							<p class="list_save">SAVE $20 </p>
-							<p class="list_left">12m left! </p>
-						</div> --}}
-					</div>
-					<div class="row">
-						<div class="col-md-5 edit-listing-feature">
-							<p style="margin-left:10px;">Category:</p>
-						</div>
-						<div class="col-md-7 edit-listing-feature">
-							<p style="margin-right:10px;">{{Titlecase feature.category_name}}> {{feature.sub_category_name}} </p>
-						</div>
-						<div class="col-md-5 edit-listing-feature">
-							<p style="margin-left:10px;">Sellar Rating:</p>
-						</div>
-						<div class="col-md-7 edit-listing-feature">
-							<p>{{ starCount feature.product_rating}}</p>
-						</div>
-		            </div>
-					<hr class="list-hr">
-					<p class="edit-listing-feature"> Status:
-						<span> Live </span>
-					</p>
-					<select class="edit_lists_feature_buttonstyle">
-						<option disabled selected>Change</option>
-						<option value="active">Live</option>
-						<option value="inactive">InActive</option>
-					</select>
-					<p class="edit-listing-feature">Duration:</p>
-					<div class="row" style="margin-bottom: 20px;">
-						<div class="col-md-12 edit-listing-feature">
-							<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px; margin-left:20px;" type="text" id="from"
-							 placeholder="01/01/2017"> to
-							<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" id="to"
-							 placeholder="12/12/2017">
-						</div>
-					</div>
-					<div class="row" style="margin-left: 5px; margin-bottom:10px;">
-						<div class="col-md-12 edit-listing-feature">
-							<input type="checkbox" />Feature this product indefinitely.
-						</div>
-					</div>
-					<p class="edit-listing-feature" style="margin-bottom:10px;">Feature this product:</p>
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_profilepage"/>My Profile Page Only (Free)
-					</div>
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_searchresult"/>In Search Results(+$50/mo)
-					</div>
-					{{#ifCond this.type '==' 'wholesale'}}
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_wholesale_landing"/>Wholesale Landing(+$150/mo)
-					</div>
-					{{else ifCond this.type '==' 'shop'}}
-                    <div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_shop_landing"/>Shop Landing(+$150/mo)
-					</div>
-					{{else ifCond this.type '==' 'services'}}
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_service_landing"/>Services Landing(+$150/mo)
-					</div>
-					{{else ifCond this.type '==' 'lifestyle'}}
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-						<input type="checkbox" value="position_subscription_landing"/>Subscription Landing(+$150/mo)
-					</div>
-					{{/ifCond}}
-					<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
-						<input type="checkbox" value="position_homepage" />GTC Homepage(+$250/mo)
-					</div>
+					<div class="list_bg">
+						<p class="list_fe">FEATURE THIS PRODUCT!</p>
+						<div class="list-padding">
+							<div class="row ">
+								<div class="col-md-6">
+									<img src="{{feature.product_base_image}}" alt="logo" style="width: 100%" />
+								</div>
+								<div class="col-md-6">
+								</div>
+							</div>
+							<p class="list_ip">{{feature.product_name}}</p>
+							<div class="row">
+								<div class="col-md-6 list_rup">
+									${{feature.product_price}}
+								</div>
+								{{!--
+								<div class="col-md-6">
+									<p class="list_save">SAVE $20 </p>
+									<p class="list_left">12m left! </p>
+								</div> --}}
+							</div>
+							<div class="row">
+								<div class="col-md-5 edit-listing-feature">
+									<p style="margin-left:10px;">Category:</p>
+								</div>
+								<div class="col-md-7 edit-listing-feature">
+									<p style="margin-right:10px;">{{Titlecase feature.category_name}}> {{feature.sub_category_name}} </p>
+								</div>
+								<div class="col-md-5 edit-listing-feature">
+									<p style="margin-left:10px;">Sellar Rating:</p>
+								</div>
+								<div class="col-md-7 edit-listing-feature">
+									<p>{{ starCount feature.product_rating}}</p>
+								</div>
+							</div>
+							<hr class="list-hr">
+							<p class="edit-listing-feature"> Status:
+								<span> Live </span>
+							</p>
+							<select class="edit_lists_feature_buttonstyle">
+								<option disabled selected>Change</option>
+								<option value="active">Live</option>
+								<option value="inactive">InActive</option>
+							</select>
+							<p class="edit-listing-feature">Duration:</p>
+							<div class="row" style="margin-bottom: 20px;">
+								<div class="col-md-12 edit-listing-feature">
+									<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px; margin-left:20px;"
+									 type="text" id="from" placeholder="mm/dd/yyyy"> to
+									<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" id="to"
+									 placeholder="mm/dd/yyyy">
+								</div>
+							</div>
+							<div class="row" style="margin-left: 5px; margin-bottom:10px;">
+								<div class="col-md-12 edit-listing-feature">
+									<input type="checkbox" id="feature_indefinitely" />Feature this product indefinitely.
+								</div>
+							</div>
+							<p class="edit-listing-feature" style="margin-bottom:10px;">Feature this product:</p>
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="0" />My Profile Page Only (Free)
+							</div>
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="50" />In Search Results(+$50/mo)
+							</div>
+							{{#ifCond this.type '==' 'wholesale'}}
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="150" />Wholesale Landing(+$150/mo)
+							</div>
+							{{else ifCond this.type '==' 'shop'}}
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="150" />Shop Landing(+$150/mo)
+							</div>
+							{{else ifCond this.type '==' 'services'}}
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="150" />Services Landing(+$150/mo)
+							</div>
+							{{else ifCond this.type '==' 'lifestyle'}}
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+								<input type="checkbox" name="feature_position" value="150" />Subscription Landing(+$150/mo)
+							</div>
+							{{/ifCond}}
+							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
+								<input type="checkbox" name="feature_position" value="250" />GTC Homepage(+$250/mo)
+							</div>
 
-					<p class="list_tot"> TOTAL:$350</p>
-					<p class="list_bg_blue">
-						<a href="#">YES,PROMOTE THIS!
-							<i class="fas fa-caret-right"></i>
-						</a>
-					</p>
-					{{!--
-					<p class="list_butt_2">Performance</p>
-					<div class="row col-md-12">
-						<p>Ad has been running for: 123days </p>
+							<p class="list_tot"> TOTAL:$
+								<span class="list_tot" id="totalFees"></span>
+							</p>
+							<p class="list_bg_blue">
+								<a href="/order-checkout/payment-method">YES,PROMOTE THIS!
+									<i class="fas fa-caret-right"></i>
+								</a>
+							</p>
+							{{!--
+							<p class="list_butt_2">Performance</p>
+							<div class="row col-md-12">
+								<p>Ad has been running for: 123days </p>
+							</div>
+							<hr/>
+							<p> Impressions Vs Clicks </p>
+							<p>
+								<img width="100%" src="../../img/verification-id.png" />
+							</p>
+							<p> Total Clicks:div>
+								<b>233</b>
+							</p>
+							<p> Impressions:
+								<b>33,0000</b>
+							</p>
+							<p>Click-Through rate (CTR):
+								<b>12%</b>
+							</p>
+							<p> Total Purchases:
+								<b>45</b>
+							</p>
+							<p> Total Revanus:
+								<b>$4500</b>
+							</p>
+							<p class="list_bg_blue">
+								<a href="#">EXPORT REPORT AS PDF
+									<i class="fas fa-caret-right"></i>
+								</a>
+							</p> --}}
+
+
+
+						</div>
+
+
 					</div>
-					<hr/>
-					<p> Impressions Vs Clicks </p>
-					<p>
-						<img width="100%" src="../../img/verification-id.png" />
-					</p>
-					<p> Total Clicks:div>
-						<b>233</b>
-					</p>
-					<p> Impressions:
-						<b>33,0000</b>
-					</p>
-					<p>Click-Through rate (CTR):
-						<b>12%</b>
-					</p>
-					<p> Total Purchases:
-						<b>45</b>
-					</p>
-					<p> Total Revanus:
-						<b>$4500</b>
-					</p>
-					<p class="list_bg_blue">
-						<a href="#">EXPORT REPORT AS PDF
-							<i class="fas fa-caret-right"></i>
-						</a>
-					</p> --}}
-
-
-
-				</div>
-				
-				
-				</div>
 				</div>
 			</div>
 		</div>
