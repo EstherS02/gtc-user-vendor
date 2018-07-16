@@ -1,8 +1,9 @@
 <script type="text/javascript">
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 	$("body").on("click", "#followVendor", function() {
-		if(vendorInfo.user_id){
+		if(userInfo.emamil){
 			var  dataItem = {};
 			dataItem.vendor_id = vendorInfo.id;
 			$.ajax({
@@ -48,7 +49,7 @@
 			<div class="row prfl-wt-txt" style="top: -58px;">
 				<div class="col-md-2 common_padding1">
 					<a class="navbar-brand float-right" href="/vendor/{{this.VendorDetail.id}}" style="margin-right: 0px;">
-						<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/images/products/vendor7.jpg" {{/if}} width=154px height=154px class="img-border"/></a>
+						<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width=154px height=154px class="img-border"/></a>
 					</div>
 					<div class="col-md-6">
 						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}} </span>
@@ -89,7 +90,7 @@
 										{{/if}}
 										{{/if}}
 									</li>
-
+									{{#if VendorDetail.VendorPlans.[0].plan_id}}
 									<li class="nav-item" {{#ifCond selectedPage '==' 'wholesale'}} style="background-color: #084681;color: #fff" {{/ifCond}} >
 										<a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
 											{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}} 
@@ -110,6 +111,7 @@
 											{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 										</a>
 									</li>
+									{{/if}}
 									{{#if LoggedInUser.id}}
 									<li class="nav-item" {{#ifCond selectedPage '==' 'discussion'}} style="background-color: #084681;" {{/ifCond}} >
 										<a class="nav-link" href="/vendor-discussion/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'discussion'}} style="color: #fff" {{/ifCond}}>

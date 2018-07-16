@@ -154,7 +154,7 @@
 									{{#each Reviews}}
 									<div class="row">
 										<div class="col-md-2 product_img">
-											<img width="100%" style="border-radius:50%" src="{{this.User.user_pic_url}}"/>
+											<img width="100%" style="border-radius:50%" {{#if this.User.user_pic_url}} src="{{this.User.user_pic_url}}" {{else}} src="img/avatar.png" {{/if}}/>
 										</div>
 										<div class="col-md-10 product_great_bg common_padding1"  >
 											<p class="product_great">

@@ -292,10 +292,10 @@ Handlebars.registerHelper('countrySelected', function(context, test) {
 Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
     var ret = '';
     var option;
-    console.log(test);
+    // console.log(test);
     for (var i = 0, len = context.length; i < len; i++) {
         if (test.indexOf(context[i].id) >= 0) {
-            console.log('context',test.indexOf(context[i].id));
+            // console.log('context',test.indexOf(context[i].id));
             option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
             ret += option;
         }
