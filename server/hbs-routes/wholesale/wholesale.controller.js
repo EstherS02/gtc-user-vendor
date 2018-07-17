@@ -177,8 +177,8 @@ export function wholesale(req, res) {
                 requestForQuote: results.requestForQuote,
                 featuredProducts: results.featuredProducts,
                 wholesalers: results.wholesalers,
-                category: results.category,
                 country: results.country,
+                category: results.category,
                 type: results.type,
                 LoggedInUser: LoggedInUser
             });
