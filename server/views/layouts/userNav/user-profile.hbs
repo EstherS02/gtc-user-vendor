@@ -2,7 +2,6 @@
 	#imageUpload {
 		display: none;
 	}
-
 	#profileImage,
 	#userUpdateBtn,
 	#userCancelBtn {
@@ -238,21 +237,31 @@
 $(document).ready(function(){
 	$('#changePwd').validate({
     rules: {
-		email_id:
+		password_old:{
+			required: true
+		},
         password: {
             required: true,
-            minlength: 5
+            minlength: 9
         },
-        password_confirm: {
-            required: true,
-            minlength: 5,
-            equalTo: "#password"
-        }
+		password_confirm:{
+			required: true,
+			equalTo: "#password"
+		}
     },
 	messages:{
-		password: "plesssssss",
-		password_confirm: "gffgfgfgf"
-	}
+		password_old:{
+			required: "Please enter Old password",
+		},
+		password: {
+			required : "Please enter password",
+			minlength : "Password must have atleast 8 character"
+		},
+		password_confirm:{
+			required: "Please enter confirm password",
+			equalTo: "Please enter the same password again"
+		}
+	}	
 }); 
 })
 
@@ -572,19 +581,19 @@ $(document).ready(function(){
         
           <div class="form-group">
             <label for="email_id" class="col-form-label">Email Address:</label>
-            <input type="text" class="form-control" id="email_id" required>
+            <input type="text" class="form-control" id="email_id" value="{{user.email}}" readonly>
           </div>
           <div class="form-group">
             <label for="password_old" class="col-form-label">Old Password:</label>
-            <input type="password" class="form-control" id="password_old" required>
+            <input type="password" class="form-control" id="password_old" name="password_old">
           </div>
 		  <div class="form-group">
             <label for="password" class="col-form-label">New Password:</label>
-            <input type="password" class="form-control" id="password" required>
+            <input type="password" class="form-control" id="password" name="password" required>
           </div>
 		  <div class="form-group">
             <label for="password_confirm" class="col-form-label">Confirm Password:</label>
-            <input type="password" class="form-control" id="password_confirm" required>
+            <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
           </div>
        
       </div>
