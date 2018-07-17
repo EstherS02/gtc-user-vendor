@@ -116,18 +116,15 @@ export function wholesale(req, res) {
 					return callback(null);
 				});
 		},
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
-
-			topCategoryQueryObj['status'] = status["ACTIVE"];
-
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
+		category: function(callback) {
+			limit = null;
+			delete queryObj['marketplace_id'];
+			delete queryObj['featured_position'];
+			delete queryObj['is_featured_product'];
+			service.findRows(categoryModel, queryObj, offset, limit, field, order)
 				.then(function(category) {
 					return callback(null, category.rows);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -162,6 +159,7 @@ export function wholesale(req, res) {
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(wholesalers) {
 					return callback(null, wholesalers.rows);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -179,8 +177,8 @@ export function wholesale(req, res) {
 				requestForQuote: results.requestForQuote,
 				featuredProducts: results.featuredProducts,
 				wholesalers: results.wholesalers,
-				topSearchCategories: results.topSearchCategory,
 				country: results.country,
+				category: results.category,
 				type: results.type,
 				LoggedInUser: LoggedInUser
 			});
