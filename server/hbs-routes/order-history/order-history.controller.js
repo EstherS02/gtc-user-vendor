@@ -141,7 +141,9 @@ export function orderHistory(req, res) {
 
 	}];
 	// console.log(orderQueryObj);
-
+	var queryObjCategory = {
+			status: statusCode['ACTIVE']
+		};
 	async.series({
 			orderHistory: function(callback) {
 				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
@@ -151,10 +153,20 @@ export function orderHistory(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			category: function(callback) {
+				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
+					.then(function(category) {
+						return callback(null, category.rows);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
-			console.l
+			// console.l
 			maxSize = results.orderHistory.count / limit;
 			if (results.orderHistory.count % limit)
 				maxSize++;
@@ -178,6 +190,7 @@ export function orderHistory(req, res) {
 					queryURI: queryURI,
 					LoggedInUser: LoggedInUser,
 					marketPlace: marketPlace,
+					category: results.category, 
 					statusCode : statusCode,
 					orderStatus: orderStatus,
                     totalTransaction : (total_transaction).toFixed(2),

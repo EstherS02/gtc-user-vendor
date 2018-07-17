@@ -36,9 +36,13 @@ export function addProduct(req, res) {
 
     queryObj['status'] = status["ACTIVE"];
 
+    var queryObjCategory = {
+        status: statusCode['ACTIVE']
+    };
+
     async.series({
         category: function (callback) {
-            service.findRows(categoryModel, queryObj, offset, limit, field, order)
+            service.findRows(categoryModel, queryObjCategory, offset, limit, field, order)
                 .then(function (category) {
                     return callback(null, category.rows);
 
