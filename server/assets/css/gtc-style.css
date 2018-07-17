@@ -1259,7 +1259,7 @@ width: 100%;
     border-width: 0px 10px 10px 10px !important;
     border-color: transparent transparent #fff transparent !important;
 }
-.navbar-dark .navbar-nav .nav-link
+/*.navbar-dark .navbar-nav .nav-link
 {
 	color:#fff;
 	font-family: 'Oswald', sans-serif;
@@ -1273,7 +1273,7 @@ width: 100%;
 {
 	text-decoration: none;
     border-bottom-width: 7px;
-}
+}*/
 .badge {
     position: absolute;
     background: #4078a5;

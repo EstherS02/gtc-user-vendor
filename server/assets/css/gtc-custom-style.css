@@ -50,8 +50,17 @@ i.fas.fa-exclamation-circle {
   color: gray;
   margin-top: -10px;
   margin-bottom: -5px;
-  width: auto;
-  outline: 0px;
+  width:auto;
+  outline:0px; 
+}
+
+.edit-listing-feature{
+  font-size: 10px;
+  border:none;
+  margin:0px;
+  padding: 0px;
+  color:gray;
+ 
 }
 
 .edit-listing-discount {
@@ -749,12 +758,12 @@ a {
   text-shadow: none;
 }
 
-.header {
+/*.header {
   background: url(../bg-footer.jpg);
   position: relative;
   min-height: 84px;
   background-repeat: no-repeat;
-}
+}*/
 
 .shop_price_doller {
   padding-left: 20px;
@@ -1295,10 +1304,19 @@ p.p1 {
   padding: 6px 0px !important;
 }
 
-.banner_bg {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+.edit_lists_feature_buttonstyle
+{
+    border: none;
+    font-size: 11px;
+    width: 100px;
+    padding: 6px 5px;
+    margin-bottom: 10px;
+}
+
+.banner_bg{
+background-repeat:no-repeat;
+background-size:cover;
+background-position:center;
 }
 
 .img-border {
@@ -1451,38 +1469,6 @@ p.p1 {
 .custom-checkbox-warning input[type="checkbox"]:checked+label::after {
   color: #fff;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .pyt_group {
   background: white;

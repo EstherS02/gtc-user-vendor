@@ -342,7 +342,6 @@ export function GetProductReview(req, res) {
     if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
         LoggedInUser = req.gtcGlobalUserObj;
     }
-
     if (req.params.product_id)
         queryParams['id'] = req.params.product_id;
 
@@ -504,7 +503,21 @@ export function GetProductReview(req, res) {
 
     }, function(err, results) {
         queryURI['marketplace_id'] = results.Product.marketplace_id;
+
+
         if (!err) {
+                var selectedPage;
+        if (results.Product.marketplace_id == 1) {
+            selectedPage = "wholesale";
+        } else if (results.Productmarketplace_id == 2) {
+            selectedPage = "shop";
+        } else if (results.Product.marketplace_id == 3) {
+            selectedPage = "services";
+        } else {
+            selectedPage = "lifestyle";
+        }
+
+
             maxSize = results.Review.count / limit;
             if (results.Review.count % limit)
                 maxSize++;
@@ -552,6 +565,7 @@ export function GetProductReview(req, res) {
                 categories: results.categories,
                 queryURI: queryURI,
                 category: results.category,
+                selectedPage: selectedPage,
 
                 // pagination
                 page: page,
