@@ -18,10 +18,15 @@ export function reporting(req, res) {
     if (req.user)
         LoggedInUser = req.user;
 
+    var queryObjCategory = {
+        status: statusCode['ACTIVE']
+    };
+
+
     let user_id = LoggedInUser.id;
     async.series({
             category: function(callback) {
-                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
                     .then(function(category) {
                         return callback(null, category.rows);
 

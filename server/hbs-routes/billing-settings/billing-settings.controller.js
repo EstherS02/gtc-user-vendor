@@ -14,14 +14,17 @@ const vendorPlan = require('../../config/gtc-plan');
 export function billingSettings(req, res) {
     var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
+    if (req.user)
+        LoggedInUser = req.user;
+
     let user_id = LoggedInUser.id;
-    console.log(LoggedInUser);
+    // console.log(LoggedInUser);
+    var queryObjCategory = {
+        status: statusCode['ACTIVE']
+    };
     async.series({
             category: function(callback) {
-                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
                     .then(function(category) {
                         return callback(null, category.rows);
 
@@ -33,18 +36,19 @@ export function billingSettings(req, res) {
 
         },
         function(err, results) {
+            console.log(results)
             if (!err) {
                 res.render('billing-settings', {
                     title: "Global Trade Connect",
                     LoggedInUser: LoggedInUser,
                     category: results.category,
                     selectedPage: 'billing-settings',
-                    vendorPlan:vendorPlan
+                    vendorPlan: vendorPlan
                 });
             } else {
                 res.render('billing-settings', err);
             }
         });
-    
+
 
 }

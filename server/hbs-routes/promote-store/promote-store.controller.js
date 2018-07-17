@@ -18,11 +18,35 @@ export function promoteStore(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	res.render('promote-store', {
-		title: "Global Trade Connect",
-		LoggedInUser: LoggedInUser,
-		selectedPage: 'promote-store',
-		vendorPlan: vendorPlan
-	});
+	var queryObjCategory = {
+		status: statusCode['ACTIVE']
+	};
+	async.series({
+			category: function(callback) {
+				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
+					.then(function(category) {
+						return callback(null, category.rows);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
+
+		},
+		function(err, results) {
+			console.log(results)
+			if (!err) {
+				res.render('promote-store', {
+					title: "Global Trade Connect",
+					LoggedInUser: LoggedInUser,
+					category: results.category,
+					selectedPage: 'promote-store',
+					vendorPlan: vendorPlan
+				});
+			} else {
+				res.render('promote-store', err);
+			}
+		});
 
 }

@@ -64,7 +64,9 @@ export function coupons(req, res) {
 	queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
-
+	 var queryObjCategory = {
+        status: statusCode['ACTIVE']
+    };
 	async.series({
 			Coupons: function(callback) {
 				service.findRows(couponModel, queryObj, offset, limit, field, order)
@@ -77,7 +79,7 @@ export function coupons(req, res) {
 					});
 			},
 			category: function(callback) {
-				service.findRows("Category", {}, 0, null, 'id', 'asc')
+				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
 					.then(function(category) {
 						return callback(null, category.rows);
 

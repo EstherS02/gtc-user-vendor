@@ -203,7 +203,6 @@ export function userAuthenticate(req, res) {
 }
 
 export function me(req, res) {
-    console.log('req.user', req.user);
     if (req.user) {
         delete req.user.email_verified_token;
         delete req.user.email_verified_token_generated;
@@ -263,6 +262,49 @@ function encryptPassword(req) {
         return '';
     var saltWithEmail = new Buffer(req.body.salt + req.body.email.toString('base64'), 'base64');
     return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+}
+
+export function changePassword(req,res){
+if (req.body) {
+        req.checkBody('old_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password)
+    }
+     var errors = req.validationErrors();
+    if (errors) {
+        res.status(400).send(errors);
+        return;
+    }
+    var UserModel = "User";
+    var userId = req.user.id;
+    model[UserModel].findOne({id:userId}, function(err, user) {
+        if (!req.user) {
+            res.status(400).send("User Not Found");
+        return;
+        } else {
+            if (!req.user.authenticate(req.body.old_password)) {
+                res.status(400).send("Invalid Old Password");
+                return;
+            }
+            var hashedPassword = encryptPassword(req);
+            model[UserModel].findOneAndUpdate({
+                'email': req.user.email
+            }, {
+                'hashed_pswd': hashedPassword
+            }, function(err, updateUser) {
+                if (err) {
+                res.status(400).send("Internal Server Error");
+                    return;
+                }
+                res.status(200).send("Password Changed Successfully");
+                return;
+            });
+        }
+    });
+    // var bodyParams = req.body;
+    // bodyParams['hashed_pwd'] = encryptPassword(req);
+
 }
 
 
