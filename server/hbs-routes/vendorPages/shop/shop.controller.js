@@ -1,17 +1,17 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const marketplace_type = require('../../config/marketplace_type');
+const marketplace = require('../../../config/marketplace');
+const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
-const populate = require('../../utilities/populate');
+const populate = require('../../../utilities/populate');
 
 
 export function vendorShop(req, res) {
@@ -137,7 +137,7 @@ export function vendorShop(req, res) {
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
-			res.render('vendor-shop', {
+			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail: results.VendorDetail,

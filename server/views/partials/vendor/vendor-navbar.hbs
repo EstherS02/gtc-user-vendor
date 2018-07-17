@@ -92,39 +92,39 @@
 									</li>
 									{{#if VendorDetail.VendorPlans.[0].plan_id}}
 									<li class="nav-item" {{#ifCond selectedPage '==' 'wholesale'}} style="background-color: #084681;color: #fff" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
+										<a class="nav-link" href="/vendor/wholesale/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'wholesale'}} style="color: #fff" {{/ifCond}}>
 											{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}} 
 										</a>
 									</li>
 									<li class="nav-item"  {{#ifCond selectedPage '==' 'shop'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-shop/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'shop'}} style="color: #fff" {{/ifCond}}>
+										<a class="nav-link" href="/vendor/shop/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'shop'}} style="color: #fff" {{/ifCond}}>
 											{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 										</a>
 									</li>
 									<li class="nav-item"  {{#ifCond selectedPage '==' 'services'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-services/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'services'}} style="color: #fff" {{/ifCond}}>
+										<a class="nav-link" href="/vendor/services/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'services'}} style="color: #fff" {{/ifCond}}>
 											{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 										</a>
 									</li>
 									<li class="nav-item" {{#ifCond selectedPage '==' 'lifestyle'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-lifestyle/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'lifestyle'}} style="color: #fff;" {{/ifCond}} >
+										<a class="nav-link" href="/vendor/lifestyle/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'lifestyle'}} style="color: #fff;" {{/ifCond}} >
 											{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}
 										</a>
 									</li>
 									{{/if}}
 									{{#if LoggedInUser.id}}
-									<li class="nav-item" {{#ifCond selectedPage '==' 'discussion'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-discussion/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'discussion'}} style="color: #fff" {{/ifCond}}>
+									<li class="nav-item" {{#ifCond selectedPage '==' 'discussion-board'}} style="background-color: #084681;" {{/ifCond}} >
+										<a class="nav-link" href="/vendor/discussion-board/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'discussion-board'}} style="color: #fff" {{/ifCond}}>
 											DISCUSSION BOARD
 										</a>
 									</li>
 									<li class="nav-item" {{#ifCond selectedPage '==' 'about'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-about/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'about'}} style="color: #fff" {{/ifCond}}>
+										<a class="nav-link" href="/vendor/about/{{VendorDetail.id}}" {{#ifCond selectedPage '==' 'about'}} style="color: #fff" {{/ifCond}}>
 											ABOUT
 										</a>
 									</li>
 									<li class="nav-item" {{#ifCond selectedPage '==' 'support'}} style="background-color: #084681;" {{/ifCond}} >
-										<a class="nav-link" href="/vendor-support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
+										<a class="nav-link" href="/vendor/support/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'support'}} style="color: #fff" {{/ifCond}}>
 											SUPPORT
 										</a>
 									</li>
@@ -136,7 +136,7 @@
 										</a>
 										<div class="dropdown-menu">
 											<a class="dropdown-item" href="/edit-listing">Edit Listings</a>
-											<a class="dropdown-item" href="/vendor-order-history">Order History</a>
+											<a class="dropdown-item" href="/vendor/order-history">Order History</a>
 											<a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
 											<a class="dropdown-item" href="/reporting/performance">Reporting</a>
 											<div class="dropdown-divider"></div>

@@ -1,10 +1,10 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
@@ -45,7 +45,7 @@ export function vendorSupport(req, res) {
 		}
 	}, function(err, results) {
 		if (!err) {
-			res.render('vendor-support', {
+			res.render('vendorPages/vendor-support', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
 				LoggedInUser: LoggedInUser,
