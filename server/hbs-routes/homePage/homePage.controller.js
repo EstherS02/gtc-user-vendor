@@ -29,6 +29,23 @@ export function homePage(req, res) {
 	}
 
 	async.series({
+		categories: function(callback) {
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findRows(categoryModel, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		wantToSell: function(callback) {
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
@@ -94,7 +111,6 @@ export function homePage(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(serviceMarketplace) {
 					return callback(null, serviceMarketplace.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -105,7 +121,6 @@ export function homePage(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(lifestyleMarketplace) {
 					return callback(null, lifestyleMarketplace.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -119,7 +134,6 @@ export function homePage(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(featuredProducts) {
 					return callback(null, featuredProducts.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -134,24 +148,6 @@ export function homePage(req, res) {
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(servicesProviders) {
 					return callback(null, servicesProviders.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
-
-			topCategoryQueryObj['status'] = status["ACTIVE"];
-
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
-				.then(function(category) {
-					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -172,7 +168,7 @@ export function homePage(req, res) {
 				lifestyleMarketplace: results.lifestyleMarketplace,
 				featuredProducts: results.featuredProducts,
 				topSellers: results.topSellers,
-				topSearchCategories: results.topSearchCategory,
+				categories: results.categories,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

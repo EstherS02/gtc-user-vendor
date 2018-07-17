@@ -97,26 +97,16 @@
                                 <div class="row">
                                     <div class="col-md-6 col-6">
                                         <ul class="footer-menu-list">
-                                            <li><a href="#">Agriculture</a></li>
-                                            <li><a href="#">Apparel & Fashion</a></li>
-                                            <li><a href="#">Business Services</a></li>
-                                            <li><a href="#">Chemicals</a></li>
-                                            <li><a href="#">Computer</a></li>
-                                            <li><a href="#">Electronics & Electrical</a></li>
-                                            <li><a href="#">Food & Beverages</a></li>
-                                            <li><a href="#">Furniture & Furnishings</a></li>
+                                            {{#each_limit categories 8}}
+                                            <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
+                                            {{/each_limit}}
                                         </ul>
                                     </div>
                                     <div class="col-md-6 col-6">
                                         <ul class="footer-menu-list">
-                                            <li><a href="#">Agriculture</a></li>
-                                            <li><a href="#">Apparel & Fashion</a></li>
-                                            <li><a href="#">Business Services</a></li>
-                                            <li><a href="#">Chemicals</a></li>
-                                            <li><a href="#">Computer</a></li>
-                                            <li><a href="#">Electronics & Electrical</a></li>
-                                            <li><a href="#">Food & Beverages</a></li>
-                                            <li><a href="#">Furniture & Furnishings</a></li>
+                                            {{#each_limit categories 8}}
+                                            <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
+                                            {{/each_limit}}
                                         </ul>
                                     </div>
                                 </div>

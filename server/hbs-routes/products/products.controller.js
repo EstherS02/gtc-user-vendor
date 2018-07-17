@@ -92,7 +92,7 @@ export function products(req, res) {
 		},
 		category: function(callback) {
 			delete queryObj['marketplace_id'];
-			limit = 10;
+			limit = null;
 			order = 'asc';
 			field = 'id';
 			service.findRows(categoryModel, queryObj, offset, limit, field, order)
