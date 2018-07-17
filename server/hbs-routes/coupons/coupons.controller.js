@@ -93,7 +93,7 @@ export function coupons(req, res) {
 				maxSize = results.Coupons.count / limit;
 				if (results.Coupons.count % limit)
 					maxSize++;
-				res.render('view-coupons', {
+				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
@@ -111,7 +111,7 @@ export function coupons(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('view-coupons', err);
+				res.render('vendorNav/coupons/view-coupons', err);
 			}
 		});
 }
@@ -169,7 +169,7 @@ export function addCoupon(req, res) {
 		}
 	}, function(err, results) {
 		if (!err) {
-			res.render('edit-coupon', {
+			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				products: results.products,
 				categories: results.categories,
@@ -179,7 +179,7 @@ export function addCoupon(req, res) {
 				selectedPage:'coupons',
 			});
 		} else {
-			res.render('services', err);
+			res.render('vendorNav/coupons/edit-coupon', err);
 		}
 	});
 }
@@ -355,7 +355,7 @@ export function editCoupons(req, res) {
 	}, function(error, results) {
 		if (!error) {
 			// console.log('results', results);
-			res.render('edit-coupon', {
+			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,
 				products: results.products,
@@ -371,7 +371,7 @@ export function editCoupons(req, res) {
 			});
 
 		} else {
-			res.render('services', error);
+			res.render('vendorNav/coupons/edit-coupon', error);
 		}
 	});
 }

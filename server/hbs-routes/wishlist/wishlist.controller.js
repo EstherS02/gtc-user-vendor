@@ -75,7 +75,7 @@ export function wishlist(req, res) {
 		function(err, results) {
 			console.log(JSON.stringify(results))
 			if (!err) {
-				res.render('wishlist', {
+				res.render('userNav/wishlist', {
 					title: "Global Trade Connect",
 					wishlist: results.wishlist.rows,
 					count: results.wishlist.count,
@@ -84,7 +84,7 @@ export function wishlist(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('wishlist', err);
+				res.render('userNav/wishlist', err);
 			}
 		});
 }

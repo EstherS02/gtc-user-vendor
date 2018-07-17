@@ -60,7 +60,7 @@ export function shippingSettings(req, res) {
 		function(err, results) {
 			// console.log(results.vendorCountries)
 			if (!err) {
-				res.render('shipping-settings', {
+				res.render('vendorNav/shipping-settings', {
 					title: "Global Trade Connect",
 					Countries: results.Countries,
 					LoggedInUser:LoggedInUser,
@@ -69,7 +69,7 @@ export function shippingSettings(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('shipping-settings', err);
+				res.render('vendorNav/shipping-settings', err);
 			}
 		});
 

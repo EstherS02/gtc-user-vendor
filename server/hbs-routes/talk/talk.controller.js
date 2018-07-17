@@ -60,7 +60,7 @@ export function talk(req, res) {
 	}, function(error, results) {
 		if (!error) {
 			// console.log('results', results);
-			res.render('talk', {
+			res.render('vendorNav/talk', {
 				title: "Global Trade Connect",
 				talk: results.talk,
 				busiHours: results.busiHours,
@@ -71,7 +71,7 @@ export function talk(req, res) {
 				vendorPlan:vendorPlan
 			});
 		} else {
-			res.render('services', error);
+			res.render('vendorNav/talk', error);
 		}
 	});
 }

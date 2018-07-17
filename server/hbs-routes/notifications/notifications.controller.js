@@ -33,7 +33,7 @@ export function notifications(req, res) {
 	}];
 	service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
 		.then(function(results) {
-			res.render('notifications', {
+			res.render('vendorNav/notifications', {
 				title: "Global Trade Connect",
 				count: results.count,
 				notification: results.rows,
@@ -42,7 +42,7 @@ export function notifications(req, res) {
 				vendorPlan:vendorPlan
 			}).catch(function(error) {
 				console.log('Error:::', error);
-            	res.render('notifications', error);
+            	res.render('vendorNav/notifications', error);
 			});
 		});
 	}else {
