@@ -2991,8 +2991,7 @@ font-size: 12px;
 
 /* The actual popup (appears on top) */
 .popup .popuptext {
-    visibility: hidden;
-    width: 160px;
+    width: 200px;
     background-color: #FFF;
     color: #000;
     text-align: center;
@@ -3003,6 +3002,7 @@ font-size: 12px;
     bottom: 125%;
     left: 50%;
     margin-left: -80px;
+    box-shadow: 0 0 20px; 
 }
 
 /* Popup arrow */
