@@ -34,14 +34,14 @@ Handlebars.registerHelper('convertUpperCase', function(msg) {
 });
 
 Handlebars.registerHelper('Titlecase', function(str) {
-    if(str){
+    if (str) {
         return str.replace(/\w\S*/g, function(txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
-    }else{
+    } else {
         return '';
     }
-    
+
 });
 
 
@@ -102,9 +102,9 @@ Handlebars.registerHelper('formatTime', function(date, format) {
 });
 
 Handlebars.registerHelper('progressBar', function(value, total) {
-    var rating=0;
-    if(total != 0){
-     rating = (value / total) * 100;
+    var rating = 0;
+    if (total != 0) {
+        rating = (value / total) * 100;
     }
     return rating;
 });
@@ -170,13 +170,12 @@ Handlebars.registerHelper("setChecked", function(value, currentValue) {
 });
 
 Handlebars.registerHelper("days", function(value) {
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     return days[value];
 });
 
 Handlebars.registerHelper('optionsSelected', function(context, test) {
     var ret = '';
-
     for (var i = 0, len = context.length; i < len; i++) {
         var option = '<option value="' + context[i].id + '"';
         if (test.indexOf(context[i].id) >= 0) {
@@ -204,7 +203,6 @@ Handlebars.registerHelper('optionsSelectedCategory', function(context, test) {
 Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
     if (!ary || ary.length == 0)
         return options.inverse(this);
-
     var result = [];
     for (var i = 0; result.length < max && i < ary.length; ++i)
         if (ary[i].category_id == id) {
@@ -216,12 +214,9 @@ Handlebars.registerHelper('each_upto', function(ary, max, id, options) {
 Handlebars.registerHelper('each_limit', function(ary, max, options) {
     if (!ary || ary.length == 0)
         return options.inverse(this);
-
     var result = [];
     for (var i = 0; result.length < max && i < ary.length; ++i)
-        // if(ary[i].category_id == id){
         result.push(options.fn(ary[i]));
-    // }
     return result.join('');
 });
 
@@ -260,18 +255,18 @@ Handlebars.registerHelper('FrameObject', function(options) {
 });
 
 Handlebars.registerHelper('ProfilePicture', function(context, options) {
-    if(context && context.user_pic_url)
+    if (context && context.user_pic_url)
         return context.user_pic_url;
-    
     return '/img/avatar.png'
 });
+
 Handlebars.registerHelper('objectKey', function(obj, value_pass, options) {
     var val;
     Object.keys(obj).forEach(function(key) {
-        if(value_pass == obj[key]){
+        if (value_pass == obj[key]) {
             var val1 = key.toLowerCase();
-             val = val1.charAt(0).toUpperCase() + val1.slice(1);
-             val = val.replace("order"," Order");
+            val = val1.charAt(0).toUpperCase() + val1.slice(1);
+            val = val.replace("order", " Order");
         }
     });
     return val;
@@ -282,24 +277,23 @@ Handlebars.registerHelper('countrySelected', function(context, test) {
     var option;
     for (var i = 0, len = context.length; i < len; i++) {
         if (test.indexOf(context[i].id) == -1) {
-            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
-        ret += option;
-            
+            option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
+            ret += option;
+
         }
     }
     return new Handlebars.SafeString(ret);
 });
+
 Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
     var ret = '';
     var option;
-    // console.log(test);
     for (var i = 0, len = context.length; i < len; i++) {
         if (test.indexOf(context[i].id) >= 0) {
-            // console.log('context',test.indexOf(context[i].id));
-            option ='<option value="' + context[i].id + '">' + context[i].name + '</option>'
+            option = '<option value="' + context[i].id + '">' + context[i].name + '</option>'
             ret += option;
         }
-        
+
     }
     return new Handlebars.SafeString(ret);
 });
@@ -307,10 +301,10 @@ Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
 Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
     var ret = '';
     var option;
-    if (plan == 1 || plan == 6 ||plan == 5) {
+    if (plan == 1 || plan == 6 || plan == 5) {
         return context;
     } else if (plan == 2) {
-        if (context == 'SHOP'|| context == 'SERVICES'|| context == 'LIFESTYLE') {
+        if (context == 'SHOP' || context == 'SERVICES' || context == 'LIFESTYLE') {
             return context;
         } else {
             return ret;
@@ -328,31 +322,31 @@ Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
         return;
     }
 });
+
 Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
-    console.log(limit,offset,count)
-    return count-(limit*offset);
+    return count - (limit * offset);
 });
+
 Handlebars.registerHelper('bgColor', function(type, option) {
-    if(type == 1){
+    if (type == 1) {
         return 'pmp4';
-    }
-    else if(type == 2){
+    } else if (type == 2) {
         return 'pmp1';
-    }else if(type == 3){
+    } else if (type == 3) {
         return 'pmp2';
-    }else {
+    } else {
         return 'pmp3';
     }
 });
+
 Handlebars.registerHelper('navbarSetting', function(user, type, options) {
-    if(type == "wholesale"){
-        if(user){
+    if (type == "wholesale") {
+        if (user) {
             return options.fn(this);
-        }else
-        {
-           return options.inverse(this);     
+        } else {
+            return options.inverse(this);
         }
-    }else{
+    } else {
         return options.fn(this);
     }
 });

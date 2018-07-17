@@ -40,7 +40,7 @@ iPad 3
 /* Desktops and laptops ----------- */
 @media only screen  and (min-width : 1224px) {
 	.gtc-container {
-		/*max-width: 1290px;*/
+		max-width: 1290px;
 	}
 	.main-nav {
 		display: table;
