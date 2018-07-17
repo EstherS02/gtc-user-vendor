@@ -106,6 +106,11 @@ var all = {
         url: baseUrl + "/auth/admin-token",
     },
 
+    stripeConfig: {
+        keyPublishable: process.env.STRIPE_PUBLISHABLE_KEY,
+        keySecret: process.env.STRIPE_SECRET_KEY
+    },
+
     // MongoDB connection options
     mongo: {
         options: {
