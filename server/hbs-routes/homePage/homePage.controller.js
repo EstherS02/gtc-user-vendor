@@ -16,6 +16,7 @@ export function homePage(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	offset = 0;
 	limit = 5;
@@ -30,6 +31,7 @@ export function homePage(req, res) {
 
 	async.series({
 		categories: function(callback) {
+			var includeArr = [];
 			const categoryOffset = 0;
 			const categoryLimit = null;
 			const categoryField = "id";
@@ -38,8 +40,11 @@ export function homePage(req, res) {
 
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findRows(categoryModel, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -157,6 +162,8 @@ export function homePage(req, res) {
 		if (!err) {
 			res.render('homePage', {
 				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				wantToSell: results.wantToSell,
@@ -168,7 +175,6 @@ export function homePage(req, res) {
 				lifestyleMarketplace: results.lifestyleMarketplace,
 				featuredProducts: results.featuredProducts,
 				topSellers: results.topSellers,
-				categories: results.categories,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

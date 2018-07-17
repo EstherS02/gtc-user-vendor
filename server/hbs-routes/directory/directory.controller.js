@@ -16,6 +16,7 @@ export function directory(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -27,28 +28,21 @@ export function directory(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
-		category: function(callback) {
-			limit = 10;
-			service.findRows(categoryModel, queryObj, offset, limit, field, order)
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
-					return callback(null, category.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
-
-			topCategoryQueryObj['status'] = status["ACTIVE"];
-
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
-				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -145,8 +139,8 @@ export function directory(req, res) {
 		if (!err) {
 			res.render('directory', {
 				title: "Global Trade Connect",
-				topSearchCategories: results.topSearchCategory,
-				category: results.category,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				subCategory: results.subCategory,
 				country: results.country,
 				wholesalers: results.wholesalers,

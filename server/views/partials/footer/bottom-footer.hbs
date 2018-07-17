@@ -97,16 +97,16 @@
                                 <div class="row">
                                     <div class="col-md-6 col-6">
                                         <ul class="footer-menu-list">
-                                            {{#each_limit categories 8}}
+                                            {{#each bottomCategory.left}}
                                             <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
-                                            {{/each_limit}}
+                                            {{/each}}
                                         </ul>
                                     </div>
-                                    <div class="col-md-6 col-6">
+                                    <div class="col-md-6 col-6 no-padding">
                                         <ul class="footer-menu-list">
-                                            {{#each_limit categories 8}}
+                                            {{#each bottomCategory.right}}
                                             <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
-                                            {{/each_limit}}
+                                            {{/each}}
                                         </ul>
                                     </div>
                                 </div>

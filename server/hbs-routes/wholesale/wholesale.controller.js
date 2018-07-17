@@ -45,6 +45,7 @@ export function wholesale(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {}
+	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -57,6 +58,27 @@ export function wholesale(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		wantToSell: function(callback) {
 			queryObj['marketplace_type_id'] = 1;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -116,20 +138,6 @@ export function wholesale(req, res) {
 					return callback(null);
 				});
 		},
-		category: function(callback) {
-			limit = null;
-			delete queryObj['marketplace_id'];
-			delete queryObj['featured_position'];
-			delete queryObj['is_featured_product'];
-			service.findRows(categoryModel, queryObj, offset, limit, field, order)
-				.then(function(category) {
-					return callback(null, category.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
 		country: function(callback) {
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
@@ -159,7 +167,6 @@ export function wholesale(req, res) {
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(wholesalers) {
 					return callback(null, wholesalers.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -169,6 +176,8 @@ export function wholesale(req, res) {
 		if (!err) {
 			res.render('wholesale', {
 				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
 				wantToSell: results.wantToSell,
@@ -178,7 +187,6 @@ export function wholesale(req, res) {
 				featuredProducts: results.featuredProducts,
 				wholesalers: results.wholesalers,
 				country: results.country,
-				category: results.category,
 				type: results.type,
 				LoggedInUser: LoggedInUser
 			});
