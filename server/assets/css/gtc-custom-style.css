@@ -674,12 +674,12 @@ a {
   text-shadow: none;
 }
 
-.header {
+/*.header {
   background: url(../bg-footer.jpg);
   position: relative;
   min-height: 84px;
   background-repeat: no-repeat;
-}
+}*/
 
 .shop_price_doller{
   padding-left: 20px;
