@@ -96,11 +96,28 @@ export function customerInformation(req, res) {
         }
 
     }, function(err, results) {
-            //console.log(results.address);
+        
+            let billing_address = [], shipping_address = [];
 
             let splitAddress = _.groupBy(results.address, "address_type");
-            let billing_address = splitAddress[ADDRESS_TYPE['BILLINGADDRESS']];
-            let shipping_address = splitAddress[ADDRESS_TYPE['SHIPPINGADDRESS']];
+
+                if(splitAddress && splitAddress[ADDRESS_TYPE['BILLINGADDRESS']])
+                    billing_address = splitAddress[ADDRESS_TYPE['BILLINGADDRESS']];
+                if(splitAddress && splitAddress[ADDRESS_TYPE['SHIPPINGADDRESS']])
+                    shipping_address = splitAddress[ADDRESS_TYPE['SHIPPINGADDRESS']];
+
+/* 
+            return res.status(200).send({
+                title: "Global Trade Connect",
+                LoggedInUser: LoggedInUser,
+                billing_address: billing_address,
+                shipping_address: shipping_address,
+                state: results.state,
+                country: results.country
+            }) */
+
+            console.log(billing_address)
+
         
 
         return res.status(200).render('checkout/customer-information', {

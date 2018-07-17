@@ -108,7 +108,7 @@ export function cart(req, res) {
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
-            var defaultShipping = 50;
+            var defaultShipping = 10;
 
             totalPrice['grandTotal'] = 0;
 
@@ -172,12 +172,11 @@ export function cart(req, res) {
                     req.body.coupon_code = coupon_data[0].coupon_code;
                     cartObj.callApplyCoupon(req, res, function(return_val) {
                         if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPILED') {
-                            console.log("====================");
-                            console.log(return_val.coupon_data);
+                            
                             result_obj['couponData'] = [return_val.coupon_data];
                             return res.status(200).render('cart', result_obj);
                         } else {
-                            console.log("ssss====================");
+
                             result_obj['couponUpdateError'] = return_val.message;
                             result_obj['couponUpdateErrorMessage'] = return_val.message_details;
                             return res.status(200).render('cart', result_obj);
@@ -190,14 +189,7 @@ export function cart(req, res) {
             } else {
                 return res.status(200).render('cart', result_obj);
             }
-            /* return res.status(200).send({
-                 title : "Global Trade Connect",
-                 seperatedItemsList : seperatedItems,
-                 cartItems: results.cartItems.rows,
-                 cartItemsCount: results.cartItems.count,
-                 marketPlaces: results.marketPlace.rows,
-                 seperatedItemsList : seperatedItems
-             });  */
+
         } else {
             console.log(err)
             return res.status(500).render(err);

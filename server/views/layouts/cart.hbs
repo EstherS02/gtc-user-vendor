@@ -114,6 +114,10 @@ function applyGTCCoupon(){
 	});
 }
 
+function orderCheckout(){
+	location.href = "/order-checkout/customer-information"
+}
+
 
 
 </script>
@@ -354,7 +358,7 @@ function applyGTCCoupon(){
 						{{#ifCond couponUpdateErrorMessage '!=' ""}}
 							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
 						{{/ifCond}}
-						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="checkoutSave()"/>
+						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="orderCheckout()"/>
 						<img src="../img/payment-methods.jpg" alt="payment">
 					</div>
 				</div>

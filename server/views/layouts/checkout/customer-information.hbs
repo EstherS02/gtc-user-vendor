@@ -17,36 +17,106 @@ $(document).ready(function(){
 		}
 	})
 
-	$("#shipping-select-country").val(shippingAddress[0].Country.id).trigger('change');
-	$("#shipping-select-state").val(shippingAddress[0].State.id)
+	if(shippingAddress && shippingAddress[0] && shippingAddress[0].Country)
+		$("#shipping-select-country").val(shippingAddress[0].Country.id).trigger('change');
+	if(shippingAddress && shippingAddress[0] && shippingAddress[0].State)
+		$("#shipping-select-state").val(shippingAddress[0].State.id);
+
+	$('#billing-select-country').on('change', function() {
+		$('#billing-select-state').empty();
+		let emptyOption = `<option value="">Choose Province</option>`;
+		$('#billing-select-state').append(emptyOption)
+		for(let i=0; i<state.length; i++){
+			if(this.value == state[i].Country.id){
+				let stateOptions = '<option value="'+state[i].id+'">'+state[i].name+'</option>';
+					$('#billing-select-state').append(stateOptions)
+			}
+		}
+	})
+
+	if(billingAddress && billingAddress[0] && billingAddress[0].Country)
+		$("#billing-select-country").val(billingAddress[0].Country.id).trigger('change');
+	if(billingAddress && billingAddress[0] && billingAddress[0].State)
+		$("#billing-select-state").val(billingAddress[0].State.id)
+
+
 
      continueShipping = function() {
-        var customerInfo = {};
-		customerInfo['shipping_address'] = $("#shipping-method-submission").serializeArray();
-		customerInfo['shipping_address'] = _.mapValues(_.keyBy(customerInfo.shipping_address, 'name'), 'value');
 
-		customerInfo['billing_address'] = billingAddress[0];
-		customerInfo['different_shipping_address'] = $("#different_shipping_address:checked").val();
+        let customerInfo = {};
+		let isCheckBox = $('#different_shipping_address').is(":checked");
+
+
+		let mapKeysObj = {
+			billing_first_name: 'shipping_first_name',
+			billing_last_name: 'shipping_last_name',
+			billing_company: 'shipping_company',
+			billing_addressline1: 'shipping_addressline1',
+			billing_addressline2: 'shipping_addressline2',
+			billing_city: 'shipping_city',
+			billing_country: 'shipping_country',
+			billing_state: 'shipping_state',
+			billing_postal: 'shipping_postal',
+			billing_phone: 'shipping_phone'
+		}
+
+		if(shippingAddress && shippingAddress[0])
+			customerInfo['exist_ship_addr'] = shippingAddress[0].id;
+		else
+			customerInfo['exist_ship_addr'] = null;
+
+		if(billingAddress && billingAddress[0])
+			customerInfo['exist_bill_addr'] = shippingAddress[0].id;
+		else
+			customerInfo['exist_bill_addr'] = null;
+
+		
+		customerInfo['billing_address'] = $("#billing-address-form").serializeArray();
+		customerInfo['billing_address'] = _.mapValues(_.keyBy(customerInfo.billing_address, 'name'), 'value');
+
+		if(isCheckBox){
+			customerInfo['shipping_address'] = $("#shipping-method-submission").serializeArray();
+			customerInfo['shipping_address'] = _.mapValues(_.keyBy(customerInfo.shipping_address, 'name'), 'value');
+		}else{
+			let addr_data = JSON.parse(JSON.stringify(customerInfo['billing_address']));
+			customerInfo['shipping_address'] = _.mapKeys(addr_data, function(value, key) { return mapKeysObj[key]; });
+		}
+		
 
 		console.log(customerInfo)
 
-		/* $.ajax({
-			url: '/api/cart/checkout',
-			type: 'POST',
-			data: customerInfo,
-			dataType: "html",
-			success: function(updateData) {
-					console.log(updateData)
-					window.scrollTo(0,0)
-					$("body").html(updateData)
+		$.ajax({
+			 url: '/api/order-checkout/customer-information',
+			 type: 'POST',
+			 data: JSON.stringify(customerInfo),
+			 contentType: "application/json",
+			success: function (updated) {
+				 console.log("ffffffffffff");
 			},
-			error: function(error){
-					console.log("Error occured while updating", error);
+			error: function (error) {
+				 console.log("Error occured adding Shipping Details", error);
 			}
-		}); */
+		 });
 
-    }
+	 }
+
+
+	$("#different_shipping_address").change(function() {
+		let ischecked = $(this).is(':checked');
+		if(!ischecked){
+			$('#shipping-method-submission').hide();
+		}else{
+			$('#shipping-method-submission').show();
+		}
+	}); 
+
+
 });
+
+function editBillingAddressButton(){
+	$('#display-billing-address').hide();
+	$('#edit-billing-address').show();
+}
 
  </script>
  
@@ -57,7 +127,7 @@ $(document).ready(function(){
 			<div class="row">
 				<div class="col-md-6 col-12">
 					<ul class="breadcrumb">
-					  <li><a href="check_out2.html" class="active1">1. Customer Inforamation</a></li>
+					  <li><a href="check_out2.html" class="active1">1. Customer Information</a></li>
 					  <li><a href="check_out3.html">2. Shipping Method</a></li>
 					  <li><a href="check_out4.html">3. Payment Method</a></li>
 					  <li><a href="checkout_thankyou.html">4. Confirmation</a></li>
@@ -74,32 +144,151 @@ $(document).ready(function(){
 							<div class="col-md-9 col-12">
 								<div class="container">
 									<div class="row">
-										<div class="col-md-3 col-12 checkout_cont">
+										<div class="col-md-4 col-12 checkout_cont">
 											<p><b>Customer Information</b></p>
 										</div>
-										<div class="col-md-9 col-12 checkout_cont" style="">
-											<div>
-												<p><b class="text-capitalize">{{billing_address.[0].User.first_name}} {{billing_address.[0].User.last_name}}</b> <span class="checkout_2_para_span_1">Switch Accouts</span></p>
-												<p class="shop_shipping">{{shipping_address.[0].address_line1}}</p>
-												<p class="shop_shipping">{{shipping_address.[0].address_line2}}</p>
-												<p class="shop_shipping">{{shipping_address.[0].city}}</p>
-												<p class="shop_shipping">{{shipping_address.[0].State.name}}, {{shipping_address.[0].Country.name}}</p>
-												<p class="shop_shipping">{{shipping_address.[0].postal_code}}</p>
-											</div>
+										<div class="col-md-8 col-12 checkout_cont">
+											{{#ifCond billing_address.length '>' 0}}
+												<div id="display-billing-address">
+													<p><b class="text-capitalize">{{billing_address.[0].User.first_name}} {{billing_address.[0].User.last_name}}</b> 
+													<span class="checkout_2_para_span_1"><a href="javascript:;" onclick="editBillingAddressButton()">Edit billing address</a></span>
+													</p>
+													<p class="shop_shipping">{{shipping_address.[0].address_line1}}</p>
+													<p class="shop_shipping">{{shipping_address.[0].address_line2}}</p>
+													<p class="shop_shipping">{{shipping_address.[0].city}}</p>
+													<p class="shop_shipping">{{shipping_address.[0].State.name}}, {{shipping_address.[0].Country.name}}</p>
+													<p class="shop_shipping">{{shipping_address.[0].postal_code}}</p>
+												</div>
+												<div id="edit-billing-address" style="display:none;padding-top:20px;">
+													<form  id="billing-address-form" name="billing-address-form" onsubmit="return false">
+														<div class="row">
+															<div class="col-md-6 col-12 common_padding1">
+																<input type="text" name="billing_first_name" placeholder="First Name" value="{{shipping_address.[0].User.first_name}}" class="text-capitalize geo_textbox" required/>
+															</div>
+															<div class="col-md-6 col-12 common_padding1">
+																<input type="text" name="billing_last_name" placeholder="Last Name" value="{{shipping_address.[0].User.last_name}}" class="text-capitalize geo_textbox" required/>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12 col-12 common_padding1">
+																<input type="text" name="billing_company" placeholder="Company (optional)" value="{{shipping_address.[0].company_name}}" class="geo_textbox" style="width: 99%" required/>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12 col-12 common_padding1">
+																<input type="text" name="billing_addressline1" placeholder="Apt, Suite" value="{{shipping_address.[0].address_line1}}" class="geo_textbox" required/>
+															</div>
+															<div class="col-md-12 col-12 common_padding1">
+																<input type="text" name="billing_addressline2" placeholder="Address" value="{{shipping_address.[0].address_line2}}" class="geo_textbox" required/>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-12 col-12 common_padding1">
+																<input type="text" name="billing_city" placeholder="City" value="{{shipping_address.[0].city}}" class="geo_textbox" style="width: 99%" required/>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-5 col-12 common_padding1">
+																<select id="billing-select-country" name="billing_country" class="geo_textbox" required="required">
+																	<option value="">Choose Country</option>
+																	{{#each country}}
+																	<option value="{{this.id}}">{{this.name}}</option>
+																	{{/each}}
+																</select>
+															</div>
+															<div class="col-md-4 col-12 common_padding1">
+																<select id="billing-select-state" name="billing_state" class="geo_textbox" required="required">
+																	<option value="">Choose Province</option>
+																</select>
+															</div>
+															<div class="col-md-3 col-12 common_padding1">
+																<input type="text" placeholder="Postal" name="billing_postal" value="{{shipping_address.[0].postal_code}}" class="geo_textbox" required/>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-6 col-12 common_padding1" >
+																<input type="text" placeholder="Phone" name="billing_phone" class="geo_textbox" />
+															</div>
+															<div class="col-md-6 col-12 common_padding1">
+																
+															</div>
+														</div>
+													</form>	
+
+												</div>
+											{{else}}
+
+												<form  id="billing-address-form" name="billing-address-form" onsubmit="return false" style="padding-top:20px">
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" name="billing_first_name" placeholder="First Name" class="text-capitalize geo_textbox" required/>
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														<input type="text" name="billing_last_name" placeholder="Last Name" class="text-capitalize geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="billing_company" placeholder="Company (optional)" class="geo_textbox" style="width: 99%" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="billing_addressline1" placeholder="Apt, Suite" class="geo_textbox" required/>
+													</div>
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="billing_addressline2" placeholder="Address" class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-12 col-12 common_padding1">
+														<input type="text" name="billing_city" placeholder="City" class="geo_textbox" style="width: 99%" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-5 col-12 common_padding1">
+														<select id="billing-select-country" name="billing_country" class="geo_textbox" required="required">
+															<option value="">Choose Country</option>
+															{{#each country}}
+															<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+													<div class="col-md-4 col-12 common_padding1">
+														<select id="billing-select-state" name="billing_state" class="geo_textbox" required="required">
+															<option value="">Choose Province</option>
+														</select>
+													</div>
+													<div class="col-md-3 col-12 common_padding1">
+														<input type="text" placeholder="Postal" name="billing_postal" class="geo_textbox" required/>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-6 col-12 common_padding1" >
+														<input type="text" placeholder="Phone" name="billing_phone" class="geo_textbox" />
+													</div>
+													<div class="col-md-6 col-12 common_padding1">
+														
+													</div>
+												</div>
+											</form>									
+
+											{{/ifCond}}
 										
 										</div>
 									</div>
 									<hr/>
 									<div class="row">
-										<div class="col-md-3 col-6 checkout_cont">
+										<div class="col-md-4 col-6 checkout_cont">
 											<p><b>Shipping Address</b></p>
 										</div>
-										<div class="col-md-9 col-12 checkout_cont">
-											<p>
-												<label class="login-checkbox1">
-													<input type="checkbox" value="" name="different_shipping_address" id="different_shipping_address">
-													<i></i> Shipping Address is different then my billing address above</label>
-											</p>
+										<div class="col-md-8 col-12 checkout_cont">
+											<div class="login-checkbox1 custom-checkbox" style="padding-bottom:10px;">
+												<input id="different_shipping_address" name="different_shipping_address" type="checkbox" checked="checked">
+												<label for="different_shipping_address" style="cursor:pointer;">
+													Shipping Address is different then my billing address above
+												</label>
+											</div>
 											<form id="shipping-method-submission" name="shipping-method-submission" onsubmit="return false">
 												<div class="row">
 													<div class="col-md-6 col-12 common_padding1">
