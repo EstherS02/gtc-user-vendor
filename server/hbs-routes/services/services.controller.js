@@ -11,14 +11,15 @@ const async = require('async');
 
 
 export function services(req, res) {
+	var categoryModel = "Category";
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {}
 
-    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-        LoggedInUser = req.gtcGlobalUserObj;
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
 	field = "id";
@@ -28,6 +29,23 @@ export function services(req, res) {
 	queryObj['marketplace_id'] = 3;
 
 	async.series({
+		topSearchCategory: function(callback) {
+			const topCategoryOffset = 0;
+			const topCategoryLimit = null;
+			const topCategoryField = "id";
+			const topCategoryOrder = "asc";
+			const topCategoryQueryObj = {};
+
+			topCategoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
+				.then(function(category) {
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		featuredService: function(callback) {
 			limit = null;
 			queryObj['featured_position'] = position.ServiceLanding;
@@ -42,7 +60,7 @@ export function services(req, res) {
 		},
 		serviceProduct: function(callback) {
 			delete queryObj['featured_position'];
-            delete queryObj['is_featured_product'];
+			delete queryObj['is_featured_product'];
 			limit = 20;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(serviceProduct) {
@@ -70,6 +88,7 @@ export function services(req, res) {
 		if (!err) {
 			res.render('services', {
 				title: "Global Trade Connect",
+				topSearchCategories: results.topSearchCategory,
 				marketPlace: marketplace,
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,

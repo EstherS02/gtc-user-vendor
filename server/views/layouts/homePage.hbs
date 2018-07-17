@@ -30,7 +30,7 @@
                             <input type="text" id="origin" name="origin" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
                             <select class="geo_textbox" name="category" id="category">
                                 <option disabled selected>Category</option>
-                                {{#each category}}
+                                {{#each topSearchCategories}}
                                 <option value="{{this.id}}">{{ this.name}}</option>
                                 {{/each}}
                             </select>

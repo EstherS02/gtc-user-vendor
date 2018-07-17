@@ -29,12 +29,15 @@ body {
     box-shadow: none;
 }
 .search-select {
-    width: auto;
+    width: 100px;
     height: auto;
     position: relative;
 }
 .search-select select {
+    font-size: 13px;
     line-height: 1.6;
+    padding: 0 10px;
+    text-align-last: right;
 }
 .search-select:after {
     position: absolute;
@@ -517,6 +520,9 @@ ul.footer-social-links li a img {
     color: #575757;
     padding: 2px 15px;
 }
+.dropdown-menu-list ul li a:hover {
+    color: #000;
+}
 .hr-line-solid {
     border-top: 1px solid #e7eaec;
     color: #ffffff;
@@ -607,13 +613,6 @@ ul.footer-social-links li a img {
 }
 .search-input-group .btn-gtc {
     padding: 0 10px;
-}
-.search-select select {
-    padding: 0 10px;
-    text-align-last: right;
-}
-option { 
-    direction: rtl;
 }
 .marketplace-dropdown {
     font-family: 'Oswald', sans-serif;

@@ -37,7 +37,7 @@
 										<li><a href="#">Feed</a></li>
 										<li><a href="#">Support</a></li>
 										<div class="hr-line-solid"></div>
-										<li><a href="#">Logout</a></li>
+										<li><a href="javascript:;" onclick="gtcLogout()">Logout</a></li>
 									</ul>
 								</div>
 							</li>
@@ -123,11 +123,11 @@
 												<a class="dropdown-item" href="/products">PRODUCTS</a>
 											</div>
 										</div>
-										<input type="text" class="form-control form-control-sm" placeholder="Search the Globe" aria-label="...">
+										<input type="search" class="form-control form-control-sm" id="inputSearchText" name="keyword" placeholder="Search the Globe" aria-label="...">
 										<div class="search-select">
-											<select class="form-control form-control-sm" id="inputSearchCategory" name="search-category">
+											<select class="form-control form-control-sm" id="inputSearchCategory" name="category">
 												<option disabled selected>Category</option>
-												{{#each category}}
+												{{#each topSearchCategories}}
 												<option value={{this.id}}>{{this.name}}</option>
 												{{/each}}
 											</select>
@@ -180,15 +180,15 @@
 			$("#searchBtnGrp").css("display", "none");
 		}
 
-		$('#headerSearchSubmit').prop('disabled', true);
-		$('#searchKey').keyup(function() {
-			$('#headerSearchSubmit').prop('disabled', this.value == "" ? true : false);
-		})
-		$("#headerSearchForm").submit(function(e) {
+		$('#topSearchForm').submit(function(e) {
 			e.preventDefault();
-			let formInput = $("#headerSearchForm :input").filter(function(index, element) {
+
+			let formInput = $("#topSearchForm :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
+			if (!formInput || formInput.keyword) {
+				return;
+			}
 			window.location.href = '/search?' + formInput;
 		});
 	});
