@@ -1,43 +1,46 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
+const marketplace = require('../../../config/marketplace');
+const marketplace_type = require('../../../config/marketplace_type');
 const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const marketplace_type = require('../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 
-export function vendorLifestyle(req, res) {
+export function vendorServices(req, res) {
 	var LoggedInUser = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order, page;
+	var offset, limit, field, order,page;
 	var queryObj = {};
 	var queryURI = {};
 	var vendor_id = req.params.id;
-	queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
-	queryURI['marketplace_id'] = marketplace['LIFESTYLE'];
+	queryObj['marketplace_id'] = marketplace['SERVICE'];
+	queryURI['marketplace_id'] = marketplace['SERVICE'];
 	queryObj['vendor_id'] = vendor_id;
-	queryObj['status'] = status["ACTIVE"];
 	// var vevndorIncludeArr = [{
 	// 	model:model['Country']
 
 	// }]
+
 	var queryPaginationObj = {};
 	// var queryURI = {};
 
+	// offset = 0;
+	// limit = 18;
+	// field = "created_on";
+	// order = 0;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
@@ -60,11 +63,12 @@ export function vendorLifestyle(req, res) {
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 
+
 	async.series({
-		publicLifestyle: function(callback) {
+		publicService: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(wantToSell) {
-					return callback(null, wantToSell);
+				.then(function(response) {
+					return callback(null, response);
 
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -84,14 +88,6 @@ export function vendorLifestyle(req, res) {
 					vendor_verified_status: status['ACTIVE']
 				},
 				required:false
-
-			}, {
-				model: model['VendorFollower'],
-				where: {
-					user_id: req.user.id,
-					status: 1
-				},
-				required: false
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -108,9 +104,24 @@ export function vendorLifestyle(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
+			}
+
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
 					return callback(null, response);
@@ -121,27 +132,27 @@ export function vendorLifestyle(req, res) {
 				});
 		}
 	}, function(err, results) {
-		// console.log(results);
+		// console.log(JSON.stringify(results.VendorDetail));
 		queryPaginationObj['maxSize'] = 5;
 
 		if (!err) {
-			res.render('vendor-lifestyle', {
+			res.render('vendorPages/vendor-services', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
-				publicLifestyle: results.publicLifestyle,
+				publicService: results.publicService,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
+				page:page,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'lifestyle'
+				selectedPage: 'services'
 			});
 		} else {
-			res.render('vendor-lifestyle', err);
+			res.render('vendor-services', err);
 		}
 	});
-
 
 
 }

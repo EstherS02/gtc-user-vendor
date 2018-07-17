@@ -1,13 +1,13 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const marketplace_type = require('../../config/marketplace_type');
+const marketplace = require('../../../config/marketplace');
+const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -111,7 +111,7 @@ export function vendorDiscussion(req, res) {
 		console.log(results.VendorDetail)
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
-			res.render('vendor-discussion', {
+			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
@@ -121,13 +121,10 @@ export function vendorDiscussion(req, res) {
 				publicShop: results.publicShop,
 				// categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'discussion'
+				selectedPage:'discussion-board'
 			});
 		} else {
 			res.render('vendor-discussion', err);
 		}
 	});
-
-
-
 }

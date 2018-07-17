@@ -1,13 +1,13 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const marketplace_type = require('../../config/marketplace_type');
+const marketplace = require('../../../config/marketplace');
+const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -222,7 +222,7 @@ export function vendorWholesale(req, res) {
 	}, function(err, results) {
 		console.log((results.marketPlaceTypes))
 		if (!err) {
-			res.render('vendor-wholesale', {
+			res.render('vendorPages/vendor-wholesale', {
 				title: "Global Trade Connect",
 				VendorDetail: results.vendorDetail,
 				marketPlace: marketplace,
@@ -241,10 +241,4 @@ export function vendorWholesale(req, res) {
 			res.render('vendor-wholesale', err);
 		}
 	});
-
-	// res.render('vendor-wholesale', {
-	//     title: "Global Trade Connect",
-	//     LoggedInUser: LoggedInUser
-	// });
-
 }

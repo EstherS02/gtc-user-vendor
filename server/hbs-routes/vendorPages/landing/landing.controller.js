@@ -1,14 +1,13 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const position = require('../../config/position');
-const status = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const status = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const marketplace_type = require('../../config/marketplace_type');
+const marketplace = require('../../../config/marketplace');
+const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -109,7 +108,7 @@ export function vendor(req, res) {
 	}, function(err, results) {
 		console.log(results.featuredProducts);
 		if (!err) {
-			res.render('vendor', {
+			res.render('vendorPages/vendor', {
 				title: "Global Trade Connect",
 				VendorDetail : results.VendorDetail,
 				categories: results.categories,
