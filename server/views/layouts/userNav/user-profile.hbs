@@ -8,7 +8,6 @@
 	#userCancelBtn {
 		cursor: pointer;
 	}
-
 	.list_butt_2 {
 		cursor: pointer;
 	}
@@ -160,14 +159,14 @@
 				first_name: "required",
 				b_company_name: "required",
 				b_address1: "required",
-				b_country:"required",
+				b_country: "required",
 				b_state: "required",
 				b_city: "required",
 				b_postal_code: "required",
 				s_company_name: "required",
 				s_address1: "required",
 				s_country: "required",
-				b_state : "required",
+				b_state: "required",
 				s_city: "required",
 				s_postal_code: "required"
 			},
@@ -184,9 +183,18 @@
 				s_country: "Please select country",
 				s_state: "Please select state",
 				s_city: "Please enter shipping city",
-                s_postal_code: "Please enter postal code"
+				s_postal_code: "Please enter postal code"
 			}
 		});
+
+		 $('#resetPassword').click(function() {
+        var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
+        if (window.focus) {
+            newwindow.focus();
+        }
+        return false;
+    });
+
 	});
 	function change_b_Country(e) {
 		$.ajax({
@@ -222,6 +230,32 @@
 			}
 		});
 	}	
+</script>
+
+
+
+<script>
+$(document).ready(function(){
+	$('#changePwd').validate({
+    rules: {
+		email_id:
+        password: {
+            required: true,
+            minlength: 5
+        },
+        password_confirm: {
+            required: true,
+            minlength: 5,
+            equalTo: "#password"
+        }
+    },
+	messages:{
+		password: "plesssssss",
+		password_confirm: "gffgfgfgf"
+	}
+}); 
+})
+
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -284,6 +318,7 @@
 											<b>Account Settings</b>
 										</p>
 									</div>
+									
 									<div class="col-md-8 common_padding1">
 										<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" />
@@ -342,7 +377,7 @@
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-										<input readonly class="list_butt_2" placeholder="Change Password">
+									<button type="button" class="list_butt_2" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
 									</div>
 								</div>
 							</div>
@@ -380,13 +415,13 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" onChange="change_b_Country(this);" required>
+									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" onChange="change_b_Country(this);"
+									 required>
 										{{#if billingAddress.country_id}}
 										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
-                                        {{else}}
+										{{else}}
 										<option disabled selected>Country</option>
-										{{/if}}
-										{{#each country}}
+										{{/if}} {{#each country}}
 										<option value="{{this.id}}">{{ this.name}}</option>
 										{{/each}}
 									</select>
@@ -396,7 +431,7 @@
 										<p></p>
 									</div>
 									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" style="width:200px;" value="" required>
-                                        {{#if billingAddress.province_id}}
+										{{#if billingAddress.province_id}}
 										<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
 										{{else}}
 										<option disabled selected>Province/State</option>
@@ -462,13 +497,13 @@
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" onChange="change_s_Country(this);" required>
+									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" onChange="change_s_Country(this);"
+									 required>
 										{{#if shippingAddress.country_id}}
 										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
-                                        {{else}}
+										{{else}}
 										<option disabled selected>Country</option>
-										{{/if}}
-										{{#each country}}
+										{{/if}} {{#each country}}
 										<option value="{{this.id}}">{{ this.name}}</option>
 										{{/each}}
 									</select>
@@ -523,4 +558,42 @@
 		</div>
 	</div>
 </section>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="background-color: #CCCCCC;">
+		<form id="changePwd">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+          <div class="form-group">
+            <label for="email_id" class="col-form-label">Email Address:</label>
+            <input type="text" class="form-control" id="email_id" required>
+          </div>
+          <div class="form-group">
+            <label for="password_old" class="col-form-label">Old Password:</label>
+            <input type="password" class="form-control" id="password_old" required>
+          </div>
+		  <div class="form-group">
+            <label for="password" class="col-form-label">New Password:</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+		  <div class="form-group">
+            <label for="password_confirm" class="col-form-label">Confirm Password:</label>
+            <input type="password" class="form-control" id="password_confirm" required>
+          </div>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+	  </form>
+    </div>
+  </div>
+</div>
 {{> footer/footer}}
