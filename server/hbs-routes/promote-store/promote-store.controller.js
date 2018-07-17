@@ -18,7 +18,7 @@ export function promoteStore(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	res.render('promote-store', {
+	res.render('vendorNav/promote-store', {
 		title: "Global Trade Connect",
 		LoggedInUser: LoggedInUser,
 		selectedPage: 'promote-store',

@@ -18,7 +18,7 @@ export function paymentSettings(req, res) {
     
     let user_id = LoggedInUser.id;
 
-    res.render('payment-settings', {
+    res.render('vendorNav/payment-settings', {
         title: "Global Trade Connect",
         LoggedInUser: LoggedInUser,
         vendorPlan:vendorPlan

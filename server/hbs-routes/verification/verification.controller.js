@@ -48,7 +48,7 @@ export function verification(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('verification', {
+				res.render('vendorNav/verification', {
 					title: "Global Trade Connect",
 					verification: results.verification,
 					LoggedInUser: LoggedInUser,
@@ -57,7 +57,7 @@ export function verification(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('verification', err);
+				res.render('vendorNav/verification', err);
 			}
 		});
 

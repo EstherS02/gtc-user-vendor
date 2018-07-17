@@ -19,7 +19,7 @@ export function termsAndCond(req, res) {
     
     let user_id = LoggedInUser.id;
 
-    res.render('terms-and-cond', {
+    res.render('vendorNav/terms-and-cond', {
         title: "Global Trade Connect",
         LoggedInUser: LoggedInUser,
         vendorPlan:vendorPlan

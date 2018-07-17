@@ -10,12 +10,12 @@ export function vendorLanding(req, res) {
     async.series({
     }, function (err, results) {
         if (!err) {
-            res.render('vendor-landing', {
+            res.render('vendorNav/vendor-landing', {
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser,
             });
         } else {
-            res.render('vendor-landing', err);
+            res.render('vendorNav/vendor-landing', err);
         }
     })
 }

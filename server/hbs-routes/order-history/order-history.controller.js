@@ -171,7 +171,7 @@ export function orderHistory(req, res) {
 
 			if (!err) {
 				
-				res.render('order-history', {
+				res.render('userNav/order-history', {
 					title: "Global Trade Connect",
 					OrderItems: results.orderHistory.rows,
 					count: results.orderHistory.count,
@@ -192,7 +192,7 @@ export function orderHistory(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('order-history', err);
+				res.render('userNav/order-history', err);
 			}
 		});
 
