@@ -126,7 +126,7 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('reviews', {
+				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
 					Ratings: results.Rating.productRating,
@@ -144,7 +144,7 @@ export function reviews(req, res) {
 					vendorPlan: vendorPlan
 				});
 			} else {
-				res.render('reviews', err);
+				res.render('vendorNav/reviews', err);
 			}
 		});
 

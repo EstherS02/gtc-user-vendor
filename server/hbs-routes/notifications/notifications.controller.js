@@ -60,7 +60,7 @@ export function notifications(req, res) {
 			}
 		}, function(err, results) {
 			if (!err) {
-				res.render('notifications', {
+				res.render('vendorNav/notifications', {
 					title: "Global Trade Connect",
 					title: "Global Trade Connect",
 					count: results.notifications.count,
@@ -73,6 +73,7 @@ export function notifications(req, res) {
 			} else {
 				res.render('notifications', err);
 			}
+
 		});
 	}
 }

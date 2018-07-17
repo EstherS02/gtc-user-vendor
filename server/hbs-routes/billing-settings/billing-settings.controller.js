@@ -38,7 +38,7 @@ export function billingSettings(req, res) {
         function(err, results) {
             console.log(results)
             if (!err) {
-                res.render('billing-settings', {
+                res.render('userNav/billing-settings', {
                     title: "Global Trade Connect",
                     LoggedInUser: LoggedInUser,
                     category: results.category,
@@ -46,7 +46,7 @@ export function billingSettings(req, res) {
                     vendorPlan: vendorPlan
                 });
             } else {
-                res.render('billing-settings', err);
+                res.render('userNav/billing-settings', err);
             }
         });
 

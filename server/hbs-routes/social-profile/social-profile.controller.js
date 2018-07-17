@@ -35,7 +35,7 @@ export function socialProfile(req, res) {
         }
     }, function (err, results) {
         if (!err) {
-            res.render('social-profile', {
+            res.render('vendorNav/social-profile', {
 				title: "Global Trade Connect",
                 vendorInfo:results.vendorInfo,
                 LoggedInUser: LoggedInUser,
@@ -44,7 +44,7 @@ export function socialProfile(req, res) {
 			});
         }
         else {
-            res.render('social-profile', err);
+            res.render('vendorNav/social-profile', err);
         }
     });
 

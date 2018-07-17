@@ -82,7 +82,7 @@ export function userProfile(req, res) {
         }
 	}, function (err, results) {
 		if (!err) {
-			res.render('user-profile', {
+			res.render('userNav/user-profile', {
 				title: "Global Trade Connect",
 				vendor:results.vendor,
 				user:results.user,
@@ -94,7 +94,7 @@ export function userProfile(req, res) {
 				vendorPlan:vendorPlan
 			});
 		} else {
-			res.render('user-profile', err);
+			res.render('userNav/user-profile', err);
 		}
 	});
 }

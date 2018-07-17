@@ -36,7 +36,7 @@ export function paymentSettings(req, res) {
 		function(err, results) {
 			console.log(results)
 			if (!err) {
-				res.render('payment-settings', {
+				res.render('vendorNav/payment-settings', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					category: results.category,
@@ -47,6 +47,7 @@ export function paymentSettings(req, res) {
 				res.render('payment-settings', err);
 			}
 		});
+
 
 
 }

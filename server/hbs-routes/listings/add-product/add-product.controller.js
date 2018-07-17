@@ -75,7 +75,7 @@ export function addProduct(req, res) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
         if (!err) {
-            res.render('listings/add-product', {
+            res.render('vendorNav/listings/add-product', {
                 title: "Global Trade Connect",
                 category: results.category,
                 country: results.country,
@@ -87,7 +87,7 @@ export function addProduct(req, res) {
             });
         }
         else {
-            res.render('add-product', err);
+            res.render('vendorNav/listings/add-product', err);
         }
     });
 }

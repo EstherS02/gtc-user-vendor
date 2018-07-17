@@ -26,8 +26,7 @@
 	function search(e) {
 		window.location.href = '/listings/' + e.name + '?keyword=' + e.value;
 	}
-
-	function edit(e) {
+    function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
 			chkArray.push($(this).val());
@@ -46,8 +45,7 @@
 			});
 		}
 	}
-
-	function add(e) {
+    function add(e) {
 		window.location.href = '/listings/'+e.name+'/add-product';
 	}
 
@@ -81,11 +79,6 @@
 								<option value="SOLDOUT">Sold Out</option>
 							</select>
 						</div>
-						{{!-- <div class="col-md-2 common_padding1">
-							<select style="width: 90%;" class="vend_edit_lists_buttonstyle">
-								<option>CHANGE TYPE</option>
-							</select>
-						</div> --}}
 						<div class="col-md-3 common_padding1">
 							<input style="width: 50%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
 							 onclick="edit(this);" />
@@ -163,15 +156,15 @@
 								<ul class="pagination justify-content-center">
 									{{#unless startFromFirstPage}}
 									<li class="page-item">
-										<a class="page-link" href="listings?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+										<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
 									</li>
 									{{/unless}} {{#each pages}}
 									<li class="page-item {{#if isCurrent}} active {{/if}}">
-										<a class="page-link" href="listings?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+										<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
 									</li>
 									{{/each}} {{#unless endAtLastPage}}
 									<li class="page-item">
-										<a class="page-link" href="listings?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+										<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
 									</li>
 									{{/unless}}
 								</ul>

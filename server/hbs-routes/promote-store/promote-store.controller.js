@@ -37,7 +37,7 @@ export function promoteStore(req, res) {
 		function(err, results) {
 			console.log(results)
 			if (!err) {
-				res.render('promote-store', {
+				res.render('vendorNav/promote-store', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					category: results.category,
@@ -48,5 +48,6 @@ export function promoteStore(req, res) {
 				res.render('promote-store', err);
 			}
 		});
+
 
 }
