@@ -57,7 +57,7 @@
                         <p class="footer_help">SEARCH BY CATEGORY</p>
                         <span id="appendOn"></span>
                         {{#each_limit category 7}}
-                        <p class="footer_help_para"><a href="/search?category={{this.id}}">{{this.name}}</a></p>
+                        <p class="footer_help_para"><a href="/search?category={{this.id}}">{{Titlecase this.name}}</a></p>
                         {{/each_limit}}
                     </div>
                 </div>
