@@ -46,7 +46,25 @@
 			window.location.href = '/coupons?name=' + $(ths).val();
 		}
 	}
-
+	function Password(e,ths){
+		var newData={};
+		newData.old_password=$("#old_password").val();
+		newData.new_password=$("#new_password").val();
+		newData.new_confirm_password=$("#new_confirm_password").val();
+		// console.log(newData)
+		$.ajax({
+				type: 'PUT',
+				url: "/api/users/change-password",
+				data: newData,
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+	}
 </script>
 {{> header/defaultHeader LoggedInUser = LoggedInUser}}
 {{> vendor/header}}
@@ -164,6 +182,14 @@
 						</div>
 					</div>
 					{{!-- Pagination starts --}}
+					<section>
+					{{!-- <form id="Password" > --}}
+<input type="password" name="old_password" id="old_password">
+<input type="password" name="new_password" id="new_password">
+<input type="password" name="new_confirm_password" id="new_confirm_password">
+<button type="submit" name="save" value="save" onclick="Password(this)">Save</button>
+{{!-- </form> --}}
+</section>
 				</div>
 				<div class="col-md-2">
 				</div>				
@@ -171,4 +197,5 @@
 		</div>
 	</div>
 </section>
+
 {{> footer/footer}}

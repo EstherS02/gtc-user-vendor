@@ -76,7 +76,10 @@ export function viewListings(req, res) {
 			'$ne': status["DELETED"]
 		}
 	}
-	console.log(queryParams)
+	var queryObjCategory = {
+        status: status['ACTIVE']
+    };
+	// console.log(queryParams)
 	async.series({
 		products: function (callback) {
 
@@ -90,7 +93,7 @@ export function viewListings(req, res) {
 				});
 		},
 		category: function(callback) {
-                service.findRows("Category", {}, 0, null, 'id', 'asc')
+                service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
                     .then(function(category) {
                         return callback(null, category.rows);
 
