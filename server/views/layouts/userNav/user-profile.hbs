@@ -1,3 +1,4 @@
+{{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <style>
 	#imageUpload {
 		display: none;
@@ -15,6 +16,7 @@
 	$(document).ready(function () {
 
 		$("#gtc-cart-alert").hide();
+
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
 		$('#crop-profile-image').click(function () {
@@ -27,17 +29,6 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-		$("#sameAsAddr").change(function () {
-
-			$("#s_company_name").val($("#b_company_name").val());
-			$("#s_address1").val($("#b_address1").val());
-			$("#s_address2").val($("#b_address2").val());
-			//$("#s_country").val($("#b_country").val());
-			//$("#s_state").val($("#b_state").val());
-			$("#s_city").val($("#b_city").val());
-			$("#s_postal_code").val($("#b_postal_code").val());
-		});
-
 		$("#profileImage").click(function (e) {
 			$("#imageUpload").click();
 		});
@@ -45,9 +36,7 @@
 		$('#profile-picture-modal').on('shown.bs.modal', function () {
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
-				ready: function () {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-				}
+				ready: function () { }
 			});
 		}).on('hidden.bs.modal', function () {
 			cropBoxData = cropper.getCropBoxData();
@@ -57,7 +46,6 @@
 
 		function fasterPreview(uploader) {
 			if (uploader.files && uploader.files[0]) {
-
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 				$('#UploadedImage').attr('src',
@@ -69,6 +57,53 @@
 		}
 		$("#imageUpload").change(function () {
 			fasterPreview(this);
+		});
+		$("#b_country").change(function () {
+			var country_id = $('#b_country').val();
+			$.ajax({
+				url: '/api/states?country_id=' + country_id,
+				type: 'GET',
+				success: function (result) {
+					$("#b_state").empty();
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#b_state").append(options)
+					}
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		});
+
+		$('#s_country').change(function () {
+            var country_id = $('#s_country').val();
+			$.ajax({
+				url: '/api/states?country_id=' + country_id,
+				type: 'GET',
+				success: function (result) {
+					$("#s_state").empty();
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#s_state").append(options)
+					}
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		})
+
+		$("#sameAsAddr").change(function () {
+			$("#s_company_name").val($("#b_company_name").val());
+			$("#s_address1").val($("#b_address1").val());
+			$("#s_address2").val($("#b_address2").val());
+			//$("#s_country").val($("#b_country").val());
+			//$("#s_state").val($("#b_state").val());
+			$("#s_city").val($("#b_city").val());
+			$("#s_postal_code").val($("#b_postal_code").val());
 		});
 
 		$("#userForm").submit(function (e) {
@@ -101,7 +136,6 @@
 			var image = $("#imageUpload")[0].files[0];
 			var user_pic_url;
 			var form = new FormData();
-			//form.append("file", $("#imageUpload")[0].files[0]);
 			form.append("file", cropperOutputImage, fileDetails["fileName"]);
 
 			$.ajaxSetup({ async: false });
@@ -117,7 +151,6 @@
 					contentType: false,
 					success: function (data) {
 						userUpdate.user_pic_url = data.imageURL;
-
 					},
 					error: function (error) {
 						console.log("Error", error);
@@ -126,7 +159,6 @@
 			}
 
 			if ($('#userForm').valid()) {
-
 				$.ajax({
 					url: '/api/users/user-profile',
 					type: 'PUT',
@@ -149,7 +181,6 @@
 					}
 				});
 			}
-
 			$.ajaxSetup({ async: true });
 		});
 
@@ -185,86 +216,64 @@
 				s_postal_code: "Please enter postal code"
 			}
 		});
+		$('#resetPassword').click(function () {
+			var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
+			if (window.focus) {
+				newwindow.focus();
+			}
+			return false;
+		});
 
-		 $('#resetPassword').click(function() {
-        var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
-        if (window.focus) {
-            newwindow.focus();
-        }
-        return false;
-    });
-
-	});
-	function change_b_Country(e) {
-		$.ajax({
-			url: '/api/states?country_id=' + e.value,
-			type: 'GET',
-			success: function (result) {
-				$("#b_state").empty();
-				for (var i = 0; i < result.rows.length; i++) {
-					var options;
-					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-					$("#b_state").append(options)
+		$('#changePwd').validate({
+			rules: {
+				password_old: {
+					required: true
+				},
+				password: {
+					required: true,
+					minlength: 9
+				},
+				password_confirm: {
+					required: true,
+					equalTo: "#password"
 				}
 			},
-			error: function (error) {
-				console.log("Error", error);
-			}
-		});
-	}
-	function change_s_Country(e) {
-		$.ajax({
-			url: '/api/states?country_id=' + e.value,
-			type: 'GET',
-			success: function (result) {
-				$("#s_state").empty();
-				for (var i = 0; i < result.rows.length; i++) {
-					var options;
-					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-					$("#s_state").append(options)
+			messages: {
+				password_old: {
+					required: "Please enter Old password",
+				},
+				password: {
+					required: "Please enter New password",
+					minlength: "Password must have atleast 8 character"
+				},
+				password_confirm: {
+					required: "Please enter Confirm password",
+					equalTo: "Please enter the same password again"
 				}
-			},
-			error: function (error) {
-				console.log("Error", error);
 			}
 		});
-	}	
-</script>
 
+		$("#changePwd").submit(function (e) {
+			if ($('#changePwd').valid()) {
+				let input = $("#changePwd :input").filter(function (index, element) {
+					return $(element).val() != '';
+				}).serialize();
 
-
-<script>
-$(document).ready(function(){
-	$('#changePwd').validate({
-    rules: {
-		password_old:{
-			required: true
-		},
-        password: {
-            required: true,
-            minlength: 9
-        },
-		password_confirm:{
-			required: true,
-			equalTo: "#password"
-		}
-    },
-	messages:{
-		password_old:{
-			required: "Please enter Old password",
-		},
-		password: {
-			required : "Please enter password",
-			minlength : "Password must have atleast 8 character"
-		},
-		password_confirm:{
-			required: "Please enter confirm password",
-			equalTo: "Please enter the same password again"
-		}
-	}	
-}); 
-})
-
+				$.ajax({
+					type: 'PUT',
+					url: 'api/users/change-password',
+					data: input,
+					success: function (data, text) {
+						console.log("password change successfully");
+					},
+					error: function (request, status, error) {
+						console.log('status', status);
+						console.log('error', error);
+					}
+				})
+			};
+		});
+	});	
 </script>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -290,7 +299,7 @@ $(document).ready(function(){
 	</div>
 </div>
 
-{{> header/defaultHeader LoggedInUser = LoggedInUser}} {{> vendor/header}}
+
 
 <section class="showing_categ">
 	<div class="">
@@ -327,7 +336,7 @@ $(document).ready(function(){
 											<b>Account Settings</b>
 										</p>
 									</div>
-									
+
 									<div class="col-md-8 common_padding1">
 										<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
 										 style="width: 80%" />
@@ -386,7 +395,7 @@ $(document).ready(function(){
 										<p></p>
 									</div>
 									<div class="col-md-8 common_padding1">
-									<button type="button" class="list_butt_2" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
+										<button type="button" class="list_butt_2" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
 									</div>
 								</div>
 							</div>
@@ -424,8 +433,7 @@ $(document).ready(function(){
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" onChange="change_b_Country(this);"
-									 required>
+									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" required>
 										{{#if billingAddress.country_id}}
 										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
 										{{else}}
@@ -506,8 +514,7 @@ $(document).ready(function(){
 									<div class="col-md-4">
 										<p></p>
 									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" onChange="change_s_Country(this);"
-									 required>
+									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" required>
 										{{#if shippingAddress.country_id}}
 										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
 										{{else}}
@@ -568,41 +575,41 @@ $(document).ready(function(){
 	</div>
 </section>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="background-color: #CCCCCC;">
-		<form id="changePwd">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-          <div class="form-group">
-            <label for="email_id" class="col-form-label">Email Address:</label>
-            <input type="text" class="form-control" id="email_id" value="{{user.email}}" readonly>
-          </div>
-          <div class="form-group">
-            <label for="password_old" class="col-form-label">Old Password:</label>
-            <input type="password" class="form-control" id="password_old" name="password_old">
-          </div>
-		  <div class="form-group">
-            <label for="password" class="col-form-label">New Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-          </div>
-		  <div class="form-group">
-            <label for="password_confirm" class="col-form-label">Confirm Password:</label>
-            <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
-          </div>
-       
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-	  </form>
-    </div>
-  </div>
+	<div class="modal-dialog" role="document">
+		<div class="modal-content" style="background-color: #CCCCCC;">
+			<form id="changePwd">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<div class="form-group">
+						<label for="email_id" class="col-form-label">Email Address:</label>
+						<input type="text" class="form-control" id="email_id" value="{{user.email}}" readonly>
+					</div>
+					<div class="form-group">
+						<label for="password_old" class="col-form-label">Old Password:</label>
+						<input type="password" class="form-control" id="password_old" name="password_old">
+					</div>
+					<div class="form-group">
+						<label for="password" class="col-form-label">New Password:</label>
+						<input type="password" class="form-control" id="password" name="password" required>
+					</div>
+					<div class="form-group">
+						<label for="password_confirm" class="col-form-label">Confirm Password:</label>
+						<input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 {{> footer/footer}}
