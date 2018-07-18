@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Currency', {
+    return sequelize.define('Payment', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,30 +9,30 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
-            type: DataTypes.STRING(128),
-            field: 'name',
-            allowNull: false
+        paid_date: {
+            type: DataTypes.DATE,
+            field: 'paid_date',
+            allowNull: true
         },
-        symbol: {
-            type: DataTypes.TEXT,
-            field: 'symbol',
-            allowNull: false
+        paid_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'paid_amount',
+            allowNull: true
         },
-        code: {
-            type: DataTypes.STRING(5),
-            field: 'code',
-            allowNull: false
-        },
-        decimal_points: {
+        payment_method: {
             type: DataTypes.INTEGER,
-            field: 'decimal_points',
+            field: 'payment_method',
             allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        payment_response: {
+            type: DataTypes.TEXT,
+            field: 'payment_response',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'currency',
+        tableName: 'payment',
         timestamps: false
     });
 };
@@ -69,53 +69,35 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Currency = model.Currency;
-    const Country = model.Country;
-    const Vendor = model.Vendor;
-    const Region = model.Region;
-    const User = model.User;
-    const Timezone = model.Timezone;
+    const Payment = model.Payment;
+    const OrderPayment = model.OrderPayment;
+    const OrderPaymentEscrow = model.OrderPaymentEscrow;
+    const Order = model.Order;
 
-    Currency.hasMany(Country, {
-        foreignKey: 'currency_id',
+    Payment.hasMany(OrderPayment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Currency.hasMany(Vendor, {
-        foreignKey: 'currency_id',
+    Payment.hasMany(OrderPaymentEscrow, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Currency.belongsToMany(Region, {
-        through: Country,
-        foreignKey: 'currency_id',
-        otherKey: 'region_id',
+    Payment.belongsToMany(Order, {
+        through: OrderPayment,
+        foreignKey: 'payment_id',
+        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Currency.belongsToMany(User, {
-        through: Vendor,
-        foreignKey: 'currency_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Currency.belongsToMany(Country, {
-        through: Vendor,
-        foreignKey: 'currency_id',
-        otherKey: 'base_location',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Currency.belongsToMany(Timezone, {
-        through: Vendor,
-        foreignKey: 'currency_id',
-        otherKey: 'timezone_id',
+    Payment.belongsToMany(Order, {
+        through: OrderPaymentEscrow,
+        foreignKey: 'payment_id',
+        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

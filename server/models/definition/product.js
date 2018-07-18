@@ -136,21 +136,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'moq',
             allowNull: true
         },
-        individual_sale_only: {
-            type: DataTypes.INTEGER,
-            field: 'individual_sale_only',
-            allowNull: true
-        },
-        exclusive_sale: {
-            type: DataTypes.INTEGER,
-            field: 'exclusive_sale',
-            allowNull: true
-        },
-        product_status: {
-            type: DataTypes.INTEGER,
-            field: 'product_status',
-            allowNull: true
-        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -326,7 +311,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Product.belongsToMany(User, {
+    Product.belongsToMany(User, {
         through: Cart,
         foreignKey: 'product_id',
         otherKey: 'user_id',
@@ -421,5 +406,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-*/
+
 };
