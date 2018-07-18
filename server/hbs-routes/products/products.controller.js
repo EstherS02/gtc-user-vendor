@@ -17,7 +17,8 @@ export function products(req, res) {
 	var countryModel = "Country";
 	var offset, limit, field, order;
 	var queryObj = {};
-	var LoggedInUser = {}
+	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -30,17 +31,21 @@ export function products(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-			topCategoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -52,7 +57,6 @@ export function products(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wholesalerProducts) {
 					return callback(null, wholesalerProducts.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -63,7 +67,6 @@ export function products(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(retailProducts) {
 					return callback(null, retailProducts.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -74,7 +77,6 @@ export function products(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(services) {
 					return callback(null, services.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -91,26 +93,14 @@ export function products(req, res) {
 					return callback(null);
 				});
 		},
-		category: function(callback) {
+		subCategory: function(callback) {
 			delete queryObj['marketplace_id'];
 			limit = null;
 			order = 'asc';
 			field = 'id';
-			service.findRows(categoryModel, queryObj, offset, limit, field, order)
-				.then(function(category) {
-					return callback(null, category.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		subCategory: function(callback) {
-			limit = null;
 			service.findRows(subcategoryModel, queryObj, offset, limit, field, order)
 				.then(function(subCategory) {
 					return callback(null, subCategory.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -120,7 +110,6 @@ export function products(req, res) {
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
 				.then(function(country) {
 					return callback(null, country.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -140,13 +129,13 @@ export function products(req, res) {
 		if (!err) {
 			res.render('products', {
 				title: "Global Trade Connect",
-				topSearchCategories: results.topSearchCategory,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				wholesalerProducts: results.wholesalerProducts,
 				retailProducts: results.retailProducts,
 				services: results.services,
 				subscriptions: results.subscriptions,
-				category: results.category,
 				subCategory: results.subCategory,
 				country: results.country,
 				depart: results.depart,

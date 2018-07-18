@@ -12,12 +12,13 @@ const async = require('async');
 import series from 'async/series';
 
 export function lifestyle(req, res) {
-	var categoryModel = "Category";
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
+	var categoryModel = "Category";
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -30,17 +31,21 @@ export function lifestyle(req, res) {
 	queryObj['marketplace_id'] = 4;
 
 	async.series({
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-			topCategoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -54,6 +59,7 @@ export function lifestyle(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(featuredProducts) {
 					return callback(null, featuredProducts.rows);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -66,6 +72,7 @@ export function lifestyle(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(lifestyle) {
 					return callback(null, lifestyle.rows);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -80,6 +87,7 @@ export function lifestyle(req, res) {
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(subscriptionProviders) {
 					return callback(null, subscriptionProviders.rows);
+
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -89,7 +97,8 @@ export function lifestyle(req, res) {
 		if (!err) {
 			res.render('lifestyle', {
 				title: "Global Trade Connect",
-				topSearchCategories: results.topSearchCategory,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				featuredProducts: results.featuredProducts,
 				lifestyle: results.lifestyle,

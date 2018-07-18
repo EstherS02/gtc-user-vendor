@@ -17,7 +17,8 @@ export function shop(req, res) {
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
-	var LoggedInUser = {}
+	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -30,17 +31,21 @@ export function shop(req, res) {
 	queryObj['marketplace_id'] = 2;
 
 	async.series({
-		topSearchCategory: function(callback) {
-			const topCategoryOffset = 0;
-			const topCategoryLimit = null;
-			const topCategoryField = "id";
-			const topCategoryOrder = "asc";
-			const topCategoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-			topCategoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findRows(categoryModel, topCategoryQueryObj, topCategoryOffset, topCategoryLimit, topCategoryField, topCategoryOrder)
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -96,7 +101,8 @@ export function shop(req, res) {
 		if (!err) {
 			res.render('shop', {
 				title: "Global Trade Connect",
-				topSearchCategories: results.topSearchCategory,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				featuredProducts: results.featuredProducts,
 				publicMarketplace: results.publicMarketplace,
