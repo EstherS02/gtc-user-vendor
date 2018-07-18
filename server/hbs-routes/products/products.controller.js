@@ -8,6 +8,7 @@ const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const async = require('async');
 
+
 export function products(req, res) {
     var productModel = "MarketplaceProduct";
     var marketplaceModel ="Marketplace";
