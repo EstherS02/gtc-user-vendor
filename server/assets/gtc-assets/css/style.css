@@ -654,3 +654,7 @@ ul.footer-social-links li a img {
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
 }
+.label-control {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
