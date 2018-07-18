@@ -9,9 +9,8 @@ const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
-
+ 
 const async = require('async');
-import series from 'async/series';
 
 export function wholeSaleProductView(req, res) {
 	var modeName = "Product";
