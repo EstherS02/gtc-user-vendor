@@ -3,7 +3,7 @@
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 	$("body").on("click", "#followVendor", function() {
-		if(userInfo.emamil){
+		if(userInfo.email){
 			var  dataItem = {};
 			dataItem.vendor_id = vendorInfo.id;
 			$.ajax({
@@ -52,7 +52,7 @@
 						<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width=154px height=154px class="img-border"/></a>
 					</div>
 					<div class="col-md-6">
-						<span class="prf_landing_cmpy">{{this.VendorDetail.vendor_name}} </span>
+						<span class="prf_landing_cmpy" style="background-color: rgba(128, 128, 128, 0.27);">{{this.VendorDetail.vendor_name}} </span>
 
 					</div>
 				</div>
@@ -75,19 +75,19 @@
 									</li>
 									<li class=" nav-item">
 										{{#if LoggedInUser.Vendor.id}}
-										{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
-										{{#if VendorDetail.VendorFollowers}}
-										<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+											{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
+												{{#if VendorDetail.VendorFollowers}}
+												<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+												{{else}}
+												<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+												{{/if}}
+											{{/ifCond}}
 										{{else}}
-										<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
-										{{/if}}
-										{{/ifCond}}
-										{{else}}
-										{{#if VendorDetail.VendorFollowers}}
-										<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
-										{{else}}
-										<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
-										{{/if}}
+												{{#if VendorDetail.VendorFollowers}}
+												<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+												{{else}}
+												<a id="followVendor"><img src="../img/follow.png" alt="Follow"  style="width: 80px; margin-top: 5px; padding-right:5px "/></a>
+												{{/if}}
 										{{/if}}
 									</li>
 									{{#if VendorDetail.VendorPlans.[0].plan_id}}
