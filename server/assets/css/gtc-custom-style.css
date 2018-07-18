@@ -1520,3 +1520,9 @@ background-position:center;
   color: #b1afaf;
   opacity: 1; 
 }
+
+.btn-submit{
+  background-color: #4178BB;
+    color: #FFF;
+    border: none;
+}
