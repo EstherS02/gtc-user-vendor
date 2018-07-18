@@ -270,7 +270,7 @@ export function changePassword(req, res) {
         req.checkBody('new_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
-        console.log("hahi")
+        // console.log("hahi")
     }
     var errors = req.validationErrors();
     if (errors) {
@@ -297,7 +297,7 @@ export function changePassword(req, res) {
                 }
             })
         } else {
-            return res.status(401).send("Invalid Password");
+            return res.status(401).send("Invalid Old Password");
 
         }
     });
