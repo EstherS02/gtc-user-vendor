@@ -115,7 +115,7 @@
                 <div class="wts1 gtc-box-title">
                     <h6 class="float-left">WTS - Want To Sell</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTS}}">SEE ALL</a>
+                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -166,7 +166,7 @@
                                     {{#if ../LoggedInUser.email}}
                                     <div class="wts_header popup">
                                         <p>
-                                            <a id="{{this.vendor_id}}" name="{{this.id}}" onmouseover="popup(this)"  onmouseout="removepopup(this)"  href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                            <a id="{{this.vendor_id}}" name="{{this.id}}" onmouseover="popup(this)"  onmouseout="removepopup(this)"  href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                         </p>  
                                         <div class="" id="{{this.id}}-append"></div>  
                                     </div>
@@ -193,7 +193,7 @@
                 <div class="wts2 gtc-box-title">
                     <h6 class="float-left">WTB - Want To Buy</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
+                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -243,7 +243,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -266,7 +266,7 @@
                 <div class="wts3 gtc-box-title">
                     <h6 class="float-left">WTT - Want To Trade</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
+                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -316,7 +316,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -339,7 +339,7 @@
                 <div class="wts4 gtc-box-title">
                     <h6 class="float-left">RFQ - Request For Quote</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.WHOLESALE}}&marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
+                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -389,7 +389,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -421,7 +421,7 @@
                 <div class="gtc-box-market-title pmp1">
                     <h6 class="float-left">PUBLIC MARKETPLACE</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.PUBLIC}}">SEE ALL</a>
+                        <a href="/shop/search">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -471,7 +471,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -494,7 +494,7 @@
                 <div class="gtc-box-market-title pmp2">
                     <h6 class="float-left">SERVICES MARKETPLACE</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.SERVICE}}">SEE ALL</a>
+                        <a href="/services/search">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -544,7 +544,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -567,7 +567,7 @@
                 <div class="gtc-box-market-title pmp3">
                     <h6 class="float-left">LIFESTYLE MARKETPLACE</h6>
                     <p class="float-right see_all">
-                        <a href="/search?marketplace={{marketPlace.LIFESTYLE}}">SEE ALL</a>
+                        <a href="/lifestyle/search">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -617,7 +617,7 @@
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
                                     <p>
-                                        <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                     </p>
                                     {{else}}
                                     <p>
@@ -698,7 +698,7 @@
                 <div class="gtc-box-market-title ts1">
                     <h6 class="float-left">TOP SELLERS</h6>
                     <p class="float-right see_all">
-                        <a href="/search">SEE ALL</a>
+                        <a href="/directory/search">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -769,7 +769,7 @@
                 <div class="gtc-box-market-title ts2">
                     <h6 class="float-left">FEATURED PRODUCTS</h6>
                     <p class="float-right see_all">
-                        <a href="/search">SEE ALL</a>
+                        <a href="/product/search?is_featured_product=1">SEE ALL</a>
                         <i class="fa fa-caret-right"></i>
                     </p>
                 </div>
@@ -821,7 +821,7 @@
                                         <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                             {{#if ../LoggedInUser.email}}
                                             <p>
-                                                <a href="/vendor-about/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                             </p>
                                             {{else}}
                                             <p>

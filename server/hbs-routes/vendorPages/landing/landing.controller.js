@@ -87,7 +87,8 @@ export function vendor(req, res) {
 				model: model['VendorVerification'],
 				where: {
 						vendor_verified_status: status['ACTIVE']
-				}
+				},
+				required:false	
 			}, {
 				model: model['VendorFollower'],
 				where: {
@@ -106,7 +107,6 @@ export function vendor(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(results.featuredProducts);
 		if (!err) {
 			res.render('vendorPages/vendor', {
 				title: "Global Trade Connect",
