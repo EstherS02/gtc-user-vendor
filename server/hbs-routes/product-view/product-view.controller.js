@@ -113,7 +113,8 @@ export function GetProductDetails(req, res) {
                 model: model['VendorVerification'],
                 where: {
                     vendor_verified_status: status['ACTIVE']
-                }
+                },
+                required:false
 
             }, {
                 model: model['VendorRating'],
@@ -404,8 +405,13 @@ export function GetProductReview(req, res) {
                 model: model['VendorPlan'],
 
             }, {
-                    model: model['VendorVerification'],
-            }, {
+                model: model['VendorVerification'],
+                where: {
+                    vendor_verified_status: status['ACTIVE']
+                },
+                required:false
+
+            },{
                 model: model['VendorRating'],
                 attributes: [
                     [sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
@@ -516,7 +522,6 @@ export function GetProductReview(req, res) {
         } else {
             selectedPage = "lifestyle";
         }
-
 
             maxSize = results.Review.count / limit;
             if (results.Review.count % limit)
