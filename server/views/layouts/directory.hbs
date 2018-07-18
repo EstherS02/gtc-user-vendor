@@ -45,7 +45,7 @@
                                 <div class="col-md-4 col-12 common_padding1">
                                 <select class="geo_textbox" id="category" name="category">
                                     <option disabled selected>Category</option>
-                                    {{#each category}}
+                                    {{#each categories}}
                                     <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
@@ -371,15 +371,11 @@
             </div>
         </div>
     </section>
-
-
-
-
 <section class=" jumbotron global">
     <h5 class="global_search">Search the Global Trade Connect Directory by Category </h5>
     <div class="container ">
-        <div class="row  ">
-            {{#each category}}
+        <div class="row">
+            {{#each_limit categories 10}}
                 <div class="col-md-3 col-12 why_global1">
                     <p class="global_para_head">{{convertUpperCase this.name}}</p>
                     {{#each_upto ../subCategory 10 this.id}} 
@@ -392,8 +388,9 @@
                         <a href="search?category={{this.id}}" style="color:white">...see more</a>
                     </p>
                 </div>
-            {{/each}}
+            {{/each_limit}}
         </div>
     </div>
 </section>
-{{> footer/footer}}
+
+{{> footer/bottom-footer}}

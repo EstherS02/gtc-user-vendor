@@ -29,12 +29,15 @@ body {
     box-shadow: none;
 }
 .search-select {
-    width: auto;
+    width: 100px;
     height: auto;
     position: relative;
 }
 .search-select select {
+    font-size: 13px;
     line-height: 1.6;
+    padding: 0 10px;
+    text-align-last: right;
 }
 .search-select:after {
     position: absolute;
@@ -453,6 +456,9 @@ ul.footer-menu-list li a {
     font-weight: 500;
     text-decoration: none !important;
 }
+ul.footer-menu-list li a:hover {
+    color: #fff;
+}
 .b-l-3x {
     border-left: 2px solid #abc9ea;
     padding-left: 15px;
@@ -516,6 +522,9 @@ ul.footer-social-links li a img {
     font-size: 13px;
     color: #575757;
     padding: 2px 15px;
+}
+.dropdown-menu-list ul li a:hover {
+    color: #000;
 }
 .hr-line-solid {
     border-top: 1px solid #e7eaec;
@@ -607,13 +616,6 @@ ul.footer-social-links li a img {
 }
 .search-input-group .btn-gtc {
     padding: 0 10px;
-}
-.search-select select {
-    padding: 0 10px;
-    text-align-last: right;
-}
-option { 
-    direction: rtl;
 }
 .marketplace-dropdown {
     font-family: 'Oswald', sans-serif;

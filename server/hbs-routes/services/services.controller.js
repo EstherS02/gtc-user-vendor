@@ -11,14 +11,16 @@ const async = require('async');
 
 
 export function services(req, res) {
+	var categoryModel = "Category";
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var offset, limit, field, order;
 	var queryObj = {};
-	var LoggedInUser = {}
+	var LoggedInUser = {};
+	var bottomCategory = {};
 
-    if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-        LoggedInUser = req.gtcGlobalUserObj;
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
 	field = "id";
@@ -28,6 +30,27 @@ export function services(req, res) {
 	queryObj['marketplace_id'] = 3;
 
 	async.series({
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		featuredService: function(callback) {
 			limit = null;
 			queryObj['featured_position'] = position.ServiceLanding;
@@ -42,7 +65,7 @@ export function services(req, res) {
 		},
 		serviceProduct: function(callback) {
 			delete queryObj['featured_position'];
-            delete queryObj['is_featured_product'];
+			delete queryObj['is_featured_product'];
 			limit = 20;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(serviceProduct) {
@@ -70,6 +93,8 @@ export function services(req, res) {
 		if (!err) {
 			res.render('services', {
 				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,

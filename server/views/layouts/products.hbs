@@ -46,7 +46,7 @@
             <div class="col-md-4 col-12 common_padding1">
               <select class="geo_textbox" id="category" name="category">
                 <option disabled selected>Category</option>
-                {{#each category}}
+                {{#each categories}}
                 <option value="{{this.id}}">{{ this.name}}</option>
                 {{/each}}
               </select>
@@ -337,22 +337,21 @@
   <h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
   <div class="container-fluid full_view_pad1 ">
     <div class="row  ">
-      {{#each category}}
-      <div class="col-md-3 col-12 why_global1" >
-        <p class="global_para_head">{{convertUpperCase this.name}}</p>
-        {{#each_upto ../subCategory 10 this.id}} 
-        <p class="global_para ">
-          <a href="search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
-          </a>
-
-        </p>
-        {{/each_upto}}
-        <p class = "global_para">
-          <a href="search?category={{this.id}}" style="color:white">...see more</a>
-        </p>
-      </div>
-      {{/each}}
+      {{#each_limit categories 10}}
+                <div class="col-md-3 col-12 why_global1">
+                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+                    {{#each_upto ../subCategory 10 this.id}} 
+                            <p class="global_para ">
+                                <a href="search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
+                                </a>    
+                            </p>
+                    {{/each_upto}}
+                    <p class = "global_para">
+                        <a href="search?category={{this.id}}" style="color:white">...see more</a>
+                    </p>
+                </div>
+            {{/each_limit}}
     </div>
   </div>
 </section>
-{{> footer/footer}}
+{{> footer/bottom-footer}}
