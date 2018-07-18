@@ -9,7 +9,7 @@ const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
- 
+
 const async = require('async');
 
 export function wholeSaleProductView(req, res) {
@@ -43,7 +43,7 @@ export function wholesale(req, res) {
 	var typeModel = "MarketplaceType";
 	var offset, limit, field, order;
 	var queryObj = {};
-	var LoggedInUser = {}
+	var LoggedInUser = {};
 	var bottomCategory = {};
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
@@ -83,7 +83,6 @@ export function wholesale(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
 					return callback(null, wantToSell.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -94,7 +93,6 @@ export function wholesale(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToBuy) {
 					return callback(null, wantToBuy.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -105,7 +103,6 @@ export function wholesale(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToTrade) {
 					return callback(null, wantToTrade.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -116,7 +113,6 @@ export function wholesale(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(requestForQuote) {
 					return callback(null, requestForQuote.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -131,18 +127,19 @@ export function wholesale(req, res) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(featuredProducts) {
 					return callback(null, featuredProducts.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		country: function(callback) {
+			delete queryObj['marketplace_id'];
+			delete queryObj['featured_position'];
+			delete queryObj['is_featured_product'];
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)
 				.then(function(country) {
 					return callback(null, country.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -152,7 +149,6 @@ export function wholesale(req, res) {
 			service.findRows(typeModel, queryObj, offset, limit, field, order)
 				.then(function(type) {
 					return callback(null, type.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
