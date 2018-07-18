@@ -81,26 +81,10 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const PaymentSetting = model.PaymentSetting;
-    const OrderPayment = model.OrderPayment;
     const User = model.User;
-    const Order = model.Order;
-
-    PaymentSetting.hasMany(OrderPayment, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
     PaymentSetting.belongsTo(User, {
         foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    PaymentSetting.belongsToMany(Order, {
-        through: OrderPayment,
-        foreignKey: 'payment_id',
-        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

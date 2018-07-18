@@ -91,7 +91,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*MarketplaceType.belongsToMany(Vendor, {
+    MarketplaceType.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'marketplace_type_id',
         otherKey: 'vendor_id',
@@ -137,6 +137,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

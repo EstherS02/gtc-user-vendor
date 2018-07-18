@@ -130,21 +130,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Address = model.Address;
     const Coupon = model.Coupon;
     const CouponCategory = model.CouponCategory;
     const CouponExcludedCategory = model.CouponExcludedCategory;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
-    //const OrderItem = model.OrderItem;
+    const OrderItem = model.OrderItem;
     const Vendor = model.Vendor;
     const Category = model.Category;
     const Product = model.Product;
     const Order = model.Order;
     const Tax = model.Tax;
-    const User = model.User;
-    const Shipping = model.Shipping;
-    
+
     Coupon.hasMany(CouponCategory, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
@@ -169,7 +166,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.hasMany(Order, {
+    Coupon.hasMany(OrderItem, {
         foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -213,36 +210,26 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsToMany(User, {
-        through: Order,
+    Coupon.belongsToMany(Order, {
+        through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'user_id',
+        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsToMany(Shipping, {
-        through: Order,
+    Coupon.belongsToMany(Product, {
+        through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'shipping_id',
+        otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsToMany(Address, {
-        as: 'shippingAddress',
-        through: Order,
+    Coupon.belongsToMany(Tax, {
+        through: OrderItem,
         foreignKey: 'coupon_id',
-        otherKey: 'shipping_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Coupon.belongsToMany(Address, {
-        as: 'billingAddress',
-        through: Order,
-        foreignKey: 'coupon_id',
-        otherKey: 'billing_address_id',
+        otherKey: 'tax_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

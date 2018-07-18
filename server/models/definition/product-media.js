@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         base_image: {
             type: DataTypes.INTEGER,
             field: 'base_image',
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,

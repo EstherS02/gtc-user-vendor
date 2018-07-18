@@ -108,7 +108,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Category.belongsToMany(Attribute, {
+    Category.belongsToMany(Attribute, {
         through: CategoryAttribute,
         foreignKey: 'category_id',
         otherKey: 'attribute_id',
@@ -178,6 +178,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

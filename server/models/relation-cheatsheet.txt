@@ -169,6 +169,27 @@ DiscussionBoardDetail
 belongs to        discussion_board                         as DiscussionBoard 
 
 
+DiscussionBoardPost
+-------------------
+has many          discussion_board_post_comment            as FkDiscussionBoardPostComment1s 
+has many          discussion_board_post_like               as FkDiscussionBoardPostLike1s 
+belongs to        vendor                                   as Vendor 
+belongs to many   users                                    as DiscussionBoardPostCommentUsers 
+belongs to many   users                                    as DiscussionBoardPostLikeUsers 
+
+
+DiscussionBoardPostComment
+--------------------------
+belongs to        discussion_board_post                    as DiscussionBoardPost 
+belongs to        users                                    as User 
+
+
+DiscussionBoardPostLike
+-----------------------
+belongs to        discussion_board_post                    as DiscussionBoardPost 
+belongs to        users                                    as User 
+
+
 EmailTemplate
 -------------
 
@@ -218,20 +239,21 @@ belongs to        tax                                      as Tax
 
 OrderPayment
 ------------
-has many          order_payment_escrow                     as FkOrderPaymentEscrow1s 
 belongs to        orders                                   as Order 
-belongs to        payment_setting                          as Payment 
+belongs to        payment                                  as Payment 
 
 
 OrderPaymentEscrow
 ------------------
-belongs to        order_payment                            as OrderPayment 
+belongs to        payment                                  as Payment 
+belongs to        orders                                   as Order 
 
 
 Order
 -----
 has many          order_items                              as FkOrderItems1s 
 has many          order_payment                            as FkOrderPayment1s 
+has many          order_payment_escrow                     as FkOrderPaymentEscrow2s 
 belongs to        users                                    as User 
 belongs to        shipping                                 as Shipping 
 belongs to        address                                  as ShippingAddress 
@@ -239,14 +261,21 @@ belongs to        address                                  as BillingAddress
 belongs to many   product                                  as OrderItemProducts 
 belongs to many   coupon                                   as OrderItemCoupons 
 belongs to many   tax                                      as OrderItemTaxes 
-belongs to many   payment_setting                          as OrderPaymentPayments 
+belongs to many   payment                                  as OrderPaymentPayments 
+belongs to many   payment                                  as OrderPaymentEscrowPayments 
+
+
+Payment
+-------
+has many          order_payment                            as FkOrderPayment2s 
+has many          order_payment_escrow                     as FkOrderPaymentEscrow1s 
+belongs to many   orders                                   as OrderPaymentOrders 
+belongs to many   orders                                   as OrderPaymentEscrowOrders 
 
 
 PaymentSetting
 --------------
-has many          order_payment                            as FkOrderPayment2s 
 belongs to        users                                    as User 
-belongs to many   orders                                   as OrderPaymentOrders 
 
 
 Plan
@@ -317,7 +346,7 @@ belongs to        attribute                                as Attribute
 belongs to        product                                  as Product 
 
 
-ProductMedia
+ProductMedium
 -------------
 belongs to        product                                  as Product 
 
@@ -442,6 +471,8 @@ User
 has many          address                                  as FkAddress1s 
 has many          admin                                    as FkAdmin1s 
 has many          cart                                     as FkCart1s 
+has many          discussion_board_post_comment            as FkDiscussionBoardPostComment2s 
+has many          discussion_board_post_like               as FkDiscussionBoardPostLike2s 
 has many          orders                                   as FkOrder1s 
 has many          payment_setting                          as FkPaymentSetting1s 
 has many          reviews                                  as FkProductReview2s 
@@ -459,6 +490,8 @@ has many          wish_list                                as FkWishList1s
 belongs to many   country                                  as AddressCountries 
 belongs to many   state                                    as AddressProvinces 
 belongs to many   product                                  as CartProducts 
+belongs to many   discussion_board_post                    as DiscussionBoardPostCommentDiscussionBoardPosts 
+belongs to many   discussion_board_post                    as DiscussionBoardPostLikeDiscussionBoardPosts 
 belongs to many   shipping                                 as OrderShippings 
 belongs to many   address                                  as OrderShippingAddresses 
 belongs to many   address                                  as OrderBillingAddresses 
@@ -491,6 +524,7 @@ Vendor
 has many          business_hours                           as FkBusinessHours1s 
 has many          coupon                                   as FkCoupon1s 
 has many          discussion_board                         as FkDiscussionBoard1s 
+has many          discussion_board_post                    as FkDiscussionBoardPost1s 
 has many          product                                  as FkProduct1s 
 has many          talk_setting                             as FkTalkSetting1s 
 has many          vendor_follower                          as FkVendorFollower1s 

@@ -36,6 +36,22 @@ module.exports = (sequelize, DataTypes) => {
             field: 'quantity',
             allowNull: false
         },
+        coupon_id: {
+            type: DataTypes.BIGINT,
+            field: 'coupon_id',
+            allowNull: true,
+            references: {
+                model: 'coupon',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'coupon_amount',
+            allowNull: true
+        },
         tax_id: {
             type: DataTypes.BIGINT,
             field: 'tax_id',
@@ -100,7 +116,7 @@ module.exports.initRelations = () => {
     const OrderItem = model.OrderItem;
     const Order = model.Order;
     const Product = model.Product;
-    //const Coupon = model.Coupon;
+    const Coupon = model.Coupon;
     const Tax = model.Tax;
 
     OrderItem.belongsTo(Order, {
@@ -111,6 +127,12 @@ module.exports.initRelations = () => {
 
     OrderItem.belongsTo(Product, {
         foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderItem.belongsTo(Coupon, {
+        foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
