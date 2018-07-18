@@ -4,7 +4,7 @@
     }
 </style><script>
     $(document).ready(function () {
-        $("#gtc-cart-alert").hide();
+        $("#gtc-form-alert").hide();
         var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
         var cropperOutputImage;
         var fileDetails = {};
@@ -107,11 +107,10 @@
                         window.location.href = '/vendor-landing';
                     },
                     error: function (error) {
-                        $('#gtc-add-to-cart').prop('disabled', false);
-                        $('#gtc-cart-alert').addClass('alert-danger');
-                        $('#gtc-cart-alert .cart-message').text("Your email address not verified yet. Please check your mail to verify.");
-                        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                            $("#gtc-cart-alert").slideUp(500);
+                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-danger');
+                        $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function () {
+                            $("#gtc-form-alert").slideUp(500);
                         });
                     }
                 });
@@ -194,11 +193,11 @@
                                 <div class="form-group product-heading">
                                     <p>Vendor Form</p>
                                 </div>
-                                <div class="alert" id="gtc-cart-alert">
+                                <div class="alert" id="gtc-form-alert">
                                     <button type="button" class="close" data-dismiss="alert">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <span class="cart-message"></span>
+                                    <span class="form-message"></span>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12">

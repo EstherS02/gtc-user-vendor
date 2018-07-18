@@ -15,7 +15,7 @@
             let formInput = $("#searchForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
-            window.location.href = '/search?' + formInput;
+            window.location.href = '/directory/search?' + formInput;
         });
     });
 </script>
@@ -78,7 +78,7 @@
                     <div class="gtc-box-market-title ts1">
                         <h6 class="float-left">TOP SELLING WHOLESALERS</h6>
                         <p class="float-right see_all">
-                            <a href="/search">SEE ALL</a>
+                            <a href="/directory/search?marketplace={{marketplace.WHOLESALE}}">SEE ALL</a>
                             <i class="fa fa-caret-right"></i>
                         </p>
                     </div>
@@ -148,7 +148,7 @@
                     <div class="gtc-box-market-title ts2">
                         <h6 class="float-left">TOP SELLING RETAILERS</h6>
                         <p class="float-right see_all">
-                            <a href="/search">SEE ALL</a>
+                            <a href="/directory/search?marketplace={{marketplace.PUBLIC}}">SEE ALL</a>
                             <i class="fa fa-caret-right"></i>
                         </p>
                     </div>
@@ -232,7 +232,7 @@
                     <div class="gtc-box-market-title pmp2">
                         <h6 class="float-left">TOP SELLING SERVICES PROVIDERS</h6>
                         <p class="float-right see_all">
-                            <a href="/search">SEE ALL</a>
+                            <a href="/directory/search?marketplace={{marketplace.SERVICE}}">SEE ALL</a>
                             <i class="fa fa-caret-right"></i>
                         </p>
                     </div>
@@ -302,7 +302,7 @@
                     <div class="gtc-box-market-title pmp3">
                         <h6 class="float-left">TOP SELLING SUBSCRIPTION PROVIDERS</h6>
                         <p class="float-right see_all">
-                            <a href="/search">SEE ALL</a>
+                            <a href="/directory/search?marketplace={{marketplace.LIFESTYLE}}">SEE ALL</a>
                             <i class="fa fa-caret-right"></i>
                         </p>
                     </div>
@@ -380,12 +380,12 @@
                     <p class="global_para_head">{{convertUpperCase this.name}}</p>
                     {{#each_upto ../subCategory 10 this.id}} 
                             <p class="global_para ">
-                                <a href="search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
+                                <a href="/directory/search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
                                 </a>    
                             </p>
                     {{/each_upto}}
                     <p class = "global_para">
-                        <a href="search?category={{this.id}}" style="color:white">...see more</a>
+                        <a href="/directory/search?category={{this.id}}" style="color:white">...see more</a>
                     </p>
                 </div>
             {{/each_limit}}

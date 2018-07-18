@@ -71,11 +71,10 @@
 			url: '/api/product/edit-product?product_id=' + data,
 			data: input,
 			success: function (data) {
-				$('#gtc-add-to-cart').prop('disabled', false);
-				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-				$('#gtc-cart-alert .cart-message').text('Product Updated Successfully');
-				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-					$("#gtc-cart-alert").slideUp(500);
+				$('#gtc-listing-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-listing-alert .listing-message').text('Product Updated Successfully');
+				$("#gtc-listing-alert").fadeTo(7000, 500).slideUp(500, function () {
+					$("#gtc-listing-alert").slideUp(500);
 				});
 			},
 			error: function (error) {
@@ -86,7 +85,7 @@
 
 	$(document).ready(function () {
 
-		$("#gtc-cart-alert").hide();
+		$("#gtc-listing-alert").hide();
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
 
@@ -416,11 +415,11 @@
 				<div class="col-md-8" style="background-color: #fff;">
 					<form role="form" id="editForm">
 						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
-						<div class="alert" id="gtc-cart-alert">
+						<div class="alert" id="gtc-listing-alert">
 							<button type="button" class="close" data-dismiss="alert">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<span class="cart-message"></span>
+							<span class="listing-message"></span>
 						</div>
 						{{#ifCond this.type '==' 'wholesale'}}
 						<section class="box2 list_sec">
