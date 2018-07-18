@@ -37,7 +37,7 @@ export function addProduct(req, res) {
     queryObj['status'] = status["ACTIVE"];
 
     var queryObjCategory = {
-        status: statusCode['ACTIVE']
+        status: status['ACTIVE']
     };
 
     async.series({

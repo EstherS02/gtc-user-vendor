@@ -5,6 +5,8 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
+const marketplace = require('../../config/marketplace');
+
 const async = require('async');
 
 export function directory(req, res) {
@@ -148,7 +150,8 @@ export function directory(req, res) {
 				servicesProviders: results.servicesProviders,
 				subscriptionProviders: results.subscriptionProviders,
 				depart: results.depart,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				marketplace: marketplace
 			});
 		} else {
 			res.render('directory', err);

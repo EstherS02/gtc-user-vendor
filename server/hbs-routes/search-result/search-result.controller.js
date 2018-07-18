@@ -11,6 +11,10 @@ const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
 
 export function index(req, res) {
+	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+	var marketplaceURl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','').trim();
+
+
 	var selectedLocation = 0;
 	var selectedCategory = 0;
 	var selectedSubCategory = 0;
@@ -69,6 +73,27 @@ export function index(req, res) {
 			city: req.query.origin
 		}];
 	}
+
+	if (marketplaceURl == 'wholesale') {
+			selectedMarketPlace = marketplace['WHOLESALE'];
+			queryParameters['marketplace_id'] = marketplace['WHOLESALE'];
+		}else if(marketplaceURl == 'shop'){
+			selectedMarketPlace = marketplace['PUBLIC'];
+			queryParameters['marketplace_id'] = marketplace['PUBLIC'];
+		}else if(marketplaceURl == 'services'){
+			selectedMarketPlace = marketplace['SERVICE'];
+			queryParameters['marketplace_id'] = marketplace['SERVICE'];
+		}else if(marketplaceURl == 'lifestyle'){
+			selectedMarketPlace = marketplace['LIFESTYLE'];
+			queryParameters['marketplace_id'] = marketplace['LIFESTYLE'];
+		}else{
+		if (req.query.marketplace) {
+			selectedMarketPlace = req.query.marketplace;
+			queryURI['marketplace'] = req.query.marketplace;
+			queryParameters['marketplace_id'] = req.query.marketplace;
+		}
+	}
+
 	if (req.query.is_featured_product) {
 		queryURI['is_featured_product'] = req.query.is_featured_product;
 		queryParameters['is_featured_product'] = req.query.is_featured_product;
@@ -88,11 +113,7 @@ export function index(req, res) {
 		queryURI['sub_category'] = req.query.sub_category;
 		queryParameters['sub_category_id'] = req.query.sub_category;
 	}
-	if (req.query.marketplace) {
-		selectedMarketPlace = req.query.marketplace;
-		queryURI['marketplace'] = req.query.marketplace;
-		queryParameters['marketplace_id'] = req.query.marketplace;
-	}
+	
 	if (req.query.marketplace_type) {
 		selectedMarketPlaceType = req.query.marketplace_type;
 		queryURI['marketplace_type'] = req.query.marketplace_type;
@@ -107,7 +128,8 @@ export function index(req, res) {
 		queryParameters['field'] = req.query.field;
 	}
 	queryParameters['status'] = status["ACTIVE"];
-
+			selectedMarketPlace = req.query.marketplace;
+console.log("queryParameters***************************************************************",queryParameters)
 	async.series({
 		marketPlace: function(callback) {
 			var marketPlaceModel = "Marketplace";
@@ -386,7 +408,8 @@ export function index(req, res) {
 				locations: results.locations,
 				categories: results.categories,
 				category: results.category,
-				LoggedInUser:LoggedInUser
+				LoggedInUser:LoggedInUser,
+				marketplaceURl:marketplaceURl,
 			});
 		} else {
 			res.render('search', error);
