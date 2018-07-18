@@ -155,7 +155,6 @@ export function create(req, res) {
 }
 
 export function userAuthenticate(req, res) {
-    console.log("req.body", req.body);
     var UserModel = "User";
     var includeArr = [];
     var queryObj = {};
@@ -264,47 +263,44 @@ function encryptPassword(req) {
     return crypto.pbkdf2Sync(req.body.password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
 }
 
-export function changePassword(req,res){
-if (req.body) {
+export function changePassword(req, res) {
+
+    if (req.body) {
         req.checkBody('old_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
-        req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password)
+        req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
+        console.log("hahi")
     }
-     var errors = req.validationErrors();
+    var errors = req.validationErrors();
     if (errors) {
+        console.log("error", errors)
         res.status(400).send(errors);
         return;
     }
     var UserModel = "User";
     var userId = req.user.id;
-    model[UserModel].findOne({id:userId}, function(err, user) {
-        if (!req.user) {
-            res.status(400).send("User Not Found");
-        return;
-        } else {
-            if (!req.user.authenticate(req.body.old_password)) {
-                res.status(400).send("Invalid Old Password");
-                return;
-            }
-            var hashedPassword = encryptPassword(req);
-            model[UserModel].findOneAndUpdate({
-                'email': req.user.email
-            }, {
-                'hashed_pswd': hashedPassword
-            }, function(err, updateUser) {
-                if (err) {
-                res.status(400).send("Internal Server Error");
+    service.findIdRow(UserModel, userId, []).then(function(result) {
+        if (authenticate(req.body.old_password, result)) {
+            var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
+            var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+            var bodyParams = {
+                hashed_pwd: hashedPassword
+            };
+            service.updateRow(UserModel, bodyParams, userId).then(function(response) {
+                if (response) {
+                    res.status(200).send("Password Updated successfully")
+                    return;
+                } else {
+                    res.status(304).send("Password Unable to update")
                     return;
                 }
-                res.status(200).send("Password Changed Successfully");
-                return;
-            });
+            })
+        } else {
+            return res.status(401).send("Invalid Password");
+
         }
     });
-    // var bodyParams = req.body;
-    // bodyParams['hashed_pwd'] = encryptPassword(req);
-
 }
 
 
