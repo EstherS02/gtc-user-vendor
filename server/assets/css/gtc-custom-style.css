@@ -947,18 +947,18 @@ p.order-details {
   white-space: nowrap;
 }
 
-.custom-file-input~.custom-file-label::after {
+/*.custom-file-input~.custom-file-label::after {
   content: "\f0d7";
   font-family: FontAwesome;
   font-weight: normal;
   font-style: normal;
   margin: 0px 0px 0px 10px;
   text-decoration: none;
-}
+}*/
 
-.custom-file-label {
+/*.custom-file-label {
   font-size: 10px;
-}
+}*/
 
 .custom-file-input {
   height: 1px !important;

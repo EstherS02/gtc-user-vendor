@@ -47,6 +47,7 @@ select {
     border-radius: 0;
     color: inherit;
     display: block;
+    padding: .375rem .75rem;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 100%;
     background-color: #f3f3f2;
@@ -60,15 +61,15 @@ select {
     border-color: #f3f3f2;
     outline: 0;
 }
-.form-control,
-.form-control:focus,
-.has-error .form-control:focus,
-.has-success .form-control:focus,
-.has-warning .form-control:focus,
+.form-control-customized,
+.form-control-customized:focus,
+.has-error .form-control-customized:focus,
+.has-success .form-control-customized:focus,
+.has-warning .form-control-customized:focus,
 .navbar-collapse,
 .navbar-form,
-.navbar-form-custom .form-control:focus,
-.navbar-form-custom .form-control:hover,
+.navbar-form-custom .form-control-customized:focus,
+.navbar-form-custom .form-control-customized:hover,
 .open .btn.dropdown-toggle,
 .panel,
 .popover,
@@ -757,9 +758,10 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
     display: block;
 }
 .dropdown-v-list ul li a {
-    font-size: 13px;
+    font-size: 12px;
     color: #afafae;
     padding: 0;
+    font-weight: lighter;
 }
 .ibox {
     clear: both;
@@ -798,9 +800,20 @@ select {
     padding: 1em 2em 1em 1em;
     font-size: 1em;
 }
-.select-container {position:relative;}
+/*.select-container {position:relative;}
 .select-container:after {content:""; width:0; height:0; position:absolute; pointer-events: none;}
 .select-container:after {
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 10px solid black;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    opacity: 0.5;
+}*/
+.custom-group-append {position:relative;}
+.custom-group-append:after {content:""; width:0; height:0; position:absolute; pointer-events: none;}
+.custom-group-append:after {
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
     top: 0;
@@ -809,6 +822,34 @@ select {
     border-top: 10px solid black;
     opacity: 0.5;
 }
+.custom-select:focus {
+    box-shadow: none;
+}
+.custom-select {
+    padding: .25rem .5rem;
+}
+.custom-group-append {
+    padding: 14px;
+    background: #ccc;
+}
 select::-ms-expand {
     display: none;
+}
+label {
+    margin-bottom: 0;
+}
+.customized-file-label {
+    border: 0;
+    background-color: #f3f3f2;
+    height: calc(1.8125rem + 2px);
+    padding: .25rem .5rem;
+}
+.custom-file-label::after {
+    content: "\25BA" !important;
+    background-color: #cccccc;
+    border-left: 0;
+    line-height: 2.7;
+    font-size: 9px;
+    height: calc(1.8125rem + 2px);
+    padding: .25rem .5rem;
 }

@@ -201,15 +201,116 @@
             <input type="text" class="form-control-customized form-control-sm">
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-group">
+            <label class="label-control">Address</label>
+            <input type="text" class="form-control-customized form-control-sm">
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-lg-4">
         <div class="form-group">
-            <label class="label-control">Base Location</label>
-            <div class="select-container">
-                <select class="form-control-customized form-control-sm">
-                    <option>Select location</option>
+            <label class="label-control">Base Location</label>      
+            <div class="input-group">
+                <select class="custom-select form-control-customized form-control-sm" name="location" id="inputGroupLocation">
+                    <option disabled selected>Select Location...</option>
                 </select>
+                <label class="input-group-append custom-group-append" for="inputGroupLocation"></label>
             </div>
         </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label class="label-control">Province</label>
+            <div class="input-group">
+                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
+                    <option disabled selected>Select Province...</option>
+                </select>
+                <div class="input-group-append custom-group-append">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label class="label-control">City</label>
+            <div class="input-group">
+                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
+                    <option disabled selected>Select City...</option>
+                </select>
+                <div class="input-group-append custom-group-append">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label class="label-control">Currency</label>
+            <div class="input-group">
+                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
+                    <option disabled selected>Select Currency...</option>
+                </select>
+                <div class="input-group-append custom-group-append">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label class="label-control">Timezone</label>
+            <div class="input-group">
+                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
+                    <option disabled selected>Select Timezone...</option>
+                </select>
+                <div class="input-group-append custom-group-append">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group">
+            <label class="label-control">About</label>
+            <textarea class="form-control-customized" rows="2"></textarea>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-group">
+            <label class="label-control">Vendor Icon</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile04">
+                    <label class="custom-file-label customized-file-label" for="inputGroupFile04">Choose file</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-group">
+            <label class="label-control">Cover Picture</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile04">
+                    <label class="custom-file-label customized-file-label" for="inputGroupFile04">Choose file</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
     </div>
 </div>
                             </form>
@@ -241,8 +342,8 @@
             </div>
         </div>
     </div>
-</div>
-<section class="showing_categ">
+</div> --}}
+{{!-- <section class="showing_categ">
     <div class="">
         <div class="container">
             <div class="row">

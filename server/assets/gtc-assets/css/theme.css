@@ -77,6 +77,24 @@
   border-radius: 0 !important;
   background: #fff;
 }
+.btn-gray {
+  color: #212529;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+.btn-primary {
+  background-color: #f9a025;
+  border-color: #f9a025;
+  color: #FFFFFF;
+}
+.btn-primary.focus, .btn-primary:focus {
+  box-shadow: none;
+}
+.btn-primary:hover {
+  background-color: #f9a025;
+  border-color: #f9a025;
+  color: #FFFFFF;
+}
 .wrapper-content {
     padding: 20px 10px 40px;
 }
