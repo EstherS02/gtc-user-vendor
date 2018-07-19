@@ -164,12 +164,9 @@
                                 </div>
                                 <div class="col-md-5 col-5 col-lg-5 col-xl-5">
                                     {{#if ../LoggedInUser.email}}
-                                    <div class="wts_header popup">
-                                        <p>
-                                            <a id="{{this.vendor_id}}" name="{{this.id}}" onmouseover="popup(this)"  onmouseout="removepopup(this)"  href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                        </p>  
-                                        <div class="" id="{{this.id}}-append"></div>  
-                                    </div>
+                                    <p>
+                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                    </p>
                                     {{else}}
                                     <p>
                                         <a href="/login">

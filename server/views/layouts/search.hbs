@@ -33,7 +33,7 @@
 				window.location.href = uri;
 		}
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
 	<div>
 		<div class="container">
@@ -102,12 +102,12 @@
 					<p><b>FILTER BY CATEGORY</b></p>
 					<p class="cat_bg_title">
 						<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'category&sub_category'}}">
-							<span>ALL CATEGORIES ({{categories.count}})</span>
+							<span>ALL CATEGORIES ({{categoriesWithCount.count}})</span>
 						</a>
 					</p>
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
-							{{#each categories.rows}}
+							{{#each categoriesWithCount.rows}}
 							<li class="list-group-item">
 								<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="true" aria-controls="collapseCategory{{this.id}}">
 									<span>{{this.name}} ({{this.product_count}})</span>
@@ -347,4 +347,4 @@
 			{{/ifCond}}
 		</div>
 	</section>
-	{{> footer/footer}}
+	{{> footer/bottom-footer}}

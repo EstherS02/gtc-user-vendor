@@ -1,9 +1,13 @@
 @media screen and (max-width: 400px) {
-    
+    .top-menu-text {
+		display: none !important;
+	}
 }
 
 @media screen and (min-width: 401px) and (max-width: 720px) {
-    
+    .top-menu-text {
+		display: none !important;
+	}
 }
 
 @media screen and (min-width: 721px) and (max-width: 1280px) {
@@ -20,6 +24,9 @@
 	ul.main-nav li.nav-item {
 		display: table-cell;
 	}
+	/*ul.vp-nav li.nav-item {
+		display: table-cell;
+	}*/
 	.top-header {
 		margin-bottom: -26px;
 	}
@@ -43,7 +50,7 @@
     .gtc-container {
     	max-width: 1715px;
     }
-    .main-nav {
+    .main-nav, .vp-nav {
 		display: table;
 	}
 	ul.main-nav li.nav-item {
