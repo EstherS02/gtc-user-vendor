@@ -40,9 +40,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'business_verification_file_link',
             allowNull: false
         },
-        business_address_verfication_file_link: {
+        business_address_verification_file_link: {
             type: DataTypes.TEXT,
-            field: 'business_address_verfication_file_link',
+            field: 'business_address_verification_file_link',
             allowNull: false
         },
         uploaded_on: {

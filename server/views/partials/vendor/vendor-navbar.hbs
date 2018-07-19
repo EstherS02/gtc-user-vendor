@@ -114,7 +114,7 @@
 										</a>
 									</li>
 									{{/if}}
-									{{#if LoggedInUser.id}}
+									{{!-- {{#if LoggedInUser.id}} --}}
 									<li class="nav-item" {{#ifCond selectedPage '==' 'discussion-board'}} style="background-color: #084681;" {{/ifCond}} >
 										<a class="nav-link" href="/vendor/discussion-board/{{VendorDetail.id}}"  {{#ifCond selectedPage '==' 'discussion-board'}} style="color: #fff" {{/ifCond}}>
 											DISCUSSION BOARD
@@ -130,7 +130,7 @@
 											SUPPORT
 										</a>
 									</li>
-									{{/if}}
+									{{!-- {{/if}} --}}
 									{{#if LoggedInUser.Vendor.id}}
 									<li class="nav-item dropdown">
 										<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
