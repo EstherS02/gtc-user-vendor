@@ -25,36 +25,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'payment_id',
             allowNull: false,
             references: {
-                model: 'payment_setting',
+                model: 'payment',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        paid_date: {
-            type: DataTypes.DATE,
-            field: 'paid_date',
-            allowNull: true
-        },
-        amount_paid: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'amount_paid',
-            allowNull: true
-        },
-        payment_method: {
-            type: DataTypes.INTEGER,
-            field: 'payment_method',
-            allowNull: true
-        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-        },
-        payment_response: {
-            type: DataTypes.TEXT,
-            field: 'payment_response',
-            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -92,15 +72,8 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrderPayment = model.OrderPayment;
-    const OrderPaymentEscrow = model.OrderPaymentEscrow;
     const Order = model.Order;
-    const PaymentSetting = model.PaymentSetting;
-
-    OrderPayment.hasMany(OrderPaymentEscrow, {
-        foreignKey: 'order_payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    const Payment = model.Payment;
 
     OrderPayment.belongsTo(Order, {
         foreignKey: 'order_id',
@@ -108,7 +81,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    OrderPayment.belongsTo(PaymentSetting, {
+    OrderPayment.belongsTo(Payment, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

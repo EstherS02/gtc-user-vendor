@@ -91,7 +91,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*SubCategory.belongsToMany(Vendor, {
+    SubCategory.belongsToMany(Vendor, {
         through: Product,
         foreignKey: 'sub_category_id',
         otherKey: 'vendor_id',
@@ -137,6 +137,6 @@ module.exports.initRelations = () => {
         otherKey: 'state_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
 };

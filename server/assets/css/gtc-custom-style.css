@@ -506,11 +506,11 @@ a {
   width: 100%;
 }
 
-.btn-group-sm>.btn,
+/*.btn-group-sm>.btn,
 .btn-sm {
   padding: 5px 10px;
   line-height: 1.5;
-}
+}*/
 
 .text-primary {
   color: #cd8005 !important;
@@ -733,11 +733,11 @@ a {
   color: #888888;
 }
 
-.label {
+/*.label {
   font-weight: 600;
   padding: 3px 8px;
   text-shadow: none;
-}
+}*/
 
 .banner-signup {
   background: url(../signup-hero-home.jpg);

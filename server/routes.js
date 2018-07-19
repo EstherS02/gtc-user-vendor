@@ -77,9 +77,9 @@ export default function(app) {
   app.use('/billing-settings', require('./hbs-routes/billing-settings'));
   app.use('/user-verify', require('./hbs-routes/user-verify'));
   app.use('/order-checkout', require('./hbs-routes/checkout'));
-  app.use('/user-join', require('./hbs-routes/user-join'))
+  app.use('/user-join', require('./hbs-routes/user-join'));
 
-
+  app.use('/:vendorType(wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
 
   //should be last route
   app.use('/:marketPlaceType(shop|wholesale|services|lifestyle|product)', require('./hbs-routes/product-view'));

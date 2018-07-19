@@ -9,31 +9,32 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        order_payment_id: {
+        payment_id: {
             type: DataTypes.BIGINT,
-            field: 'order_payment_id',
+            field: 'payment_id',
             allowNull: false,
             references: {
-                model: 'order_payment',
+                model: 'payment',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        processing_time: {
-            type: DataTypes.DATE,
-            field: 'processing_time',
-            allowNull: true
+        order_id: {
+            type: DataTypes.BIGINT,
+            field: 'order_id',
+            allowNull: false,
+            references: {
+                model: 'orders',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-        },
-        payment_response: {
-            type: DataTypes.TEXT,
-            field: 'payment_response',
-            allowNull: true
         },
         action: {
             type: DataTypes.INTEGER,
@@ -76,10 +77,17 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const OrderPaymentEscrow = model.OrderPaymentEscrow;
-    const OrderPayment = model.OrderPayment;
+    const Payment = model.Payment;
+    const Order = model.Order;
 
-    OrderPaymentEscrow.belongsTo(OrderPayment, {
-        foreignKey: 'order_payment_id',
+    OrderPaymentEscrow.belongsTo(Payment, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    OrderPaymentEscrow.belongsTo(Order, {
+        foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
