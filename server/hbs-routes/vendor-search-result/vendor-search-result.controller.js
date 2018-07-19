@@ -72,7 +72,6 @@ export function index(req, res) {
 
     queryParameters['status'] = status["ACTIVE"];
 
-
     var vendorModel = "VendorUserProduct";
 
     async.series({
@@ -90,11 +89,13 @@ export function index(req, res) {
 				include: [{
 					model: model['Vendor'],
 					where: vendorCountQueryParames,
-					attributes: []
+					attributes: ['id','base_location'],
+					required: false
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Vendors.id')), 'vendor_count']],
 				group: ['Country.id']
 			}).then(function(results) {
+				
 				if (results.length > 0) {
 					model['Vendor'].count({
 						where: vendorCountQueryParames
@@ -102,7 +103,6 @@ export function index(req, res) {
 						result.count = count;
 						result.rows = JSON.parse(JSON.stringify(results));
 
-						console.log(result.rows);
 						return callback(null, result);
 					}).catch(function(error) {
 						console.log('Error:::', error);
@@ -118,34 +118,19 @@ export function index(req, res) {
 				return callback(error, null);
 			});
         },
-     topVendors: function(callback){
-		 limit =6;
+     vendors: function(callback){
+		 limit =null;
 		 field ='sales_count';
 		 order = 'desc';
         service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
-        .then(function(topVendors) {
-            return callback(null, topVendors.rows);
+        .then(function(vendors) {
+            return callback(null, vendors);
         })
         .catch(function(error) {
             console.log('Error:::', error);
             return callback(error, null);
         });
-	 },
-	 remainingVendors: function(callback){
-		limit =null;
-		field ='sales_count';
-		order = 'desc';
-		offset = 6;
-	   service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
-	   .then(function(remainingVendors) {
-		   return callback(null, remainingVendors.rows);
-	   })
-	   .catch(function(error) {
-		   console.log('Error:::', error);
-		   return callback(error, null);
-	   });
-	},
-        
+	 },    
     }, function(error, results) {
         queryPaginationObj['maxSize'] = 5;
         if (!error) {
@@ -154,8 +139,7 @@ export function index(req, res) {
 				queryURI:queryURI,
 				queryPaginationObj: queryPaginationObj,
                 locations: results.locations,
-				topVendors:results.topVendors,
-				remainingVendors: results.remainingVendors,
+				vendors:results.vendors,
                 selectedMarketPlace: results.marketPlace,
                 LoggedInUser:LoggedInUser,
 				marketplaceURl:marketplaceURl,
