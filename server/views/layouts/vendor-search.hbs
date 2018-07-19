@@ -4,13 +4,13 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6">
-					<ul class="breadcrumb" style="padding: 8px;">
+					{{!-- <ul class="breadcrumb" style="padding: 8px;">
 						<li>
 							<a href="#" class="active">North America</a>
 						</li>
 						
 						<li>Search</li>
-					</ul>
+					</ul> --}}
 				</div>
 				<div class="col-md-6">
 					<p class="see_all float-right" style="margin: 10px;">
@@ -75,13 +75,13 @@
 					<div class="row col-md-12 showing_categ" style="padding: 6px; margin-bottom: 10px;">
 						<div class="col-md-6">
 							<p style="margin-bottom: 0px">
-								<b>TOP WHOLESALERS
-								</b>
+								<b>TOP {{ convertUpperCase marketplaceURl}}
+                                 </b>
 							</p>
 						</div>
 					</div>
 					<div class="row">
-                        {{#each topVendors}}
+                        {{#each vendors.rows}}
                             <div class="col-md-4 col-lg-4 col-xl-4 common_bottom">
                                 <div class="row">
                                     <div class="col-md-3 col-3 col-lg-3 col-xl-3">
@@ -127,74 +127,40 @@
                                 </div>
                             </div>
                             {{/each}}
-
-					</div>
-					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-					</div>
-					<div class="row">
-                      {{#each remainingVendors}}
-                            <div class="col-md-4 col-lg-4 col-xl-4 common_bottom">
-                                <div class="row">
-                                    <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                        <img src="{{this.url}}" class="img_fixed_height">
-                                    </div>
-                                    <div class="col-md-9 col-9 col-lg-9 col-xl-9">
-                                        <div class="row common_padding">
-                                            <div class="col-md-12">
-                                                <p class="wts_header">
-                                                    <a class="header_title" href="/">{{Titlecase this.vendor_name}}</a>
-                                                </p>
-                                            </div>
-
-                                        </div>
-                                        <div class="row common_padding">
-                                            <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                                <p>Origin</p>
-                                            </div>
-                                            <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                                <p>{{this.origin}}</p>
-                                            </div>
-                                        </div>
-                                        {{!-- <div class="row common_padding">
-                                            <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                                <p>Category</p>
-                                            </div>
-                                            <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                                <p>Electronic - Phones</p>
-                                            </div>
-                                        </div> --}}
-                                        <div class="row common_padding">
-                                            <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                                <p>Inventory</p>
-                                            </div>
-                                            <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                                <p>
-                                                    <b>{{this.product_count}} Products</b> Listed
-                                                    <span class="wts_header_red">on Sale</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="row common_padding">
-                                            <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                                <p>Seller Rating</p>
-                                            </div>
-                                            <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                                <p>{{starCount rating}}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{/each}}
-
-                
-
-					</div>
+                   </div>
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
 				</div>
 			</div>
-		
+       
+	{{#ifCond vendors.count '>' queryPaginationObj.limit}}
+			<div class="row">
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-7">
+					{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+					<nav aria-label="Page navigation example">
+						<ul class="pagination justify-content-center">
+							{{#unless startFromFirstPage}}
+							<li class="page-item">
+								<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+							</li>
+							{{/unless}} {{#each pages}}
+							<li class="page-item {{#if isCurrent}} active {{/if}}">
+								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+							</li>
+							{{/each}} {{#unless endAtLastPage}}
+							<li class="page-item">
+								<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+							</li>
+							{{/unless}}
+						</ul>
+					</nav>
+					{{/pagination}}
+				</div>
+			</div>
+			{{/ifCond}}
+
 		</div>
 	</section>
 	{{> footer/bottom-footer}}
