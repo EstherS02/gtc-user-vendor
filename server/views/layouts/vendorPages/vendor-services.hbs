@@ -22,7 +22,7 @@
     window.location.href = queries;
   });
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
  {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
     <div class="logged_in_cont">
@@ -135,7 +135,7 @@
                     </div>
                     <div class="col-md-3 col-12 showing_categ">
                         <p><b>FILTER BY CATEGORY</b></p>
-                        <p class="cat_bg_title_serv">ALL CATEGORIES ({{categories.count}})</p>
+                        <p class="cat_bg_title_serv">ALL CATEGORIES ({{category.count}})</p>
                         {{> vendor/vendor-category }}
                     </div>
                 </div>
@@ -144,4 +144,4 @@
         </div>
     </div>
 </section>
-{{> footer/footer}}
+{{> footer/bottom-footer}}

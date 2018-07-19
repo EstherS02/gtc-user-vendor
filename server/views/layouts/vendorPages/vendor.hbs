@@ -1,4 +1,4 @@
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
  {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 <div class="logged_in_cont" >
@@ -8,7 +8,7 @@
                 {{> vendor/vendor-left VendorDetail = VendorDetail}}
             </div>
 
-            <div class="col-md-3 col-12 ">
+            <div class="col-md-3 col-12 " style="background-color:#fff">
                 <h5 class="log_head_style">FEATURED</h5>
                 {{#if featuredProducts}}
                 {{#each featuredProducts}}
@@ -36,7 +36,7 @@
                 {{/each}}
                 {{/if}}
             </div>  
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-12" style="background-color:#fff">
                 <h5 class="log_head_style">ON SALE</h5>
                 <div class="row profile_logged_in_body2_bg_color">
                 {{#each topSelling}}
@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 col-12">
+            <div class="col-md-3 col-12" style="background-color:#fff">
                 <h5 class="log_head_style">TOP RATED</h5>
                 <div class="row profile_logged_in_body2_bg_color">
                 {{#each topRating}}
@@ -79,4 +79,4 @@
     </div>
 </section>
 
-{{> footer/footer}}
+{{> footer/bottom-footer}}

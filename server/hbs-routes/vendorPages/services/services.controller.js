@@ -25,6 +25,7 @@ export function vendorServices(req, res) {
 	var offset, limit, field, order,page;
 	var queryObj = {};
 	var queryURI = {};
+	var bottomCategory = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['SERVICE'];
 	queryURI['marketplace_id'] = marketplace['SERVICE'];
@@ -104,26 +105,14 @@ export function vendorServices(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-
+			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
+					var categories = response.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -145,7 +134,9 @@ export function vendorServices(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				page:page,
-				categories: results.categories,
+				categories: results.categories.rows,
+				category: results.categories,
+				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services'
 			});

@@ -130,7 +130,7 @@
 	}
 
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 
 <section>
 	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
@@ -542,8 +542,8 @@
 							</div>
 							<div class="col-md-3 showing_categ">
 								<p><b>FILTER BY CATEGORY</b></p>
-								<p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p>
-								{{> vendor/vendor-category }}
+								<p class="cat_bg_title">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+								{{> vendor/vendor-category }} 
 							</div>
 						</div>
 					</div>
@@ -552,4 +552,4 @@
 		</div>
 	</div>
 </section>
-{{> footer/footer}}
+{{> footer/bottom-footer}}
