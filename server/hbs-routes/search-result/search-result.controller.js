@@ -129,7 +129,6 @@ export function index(req, res) {
 	}
 	queryParameters['status'] = status["ACTIVE"];
 			selectedMarketPlace = req.query.marketplace;
-console.log("queryParameters***************************************************************",queryParameters)
 	async.series({
 		marketPlace: function(callback) {
 			var marketPlaceModel = "Marketplace";
