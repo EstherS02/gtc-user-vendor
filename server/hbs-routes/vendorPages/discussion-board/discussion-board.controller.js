@@ -21,28 +21,27 @@ export function vendorDiscussion(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
-	var productModel = "MarketplaceProduct";
-	var vendorModel = "VendorUserProduct";
-	var categoryModel = "Category";
+	var discussModelComment = "DiscussionBoardPostComment";
+	var discussModelLike = "DiscussionBoardPostLike";
+	var discussModel = "DiscussionBoardPost";
 	var offset, limit, field, order,page;
 	var queryPaginationObj = {};
 	var queryObj = {};
 	var queryURI = {};
 	var vendor_id = req.params.id;
-	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
+	queryObj['status'] = status["ACTIVE"];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
+	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
 
@@ -55,10 +54,10 @@ export function vendorDiscussion(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		publicShop: function(callback) {
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(wantToSell) {
-					return callback(null, wantToSell);
+		discussion: function(callback) {
+			service.findRows(discussModel, queryObj, offset, limit, field, order)
+				.then(function(response) {
+					return callback(null, response);
 
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -110,11 +109,18 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(results.VendorDetail)
-		queryPaginationObj['maxSize'] = 5;
+		console.log(results.discussion, queryObj)
+		if(results.discussion.count){
+			var maxSize = results.discussion.count/limit;
+			if(results.discussion.count%limit)
+				maxSize++;
+			queryPaginationObj['maxSize'] = maxSize;
+		}
+		
 		if (!err) {
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
+				discussionBoard : results.discussion,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				queryPaginationObj: queryPaginationObj,

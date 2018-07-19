@@ -287,6 +287,7 @@ console.log("queryParameters****************************************************
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['Country.id']
 			}).then(function(results) {
+				console.log(results.locations)
 				if (results.length > 0) {
 					model['Product'].count({
 						where: productCountQueryParames
