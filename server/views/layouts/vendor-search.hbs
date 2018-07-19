@@ -1,16 +1,25 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
+<script>
+	function sortSearch(e) {
+				var url = window.location.href;
+				var uri = updateQueryStringParameter(url, 'field', e.value)
+				window.location.href = uri;
+		}
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		} else {
+			return uri + separator + key + "=" + value;
+		}
+	}
+</script>
 <section>
 	<div>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6">
-					{{!-- <ul class="breadcrumb" style="padding: 8px;">
-						<li>
-							<a href="#" class="active">North America</a>
-						</li>
-						
-						<li>Search</li>
-					</ul> --}}
 				</div>
 				<div class="col-md-6">
 					<p class="see_all float-right" style="margin: 10px;">
@@ -43,8 +52,7 @@
 						<div class="col-md-6">
 							<select class="geo_textbox" name="order" onchange="sortSearch(this)" id="sortValue" >
 								<option disabled selected>select filter type</option>
-								<option value="created_on">Date</option>
-								<option value="product_name">Alphabetical</option>
+								<option value="vendor_name">Alphabetical</option>
 							</select>
 						</div>
 					</div>
