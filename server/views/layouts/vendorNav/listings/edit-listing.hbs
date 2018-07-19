@@ -335,12 +335,12 @@
 
 		if (count < 3) {
 
-			var domElements = '<div class="row"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
+			var domElements = '<div class="row" style="margin-left:7px;"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
 				'<div class="row form-group"' + 'style="padding-left: 10px;"' + '><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
 				'<div class="col-md-1 common_padding1" style="margin-right: 5px;">' +
 				'<input class="list_place_1 quantity" type="text" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"/></div>' +
 				'<div class="col-md-2 common_padding1" style="margin-right:15px;"><p class="edit-listing-dis">user recieves</p></div>' +
-				'<div class="col-md-7 common_padding1"><div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
+				'<div class="col-md-7 common_padding1"><div class="row" ><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
 				'<input type="radio" class="discount_type" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" onclick=testPercent(' + count + '); checked /> Total Percent Discount</p></div>' +
 				'<div class="col-md-3 common_padding1 percent_discount_amount' + count + '"><input class="list_place_2 discount_amount" type="text" id="percent_discount_amount' + count + '" name="percent_discount_amount' + count + '" placeholder="20%" />%</div>' +
 				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
@@ -359,6 +359,16 @@
 		}
 	})
 
+	function testValue(count) {
+		$(".value_discount_amount" + count).show();
+		$(".percent_discount_amount" + count).hide();
+	}
+
+	function testPercent(count) {
+		$(".value_discount_amount" + count).hide();
+		$(".percent_discount_amount" + count).show();
+	}
+
 	$('input:checkbox:not("#feature_indefinitely")').change(function () {
 		recalculate();
 	});
@@ -369,17 +379,20 @@
 		});
 		$('#totalFees').html(sum);
 	}
+
+	$("#featureForm").validate({
+		rules: {
+			profile: {require_from_group: [1, ".position"]},
+			search_result: {require_from_group: [1, ".position"]},
+			wholesale_landing: {require_from_group: [1, ".position"]},
+			shop_landing: {require_from_group: [1, ".position"]},
+			service_landing:{require_from_group: [1, ".position"]},
+			subscription_landing:{require_from_group: [1, ".position"]},
+			homepage:{require_from_group: [1, ".position"]}
+		}
 	});
 
-	function testValue(count) {
-		$(".value_discount_amount" + count).show();
-		$(".percent_discount_amount" + count).hide();
-	}
-
-	function testPercent(count) {
-		$(".value_discount_amount" + count).hide();
-		$(".percent_discount_amount" + count).show();
-	}
+	});
 
 </script>
 
@@ -698,6 +711,9 @@
 					<div class="list_bg">
 						<p class="list_fe">FEATURE THIS PRODUCT!</p>
 						<div class="list-padding">
+                           <form id="featureForm">
+
+
 							<div class="row ">
 								<div class="col-md-6">
 									<img src="{{feature.product_base_image}}" alt="logo" style="width: 100%" />
@@ -730,6 +746,7 @@
 									<p>{{ starCount feature.product_rating}}</p>
 								</div>
 							</div>
+							
 							<hr class="list-hr">
 							<p class="edit-listing-feature"> Status:
 								<span> Live </span>
@@ -755,30 +772,30 @@
 							</div>
 							<p class="edit-listing-feature" style="margin-bottom:10px;">Feature this product:</p>
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="0" />My Profile Page Only (Free)
+								<input type="checkbox" class="position" name="profile" value="0" />My Profile Page Only (Free)
 							</div>
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="50" />In Search Results(+$50/mo)
+								<input type="checkbox" class="position" name="search_result" value="50" />In Search Results(+$50/mo)
 							</div>
 							{{#ifCond this.type '==' 'wholesale'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="150" />Wholesale Landing(+$150/mo)
+								<input type="checkbox" class="position" name="wholesale_landing" value="150" />Wholesale Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'shop'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="150" />Shop Landing(+$150/mo)
+								<input type="checkbox" class="position" name="shop_landing" value="150" />Shop Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'services'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="150" />Services Landing(+$150/mo)
+								<input type="checkbox" class="position" name="service_landing" value="150" />Services Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'lifestyle'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" name="feature_position" value="150" />Subscription Landing(+$150/mo)
+								<input type="checkbox" class="position" name="subscription_landing" value="150" />Subscription Landing(+$150/mo)
 							</div>
 							{{/ifCond}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
-								<input type="checkbox" name="feature_position" value="250" />GTC Homepage(+$250/mo)
+								<input type="checkbox" class="position" name="homepage" value="250" />GTC Homepage(+$250/mo)
 							</div>
 
 							<p class="list_tot"> TOTAL:$
@@ -820,7 +837,7 @@
 								</a>
 							</p> --}}
 
-
+                         </form>
 
 						</div>
 
