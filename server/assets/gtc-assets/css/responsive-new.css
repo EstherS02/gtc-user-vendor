@@ -14,10 +14,13 @@
     .gtc-container {
     	max-width: 1230px;
     }
-    .main-nav {
+    .main-nav, .vp-nav {
 		display: table;
 	}
 	ul.main-nav li.nav-item {
+		display: table-cell;
+	}
+	ul.vp-nav li.nav-item {
 		display: table-cell;
 	}
 	.top-header {
@@ -43,7 +46,7 @@
     .gtc-container {
     	max-width: 1715px;
     }
-    .main-nav {
+    .main-nav, .vp-nav {
 		display: table;
 	}
 	ul.main-nav li.nav-item {
