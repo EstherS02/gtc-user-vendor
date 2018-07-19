@@ -90,8 +90,7 @@ export function index(req, res) {
 				include: [{
 					model: model['Vendor'],
 					where: vendorCountQueryParames,
-					attributes: [],
-					required: false
+					attributes: []
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Vendors.id')), 'vendor_count']],
 				group: ['Country.id']
@@ -102,6 +101,8 @@ export function index(req, res) {
 					}).then(function(count) {
 						result.count = count;
 						result.rows = JSON.parse(JSON.stringify(results));
+
+						console.log(result.rows);
 						return callback(null, result);
 					}).catch(function(error) {
 						console.log('Error:::', error);
@@ -117,16 +118,33 @@ export function index(req, res) {
 				return callback(error, null);
 			});
         },
-     vendors: function(callback){
+     topVendors: function(callback){
+		 limit =6;
+		 field ='sales_count';
+		 order = 'desc';
         service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
-        .then(function(vendors) {
-            return callback(null, vendors.rows);
+        .then(function(topVendors) {
+            return callback(null, topVendors.rows);
         })
         .catch(function(error) {
             console.log('Error:::', error);
             return callback(error, null);
         });
-     }
+	 },
+	 remainingVendors: function(callback){
+		limit =null;
+		field ='sales_count';
+		order = 'desc';
+		offset = 6;
+	   service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
+	   .then(function(remainingVendors) {
+		   return callback(null, remainingVendors.rows);
+	   })
+	   .catch(function(error) {
+		   console.log('Error:::', error);
+		   return callback(error, null);
+	   });
+	},
         
     }, function(error, results) {
         queryPaginationObj['maxSize'] = 5;
@@ -136,7 +154,8 @@ export function index(req, res) {
 				queryURI:queryURI,
 				queryPaginationObj: queryPaginationObj,
                 locations: results.locations,
-                vendors:results.vendors,
+				topVendors:results.topVendors,
+				remainingVendors: results.remainingVendors,
                 selectedMarketPlace: results.marketPlace,
                 LoggedInUser:LoggedInUser,
 				marketplaceURl:marketplaceURl,
