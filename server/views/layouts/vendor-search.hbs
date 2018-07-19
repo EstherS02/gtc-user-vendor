@@ -2,7 +2,8 @@
 <script>
 	function sortSearch(e) {
 				var url = window.location.href;
-				var uri = updateQueryStringParameter(url, 'field', e.value)
+				var uri = updateQueryStringParameter(url, 'field', e.value);
+				uri = updateQueryStringParameter(uri, 'order', 'asc');
 				window.location.href = uri;
 		}
 	function updateQueryStringParameter(uri, key, value) {
@@ -99,7 +100,7 @@
                                         <div class="row common_padding">
                                             <div class="col-md-12">
                                                 <p class="wts_header">
-                                                    <a class="header_title" href="/">{{Titlecase this.vendor_name}}</a>
+                                                    <a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
                                                 </p>
                                             </div>
 

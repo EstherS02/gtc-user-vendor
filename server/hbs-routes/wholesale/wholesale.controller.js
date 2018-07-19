@@ -1,4 +1,4 @@
-'use strict';
+	'use strict';
 
 const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
