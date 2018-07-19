@@ -1,20 +1,16 @@
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
-    <section>
- {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
-        <div class="logged_in_cont" >
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-2 col-12"  >
-                         {{> vendor/vendor-left VendorDetail = VendorDetail}}
-                    </div>
-                    
-                    
-                   <!------------------Profile_terms--------------------------------------------------------------->
-                   <div class="col-md-10 terms_bg">
-                   <h3>SUPPORT</h3>
-                   
-                  	 <div class="row">
-                   		<div class="col-md-9 col-12 terms_para_bg">
+{{> header/top-header LoggedInUser = LoggedInUser}}
+<section>
+	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+	<div class="logged_in_cont" >
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2 col-12"  >
+					{{> vendor/vendor-left VendorDetail = VendorDetail}}
+				</div>
+				<div class="col-md-10 terms_bg">
+					<h3>SUPPORT</h3>
+					<div class="row">
+						<div class="col-md-9 col-12 terms_para_bg">
 							<div class="row">
 								<div class="col-md-7 col-12" style="padding: 30px;">
 									<p class="terms_head">SHIPPING POLICY </p>
@@ -47,18 +43,11 @@
 									</div>
 								</div>
 							</div>
-						
-						
-						
-						
-						
-						
-                   		
-                        	
-                   </div>
-               </div>       
-       </div>
-      
-            </div>
-    </section>                     
-{{> footer/footer}}
+						</div>
+					</div>       
+				</div>
+			</div>
+		</div>
+	</div>
+</section>                     
+{{> footer/bottom-footer}}

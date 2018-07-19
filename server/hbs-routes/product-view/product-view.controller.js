@@ -237,17 +237,7 @@ export function GetProductDetails(req, res) {
 				return callback(null);
 
 			}
-		},
-		/*category: function(callback) {
-			service.findRows("Category", {}, 0, null, 'id', 'asc')
-				.then(function(category) {
-					return callback(null, category.rows);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}*/
-
+		}
 	}, function(err, results) {
 		queryURI['marketplace_id'] = results.Product.Marketplace.id;
 		var productsList = JSON.parse(JSON.stringify(results.Product));
@@ -308,7 +298,6 @@ export function GetProductDetails(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				marketplace: marketplace,
 				selectedPage: selectedPage,
-				/*category: results.category,*/
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser
 			});

@@ -34,13 +34,15 @@
 			let formInput = $("#headerSearchForm1 :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
-			console.log()
-			window.location.href = '/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
+			if(marketPlaceType.marketplace_id){
+			window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
+			}else{
+				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput
+			}
 		});
 	});
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
-
 
 <div class="banner_bg" {{#if VendorDetail.vendor_cover_pic_url}} style="background-image: url({{VendorDetail.vendor_cover_pic_url}});" {{/if}}>
 	{{!--  --}}
@@ -157,7 +159,7 @@
 									<form id="headerSearchForm1">
 										<input type="search" id="searchKey1" name="keyword" placeholder="Search {{this.VendorDetail.vendor_name}}">
 										<div class="right">
-											<button id="headerSearchSubmit1" name="headerSearchSubmit1">
+											<button name="headerSearchSubmit1">
 												<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6">
 													<g fill="none" stroke="currentColor" stroke-width="4" stroke-miterlimit="10">
 														<circle cx="9.3" cy="9.3" r="7.3"></circle>

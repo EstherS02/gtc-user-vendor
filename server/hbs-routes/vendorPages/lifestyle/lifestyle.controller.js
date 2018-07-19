@@ -19,6 +19,7 @@ export function vendorLifestyle(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
+	var bottomCategory = {};
 
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
@@ -113,6 +114,9 @@ export function vendorLifestyle(req, res) {
 			productCountQueryParames['vendor_id'] = vendor_id;
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
+					var categories = response.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -133,7 +137,9 @@ export function vendorLifestyle(req, res) {
 				publicLifestyle: results.publicLifestyle,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
-				categories: results.categories,
+				categories: results.categories.rows,
+				category: results.categories,
+				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle'
 			});

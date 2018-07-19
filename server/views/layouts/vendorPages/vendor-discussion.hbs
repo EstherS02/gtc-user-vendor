@@ -1,4 +1,6 @@
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+<script type="text/javascript">
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
 	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
 	<div class="logged_in_cont" >
@@ -15,11 +17,12 @@
 						<div class="col-md-9 col-12 discussion_logo" >
 							<div class="row">
 								<div class="col-md-7 col-12">
+								{{#if LoggedInUser.Vendor.id}}
 									<div class="row">
 										<div class="col-md-2 col-3 discussion_para_bg">
-											<img style="width: 45px" src="../img/logo/icon_logo.png">
+											<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}">
 										</div>
-										<div class="col-md-10 col-9 discussion_para_bg common_padding1" >
+										<div class="col-md-10 col-9 discussion_para_bg " >
 											<div class="discussion_text">
 												<div class="input-group">
 													<input type="text" class="form-control promo_code_text1" placeholder="Ask Hayden Agencies a question or post" style="width: 80%">
@@ -31,11 +34,12 @@
 									</div>
 									<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
 									</div>
+									{{/if}}
 									<div class="row">
-										<div class="col-md-2 col-2">
+										<div class="col-md-2 col-2 discussion_para_bg">
 											<img style="width: 45px" src="../img/logo/icon_logo.png">
 										</div>
-										<div class="col-md-10 col-10">
+										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span">Hayden Agencies Ltd.</span>-Here's our next product being released in 10days - <span style="color: #BDBDBD;">1 day ago</span></p>
 											<img src="../img/discuss_cnt_img.png" alt="img" style="width: 100%;margin-top: 10px;">
 											<div class="row">    	
@@ -113,7 +117,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
+									<div class="row " style="padding: 3px;margin-top: 10px;">
 									</div>
 								</div>
 								<div class="col-md-5 col-12 discussion_most-bg">
@@ -146,4 +150,4 @@
 		</div>
 	</div>
 </section>						
-{{> footer/footer}}
+{{> footer/bottom-footer}}

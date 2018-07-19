@@ -21,6 +21,8 @@ export function vendor(req, res) {
 	let user_id = LoggedInUser.id;
 
 	var productModel = "MarketplaceProduct";
+	var categoryModel = "Category";
+	var bottomCategory = {};
 	var offset=0;
 	var limit;
 	var field="created_on";
@@ -30,6 +32,27 @@ export function vendor(req, res) {
 	queryObj['vendor_id'] = vendor_id;
 
 	async.series({
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		featuredProducts: function(callback) {
             queryObj['is_featured_product'] = 1;
             limit = 1;
@@ -110,8 +133,9 @@ export function vendor(req, res) {
 		if (!err) {
 			res.render('vendorPages/vendor', {
 				title: "Global Trade Connect",
-				VendorDetail : results.VendorDetail,
 				categories: results.categories,
+				bottomCategory: bottomCategory,
+				VendorDetail : results.VendorDetail,
 				featuredProducts:results.featuredProducts,
 				topSelling:results.topSelling,
 				topRating:results.topRating,
