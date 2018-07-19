@@ -205,13 +205,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Order.belongsToMany(Coupon, {
+    //     through: OrderItem,
+    //     foreignKey: 'order_id',
+    //     otherKey: 'coupon_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
     Order.belongsToMany(Tax, {
         through: OrderItem,
