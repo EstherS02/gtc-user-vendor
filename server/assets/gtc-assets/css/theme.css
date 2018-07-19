@@ -10,6 +10,9 @@
 .gray-bg, .bg-muted {
   background-color: #f3f3f4;
 }
+.bg-gray {
+  background: #ededed;
+}
 .m-t-b-xs {
   margin: 5px 0px;
 }
@@ -73,6 +76,9 @@
 .btn-gtc {
   border-radius: 0 !important;
   background: #fff;
+}
+.wrapper-content {
+    padding: 20px 10px 40px;
 }
 /* GLOBAL  */
 .no-padding {
@@ -168,7 +174,7 @@
   margin-left: 10px !important;
 }
 .m-l {
-  margin-left: 15px;
+  margin-left: 15px !important;
 }
 .m-l-md {
   margin-left: 20px;
