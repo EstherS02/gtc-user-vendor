@@ -35,10 +35,10 @@ export function index(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 12;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
+	field = req.query.field ? req.query.field : "sales_count";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
     delete req.query.order;   
     
@@ -119,9 +119,6 @@ export function index(req, res) {
 			});
         },
      vendors: function(callback){
-		 limit =null;
-		 field ='sales_count';
-		 order = 'desc';
         service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
         .then(function(vendors) {
             return callback(null, vendors);
