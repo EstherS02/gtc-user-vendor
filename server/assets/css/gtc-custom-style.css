@@ -1526,3 +1526,11 @@ background-position:center;
     color: #FFF;
     border: none;
 }
+.img-border-page{
+  box-shadow: 0px 0px 3px 3px #ffab5e;
+  -moz-box-shadow: 0px 0px 3px 3px #ffab5e;
+-webkit-box-shadow: 0px 0px 3px 3px #ffab5e;
+}
+.logged_in_cont{
+      padding-top: 45px!important;
+}

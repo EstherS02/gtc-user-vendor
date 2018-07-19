@@ -16,6 +16,7 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function coupons(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -81,6 +82,9 @@ export function coupons(req, res) {
 			category: function(callback) {
 				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
 					.then(function(category) {
+						var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 						return callback(null, category.rows);
 
 					}).catch(function(error) {
@@ -102,7 +106,8 @@ export function coupons(req, res) {
 					statusCode: statusCode,
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
-					category: results.category,
+					categories: results.category,
+					bottomCategory: bottomCategory,
 					selectedPage:'coupons',
 					// pagination
 					page: page,

@@ -53,122 +53,12 @@
 				success: function(data, text) {
 					alert("Added successfully");
 					location.reload();
-					// products(data, function() {
-					// 	excludeProducts(data, function() {
-					// 		categories(data, function() {
-					// 			excludeCategories(data, function() {
-					// 				console.log('done');
-					// 			});
-					// 		});
-					// 	});
-					// });
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});
-
-			// function products(data, callback) {
-			// 	if (couponProducts.length > 0) {
-			// 		for (var i = 0; i < couponProducts.length; i++) {
-			// 			newCouponProducts.push({
-			// 				product_id: parseInt(couponProducts[i]),
-			// 				coupon_id: data.id
-			// 			});
-			// 		}
-			// 		$.ajax({
-			// 			type: 'POST',
-			// 			url: '/api/coupon-products/bulk-create',
-			// 			contentType: "application/json",
-			// 			data: JSON.stringify(newCouponProducts),
-			// 			success: function(data, text) {
-			// 				callback();
-			// 			},
-			// 			error: function(request, status, error) {
-			// 				callback();
-			// 			}
-			// 		});
-			// 	} else {
-			// 		callback();
-			// 	}
-			// }
-
-			// function excludeProducts(data, callback) {
-			// 	if (couponExcludeProducts.length > 0) {
-			// 		for (var i = 0; i < couponExcludeProducts.length; i++) {
-			// 			newCouponExcludeProducts.push({
-			// 				product_id: couponExcludeProducts[i],
-			// 				coupon_id: data.id
-			// 			});
-			// 		}
-			// 		$.ajax({
-			// 			type: 'POST',
-			// 			url: '/api/coupon-excluded-products/bulk-create',
-			// 			contentType: "application/json",
-			// 			data: JSON.stringify(newCouponExcludeProducts),
-			// 			success: function(data, text) {
-			// 				callback();
-			// 			},
-			// 			error: function(request, status, error) {
-			// 				callback();
-			// 			}
-			// 		});
-			// 	} else {
-			// 		callback();
-			// 	}
-			// }
-
-			// function categories(data, callback) {
-			// 	if (couponCategories.length > 0) {
-			// 		for (var i = 0; i < couponCategories.length; i++) {
-			// 			newCouponCategories.push({
-			// 				category_id: couponCategories[i],
-			// 				coupon_id: data.id
-			// 			});
-			// 		}
-			// 		$.ajax({
-			// 			type: 'POST',
-			// 			url: '/api/coupon-categories/bulk-create',
-			// 			contentType: "application/json",
-			// 			data: JSON.stringify(newCouponCategories),
-			// 			success: function(data, text) {
-			// 				callback();
-			// 			},
-			// 			error: function(request, status, error) {
-			// 				callback();
-			// 			}
-			// 		});
-			// 	} else {
-			// 		callback();
-			// 	}
-			// }
-
-			// function excludeCategories(data, callback) {
-			// 	if (couponExcludeCategories.length > 0) {
-			// 		for (var i = 0; i < couponExcludeCategories.length; i++) {
-			// 			newCouponExcludeCategories.push({
-			// 				category_id: couponExcludeCategories[i],
-			// 				coupon_id: data.id
-			// 			});
-			// 		}
-			// 		$.ajax({
-			// 			type: 'POST',
-			// 			url: '/api/coupon-excluded-categories/bulk-create',
-			// 			contentType: "application/json",
-			// 			data: JSON.stringify(newCouponExcludeCategories),
-			// 			success: function(data, text) {
-			// 				callback();
-			// 			},
-			// 			error: function(request, status, error) {
-			// 				callback();
-			// 			}
-			// 		});
-			// 	} else {
-			// 		callback();
-			// 	}
-			// }
-
 		});
 
 		$("#inputIndividualUseOnly[value=1]").prop("checked", "true");
@@ -179,7 +69,6 @@
 
 			const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
-
 		});
 
 		$("#couponUpdateBtn").click(function(e) {
@@ -230,99 +119,12 @@
 				success: function(data, text) {
 					alert("Updated successfully");
 					location.reload();
-					// products(data, function() {
-
-					// });
-					// excludeProducts(data, function() {
-
-					// });
-					// categories(data, function() {
-
-					// });
-					// excludeCategories(data, function() {
-					// 	window.location.href = '/coupons';
-					// });
 				},
 				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});
-
-			// function products(data, callback) {
-			// 	var product = {};
-			// 	product.id = id;
-			// 	product.couponArray = JSON.stringify($('#inputProducts').val());
-			// 	product.modelName = "CouponProduct";
-			// 	console.log(product)
-			// 	$.ajax({
-			// 		type: 'PUT',
-			// 		url: '/api/coupon/update-product-coupon',
-			// 		data: product,
-			// 		success: function(data, text) {
-			// 			// console.log('data', data);
-			// 			// console.log('text', text);
-			// 			callback();
-			// 		},
-			// 		error: function(request, status, error) {
-			// 			callback();
-			// 		}
-			// 	});
-			// }
-
-			// function excludeProducts(data, callback) {
-			// 	var product = {};
-			// 	product.id = id;
-			// 	product.couponArray = JSON.stringify($('#inputExcludeProduct').val());
-			// 	product.modelName = "CouponExcludedProduct";
-			// 	$.ajax({
-			// 		type: 'PUT',
-			// 		url: '/api/coupon/update-product-coupon',
-			// 		data: product,
-			// 		success: function(data, text) {
-			// 			callback();
-			// 		},
-			// 		error: function(request, status, error) {
-			// 			callback();
-			// 		}
-			// 	});
-			// }
-
-			// function categories(data, callback) {
-			// 	var product = {};
-			// 	product.id = id;
-			// 	product.couponArray = JSON.stringify($('#inputCategories').val());
-			// 	product.modelName = "CouponCategory";
-			// 	$.ajax({
-			// 		type: 'PUT',
-			// 		url: '/api/coupon/update-category-coupon',
-			// 		data: product,
-			// 		success: function(data, text) {
-			// 			callback();
-			// 		},
-			// 		error: function(request, status, error) {
-			// 			callback();
-			// 		}
-			// 	});
-			// }
-
-			// function excludeCategories(data, callback) {
-			// 	var product = {};
-			// 	product.id = id;
-			// 	product.couponArray = JSON.stringify($('#inputExcludeCategories').val());
-			// 	product.modelName = "CouponExcludedCategory";
-			// 	$.ajax({
-			// 		type: 'PUT',
-			// 		url: '/api/coupon/update-category-coupon',
-			// 		data: product,
-			// 		success: function(data, text) {
-			// 			callback();
-			// 		},
-			// 		error: function(request, status, error) {
-			// 			callback();
-			// 		}
-			// 	});
-			// }
 		});
 
 		$("body").on("change", "#inputCategories", function() {
@@ -363,7 +165,7 @@
 		$(".multiSelect").trigger('change');
 	});
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/header}}
 <section class="showing_categ">
 	<div class="" >
@@ -390,119 +192,118 @@
 									<option >Discount Type</option>
 									<option value="1">Percentage</option>
 									<option value="2">Fixed Price</option>
-<!-- 									<option value="3">Fixed Price Discount</option>
+<!-- 								<option value="3">Fixed Price Discount</option>
 									<option value="4">Fixed Cart Discount</option>
- -->									{{/select}}
-								</select>
-							</div>
-							<div class="col-md-12">
-								<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}">
-							</div>
-							<div class="col-md-12">
-								<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"/>
-								<span class="vend_edit_list_spanstyle"> Expiry Date</span>
-							</div>
-							<div class="col-md-12">
-								<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend" value="{{coupon.minimum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allwoed to use the coupon</span>
-							</div>
-							<div class="col-md-12">
-								<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{coupon.maximum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
-							</div>
-							<div class="col-md-12">
-								<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only" value="{{coupon.individual_use_only}}">
-								<b>Individual use only.</b> 
-								<span class="vend_edit_list_spanstyle">
-								</span>
-							</div>
-							<div class="col-md-12">
-								<input type="checkbox" id="inputExcluseSaleItem" name="excluse_sale_item" value="{{coupon.excluse_sale_item}}">
-								<b>Excluse sale Item.</b> <span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
-							</div>
-							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
-									{{#if existingCouponCategories}}
-									{{{optionsSelectedCategory  categories existingCouponCategories}}}
+								-->									{{/select}}
+							</select>
+						</div>
+						<div class="col-md-12">
+							<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}">
+						</div>
+						<div class="col-md-12">
+							<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"/>
+							<span class="vend_edit_list_spanstyle"> Expiry Date</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend" value="{{coupon.minimum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allwoed to use the coupon</span>
+						</div>
+						<div class="col-md-12">
+							<input type="text" name="maximum_spend" placeholder="Maximum Spend" class="vend_edit_lists_textstyle1" id="inputMaximumSpend" value="{{coupon.maximum_spend}}"/><span class="vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allwoed to use the coupon</span>
+						</div>
+						<div class="col-md-12">
+							<input type="checkbox" id="inputIndividualUseOnly" name="individual_use_only" value="{{coupon.individual_use_only}}">
+							<b>Individual use only.</b> 
+							<span class="vend_edit_list_spanstyle">
+							</span>
+						</div>
+						<div class="col-md-12">
+							<input type="checkbox" id="inputExcluseSaleItem" name="excluse_sale_item" value="{{coupon.excluse_sale_item}}">
+							<b>Excluse sale Item.</b> <span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
+								{{#if existingCouponCategories}}
+								{{{optionsSelectedCategory  categories existingCouponCategories}}}
 								{{else}}
-									{{#each categories}}
-										<option value={{this.id}}>{{this.name}}</option>
-									{{/each}}
+								{{#each categories}}
+								<option value={{this.id}}>{{this.name}}</option>
+								{{/each}}
 								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
-							</div>
-							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple" placeholder="Product Exclude Categories">
-									{{#if existingCouponExcludeCategories}}
-									{{{optionsSelectedCategory  categories existingCouponExcludeCategories}}}
+							</select>
+							<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple" placeholder="Product Exclude Categories">
+								{{#if existingCouponExcludeCategories}}
+								{{{optionsSelectedCategory  categories existingCouponExcludeCategories}}}
 								{{else}}
-									{{#each categories}}
-										<option value={{this.id}}>{{this.name}}</option>
-									{{/each}}
+								{{#each categories}}
+								<option value={{this.id}}>{{this.name}}</option>
+								{{/each}}
 								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
-							</div>
-							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
+							</select>
+							<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
 								{{#if existingCouponProducts}}
-									{{{optionsSelected  products existingCouponProducts}}}
+								{{{optionsSelected  products existingCouponProducts}}}
 								{{else}}
-									{{#each products}}
-										<option value={{this.id}}>{{this.product_name}}</option>
-									{{/each}}
+								{{#each products}}
+								<option value={{this.id}}>{{this.product_name}}</option>
+								{{/each}}
 								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
-							</div>
-							<div class="col-md-12">
-								<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
-							    {{#if existingCouponExcludeProducts}}
-									{{{optionsSelected  products existingCouponExcludeProducts}}}
+							</select>
+							<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
+						</div>
+						<div class="col-md-12">
+							<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple" placeholder="Exclude products..">
+								{{#if existingCouponExcludeProducts}}
+								{{{optionsSelected  products existingCouponExcludeProducts}}}
 								{{else}}
-									{{#each products}}
-										<option value={{this.id}}>{{this.product_name}}</option>
-									{{/each}}
+								{{#each products}}
+								<option value={{this.id}}>{{this.product_name}}</option>
+								{{/each}}
 								{{/if}}
-								</select>
-								<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
-							</div>
-							
-							<div class="col-md-12">
-								<input type="text" placeholder="Usage Limit"  class="vend_edit_lists_textstyle1" id="inputUsageLimit" name="usage_limit" value="{{coupon.usage_limit}}">
-								<span class="vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</span>
-							</div>
-							<div class="col-md-12">
-								<input type="text" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" value="{{coupon.limit_usage_to_x_items}}" placeholder="Limit usage to X items" class="vend_edit_lists_textstyle1">
-								<span class="vend_edit_list_spanstyle">The maximum items this coupon can be applied to when using product discount (default is all)</span>
-							</div>
-							<div class="col-md-12">
-								<input type="text" name="usage_limit_per_user" id="inputUsageLimitPerUser" value="{{coupon.usage_limit_per_user}}" placeholder="usage limit per user" class="vend_edit_lists_textstyle1">
-								<span class="vend_edit_list_spanstyle">How many times this coupons can be used by an individual (default is unlimited)</span>
-							</div>
+							</select>
+							<span class="vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</span>
 						</div>
-						<hr/>
-						<div class="row">
-							<div class="col-md-12">
-								{{#if coupon.id}}
-								<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
-								{{else}}
-								<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
-								{{/if}}
-								<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>								
-							</div>
+
+						<div class="col-md-12">
+							<input type="text" placeholder="Usage Limit"  class="vend_edit_lists_textstyle1" id="inputUsageLimit" name="usage_limit" value="{{coupon.usage_limit}}">
+							<span class="vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</span>
 						</div>
-						
-						<div class="row">
-							<div class="col-md-12">
-								<p class="vend_edit_lists_pstyle"></p>
-							</div>
+						<div class="col-md-12">
+							<input type="text" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" value="{{coupon.limit_usage_to_x_items}}" placeholder="Limit usage to X items" class="vend_edit_lists_textstyle1">
+							<span class="vend_edit_list_spanstyle">The maximum items this coupon can be applied to when using product discount (default is all)</span>
 						</div>
-					</form>
-				</div>
-				<div class="col-md-2">
-				</div>				
+						<div class="col-md-12">
+							<input type="text" name="usage_limit_per_user" id="inputUsageLimitPerUser" value="{{coupon.usage_limit_per_user}}" placeholder="usage limit per user" class="vend_edit_lists_textstyle1">
+							<span class="vend_edit_list_spanstyle">How many times this coupons can be used by an individual (default is unlimited)</span>
+						</div>
+					</div>
+					<hr/>
+					<div class="row">
+						<div class="col-md-12">
+							{{#if coupon.id}}
+							<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
+							{{else}}
+							<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
+							{{/if}}
+							<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>	
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<p class="vend_edit_lists_pstyle"></p>
+						</div>
+					</div>
+				</form>
 			</div>
+			<div class="col-md-2">
+			</div>				
 		</div>
 	</div>
+</div>
 </section>
-{{> footer/footer}}
+{{> footer/bottomfooter}}

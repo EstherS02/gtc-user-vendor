@@ -16,6 +16,7 @@ export function vendorAbout(req, res) {
 		vendor_id = req.params.id
 	}
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
 
 	if (req.user)
@@ -75,12 +76,36 @@ export function vendorAbout(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
+		categories: function(callback) {
+			var categoryModel = "Category";
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
 	}, function(err, results) {
 		console.log(LoggedInUser);
 		if (!err) {
 			res.render('vendorPages/vendor-about', {
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
 				follower: results.Follower,

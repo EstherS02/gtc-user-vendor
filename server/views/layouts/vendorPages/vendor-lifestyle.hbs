@@ -24,7 +24,7 @@ $(document).on('change', "#sortListing", function() {
   window.location.href = queries;
 });
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
    {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
    <div class="logged_in_cont">
@@ -137,7 +137,7 @@ $(document).on('change', "#sortListing", function() {
                     </div>
                     <div class="col-md-3 col-12 showing_categ">
                         <p><b>FILTER BY CATEGORY</b></p>
-                        <p class="cat_bg_title_serv lifestyle-market-bg">ALL CATEGORIES ({{categories.count}})</p>
+                        <p class="cat_bg_title_serv lifestyle-market-bg">ALL CATEGORIES ({{category.count}})</p>
                         {{> vendor/vendor-category }}
                     </div>
                 </div>
@@ -146,4 +146,4 @@ $(document).on('change', "#sortListing", function() {
     </div>
 </section>
 
-{{> footer/footer}}
+{{> footer/bottom-footer}}

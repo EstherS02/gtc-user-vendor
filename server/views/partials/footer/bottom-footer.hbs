@@ -98,14 +98,14 @@
                                     <div class="col-md-6 col-6">
                                         <ul class="footer-menu-list">
                                             {{#each bottomCategory.left}}
-                                            <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
+                                            <li><a href="/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
                                             {{/each}}
                                         </ul>
                                     </div>
                                     <div class="col-md-6 col-6 no-padding">
                                         <ul class="footer-menu-list">
                                             {{#each bottomCategory.right}}
-                                            <li><a href="/search?category={{this.id}}">{{this.name}}</a></li>
+                                            <li><a href="/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
                                             {{/each}}
                                         </ul>
                                     </div>

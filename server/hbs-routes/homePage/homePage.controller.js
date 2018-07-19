@@ -13,10 +13,10 @@ export function homePage(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
+	var bottomCategory = {};
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
-	var bottomCategory = {};
 
 	offset = 0;
 	limit = 5;

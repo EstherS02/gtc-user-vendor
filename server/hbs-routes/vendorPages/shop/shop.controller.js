@@ -25,6 +25,7 @@ export function vendorShop(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
+	var bottomCategory = {};
 	var offset, limit, field, order, page;
 	var queryPaginationObj = {};
 	var queryObj = {};
@@ -106,27 +107,20 @@ export function vendorShop(req, res) {
 				});
 		},
 		categories: function(callback) {
-			var result = {};
+						var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
+					console.log("response.count",response.count)
+					var categories = response.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -146,7 +140,9 @@ export function vendorShop(req, res) {
 				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
-				categories: results.categories,
+				categories: results.categories.rows,
+				bottomCategory: bottomCategory,
+				category: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'shop'
 			});

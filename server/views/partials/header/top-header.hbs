@@ -128,7 +128,7 @@
 											<select class="form-control form-control-sm" id="inputSearchCategory" name="category">
 												<option disabled selected>Category</option>
 												{{#each categories}}
-												<option value={{this.id}}>{{this.name}}</option>
+												<option value={{this.id}}>{{#Titlecase this.name}}{{/Titlecase}}</option>
 												{{/each}}
 											</select>
 										</div>

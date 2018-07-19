@@ -13,6 +13,8 @@ import series from 'async/series';
 var async = require('async');
 
 export function vendorDiscussion(req, res) {
+	var categoryModel = "Category";
+	var bottomCategory = {};
 	var LoggedInUser = {};
 
 	if (req.user)
@@ -86,33 +88,35 @@ export function vendorDiscussion(req, res) {
 					return callback(null);
 				});
 		},
-		// categories: function(callback) {
-		// 	var result = {};
-		// 	var categoryQueryObj = {};
-		// 	var productCountQueryParames = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-		// 	categoryQueryObj['status'] = status["ACTIVE"];
-		// 	productCountQueryParames['marketplace_id'] =  marketplace['PUBLIC'];
-		// 	productCountQueryParames['status'] = status["ACTIVE"];
-		// 	// if(vendor_id){
-		// 	productCountQueryParames['vendor_id'] = vendor_id;
-		// 	// }
+			categoryQueryObj['status'] = status["ACTIVE"];
 
-		// 	service.getCategory(categoryQueryObj, productCountQueryParames)
-		// 		.then(function(response) {
-		// 			return callback(null, response);
-
-		// 		}).catch(function(error) {
-		// 			console.log('Error :::', error);
-		// 			return callback(null);
-		// 		});
-		// }
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		console.log(results.VendorDetail)
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
 				marketPlace: marketplace,

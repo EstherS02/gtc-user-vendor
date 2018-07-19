@@ -2,7 +2,7 @@
     <p class="cat_bg_title">ALL CATEGORIES ({{categories.count}})</p> --}}
     <div class="list-group panel ">
      <ul class="list-group">
-      {{#each categories.rows}}
+      {{#each category.rows}}
       <li class="list-group-item">
         <a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="true" aria-controls="collapseCategory{{this.id}}">
           <span>{{this.name}} ({{this.product_count}})</span>
