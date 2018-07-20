@@ -1,12 +1,20 @@
- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
- <section class="showing_categ">
-    <div class="">
-        <div class="container">
-            <div class="row">
-                {{> vendor/navbar}}
-                <div class="col-md-10" style="background-color: #fff;">
-                    <h5 style="padding-top: 20px; float: left;">Tax Summary (CAD)</h5>
-                    <p style="float: right; padding-top: 20px;">Current location: <span class="current-location">Calgary,Albetra,Canada</span> <span class="change-color">(Change)</span></p><br><br><br><br>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>My Wishlist</h2>
+                            <p style="float: right;">Current location: <span class="current-location">Calgary,Albetra,Canada</span> <span class="change-color">(Change)</span></p>
+						</div>
+						<div class="content-body">
+
                     <div class="row">
                         <div class="col-md-12">
                             <select class="vend_edit_lists_buttonstyle" style="width: 10%;">
@@ -133,6 +141,64 @@
                             </tbody>
                         </table>
                     </div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+ <section class="showing_categ">
+    <div class="">
+        <div class="container">
+            <div class="row">
+                {{> vendor/navbar}}
+                <div class="col-md-10" style="background-color: #fff;">
+                    <h5 style="padding-top: 20px; float: left;">Tax Summary (CAD)</h5>
+                    <p style="float: right; padding-top: 20px;">Current location: <span class="current-location">Calgary,Albetra,Canada</span> <span class="change-color">(Change)</span></p><br><br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
             </div>
         </div>

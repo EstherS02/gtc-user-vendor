@@ -82,7 +82,7 @@
 
             },
             error: function (error) {
-                 $('#gtc-add-to-cart').prop('disabled', false);
+                $('#gtc-add-to-cart').prop('disabled', false);
                 $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
                 $('#gtc-cart-alert .cart-message').text("Server Error")
                 $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
@@ -203,28 +203,31 @@
         </div>
     </div>
 </div>
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-    <div class="">
-        <div class="container">
-            <div class="row">
-                {{> vendor/navbar}}
-                <div class="col-md-8" style="background-color: #fff;">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Add Product</h2>
+                            <div class="alert" id="gtc-cart-alert">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <span class="cart-message"></span>
+                            </div>
+                        </div>
+                        <div class="content-body">
                             <form role="form" id="productForm">
                                 <div class="form-group product-heading">
-                                    <p>Add Product</p>
+                                    <p></p>
                                 </div>
-                                <div class="alert" id="gtc-cart-alert">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <span class="cart-message"></span>
-                                </div>
-                                <br>
-                                <br>
                                 <div class="form-group">
                                     <input type="text" name="product_name" id="product_name" class="form-control input-lg" placeholder="Product Name" tabindex="1"
                                         required />
@@ -372,10 +375,31 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> footer/bottom-footer}} {{!-- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<section class="showing_categ">
+    <div class="">
+        <div class="container">
+            <div class="row">
+                {{> vendor/navbar}}
+                <div class="col-md-8" style="background-color: #fff;">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-2">
                 </div>
             </div>
         </div>
     </div>
 </section>
-{{> footer/bottom-footer}}
+{{> footer/bottom-footer}} --}}
