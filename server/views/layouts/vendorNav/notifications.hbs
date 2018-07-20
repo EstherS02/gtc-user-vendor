@@ -17,114 +17,115 @@
 		}
 	}
 	var oldArray = [];
-	$(document).ready(function() {
+	$(document).ready(function () {
 
-	$("#updateBtn").prop("disabled", true);
+		$("#updateBtn").prop("disabled", true);
 
 		var checkboxes = document.getElementsByTagName("input");
-		$(":checkbox:checked").each(function(i) {
+		$(":checkbox:checked").each(function (i) {
 			oldArray.push($(this).val());
 		});
 	});
 
 	function updateNotification(e) {
 		var chkArray = [];
-		$(":checkbox:checked").each(function(i) {
-			if($(this).val() != "on"){
-			chkArray.push($(this).val());
-			}	
+		$(":checkbox:checked").each(function (i) {
+			if ($(this).val() != "on") {
+				chkArray.push($(this).val());
+			}
 		});
 		var a = oldArray.diff(chkArray);
 		var formData = {};
-		formData.data =JSON.stringify(a);
+		formData.data = JSON.stringify(a);
 		//api Call 
-		if(a){
-		$.ajax({
+		if (a) {
+			$.ajax({
 				type: 'POST',
 				url: "/api/notification/addSettings",
 				data: formData,
-				success: function(data, text) {
+				success: function (data, text) {
 					location.reload();
 				},
-				error: function(request, status, error) {
+				error: function (request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
 			});
-	}
+		}
 	}
 
-	Array.prototype.diff = function(a) {
+	Array.prototype.diff = function (a) {
 		return this.filter(x => !a.includes(x))
 			.concat(a.filter(x => !this.includes(x)))
 	};
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
-	$('#CheckBoxList').on('change', 'input[type=checkbox]', function() {
-		$('#updateBtn').prop('disabled', false);
+		$('#CheckBoxList').on('change', 'input[type=checkbox]', function () {
+			$('#updateBtn').prop('disabled', false);
+		});
 	});
-});
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
-{{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="" >
-		<div class="container-fluid">
-			<div class="row">
-				{{> vendor/navbar}} 
-				<div class="col-md-8" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;">Notification Settings</h5>
-					<div class="row">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>
-									 <input type="checkbox" onclick="selectAll(this);"></th> 
-									<th>Event</th>
-									<th>Code</th>
-									<th>Description</th>
-								</tr>
-							</thead>
-							<tbody id="CheckBoxList">
-								{{#each notification}}
-								<tr>
-									{{#if this.VendorNotificationSettings}}
-									<td><input type="checkbox" value="{{this.id}}"></td>
-									{{else}}
-									<td><input type="checkbox" value="{{this.id}}" checked  ></td>
-									{{/if}}
-									<td>
-									{{#if this.VendorNotificationSettings}}
-									<span class="exclamation" style="padding:0px"><i class="fas fa-exclamation-circle " ></i>
-									</span>
-									{{else}}
-									<i class="fas fa-check-circle text_green_color"></i>
-									{{/if}}
-									{{this.name}}</td>
-									<td>{{this.code}}</td>
-									<td>{{this.description}}</td>
-								</tr>
-								{{/each}}
-							</tbody>
-						</table>
-						<button class="btn btn-sm "  id= "updateBtn" onclick="updateNotification(this)" style="margin-left:10px"> update</button>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle"></p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right"></p>
-						</div>
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Notification Settings</h2>
+						</div>
+						<div class="content-body">
+							<div class="row">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" onclick="selectAll(this);">
+											</th>
+											<th>Event</th>
+											<th>Code</th>
+											<th>Description</th>
+										</tr>
+									</thead>
+									<tbody id="CheckBoxList">
+										{{#each notification}}
+										<tr>
+											{{#if this.VendorNotificationSettings}}
+											<td>
+												<input type="checkbox" value="{{this.id}}">
+											</td>
+											{{else}}
+											<td>
+												<input type="checkbox" value="{{this.id}}" checked>
+											</td>
+											{{/if}}
+											<td>
+												{{#if this.VendorNotificationSettings}}
+												<span class="exclamation" style="padding:0px">
+													<i class="fas fa-exclamation-circle "></i>
+												</span>
+												{{else}}
+												<i class="fas fa-check-circle text_green_color"></i>
+												{{/if}} {{this.name}}
+											</td>
+											<td>{{this.code}}</td>
+											<td>{{this.description}}</td>
+										</tr>
+										{{/each}}
+									</tbody>
+								</table>
+								<button class="btn btn-sm " id="updateBtn" onclick="updateNotification(this)" style="margin-left:10px"> update</button>
+							</div>
+						</div>
 					</div>
-
 				</div>
-				<div class="col-md-2">
-				</div>				
 			</div>
 		</div>
 	</div>
-</section>
-{{> footer/bottom-footer}}
+</div>
+{{> footer/bottom-footer}} 
