@@ -241,17 +241,17 @@ export function getCategory(categoryQueryObj, productCountQueryParames) {
             include: [{
                 model: model['SubCategory'],
                 where: categoryQueryObj,
-                attributes: ['id', 'category_id', 'name', 'code'],
                 include: [{
                     model: model['Product'],
                     where: productCountQueryParames,
                     attributes: [],
                     required: false
-                }]
+                }],
+                attributes: ['id', 'category_id', 'name', 'code']
             }, {
                 model: model['Product'],
                 where: productCountQueryParames,
-                attributes: [],
+                attributes: ['id'],
                 required: false
             }],
             attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],

@@ -118,6 +118,13 @@ export function vendorWholesale(req, res) {
 					status: 1
 				},
 				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -129,22 +136,39 @@ export function vendorWholesale(req, res) {
 				});
 		},
 		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
+			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
-					console.log("response.count", response.count)
-					var categories = response.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -175,39 +199,14 @@ export function vendorWholesale(req, res) {
 					like: '%' + req.query.keyword + '%'
 				};
 			}
+			service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 
-			model['MarketplaceType'].findAll({
-				where: marketplaceTypeQueryObj,
-				include: [{
-					model: model['Product'],
-					where: productCountQueryParames,
-					attributes: [],
-					required: false
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['MarketplaceType.id']
-			}).then(function(results) {
-				console.log("results", results)
-				if (results.length > 0) {
-					model['Product'].count({
-						where: productCountQueryParames
-					}).then(function(count) {
-						result.count = count;
-						result.rows = JSON.parse(JSON.stringify(results));
-						return callback(null, result);
-					}).catch(function(error) {
-						console.log('Error:::', error);
-						return callback(error, null);
-					});
-				} else {
-					result.count = 0;
-					result.rows = [];
-					return callback(null, result);
-				}
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
 		}
 	}, function(err, results) {
 		console.log((results.marketPlaceTypes))
@@ -223,8 +222,8 @@ export function vendorWholesale(req, res) {
 				wantToTrade: results.wantToTrade,
 				queryURI: queryURI,
 				requestForQuote: results.requestForQuote,
-				categories: results.categories.rows,
-				category: results.categories,
+				categories: results.categories,
+				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'wholesale'

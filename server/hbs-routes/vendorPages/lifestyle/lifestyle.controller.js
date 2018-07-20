@@ -93,6 +93,13 @@ export function vendorLifestyle(req, res) {
 					status: 1
 				},
 				required: false
+			},{
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -104,26 +111,44 @@ export function vendorLifestyle(req, res) {
 				});
 		},
 		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			productCountQueryParames['status'] = status["ACTIVE"];
 			productCountQueryParames['vendor_id'] = vendor_id;
+			productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
-					var categories = response.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
 	}, function(err, results) {
 		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
@@ -137,8 +162,8 @@ export function vendorLifestyle(req, res) {
 				publicLifestyle: results.publicLifestyle,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
-				categories: results.categories.rows,
-				category: results.categories,
+				categoriesWithCount: results.categoriesWithCount,
+				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle'

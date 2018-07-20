@@ -1,17 +1,66 @@
+<script type="text/javascript">
+	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
+	$("body").on("click", "#followVendor", function() {
+		if(userInfo.email){
+			var  dataItem = {};
+			dataItem.vendor_id = vendorInfo.id;
+			$.ajax({
+				type: "PUT",
+				url: "/api/users/user-vendor-follow",
+				data: dataItem,
+				success: function(result) {
+					if (result){
+						location.reload();
+					}
+					// console.log(result);
+					// console.log(vendorInfo.VendorFollowers)
+				}
+			});
+
+		}else{
+			location.href = "/login";
+		}
+	});
+
+
+</script>
+<script>
+	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
+	// var marketplacetype = {{{ DisplayJSON selectedPage}}}
+	var marketPlaceType = {{{DisplayJSON queryURI}}}
+
+	$(document).ready(function () {
+		$("#vendorSearchForm").submit(function (e) {
+			e.preventDefault();
+			let formInput = $("#vendorSearchForm :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+			if(marketPlaceType.marketplace_id){
+			window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
+			}else{
+				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput
+			}
+		});
+	});
+</script>
+{{#navbarSetting LoggedInUser.id selectedPage}}
+
 <div class="vendor-header">
 	<div class="vp-cover">
-		<img src="gtc-assets/images/inner_page_bnr.jpg" class="object-fit">
+		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit">
 	</div>
 	<div class="vp-title">
 		<div class="gtc-container">
-			<h2>Hayden Agencies Ltd</h2>
+			<h2>{{this.VendorDetail.vendor_name}}</h2>
 		</div>
 	</div>
 	<div class="vp-menu">
 		<div class="gtc-container">
 			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
-				<a class="vendor-logo" href="/">
-					<img src="gtc-assets/img/test-user.png" alt="logo" title="Global Trade Connect">
+				<a class="vendor-logo" href="/vendor/{{this.VendorDetail.id}}">
+					<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} alt="logo" title="Global Trade Connect">
 				</a>
 				<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -20,24 +69,70 @@
 					<div class="row col no-margins no-padding">
 						<div class="col-md-8">
 							<div class="vp-verified-follow d-inline-block">
-								<img src="gtc-assets/img/gtc-verified.png"><img src="gtc-assets/img/follow.png">
+							{{#if VendorDetail.VendorVerification}}
+										<img src="../img/gtc-verified.png" alt="GTC Verified" />
+										{{else}}
+										<img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified"/>
+										{{/if}}
+								{{!-- <img src="gtc-assets/img/gtc-verified.png"> --}}
+								{{#if LoggedInUser.id}}
+											{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
+												{{#if VendorDetail.VendorFollowers}}
+												<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  /></a>
+												{{else}}
+												<a id="followVendor"><img src="../img/follow.png" alt="Follow" /></a>
+												{{/if}}
+											{{/ifCond}}
+										{{else}}
+												{{#if VendorDetail.VendorFollowers}}
+												<a href="" id="followVendor"><img src="../img/unfollow.png" alt="Follow"  /></a>
+												{{else}}
+												<a  href="" id="followVendor"><img src="../img/follow.png" alt="Follow"  /></a>
+												{{/if}}
+										{{/if}}{{!-- <img src="gtc-assets/img/follow.png"> --}}
 							</div>
 							<div class="vp-navmenu d-inline-block">
 								<ul class="navbar-nav vp-nav">
-									<li class="nav-item active"><a href="/directory" class="nav-link">WHOLESALE</a></li>
-									<li class="nav-item"><a href="/wholesale" class="nav-link">SHOP</a></li>
-									<li class="nav-item"><a href="/shop" class="nav-link">SERVICES</a></li>
-									<li class="nav-item"><a href="/services" class="nav-link">LIFESTYLE</a></li>
-									<li class="nav-item"><a href="/lifestyle" class="nav-link">DISCUSSION BOARD</a></li>
-									<li class="nav-item"><a href="/products" class="nav-link">ABOUT</a></li>
-									<li class="nav-item"><a href="/products" class="nav-link">SUPPORT</a></li>
+									{{#if VendorDetail.VendorPlans.[0].plan_id}}
+
+									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}"><a  href="/vendor/wholesale/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}"><a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}"><a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}"><a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
+									{{/if}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'discussion-board'}} active {{/ifCond}}"><a  href="/vendor/discussion-board/{{VendorDetail.id}}" class="nav-link">DISCUSSION BOARD</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'about'}} active {{/ifCond}}"><a  href="/vendor/about/{{VendorDetail.id}}" class="nav-link">ABOUT</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'support'}} active {{/ifCond}}"><a  href="/vendor/support/{{VendorDetail.id}}" class="nav-link">SUPPORT</a></li>
+									{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
+									<li class="nav-item dropdown">
+										<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+											<i class="fas fa-ellipsis-h"></i>
+										</a>
+										<div class="dropdown-menu">
+											<a class="dropdown-item" href="/edit-listing">Edit Listings</a>
+											<a class="dropdown-item" href="/vendor/order-history">Order History</a>
+											<a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
+											<a class="dropdown-item" href="/reporting/performance">Reporting</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="/reviews">See My Reviews</a>
+											<a class="dropdown-item" href="/promote-store">Store Branding</a>
+											<a class="dropdown-item" href="/notifications">Notification Settings</a>
+											<a class="dropdown-item" href="/social-profile">Social Profile Settings</a>
+											<a class="dropdown-item" href="/shipping-settings">Shipping Settings</a>
+											<a class="dropdown-item" href="/payment-settings">Payment Settings</a>
+											<a class="dropdown-item" href="/verification">Get GTC Verified</a>
+											<a class="dropdown-item" href="/gtc-talk">GTC Talk Settings</a>
+											<a class="dropdown-item" href="#">GTC Mail Settings</a>
+										</div>
+									</li>
+									{{/ifCond}}
 								</ul>
 							</div>
 						</div>
 						<div class="col-md-4" style="margin: auto;">
 							<form id="vendorSearchForm" class="search-form-home">
 								<div class="input-group search-input-group">
-									<input type="search" class="form-control form-control-sm" id="inputVSearchText" name="v-search-text" placeholder="Search Hayden Auto" aria-label="...">
+									<input type="search" class="form-control form-control-sm" id="inputVSearchText" name="keyword" placeholder="Search {{this.VendorDetail.vendor_name}}" aria-label="...">
 									<button type="submit" class="btn btn-sm btn-gtc">
 										<i class="fa fa-search"></i>
 									</button>
@@ -50,3 +145,24 @@
 		</div>
 	</div>
 </div> 
+{{else}}
+<div class="vendor-header">
+	<div class="vp-cover">
+		<img src="gtc-assets/images/inner_page_bnr.jpg" class="object-fit">
+	</div>
+	<div class="vp-title">
+		<div class="gtc-container">
+			<h2>GTC Products<a href="/login" style="font-size:15px;color:#fff ">(Login to view vendor detail)</h2>
+		</div>
+	</div>
+	<div class="vp-menu">
+		<div class="gtc-container">
+			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
+				<a class="vendor-logo" href="/">
+					<img src="gtc-assets/img/logo.svg" alt="logo" title="Global Trade Connect">
+				</a>
+			</nav>
+		</div>
+	</div>
+</div> 
+{{/navbarSetting}}

@@ -65,18 +65,32 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 		VendorDetail: function(callback) {
-		var vendorIncludeArr = [{
+var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
 				model: model['VendorPlan'],
-
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
 				},
-				required:false
+				required: false
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -109,7 +123,7 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 	}, function(err, results) {
-		console.log(results.discussion, queryObj)
+		// console.log(results.discussion, queryObj)
 		if(results.discussion.count){
 			var maxSize = results.discussion.count/limit;
 			if(results.discussion.count%limit)

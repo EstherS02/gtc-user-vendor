@@ -131,7 +131,13 @@ export function GetProductDetails(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
-			}, {
+			},{
+				model: model['VendorFollower'],
+				where:{
+					status: status['ACTIVE']
+				},
+				required:false
+			},{
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
@@ -314,6 +320,8 @@ export function GetProductReview(req, res) {
 	var includeArr = [];
 	var LoggedInUser = {};
 	var queryPaginationObj = {};
+	var bottomCategory = {};
+	var categoryModel = "Category";
 	var queryParams = {};
 	var sub_category;
 	var vendor_id;
@@ -467,6 +475,27 @@ export function GetProductReview(req, res) {
 				});
 		},
 		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		categoriesWithCount: function(callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -490,22 +519,11 @@ export function GetProductReview(req, res) {
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function(response) {
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		category: function(callback) {
-			service.findRows("Category", {}, 0, null, 'id', 'asc')
-				.then(function(category) {
-					return callback(null, category.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}
 
 	}, function(err, results) {
 		queryURI['marketplace_id'] = results.Product.marketplace_id;
@@ -562,6 +580,8 @@ export function GetProductReview(req, res) {
 				Reviews: results.Review.rows,
 				LoggedInUser: LoggedInUser,
 				Rating: productRating,
+				bottomCategory: bottomCategory,
+				categoriesWithCount: results.categoriesWithCount,
 				AvgRating: productAvgRating,
 				RelatedProducts: results.RelatedProducts.rows,
 				queryPaginationObj: queryPaginationObj,
@@ -569,7 +589,6 @@ export function GetProductReview(req, res) {
 				VendorDetail: results.VendorDetail,
 				categories: results.categories,
 				queryURI: queryURI,
-				category: results.category,
 				selectedPage: selectedPage,
 				page: page,
 				pageCount: results.Review.count - offset,

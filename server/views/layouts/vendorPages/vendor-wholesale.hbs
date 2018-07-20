@@ -24,7 +24,7 @@
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
- {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+ {{> vendor/vendor-header VendorDetail = VendorDetail}}
  <div class="logged_in_cont" >
   <div class="container">
     <div class="row">
@@ -358,7 +358,7 @@
 </div>
 <div class="col-md-3 showing_categ">
   <p><b>FILTER BY CATEGORY</b></p>
-  <p class="cat_bg_title">ALL CATEGORIES ({{category.count}})</p>
+  <p class="cat_bg_title">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
   {{> vendor/vendor-category  }}
 </div>
 </div>
