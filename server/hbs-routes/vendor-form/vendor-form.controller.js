@@ -9,6 +9,7 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function vendorForm(req, res) {
+	
 	var countryModel = "Country";
 	var currencyModel = "Currency";
 	var timezoneModel = "Timezone";
