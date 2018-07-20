@@ -3961,7 +3961,7 @@ button.upload-btn {
 }
 
 hr {
-    margin-top: 4rem;
+    /*margin-top: 4rem;*/
 }
 
 input.upload-btn1 {
@@ -4959,7 +4959,7 @@ img.calendar-icon {
 /*-- media quary --*/
 
 hr {
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    /*border: 1px solid rgba(0, 0, 0, 0.05);*/
 }
 
 .col-md-8.col-12.re_pr_re_bd_bg {
