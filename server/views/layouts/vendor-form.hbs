@@ -1,36 +1,36 @@
 <style type="text/css">
-    .fas{
+    .fas {
         cursor: pointer;
     }
 </style>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#gtc-form-alert").hide();
         var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
         var cropperOutputImage;
         var fileDetails = {};
-        var imagesPreview = function(uploader, placeToInsertImagePreview) {
+        var imagesPreview = function (uploader, placeToInsertImagePreview) {
             if (uploader.files && uploader.files[0]) {
                 $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
                 cropperInputImage = document.getElementById('uploaded-profile-picture');
                 $('#profile-picture-modal').modal('show');
             }
         };
-        $('#icon').on('change', function() {
+        $('#icon').on('change', function () {
             imagesPreview(this);
             test = 'div.icon';
         });
-        $('#cover_pic').on('change', function() {
+        $('#cover_pic').on('change', function () {
             imagesPreview(this);
             test = 'div.cov_pic';
         });
-        $('#profile-picture-modal').on('shown.bs.modal', function() {
+        $('#profile-picture-modal').on('shown.bs.modal', function () {
             if (test == 'div.icon') {
                 cropper = new Cropper(cropperInputImage, {
                     aspectRatio: 16 / 16,
                     minCropBoxHeight: 280,
                     minCropBoxWidth: 1364,
-                    ready: function() {
+                    ready: function () {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
                 });
@@ -39,18 +39,18 @@
                     aspectRatio: 16 / 9,
                     minCropBoxHeight: 280,
                     minCropBoxWidth: 1364,
-                    ready: function() {
+                    ready: function () {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
                 });
             }
-        }).on('hidden.bs.modal', function() {
+        }).on('hidden.bs.modal', function () {
             cropBoxData = cropper.getCropBoxData();
             canvasData = cropper.getCanvasData();
             cropper.destroy();
         });
-        $('#crop-profile-image').click(function() {
-            cropper.getCroppedCanvas().toBlob(function(blob) {
+        $('#crop-profile-image').click(function () {
+            cropper.getCroppedCanvas().toBlob(function (blob) {
                 cropperOutputImage = blob;
                 fileDetails["croppedExtension"] = blob["type"].split("/")[1];
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -76,7 +76,7 @@
                 dataType: 'json',
                 processData: false,
                 contentType: false,
-                success: function(data) {
+                success: function (data) {
                     if (test == 'div.icon') {
                         vendor_profile_pic_url = data.imageURL;
                         console.log('vendor_profile_pic_url', vendor_profile_pic_url);
@@ -85,14 +85,14 @@
                         console.log('vendor_cover_pic_url', vendor_cover_pic_url);
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log("Error", error);
                 }
             })
         }
-        $("#vendorForm").submit(function(e) {
+        $("#vendorForm").submit(function (e) {
             e.preventDefault();
-            let input = $("#vendorForm :input").filter(function(index, element) {
+            let input = $("#vendorForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
 
@@ -103,26 +103,26 @@
                     url: '/api/vendor/starter-seller',
                     type: 'POST',
                     data: formInput,
-                    success: function(result) {
+                    success: function (result) {
                         window.location.href = '/vendor-landing';
                     },
-                    error: function(error) {
+                    error: function (error) {
                         $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-danger');
                         $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
-                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function () {
                             $("#gtc-form-alert").slideUp(500);
                         });
                     }
                 });
             }
         })
-        $("#country").change(function() {
+        $("#country").change(function () {
             var country_id = $('#country').val();
 
             $.ajax({
                 url: '/api/states?country_id=' + country_id,
                 type: 'GET',
-                success: function(result) {
+                success: function (result) {
                     $("#state").empty();
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
@@ -130,7 +130,7 @@
                         $("#state").append(options)
                     }
                 },
-                error: function(error) {
+                error: function (error) {
                     console.log("Error", error);
                 }
             });
@@ -158,150 +158,8 @@
             }
         });
     });
-</script> 
-{{> header/top-header LoggedInUser = LoggedInUser}}
-<div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Become a Vendor</h2>
-                        </div>
-                        <div class="content-body">
-                            <form class="form">
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Vendor Name</label>
-                                            <input type="text" class="form-control-customized form-control-sm">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Address</label>
-                                            <input type="text" class="form-control-customized form-control-sm">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Base Location</label>      
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" name="location" id="inputGroupLocation">
-                                                    <option disabled selected>Select Location...</option>
-                                                </select>
-                                                <label class="input-group-append custom-group-append" for="inputGroupLocation"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Province</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
-                                                    <option disabled selected>Select Province...</option>
-                                                </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">City</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
-                                                    <option disabled selected>Select City...</option>
-                                                </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Currency</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
-                                                    <option disabled selected>Select Currency...</option>
-                                                </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Timezone</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" id="inputGroupSelect02">
-                                                    <option disabled selected>Select Timezone...</option>
-                                                </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="label-control">About</label>
-                                            <textarea class="form-control-customized" rows="2"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Vendor Icon</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="inputGroupVendorIcon">
-                                                    <label class="custom-file-label customized-file-label" for="inputGroupVendorIcon">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Cover Picture</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="inputGroupVendorCover">
-                                                    <label class="custom-file-label customized-file-label" for="inputGroupVendorCover">Choose file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{{!-- <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -322,176 +180,157 @@
             </div>
         </div>
     </div>
-</div> --}}
-{{!-- <section class="showing_categ">
-    <div class="">
-        <div class="container">
-            <div class="row">
-                {{> vendor/navbar}}
-                <div class="col-md-8" style="background-color: #fff;">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-3">
-                            <form role="form" id="vendorForm">
-                                <div class="form-group product-heading">
-                                    <p>Vendor Form</p>
-                                </div>
-                                <div class="alert" id="gtc-form-alert">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <span class="form-message"></span>
-                                </div>
+</div>
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Become a Vendor</h2>
+                        </div>
+                        <div class="alert" id="gtc-form-alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="content-body">
+                            <form id="vendorForm" class="form">
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>
-                                                <small>Vendor Name:
-                                               <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The Company Name"></i></small>
-                                            </h6>
-                                        </label>
-                                        <br>
+                                    <div class="col-lg-8">
                                         <div class="form-group">
-                                            <input type="text" name="vendor_name" id="vendor_name" class="form-control input-lg" placeholder="Vendor Name" tabindex="1"
-                                                required />
+                                            <label class="label-control">Vendor Name</label>
+                                            <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required/>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>
-                                                <small>Address:
-                                                    <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The physical location of your business"></i>
-                                                </small>
-                                            </h6>
-                                        </label>
-                                        <br>
+                                    <div class="col-lg-8">
                                         <div class="form-group">
-                                            <input type="text" name="address" id="address" placeholder="Address" class="form-control" required/>
+                                            <label class="label-control">Address</label>
+                                            <input type="text" name="address" class="form-control-customized form-control-sm" required/>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control" id="country" name="base_location" required>
-                                                <option disabled selected>Base Location</option>
-                                                {{#each country}}
-                                                <option value="{{this.id}}">{{ this.name}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label class="label-control">Base Location</label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm" name="base_location" id="country" required>
+                                                    <option disabled selected>Select Location...</option>
+                                                    {{#each country}}
+                                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                                <label class="input-group-append custom-group-append" for="country"></label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control " name="province_id" id="state" value="" required>
-                                                <option disabled selected>Province</option>
-                                            </select>
+                                            <label class="label-control">Province</label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm" name="province_id" id="state" required>
+                                                    <option disabled selected>Select Province...</option>
+                                                </select>
+                                                <div class="input-group-append custom-group-append">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-4 col-md-6">
-                                        <label>
-                                            <h6>
-                                                <small>Currency:
-                                                    <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="This controls what currency your product will be displayed in"></i>
-                                                </small>
-                                            </h6>
-                                        </label>
-                                        <br/>
-                                        <div class="form-group">
-                                            <select class="form-control " id="currency" name="currency_id" required>
-                                                <option disabled selected>Currency</option>
-                                                {{#each currency}}
-                                                <option value="{{this.id}}">{{ this.name}}</option>
-                                                {{/each}}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-4 col-md-6">
-                                        <label>
-                                            <h6>
-                                                <small>TimeZone:</small>
-                                            </h6>
-                                        </label>
-                                        <div class="form-group">
-                                            <select class="form-control" name="timezone_id" id="timezone_id" value="">
-                                                <option disabled selected>TimeZone</option>
-                                                {{#each timezone}}
-                                                <option value="{{this.id}}">{{ this.timezone}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label class="label-control">City</label>
+                                            <input type="text" name="city" class="form-control-customized form-control-sm" required>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>
-                                                <small>About:</small>
-                                            </h6>
-                                        </label>
-                                        <br>
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <textarea id="about" name="about" class="form-control"></textarea>
+                                            <label class="label-control">Currency</label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm" name="currency_id" id="inputGroupSelect02" required>
+                                                    <option disabled selected>Select Currency...</option>
+                                                    {{#each currency}}
+                                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                                <div class="input-group-append custom-group-append">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="label-control">Timezone</label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm" name="timezone_id" id="inputGroupSelect02">
+                                                    <option disabled selected>Select Timezone...</option>
+                                                    {{#each timezone}}
+                                                    <option value="{{this.id}}">{{ this.timezone}}</option>
+                                                    {{/each}}
+                                                </select>
+                                                <div class="input-group-append custom-group-append">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>
-                                                <small>Vendor Icon:
-                                                <i class="fas fa-question" data-toggle="tooltip" data-placement="top" title="The Company Logo"></i>
-                                           </small>
-                                           </h6>
-                                        </label>
-                                        <br>
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <input id="icon" type="file" name="icon" class="form-control" required>
+                                            <label class="label-control">About</label>
+                                            <textarea class="form-control-customized" name="about" rows="2"></textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="icon"></div>
-                                <br/>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>
-                                                <small>Vendor Cover Picture:</small>
-                                            </h6>
-                                        </label>
-                                        <br>
+                                    <div class="col-lg-8">
                                         <div class="form-group">
-                                            <input id="cover_pic" type="file" name="cover_pic" class="form-control">
+                                            <label class="label-control">Vendor Icon</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="icon" required>
+                                                    <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="icon"></div>
                                     </div>
                                 </div>
-                                <div class="cov_pic"></div>
-                                <hr class="colorgraph">
                                 <div class="row">
-                                    <div class="col-xs-12 col-md-6">
-                                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Cover Picture</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="cover_pic">
+                                                    <label class="custom-file-label customized-file-label" for="cover_pic">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="cov_pic"></div>
                                     </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <button type="reset" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
+                                </div><br/>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                </div>
             </div>
         </div>
     </div>
-</section> --}}
-
+</div>
 {{> footer/bottom-footer}}

@@ -382,15 +382,22 @@
 
 	$("#featureForm").validate({
 		rules: {
-			profile: {require_from_group: [1, ".position"]},
-			search_result: {require_from_group: [1, ".position"]},
-			wholesale_landing: {require_from_group: [1, ".position"]},
-			shop_landing: {require_from_group: [1, ".position"]},
-			service_landing:{require_from_group: [1, ".position"]},
-			subscription_landing:{require_from_group: [1, ".position"]},
-			homepage:{require_from_group: [1, ".position"]}
+			feature_position:{
+            required: function(elem)
+            { return $("input.select:checked").length > 0;}
+
+          }
+		},
+		messages: {
+			feature_position: "Please select one feature position"
 		}
 	});
+
+	$("#featureForm").submit(function (e) {
+		if ($('#featureForm').valid()) {
+		
+		}
+	})
 
 	});
 
@@ -772,39 +779,40 @@
 							</div>
 							<p class="edit-listing-feature" style="margin-bottom:10px;">Feature this product:</p>
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="profile" value="0" />My Profile Page Only (Free)
+								<input type="checkbox" class="position" name="feature_position[]"  />My Profile Page Only (Free)
 							</div>
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="search_result" value="50" />In Search Results(+$50/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="50" />In Search Results(+$50/mo)
 							</div>
 							{{#ifCond this.type '==' 'wholesale'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="wholesale_landing" value="150" />Wholesale Landing(+$150/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="150" />Wholesale Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'shop'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="shop_landing" value="150" />Shop Landing(+$150/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="150" />Shop Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'services'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="service_landing" value="150" />Services Landing(+$150/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="150" />Services Landing(+$150/mo)
 							</div>
 							{{else ifCond this.type '==' 'lifestyle'}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-								<input type="checkbox" class="position" name="subscription_landing" value="150" />Subscription Landing(+$150/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="150" />Subscription Landing(+$150/mo)
 							</div>
 							{{/ifCond}}
 							<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
-								<input type="checkbox" class="position" name="homepage" value="250" />GTC Homepage(+$250/mo)
+								<input type="checkbox" class="position" name="feature_position[]" value="250" />GTC Homepage(+$250/mo)
 							</div>
 
 							<p class="list_tot"> TOTAL:$
 								<span class="list_tot" id="totalFees"></span>
 							</p>
 							<p class="list_bg_blue">
-								<a href="/order-checkout/payment-method">YES,PROMOTE THIS!
+								<input type="submit" value="Validate!">
+								{{!-- <a href="/order-checkout/payment-method">YES,PROMOTE THIS!
 									<i class="fas fa-caret-right"></i>
-								</a>
+								</a> --}}
 							</p>
 							{{!--
 							<p class="list_butt_2">Performance</p>

@@ -89,6 +89,7 @@ export function vendorForm(req, res) {
 				country: results.country,
 				currency: results.currency,
 				timezone: results.timezone,
+				selectedPage: 'vendor-form',
 				vendorPlan: vendorPlan
 			});
 		} else {
