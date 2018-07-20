@@ -28,10 +28,10 @@
 				type: 'PUT',
 				url: '/api/wishlist/cart',
 				data: dataInfo,
-				success: function(data, text) {
+				success: function (data, text) {
 					window.location.href = '/wishlist';
 				},
-				error: function(request, status, error) {
+				error: function (request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
@@ -43,7 +43,7 @@
 
 	function remove(e) {
 		var chkArray = [];
-		$(':checkbox:checked').each(function(i) {
+		$(':checkbox:checked').each(function (i) {
 			if ($(this).val() != 'on') {
 				chkArray.push($(this).val());
 			}
@@ -55,10 +55,10 @@
 				url: '/api/wishlist/remove',
 				contentType: "application/json",
 				data: JSON.stringify(chkArray),
-				success: function(data, text) {
+				success: function (data, text) {
 					location.reload();
 				},
-				error: function(request, status, error) {
+				error: function (request, status, error) {
 					console.log('request', request);
 					console.log('status', status);
 				}
@@ -68,18 +68,18 @@
 		}
 	}
 
-	function deleteAll(e){
+	function deleteAll(e) {
 		$.ajax({
-				type: 'GET',
-				url: '/api/wishlist/delete',
-				success: function(data, text) {
-					location.reload();
-				},
-				error: function(request, status, error) {
-					console.log('request', request);
-					console.log('status', status);
-				}
-			});
+			type: 'GET',
+			url: '/api/wishlist/delete',
+			success: function (data, text) {
+				location.reload();
+			},
+			error: function (request, status, error) {
+				console.log('request', request);
+				console.log('status', status);
+			}
+		});
 	}
 
 	function quantityCheck(val) {
@@ -91,103 +91,126 @@
 			$("#inputQuantity").val(availableProductQuantity);
 		}
 	}
-	
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
-{{> vendor/header}}
-<section class="showing_categ">
-	<div class="" >
-		<div class="container">
-			<div class="row">
-				{{> vendor/navbar}} 
-				<div class="col-md-10" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;">My Wishlist</h5>
-					<div class="row">
-						<div class="col-md-6">
-							<input type="submit" value="REMOVE" onclick="remove(this)"class="vend_edit_lists_buttonstyle" />
+
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>My Wishlist</h2>
 						</div>
-						<div class="col-md-6">
-							<input type="submit" onclick="deleteAll(this)" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-6">
+									<input type="submit" value="REMOVE" onclick="remove(this)" class="vend_edit_lists_buttonstyle" />
+								</div>
+								<div class="col-md-6">
+									<input type="submit" onclick="deleteAll(this)" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+								</div>
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle float-right">Entries per page:
+										<a href="/wishlist?limit=10"> 10</a>
+										<a href="/wishlist?limit=25"> 25</a>
+										<a href="/wishlist?limit=100"> 100</a>
+										<a href="/wishlist?limit=All"> All </a>
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" onclick="selectAll(this);">
+											</th>
+											<th>Product Name</th>
+											<th>Store Name</th>
+											<th>Available</th>
+											<th>Type</th>
+											<th>price</th>
+											<th>Add to Cart</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{{#each wishlist}}
+										<tr>
+											<td>
+												<input type="checkbox" value="{{this.id}}">
+											</td>
+											<td class="text_blue_color">
+												<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" />
+												<a href="#">{{this.Product.product_name}}</a>
+											</td>
+											<td class="text_blue_color">
+												<a href="#">{{this.User.first_name}} {{this.User.last_name}}</a>
+											</td>
+											{{#if this.Product.quantity_available}}
+											<td class="text_green_color" style="font-size: 20px;">
+												<i class="fas fa-check-circle"></i>
+											</td>
+											{{else}}
+											<td class="text_orange_color" style="font-size: 20px;">
+												<i class="fas fa-exclamation-circle"></i>
+											</td>
+											{{/if}} {{!-- Type --}} {{#ifCond this.Product.marketplace_id "==" 1}}
+											<td>Wholesale</td>
+											{{else ifCond this.Product.marketplace_id "==" 2}}
+											<td>Retail</td>
+											{{else ifCond this.Product.marketplace_id "==" 3}}
+											<td>Service</td>
+											{{else ifCond this.Product.marketplace_id "==" 4}}
+											<td>Life style</td>
+											{{/ifCond}} {{!--End Type --}}
+											<td class="text_black_color">{{this.Product.price}}</td>
+											<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}"> {{!--
+											<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
+											<td class="text_blue_color">
+												<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+												 placeholder="1" onchange="quantityCheck(this)">
+												<a href="#">
+													Update </a>
+											</td>
+											<td class="text_blue_color ">
+												<i class="fas fa-credit-card" onclick="CartUpdate()">
+													<a href="#"> Add to cart </a>
+												</i>
+											</td>
+										</tr>
+										{{/each}}
+									</tbody>
+								</table>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+								</div>
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle float-right">Entries per page:
+										<a href="/wishlist?limit=10"> 10</a>
+										<a href="/wishlist?limit=25"> 25</a>
+										<a href="/wishlist?limit=100"> 100</a>
+										<a href="/wishlist?limit=All"> All </a>
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
-								<a href="/wishlist?limit=10"> 10</a>
-								<a href="/wishlist?limit=25"> 25</a>
-								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=All"> All </a>
-							</p>
-						</div>
-					</div>
-					<div class="row">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th><input type="checkbox" onclick="selectAll(this);"></th>
-									<th>Product Name</th>
-									<th>Store Name</th>
-									<th>Available</th>
-									<th>Type</th>
-									<th>price</th>
-									<th>Add to Cart</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								{{#each wishlist}}
-								<tr>
-									<td><input type="checkbox" value="{{this.id}}"></td>
-									<td class="text_blue_color"><img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" /> <a href="#">{{this.Product.product_name}}</a></td>
-									<td class="text_blue_color"><a href="#">{{this.User.first_name}} {{this.User.last_name}}</a></td>
-									{{#if this.Product.quantity_available}}
-									<td class="text_green_color" style="font-size: 20px;"><i class="fas fa-check-circle"></i></td>
-									{{else}}
-									<td class="text_orange_color" style="font-size: 20px;"><i class="fas fa-exclamation-circle"></i></td>
-									{{/if}}
-									{{!-- Type --}}
-									{{#ifCond this.Product.marketplace_id "==" 1}}
-									<td>Wholesale</td> 
-									{{else ifCond this.Product.marketplace_id "==" 2}}
-									<td>Retail</td>
-									{{else ifCond this.Product.marketplace_id "==" 3}}
-									<td>Service</td> 
-									{{else ifCond this.Product.marketplace_id "==" 4}}
-									<td>Life style</td> 
-									{{/ifCond}}
-									{{!--End Type --}}
-									<td class="text_black_color">{{this.Product.price}}</td>
-										<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}">
-										{{!-- <input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
-										<td class="text_blue_color">
-											<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" onchange="quantityCheck(this)"><a href="#">
-											Update </a>
-										</td>
-										<td class="text_blue_color "  ><i class="fas fa-credit-card" onclick="CartUpdate()"> <a href="#"> Add to cart </a></i></td>
-								</tr>
-								{{/each}}
-							</tbody>
-						</table>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page: 
-								<a href="/wishlist?limit=10"> 10</a>
-								<a href="/wishlist?limit=25"> 25</a>
-								<a href="/wishlist?limit=100"> 100</a>
-								<a href="/wishlist?limit=All"> All </a>
-							</p>
-						</div>
-					</div>
-				</div>		
+				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}
