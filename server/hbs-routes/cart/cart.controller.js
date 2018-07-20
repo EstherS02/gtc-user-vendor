@@ -14,6 +14,8 @@ const populate = require('../../utilities/populate');
 
 export function cart(req, res) {
     var LoggedInUser = {};
+    var bottomCategory = {};
+    var categoryModel = "Category";
 
     if (req.user)
         LoggedInUser = req.user;
@@ -94,7 +96,7 @@ export function cart(req, res) {
                     return cb(error);
                 });
         },
-        categories: function(callback) {
+        categories: function(cb) {
                 var includeArr = [];
                 const categoryOffset = 0;
                 const categoryLimit = null;
@@ -110,10 +112,10 @@ export function cart(req, res) {
                         var categories = category.rows;
                         bottomCategory['left'] = categories.slice(0, 8);
                         bottomCategory['right'] = categories.slice(8, 16);
-                        return callback(null, category.rows);
+                        return cb(null, category.rows);
                     }).catch(function(error) {
                         console.log('Error :::', error);
-                        return callback(null);
+                        return cb(null);
                     });
             }
     }, function(err, results) {
