@@ -332,6 +332,8 @@ export function index(req, res) {
 				});
 		}
 	}, function(error, results) {
+		console.log(results.categoriesWithCount.count)
+		console.log(results.categoriesWithCount.rows)
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('search', {

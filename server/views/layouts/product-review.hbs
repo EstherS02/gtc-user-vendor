@@ -48,9 +48,9 @@
 		}
 	}
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+{{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
-	{{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+	{{> vendor/vendor-header VendorDetail = VendorDetail}}
 	
 	<div class="logged_in_cont" >
 		<div class="container">
@@ -180,7 +180,7 @@
 												<ul class="pagination justify-content-center">
 													{{#each pages}}
 													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="product/{{../../queryParams.product_slug}}/{{../../
+														<a class="page-link" href="products/{{../../queryParams.product_slug}}/{{../../
 														queryParams.id}}/allReviews?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
 													</li>
 													{{/each}} 
@@ -255,7 +255,7 @@
 						</div>
 						<div class="col-md-3 showing_categ">
 							<p><b>FILTER BY CATEGORY</b></p>
-							<p class="cat_bg_title_shp">ALL CATEGORIES ({{categories.count}})</p>
+							<p class="cat_bg_title_shp">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
 							{{> vendor/vendor-category }}
 						</div>
 					</div>
@@ -264,4 +264,4 @@
 		</div>
 	</div>
 </section>
-{{> footer/footer}}
+{{> footer/bottom-footer}}
