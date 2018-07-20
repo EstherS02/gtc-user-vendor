@@ -19,9 +19,11 @@ export function addProduct(req, res) {
     var marketplaceTypeModel = "MarketplaceType";
 
     var offset, limit, field, order;
-    var queryObj = {},  LoggedInUser = {};
+    var queryObj = {},
+        LoggedInUser = {};
+    var bottomCategory = {};
 
-    var type=req.params.type;
+    var type = req.params.type;
 
     offset = 0;
     limit = null;
@@ -30,9 +32,9 @@ export function addProduct(req, res) {
 
     var LoggedInUser = {};
 
-    if(req.user)
-    LoggedInUser = req.user;
-    
+    if (req.user)
+        LoggedInUser = req.user;
+
 
     queryObj['status'] = status["ACTIVE"];
 
@@ -41,52 +43,63 @@ export function addProduct(req, res) {
     };
 
     async.series({
-        category: function (callback) {
-            service.findRows(categoryModel, queryObjCategory, offset, limit, field, order)
-                .then(function (category) {
-                    return callback(null, category.rows);
+        categories: function(callback) {
+            var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            const categoryQueryObj = {};
 
-                }).catch(function (error) {
+            categoryQueryObj['status'] = status["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        country: function (callback) {
+        country: function(callback) {
             service.findRows(countryModel, queryObj, offset, limit, field, order)
-                .then(function (country) {
+                .then(function(country) {
                     return callback(null, country.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         },
-        marketplaceType: function (callback) {
+        marketplaceType: function(callback) {
             service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
-                .then(function (marketplaceType) {
+                .then(function(marketplaceType) {
                     return callback(null, marketplaceType.rows);
 
-                }).catch(function (error) {
+                }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
         }
-    }, function (err, results) {
-		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
+    }, function(err, results) {
+        var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+        var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
         if (!err) {
             res.render('vendorNav/listings/add-product', {
                 title: "Global Trade Connect",
-                category: results.category,
+                categories: results.categories,
+                bottomCategory: bottomCategory,
                 country: results.country,
-                marketplaceType:results.marketplaceType,
+                marketplaceType: results.marketplaceType,
                 LoggedInUser: LoggedInUser,
-                vendorPlan:vendorPlan,
-				type:type,
-				dropDownUrl:dropDownUrl,
+                vendorPlan: vendorPlan,
+                type: type,
+                dropDownUrl: dropDownUrl,
             });
-        }
-        else {
+        } else {
             res.render('vendorNav/listings/add-product', err);
         }
     });

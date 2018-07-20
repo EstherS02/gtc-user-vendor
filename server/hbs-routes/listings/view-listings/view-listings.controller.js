@@ -14,8 +14,11 @@ var url = require('url');
 export function viewListings(req, res) {
 
 	var offset, limit, field, order, page, type;
-	var queryParams = {}, LoggedInUser = {};
+	var queryParams = {},
+		LoggedInUser = {};
+	var bottomCategory = {};
 	var productModel = "MarketplaceProduct";
+	var categoryModel = "Category";
 	field = "id";
 	order = "asc";
 	offset = 0;
@@ -70,49 +73,60 @@ export function viewListings(req, res) {
 			queryParams['status'] = status[req.query.status];
 		if (req.query.status == 'SOLDOUT')
 			queryParams['status'] = status[req.query.status];
-	}
-	else {
+	} else {
 		queryParams['status'] = {
 			'$ne': status["DELETED"]
 		}
 	}
 	var queryObjCategory = {
-        status: status['ACTIVE']
-    };
+		status: status['ACTIVE']
+	};
 	// console.log(queryParams)
 	async.series({
-		products: function (callback) {
+		products: function(callback) {
 
 			service.findRows(productModel, queryParams, offset, limit, field, order)
-				.then(function (products) {
+				.then(function(products) {
 					return callback(null, products);
 
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		category: function(callback) {
-                service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-                    .then(function(category) {
-                        return callback(null, category.rows);
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return callback(null);
-                    });
-            }
-	}, function (err, results) {
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+	}, function(err, results) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','').trim();
+		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 
 		if (!err) {
 			res.render('vendorNav/listings/view-listings', {
 				title: "Global Trade Connect",
 				products: results.products.rows,
 				collectionSize: results.products.count,
-				category:results.category,
+				categories: results.categories,
 				page: page,
+				bottomCategory: bottomCategory,
 				pageSize: limit,
 				offset: offset,
 				maxSize: 5,
@@ -120,11 +134,10 @@ export function viewListings(req, res) {
 				LoggedInUser: LoggedInUser,
 				type: type,
 				selectedPage: type,
-				vendorPlan:vendorPlan,
-				dropDownUrl:dropDownUrl
+				vendorPlan: vendorPlan,
+				dropDownUrl: dropDownUrl
 			});
-		}
-		else {
+		} else {
 			res.render('vendorNav/listings/view-listings', err);
 		}
 	});

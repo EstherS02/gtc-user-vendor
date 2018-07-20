@@ -13,19 +13,23 @@ var url = require('url');
 
 export function editListing(req, res) {
 
-	let searchObj = {},LoggedInUser = {},queryObj = {},type;
+	let searchObj = {},
+		LoggedInUser = {},
+		queryObj = {},
+		type;
 	var productModel = "Product";
 	var categoryModel = "Category";
 	var subCategoryModel = "SubCategory";
 	var marketplaceTypeModel = "MarketplaceType";
 	var featureModel = "MarketplaceProduct";
 	var productIncludeArr = [];
+	var bottomCategory = {};
 
 	var offset, limit, field, order;
 	offset = 0;
-    limit = null;
-    field = "id";
-    order = "asc";
+	limit = null;
+	field = "id";
+	order = "asc";
 
 	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType');
 
@@ -38,78 +42,88 @@ export function editListing(req, res) {
 		searchObj["product_slug"] = req.params.product_slug;
 
 	async.series({
-		product: function (callback) {
+		product: function(callback) {
 
 			service.findOneRow(productModel, searchObj, productIncludeArr)
-				.then(function (product) {
+				.then(function(product) {
 					return callback(null, product);
 
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		category: function (callback) {
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-			service.findRows(categoryModel, queryObj, offset, limit, field, order)
-				.then(function (category) {
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
-
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		subCategory: function (callback) {
+		subCategory: function(callback) {
 
 			service.findRows(subCategoryModel, queryObj, offset, limit, field, order)
-				.then(function (subCategory) {
+				.then(function(subCategory) {
 					return callback(null, subCategory.rows);
 
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		marketplaceType: function (callback) {
-            service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
-                .then(function (marketplaceType) {
-                    return callback(null, marketplaceType.rows);
+		marketplaceType: function(callback) {
+			service.findRows(marketplaceTypeModel, queryObj, offset, limit, field, order)
+				.then(function(marketplaceType) {
+					return callback(null, marketplaceType.rows);
 
-                }).catch(function (error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
-		feature: function(callback){
-            service.findOneRow(featureModel, searchObj)
-			.then(function (feature) {
-				return callback(null, feature);
+		feature: function(callback) {
+			service.findOneRow(featureModel, searchObj)
+				.then(function(feature) {
+					return callback(null, feature);
 
-			}).catch(function (error) {
-				console.log('Error :::', error);
-				return callback(null);
-			});
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
-	}, function (err, results) {
+	}, function(err, results) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-		var dropDownUrl = fullUrl.replace(req.url,'').replace(req.protocol + '://' + req.get('host'),'').replace('/','');
+		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 		if (!err) {
 			res.render('vendorNav/listings/edit-listing', {
 				title: "Global Trade Connect",
 				statusCode: status,
 				product: results.product,
-				category: results.category,
+				categories: results.categories,
+				bottomCategory: bottomCategory,
 				subCategory: results.subCategory,
 				LoggedInUser: LoggedInUser,
-				marketplaceType:results.marketplaceType,
+				marketplaceType: results.marketplaceType,
 				type: type,
-				vendorPlan:vendorPlan,
-				feature:results.feature,
-				dropDownUrl:dropDownUrl
+				vendorPlan: vendorPlan,
+				feature: results.feature,
+				dropDownUrl: dropDownUrl
 			});
-		}
-		else {
+		} else {
 			res.render('vendorNav/listings/edit-listing', err);
 		}
 	});

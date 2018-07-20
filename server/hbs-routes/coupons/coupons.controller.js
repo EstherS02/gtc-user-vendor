@@ -16,7 +16,6 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function coupons(req, res) {
 	var LoggedInUser = {};
-	var bottomCategory = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -30,6 +29,7 @@ export function coupons(req, res) {
 	var offset = 0;
 	var limit = 10;
 	var queryObj = {};
+	var bottomCategory ={};
 	var couponModel = 'Coupon';
 
 	if (typeof req.query.limit !== 'undefined') {
@@ -37,9 +37,9 @@ export function coupons(req, res) {
 		limit = parseInt(limit);
 	}
 	if (typeof req.query.status !== 'undefined') {
-		var status = '';
-		if (status = statusCode[req.query.status])
-			queryObj['status'] = parseInt(status);
+		var statusNew = '';
+		if (statusNew = status[req.query.status])
+			queryObj['status'] = parseInt(statusNew);
 	}
 	if (typeof req.query.name !== 'undefined') {
 		queryObj['coupon_name'] = {
@@ -66,7 +66,7 @@ export function coupons(req, res) {
 
 	console.log('queryObj', queryObj);
 	 var queryObjCategory = {
-        status: statusCode['ACTIVE']
+        status: status['ACTIVE']
     };
 	async.series({
 			Coupons: function(callback) {
@@ -79,19 +79,29 @@ export function coupons(req, res) {
 						return callback(null);
 					});
 			},
-			category: function(callback) {
-				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-					.then(function(category) {
-						var categories = category.rows;
+		categories: function(callback) {
+			var categoryModel = "Category";
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
 					bottomCategory['right'] = categories.slice(8, 16);
-						return callback(null, category.rows);
-
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			}
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
 
 		},
 		function(err, results) {
@@ -103,10 +113,10 @@ export function coupons(req, res) {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
-					statusCode: statusCode,
+					statusCode: status,
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
-					categories: results.category,
+					categories: results.categories,
 					bottomCategory: bottomCategory,
 					selectedPage:'coupons',
 					// pagination
@@ -136,13 +146,13 @@ export function addCoupon(req, res) {
 	var offset, limit, field, order;
 	var productQueryObj = {};
 	var categoryQueryObj = {};
-
+	var bottomCategory={};
 	field = "id";
 	order = "asc";
 
 	productQueryObj['status'] = status["ACTIVE"];
 	categoryQueryObj['status'] = status["ACTIVE"];
-
+	
 	productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 	async.series({
@@ -155,38 +165,44 @@ export function addCoupon(req, res) {
 					return callback(null);
 				});
 		},
-		categories: function(callback) {
-			service.findRows(categoryModel, categoryQueryObj, offset, limit, field, order)
-				.then(function(categories) {
-					return callback(null, categories.rows);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		category: function(callback) {
-			service.findRows("Category", {}, 0, null, 'id', 'asc')
-				.then(function(category) {
-					return callback(null, category.rows);
 
+			categories: function(callback) {
+			var categoryModel = "Category";
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		}
+
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				products: results.products,
 				categories: results.categories,
-				category: results.category,
+				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				vendorPlan:vendorPlan,
+				vendorPlan: vendorPlan,
 				selectedPage:'coupons',
 			});
 		} else {
-			res.render('vendorNav/coupons/edit-coupon', err);
+			res.render('vendorNav/coupons/add-coupon', err);
 		}
 	});
 }
@@ -194,6 +210,7 @@ export function addCoupon(req, res) {
 export function editCoupons(req, res) {
 
 	var LoggedInUser = {};
+	var bottomCategory={};
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -246,8 +263,11 @@ export function editCoupons(req, res) {
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, offset, limit, field, order)
-				.then(function(categories) {
-					return callback(null, categories.rows);
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -348,16 +368,6 @@ export function editCoupons(req, res) {
 					console.log('Error:::', error);
 					return callback(null);
 				});
-		},
-		category: function(callback) {
-			service.findRows("Category", {}, 0, null, 'id', 'asc')
-				.then(function(category) {
-					return callback(null, category.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
 		}
 	}, function(error, results) {
 		if (!error) {
@@ -367,6 +377,7 @@ export function editCoupons(req, res) {
 				coupon: results.coupon,
 				products: results.products,
 				categories: results.categories,
+				bottomCategory: bottomCategory,
 				existingCouponProducts: results.couponProducts,
 				existingCouponExcludeProducts: results.couponExcludeProducts,
 				existingCouponCategories: results.couponCategories,
