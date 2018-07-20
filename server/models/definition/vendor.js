@@ -30,6 +30,27 @@ module.exports = (sequelize, DataTypes) => {
             field: 'contact_email',
             allowNull: true
         },
+        address: {
+            type: DataTypes.STRING(255),
+            field: 'address',
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        province_id: {
+            type: DataTypes.BIGINT,
+            field: 'province_id',
+            allowNull: false,
+            references: {
+                model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         base_location: {
             type: DataTypes.BIGINT,
             field: 'base_location',
@@ -40,6 +61,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        about: {
+            type: DataTypes.TEXT,
+            field: 'about',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,

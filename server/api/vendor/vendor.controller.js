@@ -25,7 +25,7 @@ export function createStarterSeller(req, res) {
     req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
     req.checkBody('base_location', 'Missing Query Param').notEmpty();
     req.checkBody('currency_id', 'Missing Query Param').notEmpty();
-    req.checkBody('timezone_id', 'Missing Query Param').notEmpty();
+    req.checkBody('address', 'Missing Query Param').notEmpty();
 
     var errors = req.validationErrors();
     if (errors) {

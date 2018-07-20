@@ -13,6 +13,8 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function billingSettings(req, res) {
     var LoggedInUser = {};
+    var bottomCategory = {};
+	var categoryModel = "Category";
 
     if (req.user)
         LoggedInUser = req.user;
@@ -23,16 +25,27 @@ export function billingSettings(req, res) {
         status: statusCode['ACTIVE']
     };
     async.series({
-            category: function(callback) {
-                service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-                    .then(function(category) {
-                        return callback(null, category.rows);
+        categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return callback(null);
-                    });
-            }
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 
         },
         function(err, results) {
@@ -41,7 +54,8 @@ export function billingSettings(req, res) {
                 res.render('userNav/billing-settings', {
                     title: "Global Trade Connect",
                     LoggedInUser: LoggedInUser,
-                    category: results.category,
+                    categories: results.categories,
+				    bottomCategory: bottomCategory,
                     selectedPage: 'billing-settings',
                     vendorPlan: vendorPlan
                 });
