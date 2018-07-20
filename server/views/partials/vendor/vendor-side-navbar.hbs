@@ -1,21 +1,71 @@
 <div class="dropdown-v-list">
     <ul>
-        <li><a href="/order-history">Personal Order History</a></li>
-        <li><a href="#">My Downloads</a></li>
-        <li><a href="/wishlist">Wishlist</a></li>
-        <li><a href="/billing-settings">Billing Settings</a></li>
-        <li><a href="/user-profile">Profile Settings</a></li>
-        <li><a href="#">GTC Mail</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Feed</a></li>
-        <li>
-            <a data-toggle="collapse" href="#collapse4Support" role="button" aria-expanded="false" aria-controls="collapse4Support">Support</a>
-            <ul class="collapse m-l" id="collapse4Support">
-                <li><a href="#">FAQ</a></li>
-                <li><a href="#">Ticket History</a></li>
-                <li><a href="#">Direct Support(?)</a></li>
+        <li ><a data-toggle="collapse" href="#collapse4Reporting" role="button" aria-expanded="false" aria-controls="collapse4Reporting">Reporting</a>
+            <ul class="collapse m-l vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "reporting"}}show{{/ifCond}}{{/if}}" id="collapse4Reporting">
+                <li class="nav-bar"><a class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}" href="/reporting/performance">Performance</a></li>
+                <li class="nav-bar"><a href="/reporting/sales-history" class="vs-link {{#ifCond selectedPage '==' 'sales-history'}} active {{/ifCond}}">Sales History</a></li>
+                <li class="nav-bar"><a data-toggle="collapse" href="#collapse4Account" role="button" aria-expanded="false" aria-controls="collapse4Account">Accounting</a>
+                    <ul class="collapse m-l vs-nav {{#ifCond selectedPage '==' 'tax'}} active {{/ifCond}}" id="collapse4Account">
+                        <li class="nav-bar"><a href="/reporting/tax">Report tax</a></li>
+                    </ul>
+                </li>
             </ul>
         </li>
-        <li><a href="/vendor-form">Become a vendor</a></li>
+        <li ><a data-toggle="collapse" href="#collapse4Listing" role="button" aria-expanded="false" aria-controls="collapse4Listing">Edit Listings</a>
+            <ul class="collapse m-l  vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="collapse4Listing">
+                <li class="nav-bar"><a href="/listings/wholesale" class="vs-link {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">Wholesale Listings</a></li>
+                <li class="nav-bar"><a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a></li>
+                <li class="nav-bar"><a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a></li>
+                <li class="nav-bar"><a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a></li>
+            </ul>
+        </li>
+        <li class="nav-bar"><a href="/coupons"class="vs-link {{#ifCond selectedPage '==' 'coupons'}} active {{/ifCond}}">Edit/Add Coupons</a></li>
+        <li class="nav-bar"i><a href="/reviews"class="vs-link {{#ifCond selectedPage '==' 'reviews'}} active {{/ifCond}}">See My Reviews</a></li>
+        <li class="nav-bar"><a href="/promote-store"class="vs-link {{#ifCond selectedPage '==' 'promote-store'}} active {{/ifCond}}">Store Branding</a></li>
+        <li class="nav-bar"><a href="/notifications"class="vs-link {{#ifCond selectedPage '==' 'notifications'}} active {{/ifCond}}">Notification Settings</a></li>
+        <li class="nav-bar"><a href="/social-profile"class="vs-link {{#ifCond selectedPage '==' 'social-profile'}} active {{/ifCond}}">Social Profiles Settings</a></li>
+        <li class="nav-bar"><a href="/shipping-settings"class="vs-link {{#ifCond selectedPage '==' 'shipping-settings'}} active {{/ifCond}}">Shipping Settings</a></li>
+        <li class="nav-bar"><a href="/payment-settings"class="vs-link {{#ifCond selectedPage '==' 'payment-settings'}} active {{/ifCond}}">Payment Settings</a></li>
+        <li class="nav-bar"><a href="/verification"class="vs-link {{#ifCond selectedPage '==' 'gtc-verified'}} active {{/ifCond}}">Get GTC Verified</a></li>
+        <li class="nav-bar"><a href="/gtc-talk"class="vs-link {{#ifCond selectedPage '==' 'gtc-talk'}} active {{/ifCond}}">GTC Talk Settings</a></li>
+        <li><a data-toggle="collapse" href="#collapse4Mail" role="button" aria-expanded="false" aria-controls="collapse4Mail">GTC Mail</a>
+            <ul class="collapse m-l" id="collapse4Mail">
+                <li><a href="/gtc-mail">Inbox</a></li>
+                <li><a href="/gtc-mail">Sent</a></li>
+                <li><a href="/gtc-mail">Drafts</a></li>
+                <li><a href="/gtc-mail">Deleted</a></li>
+                <li><a href="/gtc-mail">GTC Mail Settings</a></li>
+            </ul>
+        </li>
+        <li><a href="/terms-and-cond">Terms &amp; Conditions Settings</a></li>
+    </ul>
+</div>
+<hr>
+<div class="dropdown-v-list">
+    <ul class="vs-nav">
+        <li class="nav-bar"><a href="/order-history"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Personal Order History</a></li>
+        <li class="nav-bar"><a href="#"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">My Downloads</a></li>
+        <li class="nav-bar"><a href="/wishlist"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Wishlist</a></li>
+        <li class="nav-bar"><a href="/billing-settings"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Billing Settings</a></li>
+        <li class="nav-bar"><a href="/user-profile"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Profile Settings</a></li>
+         <li ><a data-toggle="collapse" href="#collapse4UserMail" role="button" aria-expanded="false" aria-controls="collapse4UserMail">GTC Mail</a>
+            <ul class="collapse m-l vs-nav" id="collapse4UserMail">
+                <li class="nav-bar"><a href="#">Inbox</a></li>
+                <li class="nav-bar"><a href="#">Sent</a></li>
+                <li class="nav-bar"><a href="#">Drafts</a></li>
+                <li class="nav-bar"><a href="#">Deleted</a></li>
+                <li class="nav-bar"><a href="#">GTC Mail Settings</a></li>
+            </ul>
+        </li>
+        <li class="nav-bar"><a href="#" class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Contact</a></li>
+        <li class="nav-bar"><a href="#">Feed</a></li>
+        <li><a data-toggle="collapse" href="#collapse4Support" role="button" aria-expanded="false" aria-controls="collapse4Support">Support</a>
+            <ul class="collapse m-l vs-nav" id="collapse4Support">
+                <li class="nav-bar"><a href="#">FAQ</a></li>
+                <li class="nav-bar"><a href="#">Ticket History</a></li>
+                <li class="nav-bar"><a href="#">Direct Support(?)</a></li>
+            </ul>
+        </li>
+        <li><a href="/vendor-form"class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}">Become a vendor</a></li>
     </ul>
 </div>

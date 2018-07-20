@@ -2,18 +2,18 @@
   $(function () {
     $("#from").datepicker({
       format: 'yyyy-mm-dd',
-      autohide: true, 
+      autohide: true,
 
     });
-    
+
     $("#to").datepicker({
       format: 'yyyy-mm-dd',
-      autohide: true, 
-        // endDate: new Date(),
-        "endDate": {greaterStart: "#from_date"},
-        onSelect: $('#selectDate').val("")
+      autohide: true,
+      // endDate: new Date(),
+      "endDate": { greaterStart: "#from_date" },
+      onSelect: $('#selectDate').val("")
 
-      });
+    });
   });
 </script>
 <script type="text/javascript">
@@ -36,179 +36,201 @@
   }
 </script>
 <script type="text/javascript">
-  function selectDatefun(){
-    var val = $( "#selectDate option:selected" ).val();
-    if(val){
+  function selectDatefun() {
+    var val = $("#selectDate option:selected").val();
+    if (val) {
       console.log();
       $('#from').val("");
-      $('#to').val(""); 
+      $('#to').val("");
     }
   }
 
-</script>
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-  <div class="" >
-    <div class="container-fluid">
-      <div class="row">
-        {{> vendor/navbar}}
-        <div class="col-md-10" style="background-color: #fff;">
-          <h5 style="padding-top: 20px;">Order History</h5>
-          <div class="row">
-            <div class="col-md-9">
-              <form id="searchOrder">
-                Date Range
-                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date"/>
-                to
-                <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" name="to_date" id="to" /> 
-                <select class="vend_edit_lists_buttonstyle" name="dateSelect" id="selectDate" onchange="selectDatefun()">
-                  <option value="">select</option>>
-                  <option value="today">Today</option>
-                  <option value="yesterday">Yesterday</option>
-                  <option value="last7day">LAST 7 DAY</option>
-                  <option value="last15day">LAST 15 DAY</option>
-                  <option value="last30day">LAST 30 DAY</option>
-                </select> 
-                <select class="vend_edit_lists_buttonstyle" name="marketType">
-                  <option value=""> TYPE </option>
-                  {{#each marketPlace}}
-                  <option value = "{{this}}">{{@key}}</option>
-                  {{/each}}
-                </select>
-                
-                <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
-              </form>
+<div class="wrapper-content bg-gray">
+  <div class="gtc-container">
+    <div class="row">
+      <div class="col-sm-2">
+        {{> vendor/vendor-side-navbar}}
+      </div>
+      <div class="col-sm-10">
+        <div class="ibox">
+          <div class="ibox-content">
+            <div class="ibox-title">
+              <h2>Sales History</h2>
             </div>
-            <div class="col-md-3">
-            <select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
-                  <option value="">STATUS</option>
-                  <option value="INACTIVE">InActive</option>
-                  <option value="NEWORDER"> New Order</option>
-                  <option value="CANCLEORDER"> Cancel Order</option>
-                  <option value="FAILEDORDER"> Failed Order</option>
-                </select> 
-                <input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
-              <input  type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " />
-            </div>
-          </div>
-          <div class="row" style="padding-top: 10px">
-            <div class="col-md-8">
-              
-            </div>
-            <div class="col-md-4">
+            <div class="content-body">
+
               <div class="row">
-              <div class="col-md-6">
-              <form>
-              <input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
-              </form>
+                <div class="col-md-9">
+                  <form id="searchOrder">
+                    Date Range
+                    <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" id="from" name="from_date" /> to
+                    <input data-date-format="MMM D, Y" class="vend_edit_lists_buttonstyle" name="to_date" id="to" />
+                    <select class="vend_edit_lists_buttonstyle" name="dateSelect" id="selectDate" onchange="selectDatefun()">
+                      <option value="">select</option>>
+                      <option value="today">Today</option>
+                      <option value="yesterday">Yesterday</option>
+                      <option value="last7day">LAST 7 DAY</option>
+                      <option value="last15day">LAST 15 DAY</option>
+                      <option value="last30day">LAST 30 DAY</option>
+                    </select>
+                    <select class="vend_edit_lists_buttonstyle" name="marketType">
+                      <option value=""> TYPE </option>
+                      {{#each marketPlace}}
+                      <option value="{{this}}">{{@key}}</option>
+                      {{/each}}
+                    </select>
+
+                    <input type="submit" value="Search" onclick="searchOrderSubmit" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"
+                    />
+                  </form>
+                </div>
+                <div class="col-md-3">
+                  <select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
+                    <option value="">STATUS</option>
+                    <option value="INACTIVE">InActive</option>
+                    <option value="NEWORDER"> New Order</option>
+                    <option value="CANCLEORDER"> Cancel Order</option>
+                    <option value="FAILEDORDER"> Failed Order</option>
+                  </select>
+                  <input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"
+                  />
+                  <input type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " />
+                </div>
               </div>
-              <div class="col-md-6">
-              <select  class="vend_edit_lists_buttonstyle ">
-                <option>EXPORT TO</option>
-              </select>
+              <div class="row" style="padding-top: 10px">
+                <div class="col-md-8">
+
+                </div>
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <form>
+                        <input type="text" placeholder="Search History" name="keyword" class="vend_edit_lists_searchstyle" />
+                      </form>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="vend_edit_lists_buttonstyle ">
+                        <option>EXPORT TO</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date
+                    "MMM D, Y"}}</p>
+                </div>
+                <div class="col-md-6">
+                  <p class="vend_edit_lists_pstyle float-right">Entries per page:
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>
+                        <input type="checkbox" onclick="selectAll(this);">
+                      </th>
+                      <th>Invoice #</th>
+                      <th>Product</th>
+                      <th>Vendor</th>
+                      <th>Type</th>
+                      <th>Date</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                      <th>Notes</th>
+                      <th></th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each OrderItems}}
+                    <tr>
+                      <td>
+                        <input type="checkbox">
+                      </td>
+                      <td>{{this.Order.invoice_id}}</td>
+                      <td>
+                        <a href="/product/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
+                      </td>
+                      <td class="text_blue_color">
+                        <a href="/vendor-about">{{this.Product.Vendor.vendor_name}}</a>
+                      </td>
+                      <td>{{objectKey ../marketPlace this.Product.marketplace_id }}</td>
+                      <td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
+                      <td>PayPal</td>
+                      <td class="text_green_color">{{objectKey ../statusCode this.status}}</td>
+                      <td>
+                        <td>
+                          <td class="text_blue_color">
+                            <a href="#">
+                              <i class="fas fa-credit-card"></i> Issue Refund</a>
+                          </td>
+                          <td>${{this.final_price}} CAD</td>
+                    </tr>
+                    {{/each}}
+                    <tr>
+                      <td colspan="10"></td>
+                      <td class="text_blue_color">Total Transaction</td>
+                      <td>${{totalTransaction}} CAD</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {{!-- Pagination starts --}} {{#ifCond count '>' queryPaginationObj.limit}}
+              <div class="row">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-7">
+                  {{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                      {{#unless startFromFirstPage}}
+                      <li class="page-item">
+                        <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                      </li>
+                      {{/unless}} {{#each pages}}
+                      <li class="page-item {{#if isCurrent}} active {{/if}}">
+                        <a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                      </li>
+                      {{/each}} {{#unless endAtLastPage}}
+                      <li class="page-item">
+                        <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                      </li>
+                      {{/unless}}
+                    </ul>
+                  </nav>
+                  {{/pagination}}
+                </div>
+              </div>
+              {{/ifCond}} {{!-- Pagination Ends --}}
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date
+                    "MMM D, Y"}}</p>
+                </div>
+                <div class="col-md-6">
+                  <p class="vend_edit_lists_pstyle float-right">Entries per page:
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+                    <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
-            </div>
-            <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle float-right">Entries per page: 
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th><input type="checkbox" onclick="selectAll(this);"></th>
-                  <th>Invoice #</th>
-                  <th>Product</th>
-                  <th>Vendor</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Method</th>
-                  <th>Status</th>
-                  <th>Notes</th>
-                  <th></th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each OrderItems}}
-                <tr>
-                  <td><input type="checkbox"></td>
-                  <td>{{this.Order.invoice_id}}</td>
-                  <td><a href="/product/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a></td>
-                  <td class="text_blue_color"><a href="/vendor-about">{{this.Product.Vendor.vendor_name}}</a></td>
-                  <td>{{objectKey  ../marketPlace this.Product.marketplace_id }}</td>
-                  <td>{{formatTime this.Order.ordered_date "MMM D, Y"}}</td>
-                  <td>PayPal</td>
-                  <td class="text_green_color">{{objectKey ../statusCode this.status}}</td>
-                  <td> <td>
-                  <td class="text_blue_color"><a href="#"><i class="fas fa-credit-card"></i> Issue Refund</a></td>
-                  <td>${{this.final_price}} CAD</td>
-                </tr>
-                {{/each}}
-                <tr>
-                  <td colspan="10"></td>
-                  <td class="text_blue_color">Total Transaction</td>
-                  <td>${{totalTransaction}} CAD</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          {{!-- Pagination starts --}}
-          {{#ifCond count '>' queryPaginationObj.limit}}
-          <div class="row">
-            <div class="col-md-3">
-            </div>
-            <div class="col-md-7">
-              {{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-              <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  {{#unless startFromFirstPage}}
-                  <li class="page-item">
-                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-                  </li>
-                  {{/unless}} {{#each pages}}
-                  <li class="page-item {{#if isCurrent}} active {{/if}}">
-                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-                  </li>
-                  {{/each}} {{#unless endAtLastPage}}
-                  <li class="page-item">
-                    <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-                  </li>
-                  {{/unless}}
-                </ul>
-              </nav>
-              {{/pagination}}
-            </div>
-          </div>
-          {{/ifCond}}
-          {{!-- Pagination Ends --}}
-          <div class="row">
-            <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</p>
-            </div>
-            <div class="col-md-6">
-              <p class="vend_edit_lists_pstyle float-right">Entries per page: 
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-                <a href="/reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a></p>
-              </div>
-            </div>
-          </div>    
         </div>
       </div>
     </div>
-  </section>
-  {{> footer/bottom-footer}}
+  </div>
+</div>
+{{> footer/bottom-footer}}

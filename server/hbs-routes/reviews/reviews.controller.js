@@ -12,6 +12,8 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory={};
+
 	if (req.user)
 		LoggedInUser = req.user;
 
@@ -51,6 +53,28 @@ export function reviews(req, res) {
 	var maxSize;
 	// End pagination
 	async.series({
+		categories: function(callback) {
+		var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+		},
 			Reviews: function(callback) {
 				model['VendorRating'].findAndCountAll({
 					where: queryObj,
@@ -133,6 +157,8 @@ export function reviews(req, res) {
 					ratingCount: results.Rating.count,
 					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
+					categories: results.categories,
+                    bottomCategory: bottomCategory,
 					// pagination
 					page: page,
 					maxSize: maxSize,

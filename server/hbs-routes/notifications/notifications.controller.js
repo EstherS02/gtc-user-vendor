@@ -10,6 +10,7 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function notifications(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory ={};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -48,16 +49,29 @@ export function notifications(req, res) {
 						return callback(null);
 					});
 			},
-			category: function(callback) {
-				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-					.then(function(category) {
-						return callback(null, category.rows);
+			categories: function(callback) {
+			var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
 
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			}
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+
+		}
 		}, function(err, results) {
 			if (!err) {
 				res.render('vendorNav/notifications', {
@@ -65,7 +79,8 @@ export function notifications(req, res) {
 					title: "Global Trade Connect",
 					count: results.notifications.count,
 					notification: results.notifications.rows,
-					category: results.category,
+					categories: results.categories,
+                    bottomCategory: bottomCategory,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'notifications',
 					vendorPlan: vendorPlan

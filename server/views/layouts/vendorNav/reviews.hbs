@@ -1,14 +1,19 @@
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="" >
-		<div class="container-fluid">
-			<div class="row">
-				{{> vendor/navbar}} 
-				<div class="col-md-8" style="background-color: #fff;">
-					<div class="row">
-						<div class="col-md-9" id="render_list" >
-							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
-							<p>Sort by
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>My Reviews</h2>
+						</div>
+						<div class="content-body">
+                              <p>Sort by
 								{{#ifCond queryPaginationObj.field '==' 'rating' }}
 								<span class="text_blue_color"><a href="/reviews?sort=mostRecent">Most Recent</a></span>
 								<span class="text_blue_color"><a href="/reviews?sort=rating" class="review-sort ">    Star Rating</a></span>
@@ -54,7 +59,44 @@
 								</div>
 							</div>
 							{{!-- Pagination Ends --}}
+
 						</div>
+					</div>
+
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}} 
+
+
+
+
+
+
+
+{{!-- 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<section class="showing_categ">
+	<div class="" >
+		<div class="container-fluid">
+			<div class="row">
+				{{> vendor/navbar}} 
+				<div class="col-md-8" style="background-color: #fff;">
+					<div class="row">
+						<div class="col-md-9" id="render_list" >
+
+							<h5 style="padding-top: 20px;margin-bottom: 30px">My Reviews</h5>
+
+							
+
+
+						</div>
+
+
 						<div class="col-md-3" style="padding-top: 20px;">
 							<p class="list_bg_blue" style="font-size: 11px;margin-bottom: 0px;">{{this.avgRating}} &nbsp;&nbsp;{{starCount this.avgRating}}</p>
 							<div style="border: 1px solid #E6E6E6; padding: 10px;">
@@ -83,4 +125,4 @@
 		</div>
 	</div>
 </section>
-{{> footer/bottom-footer}}
+{{> footer/bottom-footer}} --}}

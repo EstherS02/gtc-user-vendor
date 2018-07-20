@@ -1,19 +1,18 @@
 <script type="text/javascript">
-    function myAdd(e){
+    function myAdd(e) {
         var addSelected = $('select[name="country"] option:selected').val();
-        if(addSelected){
+        if (addSelected) {
             var newData = {};
             var selectArray = [];
-            if(addSelected == 'All'){
-                $("#sellingCountry option").each(function()
-                {
-                    if($(this).val() != "All")
+            if (addSelected == 'All') {
+                $("#sellingCountry option").each(function () {
+                    if ($(this).val() != "All")
                         selectArray.push($(this).val());
                 });
                 newData.country_id = JSON.stringify(selectArray);
                 console.log(selectArray);
             }
-            else{
+            else {
                 selectArray.push(addSelected);
                 console.log(selectArray);
                 newData.country_id = JSON.stringify(selectArray);
@@ -23,10 +22,10 @@
                 type: 'PUT',
                 url: '/api/shipping-setting/add-country',
                 data: newData,
-                success: function(data, text) {
+                success: function (data, text) {
                     location.reload();
                 },
-                error: function(request, status, error) {
+                error: function (request, status, error) {
                     console.log('status', status);
                     console.log('error', error);
                 }
@@ -34,21 +33,20 @@
         }
 
     }
-    function myRemove(e){
+    function myRemove(e) {
         var removeSelected = $('select[name="addedCountry"] option:selected').val();
-        if(removeSelected){
+        if (removeSelected) {
             var newData = {};
             var selectArray = [];
-            if(removeSelected == 'All'){
-                $("#removeCountry option").each(function()
-                {
-                    if($(this).val() != "All")
+            if (removeSelected == 'All') {
+                $("#removeCountry option").each(function () {
+                    if ($(this).val() != "All")
                         selectArray.push($(this).val());
                 });
                 newData.country_id = JSON.stringify(selectArray);
                 console.log(selectArray);
             }
-            else{
+            else {
                 selectArray.push(removeSelected);
                 console.log(selectArray);
                 newData.country_id = JSON.stringify(selectArray);
@@ -58,10 +56,10 @@
                 type: 'PUT',
                 url: '/api/shipping-setting/remove-country',
                 data: newData,
-                success: function(data, text) {
+                success: function (data, text) {
                     location.reload();
                 },
-                error: function(request, status, error) {
+                error: function (request, status, error) {
                     console.log('status', status);
                     console.log('error', error);
                 }
@@ -69,82 +67,85 @@
         }
 
     }
-    function updateFunction(){
+    function updateFunction() {
 
-       var old_base_location = {{LoggedInUser.Vendor.base_location}};
-       var new_base_location = $('select[name="base_location"] option:selected').val();
-       if(old_base_location != new_base_location)
-       {
-           var newData = {};
-           newData.country_id = new_base_location;
-           $.ajax({
+    var old_base_location = {{ LoggedInUser.Vendor.base_location }};
+    var new_base_location = $('select[name="base_location"] option:selected').val();
+    if (old_base_location != new_base_location) {
+        var newData = {};
+        newData.country_id = new_base_location;
+        $.ajax({
             type: 'PUT',
             url: '/api/shipping-setting/vendor-update',
             data: newData,
-            success: function(data, text) {
+            success: function (data, text) {
                 location.reload();
             },
-            error: function(request, status, error) {
+            error: function (request, status, error) {
                 console.log('status', status);
                 console.log('error', error);
             }
         });
-       }
+    }
 
    }
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-    <div class="row">
-        {{> vendor/navbar}}
-        <div class="col-md-8 list_bg">
-            <h5 class="gtc-title"> Shipping Settings </h5>
-            <select class="payment-selection" name="base_location">
-                {{#each Countries.rows}}
-                {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
-                <option value={{this.id}} selected>Base :{{this.name}}</option>
-                {{else}}
-                <option value={{this.id}}>{{this.name}}</option>
-                {{/ifCond}}
-                {{/each}}
-            </select>
-            <label class="base-location" for="lacation">The physical location of your business</label>
-            <div class="col-sm-8 all-coutries" style="height: 300px;">
-                <h5 class="gtc-title"> Selling Location </h5>
-                <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
-                <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
-                <select class="cuntries" size="4" name="country" id="sellingCountry">
-                 {{#ifCond Countries.count "!=" vendorCountry.count}}
-                 <option value="All">All </option>
-                 {{#if vendorCountry.vendorCountriesID}}
-                 {{{countrySelected  Countries.rows vendorCountry.vendorCountriesID}}}
-                 {{else}}
-                 {{#each Countries.rows}}
-                 <option value={{this.id}}>{{this.name}}</option>
-                 {{/each}}
-                 {{/if}}
-                 {{/ifCond}}
-             </select>
-             <div class="add-remove">
-                <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button><br>
-                <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
             </div>
-            <select id="removeCountry" size="4" class="cuntries" name="addedCountry">
-              {{#if vendorCountry.count}}
-              <option value="All">All </option>
-              {{#if vendorCountry.vendorCountriesID}}
-              {{{vendorSelectedcountry  Countries.rows vendorCountry.vendorCountriesID}}}
-              {{else}}
-              {{#each Countries}}
-              <option value={{this.id}}>{{this.name}}</option>
-              {{/each}}
-              {{/if}}
-              {{/if}}
-          </select>
-      </div>
-      <hr style="margin-top: 10px;"/>
-      <button class="update-btn" style="padding: 5px 20px;" onclick="updateFunction(this)">UPDATE </button>
-      <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Shipping Settings</h2>
+                        </div>
+                        <div class="content-body">
+                            <select class="payment-selection" name="base_location">
+                                {{#each Countries.rows}} {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
+                                <option value={{this.id}} selected>Base :{{this.name}}</option>
+                                {{else}}
+                                <option value={{this.id}}>{{this.name}}</option>
+                                {{/ifCond}} {{/each}}
+                            </select>
+                            <label class="base-location" for="lacation">The physical location of your business</label>
+                            <div class="col-sm-8 all-coutries" style="height: 300px;">
+                                <h5 class="gtc-title"> Selling Location </h5>
+                                <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
+                                <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
+                                <select class="cuntries" size="4" name="country" id="sellingCountry">
+                                    {{#ifCond Countries.count "!=" vendorCountry.count}}
+                                    <option value="All">All </option>
+                                    {{#if vendorCountry.vendorCountriesID}} {{{countrySelected Countries.rows vendorCountry.vendorCountriesID}}} {{else}} {{#each
+                                    Countries.rows}}
+                                    <option value={{this.id}}>{{this.name}}</option>
+                                    {{/each}} {{/if}} {{/ifCond}}
+                                </select>
+                                <div class="add-remove">
+                                    <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button>
+                                    <br>
+                                    <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
+                                </div>
+                                <select id="removeCountry" size="4" class="cuntries" name="addedCountry">
+                                    {{#if vendorCountry.count}}
+                                    <option value="All">All </option>
+                                    {{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
+                                    {{#each Countries}}
+                                    <option value={{this.id}}>{{this.name}}</option>
+                                    {{/each}} {{/if}} {{/if}}
+                                </select>
+                            </div>
+                            <hr style="margin-top: 10px;" />
+                            <button class="update-btn" style="padding: 5px 20px;" onclick="updateFunction(this)">UPDATE </button>
+                            <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+</div>
 {{> footer/bottom-footer}}

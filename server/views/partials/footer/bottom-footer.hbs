@@ -57,8 +57,11 @@
                             <div class="b-l-3x">
                                 <h4>ACCOUNT CENTER</h4>
                                 <ul class="footer-menu-list">
-                                    <li><a href="/login">Sign Up / Sign In</a></li>
+                                    {{#if LoggedInUser.id}}
                                     <li><a href="/user-profile">My Account</a></li>
+                                    {{else}}
+                                    <li><a href="/login">Sign Up / Sign In</a></li>
+                                    {{/if}}
                                     <li><a href="/order-track">Track your Order</a></li>
                                     <li><a href="/wishlist">Wishlist</a></li>
                                     <li><a href="/cart">Shopping Cart</a></li>
@@ -69,11 +72,11 @@
                             <div class="b-l-3x">
                                 <h4>QUICK JUMP</h4>
                                 <ul class="footer-menu-list">
-                                    <li><a href="/search?field=product_rating&order=desc">Top Rated Products</a></li>
+                                    <li><a href="/products/search?field=product_rating&order=desc">Top Rated Products</a></li>
                                     <li><a href="#">Sale Products</a></li>
-                                    <li><a href="/search?field=created_on&order=desc">Recent Products</a></li>
-                                    <li><a href="/search?is_featured_product=1">Featured Products</a></li>
-                                    <li><a href="/search?field=product_selling_count&order=desc">Best Selling Products</a></li>
+                                    <li><a href="/products/search?field=created_on&order=desc">Recent Products</a></li>
+                                    <li><a href="/products/search?is_featured_product=1">Featured Products</a></li>
+                                    <li><a href="/products/search?field=product_selling_count&order=desc">Best Selling Products</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -98,14 +101,14 @@
                                     <div class="col-md-6 col-6">
                                         <ul class="footer-menu-list">
                                             {{#each bottomCategory.left}}
-                                            <li><a href="/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
+                                            <li><a href="/products/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
                                             {{/each}}
                                         </ul>
                                     </div>
                                     <div class="col-md-6 col-6 no-padding">
                                         <ul class="footer-menu-list">
                                             {{#each bottomCategory.right}}
-                                            <li><a href="/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
+                                            <li><a href="/products/search?category={{this.id}}">{{#Titlecase this.name}}{{/Titlecase}}</a></li>
                                             {{/each}}
                                         </ul>
                                     </div>
