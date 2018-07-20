@@ -14,7 +14,8 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
-	// console.log(req.user.Vendor.id)
+	var bottomCategory = {};
+	var categoryModel = "Category";
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -26,7 +27,6 @@ export function orderHistory(req, res) {
 	var orderQueryObj = {};
 	var productQueryObj = {};
 
-	//  Query string assignment
 	var from_date = req.query.from_date;
 	var to_date = req.query.to_date;
 	var dateSelect = req.query.dateSelect;
@@ -57,10 +57,8 @@ export function orderHistory(req, res) {
 				end_date = to_date;
 			} else {
 				end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
-				// end_date= moment().toDate();
 			}
 		}
-
 	} else {
 		if (from_date) {
 			start_date = from_date;
@@ -93,12 +91,10 @@ export function orderHistory(req, res) {
 		orderQueryObj['status'] = statusCode[status];
 	}
 
-	// end Query string assignment
 
-	var order = "desc"; //"asc"
+	var order = "desc";
 	var offset = 0;
 	var limit = 1;
-	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -124,14 +120,13 @@ export function orderHistory(req, res) {
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
-	// End pagination
 
 	var modelName = "OrderItem";
 	orderQueryObj['user_id'] = user_id;
 	var includeArr = [{
 		model: model["Order"],
 		where: orderQueryObj,
-		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price','status']
+		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price', 'status']
 	}, {
 		model: model['Product'],
 		where: productQueryObj,
@@ -140,73 +135,88 @@ export function orderHistory(req, res) {
 		}]
 
 	}];
-	// console.log(orderQueryObj);
 	var queryObjCategory = {
-			status: statusCode['ACTIVE']
-		};
+		status: statusCode['ACTIVE']
+	};
 	async.series({
-			orderHistory: function(callback) {
-				service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
-					.then(function(results) {
-						return callback(null, results);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			},
-			category: function(callback) {
-				service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-					.then(function(category) {
-						return callback(null, category.rows);
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-			}
-		},
-		function(err, results) {
-			// console.l
-			maxSize = results.orderHistory.count / limit;
-			if (results.orderHistory.count % limit)
-				maxSize++;
-				queryPaginationObj['maxSize'] = maxSize;
-			console.log("start_date", queryPaginationObj,queryURI);
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            var total_transaction = 0.00;
-            if(results.orderHistory.count > 0) {
-                results.orderHistory.rows.forEach((value, index) => {
-                    total_transaction += parseFloat(value.final_price);                    
-                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
-                });    
-            }
-
-			if (!err) {
-				
-				res.render('userNav/order-history', {
-					title: "Global Trade Connect",
-					OrderItems: results.orderHistory.rows,
-					count: results.orderHistory.count,
-					queryURI: queryURI,
-					LoggedInUser: LoggedInUser,
-					marketPlace: marketPlace,
-					category: results.category, 
-					statusCode : statusCode,
-					orderStatus: orderStatus,
-                    totalTransaction : (total_transaction).toFixed(2),
-					// pagination
-					page: page,
-					maxSize:maxSize,
-					pageSize: limit,
-					queryPaginationObj:queryPaginationObj,
-					collectionSize: results.orderHistory.count,
-					selectedPage:"order-history",
-					// End pagination
-					vendorPlan:vendorPlan
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
-			} else {
-				res.render('userNav/order-history', err);
-			}
-		});
+		},
+		orderHistory: function(callback) {
+			service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
+				.then(function(results) {
+					return callback(null, results);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		category: function(callback) {
+			service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
+				.then(function(category) {
+					return callback(null, category.rows);
 
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
+	}, function(err, results) {
+		maxSize = results.orderHistory.count / limit;
+		if (results.orderHistory.count % limit)
+			maxSize++;
+		queryPaginationObj['maxSize'] = maxSize;
+		console.log("start_date", queryPaginationObj, queryURI);
+
+		var total_transaction = 0.00;
+		if (results.orderHistory.count > 0) {
+			results.orderHistory.rows.forEach((value, index) => {
+				total_transaction += parseFloat(value.final_price);
+				results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+			});
+		}
+		if (!err) {
+			res.render('userNav/order-history', {
+				title: "Global Trade Connect",
+				categories: results.categories,
+				bottomCategory: bottomCategory,
+				OrderItems: results.orderHistory.rows,
+				count: results.orderHistory.count,
+				queryURI: queryURI,
+				LoggedInUser: LoggedInUser,
+				marketPlace: marketPlace,
+				category: results.category,
+				statusCode: statusCode,
+				orderStatus: orderStatus,
+				totalTransaction: (total_transaction).toFixed(2),
+				page: page,
+				maxSize: maxSize,
+				pageSize: limit,
+				queryPaginationObj: queryPaginationObj,
+				collectionSize: results.orderHistory.count,
+				selectedPage: "order-history",
+				vendorPlan: vendorPlan
+			});
+		} else {
+			res.render('userNav/order-history', err);
+		}
+	});
 }
