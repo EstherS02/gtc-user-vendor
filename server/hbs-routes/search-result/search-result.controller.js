@@ -35,8 +35,9 @@ export function index(req, res) {
 	var offset, limit, field, order;
 	var productEndPoint = "MarketplaceProduct";
 
-	if (req.user)
-		LoggedInUser = req.user;
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -332,8 +333,7 @@ export function index(req, res) {
 				});
 		}
 	}, function(error, results) {
-		console.log(results.categoriesWithCount.count)
-		console.log(results.categoriesWithCount.rows)
+		console.log(LoggedInUser)
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('search', {
@@ -356,7 +356,6 @@ export function index(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				locations: results.locations,
 				categoriesWithCount: results.categoriesWithCount,
-				LoggedInUser: LoggedInUser,
 				marketplaceURl: marketplaceURl,
 			});
 		} else {
