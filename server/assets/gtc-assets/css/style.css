@@ -800,7 +800,10 @@ select {
     padding: 1em 2em 1em 1em;
     font-size: 1em;
 }
-/*.select-container {position:relative;}
+.select-container .form-control-customized {
+    padding: 6px 28px 6px 12px;
+}
+.select-container {position:relative;}
 .select-container:after {content:""; width:0; height:0; position:absolute; pointer-events: none;}
 .select-container:after {
     border-left: 3px solid transparent;
@@ -810,7 +813,7 @@ select {
     right: 0;
     margin: 10px;
     opacity: 0.5;
-}*/
+}
 .custom-group-append {position:relative;}
 .custom-group-append:after {content:""; width:0; height:0; position:absolute; pointer-events: none;}
 .custom-group-append:after {
