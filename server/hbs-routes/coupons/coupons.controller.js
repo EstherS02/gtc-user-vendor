@@ -31,6 +31,7 @@ export function coupons(req, res) {
 	var queryObj = {};
 	var bottomCategory ={};
 	var couponModel = 'Coupon';
+	var categoryModel = "Category";
 
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
@@ -142,6 +143,7 @@ export function addCoupon(req, res) {
 
 	var productModel = "Product";
 	var categoryModel = "Category";
+	
 
 	var offset, limit, field, order;
 	var productQueryObj = {};
@@ -220,6 +222,7 @@ export function editCoupons(req, res) {
 	var offset, limit, field, order;
 
 	var modelName = "Coupon";
+	var categoryModel = "Category";
 
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = req.user.Vendor.id;

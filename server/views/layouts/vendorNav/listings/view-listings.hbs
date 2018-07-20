@@ -17,7 +17,7 @@
 	}
 </script>
 <script type="text/javascript">
-    $(document).ready(function () {
+	$(document).ready(function () {
 		$("#gtc-cart-alert").hide();
 	})
 	function changeStatus(e) {
@@ -26,7 +26,7 @@
 	function search(e) {
 		window.location.href = '/listings/' + e.name + '?keyword=' + e.value;
 	}
-    function edit(e) {
+	function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
 			chkArray.push($(this).val());
@@ -37,146 +37,161 @@
 			window.location.href = '/listings/' + e.name + '/' + selected;
 		}
 		else {
-            $('#gtc-add-to-cart').prop('disabled', false);
+			$('#gtc-add-to-cart').prop('disabled', false);
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
 			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-			$("#gtc-cart-alert").slideUp(500);
+				$("#gtc-cart-alert").slideUp(500);
 			});
 		}
 	}
-    function add(e) {
-		window.location.href = '/listings/'+e.name+'/add-product';
+	function add(e) {
+		window.location.href = '/listings/' + e.name + '/add-product';
 	}
 
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="">
-		<div class="container-fluid">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-8" style="background-color: #fff;">
-					<p class="vend_edit_lists_pstyle">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature
-						products, or import and syncronize them with an outside source. To administer specific details of products, click on
-						the product name or SKU to go to the full edit details page for that specific products.</p>
-						<div class="alert" id="gtc-cart-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="cart-message"></span>
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2></h2>
 						</div>
-					<div class="row">
-						<div class="col-md-2">
-							<input style="width: 100%;" type="submit" name={{this.type}} value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add(this);"
-							/>
-						</div>
-						<div class="col-md-2 common_padding1">
-							<select style="width: 90%;" class="vend_edit_lists_buttonstyle" name="{{this.type}}" onChange="changeStatus(this);">
-								<option disabled selected>CHANGE STATUS</option>
-								<option value="ACTIVE">Active</option>
-								<option value="INACTIVE">InActive</option>
-								<option value="SUSPENDED">Suspended</option>
-								<option value="SOLDOUT">Sold Out</option>
-							</select>
-						</div>
-						<div class="col-md-3 common_padding1">
-							<input style="width: 50%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
-							 onclick="edit(this);" />
-						</div>
-						<div class="col-md-2 common_padding1">
-							<input style="width: 90%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
-						</div>
-						<div class="col-md-2">
-							<input type="text" placeholder="      Search Products" id="search" class="vend_edit_lists_searchstyle" name="{{this.type}}" onChange="search(this);"
-							/>
+						<div class="content-body">
+
+							<div class="row">
+								<div class="col-md-12" style="background-color: #fff;">
+									<p class="vend_edit_lists_pstyle">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or
+										feature products, or import and syncronize them with an outside source. To administer specific details of products,
+										click on the product name or SKU to go to the full edit details page for that specific products.</p>
+									<div class="alert" id="gtc-cart-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="cart-message"></span>
+									</div>
+									<div class="row">
+										<div class="col-md-2">
+											<input style="width: 100%;" type="submit" name={{this.type}} value="ADD PRODUCT" class="vend_edit_lists_buttonstyle" onclick="add(this);"
+											/>
+										</div>
+										<div class="col-md-2 common_padding1">
+											<select style="width: 90%;" class="vend_edit_lists_buttonstyle" name="{{this.type}}" onChange="changeStatus(this);">
+												<option disabled selected>CHANGE STATUS</option>
+												<option value="ACTIVE">Active</option>
+												<option value="INACTIVE">InActive</option>
+												<option value="SUSPENDED">Suspended</option>
+												<option value="SOLDOUT">Sold Out</option>
+											</select>
+										</div>
+										<div class="col-md-3 common_padding1">
+											<input style="width: 50%;" type="submit" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" name="{{this.type}}"
+											 onclick="edit(this);" />
+										</div>
+										<div class="col-md-2 common_padding1">
+											<input style="width: 90%;" type="submit" value="IMPORT..." class="vend_edit_lists_buttonstyle" />
+										</div>
+										<div class="col-md-2">
+											<input type="text" placeholder="      Search Products" id="search" class="vend_edit_lists_searchstyle" name="{{this.type}}"
+											 onChange="search(this);" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle">{{this.collectionSize}} items total</p>
+										</div>
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle float-right">Entries per page:
+												<a href="listings/{{this.type}}?limit=10">10</a>
+												<a href="listings/{{this.type}}?limit=25">25</a>
+												<a href="listings/{{this.type}}?limit=100">100</a>
+												<a href="listings/{{this.type}}">All</a>
+											</p>
+										</div>
+									</div>
+									<div class="row">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th>
+														<input type="checkbox" onclick="selectAll(this);">
+													</th>
+													<th>Product Name</th>
+													<th>Publish Date</th>
+													<th>Sales</th>
+													<th>Price</th>
+													<th>Status</th>
+													<th>SKU</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each products}}
+												<tr>
+													<td>
+														<input type="checkbox" name="selected" value={{this.product_slug}}>
+													</td>
+													<td class="text_blue_color">
+														<img src="{{this.product_base_image}}" style="width: 30px;" />
+														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
+													</td>
+													<td>{{ prettifyDate this.publish_date }}</td>
+													<td class="text_blue_color">{{this.product_selling_count}}</td>
+													<td>${{this.product_price}} CAD</td>
+													{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+													<td class="text_green_color">Active</td>
+													{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+													<td class="text_green_color">InActive</td>
+													{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+													<td class="text_orange_color">Suspended</td>
+													{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+													<td class="text_red_color">Sold Out</td>
+													{{/ifCond}}
+													<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+												</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+										</div>
+										<div class="col-md-7">
+											{{#pagination collectionSize page pageSize maxSize}}
+											<nav aria-label="Page navigation example">
+												<ul class="pagination justify-content-center">
+													{{#unless startFromFirstPage}}
+													<li class="page-item">
+														<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+													</li>
+													{{/unless}} {{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+													</li>
+													{{/each}} {{#unless endAtLastPage}}
+													<li class="page-item">
+														<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+													</li>
+													{{/unless}}
+												</ul>
+											</nav>
+											{{/pagination}}
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">{{this.collectionSize}} items total</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page:
-								<a href="listings/{{this.type}}?limit=10">10</a>
-								<a href="listings/{{this.type}}?limit=25">25</a>
-								<a href="listings/{{this.type}}?limit=100">100</a>
-								<a href="listings/{{this.type}}">All</a>
-							</p>
-						</div>
-					</div>
-					<div class="row">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>
-										<input type="checkbox" onclick="selectAll(this);">
-									</th>
-									<th>Product Name</th>
-									<th>Publish Date</th>
-									<th>Sales</th>
-									<th>Price</th>
-									<th>Status</th>
-									<th>SKU</th>
-								</tr>
-							</thead>
-							<tbody>
-								{{#each products}}
-								<tr>
-									<td>
-										<input type="checkbox" name="selected" value={{this.product_slug}}>
-									</td>
-									<td class="text_blue_color">
-										<img src="{{this.product_base_image}}" style="width: 30px;" />
-										<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-									</td>
-									<td>{{ prettifyDate this.publish_date }}</td>
-									<td class="text_blue_color">{{this.product_selling_count}}</td>
-									<td>${{this.product_price}} CAD</td>
-									{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-									<td class="text_green_color">Active</td>
-									{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-									<td class="text_green_color">InActive</td>
-									{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-									<td class="text_orange_color">Suspended</td>
-									{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-									<td class="text_red_color">Sold Out</td>
-									{{/ifCond}}
-									<td class="text_blue_color">{{this.stock_keep_unit}}</td>
-								</tr>
-								{{/each}}
-							</tbody>
-						</table>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-						</div>
-						<div class="col-md-7">
-							{{#pagination collectionSize page pageSize maxSize}}
-							<nav aria-label="Page navigation example">
-								<ul class="pagination justify-content-center">
-									{{#unless startFromFirstPage}}
-									<li class="page-item">
-										<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
-									</li>
-									{{/unless}} {{#each pages}}
-									<li class="page-item {{#if isCurrent}} active {{/if}}">
-										<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-									</li>
-									{{/each}} {{#unless endAtLastPage}}
-									<li class="page-item">
-										<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
-									</li>
-									{{/unless}}
-								</ul>
-							</nav>
-							{{/pagination}}
-						</div>
-					</div>
-				</div>
-				<div class="col-md-2">
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}
