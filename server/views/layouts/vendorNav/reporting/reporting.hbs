@@ -1,668 +1,684 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
-<section class="showing_categ">
-    <div class="row">
-        {{> vendor/navbar}}
-        <div class="col-md-10 list_bg">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8" style="padding: 0px;">
-                        <div class="col-sm-6" style="padding: 0px; float: left;">
-                            <div class="row">
-                                <div class="col-md-2 charts">
-                                    <p class="report_date-range">Date Range</p>
-                                </div>
-                                <div class="col-sm-3" style="padding: 0px">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                            id="datepicker3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-1 common_padding1">
-                                    <p style="padding: 3px 17px; font-size: 12px;"> to</p>
-                                </div>
-                                <div class="col-sm-3" style="padding: 2px">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                            id="datepicker4">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                            </span>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div class="col-md-2" style="padding: 0px">
-                                    <select class="acc-days1">
-                                        <option value="Last 30 Days" selected>Last 30 Days</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="padding:0px; float: right; ">
-                            <div class="row">
-                                <div class="col-md-3 charts">
-                                    <input type="checkbox" style="width: 20%; margin-top: 5px;" checked>
-                                    <p class="report_date-range1">Compare to</p>
-                                </div>
-                                <div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                            id="datepicker5">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-1 common_padding1">
-                                    <p style="padding: 3px 17px; font-size: 12px;"> to</p>
-                                </div>
-                                <div class="col-sm-3" style="padding: 2px">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                            id="datepicker6">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                            </span>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div class="col-md-1" style="padding: 0px">
-                                    <button class="update-btn1" type="submit">Update</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 total-sales">
-                            <div class="pts">
-                                <p class="product-total-sale">$838,000</p>
-                                <p class="product-total-sale1">+$21,000</p>
-                                <br>
-                                <br>
-                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
-                                <br>
-                                <p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
-                                <br>
-                                <div class="container horizontal flat">
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #1</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">100%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #2</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">82%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #3</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">60%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #4</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">54%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #5</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">32%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #6</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">20%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12" style="padding: 0px;">
-                                            <div class="col-md-2" style="padding: 0px; float: left;">
-                                                <p class="product-bar-chart">Product #7</p>
-                                            </div>
-                                            <div class="col-md-2" style="padding: 0px; float: right;">
-                                                <p class="product-bar-chart">$343,000</p>
-                                            </div>
-                                            <div class="col-md-8" style="padding: 0px; float: right;">
-                                                <div class="progress-bar horizontal">
-                                                    <div class="progress-track">
-                                                        <div class="progress-fill">
-                                                            <span style="display: none;">10%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="lt-more">
-                                    <a href="#" style="color: white;">More &#9658;</a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6 total-sales" style="float: right;">
-                            <div class="pts">
-                                <p class="product-total-sale">$838,000</p>
-                                <p class="product-total-sale1">+$21,000</p>
-                                <br>
-                                <br>
-                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
-                                <br>
-                                <p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
-
-                                <ul class="chart">
-                                    <li>
-                                        <span class="wholesale" style="height:60%" title="Wholesale"></span>
-                                    </li>
-                                    <li>
-                                        <span class="shop" style="height:40%" title="Shop"></span>
-                                    </li>
-                                    <li>
-                                        <span class="services" style="height:20%" title="Services"></span>
-                                    </li>
-                                    <li>
-                                        <span class="subscription" style="height:10%" title="Subscription"></span>
-                                    </li>
-                                </ul>
-                                <p class="lt-more">
-                                    <a href="#" style="color: white;">More &#9658;</a>
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6" style="padding-right: 0px;">
-                                <div class="outside-border">
-                                    <p class="latest-tickets-title">Latest Tickets</p>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
-                                            <p>subject:
-                                                <span class="lt-user-name">1213345</span>
-                                            </p>
-                                            <p>Status:
-                                                <span class="lt-status">Open</span>
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <p class="lt-see-all">
-                                    <a href="#" style="color: white;">See All &#9658;</a>
-                                </p>
-                            </div>
-                            <div class="col-md-6" style="padding-right: 0px;">
-                                <div class="outside-border">
-                                    <p class="latest-refund-title">Latest Refund</p>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-                                        <div class="user-details">
-                                            <div class="col-md-3 latest-tickets">
-                                                <img src="../../img/img_avatar.png" class="avatar-img">
-                                            </div>
-                                            <div class="col-md-9" style="float: right;">
-                                                <p class="lt-user-name">User Name</p>
-                                                <p>subject:
-                                                    <span class="lt-user-name">1213345</span>
-                                                </p>
-                                                <p>Status:
-                                                    <span class="lt-status">Open</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row landing-tables">
-
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
-                                            <p>subject:
-                                                <span class="lt-user-name">1213345</span>
-                                            </p>
-                                            <p>Status:
-                                                <span class="lt-status">Open</span>
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <p class="lt-see-all">
-                                    <a href="#" style="color: white;">See All &#9658;</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
             </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="line-chart-container">
-                        <div class="line-chart">
-                            <p class="line-chart-title">RECENT REVENUE CHANGES</p>
-
-                            <label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 26,2017 - Jun 01,2017</label>
-                            <input type="text" class="checked-input">
-                            <br>
-                            <br>
-
-                            <label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 19,2017- may 25,2017</label>
-                            <input type="text" class="unchecked-input">
-
-                            <div class="chart-container">
-                                <canvas id="line-chartcanvas"></canvas>
-                            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2></h2>
                         </div>
-                    </div>
-                    <div>
-                        <p class="line-chart-footer">Revenue($)</p>
-                        <p class="line-chart-footer">Revenue(%)</p>
-                        <p class="line-chart-footer">Completed Transaction</p>
-                        <p class="line-chart-footer">Returns</p>
-                        <p class="line-chart-footer">Disputes</p>
-                        <p class="line-chart-footer">Refunds</p>
-                        <p class="line-chart-footer">Cancelation</p>
-                    </div>
-                    <div>
-                        <p class="line-chart-green1">$21,000</p>
-                        <p class="line-chart-green2">36.79%</p>
-                        <p class="line-chart-green3">+787</p>
-                        <p class="line-chart-red1">+787</p>
-                        <p class="line-chart-green4">$21,000</p>
-                        <p class="line-chart-red2">+787</p>
-                        <p class="line-chart-red3">+787</p>
-                    </div>
-                    <div>
-                        <p class="line-chart-vs" style="padding-left: 20px">$111,082 vs $90,082</p>
-                        <p class="line-chart-vs">$1,082 vs $791</p>
-                        <p class="line-chart-vs" style="padding-left: 38px;">$1,082 vs $791</p>
-                        <p class="line-chart-vs" style="padding-left: 85px;">$1,082 vs $791</p>
-                        <p class="line-chart-vs">$1,082 vs $791</p>
-                        <p class="line-chart-vs">$1,082 vs $791</p>
-                        <p class="line-chart-vs">$1,082 vs $791</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="row">
-                        <div class="col-md-6" style="padding: 10px;">
-                            <div class="outside-border">
-                                <p class="most-active-buyers">Most Active Buyers</p>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
+                        <div class="content-body">
 
-                                            <p>1 hour ago</p>
+
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-8" style="padding: 0px;">
+                                        <div class="col-sm-6" style="padding: 0px; float: left;">
+                                            <div class="row">
+                                                <div class="col-md-2 charts">
+                                                    <p class="report_date-range">Date Range</p>
+                                                </div>
+                                                <div class="col-sm-3" style="padding: 0px">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
+                                                            id="datepicker3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                                <img class="calendar-icon" src="../../img/calendar.png">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-1 common_padding1">
+                                                    <p style="padding: 3px 17px; font-size: 12px;"> to</p>
+                                                </div>
+                                                <div class="col-sm-3" style="padding: 2px">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
+                                                            id="datepicker4">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                                <img class="calendar-icon" src="../../img/calendar.png">
+                                                            </span>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" style="padding: 0px">
+                                                    <select class="acc-days1">
+                                                        <option value="Last 30 Days" selected>Last 30 Days</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="col-sm-6" style="padding:0px; float: right; ">
+                                            <div class="row">
+                                                <div class="col-md-3 charts">
+                                                    <input type="checkbox" style="width: 20%; margin-top: 5px;" checked>
+                                                    <p class="report_date-range1">Compare to</p>
+                                                </div>
+                                                <div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
+                                                            id="datepicker5">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                                <img class="calendar-icon" src="../../img/calendar.png">
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-1 common_padding1">
+                                                    <p style="padding: 3px 17px; font-size: 12px;"> to</p>
+                                                </div>
+                                                <div class="col-sm-3" style="padding: 2px">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
+                                                            id="datepicker6">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                                <img class="calendar-icon" src="../../img/calendar.png">
+                                                            </span>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1" style="padding: 0px">
+                                                    <button class="update-btn1" type="submit">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 total-sales">
+                                            <div class="pts">
+                                                <p class="product-total-sale">$838,000</p>
+                                                <p class="product-total-sale1">+$21,000</p>
+                                                <br>
+                                                <br>
+                                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
+                                                <br>
+                                                <p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
+                                                <br>
+                                                <div class="container horizontal flat">
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #1</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">100%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #2</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">82%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #3</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">60%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #4</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">54%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #5</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">32%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #6</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">20%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            <div class="col-md-2" style="padding: 0px; float: left;">
+                                                                <p class="product-bar-chart">Product #7</p>
+                                                            </div>
+                                                            <div class="col-md-2" style="padding: 0px; float: right;">
+                                                                <p class="product-bar-chart">$343,000</p>
+                                                            </div>
+                                                            <div class="col-md-8" style="padding: 0px; float: right;">
+                                                                <div class="progress-bar horizontal">
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill">
+                                                                            <span style="display: none;">10%</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="lt-more">
+                                                    <a href="#" style="color: white;">More &#9658;</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 total-sales" style="float: right;">
+                                            <div class="pts">
+                                                <p class="product-total-sale">$838,000</p>
+                                                <p class="product-total-sale1">+$21,000</p>
+                                                <br>
+                                                <br>
+                                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
+                                                <br>
+                                                <p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
+
+                                                <ul class="chart">
+                                                    <li>
+                                                        <span class="wholesale" style="height:60%" title="Wholesale"></span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="shop" style="height:40%" title="Shop"></span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="services" style="height:20%" title="Services"></span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="subscription" style="height:10%" title="Subscription"></span>
+                                                    </li>
+                                                </ul>
+                                                <p class="lt-more">
+                                                    <a href="#" style="color: white;">More &#9658;</a>
+                                                </p>
+                                            </div>
+                                        </div>
+
                                     </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
 
-                                            <p>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
 
-                                            <p>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-6" style="padding-right: 0px;">
+                                                <div class="outside-border">
+                                                    <p class="latest-tickets-title">Latest Tickets</p>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
 
-                                            <p>1 hour ago</p>
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+                                                            <p>subject:
+                                                                <span class="lt-user-name">1213345</span>
+                                                            </p>
+                                                            <p>Status:
+                                                                <span class="lt-status">Open</span>
+                                                            </p>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <p class="lt-see-all">
+                                                    <a href="#" style="color: white;">See All &#9658;</a>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6" style="padding-right: 0px;">
+                                                <div class="outside-border">
+                                                    <p class="latest-refund-title">Latest Refund</p>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+                                                        <div class="user-details">
+                                                            <div class="col-md-3 latest-tickets">
+                                                                <img src="../../img/img_avatar.png" class="avatar-img">
+                                                            </div>
+                                                            <div class="col-md-9" style="float: right;">
+                                                                <p class="lt-user-name">User Name</p>
+                                                                <p>subject:
+                                                                    <span class="lt-user-name">1213345</span>
+                                                                </p>
+                                                                <p>Status:
+                                                                    <span class="lt-status">Open</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row landing-tables">
+
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+                                                            <p>subject:
+                                                                <span class="lt-user-name">1213345</span>
+                                                            </p>
+                                                            <p>Status:
+                                                                <span class="lt-status">Open</span>
+                                                            </p>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <p class="lt-see-all">
+                                                    <a href="#" style="color: white;">See All &#9658;</a>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-
-                                    <div class="col-md-3 latest-tickets">
-                                        <img src="../../img/img_avatar.png" class="avatar-img">
-                                    </div>
-                                    <div class="col-md-9" style="float: right;">
-                                        <p class="lt-user-name">User Name</p>
-
-                                        <p>1 hour ago</p>
                                     </div>
 
                                 </div>
                             </div>
-                            <p class="lt-see-all">
-                                <a href="#" style="color: white;">See All &#9658;</a>
-                            </p>
-                        </div>
-                        <div class="col-md-6" style="padding: 10px 13px 10px 5px;">
-                            <div class="outside-border">
-                                <p class="top-selling-cities">Top Selling Cities</p>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="line-chart-container">
+                                        <div class="line-chart">
+                                            <p class="line-chart-title">RECENT REVENUE CHANGES</p>
 
-                                            <p class="ts-rate">Total sales:
-                                                <span> 101,010</span>
+                                            <label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 26,2017 - Jun 01,2017</label>
+                                            <input type="text" class="checked-input">
+                                            <br>
+                                            <br>
+
+                                            <label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 19,2017- may 25,2017</label>
+                                            <input type="text" class="unchecked-input">
+
+                                            <div class="chart-container">
+                                                <canvas id="line-chartcanvas"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="line-chart-footer">Revenue($)</p>
+                                        <p class="line-chart-footer">Revenue(%)</p>
+                                        <p class="line-chart-footer">Completed Transaction</p>
+                                        <p class="line-chart-footer">Returns</p>
+                                        <p class="line-chart-footer">Disputes</p>
+                                        <p class="line-chart-footer">Refunds</p>
+                                        <p class="line-chart-footer">Cancelation</p>
+                                    </div>
+                                    <div>
+                                        <p class="line-chart-green1">$21,000</p>
+                                        <p class="line-chart-green2">36.79%</p>
+                                        <p class="line-chart-green3">+787</p>
+                                        <p class="line-chart-red1">+787</p>
+                                        <p class="line-chart-green4">$21,000</p>
+                                        <p class="line-chart-red2">+787</p>
+                                        <p class="line-chart-red3">+787</p>
+                                    </div>
+                                    <div>
+                                        <p class="line-chart-vs" style="padding-left: 20px">$111,082 vs $90,082</p>
+                                        <p class="line-chart-vs">$1,082 vs $791</p>
+                                        <p class="line-chart-vs" style="padding-left: 38px;">$1,082 vs $791</p>
+                                        <p class="line-chart-vs" style="padding-left: 85px;">$1,082 vs $791</p>
+                                        <p class="line-chart-vs">$1,082 vs $791</p>
+                                        <p class="line-chart-vs">$1,082 vs $791</p>
+                                        <p class="line-chart-vs">$1,082 vs $791</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-6" style="padding: 10px;">
+                                            <div class="outside-border">
+                                                <p class="most-active-buyers">Most Active Buyers</p>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p>1 hour ago</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p>1 hour ago</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p>1 hour ago</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p>1 hour ago</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+
+                                                    <div class="col-md-3 latest-tickets">
+                                                        <img src="../../img/img_avatar.png" class="avatar-img">
+                                                    </div>
+                                                    <div class="col-md-9" style="float: right;">
+                                                        <p class="lt-user-name">User Name</p>
+
+                                                        <p>1 hour ago</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <p class="lt-see-all">
+                                                <a href="#" style="color: white;">See All &#9658;</a>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6" style="padding: 10px 13px 10px 5px;">
+                                            <div class="outside-border">
+                                                <p class="top-selling-cities">Top Selling Cities</p>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p class="ts-rate">Total sales:
+                                                                <span> 101,010</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p class="ts-rate">Total sales:
+                                                                <span> 101,010</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p class="ts-rate">Total sales:
+                                                                <span> 101,010</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+                                                    <div class="user-details">
+                                                        <div class="col-md-3 latest-tickets">
+                                                            <img src="../../img/img_avatar.png" class="avatar-img">
+                                                        </div>
+                                                        <div class="col-md-9" style="float: right;">
+                                                            <p class="lt-user-name">User Name</p>
+
+                                                            <p class="ts-rate">Total sales:
+                                                                <span> 101,010</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row landing-tables">
+
+                                                    <div class="col-md-3 latest-tickets">
+                                                        <img src="../../img/img_avatar.png" class="avatar-img">
+                                                    </div>
+                                                    <div class="col-md-9" style="float: right;">
+                                                        <p class="lt-user-name">User Name</p>
+
+                                                        <p class="ts-rate">Total sales:
+                                                            <span> 101,010</span>
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <p class="lt-see-all">
+                                                <a href="#" style="color: white;">See All &#9658;</a>
                                             </p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
-
-                                            <p class="ts-rate">Total sales:
-                                                <span> 101,010</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
-
-                                            <p class="ts-rate">Total sales:
-                                                <span> 101,010</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-                                    <div class="user-details">
-                                        <div class="col-md-3 latest-tickets">
-                                            <img src="../../img/img_avatar.png" class="avatar-img">
-                                        </div>
-                                        <div class="col-md-9" style="float: right;">
-                                            <p class="lt-user-name">User Name</p>
-
-                                            <p class="ts-rate">Total sales:
-                                                <span> 101,010</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row landing-tables">
-
-                                    <div class="col-md-3 latest-tickets">
-                                        <img src="../../img/img_avatar.png" class="avatar-img">
-                                    </div>
-                                    <div class="col-md-9" style="float: right;">
-                                        <p class="lt-user-name">User Name</p>
-
-                                        <p class="ts-rate">Total sales:
-                                            <span> 101,010</span>
-                                        </p>
-                                    </div>
-
                                 </div>
                             </div>
-                            <p class="lt-see-all">
-                                <a href="#" style="color: white;">See All &#9658;</a>
-                            </p>
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-</section>
+    </div>
+</div>
 {{> footer/bottom-footer}}

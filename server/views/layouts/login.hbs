@@ -27,9 +27,10 @@
             }).then(function(user) {
                 window.location = "/";
             }).catch(function(error) {
+                $("#ErrorDiv").remove();
                 console.log('Error:::', error.responseText)
                 $("#loginErrorMessage").after(function() {
-                    return '<small class="error">' + error.responseText + '</small>';
+                    return '<small class="error" id="ErrorDiv">' + error.responseText + '</small>';
                 });
             });
         });

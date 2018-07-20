@@ -1,185 +1,194 @@
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <script>
 	$(function () {
 		console.log("comming....");
 		$("#from, #to,#c_from,#c_to").datepicker();
 	});
-</script>
-<section class="showing_categ">
-	<div class="">
-		<div class="container">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-10" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;">Report Performance</h5>
-					<div class="row">
-						<div class="col-sm-6" style="padding-left: 15px; float: left;">
-							<div class="row">
-								<div class="col-md-2" style="padding-left: 15px;">
-									<p class="report_date-range">Date Range</p>
-								</div>
-								<div class="col-sm-3" style="padding: 0px">
-									<div class="input-group">
-										<input class="form-control social_input" type="text" id="from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2" id="datepicker3"
-										 autocomplete="off"> {{!--
-										<input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-										 aria-describedby="basic-addon2" id="datepicker3" autocomplete="off"> --}}
-										<div class="input-group-prepend">
-											<span class="input-group-text calender_face_1" id="basic-addon2">
-												<img class="calendar-icon" src="../../img/calendar.png">
-											</span>
-										</div>
-									</div>
-								</div>
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
 
-								<div class="col-md-1 common_padding1">
-									<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-								</div>
-								<div class="col-sm-3" style="padding: 2px">
-									<div class="input-group">
-										<input type="text" class="form-control social_input" id="to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-										 id="datepicker4" autocomplete="off">
-										<div class="input-group-prepend">
-											<span class="input-group-text calender_face_1" id="basic-addon2">
-												<img class="calendar-icon" src="../../img/calendar.png">
-											</span>
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Report Performance</h2>
+						</div>
+						<div class="content-body">
+							<div class="row">
+								<div class="col-sm-6" style="padding-left: 15px; float: left;">
+									<div class="row">
+										<div class="col-md-2" style="padding-left: 15px;">
+											<p class="report_date-range">Date Range</p>
+										</div>
+										<div class="col-sm-3" style="padding: 0px">
+											<div class="input-group">
+												<input class="form-control social_input" type="text" id="from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
+												 id="datepicker3" autocomplete="off"> {{!--
+												<input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
+												 id="datepicker3" autocomplete="off"> --}}
+												<div class="input-group-prepend">
+													<span class="input-group-text calender_face_1" id="basic-addon2">
+														<img class="calendar-icon" src="../../img/calendar.png">
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-1 common_padding1">
+											<p style="padding: 3px 17px; font-size: 12px;"> to</p>
+										</div>
+										<div class="col-sm-3" style="padding: 2px">
+											<div class="input-group">
+												<input type="text" class="form-control social_input" id="to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+												 aria-describedby="basic-addon2" id="datepicker4" autocomplete="off">
+												<div class="input-group-prepend">
+													<span class="input-group-text calender_face_1" id="basic-addon2">
+														<img class="calendar-icon" src="../../img/calendar.png">
+													</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-2" style="padding: 0px">
+											<select class="vend_edit_lists_buttonstyle">
+												<option>Last 30 Days</option>
+											</select>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-2" style="padding: 0px">
-									<select class="vend_edit_lists_buttonstyle">
-										<option>Last 30 Days</option>
+								<div class="col-sm-4" style="padding:0px; float: right; ">
+									<div class="row">
+										<div class="col-md-3">
+											<input type="checkbox" style="width: 20%; margin-top: 5px;" checked>
+											<p class="report_date-range1">Compare to</p>
+										</div>
+										<div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
+											<div class="input-group">
+												<input type="text" class="form-control social_input" id="c_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+												 aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
+												<div class="input-group-prepend">
+													<span class="input-group-text calender_face_1" id="basic-addon2">
+														<img class="calendar-icon" src="../../img/calendar.png">
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-1 common_padding1">
+											<p style="padding: 3px 17px; font-size: 12px;"> to</p>
+										</div>
+										<div class="col-sm-3" style="padding: 2px">
+											<div class="input-group">
+												<input type="text" class="form-control social_input" id="c_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+												 aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
+												<div class="input-group-prepend">
+													<span class="input-group-text calender_face_1" id="basic-addon2">
+														<img class="calendar-icon" src="../../img/calendar.png">
+													</span>
+												</div>
+
+
+											</div>
+										</div>
+										<div class="col-md-1" style="padding: 0px">
+											<button class="update-btn1" type="submit">Update</button>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
+									<select class="vend_edit_lists_buttonstyle float-right">
+										<option>EXPORT TO</option>
 									</select>
 								</div>
 							</div>
-						</div>
-						<div class="col-sm-4" style="padding:0px; float: right; ">
+							<div class="row" style="padding-top: 10px">
+								<div class="col-md-8">
+									Select a metric
+									<select class="vend_edit_lists_buttonstyle" style="width: 250px;">
+										<option>TOP PERFORMING PRODUCTS</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<div class="input-group">
+										<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
+										<span class="promo_code_text_span">
+											<i class="fas fa-search"></i>
+										</span>
+									</div>
+									<!--<input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle float-right" /> -->
+								</div>
+							</div>
 							<div class="row">
-								<div class="col-md-3">
-									<input type="checkbox" style="width: 20%; margin-top: 5px;" checked>
-									<p class="report_date-range1">Compare to</p>
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
 								</div>
-								<div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
-									<div class="input-group">
-										<input type="text" class="form-control social_input" id="c_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-										 id="datepicker5" autocomplete="off">
-										<div class="input-group-prepend">
-											<span class="input-group-text calender_face_1" id="basic-addon2">
-												<img class="calendar-icon" src="../../img/calendar.png">
-											</span>
-										</div>
-									</div>
-								</div>
-
-								<div class="col-md-1 common_padding1">
-									<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-								</div>
-								<div class="col-sm-3" style="padding: 2px">
-									<div class="input-group">
-										<input type="text" class="form-control social_input" id="c_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-										 id="datepicker6" autocomplete="off">
-										<div class="input-group-prepend">
-											<span class="input-group-text calender_face_1" id="basic-addon2">
-												<img class="calendar-icon" src="../../img/calendar.png">
-											</span>
-										</div>
-
-
-									</div>
-								</div>
-								<div class="col-md-1" style="padding: 0px">
-									<button class="update-btn1" type="submit">Update</button>
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle float-right">Entries per page:
+										<a href="#" class="text_blue_color">10</a>
+										<a href="#" class="text_grey_color">25</a>
+										<a href="#" class="text_blue_color">100 All</a>
+									</p>
 								</div>
 							</div>
-						</div>
-						<div class="col-md-2">
-							<select class="vend_edit_lists_buttonstyle float-right">
-								<option>EXPORT TO</option>
-							</select>
-						</div>
-					</div>
-					<div class="row" style="padding-top: 10px">
-						<div class="col-md-8">
-							Select a metric
-							<select class="vend_edit_lists_buttonstyle" style="width: 250px;">
-								<option>TOP PERFORMING PRODUCTS</option>
-							</select>
-						</div>
-						<div class="col-md-4">
-							<div class="input-group">
-								<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
-								<span class="promo_code_text_span">
-									<i class="fas fa-search"></i>
-								</span>
+							<div class="row">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Product</th>
+											<th>Type</th>
+											<th>Sales</th>
+											<th>Vedor Revenue</th>
+											<th>GTC Processing Fees</th>
+
+										</tr>
+									</thead>
+									<tbody>
+
+										{{#each products}}
+										<tr>
+											<td>
+												<img src="../../img/iphone.png" style="width: 15px;" />
+												<a href="#" class="text_blue_color">{{this.product_name}}</a>
+											</td>
+											<td>{{objectKey ../marketPlace this.marketplace_id }}</td>
+											<td>{{this.product_selling_count}}
+												<span class="text_green_color">+ 100</span>
+												<span class="text_grey_color">vs $98 (+2.3 %)</span>
+											</td>
+											<td>$221,000
+												<span class="text_green_color">+ $11,000</span>
+												<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
+											</td>
+											<td>$1,000
+												<span class="text_green_color">+ $11,000</span>
+												<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
+											</td>
+										</tr>
+										{{/each}}
+									</tbody>
+								</table>
 							</div>
-							<!--<input type="text" placeholder="Search History" class="vend_edit_lists_searchstyle float-right" /> -->
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page:
-								<a href="#" class="text_blue_color">10</a>
-								<a href="#" class="text_grey_color">25</a>
-								<a href="#" class="text_blue_color">100 All</a>
-							</p>
-						</div>
-					</div>
-					<div class="row">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>Product</th>
-									<th>Type</th>
-									<th>Sales</th>
-									<th>Vedor Revenue</th>
-									<th>GTC Processing Fees</th>
+							<div class="row">
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
+								</div>
+								<div class="col-md-6">
+									<p class="vend_edit_lists_pstyle float-right">Entries per page:
+										<a href="#" class="text_blue_color">10</a>
+										<a href="#" class="text_grey_color">25</a>
+										<a href="#" class="text_blue_color">100 All</a>
+									</p>
+								</div>
+							</div>
 
-								</tr>
-							</thead>
-							<tbody>
-
-								{{#each products}}
-								<tr>
-									<td>
-										<img src="../../img/iphone.png" style="width: 15px;" />
-										<a href="#" class="text_blue_color">{{this.product_name}}</a>
-									</td>
-									<td>{{objectKey ../marketPlace this.marketplace_id }}</td>
-									<td>{{this.product_selling_count}}
-										<span class="text_green_color">+ 100</span>
-										<span class="text_grey_color">vs $98 (+2.3 %)</span>
-									</td>
-									<td>$221,000
-										<span class="text_green_color">+ $11,000</span>
-										<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
-									</td>
-									<td>$1,000
-										<span class="text_green_color">+ $11,000</span>
-										<span class="text_grey_color">vs $9,082 (+12.3 %)</span>
-									</td>
-								</tr>
-								{{/each}}
-							</tbody>
-						</table>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle">Top 25 Shown</p>
-						</div>
-						<div class="col-md-6">
-							<p class="vend_edit_lists_pstyle float-right">Entries per page:
-								<a href="#" class="text_blue_color">10</a>
-								<a href="#" class="text_grey_color">25</a>
-								<a href="#" class="text_blue_color">100 All</a>
-							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}
