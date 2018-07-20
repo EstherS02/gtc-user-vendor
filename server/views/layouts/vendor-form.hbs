@@ -144,7 +144,7 @@
                 city: "required",
                 currency_id: "required",
                 about: "required",
-                icon: "required"
+                vendorIcon: "required"
             },
             messages: {
                 vendor_name: "Please enter vendor name",
@@ -154,7 +154,7 @@
                 city: "Please enter city",
                 currency_id: "Please select currency",
                 about: "Please enter vendor details",
-                icon: "Please choose vendor icon"
+                vendorIcon: "Please choose vendor icon"
             }
         });
     });
@@ -222,13 +222,13 @@
                                         <div class="form-group">
                                             <label class="label-control">Base Location</label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" name="base_location" id="country" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location" id="country" required>
                                                     <option disabled selected>Select Location...</option>
                                                     {{#each country}}
                                                     <option value="{{this.id}}">{{ this.name}}</option>
                                                     {{/each}}
                                                 </select>
-                                                <label class="input-group-append custom-group-append" for="country"></label>
+                                                {{!-- <label class="input-group-append custom-group-append" for="country"></label> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -236,11 +236,10 @@
                                         <div class="form-group">
                                             <label class="label-control">Province</label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" name="province_id" id="state" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="province_id" id="state" required>
                                                     <option disabled selected>Select Province...</option>
                                                 </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
+                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -256,14 +255,13 @@
                                         <div class="form-group">
                                             <label class="label-control">Currency</label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" name="currency_id" id="inputGroupSelect02" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id" id="inputGroupSelect02" required>
                                                     <option disabled selected>Select Currency...</option>
                                                     {{#each currency}}
                                                     <option value="{{this.id}}">{{ this.name}}</option>
                                                     {{/each}}
                                                 </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
+                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -271,14 +269,13 @@
                                         <div class="form-group">
                                             <label class="label-control">Timezone</label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm" name="timezone_id" id="inputGroupSelect02">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="timezone_id" id="inputGroupSelect02">
                                                     <option disabled selected>Select Timezone...</option>
                                                     {{#each timezone}}
                                                     <option value="{{this.id}}">{{ this.timezone}}</option>
                                                     {{/each}}
                                                 </select>
-                                                <div class="input-group-append custom-group-append">
-                                                </div>
+                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -296,8 +293,8 @@
                                         <div class="form-group">
                                             <label class="label-control">Vendor Icon</label>
                                             <div class="input-group">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="icon" required>
+                                                <div class="custom-file custom_error_message">
+                                                    <input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
                                                     <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
                                                 </div>
                                             </div>
