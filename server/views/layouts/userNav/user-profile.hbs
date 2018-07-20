@@ -2,11 +2,13 @@
 	#imageUpload {
 		display: none;
 	}
+
 	#profileImage,
 	#userUpdateBtn,
 	#userCancelBtn {
 		cursor: pointer;
 	}
+
 	.list_butt_2 {
 		cursor: pointer;
 	}
@@ -78,7 +80,7 @@
 		});
 
 		$('#s_country').change(function () {
-            var country_id = $('#s_country').val();
+			var country_id = $('#s_country').val();
 			$.ajax({
 				url: '/api/states?country_id=' + country_id,
 				type: 'GET',
@@ -172,7 +174,7 @@
 						$('#gtc-profile-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-profile-alert .profile-message').text("Profile Updated Successfully")
 						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
-						$("#gtc-profile-alert").slideUp(500);
+							$("#gtc-profile-alert").slideUp(500);
 						});
 					},
 					error: function (error) {
@@ -255,9 +257,9 @@
 		$("#changePwd").submit(function (e) {
 			e.preventDefault();
 
-           let input = $("#changePwd :input").filter(function (index, element) {
-					return $(element).val() != '';
-				}).serialize();
+			let input = $("#changePwd :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
 
 			if ($('#changePwd').valid()) {
 				$.ajax({
@@ -268,23 +270,21 @@
 						$('#gtc-pwdreset-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-pwdreset-alert .pwdreset-message').text("Password Changed Successfully")
 						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
-						$("#gtc-pwdreset-alert").slideUp(500);
+							$("#gtc-pwdreset-alert").slideUp(500);
 						});
 					},
 					error: function (error) {
 						$('#gtc-pwdreset-alert').removeClass('alert-success').addClass('alert-danger');
 						$('#gtc-pwdreset-alert .pwdreset-message').text(error.responseText);
 						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
-						$("#gtc-pwdreset-alert").slideUp(500);
+							$("#gtc-pwdreset-alert").slideUp(500);
 						});
 					}
 				})
 			};
 		});
 	});	
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
- {{> vendor/header}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -308,281 +308,268 @@
 	</div>
 </div>
 
-
-
-<section class="showing_categ">
-	<div class="">
-		<div class="container">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-8" style="background-color: #FFF;">
-					<form id="userForm">
-						<h5 style="padding-top: 20px;margin-bottom: 30px">Profile Settings</h5>
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Profile Settings</h2>
+						</div>
 						<div class="alert" id="gtc-profile-alert">
 							<button type="button" class="close" data-dismiss="alert">
 								<span aria-hidden="true">&times;</span>
 							</button>
 							<span class="profile-message"></span>
 						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="row">
-									<div class="col-md-8 text-center">
-										{{#if user.user_pic_url}}
-										<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
-										<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
-										<p id="profileImage" class="text_blue_color">Change Avatar</p>
-										<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" capture>
-									</div>
-								</div>
-								<br/>
-								<br/>
-								<br/>
-								<br/>
-								<div class="row">
-									<div class="col-md-4">
-										<p>
-											<b>Account Settings</b>
-										</p>
-									</div>
 
-									<div class="col-md-8 common_padding1">
-										<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+						<div class="content-body">
 
+							<div class="row">
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-8 text-center">
+											{{#if user.user_pic_url}}
+											<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
+											<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
+											<p id="profileImage" class="text_blue_color">Change Avatar</p>
+											<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" capture>
+										</div>
+									</div>
+									<br/>
+									<br/>
+									<br/>
+									<br/>
+									<div class="row">
+										<div class="col-md-4">
+											<p>
+												<b>Account Settings</b>
+											</p>
+										</div>
+
+										<div class="col-md-8 common_padding1">
+											<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									{{#if LoggedInUser.Vendor}}
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id="contact_email" name="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" />
+										</div>
+									</div>
+									{{/if}}
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
+											/>
+										</div>
+									</div>
+									<br/>
+									<br/>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<button type="button" class="list_butt_2" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-4">
+											<p>
+												<b>Billing Address</b>
+											</p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
+										</div>
 									</div>
-								</div>
-								{{!--
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input readonly type="text" id="password" placeholder="Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" required>
+											{{#if billingAddress.country_id}}
+											<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+											{{else}}
+											<option disabled selected>Country</option>
+											{{/if}} {{#each country}}
+											<option value="{{this.id}}">{{ this.name}}</option>
+											{{/each}}
+										</select>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" style="width:200px;" value="" required>
+											{{#if billingAddress.province_id}}
+											<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+											{{else}}
+											<option disabled selected>Province/State</option>
+											{{/if}}
+										</select>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input readonly type="text" placeholder="Confirm Password" class="vend_edit_lists_textstyle1" style="width: 80%" />
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" required />
+										</div>
 									</div>
-								</div> --}} {{#if LoggedInUser.Vendor}}
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id="contact_email" name="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" />
+									<div class="row" style="margin-bottom: 20px;">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="checkbox" id="sameAsAddr"> My Shipping Address is the same as my billing address
+										</div>
 									</div>
-								</div>
-								{{/if}}
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+									<div class="row">
+										<div class="col-md-4">
+											<p>
+												<b>Shipping Address</b>
+											</p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<input readonly type="text" id="email" placeholder="Email" value="{{user.email}}" class="vend_edit_lists_textstyle1" style="width: 80%"
-										/>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
+										</div>
 									</div>
-								</div>
-								<br/>
-								<br/>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" />
+										</div>
 									</div>
-									<div class="col-md-8 common_padding1">
-										<button type="button" class="list_butt_2" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" required>
+											{{#if shippingAddress.country_id}}
+											<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+											{{else}}
+											<option disabled selected>Country</option>
+											{{/if}} {{#each country}}
+											<option value="{{this.id}}">{{ this.name}}</option>
+											{{/each}}
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state" style="width:200px;" required>
+											{{#if shippingAddress.province_id}}
+											<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+											{{else}}
+											<option disabled selected>Province/State</option>
+											{{/if}}
+										</select>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
+											 style="width: 80%" required />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<p></p>
+										</div>
+										<div class="col-md-8 common_padding1">
+											<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
+											 class="vend_edit_lists_textstyle1" style="width: 80%" required />
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
-								<div class="row">
-									<div class="col-md-4">
-										<p>
-											<b>Billing Address</b>
-										</p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="b_country" name="b_country" style="width:200px;" required>
-										{{#if billingAddress.country_id}}
-										<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
-										{{else}}
-										<option disabled selected>Country</option>
-										{{/if}} {{#each country}}
-										<option value="{{this.id}}">{{ this.name}}</option>
-										{{/each}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="b_state" id="b_state" style="width:200px;" value="" required>
-										{{#if billingAddress.province_id}}
-										<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
-										{{else}}
-										<option disabled selected>Province/State</option>
-										{{/if}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
-									</div>
-								</div>
-								<div class="row" style="margin-bottom: 20px;">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="checkbox" id="sameAsAddr"> My Shipping Address is the same as my billing address
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p>
-											<b>Shipping Address</b>
-										</p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required/>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" id="s_country" name="s_country" style="width:200px;" required>
-										{{#if shippingAddress.country_id}}
-										<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
-										{{else}}
-										<option disabled selected>Country</option>
-										{{/if}} {{#each country}}
-										<option value="{{this.id}}">{{ this.name}}</option>
-										{{/each}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<select class="vend_edit_lists_dropdownstyle" name="s_state" id="s_state" style="width:200px;" required>
-										{{#if shippingAddress.province_id}}
-										<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
-										{{else}}
-										<option disabled selected>Province/State</option>
-										{{/if}}
-									</select>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="vend_edit_lists_textstyle1"
-										 style="width: 80%" required />
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4">
-										<p></p>
-									</div>
-									<div class="col-md-8 common_padding1">
-										<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
-										 class="vend_edit_lists_textstyle1" style="width: 80%" required />
-									</div>
+
+							<hr/>
+							<div class="row">
+								<div class="col-md-12">
+									<button class="list_butt_1" type="submit" id="userUpdateBtn">UPDATE</button>
+									<button class="list_butt_2" type="reset" id="userCancelBtn">CANCEL</button>
 								</div>
 							</div>
 						</div>
-						<hr/>
-						<div class="row">
-							<div class="col-md-12">
-								<button class="list_butt_1" type="submit" id="userUpdateBtn">UPDATE</button>
-								<button class="list_butt_2" type="reset" id="userCancelBtn">CANCEL</button>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<p class="vend_edit_lists_pstyle"></p>
-							</div>
-						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
+
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content" style="background-color: #CCCCCC;">
@@ -595,11 +582,11 @@
 				</div>
 				<div class="modal-body">
 					<div class="alert" id="gtc-pwdreset-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="pwdreset-message"></span>
-						</div>
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="pwdreset-message"></span>
+					</div>
 
 					<div class="form-group">
 						<label for="email_id" class="col-form-label">Email Address:</label>

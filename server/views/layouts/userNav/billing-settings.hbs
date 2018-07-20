@@ -1,12 +1,18 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/header}}
-  <section class="showing_categ">
-	<div class="" >
-		<div class="container">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-8" style="background-color: #fff;">
-					<h5 style="padding-top: 20px;">Billing Settings</h5>
-					<div class="row">
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+			<div class="col-sm-10">
+				<div class="ibox">
+				 <div class="ibox-content">
+					 <div class="ibox-title">
+						 <h2>My Wishlist</h2>
+					 </div>
+				 <div class="content-body">
+					 <div class="row">
 						<div class="col-md-12">
 							<p style="font-size: 10px;" class="vend_edit_lists_pstyle">Credit Cards on File</p>
 						</div>
@@ -44,11 +50,11 @@
 							</div>
 						</div>
 					</div>
-					
-				</div>		
+				 </div>
+				  </div>	
+				</div>
 			</div>
 		</div>
 	</div>
-</section>
-
+</div>
 {{> footer/bottom-footer}}
