@@ -157,7 +157,7 @@ export function vendorShop(req, res) {
 				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
-				categories: results.categories.rows,
+				categories: results.categories,
 				bottomCategory: bottomCategory,
 				categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,

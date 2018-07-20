@@ -222,7 +222,7 @@ export function vendorWholesale(req, res) {
 				wantToTrade: results.wantToTrade,
 				queryURI: queryURI,
 				requestForQuote: results.requestForQuote,
-				categories: results.categories.rows,
+				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,

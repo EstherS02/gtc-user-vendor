@@ -26,25 +26,32 @@ export function vendorAbout(req, res) {
 
 	async.series({
 		VendorDetail: function(callback) {
-			var vendorIncludeArr = [{
+		var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
 				model: model['VendorPlan'],
-
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
 				},
-				required:false
+				required: false
 			}, {
 				model: model['VendorFollower'],
 				where: {
-					// user_id: vendor_id,
+					user_id: req.user.id,
 					status: 1
 				},
 				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {

@@ -163,7 +163,7 @@ export function vendorLifestyle(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				categoriesWithCount: results.categoriesWithCount,
-				categories: results.categories.rows,
+				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle'

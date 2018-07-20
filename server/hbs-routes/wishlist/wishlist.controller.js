@@ -73,7 +73,7 @@ export function wishlist(req, res) {
         }
 		},
 		function(err, results) {
-			console.log(JSON.stringify(results))
+			// console.log(JSON.stringify(results))
 			if (!err) {
 				res.render('userNav/wishlist', {
 					title: "Global Trade Connect",

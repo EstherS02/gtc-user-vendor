@@ -159,7 +159,7 @@ export function vendorServices(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				page:page,
-				categories: results.categories.rows,
+				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,

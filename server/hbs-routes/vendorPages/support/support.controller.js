@@ -48,13 +48,27 @@ export function vendorSupport(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
 				},
-				required:false
+				required: false
+			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: req.user.id,
+					status: 1
+				},
+				required: false
+			}, {
+				model: model['VendorRating'],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+				],
+				group: ['VendorRating.vendor_id'],
+				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
@@ -64,7 +78,7 @@ export function vendorSupport(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+			}
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorPages/vendor-support', {
