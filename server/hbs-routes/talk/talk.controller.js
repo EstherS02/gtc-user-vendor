@@ -14,8 +14,9 @@ export function talk(req, res) {
 	var modelName = 'TalkSetting';
 	var timeModel = "Timezone";
 	var queryObj1 = {}, LoggedInUser = {};
+    var bottomCategory ={};
 	var queryObj = {
-		vendor_id: 29
+		vendor_id: req.user.Vendor.id
 	};
 	var includeArr = [];
 
@@ -56,7 +57,30 @@ export function talk(req, res) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				})
-		}
+		},
+		categories: function(callback) {
+            var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+
+        }
 	}, function(error, results) {
 		if (!error) {
 			// console.log('results', results);
@@ -66,6 +90,8 @@ export function talk(req, res) {
 				busiHours: results.busiHours,
 				timeZone: results.timeZone,
 				dayCode: dayCode,
+				categories: results.categories,
+                bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				selectedPage:'gtc-talk',
 				vendorPlan:vendorPlan

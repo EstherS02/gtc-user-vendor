@@ -20,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        event: {
-            type: DataTypes.TEXT,
-            field: 'event',
-            allowNull: false
-        },
         enabled: {
             type: DataTypes.INTEGER,
             field: 'enabled',
