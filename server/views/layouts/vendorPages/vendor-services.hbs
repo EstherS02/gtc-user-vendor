@@ -24,7 +24,7 @@
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
- {{> vendor/vendor-navbar VendorDetail = VendorDetail}}
+ {{> vendor/vendor-header VendorDetail = VendorDetail}}
     <div class="logged_in_cont">
         <div class="container">
             <div class="row">
@@ -115,16 +115,16 @@
                         <ul class="pagination justify-content-center">
                             {{#unless startFromFirstPage}}
                             <li class="page-item">
-                                <a class="page-link" href="../vendor-services/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                                <a class="page-link" href="../vendor/services/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
                             </li>
                             {{/unless}} {{#each pages}}
                             <li class="page-item {{#if isCurrent}} active {{/if}}">
-                                <a class="page-link" href="../vendor-services/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                                <a class="page-link" href="../vendor/services/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
                             </li>
                             {{/each}} {{#unless endAtLastPage}}
                             <li class="page-item">
                             </li>
-                                <a class="page-link" href="../vendor-services/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                                <a class="page-link" href="../vendor/services/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
                             {{/unless}}
                         </ul>
                     </nav>
@@ -135,7 +135,7 @@
                     </div>
                     <div class="col-md-3 col-12 showing_categ">
                         <p><b>FILTER BY CATEGORY</b></p>
-                        <p class="cat_bg_title_serv">ALL CATEGORIES ({{category.count}})</p>
+                        <p class="cat_bg_title_serv">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
                         {{> vendor/vendor-category }}
                     </div>
                 </div>
