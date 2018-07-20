@@ -939,7 +939,7 @@ p.order-details {
 }*/
 
 .custom-file {
-  overflow: hidden;
+  /* overflow: hidden; */
   /*height: 15px !important;*/
 }
 
