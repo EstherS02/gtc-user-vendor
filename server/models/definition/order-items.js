@@ -52,6 +52,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'tax_amount',
             allowNull: true
         },
+        subtotal: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'subtotal',
+            allowNull: false
+        },
+        shipping_total: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'shipping_total',
+            allowNull: false
+        },
         final_price: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'final_price',

@@ -1,15 +1,15 @@
 /*Include fonts*/
-@font-face{
+/*@font-face{
 	font-family: 'HomePlanet-Regular';
     src: url('font/HomePlanet-Regular.otf') format('otf'),url('font/HomePlanet-Regular.ttf') format('ttf');
     font-weight: normal;
     font-style: normal;
 	
-}
+}*/
 body{
 	margin: 0px;
 	padding: 0px;
-	font-family: 'HomePlanet-Regular', sans-serif;
+	font-family: 'Roboto', sans-serif;
 
 }
 .its_free1
@@ -829,13 +829,13 @@ ul.breadcrumb li .active1 {
     color: #DC8C15;
 	font-weight: bold;
 }
-.log_sunnysarpel
+.logged_in_username
 {
     font-size: 11px;
     float: right;
     margin-top: 39px;
 }
-.span_sunnysarpel
+.span_username
 {
 	color: #4E82BE; font-weight: bold;
 }

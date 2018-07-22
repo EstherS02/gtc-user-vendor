@@ -8,6 +8,8 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.post('/', auth.isAuthenticated(), controller.makePayment);
+router.post('/pay', auth.isAuthenticated(), controller.makePayment);
+router.post('/card', auth.isAuthenticated(), controller.createCard);
+router.delete('/card', auth.isAuthenticated(), controller.deleteCard);
 
 module.exports = router;

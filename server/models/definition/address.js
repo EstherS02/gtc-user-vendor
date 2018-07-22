@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         company_name: {
             type: DataTypes.STRING(128),
             field: 'company_name',
-            allowNull: false
+            allowNull: true
         },
         address_line1: {
             type: DataTypes.STRING(255),
@@ -76,6 +76,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        first_name: {
+            type: DataTypes.STRING(255),
+            field: 'first_name',
+            allowNull: true
+        },
+        last_name: {
+            type: DataTypes.STRING(255),
+            field: 'last_name',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

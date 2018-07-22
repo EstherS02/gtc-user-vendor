@@ -99,6 +99,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'price',
             allowNull: false
         },
+        shipping_cost: {
+            type: DataTypes.DECIMAL(10, 1),
+            field: 'shipping_cost',
+            allowNull: false
+        },
         description: {
             type: DataTypes.TEXT,
             field: 'description',

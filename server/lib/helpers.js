@@ -1,6 +1,8 @@
 'use strict';
 import Handlebars from 'handlebars';
 const moment = require('moment');
+const _ = require('lodash');
+const numeral = require('numeral');
 
 Handlebars.registerHelper('starCount', function(rating, color) {
 
@@ -349,4 +351,55 @@ Handlebars.registerHelper('navbarSetting', function(user, type, options) {
     } else {
         return options.fn(this);
     }
+});
+
+Handlebars.registerHelper('json', function(jsonStr, key) {
+  if (_.isUndefined(jsonStr) || _.isNull(jsonStr)) {
+    return '';
+  }
+  let obj = JSON.parse(jsonStr);
+  return obj[key];
+});
+
+Handlebars.registerHelper('padZero', function(str, len, isJson, key) {
+    var s = "";
+    if (isJson == 'true') {
+        if (_.isUndefined(str) || _.isNull(str)) {
+            s = '';
+        } else {
+            let obj = JSON.parse(str);
+            if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
+                s = '';
+            } else {
+                s = obj[key];
+            }
+        }
+    } else {
+        s = str;
+    }
+    return _.padStart(s, len, '0');
+});
+
+Handlebars.registerHelper('last2', function(str, isJson, key) {
+    var s = "";
+    if (isJson == 'true') {
+        if (_.isUndefined(str) || _.isNull(str)) {
+            s = '';
+        } else {
+            let obj = JSON.parse(str);
+            if (_.isUndefined(obj[key]) || _.isNull(obj[key])) {
+                s = '';
+            } else {
+                s = obj[key];
+            }
+        }
+    } else {
+        s = str;
+    }
+    s = s + '';
+    return s.length >= 2 ? s.substring(s.length - 2, s.length) : '';
+});
+
+Handlebars.registerHelper('currency', function(amt, symbol) {
+    return numeral(amt).format(symbol + '0,0.00');
 });

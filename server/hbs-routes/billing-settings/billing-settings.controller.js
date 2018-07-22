@@ -15,6 +15,7 @@ export function billingSettings(req, res) {
     var LoggedInUser = {};
     var bottomCategory = {};
 	var categoryModel = "Category";
+    var paymentSettingModel = "PaymentSetting";
 
     if (req.user)
         LoggedInUser = req.user;
@@ -47,17 +48,36 @@ export function billingSettings(req, res) {
 				});
 		},
 
-        },
-        function(err, results) {
+        cards: function (callback) {
+            var includeArr = [];
+            const offset = 0;
+            const limit = null;
+            const field = "id";
+            const order = "asc";
+            queryObjCategory.user_id = req.user.id;
+
+            service.findAllRows(paymentSettingModel, includeArr, queryObjCategory, offset, limit, field, order)
+                .then(function(paymentSetting) {
+                    var paymentSettings = paymentSetting.rows;
+                    return callback(null, paymentSettings);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        }
+
+    }, function(err, results) {
             console.log(results)
             if (!err) {
                 res.render('userNav/billing-settings', {
                     title: "Global Trade Connect",
                     LoggedInUser: LoggedInUser,
                     categories: results.categories,
+                    cards: results.cards,
 				    bottomCategory: bottomCategory,
                     selectedPage: 'billing-settings',
-                    vendorPlan: vendorPlan
+                    vendorPlan: vendorPlan,
+                    stripePublishableKey: config.stripeConfig.keyPublishable
                 });
             } else {
                 res.render('userNav/billing-settings', err);

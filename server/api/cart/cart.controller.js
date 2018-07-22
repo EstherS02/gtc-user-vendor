@@ -833,8 +833,8 @@ var checkApplyCoupon = function(req, res, callback) {
 			}			
 
 			let return_data = {
-				message : "PROMO_CODE_APPILED",
-				message_details : "Promo Code Appiled to your order",
+				message : "PROMO_CODE_APPLIED",
+				message_details : "Promo Code Applied to your order",
 				coupon_data : cookie_obj
 			}
             callback(return_data);

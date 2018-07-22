@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
-            allowNull: false
+            allowNull: true
         },
         purchase_order_id: {
             type: DataTypes.INTEGER,
@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
+            allowNull: true
+        },
+        order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
             allowNull: true
         },
         expected_delivery_date: {
@@ -84,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',
-            allowNull: false
+            allowNull: true
         },
         shipping_address_id: {
             type: DataTypes.BIGINT,

@@ -104,6 +104,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'forgot_password_token_generated',
             allowNull: true
         },
+        stripe_customer_id: {
+            type: DataTypes.STRING,
+            field: 'stripe_customer_id',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',

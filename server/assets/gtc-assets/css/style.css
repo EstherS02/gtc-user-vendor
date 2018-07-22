@@ -131,18 +131,21 @@ select {
 .brand-logo img {
     padding: 10px;
     width: 170px;
-    height: 70px
+    height: 76px
 }
 .main-nav {
-    padding: 0 10px;
+    padding: 0 5px;
     width: 100%;
+}
+.main-nav li {
+    padding: 5px 2px;
 }
 .main-nav .nav-link {
     font-family: 'Oswald', sans-serif;
     text-shadow: none;
     font-size: 13px;
     font-weight: 400;
-    padding: 14px .5rem !important;
+    padding: 12px .35rem !important;
     color: #fff;
 }
 .navbar-dark .main-nav .nav-link {

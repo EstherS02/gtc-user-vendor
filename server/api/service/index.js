@@ -38,19 +38,19 @@ export function findAllRows(modelName, includeArr, queryObj, offset, limit, fiel
             var convertRowsJSON = [];
             if (rows.length > 0) {
                 convertRowsJSON = JSON.parse(JSON.stringify(rows));
-                model[modelName].count({
+                return model[modelName].count({
                     where: queryObj
                 }).then(function(count) {
                     result.count = count;
                     result.rows = convertRowsJSON;
-                    resolve(result);
+                    return resolve(result);
                 }).catch(function(error) {
-                    reject(error);
+                    return reject(error);
                 });
             } else {
                 result.count = 0;
                 result.rows = convertRowsJSON;
-                resolve(result);
+                return resolve(result);
             }
         }).catch(function(error) {
             reject(error);

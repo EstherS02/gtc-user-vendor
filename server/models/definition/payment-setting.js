@@ -26,12 +26,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         stripe_card_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'stripe_card_id',
             allowNull: true
         },
         stripe_customer_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'stripe_customer_id',
             allowNull: true
         },
@@ -44,6 +44,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        card_details: {
+            type: DataTypes.TEXT('medium'),
+            field: 'card_details',
+            allowNull: true
+        },
+        is_primary: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_primary',
+            defaultValue: false
         },
         created_by: {
             type: DataTypes.STRING(64),

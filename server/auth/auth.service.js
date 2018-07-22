@@ -94,14 +94,14 @@ function isAuthenticated() {
                             if (vendorObj) {
                                 req.user['Vendor'] = vendorObj.toJSON();
                                 req.user['VendorStatus'] = true;
-                                next();
+                                return next();
                             } else {
                                 req.user['Vendor'] = false;
-                                next();
+                                return next();
                             }
                         }).catch(function(error) {
                             req.user['Vendor'] = false;
-                            next();
+                            return next();
                         });
                         //next();
                     } else {

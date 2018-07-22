@@ -124,7 +124,7 @@ export function cart(req, res) {
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
-            var defaultShipping = 10;
+            var defaultShipping = 0;
 
             totalPrice['grandTotal'] = 0;
 
@@ -188,7 +188,7 @@ export function cart(req, res) {
                 if (parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
                     req.body.coupon_code = coupon_data[0].coupon_code;
                     cartObj.callApplyCoupon(req, res, function(return_val) {
-                        if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPILED') {
+                        if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPLIED') {
                             
                             result_obj['couponData'] = [return_val.coupon_data];
                             return res.status(200).render('cart', result_obj);
