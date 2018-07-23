@@ -1,0 +1,244 @@
+<section>
+	<div class="" >
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<ul class="breadcrumb">
+					  <li><a href="#" class="active">My Account</a></li>
+					  <li>Shopping Cart</li>
+					</ul>
+				</div>
+				<div class="col-md-6">
+					<p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
+				</div>
+			</div>
+			<div class="row checkout_bg_color ">
+                <div class="col-md-9 checkout_title_color">
+                	<h4>MY SHOPPING CART <span class="checkout_title_color_span">({{cartItemsCount}} Item Totals)</span></h4>
+            	</div>
+                <div class="col-md-3 checkout_title_color_1">
+					<h4>YOUR ORDER</h4>
+            	</div>	
+            </div>
+
+			<div class="row">
+				<div class="col-md-9">
+					
+					{{#each marketPlaces as |marketPlace|}}
+					<div class="row">
+						<div class="col-md-12 common_padding1">
+							{{#each ../seperatedItemsList}}
+								{{#ifCond marketPlace.code '==' @key}}
+									<p class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</p>
+								{{/ifCond}}
+							{{/each}}
+						</div>
+					</div>
+					<div class="container">
+						<table class="table table-hover">
+							{{#each ../seperatedItemsList}}
+								{{#ifCond marketPlace.code '==' @key}}
+									{{#ifCond @key.length '>' 0}}
+									<thead>
+										<tr>
+											<th class="shop_list_title">Product</th>
+											<th class="shop_list_title">Price</th>
+											<th class="shop_list_title">Qty</th>
+											<th class="shop_list_title">Total Price</th>
+										</tr>
+									</thead>
+									{{/ifCond}}
+								{{/ifCond}}
+							{{/each}}
+							<tbody>
+						{{#each ../cartItems as |cartItem|}}
+
+							{{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
+								<tr>
+									<td>
+										<div class="row">
+											<div class="col-md-3">
+												<img src="{{cartItem.Product.ProductMedia.[0].url}}" style="width: 60px; height: 70px;">
+											</div>
+											<div class="col-md-9">
+												<div class="row common_padding">
+													<div class="col-md-12">
+														<p class="shop_product_title"><a href="/products/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}">{{cartItem.Product.product_name}}</a></p>
+													</div>
+												</div>
+												<div class="row common_padding">
+													<div class="col-md-3">
+														<p>Origin</p>
+													</div>
+													<div class="col-md-9">
+														<p>{{cartItem.Product.State.name}}</p>
+													</div>
+												</div>
+												<div class="row common_padding">
+													<div class="col-md-3">
+														<p>Category</p>
+													</div>
+													<div class="col-md-9">
+														<p style="width: 80%">{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}</p>
+													</div>
+												</div>
+												<div class="row common_padding">
+													<div class="col-md-3">
+														<p>Seller</p>
+													</div>
+													<div class="col-md-9">
+														<p>(<span class="shop_price_handling">{{cartItem.Product.Vendor.vendor_name}}</span>)</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="row">
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{cartItem.Product.price}}</p>
+												<p class="shop_price_handling">Handling +$50.00</p>
+												{{#if cartItem.Product.moq}}
+												<p class="shop_price_min">Minimum Order Quantity: {{cartItem.Product.moq}}</p>
+												{{/if}}
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="row">
+											<div class="col-md-6">
+												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num all-quantity-cart-items" style="width: 50px;">
+											</div>
+											<div class="col-md-6">
+												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="row">
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{quantityPrice cartItem.quantity cartItem.Product.price}}</p>
+												<a id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;">
+													<p class="shop_total_remove text-center">REMOVE</p>
+												</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								{{/ifCond}}
+								{{/each}}
+							</tbody>
+						</table>
+					</div>
+
+					{{/each}}
+
+					<div class="row">
+						<div class="col-md-6">
+							<input type="submit" value="CONTINUE SHOPPING" onclick="location.href = '/'" class="cont_shopping"/>
+						</div>
+						<div class="col-md-6">
+							<input type="submit" value="UPDATE CART" onclick="UpdateAllCartItems()" class="update_cart"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3 your_order_bg">
+					<div class="container">
+
+						{{#each marketPlaces as |marketplace|}}
+						
+						{{#each ../totalPriceList as |totalPrice|}}
+
+						{{#ifCond marketplace.code '==' @key}}
+						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
+						<hr class="common_margin" />
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal">Subtotal</p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_shipping">Shipping Ground</p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal">Subtotal</p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
+							</div>
+						</div>
+						<hr class="common_margin" />
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal"><b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b></p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right"><b>{{currency totalPrice.total '$'}}</b></p>
+							</div>
+						</div>
+						{{/ifCond}}
+						{{/each}}
+						{{/each}}
+						
+						<hr class="common_margin" />
+						<div class="row">
+							<div class="col-md-8">
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+							</div>
+							<div class="col-md-4">
+									<p class="shop_subtotal float-right"><b>{{currency totalPriceList.grandTotal '$'}}</b></p>
+							</div>
+						</div>
+
+						<hr class="common_margin" />
+						{{#ifCond couponData.length '>' 0}}						
+						{{#each couponData}}
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal"><b>DISCOUNT</b></p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">
+									<b>{{currency this.discount_price '$'}}</b>
+								</p>
+							</div>
+						</div>
+						<hr class="common_margin"/>
+						<div class="row">
+							<div class="col-md-8">
+									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
+							</div>
+							<div class="col-md-4">
+									<p class="shop_subtotal float-right"><b>{{currency this.final_price '$'}}</b></p>
+							</div>	
+						</div>
+						<p class="promo_code_p">{{{this.message_details}}}</p>
+
+						{{/each}}
+						{{/ifCond}}
+						
+						{{#ifCond couponData.length '==' 0}}
+						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
+						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
+						<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
+						{{/ifCond}}
+						{{#ifCond couponUpdateErrorMessage '!=' ""}}
+							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
+						{{/ifCond}}
+						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="orderCheckout()"/>
+						<img src="../img/payment-methods.jpg" alt="payment">
+					</div>
+				</div>
+			</div>
+    	</div>
+	</div>
+</section>
