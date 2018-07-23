@@ -10,7 +10,7 @@ var orderHistoryCtrl = require('./order-history/order-history.controller');
 var orderViewCtrl = require('./order-view/order-view.controller');
 
 router.get('/', auth.isAuthenticated(), orderHistoryCtrl.orderHistory);
-//router.get('/:id', auth.isAuthenticated(), orderHistoryCtrl.orderView);
+router.get('/:id', auth.isAuthenticated(), orderViewCtrl.orderView);
 
 module.exports = router;
 

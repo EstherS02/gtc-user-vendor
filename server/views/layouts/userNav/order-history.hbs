@@ -39,35 +39,35 @@
 		}
 	}
 
-	// function updateStatus(){
-	// 	var chkArray = [];
-	// 	$(':checkbox:checked').each(function(i) {
-	// 		if ($(this).val() != 'on') {
-	// 			chkArray.push($(this).val());
-	// 		}
-	// 	});
+	function updateStatus(){
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}
+		});
 
-	// 	if (chkArray.length && $("#statusSelected option:selected").val()) {
-	// 		var objData = {};
-	// 		objData.id = JSON.stringify(chkArray);
-	// 		objData.status = $("#statusSelected option:selected").val();
+		if (chkArray.length && $("#statusSelected option:selected").val()) {
+			var objData = {};
+			objData.id = JSON.stringify(chkArray);
+			objData.status = $("#statusSelected option:selected").val();
 
-	// 		$.ajax({
-	// 			type: 'PUT',
-	// 			url: '/api/order-history/update-status',
-	// 			data: objData,
-	// 			success: function(data, text) {
-	// 				location.reload();
-	// 			},
-	// 			error: function(request, status, error) {
-	// 				console.log('request', request);
-	// 				console.log('status', status);
-	// 			}
-	// 		});
-	// 	} else {
-	// 		alert("Select checkboxe and status before you update");
-	// 	}
-	// }
+			$.ajax({
+				type: 'PUT',
+				url: '/api/order-history/update-status',
+				data: objData,
+				success: function(data, text) {
+					location.reload();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+		} else {
+			alert("Select checkboxe and status before you update");
+		}
+	}
 
 	// function refund(e) {
 	// 	alert("hai");
@@ -97,7 +97,7 @@
                 <div class="ibox">
                     <div class="ibox-content">
                         <div class="ibox-title">
-                            <h2>Become a Vendor</h2>
+                            <h2>Order History</h2>
                         </div>
                         <div class="alert" id="gtc-form-alert">
                             <button type="button" class="close" data-dismiss="alert">
@@ -132,15 +132,15 @@
 						</form>
 					</div>
 					<div class="col-md-3 ">
-						{{!--<select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
+						<select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
 								<option value="">STATUS</option>
 								<option value="INACTIVE">InActive</option>
-								<option value="NEWORDER"> New Order</option>
-								<option value="CANCLEORDER"> Cancel Order</option>
-								<option value="FAILEDORDER"> Failed Order</option>
+								{{!-- <option value="NEWORDER"> New Order</option> --}}
+								<option value="CANCELLEDORDER"> Cancel Order</option>
+								{{!-- <option value="FAILEDORDER"> Failed Order</option> --}}
 							</select> 
 							<input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"/>
-							<input  type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " /> --}}
+							{{!-- <input  type="submit" value="ADVANCED" class="vend_edit_lists_buttonstyle " />  --}}
 							<select  class="vend_edit_lists_buttonstyle float-right">
 								<option>EXPORT TO</option>
 							</select>

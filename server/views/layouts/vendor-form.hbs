@@ -11,6 +11,8 @@
         var fileDetails = {};
         var imagesPreview = function (uploader, placeToInsertImagePreview) {
             if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
                 $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
                 cropperInputImage = document.getElementById('uploaded-profile-picture');
                 $('#profile-picture-modal').modal('show');
@@ -51,6 +53,7 @@
         });
         $('#crop-profile-image').click(function () {
             cropper.getCroppedCanvas().toBlob(function (blob) {
+             
                 cropperOutputImage = blob;
                 fileDetails["croppedExtension"] = blob["type"].split("/")[1];
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -96,7 +99,7 @@
                 return $(element).val() != '';
             }).serialize();
 
-            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url' + vendor_cover_pic_url
+            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url=' + vendor_cover_pic_url
 
             if ($('#vendorForm').valid()) {
                 $.ajax({
