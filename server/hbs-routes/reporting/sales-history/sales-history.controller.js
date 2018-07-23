@@ -189,7 +189,6 @@ export function salesHistory(req, res) {
 
             queryPaginationObj['maxSize'] = maxSize;
             if (!err) {
-                console.log("start_date^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",results.orderHistory.rows);
                 res.render('vendorNav/reporting/sales-history', {
                     title: "Global Trade Connect",
                     OrderItems: results.orderHistory.rows,
