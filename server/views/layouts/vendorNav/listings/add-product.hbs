@@ -224,157 +224,113 @@
                             </div>
                         </div>
                         <div class="content-body">
-                            <form role="form" id="productForm">
-                                <div class="form-group product-heading">
-                                    <p></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" name="product_name" id="product_name" class="form-control input-lg" placeholder="Product Name" tabindex="1"
-                                        required />
-                                </div>
+                            <form id="productForm" class="form">
                                 <div class="row">
-                                    <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <div class="col-lg-8">
                                         <div class="form-group">
-                                            {{!--
-                                            <select id="marketplace" name="marketplace_id" onChange="changeMarketplace(this);" class="form-control" required>
-                                                <option disabled selected>Select Marketplace</option>
-                                                {{#each marketplace}}
-                                                <option value="{{this.id}}">{{ this.name}}</option>
-                                                {{/each}}
-                                            </select> --}} {{#ifCond this.type '==' 'wholesale'}}
-                                            <input type="text" class="form-control" name="marketplace" value="Private Wholesale Marketplace" readonly /> {{else ifCond this.type '==' 'shop'}}
-                                            <input type="text" class="form-control" name="marketplace" value="Public Marketplace" readonly /> {{else ifCond this.type '==' 'services'}}
-                                            <input type="text" class="form-control" name="marketplace" value="Services Marketplace" readonly /> {{else ifCond this.type '==' 'subscription'}}
-                                            <input type="text" class="form-control" name="marketplace" value="Lifestyle Marketplace" readonly /> {{/ifCond}}
+                                            <label class="label-control">Product Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
-                                    {{#ifCond this.type '==' 'wholesale'}}
-                                    <div class="col-xs-5 col-sm-5 col-md-5">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control" name="marketplace_type_id">
-                                                <option disabled selected>Select Type</option>
-                                                {{#each marketplaceType}}
-                                                <option value="{{this.id}}">{{ this.name}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label class="label-control">Marketplace <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
-                                    <div class="col-xs-2 col-sm-2 col-md-2">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="moq" id="moq" placeholder="Minimum Order Quantity" />
+                                            <label class="label-control">Category <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style">
+                                                    <option disabled selected>Select Category...</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    {{/ifCond}}
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <select class="form-control " id="category" name="product_category_id" onchange="changeCategory(this)" required>
-                                                <option disabled selected>Category</option>
-                                                {{#each category}}
-                                                <option value="{{this.id}}">{{ Titlecase this.name}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label class="label-control">Sub Category <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style">
+                                                    <option disabled selected>Select Sub Category...</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-6 col-sm-4 col-md-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control " name="sub_category_id" id="sub_category" value="" required>
-                                                <option disabled selected>Sub Category</option>
-                                            </select>
+                                            <label class="label-control">Country <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style">
+                                                    <option disabled selected>Select Country...</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control" id="country" name="product_location" onChange="changeCountry(this);" required>
-                                                <option disabled selected>Country</option>
-                                                {{#each country}}
-                                                <option value="{{this.id}}">{{ this.name}}</option>
-                                                {{/each}}
-                                            </select>
+                                            <label class="label-control">State <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style">
+                                                    <option disabled selected>Select State...</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <select class="form-control " name="state_id" id="state" value="" required>
-                                                <option disabled selected>State</option>
-                                            </select>
+                                            <label class="label-control">City <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <input type="text" name="city" id="city" placeholder="City" class="form-control" required/>
+                                            <label class="label-control">SKU <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <input type="text" name="sku" id="sku" placeholder="SKU" class="form-control" required/>
+                                            <label class="label-control">Price <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-4">
                                         <div class="form-group">
-                                            <input type="text" name="price" id="price" placeholder="Price" class="form-control" required/>
+                                            <label class="label-control">Quantity Available <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <input type="text" name="quantity_available" id="quantity_available" placeholder="Quantity Available" class="form-control"
-                                                required/>
+                                            <label class="label-control">Description</label>
+                                            <textarea class="form-control-customized" rows="3"></textarea>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Upload Image <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="custom-file custom_error_message">
+                                                    <input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
+                                                    <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="icon"></div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12">
-                                        <label>
-                                            <h6>Description</h6>
-                                        </label>
-                                        <br>
-                                        <div class="form-group">
-                                            <textarea id="description" name="description" class="form-control" required></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{!--
-                                <div class="form-group">
-                                    <label>
-                                        <h6> Upload Image</h6>
-                                    </label>
-                                    <p id="productImage" onclick="document.getElementById('imageUpload').click();">
-                                        <i class="fas fa-plus-circle"></i>
-                                        <input type="file" id="imageUpload" style="display: none;" name="file" />
-                                    </p>
-                                </div>
-                                <img id="UploadedImage" src="" style="width:10%; " alt="avt" />
-                                <div class="form-group">
-                                    <label>
-                                        <h6>Upload Image </h6>
-                                    </label>
-                                    <input type="file" class="form-control form-control-file" aria-describedby="fileHelp" id="file" name="file" />
-                                </div> --}}
-                                <div class="form-group">
-                                    <label>
-                                        <h6>Upload Image </h6>
-                                    </label>
-                                    <input type="file" id="gallery-photo-add">
-                                    <div class="gallery"></div>
-                                </div>
-                                <hr class="colorgraph">
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-6">
-                                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="productSubmitBtn">Submit</button>
-                                    </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <button type="submit" class="btn btn-cancel btn-block btn-lg" id="productCancelBtn">Reset</button>
+                                    <div class="col-lg-12">
+                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
