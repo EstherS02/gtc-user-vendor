@@ -5,13 +5,14 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
+const orderStatus = require('../../../config/order_status');
 const status = require('../../../config/status');
 const service = require('../../../api/service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
 
 export function orderView(req, res) {
-    var LoggedInUser = {}, searchObj = {}, itemIncludeArr = [];
+    var LoggedInUser = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
     var order_id;
     var marketPlaceModel = 'Marketplace';
     var orderItemsModel = 'OrderItem';
@@ -21,6 +22,7 @@ export function orderView(req, res) {
         LoggedInUser = req.user;
 
     itemIncludeArr = populate.populateData('Product,Product.Marketplace,Order');
+    orderIncludeArr = populate.populateData('Shipping');
 
     async.series({
 
@@ -103,7 +105,6 @@ export function orderView(req, res) {
                     return cb(error);
                 });
         },
-
     }, function (err, results) {
         if (!err) {
             var totalItems = results.orderItems.rows;
@@ -144,7 +145,8 @@ export function orderView(req, res) {
                 orderItems: results.orderItems.rows,
                 orderItemsCount: results.orderItems.count,
                 seperatedItemsList: seperatedItems,
-                totalPriceList: totalPrice
+                totalPriceList: totalPrice,
+                orderStatus: orderStatus
             }
             return res.status(200).render('orderView', result_obj);
         }

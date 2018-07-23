@@ -33,10 +33,8 @@
 					<h4></h4>
 				</div>
 			</div>
-
 			<div class="row">
 				<div class="col-md-9">
-
 					{{#each marketPlaces as |marketPlace|}}
 					<div class="row">
 						<div class="col-md-12 common_padding1">
@@ -60,7 +58,6 @@
 							<tbody>
 								{{#each ../orderItems as |orderItems|}}{{#ifCond marketPlace.id '===' orderItems.Product.Marketplace.id }}
 								<tr>
-
 									<td>
 										<div class="row">
 											<div class="col-md-3">
@@ -96,7 +93,9 @@
 													</div>
 													<div class="col-md-9">
 														<p>(
-															<span class="shop_price_handling"><a href="/vendor/{{orderItems.Product.Vendor.id}}">{{orderItems.Product.Vendor.vendor_name}}</a></span>)</p>
+															<span class="shop_price_handling">
+																<a href="/vendor/{{orderItems.Product.Vendor.id}}">{{orderItems.Product.Vendor.vendor_name}}</a>
+															</span>)</p>
 													</div>
 												</div>
 											</div>
@@ -104,37 +103,20 @@
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{orderItems.Product.price}}
-												{{!-- <p class="shop_price_doller"></p> --}}
-												{{!-- <p class="shop_price_handling">Handling +$50.00</p>
-												{{#if orderItems.Product.moq}}
-												<p class="shop_price_min">Minimum Order Quantity: {{orderItems.Product.moq}}</p>
-												{{/if}} --}}
-											</div>
+											<div class="col-md-12">${{orderItems.Product.price}}</div>
 										</div>
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-6"> 
+											<div class="col-md-6">
 												<input id="quantity-cart-{{orderItems.id}}" type="text" min="1" value={{orderItems.quantity}} class="shop_qty_num all-quantity-cart-items"
 												 style="width: 50px;" readonly>
 											</div>
-											{{!-- <div class="col-md-6">
-												<a id="update-cart-{{orderItems.id}}" onclick="UpdateGtcCart(`{{orderItems.Product.id}}`,`{{orderItems.id}}`,`{{orderItems.id}}`)"
-												 href="javascript:;">
-													<p class="shop_price_handling">Update</p>
-												</a>
-											</div> --}}
 										</div>
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{quantityPrice orderItems.quantity orderItems.Product.price}}
-												{{!-- <p class="shop_price_doller"></p> --}}
-												{{!-- <a id="remove-cart-{{orderItems.id}}" onclick="removeGtcCart(`{{orderItems.id}}`)" href="javascript:;">
-													<p class="shop_total_remove text-center">REMOVE</p>
-												</a> --}}
-											</div>
+											<div class="col-md-12">${{quantityPrice orderItems.quantity orderItems.Product.price}}</div>
 										</div>
 									</td>
 								</tr>
@@ -142,11 +124,8 @@
 							</tbody>
 						</table>
 					</div>
-
 					{{/each}}
 				</div>
-
-
 				<div class="col-md-3 your_order_bg">
 					<div class="container">
 
@@ -205,7 +184,6 @@
 								</p>
 							</div>
 						</div>
-
 						<hr class="common_margin" /> {{#ifCond couponData.length '>' 0}} {{#each couponData}}
 						<div class="row">
 							<div class="col-md-8">
@@ -233,15 +211,84 @@
 							</div>
 						</div>
 						{{/each}} {{/ifCond}}
-
 					</div>
-					
+					<div class="container">
 
-
+						<h6 class="yourorder_wholesalesum_head" style="color:black">Order Summary</h6>
+						<hr class="common_margin" />
+						<div class="row">
+							<div class="col-md-6">
+								<p class="shop_subtotal">
+									<b>Order Status</b>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p class="shop_subtotal float-right">{{objectKey orderStatus order.order_status}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<p class="shop_subtotal">
+									<b>Ordered On</b>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p class="shop_subtotal float-right">{{order.ordered_date}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<p class="shop_subtotal">
+									<b>Shipped On</b>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p class="shop_subtotal float-right">{{order.shipped_on}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal">
+									<b>Expected Delivery Date</b>
+								</p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">{{order.expected_delivery_date}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<p class="shop_subtotal">
+									<b>Delivered On</b>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p class="shop_subtotal float-right">{{order.delivered_on}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<p class="shop_subtotal">
+									<b>Provider Name</b>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p class="shop_subtotal float-right">{{order.Shipping.provider_name}}</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+								<p class="shop_subtotal">
+									<b>Tracking URL</b>
+								</p>
+							</div>
+							<div class="col-md-4">
+								<p class="shop_subtotal float-right">{{order.Shipping.tracking_url}}</p>
+							</div>
+						</div>
+						<hr class="common_margin" />
+					</div>
 				</div>
-
-
-
 			</div>
 		</div>
 	</div>
