@@ -16,14 +16,17 @@ body {
     overflow-x: hidden;
 }
 .search-select {
-    width: 100px;
+    /*width: 100px;*/
+    width: auto;
     height: auto;
     position: relative;
-}
+} 
 .search-select select {
     font-size: 13px;
     line-height: 1.6;
     padding: 0 10px;
+    border: 0 !important;
+    box-shadow: none !important;
     text-align-last: right;
 }
 .search-select:after {
@@ -100,7 +103,7 @@ select {
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
-    background-position: left 20%;
+    /*background-position: left 20%;*/
     margin: auto;
     padding: 0;
 }
@@ -138,12 +141,12 @@ select {
     width: 100%;
 }
 .main-nav li {
-    padding: 5px 2px;
+    /*padding: 5px 2px;*/
 }
 .main-nav .nav-link {
     font-family: 'Oswald', sans-serif;
     text-shadow: none;
-    font-size: 13px;
+    /*font-size: 13px;*/
     font-weight: 400;
     padding: 12px .35rem !important;
     color: #fff;
@@ -234,7 +237,7 @@ ul.top-menu-list li a .badge {
     padding: 5px;
 }
 .gtc-text span {
-    padding: 0 10px;
+    /*padding: 0 10px;*/
     font-style: italic;
     color: #e2dcdcad;
     font-size: 12px;
@@ -675,6 +678,8 @@ ul.footer-social-links li a img {
 }
 .search-form-home .input-group>.form-control:not(:first-child) {
     border-top-left-radius: 15px;
+    border: 0 !important;
+    box-shadow: none !important;
     border-bottom-left-radius: 15px;
 }
 .label-control {

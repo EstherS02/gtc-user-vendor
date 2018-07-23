@@ -21,6 +21,9 @@
     .main-nav {
 		display: table;
 	}
+	.main-nav .nav-link {
+		font-size: 12px;
+	}
 	ul.main-nav li.nav-item {
 		display: table-cell;
 	}
@@ -40,8 +43,8 @@
 	}
 	.gtc-top-header {
 		padding-left: 10px;
-		margin-left: 19px;
-		padding-right: 62px;
+		/*margin-left: 19px;
+		padding-right: 62px;*/
 		border-bottom-left-radius: 10px;
 	}
 }
@@ -52,6 +55,9 @@
     }
     .main-nav, .vp-nav {
 		display: table;
+	}
+	.main-nav .nav-link {
+		font-size: 13px;
 	}
 	ul.main-nav li.nav-item {
 		display: table-cell;
