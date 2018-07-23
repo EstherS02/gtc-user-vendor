@@ -1,16 +1,16 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const statusCode = require('../../config/status');
-const service = require('../../api/service');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const statusCode = require('../../../config/status');
+const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-const marketPlace = require('../../config/marketplace');
-const orderStatus = require('../../config/order_status');
+const marketPlace = require('../../../config/marketplace');
+const orderStatus = require('../../../config/order_status');
 const async = require('async');
-const vendorPlan = require('../../config/gtc-plan');
+const vendorPlan = require('../../../config/gtc-plan');
 
 export function orderHistory(req, res) {
 	var LoggedInUser = {};
