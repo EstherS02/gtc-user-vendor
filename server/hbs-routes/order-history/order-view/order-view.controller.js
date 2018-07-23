@@ -12,11 +12,12 @@ const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
 
 export function orderView(req, res) {
-    var LoggedInUser = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
+    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
     var order_id;
     var marketPlaceModel = 'Marketplace';
     var orderItemsModel = 'OrderItem';
     var orderModel = 'Order';
+    var categoryModel = "Category";
 
     if (req.user)
         LoggedInUser = req.user;
@@ -25,6 +26,28 @@ export function orderView(req, res) {
     orderIncludeArr = populate.populateData('Shipping');
 
     async.series({
+
+        categories: function(callback) {
+            var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = status["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
 
         order: function(cb){
             if (req.params.id)
@@ -146,7 +169,9 @@ export function orderView(req, res) {
                 orderItemsCount: results.orderItems.count,
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
-                orderStatus: orderStatus
+                orderStatus: orderStatus,
+                categories: results.categories,
+                bottomCategory: bottomCategory
             }
             return res.status(200).render('orderView', result_obj);
         }

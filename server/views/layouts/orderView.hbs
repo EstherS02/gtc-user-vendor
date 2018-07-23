@@ -256,6 +256,7 @@
 								<p class="shop_subtotal float-right">{{order.expected_delivery_date}}</p>
 							</div>
 						</div>
+						{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -266,6 +267,7 @@
 								<p class="shop_subtotal float-right">{{order.delivered_on}}</p>
 							</div>
 						</div>
+						{{/ifCond}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
