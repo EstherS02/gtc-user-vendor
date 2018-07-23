@@ -19,7 +19,7 @@ export function updateStatus(req, res) {
 	service.updateRow(modelName, bodyParams, id).then(function(response){
 		// console.log("response",response);
 		if(response)
-		res.status(201).send("Created");
+		res.status(200).send("Changed");
 			return;
 	});
 
