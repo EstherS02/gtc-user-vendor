@@ -101,14 +101,26 @@
 											</a>
 										</li>
 										<li class="tot-amt dropdown cursor-pointer">
-											<a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span class="badge">23</span>
+											{{#if LoggedInUser.id}}
+											<a id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="badge">0</span>
 												<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-												<span class="m-l-xs">$144.00</span>
+												<span class="m-l-xs">$00.00</span>
 											</a>
-											<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
-												<a href="/cart">View Cart</a>
+											<div class="dropdown-menu dropdown-menu-list cart-list" aria-labelledby="dropdownMenuButton2">
+												<h4>MY CART</h4>
+												<p class="wholesale-cart-txt">0 Wholesale items</p>
+												<p class="shop-cart-txt">0 Shop items</p>
+												<p class="service-cart-txt">0 Service items</p>
+												<p class="subscription-cart-txt">0 Subscription items</p>
+												<a href="/cart" class="btn btn-sm btn-primary">VIEW CART</a>
 											</div>
+											{{else}}
+											<a href="javascript:;">
+												<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
+												<span class="top-menu-text">Cart</span>
+											</a>
+											{{/if}}
 										</li>
 									</ul>
 								</div>

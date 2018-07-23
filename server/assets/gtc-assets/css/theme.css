@@ -7,8 +7,27 @@
 .text-lighter {
   font-weight: lighter !important;
 }
+.text-muted {
+  color: #737373;
+}
 .gray-bg, .bg-muted {
   background-color: #f3f3f4;
+}
+.bg-wholesale {
+  background: #d78636;
+  color: #fff;
+}
+.bg-service {
+  background: #55b82e;
+  color: #FFFFFF;
+}
+.bg-lifestyle {
+  background: #cb2f2a;
+  color: #FFFFFF;
+}
+.bg-shop {
+  background: #0f478c;
+  color: #fff;
 }
 .bg-gray {
   background: #ededed;
@@ -95,8 +114,22 @@
   border-color: #f9a025;
   color: #FFFFFF;
 }
+.btn-small {
+    font-size: 11px;
+    padding: .25rem 1.3rem !important;
+    border-radius: 0;
+}
 .wrapper-content {
     padding: 20px 10px 40px;
+}
+.table thead th {
+    border-bottom: 1px solid #dee2e6;
+    border-top: 0;
+    line-height: 1.42857;
+    padding: 8px;
+    font-weight: lighter;
+    font-size: 11px;
+    color: #b8b8b8;
 }
 /* GLOBAL  */
 .no-padding {
@@ -117,7 +150,10 @@
 .p-n-l {
     padding-left: 0;
 }
-
+.gtc-p-l-r {
+  padding-left: 25px;
+  padding-right: 25px;
+}
 /* MARGINS & PADDINGS */
 .p-xxs {
   padding: 5px;

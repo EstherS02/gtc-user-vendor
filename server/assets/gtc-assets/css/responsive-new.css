@@ -49,6 +49,12 @@
 	}
 }
 
+/*@media screen and (min-width: 1300px) and (max-width: 1440px) {
+	.gtc-container {
+    	max-width: 1295px;
+    }
+}*/
+
 @media screen and (min-width: 1441px) and (max-width: 1920px) {
     .gtc-container {
     	max-width: 1715px;
@@ -75,7 +81,7 @@
 	}
 	.gtc-top-header {
 		padding-left: 10px;
-		padding-right: 96px;
+		/*padding-right: 96px;*/
 		border-bottom-left-radius: 10px;
 	}
 }
