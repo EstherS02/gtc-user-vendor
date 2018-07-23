@@ -5,24 +5,49 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
+const orderStatus = require('../../../config/order_status');
 const status = require('../../../config/status');
 const service = require('../../../api/service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
 
 export function orderView(req, res) {
-    var LoggedInUser = {}, searchObj = {}, itemIncludeArr = [];
+    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
     var order_id;
     var marketPlaceModel = 'Marketplace';
     var orderItemsModel = 'OrderItem';
     var orderModel = 'Order';
+    var categoryModel = "Category";
 
     if (req.user)
         LoggedInUser = req.user;
 
     itemIncludeArr = populate.populateData('Product,Product.Marketplace,Order');
+    orderIncludeArr = populate.populateData('Shipping');
 
     async.series({
+
+        categories: function(callback) {
+            var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = status["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+        },
 
         order: function(cb){
             if (req.params.id)
@@ -103,7 +128,6 @@ export function orderView(req, res) {
                     return cb(error);
                 });
         },
-
     }, function (err, results) {
         if (!err) {
             var totalItems = results.orderItems.rows;
@@ -144,7 +168,10 @@ export function orderView(req, res) {
                 orderItems: results.orderItems.rows,
                 orderItemsCount: results.orderItems.count,
                 seperatedItemsList: seperatedItems,
-                totalPriceList: totalPrice
+                totalPriceList: totalPrice,
+                orderStatus: orderStatus,
+                categories: results.categories,
+                bottomCategory: bottomCategory
             }
             return res.status(200).render('orderView', result_obj);
         }
