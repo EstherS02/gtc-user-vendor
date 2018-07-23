@@ -27,6 +27,12 @@
 	ul.main-nav li.nav-item {
 		display: table-cell;
 	}
+	.brand-logo, .main-navbar {
+		margin-top: 12px;
+	}
+	.navbar-dark .main-nav .nav-link {
+		text-align: center;
+	}
 	/*ul.vp-nav li.nav-item {
 		display: table-cell;
 	}*/
@@ -67,6 +73,12 @@
 	}
 	ul.main-nav li.nav-item {
 		display: table-cell;
+	}
+	.brand-logo, .main-navbar {
+		margin-top: 12px;
+	}
+	.navbar-dark .main-nav .nav-link {
+		text-align: center;
 	}
 	.top-header {
 		margin-bottom: -26px;

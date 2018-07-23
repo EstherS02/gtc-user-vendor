@@ -47,7 +47,7 @@ export function reporting(req, res) {
         },
         function(err, results) {
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+            var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             if (!err) {
                 res.render('vendorNav/reporting/reporting', {
                     title: "Global Trade Connect",

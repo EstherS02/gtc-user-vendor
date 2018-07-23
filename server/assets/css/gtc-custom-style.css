@@ -889,12 +889,12 @@ a:hover {
   font-weight: bold;
 }
 
-.table td,
+/*.table td,
 .table th {
   padding: 20px 0.75rem;
   vertical-align: top;
   border-top: 1px solid #dee2e6;
-}
+}*/
 
 .topbar p {
   font-size: 10px;
