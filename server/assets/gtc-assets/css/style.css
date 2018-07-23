@@ -47,10 +47,21 @@ select {
     height: auto;
     padding: 0 .5em;
 }
+.gtc-rounded .form-control {
+    border-radius: 1.25em;
+    background: #dddddd;
+}
+.gtc-rounded .btn {
+    background: #dddddd;
+    border-bottom-right-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+}
 .form-control-customized {
+    height: calc(1.8125rem + 2px);
     background-image: none;
     border: none !important;
     border-radius: 0;
+    font-size: 13px;
     color: inherit;
     display: block;
     padding: .375rem .75rem;
@@ -856,7 +867,14 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
     font-weight: inherit;
 }
 .ibox-content .content-body {
-    margin-top: 15px;
+    /*margin-top: 15px;*/
+}
+.content-txt {
+    font-size: 13px;
+    font-weight: 100;
+    text-decoration: none;
+    text-shadow: none;
+    text-indent: inherit;
 }
 select {
     -webkit-appearance: none;

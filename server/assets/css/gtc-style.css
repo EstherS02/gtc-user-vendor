@@ -1801,11 +1801,11 @@ font-size:11px;
 {
 	color: #B2B2B2;
 }
-.table td, .table th {
+/*.table td, .table th {
     padding: 5px .75rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
-}
+}*/
 /*____________________email_template__________________________*/
 .vendor_email_bg
 {

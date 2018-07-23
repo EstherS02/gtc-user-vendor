@@ -143,7 +143,6 @@
                 province_id: "required",
                 city: "required",
                 currency_id: "required",
-                about: "required",
                 vendorIcon: "required"
             },
             messages: {
@@ -153,7 +152,6 @@
                 province_id: "Please select province",
                 city: "Please enter city",
                 currency_id: "Please select currency",
-                about: "Please enter vendor details",
                 vendorIcon: "Please choose vendor icon"
             }
         });
@@ -204,7 +202,7 @@
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Vendor Name</label>
+                                            <label class="label-control">Vendor Name <span class="text-danger">*</span></label>
                                             <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required/>
                                         </div>
                                     </div>
@@ -212,7 +210,7 @@
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Address</label>
+                                            <label class="label-control">Address <span class="text-danger">*</span></label>
                                             <input type="text" name="address" class="form-control-customized form-control-sm" required/>
                                         </div>
                                     </div>
@@ -220,7 +218,7 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">Base Location</label>
+                                            <label class="label-control">Base Location <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location" id="country" required>
                                                     <option disabled selected>Select Location...</option>
@@ -228,24 +226,22 @@
                                                     <option value="{{this.id}}">{{ this.name}}</option>
                                                     {{/each}}
                                                 </select>
-                                                {{!-- <label class="input-group-append custom-group-append" for="country"></label> --}}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">Province</label>
+                                            <label class="label-control">Province <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="province_id" id="state" required>
                                                     <option disabled selected>Select Province...</option>
                                                 </select>
-                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">City</label>
+                                            <label class="label-control">City <span class="text-danger">*</span></label>
                                             <input type="text" name="city" class="form-control-customized form-control-sm" required>
                                         </div>
                                     </div>
@@ -253,7 +249,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="label-control">Currency</label>
+                                            <label class="label-control">Currency <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id" id="inputGroupSelect02" required>
                                                     <option disabled selected>Select Currency...</option>
@@ -261,7 +257,6 @@
                                                     <option value="{{this.id}}">{{ this.name}}</option>
                                                     {{/each}}
                                                 </select>
-                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -275,7 +270,6 @@
                                                     <option value="{{this.id}}">{{ this.timezone}}</option>
                                                     {{/each}}
                                                 </select>
-                                                {{!-- <div class="input-group-append custom-group-append"></div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -291,7 +285,7 @@
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Vendor Icon</label>
+                                            <label class="label-control">Vendor Icon <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
                                                     <input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>

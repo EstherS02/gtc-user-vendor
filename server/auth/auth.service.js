@@ -85,11 +85,10 @@ function isAuthenticated() {
                                 model: model['Timezone']
                             }, {
                                 model: model['VendorPlan'],
-                            },{
+                            }, {
                                 model: model['VendorVerification'],
                                 required: false
-                            }
-                        ]
+                            }]
                         }).then(function(vendorObj) {
                             if (vendorObj) {
                                 req.user['Vendor'] = vendorObj.toJSON();
@@ -123,6 +122,18 @@ function isAuthenticatedUser() {
                 req.headers.authorization = 'Bearer ' + req.query.access_token;
             }
             validateJwt(req, res, next);
+        })
+        .use(function(err, req, res, next) {
+            if (err.name === 'UnauthorizedError') {
+                if (new RegExp("api").test(req.originalUrl) || new RegExp("auth").test(req.originalUrl)) {
+                    return res.status(err.status).send({
+                        message: err.message
+                    });
+                } else {
+                    return res.redirect('/login');
+                }
+            }
+            next();
         })
         .use(function(req, res, next) {
             var queryObj = {};
@@ -182,8 +193,7 @@ function hasRole(roleRequired) {
             attributes: ['id', 'name', 'cost', 'description', 'duration', 'duration_unit', 'status']
         }],
         required: false
-    },
-    {
+    }, {
         model: model["VendorVerification"],
         where: {
             status: status['ACTIVE']
