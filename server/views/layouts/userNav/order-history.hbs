@@ -202,7 +202,7 @@
 											{{#each OrderItems}}
 												<tr>
 													<td><input type="checkbox" value="{{this.id}}"></td>
-				  				<td>{{this.Order.invoice_id}}</td>
+				  				<td><a href="/order-history/{{this.id}}">{{this.Order.invoice_id}}</a></td>
 				  				<td>{{this.purchase_order_id}}</td>
 				  				<td class="text_blue_color"><a href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a></td>
 				  				<td>{{objectKey  ../marketPlace this.Product.marketplace_id }}
