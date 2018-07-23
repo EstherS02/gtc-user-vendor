@@ -89,10 +89,12 @@
                 <div class="col-md-3">
                   <select class="vend_edit_lists_buttonstyle " id="statusSelected" name="statusSelected">
                     <option value="">STATUS</option>
-                    <option value="INACTIVE">InActive</option>
-                    <option value="NEWORDER"> New Order</option>
-                    <option value="CANCLEORDER"> Cancel Order</option>
-                    <option value="FAILEDORDER"> Failed Order</option>
+                    <option value="AWAITINGORDER">Awaiting Order</option>
+                    <option value="PROCESSINGORDER">Processing Order</option>
+                    <option value="DISPATCHEDORDER">Dispatched Order</option>
+                    <option value="RETURNEDORDER">Returned Order</option>
+                    <option value="CANCELLEDORDER">Cancelled Order</option>
+                    <option value="FAILEDORDER">Failed Order</option>
                   </select>
                   <input type="submit" value="Update" onclick="updateStatus()" class="vend_edit_lists_update_buttonstyle2" style="height: 27px;"
                   />

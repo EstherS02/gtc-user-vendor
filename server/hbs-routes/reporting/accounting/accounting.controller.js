@@ -52,6 +52,7 @@ export function accounting(req, res) {
                 res.render('vendorNav/reporting/accounting', {
                     title: "Global Trade Connect",
                     category: results.category,
+                    selectedPage: 'accounting',
                     //queryUrl: queryUrl,
                     bottomCategory: bottomCategory,
                     selectedPage: 'accounting',
