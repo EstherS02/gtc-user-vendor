@@ -17,19 +17,19 @@
 		}
 	}
 	var oldArray = [];
-	$(document).ready(function () {
-
+	$(document).ready(function() {
+		$("#gtc-notify-alert").hide();
 		$("#updateBtn").prop("disabled", true);
-
 		var checkboxes = document.getElementsByTagName("input");
-		$(":checkbox:checked").each(function (i) {
+		$(":checkbox:checked").each(function(i) {
 			oldArray.push($(this).val());
 		});
 	});
 
 	function updateNotification(e) {
+		$('#updateBtn').prop('disabled', true);
 		var chkArray = [];
-		$(":checkbox:checked").each(function (i) {
+		$(":checkbox:checked").each(function(i) {
 			if ($(this).val() != "on") {
 				chkArray.push($(this).val());
 			}
@@ -38,30 +38,50 @@
 		var formData = {};
 		formData.data = JSON.stringify(a);
 		//api Call 
-		if (a) {
+		if (a.length > 0) {
 			$.ajax({
 				type: 'POST',
 				url: "/api/notification/addSettings",
 				data: formData,
-				success: function (data, text) {
-					location.reload();
+				success: function(data, text) {
+
+					$('#gtc-notify-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-notify-alert .notify-message').text("Notification Settings Changed Successfully")
+					$("#gtc-notify-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-notify-alert").slideUp(500);
+						location.reload();
+					});
+
 				},
-				error: function (request, status, error) {
+				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
+					$('#gtc-notify-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-notify-alert .notify-message').text(error.responseText);
+					$("#gtc-notify-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-notify-alert").slideUp(500);
+					});
+
 				}
 			});
+		} else {
+			$('#gtc-notify-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-notify-alert .notify-message').text("Please do some change on list");
+			$("#gtc-notify-alert").fadeTo(7000, 500).slideUp(500, function() {
+				$("#gtc-notify-alert").slideUp(500);
+			});
+
 		}
 	}
 
-	Array.prototype.diff = function (a) {
+	Array.prototype.diff = function(a) {
 		return this.filter(x => !a.includes(x))
 			.concat(a.filter(x => !this.includes(x)))
 	};
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
-		$('#CheckBoxList').on('change', 'input[type=checkbox]', function () {
+		$('#CheckBoxList').on('change', 'input[type=checkbox]', function() {
 			$('#updateBtn').prop('disabled', false);
 		});
 	});
@@ -79,6 +99,12 @@
 						<div class="ibox-title">
 							<h2>Notification Settings</h2>
 						</div>
+						<div class="alert" id="gtc-notify-alert">
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="notify-message"></span>
+					</div>
 						<div class="content-body">
 							<div class="row">
 								<table class="table table-hover">
@@ -119,6 +145,7 @@
 										{{/each}}
 									</tbody>
 								</table>
+								<button class="ladda-button btn update-btn" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">Submit</span><span class="ladda-spinner"></span></button</button>
 								<button class="btn btn-sm " id="updateBtn" onclick="updateNotification(this)" style="margin-left:10px"> update</button>
 							</div>
 						</div>

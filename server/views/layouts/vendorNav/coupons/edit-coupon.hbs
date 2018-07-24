@@ -16,7 +16,7 @@
 	$(document).ready(function () {
 
 		$("#couponSubmitBtn").click(function (e) {
-
+			alert("hai")
 			var newCouponProducts = [];
 			var newCouponExcludeProducts = [];
 			var newCouponCategories = [];
@@ -35,16 +35,17 @@
 			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
+			
 			newCoupon.vendor_id = {{ LoggedInUser.Vendor.id }};
-		newCoupon.publish_date = new Date().toISOString().split("T")[0];
-		newCoupon.usage_limit = $('#inputUsageLimit').val();
-		newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
-		newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
+			newCoupon.publish_date = new Date().toISOString().split("T")[0];
+			newCoupon.usage_limit = $('#inputUsageLimit').val();
+			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
+			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
 
-		newCoupon.couponProducts = JSON.stringify($('#inputProducts').val());
-		newCoupon.couponExcludeProducts = JSON.stringify($('#inputExcludeProduct').val());
-		newCoupon.couponCategories = JSON.stringify($('#inputCategories').val());
-		newCoupon.couponExcludeCategories = JSON.stringify($('#inputExcludeCategories').val());
+			newCoupon.couponProducts = JSON.stringify($('#inputProducts').val());
+			newCoupon.couponExcludeProducts = JSON.stringify($('#inputExcludeProduct').val());
+			newCoupon.couponCategories = JSON.stringify($('#inputCategories').val());
+			newCoupon.couponExcludeCategories = JSON.stringify($('#inputExcludeCategories').val());
 
 		$.ajax({
 			type: 'POST',
@@ -184,8 +185,8 @@
 
 							<form id="couponForm">
 								<div class="row">
-									<div class="col-md-12">
-										<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle"
+									<div class="col-md-12 required">
+										<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle required"
 										/>
 									</div>
 									<div class="col-md-12">

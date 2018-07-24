@@ -3911,6 +3911,11 @@ i.fas.fa-plus-circle {
     color: #FC5803;
 }
 
+i.fas.fa-minus-circle {
+    font-size: 20px;
+    color: #FC5803;
+}
+
 select.classic {
     background-image: linear-gradient(90deg, transparent 75%, #80808052 25%);
     font-size: 11px;

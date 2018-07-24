@@ -1,26 +1,24 @@
 <script type="text/javascript">
 	$(document).ready(function () {
+		$("#hideNewTimeSlotForm").hide();
 		$("#addTimeSlotFormNew").hide();
-		$("#addNewTimeSlot").click(function () {
+		$("#addNewTimeSlotForm").click(function () {
 			$("#addTimeSlotFormNew").show();
+			$("#addNewTimeSlotForm").hide();
+			$("#hideNewTimeSlotForm").show();
+
+		});
+		$("#hideNewTimeSlotForm").click(function () {
+			$("#addTimeSlotFormNew").hide();
+			$("#addNewTimeSlotForm").show();
+			$("#hideNewTimeSlotForm").hide();
 		});
 	});
 
-	// function timeCheck(val) {
-	// 	var endTime = val.value;
-	// 	var startTime = $('select[name=from_time]').val();
-	// 	if (startTime) {
-	// 		if (startTime > endTime) {
-	// 			alert("Start Time is less than End Time");
-	// 		}
-	// 	} else {
-	// 		alert("Please select start time");
-	// 	}
-	// }
 	$(document).ready(function () {
 		$("#uploadOperationHours").click(function (e) {
 			e.preventDefault();
-			alert($('#start_time').val(), $('input[name=end_time]').val())
+			// alert($('#start_time').val(), $('input[name=end_time]').val())
 			var op_hours = {};
 			op_hours.from_day = $('#from_day').val();
 			op_hours.to_day = $('#to_day').val();
@@ -32,12 +30,24 @@
 				url: '/api/gtc-talk/working-hours',
 				data: op_hours,
 				success: function (data, text) {
-					$("#addTimeSlotForm").hide();
-					location.reload();
+					$("#addTimeSlotFormNew").hide();
+					$("#addNewTimeSlotForm").show();
+					$("#hideNewTimeSlotForm").hide();
+					$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-talk-alert .talk-message').text("New Time Slot Added Successfully")
+					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-talk-alert").slideUp(500);
+						location.reload();
+					});
 				},
 				error: function (request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
+					$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-talk-alert .talk-message').text(error);
+					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-talk-alert").slideUp(500);
+					});
 				}
 			});
 		});
@@ -46,16 +56,77 @@
 </script>
 <script type="text/javascript">
 	$(document).ready(function () {
-		$("#UpdateTalks").click(function (e) {
-			var img = $('input[name=talk_profile_pic_url_radio]:checked').val();
-			// alert(img);
-			var formData = {
-				'gtc_talk_enabled': $('input[name=gtc_talk_enabled]:checked').val(),
-				'talk_profile_pic_url_radio': $('input[name=talk_profile_pic_url_radio]:checked').val(),
-				'default_msg': $('textarea[name=default_msg]').val(),
-			};
-			if (img == "old") {
-				formData.talk_profile_pic_url = '';
+		if(!$('input[name=gtc_talk_enabled]').is(':checked')){
+			$("#UpdateTalks").prop('disabled', true);
+		}
+	// console.log($('input[name=gtc_talk_enabled]').is(':checked'))
+	$("#gtc-talk-alert").hide();
+	$("#UpdateTalks").click(function (e) {
+		$("#UpdateTalks").prop('disabled', true);
+		var img = $('input[name=talk_profile_pic_url_radio]:checked').val();
+		var formData = {
+			'gtc_talk_enabled': $('input[name=gtc_talk_enabled]:checked').val(),
+			'talk_profile_pic_url_radio': $('input[name=talk_profile_pic_url_radio]:checked').val(),
+			'default_msg': $('textarea[name=default_msg]').val(),
+		};
+		if (img == "old") {
+			formData.talk_profile_pic_url = '';
+			$.ajax({
+				type: 'POST',
+				url: '/api/gtc-talk/store',
+				data: formData,
+				success: function (data, text) {
+					$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-talk-alert .talk-message').text("Data Updated Successfully")
+					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-talk-alert").slideUp(500);
+						location.reload();
+					});
+						// location.reload();
+					},
+					error: function (request, status, error) {
+						console.log('status', status);
+						console.log('error', error);
+						$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-talk-alert .talk-message').text(error.responseText);
+						$("#gtc-talk-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-talk-alert").slideUp(500);
+						});
+					}
+				});
+		} else {
+			var imgVal = $('input[name=talk_profile_pic_url]').val();
+			var form = new FormData();
+			form.append("file", $("#selectedFile")[0].files[0]);
+			if (imgVal) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/TalkSetting/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						formData.talk_profile_pic_url = data.imageURL;
+						$.ajax({
+							type: 'POST',
+							url: '/api/gtc-talk/store',
+							data: formData,
+							success: function (data, text) {
+								location.reload();
+							},
+							error: function (request, status, error) {
+								console.log('status', status);
+								console.log('error', error);
+							}
+						});
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				});
+			} else {
 				$.ajax({
 					type: 'POST',
 					url: '/api/gtc-talk/store',
@@ -68,60 +139,16 @@
 						console.log('error', error);
 					}
 				});
-			} else {
-				var imgVal = $('input[name=talk_profile_pic_url]').val();
-				var form = new FormData();
-				form.append("file", $("#selectedFile")[0].files[0]);
-				// formData.file = form;
-				if (imgVal) {
-					$.ajax({
-						type: 'POST',
-						url: '/api/TalkSetting/upload',
-						data: form,
-						cache: false,
-						dataType: 'json',
-						processData: false,
-						contentType: false,
-						success: function (data) {
-							formData.talk_profile_pic_url = data.imageURL;
-							$.ajax({
-								type: 'POST',
-								url: '/api/gtc-talk/store',
-								data: formData,
-								success: function (data, text) {
-									location.reload();
-								},
-								error: function (request, status, error) {
-									console.log('status', status);
-									console.log('error', error);
-								}
-							});
-						},
-						error: function (error) {
-							console.log("Error", error);
-						}
-					});
-				} else {
-					$.ajax({
-						type: 'POST',
-						url: '/api/gtc-talk/store',
-						data: formData,
-						success: function (data, text) {
-							location.reload();
-						},
-						error: function (request, status, error) {
-							console.log('status', status);
-							console.log('error', error);
-						}
-					});
 
-				}
 			}
-			var imgVal = $('input[name=talk_profile_pic_url]').val();
-		});
+		}
+		var imgVal = $('input[name=talk_profile_pic_url]').val();
 	});
+});
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -137,9 +164,15 @@
 						</div>
 						<div class="content-body">
 							<form method="POST" action="">
-								<h5 class="gtc-title"> GTC Talk </h5>
 								<p class="gtc-talk">Chat directly with users who are interacting with your page via the chat module at the bottom right of your profile
-									screen. </p>
+									screen. 
+								</p>
+								<div class="alert" id="gtc-talk-alert">
+									<button type="button" class="close" data-dismiss="alert">
+										<span aria-hidden="true">&times;</span>
+									</button>
+									<span class="talk-message"></span>
+								</div>
 								<p>
 									<h5 class="gtc-title">GTC Talk Enabled </h5>
 								</p>
@@ -183,8 +216,12 @@
 									</span>
 								</p>
 								{{/each}}
-								<p id="addNewTimeSlot">
+								<p id="addNewTimeSlotForm">
 									<i class="fas fa-plus-circle"></i>
+									<span class="gtc-talk">Add another time slot </span>
+								</p>
+								<p id="hideNewTimeSlotForm">
+									<i class="fas fa-minus-circle"></i>
 									<span class="gtc-talk">Add another time slot </span>
 								</p>
 								<div id="addTimeSlotFormNew">
@@ -222,13 +259,14 @@
 												<option value={{this.id}}>{{this.timezone}}</option>
 												{{/each}}
 											</select>
-											<button type="submit" value="upload" id="uploadOperationHours" Class="upload-btn">Submit</button>
+											<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadOperationHours"><span class="ladda-label">Submit</span><span class="ladda-spinner"></span></button</button>
+											{{!-- <button type="submit" value="upload" id="uploadOperationHours" Class="upload-btn">Submit</button> --}}
 										</div>
 									</form>
 								</div>
 								<hr>
 								<div class="col-md-4">
-									<button class="update-btn" type="submit" id="UpdateTalks">Update</button>
+									<button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button</button>
 									<button class="cancel-btn" type="reset">Cancel</button>
 								</div>
 							</form>
