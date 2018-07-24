@@ -149,6 +149,12 @@
     vertical-align: top;
     font-weight: 400;
 }
+.rounded {
+  border-radius: 1.25rem !important;
+}
+.form-control-border {
+  border: 2px solid #f3943d !important;
+}
 /* GLOBAL  */
 .no-padding {
   padding: 0 !important;
