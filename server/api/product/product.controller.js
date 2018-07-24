@@ -143,20 +143,28 @@ export function addProduct(req, res) {
     req.query.status = 1;
     req.query.publish_date = new Date();
 
+    var arrayEle =JSON.parse(req.body.data);
+
     model["Product"].create(req.query)
         .then(function(row) {
-            req.body.product_id = row.id;
-            if (req.body.url) {
-                model["ProductMedia"].create(req.body)
-                    .then(function(row) {
-                        console.log('Created:::', row);
+            var product_id = row.id;
+            if (arrayEle) {
+                arrayEle.forEach(function(element){
+                    element.product_id=product_id;
+                    console.log(element);
+            
+                    service.createRow('ProductMedia', element)
+                    .then(function(result) {
+                        console.log(result);
                         res.status(200).send("Created");
                         return;
-                    }).catch(function(error) {
+                    })
+                    .catch(function(error) {
                         console.log('Error:::', error);
                         res.status(500).send("Internal server error");
                         return;
-                    });
+                    }); 
+                })
             } else {
                 console.log("no image sucess")
                 res.status(200).send("Created");
