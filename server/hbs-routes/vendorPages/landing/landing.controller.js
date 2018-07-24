@@ -8,6 +8,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -146,7 +147,8 @@ export function vendor(req, res) {
 				featuredProducts: results.featuredProducts,
 				topSelling: results.topSelling,
 				topRating: results.topRating,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				Plan: Plan,
 				// selectedPage:'shop'
 			});
 		} else {

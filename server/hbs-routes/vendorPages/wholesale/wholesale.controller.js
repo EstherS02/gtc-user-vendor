@@ -7,6 +7,7 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
@@ -226,7 +227,8 @@ export function vendorWholesale(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'wholesale'
+				selectedPage: 'wholesale',
+				Plan: Plan,
 			});
 		} else {
 			res.render('vendor-wholesale', err);

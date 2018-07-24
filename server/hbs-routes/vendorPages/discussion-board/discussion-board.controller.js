@@ -8,6 +8,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -145,7 +146,8 @@ var vendorIncludeArr = [{
 				publicShop: results.publicShop,
 				// categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'discussion-board'
+				selectedPage:'discussion-board',
+				Plan: Plan,
 			});
 		} else {
 			res.render('vendor-discussion', err);

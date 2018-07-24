@@ -112,6 +112,12 @@ export function reviews(req, res) {
 					raw: true
 				}).then(function(Rating) {
 					var productRating = [{
+						starCount: 7,
+						ratingCount: 0
+					}, {
+						starCount: 6,
+						ratingCount: 0
+					},{
 						starCount: 5,
 						ratingCount: 0
 					}, {
@@ -133,8 +139,8 @@ export function reviews(req, res) {
 
 					for (let key in rating) {
 						total = total + rating[key].rating;
-						if (rating[key].rating <= 5)
-							productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
+						if (rating[key].rating <= 7)
+							productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
 					}
 					var avgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 					Rating.productRating = productRating;

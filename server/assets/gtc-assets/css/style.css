@@ -1,5 +1,5 @@
-/*@import url("https://fonts.googleapis.com/css?family=Oswald:300,400,600,700");
-@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");*/
+@import url("https://fonts.googleapis.com/css?family=Oswald:300,400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
 ul.vs-nav  li.nav-bar.active a.vs-link {
     color: #000 !important;
 }
@@ -57,9 +57,8 @@ select {
     border-top-right-radius: 15px !important;
 }
 .form-control-customized {
-    height: calc(1.8125rem + 2px);
     background-image: none;
-    border: none !important;
+    border: none;
     border-radius: 0;
     font-size: 13px;
     color: inherit;
@@ -751,6 +750,12 @@ ul.footer-social-links li a img {
     box-shadow: none !important;
     border-bottom-left-radius: 15px;
 }
+.login-label {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #fff;
+    margin-bottom: 5px;
+}
 .label-control {
     font-size: 13px;
     margin-bottom: 5px;
@@ -1026,4 +1031,20 @@ label {
     font-weight: 100;
     text-shadow: none;
     text-decoration: none;
+}
+.login-error {
+    margin-bottom: 0;
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #f10017a8;
+}
+.login-panel {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+#loginForm {
+    display: table-cell;
+    vertical-align: middle;
 }

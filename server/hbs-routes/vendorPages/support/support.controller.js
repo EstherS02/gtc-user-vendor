@@ -7,6 +7,7 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const Plan = require('../../../config/gtc-plan');
 import series from 'async/series';
 var async = require('async');
 
@@ -87,7 +88,8 @@ export function vendorSupport(req, res) {
 				bottomCategory: bottomCategory,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'support'
+				selectedPage: 'support',
+				Plan: Plan,
 			});
 		} else {
 			res.render('vendor-support', err);
