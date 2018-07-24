@@ -449,3 +449,115 @@
 .btn:not(:disabled):not(.disabled) {
   cursor: pointer;
 }
+.header-lg {
+  position: relative;
+}
+.header-lg-text {
+  margin-top: 24px;
+  font-family: 'Oswald', sans-serif;
+}
+.header-md-text {
+  font-weight: lighter;
+  font-size: 15px; 
+  margin-top: 17px;
+}
+.header-md-text a {
+  float: right;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: bold;
+  color: #fcfcf7;
+  text-decoration: none;
+  text-shadow: none;
+}
+.marketplace-type-bg {
+  background: #4178b1;
+  min-height: 43px;
+}
+.marketplace-type-headers {
+  margin-top: -43px;
+}
+.wts-header-bg {
+  background: #154a80;
+  color: #fcfcf7;
+  overflow: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.wtb-header-bg {
+  background: #2562a0;
+  color: #fcfcf7;
+  overflow: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.wtt-header-bg {
+  background: #638ac3;
+  color: #fcfcf7;
+  overflow: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.rfq-header-bg {
+  background: #87abd5;
+  color: #fcfcf7;
+  overflow: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.product-list-body {
+  overflow: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.product-body {
+  /*padding: 5px;*/
+}
+table.shoping-cart-table {
+  margin-bottom: 0;
+}
+table.shoping-cart-table tr td.desc, table.shoping-cart-table tr td:first-child {
+    text-align: left;
+}
+table.shoping-cart-table tr td {
+    border: none;
+    text-align: right;
+}
+.cart-product-imitation {
+    text-align: center;
+    height: 46px;
+    width: 46px;
+    background-color: #f8f8f9;
+}
+.cart-product-imitation img {
+  max-width: 100%;
+  height: auto;
+ }
+table.shoping-cart-table tr td.desc, table.shoping-cart-table tr td:first-child {
+    text-align: left;
+}
+table.shoping-cart-table tr td.desc h3 {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+table.shoping-cart-table tr td.desc h3 a {
+    font-size: 13px !important;
+    color: #3e3e3e !important;
+    text-decoration: none !important;
+}
+table.shoping-cart-table > tbody > tr > td {
+  padding: 5px !important;
+}
+.desc .row {
+  font-size: 10px;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
+  color: #c6c6c6;
+  line-height: 1.6;
+}
+.header-md-text a::after {
+    content: "\25BA" !important;
+    border-left: 0;
+    height: calc(1.8125rem + 2px);
+    padding-left: 5px;
+}
