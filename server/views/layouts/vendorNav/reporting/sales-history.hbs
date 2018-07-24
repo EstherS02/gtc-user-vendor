@@ -44,8 +44,11 @@
       $('#to').val("");
     }
   }
-
-</script>{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+  $(function(){
+      $("#gtc-form-alert").hide();
+    });
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
   <div class="gtc-container">
     <div class="row">
@@ -85,8 +88,8 @@
                         <select class="form-control-customized form-control-sm" name="marketType">
                           <option disabled selected> Type</option>
                           {{#each marketPlace}}
-                      <option value = "{{this}}">{{@key}}</option>
-                      {{/each}}
+                          <option value = "{{this}}">{{@key}}</option>
+                          {{/each}}
                         </select>
                       </div>
                     </div>
@@ -95,7 +98,7 @@
                         <select class="form-control-customized form-control-sm" name="status">
                           <option disabled selected>STATUS</option>
                           {{#each orderStatus}}
-                          <option value = "{{this}}">{{@key}}</option>
+                          <option value = "{{@key}}">{{@key}}</option>
                           {{/each}}
                         </select>
                       </div>

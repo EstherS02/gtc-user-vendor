@@ -51,12 +51,13 @@ export function storeData(req,res){
 	data.default_msg = req.body.default_msg;
 	data.talk_profile_pic_url = req.body.talk_profile_pic_url;
 	data.status = 1;
-	data.vendor_id = 29;
+	data.vendor_id = req.user.Vendor.id;
+	console.log(req.user);
 	const modelName = 'TalkSetting';
 	console.log( 'data',req.data);
 	const includeArr = [];
 	var queryObj = {
-		vendor_id :29,
+		vendor_id :req.user.Vendor.id,
 	};
 
 	service.findOneRow(modelName, queryObj, includeArr)
@@ -64,13 +65,14 @@ export function storeData(req,res){
 			if (results) {
 				var id = results.id;
 				data.last_updated_on = new Date();
-				res.status(200).send(results);
-				service.updateRow(modelName,data,id).then(function(response){
+				service.updateRow(modelName,data,id).then(function(err,response){
+				res.status(200).send(response);
 					return;
 				});
 			} else {
 				data.created_on = new Date();
 				service.createRow(modelName,data).then(function(response){
+					res.status(200).send(response);
 					return;
 			});
 		}

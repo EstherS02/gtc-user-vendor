@@ -88,7 +88,7 @@ export function orderHistory(req, res) {
 	}
 	if (status) {
 		queryURI['status'] = status;
-		orderQueryObj['status'] = statusCode[status];
+		orderQueryObj['status'] = orderStatus[status];
 	}
 
 

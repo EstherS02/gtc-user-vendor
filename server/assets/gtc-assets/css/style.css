@@ -249,7 +249,7 @@ ul.top-menu-list li a .badge {
 .gtc-text span {
     padding: 0 5px;
     font-style: italic;
-    color: #e2dcdcad;
+    color: #E2DCDC;
     font-size: 12px;
 }
 .geo-locate a {
@@ -1048,4 +1048,9 @@ label {
 #loginForm {
     display: table-cell;
     vertical-align: middle;
+}
+.required input {
+   padding-right: 25px;
+   background-image: url(...);
+   background-position: right top;
 }
