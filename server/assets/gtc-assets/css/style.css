@@ -406,7 +406,7 @@ ul.breadcrumb li+li:before {
     width: 64px;
     height: 64px;
 }
-table.shoping-cart-table {
+/*table.shoping-cart-table {
     margin-bottom: 0;
 }
 table.shoping-cart-table tr td {
@@ -420,7 +420,7 @@ table.shoping-cart-table tr td {
     color: #c6c6c6;
     font-weight: 100;
     line-height: 1.6;
-}
+}*/
 .seller-info a {
     font-weight: 400;
     text-decoration: none !important;
@@ -437,6 +437,7 @@ table.shoping-cart-table tr td {
     color: #949494 !important;
     font-weight: 600 !important;
     line-height: 16px;
+    margin-bottom: 0;
 }
 .text-overflow {
     overflow: hidden;
