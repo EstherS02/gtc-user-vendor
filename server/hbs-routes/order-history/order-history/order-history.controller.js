@@ -169,16 +169,7 @@ export function orderHistory(req, res) {
 					return callback(null);
 				});
 		},
-		category: function(callback) {
-			service.findRows("Category", queryObjCategory, 0, null, 'id', 'asc')
-				.then(function(category) {
-					return callback(null, category.rows);
 
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}
 	}, function(err, results) {
 		maxSize = results.orderHistory.count / limit;
 		if (results.orderHistory.count % limit)
@@ -203,7 +194,6 @@ export function orderHistory(req, res) {
 				queryURI: queryURI,
 				LoggedInUser: LoggedInUser,
 				marketPlace: marketPlace,
-				category: results.category,
 				statusCode: statusCode,
 				orderStatus: orderStatus,
 				totalTransaction: (total_transaction).toFixed(2),
