@@ -437,7 +437,9 @@ exports.multipleUpload = function (req, res) {
 			}
 		});	
 	}, function (err, results) {
-        console.log('results : ' + results); 
+        return res.status(201).json({
+			imageURLs: results
+		}); 
 	});
 }; 
 

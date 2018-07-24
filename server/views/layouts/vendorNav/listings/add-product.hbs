@@ -1,44 +1,32 @@
 <style>
-    #productImage {
+    .imageThumb {
+        height: 150px;
+        width: 150px;
+        border: 2px solid;
+        padding: 1px;
         cursor: pointer;
     }
+
+    .pip {
+        display: inline-block;
+        margin: 10px 10px 0 0;
+    }
+
+    .imgBlock {
+        display: block;
+        width: 150px;
+        background: #444;
+        border: 1px solid black;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .imgBlock:hover {
+        background: white;
+        color: black;
+    }
 </style>
-<script>
-    function changeCategory(e) {
-        $.ajax({
-            url: '/api/sub-categories?category_id=' + e.value,
-            type: 'GET',
-            success: function (result) {
-                $("#sub_category").empty();
-                for (var i = 0; i < result.rows.length; i++) {
-                    var options;
-                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                    $("#sub_category").append(options)
-                }
-            },
-            error: function (error) {
-                console.log("Error", error);
-            }
-        });
-    }
-    function changeCountry(e) {
-        $.ajax({
-            url: '/api/states?country_id=' + e.value,
-            type: 'GET',
-            success: function (result) {
-                $("#state").empty();
-                for (var i = 0; i < result.rows.length; i++) {
-                    var options;
-                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                    $("#state").append(options)
-                }
-            },
-            error: function (error) {
-                console.log("Error", error);
-            }
-        });
-    }
-</script>
 <script>
     function addProduct(obj, input) {
         $.ajax({
@@ -46,6 +34,7 @@
             url: '/api/product/add-product?' + input,
             data: obj,
             success: function (data) {
+
                 $('#gtc-add-to-cart').prop('disabled', false);
                 $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
                 $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
@@ -53,7 +42,6 @@
                     $("#gtc-cart-alert").slideUp(500);
                 });
                 $("#productForm")[0].reset();
-
             },
             error: function (error) {
                 $('#gtc-add-to-cart').prop('disabled', false);
@@ -69,44 +57,77 @@
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
 
-        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-        var fileDetails = {};
-        var imagesPreview = function (uploader, placeToInsertImagePreview) {
-            if (uploader.files && uploader.files[0]) {
-                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-picture');
-                $('#profile-picture-modal').modal('show');
-            }
-        };
-        $('#gallery-photo-add').on('change', function () {
-            imagesPreview(this, 'div.gallery');
-        });
+        /* if (window.File && window.FileList && window.FileReader) {*/
+        $("#files").on("change", function (e) {
+            var files = e.target.files,
+                filesLength = files.length;
 
-        $('#profile-picture-modal').on('shown.bs.modal', function () {
-            cropper = new Cropper(cropperInputImage, {
-                aspectRatio: 16 / 16,
-                //setSelect: [0,0,1,1],
-                maxContainerWidth: 800,
-                maxContainerHeight: 600,
-                ready: function () {
-                    //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+            if (filesLength < 5) {
+
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i]
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function (e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" +
+                            "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                            "<br/><span class=\"imgBlock\"><i class='fas fa-crop float-left'></i><input type='radio' name='base_image'>Base Image<i class='fa fa-times float-right' id=\"remove\" aria-hidden='true'></i></span>" +
+                            "</span>").insertAfter(".preview");
+                        $("#remove").click(function () {
+                            $(this).parents(".pip").remove();
+                        });
+
+                    });
+                    fileReader.readAsDataURL(f);
+                }
+            }
+            else {
+                alert("Maximum you can upload 4 images for a product")
+            }
+        });
+        /*} else {
+          alert("Your browser doesn't support to File API")
+        }*/
+
+        $("#country").change(function () {
+            var country_id = $('#country').val();
+
+            $.ajax({
+                url: '/api/states?country_id=' + country_id,
+                type: 'GET',
+                success: function (result) {
+                    $("#state").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var options;
+                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                        $("#state").append(options)
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);
                 }
             });
-        }).on('hidden.bs.modal', function () {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
         });
 
-        $('#crop-profile-image').click(function () {
-            cropper.getCroppedCanvas().toBlob(function (blob) {
-                cropperOutputImage = blob;
-                fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-                fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+        $("#category").change(function () {
+            var category_id = $('#category').val();
+
+            $.ajax({
+                url: '/api/sub-categories?category_id=' + category_id,
+                type: 'GET',
+                success: function (result) {
+                    $("#sub_category").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var options;
+                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                        $("#sub_category").append(options)
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);
+                }
             });
-            $($.parseHTML('<img>')).attr('src', cropper.getCroppedCanvas().toDataURL()).appendTo('div.gallery');
-            $('#profile-picture-modal').modal('hide');
-        })
+        });
 
         $("#productForm").submit(function (e) {
             e.preventDefault();
@@ -115,46 +136,50 @@
                 return $(element).val() != '';
             }).serialize();
 
-              if ($("#file")[0].files.length > 0) {
-                  var form = new FormData();
-                  form.append("file", $("#file")[0].files);
-                  form.append("filename", "test");
+            if ($("#files")[0].files.length > 0) {
+                var form = new FormData();
 
-                  console.log("-----------------------------comimng");
-  
-                  /*  $.each($("#file")[0].files, function (i, file) {
-                        form.append("file[" + i + "]", file);
-                    });
-    
-                    var obj = {};
-    
-                    console.log("uploaded files", $("#file")[0].files);*/
+                  $.each($("#files")[0].files, function (i, file) {
+                      form.append("file[" + i + "]", file);
+                  });
 
-             $.ajax({
-                  type: 'POST',
-                  url: '/api/products/upload',
-                  data: form,
-                  cache: false,
-                  dataType: 'json',
-                  processData: false,
-                  contentType: false,
-                  success: function (data) {
-                      obj.type = 1;
-                      obj.status = 1;
-                      obj.url = data.imageURL;
-                      obj.base_image = 1;
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/prod/multiple',
+                    data: form,
+                    cache: false,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var imageURLs= data.imageURLs;
+                        var imageURLsArr = [],i=0;
+                        
+                        imageURLs.forEach(function (element) {
+                        var imageURLobj={};
+ 
+                        imageURLobj.status=1;
+                        imageURLobj.type=1;                       
+                        imageURLobj.url= imageURLs[i];
+                        
+                        imageURLsArr.push(imageURLobj);
+                        i++;
+                        });
 
-                      addProduct(obj, input);
-                  },
-                  error: function (error) {
-                      console.log('error', error);
-                  }
-              });
-          } else {
-            var obj = {};
-            obj.url = null;
-            addProduct(obj, input);
-             }
+                        var dataFormate = {};
+		                dataFormate.data = JSON.stringify(imageURLsArr);
+
+                        addProduct(dataFormate, input);
+                    },
+                    error: function (error) {
+                        console.log('error', error);
+                    }
+                });
+            } else {
+                var obj = {};
+                obj.url = null;
+                addProduct(obj, input);
+            }
         });
     });
 </script>
@@ -230,12 +255,13 @@
                                             <label class="label-control">Type
                                                 <span class="text-danger">*</span>
                                             </label>
-                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id" required>
-                                                    <option disabled selected>Select Category...</option>
-                                                    {{#each marketplaceType}}
-                                                    <option value="{{this.id}}">{{ Titlecase this.name}}</option>
-                                                    {{/each}}
-                                                </select>
+                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
+                                                required>
+                                                <option disabled selected>Select Category...</option>
+                                                {{#each marketplaceType}}
+                                                <option value="{{this.id}}">{{ Titlecase this.name}}</option>
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                     {{/ifCond}}
@@ -254,7 +280,7 @@
                                             </label>
                                             <div class="input-group">
                                                 <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_category_id"
-                                                    onchange="changeCategory(this)" required>
+                                                    id="category" required>
                                                     <option disabled selected>Select Category...</option>
                                                     {{#each categories}}
                                                     <option value="{{this.id}}">{{ Titlecase this.name}}</option>
@@ -269,7 +295,7 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style"  name="sub_category_id" id="sub_category">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category">
                                                     <option disabled selected>Select Sub Category...</option>
                                                 </select>
                                             </div>
@@ -281,7 +307,7 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_location" onChange="changeCountry(this);"
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_location" id="country"
                                                     required>
                                                     <option disabled selected>Select Country...</option>
                                                     {{#each country}}
@@ -297,7 +323,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state" value="" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
+                                                    value="" required>
                                                     <option disabled selected>Select State...</option>
                                                 </select>
                                             </div>
@@ -324,7 +351,7 @@
                                             <label class="label-control">Price
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text"  name="price" class="form-control-customized form-control-sm">
+                                            <input type="text" name="price" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -341,25 +368,27 @@
                                             <textarea class="form-control-customized" name="description" rows="3"></textarea>
                                         </div>
                                     </div>
-                                    {{!-- <div class="col-lg-8">
+                                    <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Upload Image
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <div class="custom-file custom_error_message">
-                                                    <input type="file" class="custom-file-input" id="file" name="file">
-                                                    <label class="custom-file-label customized-file-label" for="file">Choose file</label>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="files" name="files[]" multiple>
+                                                    <label class="custom-file-label customized-file-label" for="files">Choose file</label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="file"></div>
-                                    </div> --}}
+                                        <div class="preview"></div>
+                                    </div>
                                 </div>
+                                <br/>
+
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
+                                        <button type="reset" class="btn btn-gray btn-sm">Cancel</button>
                                     </div>
                                 </div>
                             </form>
@@ -370,4 +399,4 @@
         </div>
     </div>
 </div>
-{{> footer/bottom-footer}} 
+{{> footer/bottom-footer}}
