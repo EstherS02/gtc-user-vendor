@@ -5,6 +5,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const service = require('../../../api/service');
+const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
@@ -117,7 +118,8 @@ export function vendorAbout(req, res) {
 				VendorDetail: results.VendorDetail,
 				follower: results.Follower,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'about'
+				selectedPage: 'about',
+				Plan: Plan,
 			});
 		} else {
 

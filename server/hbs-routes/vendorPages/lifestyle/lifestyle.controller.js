@@ -8,6 +8,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
@@ -166,7 +167,8 @@ export function vendorLifestyle(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'lifestyle'
+				selectedPage: 'lifestyle',
+				Plan: Plan,
 			});
 		} else {
 			res.render('vendor-lifestyle', err);

@@ -93,16 +93,103 @@
 							</div>
 							<div class="vp-navmenu d-inline-block">
 								<ul class="navbar-nav vp-nav">
-									{{#if VendorDetail.VendorPlans.[0].plan_id}}
+								{{!-- WHOLESALER --}}
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.WHOLESALER}}
 
-									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}"><a  href="/vendor/wholesale/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "WHOLESALE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}"><a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "SHOP" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}"><a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "SERVICES" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}"><a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">{{#vendorPlan "LIFESTYLE" VendorDetail.VendorPlans.[0].plan_id}}{{/vendorPlan}}</a></li>
-									{{/if}}
-									<li class="nav-item {{#ifCond selectedPage '==' 'discussion-board'}} active {{/ifCond}}"><a  href="/vendor/discussion-board/{{VendorDetail.id}}" class="nav-link">DISCUSSION BOARD</a></li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'about'}} active {{/ifCond}}"><a  href="/vendor/about/{{VendorDetail.id}}" class="nav-link">ABOUT</a></li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'support'}} active {{/ifCond}}"><a  href="/vendor/support/{{VendorDetail.id}}" class="nav-link">SUPPORT</a></li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">
+										<a  href="/vendor/wholesale/{{VendorDetail.id}}" class="nav-link">WHOLESALE
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
+										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
+										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+									</li>
+									{{/ifCond}}
+									{{!-- BULK_BUYER --}}
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.BULK_BUYER}}
+
+									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">
+										<a  href="/vendor/wholesale/{{VendorDetail.id}}" class="nav-link">WHOLESALE
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
+										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
+										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+									</li>
+									{{/ifCond}}
+									{{!-- PUBLIC_SELLER --}}
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.PUBLIC_SELLER}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
+										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
+										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+									</li>
+									{{/ifCond}}
+
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.LIFESTYLE_PROVIDER}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+									</li>
+									{{/ifCond}}
+									{{!-- LIFESTYLE_PROVIDER --}}
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.SERVICE_PROVIDER}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
+										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
+										</a>
+									</li>
+									{{/ifCond}}
+									{{!-- STARTER_SELLER --}}
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.STARTER_SELLER}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
+										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
+										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+									</li>
+									{{/ifCond}}
+									{{!-- Common Link --}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'discussion-board'}} active {{/ifCond}}">
+										<a  href="/vendor/discussion-board/{{VendorDetail.id}}" class="nav-link">DISCUSSION BOARD
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'about'}} active {{/ifCond}}">
+										<a  href="/vendor/about/{{VendorDetail.id}}" class="nav-link">ABOUT
+										</a>
+									</li>
+									<li class="nav-item {{#ifCond selectedPage '==' 'support'}} active {{/ifCond}}">
+										<a  href="/vendor/support/{{VendorDetail.id}}" class="nav-link">SUPPORT
+										</a>
+									</li>
 									{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
 									<li class="nav-item dropdown">
 										<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">

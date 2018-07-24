@@ -9,6 +9,7 @@ const position = require('../../config/position');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../config/marketplace');
+const Plan = require('../../config/gtc-plan');
 const async = require('async');
 const _ = require('lodash');
 
@@ -261,6 +262,12 @@ export function GetProductDetails(req, res) {
 		}
 		if (!err) {
 			var productRating = [{
+				starCount: 7,
+				ratingCount: 0
+			}, {
+				starCount: 6,
+				ratingCount: 0
+			},{
 				starCount: 5,
 				ratingCount: 0
 			}, {
@@ -282,8 +289,8 @@ export function GetProductDetails(req, res) {
 
 			for (let key in rating) {
 				total = total + rating[key].rating;
-				if (rating[key].rating <= 5)
-					productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
+				if (rating[key].rating <= 7)
+					productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
 			}
 			var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
@@ -305,7 +312,8 @@ export function GetProductDetails(req, res) {
 				marketplace: marketplace,
 				selectedPage: selectedPage,
 				title: "Global Trade Connect",
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				Plan: Plan,
 			});
 		} else {
 			res.render('product-view', {
@@ -546,6 +554,12 @@ export function GetProductReview(req, res) {
 				maxSize++;
 
 			var productRating = [{
+				starCount: 7,
+				ratingCount: 0
+			}, {
+				starCount: 6,
+				ratingCount: 0
+			}, {
 				starCount: 5,
 				ratingCount: 0
 			}, {
@@ -567,8 +581,8 @@ export function GetProductReview(req, res) {
 
 			for (let key in rating) {
 				total = total + rating[key].rating;
-				if (rating[key].rating <= 5)
-					productRating[5 - rating[key].rating].ratingCount = productRating[5 - rating[key].rating].ratingCount + 1;
+				if (rating[key].rating <= 7)
+					productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
 			}
 			var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
 
@@ -596,6 +610,7 @@ export function GetProductReview(req, res) {
 				pageSize: limit,
 				collectionSize: results.Review.count,
 				queryParams: queryParams,
+				Plan: Plan,
 			});
 		} else {
 			res.render('product-review', {

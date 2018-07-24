@@ -126,14 +126,10 @@ export function salesHistory(req, res) {
     queryPaginationObj['offset'] = offset;
     var maxSize;
     // End pagination
-    var modelName = "OrderItem";
+    var modelName = "Order";
     productQueryObj['vendor_id'] = req.user.Vendor.id;
     console.log("productQueryObj", productQueryObj)
     var includeArr = [{
-        model: model["Order"],
-        where: orderQueryObj,
-        attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price']
-    }, {
         model: model['Product'],
         where: productQueryObj,
         include: [{
@@ -142,7 +138,7 @@ export function salesHistory(req, res) {
     }];
     async.series({
             orderHistory: function(callback) {
-                service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
+                service.findRows(modelName, orderQueryObj, offset, limit, field, order, includeArr)
                     .then(function(results) {
                         return callback(null, results);
                     }).catch(function(error) {
@@ -182,8 +178,8 @@ export function salesHistory(req, res) {
             var total_transaction = 0.00;
             if (results.orderHistory.count > 0) {
                 results.orderHistory.rows.forEach((value, index) => {
-                    total_transaction += parseFloat(value.final_price);
-                    results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+                    total_transaction += parseFloat(value.total_price);
+                    results.orderHistory.rows[index]['total_price'] = (parseFloat(value.total_price)).toFixed(2);
                 });
             }
 

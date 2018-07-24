@@ -171,7 +171,7 @@ export function orderHistory(req, res) {
 		},
 
 	}, function(err, results) {
-		console.log("results*****************************************",JSON.stringify(results.orderHistory.rows))
+		// console.log("results*****************************************",JSON.stringify(results.orderHistory.rows))
 		maxSize = results.orderHistory.count / limit;
 		if (results.orderHistory.count % limit)
 			maxSize++;

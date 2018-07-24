@@ -25,7 +25,7 @@ Handlebars.registerHelper('starCount', function(rating, color) {
     for (var i = 0; i <= rating - 1; i++) {
         colored = tag1 + colored;
     }
-    for (var i = 1; i <= 5 - rating; i++) {
+    for (var i = 1; i <= 7 - rating; i++) {
         colorless = tag2 + colorless;
     }
     return new Handlebars.SafeString(colored + colorless);
@@ -300,30 +300,30 @@ Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
     return new Handlebars.SafeString(ret);
 });
 
-Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
-    var ret = '';
-    var option;
-    if (plan == 1 || plan == 6 || plan == 5) {
-        return context;
-    } else if (plan == 2) {
-        if (context == 'SHOP' || context == 'SERVICES' || context == 'LIFESTYLE') {
-            return context;
-        } else {
-            return ret;
-        }
+// Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
+//     var ret = '';
+//     var option;
+//     if (plan == 1 || plan == 6 || plan == 5) {
+//         return context;
+//     } else if (plan == 2) {
+//         if (context == 'SHOP' || context == 'SERVICES' || context == 'LIFESTYLE') {
+//             return context;
+//         } else {
+//             return ret;
+//         }
 
-    } else if (plan == 3) {
-        if (context == 'SERVICES') {
-            return context;
-        }
-    } else if (plan == 4) {
-        if (context == 'LIFESTYLE') {
-            return context;
-        }
-    } else {
-        return;
-    }
-});
+//     } else if (plan == 3) {
+//         if (context == 'SERVICES') {
+//             return context;
+//         }
+//     } else if (plan == 4) {
+//         if (context == 'LIFESTYLE') {
+//             return context;
+//         }
+//     } else {
+//         return;
+//     }
+// });
 
 Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
     return count - (limit * offset);

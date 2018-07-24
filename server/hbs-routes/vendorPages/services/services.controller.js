@@ -7,6 +7,7 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
@@ -163,7 +164,8 @@ export function vendorServices(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				selectedPage: 'services'
+				selectedPage: 'services',
+				Plan: Plan,
 			});
 		} else {
 			res.render('vendor-services', err);
