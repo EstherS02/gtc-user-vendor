@@ -110,7 +110,7 @@
                         window.location.href = '/vendor-landing';
                     },
                     error: function (error) {
-                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-danger');
+                        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
                         $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
                         $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function () {
                             $("#gtc-form-alert").slideUp(500);

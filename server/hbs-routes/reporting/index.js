@@ -15,6 +15,7 @@ var saleshistoryCtrl = require('./sales-history/sales-history.controller');
 router.get('/',auth.isAuthenticated(), landingCtrl.reporting);
 router.get('/performance',auth.isAuthenticated(), performanceCtrl.performance);
 router.get('/sales-history',auth.isAuthenticated(), saleshistoryCtrl.salesHistory);
+router.get('/sales-history/:id',auth.isAuthenticated(), saleshistoryCtrl.orderView);
 router.get('/accounting',auth.isAuthenticated(), accountingCtrl.accounting);
 router.get('/tax',auth.isAuthenticated(), taxCtrl.tax);
 
