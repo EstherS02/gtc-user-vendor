@@ -1,6 +1,6 @@
 <div id="wrapper">
 	<div class="header-bg">
-		<div class="gtc-container">
+		<div class="container">
 			<div class="row">
 				<div class="col-md-6">
 					<div class="header">
@@ -11,26 +11,31 @@
 						</nav>
 					</div>
 				</div>
-				<div class="col-md-6" style="margin: auto;">
-					<form class="form" style="margin-top: 12px;">
-						<div class="row">
-                            <div class="col-lg-4">
-                                <div class="form-group">
-                                    <label class="login-label">Returning user? Sign in:</label>
-                                    <input type="text" name="vendor_name" class="form-control-customized form-control-sm rounded form-control-border">
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="form-group">
-                                    <label class="login-label">Password</label>
-                                    <input type="password" name="vendor_name" class="form-control-customized form-control-sm rounded form-control-border">
-                                </div>
-                            </div>
-                            <div class="col-lg-4" style="margin: auto;">
-                            	<button class="btn btn-sm btn-primary">LOG IN</button>
-                            </div>
-                        </div>
-					</form>
+				<div class="col-md-6">
+					<div class="login-panel">
+						<form id="loginForm" class="form">
+							<div class="row">
+								<div class="col-lg-5">
+									<div class="form-group m-b-none">
+										<label class="login-label">Returning user? Sign in:</label>
+										<input type="email" name="vendor_name" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Email" id="loginInputEmail" name="email">
+									</div>
+								</div>
+								<div class="col-lg-5">
+									<div class="form-group m-b-none">
+										<label class="login-label">Password</label>
+										<input type="password" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password" id="loginInputPassword" name="password">
+									</div>
+								</div>
+								<div class="col-lg-2">
+									<button type="submit" class="btn btn-sm m-t-md btn-primary" style="margin-top: 30px;" id="btnLogin"><strong>LOG IN</strong></button>
+								</div>
+								<div class="col-md-12">
+									<p class="login-error" id="loginErrorMessage"></p>
+								</div>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>

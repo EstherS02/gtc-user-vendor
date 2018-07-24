@@ -27,15 +27,11 @@
             }).then(function(user) {
                 window.location = "/";
             }).catch(function(error) {
-                $("#ErrorDiv").remove();
-                console.log('Error:::', error.responseText)
-                $("#loginErrorMessage").after(function() {
-                    return '<small class="error" id="ErrorDiv">' + error.responseText + '</small>';
-                });
+                $('#loginErrorMessage').text(error.responseText);
             });
         });
     });
-</script> 
+</script>
 
 {{> header/login-header}}
 
