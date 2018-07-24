@@ -121,20 +121,20 @@ export function orderHistory(req, res) {
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
 
-	var modelName = "OrderItem";
+	var modelName = "Order";
 	orderQueryObj['user_id'] = user_id;
-	var includeArr = [{
-		model: model["Order"],
-		where: orderQueryObj,
-		attributes: ['id', 'invoice_id', 'delivered_on', 'ordered_date', 'user_id', 'total_price', 'status']
-	}, {
-		model: model['Product'],
-		where: productQueryObj,
-		include: [{
-			model: model['Vendor'],
-		}]
+	// var includeArr = [{
+	// 	model: model["Orderitem"],
+	// 	where: orderItemQueryObj,
+	// }, {
+	// 	model: model['Product'],
+	// 	where: productQueryObj,
+	// 	include: [{
+	// 		model: model['Vendor'],
+	// 	}]
 
-	}];
+	// }];
+	var includeArr=[];
 	var queryObjCategory = {
 		status: statusCode['ACTIVE']
 	};
@@ -161,7 +161,7 @@ export function orderHistory(req, res) {
 				});
 		},
 		orderHistory: function(callback) {
-			service.findRows(modelName, orderItemQueryObj, offset, limit, field, order, includeArr)
+			service.findRows(modelName,orderQueryObj, offset, limit, field, order, includeArr)
 				.then(function(results) {
 					return callback(null, results);
 				}).catch(function(error) {
@@ -171,6 +171,7 @@ export function orderHistory(req, res) {
 		},
 
 	}, function(err, results) {
+		console.log("results*****************************************",JSON.stringify(results.orderHistory.rows))
 		maxSize = results.orderHistory.count / limit;
 		if (results.orderHistory.count % limit)
 			maxSize++;
@@ -180,8 +181,8 @@ export function orderHistory(req, res) {
 		var total_transaction = 0.00;
 		if (results.orderHistory.count > 0) {
 			results.orderHistory.rows.forEach((value, index) => {
-				total_transaction += parseFloat(value.final_price);
-				results.orderHistory.rows[index]['final_price'] = (parseFloat(value.final_price)).toFixed(2);
+				total_transaction += parseFloat(value.total_price);
+				results.orderHistory.rows[index]['final_price'] = (parseFloat(value.total_price)).toFixed(2);
 			});
 		}
 		if (!err) {
