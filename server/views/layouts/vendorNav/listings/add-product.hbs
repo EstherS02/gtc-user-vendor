@@ -29,6 +29,7 @@
 </style>
 <script>
     function addProduct(obj, input) {
+       if ($('#vendorForm').valid()) {
         $.ajax({
             type: 'POST',
             url: '/api/product/add-product?' + input,
@@ -53,6 +54,7 @@
                 $("#productForm")[0].reset();
             }
         })
+       }
     }
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
@@ -127,6 +129,27 @@
                     console.log("Error", error);
                 }
             });
+        });
+
+        $("#productForm").validate({
+            rules: {
+                product_name:"required",
+                product_category_id:"required",
+                sub_category_id: "required",
+                product_location: "required",
+                sku:"required",
+                price: "required",
+                quantity_available:"required"
+            },
+            messages: {
+                product_name:"Please enter the product name",
+                product_category_id:"Please select product category",
+                sub_category_id: "Please select product sub-category",
+                product_location: "Please select product origin",
+                sku: "Please enter Stock Keeping Unit",
+                price: "Please enter product price",
+                quantity_available: "Please enter available quanity"
+            }
         });
 
         $("#productForm").submit(function (e) {
@@ -233,7 +256,7 @@
                                             <label class="label-control">Product Name
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control-customized form-control-sm" name="product_name">
+                                            <input type="text" class="form-control-customized form-control-sm" name="product_name" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -252,11 +275,8 @@
                                     {{#ifCond this.type '==' 'wholesale'}}
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">Type
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
-                                                required>
+                                            <label class="label-control">Type</label>
+                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id">
                                                 <option disabled selected>Select Category...</option>
                                                 {{#each marketplaceType}}
                                                 <option value="{{this.id}}">{{ Titlecase this.name}}</option>
@@ -267,9 +287,7 @@
                                     {{/ifCond}}
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">Shipping Cost
-                                                <span class="text-danger">*</span>
-                                            </label>
+                                            <label class="label-control">Shipping Cost</label>
                                             <input type="text" class="form-control-customized form-control-sm" name="shipping_cost">
                                         </div>
                                     </div>
@@ -295,7 +313,7 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category" required>
                                                     <option disabled selected>Select Sub Category...</option>
                                                 </select>
                                             </div>
@@ -319,12 +337,10 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">State
-                                                <span class="text-danger">*</span>
-                                            </label>
+                                            <label class="label-control">State</label>
                                             <div class="input-group">
                                                 <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
-                                                    value="" required>
+                                                    value="">
                                                     <option disabled selected>Select State...</option>
                                                 </select>
                                             </div>
@@ -332,9 +348,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
-                                            <label class="label-control">City
-                                                <span class="text-danger">*</span>
-                                            </label>
+                                            <label class="label-control">City</label>
                                             <input type="text" class="form-control-customized form-control-sm" name="city">
                                         </div>
                                     </div>
@@ -343,7 +357,7 @@
                                             <label class="label-control">SKU
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku">
+                                            <input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -351,7 +365,7 @@
                                             <label class="label-control">Price
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" name="price" class="form-control-customized form-control-sm">
+                                            <input type="text" name="price" class="form-control-customized form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -359,7 +373,7 @@
                                             <label class="label-control">Quantity Available
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" name="quantity_available" class="form-control-customized form-control-sm">
+                                            <input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -370,9 +384,7 @@
                                     </div>
                                     <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Upload Image
-                                                <span class="text-danger">*</span>
-                                            </label>
+                                            <label class="label-control">Upload Image </label>
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" class="custom-file-input" id="files" name="files[]" multiple>

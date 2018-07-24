@@ -123,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
         state_id: {
             type: DataTypes.BIGINT,
             field: 'state_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'state',
                 key: 'id'
@@ -134,7 +134,7 @@ module.exports = (sequelize, DataTypes) => {
         city: {
             type: DataTypes.STRING(128),
             field: 'city',
-            allowNull: false
+            allowNull: true
         },
         moq: {
             type: DataTypes.INTEGER,
