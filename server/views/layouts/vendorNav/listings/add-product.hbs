@@ -29,7 +29,7 @@
 </style>
 <script>
     function addProduct(obj, input) {
-       if ($('#vendorForm').valid()) {
+       if ($('#productForm').valid()) {
         $.ajax({
             type: 'POST',
             url: '/api/product/add-product?' + input,
