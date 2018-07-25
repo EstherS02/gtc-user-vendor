@@ -2,25 +2,24 @@
 
 var cartItems = {{{DisplayJSON cartItems}}};
 
-function removeGtcCart(item){
+function removeGtcCart(item) {
 	var result = confirm("Are you sure you want to delete this item?");
-if (result) {
-    //Logic to delete the item
-	$('#remove-cart-'+ item).removeAttr('href');
+	if (result) {
+		//Logic to delete the item
+		$('#remove-cart-' + item).removeAttr('href');
 
-	$.ajax({
-		url: '/api/cart/remove-cart/'+ item,
-		type: 'DELETE',
-		success: function(result) {
-			if(result)
-				location.reload();
-		},
-		error: function(error){
-			console.log("Error occured while deleting", error);
-		}
-	}); 
-}
-	
+		$.ajax({
+			url: '/api/cart/remove-cart/' + item,
+			type: 'DELETE',
+			success: function(result) {
+				if (result)
+					location.reload();
+			},
+			error: function(error) {
+				console.log("Error occured while deleting", error);
+			}
+		});
+	}
 }
 
 
@@ -55,7 +54,22 @@ function UpdateAllCartItems(){
 		data: JSON.stringify(allCartInfo),
         contentType: "application/json",
 		success: function(updateAllData) {
-			window.location.reload();
+			// window.location.reload();
+				 $('#gtc-cart-alert').prop('disabled', false);
+			if(updateAllData.statusCode == 200){
+			      $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			      $('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
+			      $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
+			        $("#gtc-cart-alert").slideUp(500);
+			        location.reload();
+			    });
+			}else{
+			      $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+			      $('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
+			      $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
+			      	  $("#gtc-cart-alert").slideUp(500);
+			    });
+			}
 		},
 		error: function(error){
 			console.log("Error occured while updating", error);
@@ -110,7 +124,15 @@ function applyGTCCoupon(){
 		type: 'POST',
 		data: cartInfo,
 		success: function(updateData) {
-			console.log(updateData);
+			console.log(updateData.message_details);
+			// var data = updateData.message_details;
+			    $('#gtc-coupon-alert').prop('disabled', false);
+		      	$('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
+		      	$('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
+		      	$("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function () {
+		        $("#gtc-coupon-alert").slideUp(500);
+		        // location.reload();
+    });
 		},
 		error: function(error) {
 			console.log("Error occured while updating", error);
@@ -121,6 +143,10 @@ function applyGTCCoupon(){
 function orderCheckout(){
 	location.href = "/order-checkout/customer-information"
 }
+$(document).ready(function(){
+$('#gtc-coupon-alert').hide();
+$('#gtc-cart-alert').hide();
+});
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -149,7 +175,13 @@ function orderCheckout(){
 
 			<div class="row">
 				<div class="col-md-9">
-					
+				<p><p>
+					<div class="alert" id="gtc-cart-alert">
+	                        <button type="button" class="close" data-dismiss="alert">
+	                            <span aria-hidden="true">&times;</span>
+	                        </button>
+	                        <span class="cart-message"></span>
+	                    </div>
 					{{#each marketPlaces as |marketPlace|}}
 					<div class="row">
 						<div class="col-md-12 common_padding1">
@@ -357,13 +389,20 @@ function orderCheckout(){
 						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
 						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
 						{{!-- <button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button> --}}
-						<p><span class="cart-message"></span></p>
+						{{!-- <p><span class="coupon-message"></span></p> --}}
+						<div class="alert" id="gtc-coupon-alert">
+	                        <button type="button" class="close" data-dismiss="alert">
+	                            <span aria-hidden="true">&times;</span>
+	                        </button>
+	                        <span class="coupon-message"></span>
+	                    </div>
 						<button class="ladda-button btn btn-sm" onclick="applyGTCCoupon()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">Apply</span><span class="ladda-spinner"></span></button>
 						{{/ifCond}}
 						{{#ifCond couponUpdateErrorMessage '!=' ""}}
 							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
 						{{/ifCond}}
-						<input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="orderCheckout()"/>
+						{{!-- <input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="orderCheckout()"/> --}}
+						<button class="ladda-button btn shop_checkout_btn" onclick="orderCheckout()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">CHECKOUT NOW</span><span class="ladda-spinner"></span></button>
 						<img src="../img/payment-methods.jpg" alt="payment">
 					</div>
 				</div>
