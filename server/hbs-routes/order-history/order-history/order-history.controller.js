@@ -112,7 +112,7 @@ export function orderHistory(req, res) {
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
 		queryURI['keyword'] = req.query.keyword;
-		productQueryObj['product_name'] = {
+		orderQueryObj['invoice_id'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
