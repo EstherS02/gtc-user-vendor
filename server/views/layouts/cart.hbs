@@ -3,7 +3,9 @@
 var cartItems = {{{DisplayJSON cartItems}}};
 
 function removeGtcCart(item){
-
+	var result = confirm("Are you sure you want to delete this item?");
+if (result) {
+    //Logic to delete the item
 	$('#remove-cart-'+ item).removeAttr('href');
 
 	$.ajax({
@@ -17,6 +19,8 @@ function removeGtcCart(item){
 			console.log("Error occured while deleting", error);
 		}
 	}); 
+}
+	
 }
 
 
@@ -117,8 +121,6 @@ function applyGTCCoupon(){
 function orderCheckout(){
 	location.href = "/order-checkout/customer-information"
 }
-
-
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -262,7 +264,8 @@ function orderCheckout(){
 							<input type="submit" value="CONTINUE SHOPPING" onclick="location.href = '/'" class="cont_shopping"/>
 						</div>
 						<div class="col-md-6">
-							<input type="submit" value="UPDATE CART" onclick="UpdateAllCartItems()" class="update_cart"/>
+							{{!-- <input type="submit" value="UPDATE CART" onclick="UpdateAllCartItems()" class="update_cart"/> --}}
+							<button class="ladda-button btn update_cart" onclick="UpdateAllCartItems()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">UPDATE CART</span><span class="ladda-spinner"></span></button>
 						</div>
 					</div>
 				</div>
@@ -353,7 +356,9 @@ function orderCheckout(){
 						{{#ifCond couponData.length '==' 0}}
 						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
 						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
-						<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
+						{{!-- <button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button> --}}
+						<p><span class="cart-message"></span></p>
+						<button class="ladda-button btn btn-sm" onclick="applyGTCCoupon()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">Apply</span><span class="ladda-spinner"></span></button>
 						{{/ifCond}}
 						{{#ifCond couponUpdateErrorMessage '!=' ""}}
 							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>

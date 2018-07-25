@@ -52,15 +52,35 @@
 			url: '/api/coupon/save',
 			data: newCoupon,
 			success: function (data, text) {
-				alert("Added successfully");
-				location.reload();
+				// alert("Added successfully");
+				ouputPopup("Added successfully");
+				// location.reload();
 			},
 			error: function (request, status, error) {
 				console.log('status', status);
 				console.log('error', error);
+				ouputErrorPopup(error);
 			}
 		});
 	});
+
+function ouputPopup(data) {
+      $('#gtc-shipping').prop('disabled', false);
+      $('#gtc-shipping').removeClass('alert-danger').addClass('alert-success');
+      $('#gtc-shipping .cart-message').text(data);
+      $("#gtc-shipping").fadeTo(2000, 500).slideUp(500, function () {
+        $("#gtc-shipping").slideUp(500);
+        location.reload();
+    });
+  }
+  function ouputErrorPopup(data) {
+      $('#gtc-shipping').prop('disabled', false);
+      $('#gtc-shipping').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-shipping .cart-message').text(data);
+      $("#gtc-shipping").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-shipping").slideUp(500);
+    });
+  }
 
 	$("#inputIndividualUseOnly[value=1]").prop("checked", "true");
 	$("#inputExcluseSaleItem[value=1]").prop("checked", "true");

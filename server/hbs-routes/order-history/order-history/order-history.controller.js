@@ -88,7 +88,7 @@ export function orderHistory(req, res) {
 	}
 	if (status) {
 		queryURI['status'] = status;
-		orderQueryObj['status'] = orderStatus[status];
+		orderQueryObj['order_status'] = orderStatus[status];
 	}
 
 
@@ -112,7 +112,7 @@ export function orderHistory(req, res) {
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
 		queryURI['keyword'] = req.query.keyword;
-		productQueryObj['product_name'] = {
+		orderQueryObj['invoice_id'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
