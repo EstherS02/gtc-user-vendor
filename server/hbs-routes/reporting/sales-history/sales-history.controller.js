@@ -95,7 +95,7 @@ export function salesHistory(req, res) {
     }
     if (status) {
         queryURI['status'] = status;
-        orderQueryObj['status'] = orderStatus[status];
+        orderQueryObj['order_status'] = orderStatus[status];
     }
     // end Query string assignment
     var order = "desc"; //"asc"

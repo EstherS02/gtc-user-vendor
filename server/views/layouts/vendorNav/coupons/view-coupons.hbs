@@ -31,31 +31,25 @@
 		if (selected.length > 0) {
 			window.location.href = '/coupons/edit-coupons?id=' + selected;
 		} else {
-			alert("Please at least check one of the checkbox");
+			// alert("Please at least check one of the checkbox");
+			ouputErrorPopup("Please at least check one of the checkbox");
 		}
 	}
 	function create(e) {
 		window.location.href = '/coupons/add-coupon';
 	}
-	function Password(e, ths) {
-		var newData = {};
-		newData.old_password = $("#old_password").val();
-		newData.new_password = $("#new_password").val();
-		newData.new_confirm_password = $("#new_confirm_password").val();
-		// console.log(newData)
-		$.ajax({
-			type: 'PUT',
-			url: "/api/users/change-password",
-			data: newData,
-			success: function (data, text) {
-				location.reload();
-			},
-			error: function (request, status, error) {
-				console.log('status', status);
-				console.log('error', error);
-			}
-		});
-	}
+
+  function ouputErrorPopup(data) {
+      $('#gtc-coupon-alert').prop('disabled', false);
+      $('#gtc-coupon-alert').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-coupon-alert .coupon-message').text(data);
+      $("#gtc-coupon-alert").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-coupon-alert").slideUp(500);
+    });
+  }
+  $(document).ready(function(){
+  	$('#gtc-coupon-alert').hide();
+  });
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
@@ -92,6 +86,12 @@
 											</form>
 										</div>
 									</div> --}}
+									<div class="alert" id="gtc-coupon-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="coupon-message"></span>
+									</div>
 									<div class="row">
 								<div class="col-md-7">
 									<div class="form-inline">
