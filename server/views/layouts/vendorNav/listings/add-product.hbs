@@ -29,32 +29,34 @@
 </style>
 <script>
     function addProduct(obj, input) {
-       if ($('#productForm').valid()) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/product/add-product?' + input,
-            data: obj,
-            success: function (data) {
+        if ($('#productForm').valid()) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/product/add-product?' + input,
+                data: obj,
+                success: function (data) {
 
-                $('#gtc-add-to-cart').prop('disabled', false);
-                $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-                $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                    $("#gtc-cart-alert").slideUp(500);
-                });
-                $("#productForm")[0].reset();
-            },
-            error: function (error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-                $('#gtc-cart-alert .cart-message').text("Server Error")
-                $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                    $("#gtc-cart-alert").slideUp(500);
-                });
-                $("#productForm")[0].reset();
-            }
-        })
-       }
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+                    $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
+                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                        $("#gtc-cart-alert").slideUp(500);
+                    });
+                    $("#productForm")[0].reset();
+                    $(".preview").empty();
+                },
+                error: function (error) {
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+                    $('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                        $("#gtc-cart-alert").slideUp(500);
+                    });
+                    $("#productForm")[0].reset();
+                    $(".preview").empty();
+                }
+            })
+        }
     }
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
@@ -99,10 +101,11 @@
                 type: 'GET',
                 success: function (result) {
                     $("#state").empty();
+                    $("#state").append("<option disabled selected>Select State...</option>")
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                        $("#state").append(options)
+                        $("#state").append(options);
                     }
                 },
                 error: function (error) {
@@ -119,6 +122,7 @@
                 type: 'GET',
                 success: function (result) {
                     $("#sub_category").empty();
+                    $("#sub_category").append("<option disabled selected>Select Sub Category...</option>")
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
@@ -133,24 +137,66 @@
 
         $("#productForm").validate({
             rules: {
-                product_name:"required",
-                product_category_id:"required",
+                product_name: "required",
+                product_category_id: "required",
                 sub_category_id: "required",
                 product_location: "required",
-                sku:"required",
-                price: "required",
-                quantity_available:"required"
+                sku: {
+                    required: true,
+                    digits: true
+                },
+                price: {
+                    required: true,
+                    number: true,
+                    dollarsscents: true
+                },
+                quantity_available: {
+                    required: true,
+                    digits: true
+                },
+                city: {
+                    lettersonly: true
+                },
+                shipping_cost: {
+                    number: true,
+                    dollarsscents: true
+                }
             },
             messages: {
-                product_name:"Please enter the product name",
-                product_category_id:"Please select product category",
+                product_name: "Please enter the product name",
+                product_category_id: "Please select product category",
                 sub_category_id: "Please select product sub-category",
                 product_location: "Please select product origin",
-                sku: "Please enter Stock Keeping Unit",
-                price: "Please enter product price",
-                quantity_available: "Please enter available quanity"
+                sku: {
+                    required: "Please enter Stock Keeping Unit",
+                    digits: "Please enter valid Stock Keeping Unit"
+                },
+                price: {
+                    required: "Please enter product price",
+                    number: "Please enter valid product price",
+                    dollarsscents: "Only two decimal values accepted"
+                },
+                quantity_available: {
+                    required: "Please enter available quantity",
+                    digits: "Please enter valid available quantity"
+                },
+                city: {
+                    lettersonly: "Please enter vaild city name"
+                },
+                shipping_cost: {
+                    number: "Please enter valid shipping cost",
+                    dollarsscents: "Only two decimal values accepted"
+                }
             }
         });
+
+        $.validator.addMethod("lettersonly", function (value, element) {
+            return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
+        }, "Letters only please");
+
+        $.validator.addMethod("dollarsscents", function (value, element) {
+            return this.optional(element) || /^\d{0,4}(\.\d{0,2})?$/i.test(value);
+        }, "You must include two decimal places");
 
         $("#productForm").submit(function (e) {
             e.preventDefault();
@@ -162,9 +208,9 @@
             if ($("#files")[0].files.length > 0) {
                 var form = new FormData();
 
-                  $.each($("#files")[0].files, function (i, file) {
-                      form.append("file[" + i + "]", file);
-                  });
+                $.each($("#files")[0].files, function (i, file) {
+                    form.append("file[" + i + "]", file);
+                });
 
                 $.ajax({
                     type: 'POST',
@@ -175,22 +221,22 @@
                     processData: false,
                     contentType: false,
                     success: function (data) {
-                        var imageURLs= data.imageURLs;
-                        var imageURLsArr = [],i=0;
-                        
+                        var imageURLs = data.imageURLs;
+                        var imageURLsArr = [], i = 0;
+
                         imageURLs.forEach(function (element) {
-                        var imageURLobj={};
- 
-                        imageURLobj.status=1;
-                        imageURLobj.type=1;                       
-                        imageURLobj.url= imageURLs[i];
-                        
-                        imageURLsArr.push(imageURLobj);
-                        i++;
+                            var imageURLobj = {};
+
+                            imageURLobj.status = 1;
+                            imageURLobj.type = 1;
+                            imageURLobj.url = imageURLs[i];
+
+                            imageURLsArr.push(imageURLobj);
+                            i++;
                         });
 
                         var dataFormate = {};
-		                dataFormate.data = JSON.stringify(imageURLsArr);
+                        dataFormate.data = JSON.stringify(imageURLsArr);
 
                         addProduct(dataFormate, input);
                     },
@@ -313,7 +359,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
+                                                    required>
                                                     <option disabled selected>Select Sub Category...</option>
                                                 </select>
                                             </div>
