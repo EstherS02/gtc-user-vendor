@@ -23,51 +23,76 @@
                 url: '/api/shipping-setting/add-country',
                 data: newData,
                 success: function (data, text) {
-                    location.reload();
+                    // location.reload();
+                    ouputPopup("Shipping Setting Updated Successfully");
                 },
                 error: function (request, status, error) {
                     console.log('status', status);
                     console.log('error', error);
                 }
             });
+        }else{
+            ouputErrorPopup("Select Country to add");
         }
 
     }
-    function myRemove(e) {
-        var removeSelected = $('select[name="addedCountry"] option:selected').val();
-        if (removeSelected) {
-            var newData = {};
-            var selectArray = [];
-            if (removeSelected == 'All') {
-                $("#removeCountry option").each(function () {
-                    if ($(this).val() != "All")
-                        selectArray.push($(this).val());
-                });
-                newData.country_id = JSON.stringify(selectArray);
-                console.log(selectArray);
-            }
-            else {
-                selectArray.push(removeSelected);
-                console.log(selectArray);
-                newData.country_id = JSON.stringify(selectArray);
-                console.log(newData)
-            }
-            $.ajax({
-                type: 'PUT',
-                url: '/api/shipping-setting/remove-country',
-                data: newData,
-                success: function (data, text) {
-                    location.reload();
-                },
-                error: function (request, status, error) {
-                    console.log('status', status);
-                    console.log('error', error);
-                }
+
+    function ouputPopup(data) {
+      $('#gtc-shipping').prop('disabled', false);
+      $('#gtc-shipping').removeClass('alert-danger').addClass('alert-success');
+      $('#gtc-shipping .cart-message').text(data);
+      $("#gtc-shipping").fadeTo(2000, 500).slideUp(500, function () {
+        $("#gtc-shipping").slideUp(500);
+        location.reload();
+    });
+  }
+  function ouputErrorPopup(data) {
+      $('#gtc-shipping').prop('disabled', false);
+      $('#gtc-shipping').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-shipping .cart-message').text(data);
+      $("#gtc-shipping").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-shipping").slideUp(500);
+    });
+  }
+
+  function myRemove(e) {
+    var removeSelected = $('select[name="addedCountry"] option:selected').val();
+    if (removeSelected) {
+        var newData = {};
+        var selectArray = [];
+        if (removeSelected == 'All') {
+            $("#removeCountry option").each(function () {
+                if ($(this).val() != "All")
+                    selectArray.push($(this).val());
             });
+            newData.country_id = JSON.stringify(selectArray);
+            console.log(selectArray);
         }
-
+        else {
+            selectArray.push(removeSelected);
+            console.log(selectArray);
+            newData.country_id = JSON.stringify(selectArray);
+            console.log(newData)
+        }
+        $.ajax({
+            type: 'PUT',
+            url: '/api/shipping-setting/remove-country',
+            data: newData,
+            success: function (data, text) {
+                ouputPopup("Shipping Setting Updated Successfully");
+            },
+            error: function (request, status, error) {
+                ouputErrorPopup("Select Option to remove");
+                console.log('status', status);
+                console.log('error', error);
+            }
+        });
+    }else{
+        ouputErrorPopup("Select Country to remove");
     }
-    function updateFunction() {
+
+}
+function updateFunction() {
 
     var old_base_location = {{ LoggedInUser.Vendor.base_location }};
     var new_base_location = $('select[name="base_location"] option:selected').val();
@@ -79,17 +104,26 @@
             url: '/api/shipping-setting/vendor-update',
             data: newData,
             success: function (data, text) {
-                location.reload();
+                // location.reload();
+                ouputPopup("Base Location Updated Successfully");
             },
             error: function (request, status, error) {
                 console.log('status', status);
                 console.log('error', error);
+                ouputErrorPopup(error);
             }
         });
+    }else{
+        ouputErrorPopup("Base Location Aleady Exist");
     }
 
-   }
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+}
+$(document).ready(function () {
+    $("#gtc-shipping").hide();
+});
+
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
     <div class="gtc-container">
@@ -103,49 +137,58 @@
                         <div class="ibox-title">
                             <h2>Shipping Settings</h2>
                         </div>
-                        <div class="content-body">
-                            <select class="payment-selection" name="base_location">
-                                {{#each Countries.rows}} {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
-                                <option value={{this.id}} selected>Base :{{this.name}}</option>
-                                {{else}}
+                        <div class="alert" id="gtc-shipping">
+                          <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span class="cart-message"></span>
+                    </div>
+                    <div class="content-body">
+                        <select class="payment-selection" name="base_location">
+                            {{#each Countries.rows}} {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
+                            <option value={{this.id}} selected>Base :{{this.name}}</option>
+                            {{else}}
+                            <option value={{this.id}}>{{this.name}}</option>
+                            {{/ifCond}} {{/each}}
+                        </select>
+                        <label class="base-location" for="lacation">The physical location of your business</label>
+                        <div class="col-sm-8 all-coutries" style="height: 300px;">
+                            <h5 class="gtc-title"> Selling Location </h5>
+                            <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
+                            <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
+                            <select class="cuntries" size="4" name="country" id="sellingCountry">
+                                {{#ifCond Countries.count "!=" vendorCountry.count}}
+                                <option value="All">All </option>
+                                {{#if vendorCountry.vendorCountriesID}} {{{countrySelected Countries.rows vendorCountry.vendorCountriesID}}} {{else}} {{#each
+                                Countries.rows}}
                                 <option value={{this.id}}>{{this.name}}</option>
-                                {{/ifCond}} {{/each}}
+                                {{/each}} {{/if}} {{/ifCond}}
                             </select>
-                            <label class="base-location" for="lacation">The physical location of your business</label>
-                            <div class="col-sm-8 all-coutries" style="height: 300px;">
-                                <h5 class="gtc-title"> Selling Location </h5>
-                                <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
-                                <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
-                                <select class="cuntries" size="4" name="country" id="sellingCountry">
-                                    {{#ifCond Countries.count "!=" vendorCountry.count}}
-                                    <option value="All">All </option>
-                                    {{#if vendorCountry.vendorCountriesID}} {{{countrySelected Countries.rows vendorCountry.vendorCountriesID}}} {{else}} {{#each
-                                    Countries.rows}}
-                                    <option value={{this.id}}>{{this.name}}</option>
-                                    {{/each}} {{/if}} {{/ifCond}}
-                                </select>
-                                <div class="add-remove">
-                                    <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button>
-                                    <br>
-                                    <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
-                                </div>
-                                <select id="removeCountry" size="4" class="cuntries" name="addedCountry">
-                                    {{#if vendorCountry.count}}
-                                    <option value="All">All </option>
-                                    {{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
-                                    {{#each Countries}}
-                                    <option value={{this.id}}>{{this.name}}</option>
-                                    {{/each}} {{/if}} {{/if}}
-                                </select>
+                            <div class="add-remove">
+                                <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button>
+                                <br>
+                                <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
                             </div>
-                            <hr style="margin-top: 10px;" />
-                            <button class="update-btn" style="padding: 5px 20px;" onclick="updateFunction(this)">UPDATE </button>
-                            <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button>
+                            <select id="removeCountry" size="4" class="cuntries" name="addedCountry">
+                                {{#if vendorCountry.count}}
+                                <option value="All">All </option>
+                                {{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
+                                {{#each Countries}}
+                                <option value={{this.id}}>{{this.name}}</option>
+                                {{/each}} {{/if}} {{/if}}
+                            </select>
                         </div>
+                        <hr style="margin-top: 10px;" />
+                        {{!-- <button class="update-btn" style="padding: 5px 20px;" >UPDATE </button> --}}
+                        <button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" onclick="updateFunction(this)" style="border-radius:0px"><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
+                        <button  type="reset" class="ladda-button btn cancel-btn" data-style="expand-left" style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
+
+                        {{!-- <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button> --}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 {{> footer/bottom-footer}}

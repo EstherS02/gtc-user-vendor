@@ -1,6 +1,6 @@
 <script>
     $(document).ready(function () {
-
+        $("#gtc-social-profile").hide();
         var domElement1 = '<div class="col-md-4 text_green_color social_check">' +
             '<i class="fas fa-check-circle"></i>' + '</div>'
         var domElement2 = '<div class="col-md-4 text_red_color social_check">' +
@@ -75,10 +75,12 @@
             type: 'PUT',
             data: formInput,
             success: function (updateData) {
-                alert("Upadted");
+                // alert("Upadted");
+                ouputPopup("Profile Setting Updated Successfully");
             },
             error: function (error) {
-                console.log("Error", error);
+                // console.log("Error", error);
+                ouputErrorPopup(error);
             }
 			});
             }
@@ -152,6 +154,23 @@
         });      
     });
 
+ function ouputPopup(data) {
+      $('#gtc-social-profile').prop('disabled', false);
+      $('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+      $('#gtc-social-profile .cart-message').text(data);
+      $("#gtc-social-profile").fadeTo(2000, 500).slideUp(500, function () {
+        $("#gtc-social-profile").slideUp(500);
+    });
+  }
+  function ouputErrorPopup(data) {
+      $('#gtc-social-profile').prop('disabled', false);
+      $('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-social-profile .cart-message').text(data);
+      $("#gtc-social-profile").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-social-profile").slideUp(500);
+    });
+  }
+
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <section class="showing_categ">
@@ -162,6 +181,12 @@
                 <h5 class="social_he">Social Profile Settings </h5>
                 <p class="social_para"> Here you can connect your various social profiles and have them show up on your profile page. Please include
                     those you'd like to feature. </p>
+                    <div class="alert" id="gtc-social-profile">
+                          <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span class="cart-message"></span>
+                    </div>
                 <div class="row">
                     <div class="col-md-1 social_face">
                         Facebook
@@ -286,12 +311,14 @@
                 <hr style="margin-top: 10px" />
                 <div class="row">
                     <div class="col-md-2">
-                        <input class="list_butt_1" type="submit" value="UPDATE" style="padding: 5px 20px;" />
+                        {{!-- <input class="list_butt_1" type="submit" value="UPDATE" style="padding: 5px 20px;" /> --}}
+                        <button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" onclick="updateFunction(this)" style="border-radius:0px"><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
                     </div>
-                    <div class="col-md-6 ">
-                        <input class="list_butt_2" type="submit" value="CANCEL" style="padding: 5px 20px;" />
+                    <div class="col-md-2">
+                        {{!-- <input class="list_butt_2" type="reset" value="CANCEL" style="padding: 5px 20px;" /> --}}
+                        <button  type="reset" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                     </div>
                 </div>
             </form>
