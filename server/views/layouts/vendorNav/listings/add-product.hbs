@@ -6,12 +6,10 @@
         padding: 1px;
         cursor: pointer;
     }
-
     .pip {
         display: inline-block;
         margin: 10px 10px 0 0;
     }
-
     .imgBlock {
         display: block;
         width: 150px;
@@ -28,68 +26,103 @@
     }
 </style>
 <script>
+    var allFiles = [];
     function addProduct(obj, input) {
-       if ($('#productForm').valid()) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/product/add-product?' + input,
-            data: obj,
-            success: function (data) {
+        if ($('#productForm').valid()) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/product/add-product?' + input,
+                data: obj,
+                success: function (data) {
+                    
+                  
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+                    $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
+                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                        $("#gtc-cart-alert").slideUp(500);
+                    });
+                    $('.pip').empty();
+                    $("#productForm")[0].reset();
+                    
+                },
+                error: function (error) {
 
-                $('#gtc-add-to-cart').prop('disabled', false);
-                $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-                $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                    $("#gtc-cart-alert").slideUp(500);
-                });
-                $("#productForm")[0].reset();
-            },
-            error: function (error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-                $('#gtc-cart-alert .cart-message').text("Server Error")
-                $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                    $("#gtc-cart-alert").slideUp(500);
-                });
-                $("#productForm")[0].reset();
-            }
-        })
-       }
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+                    $('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+                        $("#gtc-cart-alert").slideUp(500);
+                    });
+                    $('.pip').empty();
+                    $("#productForm")[0].reset();   
+                }
+            })
+        }
     }
+
+    function remove(e, index){
+        allFiles.splice(index, 1);
+        $(e).parents(".pip").remove();    
+    }
+
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
 
-        /* if (window.File && window.FileList && window.FileReader) {*/
-        $("#files").on("change", function (e) {
-            var files = e.target.files,
-                filesLength = files.length;
-
-            if (filesLength < 5) {
-
-                for (var i = 0; i < filesLength; i++) {
-                    var f = files[i]
-                    var fileReader = new FileReader();
-                    fileReader.onload = (function (e) {
-                        var file = e.target;
-                        $("<span class=\"pip\">" +
-                            "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
-                            "<br/><span class=\"imgBlock\"><i class='fas fa-crop float-left'></i><input type='radio' name='base_image'>Base Image<i class='fa fa-times float-right' id=\"remove\" aria-hidden='true'></i></span>" +
-                            "</span>").insertAfter(".preview");
-                        $("#remove").click(function () {
-                            $(this).parents(".pip").remove();
-                        });
-
-                    });
-                    fileReader.readAsDataURL(f);
-                }
-            }
-            else {
-                alert("Maximum you can upload 4 images for a product")
-            }
+        $("#imageUpload").change(function () {
+            fasterPreview(this);
         });
-        /*} else {
-          alert("Your browser doesn't support to File API")
-        }*/
+
+        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+        var fileDetails = {}; var dataURLFileName, index= 0;;
+
+        $('#crop-profile-image').click(function () {
+            
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                var fileTempHold = {};
+                fileTempHold['cropperOutputImage'] = blob;
+                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold ["croppedExtension"];
+                dataURLFileName = fileTempHold["fileName"];
+                allFiles.push(fileTempHold);
+            });
+
+        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+
+        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
+
+            $(domElement).insertAfter(".preview");
+
+            $('#profile-picture-modal').modal('hide');
+        index++;
+        });
+
+
+        $('#profile-picture-modal').on('shown.bs.modal', function () {
+            cropper = new Cropper(cropperInputImage, {
+                aspectRatio: 16 / 16,
+                ready: function () { }
+            });
+        }).on('hidden.bs.modal', function () {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
+
+        function fasterPreview(uploader) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+
+                console.log(fileDetails, uploader.files[0])
+                $('#UploadedImage').attr('src',
+                    window.URL.createObjectURL(uploader.files[0]));
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
+            }
+        }
 
         $("#country").change(function () {
             var country_id = $('#country').val();
@@ -99,10 +132,11 @@
                 type: 'GET',
                 success: function (result) {
                     $("#state").empty();
+                    $("#state").append("<option disabled selected>Select State...</option>")
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                        $("#state").append(options)
+                        $("#state").append(options);
                     }
                 },
                 error: function (error) {
@@ -119,6 +153,7 @@
                 type: 'GET',
                 success: function (result) {
                     $("#sub_category").empty();
+                    $("#sub_category").append("<option disabled selected>Select Sub Category...</option>")
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
@@ -133,38 +168,82 @@
 
         $("#productForm").validate({
             rules: {
-                product_name:"required",
-                product_category_id:"required",
+                product_name: "required",
+                product_category_id: "required",
                 sub_category_id: "required",
                 product_location: "required",
-                sku:"required",
-                price: "required",
-                quantity_available:"required"
+                sku: {
+                    required: true,
+                    digits: true
+                },
+                price: {
+                    required: true,
+                    number: true,
+                    dollarsscents: true
+                },
+                quantity_available: {
+                    required: true,
+                    digits: true
+                },
+                city: {
+                    lettersonly: true
+                },
+                shipping_cost: {
+                    number: true,
+                    dollarsscents: true
+                }
             },
             messages: {
-                product_name:"Please enter the product name",
-                product_category_id:"Please select product category",
+                product_name: "Please enter the product name",
+                product_category_id: "Please select product category",
                 sub_category_id: "Please select product sub-category",
                 product_location: "Please select product origin",
-                sku: "Please enter Stock Keeping Unit",
-                price: "Please enter product price",
-                quantity_available: "Please enter available quanity"
+                sku: {
+                    required: "Please enter Stock Keeping Unit",
+                    digits: "Please enter valid Stock Keeping Unit"
+                },
+                price: {
+                    required: "Please enter product price",
+                    number: "Please enter valid product price",
+                    dollarsscents: "Only two decimal values accepted"
+                },
+                quantity_available: {
+                    required: "Please enter available quantity",
+                    digits: "Please enter valid available quantity"
+                },
+                city: {
+                    lettersonly: "Please enter vaild city name"
+                },
+                shipping_cost: {
+                    number: "Please enter valid shipping cost",
+                    dollarsscents: "Only two decimal values accepted"
+                }
             }
         });
 
+        $.validator.addMethod("lettersonly", function (value, element) {
+            return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
+        }, "Letters only please");
+
+        $.validator.addMethod("dollarsscents", function (value, element) {
+            return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
+        }, "You must include two decimal places");
+
         $("#productForm").submit(function (e) {
             e.preventDefault();
-
+                
             let input = $("#productForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
 
-            if ($("#files")[0].files.length > 0) {
+            var temp= $("#imageUpload")[0].files.length;
+
+            if ($("#imageUpload")[0].files.length > 0) {
                 var form = new FormData();
 
-                  $.each($("#files")[0].files, function (i, file) {
-                      form.append("file[" + i + "]", file);
-                  });
+                $.each(allFiles, function (i, file) {
+                    form.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
+                });
 
                 $.ajax({
                     type: 'POST',
@@ -175,22 +254,22 @@
                     processData: false,
                     contentType: false,
                     success: function (data) {
-                        var imageURLs= data.imageURLs;
-                        var imageURLsArr = [],i=0;
-                        
+                        var imageURLs = data.imageURLs;
+                        var imageURLsArr = [], i = 0;
+
                         imageURLs.forEach(function (element) {
-                        var imageURLobj={};
- 
-                        imageURLobj.status=1;
-                        imageURLobj.type=1;                       
-                        imageURLobj.url= imageURLs[i];
-                        
-                        imageURLsArr.push(imageURLobj);
-                        i++;
+                            var imageURLobj = {};
+
+                            imageURLobj.status = 1;
+                            imageURLobj.type = 1;
+                            imageURLobj.url = imageURLs[i];
+
+                            imageURLsArr.push(imageURLobj);
+                            i++;
                         });
 
                         var dataFormate = {};
-		                dataFormate.data = JSON.stringify(imageURLsArr);
+                        dataFormate.data = JSON.stringify(imageURLsArr);
 
                         addProduct(dataFormate, input);
                     },
@@ -313,7 +392,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category" required>
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
+                                                    required>
                                                     <option disabled selected>Select Sub Category...</option>
                                                 </select>
                                             </div>
@@ -387,8 +467,8 @@
                                             <label class="label-control">Upload Image </label>
                                             <div class="input-group">
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="files" name="files[]" multiple>
-                                                    <label class="custom-file-label customized-file-label" for="files">Choose file</label>
+                                                    <input type="file" class="custom-file-input" id="imageUpload" name="files">
+                                                    <label class="custom-file-label customized-file-label" for="imageUpload">Choose file</label>
                                                 </div>
                                             </div>
                                         </div>

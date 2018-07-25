@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
         total_price: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'total_price',
-            allowNull: true
+            allowNull: false
         },
         tracking_id: {
             type: DataTypes.INTEGER,

@@ -1019,8 +1019,17 @@ label {
     display: table-cell;
     vertical-align: middle;
 }
-.required input {
-   padding-right: 25px;
-   background-image: url(...);
-   background-position: right top;
+.save-btn{
+    background-color: #4178BB;
+    font-size: 11px;
+    border: none;
+    padding: 5px 15px;
+    color: white;
+    font-weight: bold;
+    margin-right: 15px;
+    font-family: 'heebo', sans-serif;
+    cursor: pointer;
+}
+.export-btn:hover{
+    background-color: rgba(128, 128, 128, 0.86);
 }
