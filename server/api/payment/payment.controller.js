@@ -74,7 +74,7 @@ export function makePayment(req, res) {
             payment_id: paymentRow.id,
             status: status['ACTIVE'],
             created_on: new Date(),
-            created_by: req.user.first_name + req.user.last_name
+            created_by: req.user.first_name
         }
         orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
       }
