@@ -315,11 +315,14 @@
         });
 
         $("#productAttr").submit(function(e){
+          
             e.preventDefault();
                 
             attributeArr = $("#productAttr :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serializeArray();
+
+            $('#exampleModal').modal('hide');
         })
     });
 </script>
