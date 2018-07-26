@@ -52,8 +52,7 @@ export function updateStatus(req, res) {
 						if (result) {
 
 							purchase_order_id= row.purchase_order_id;
-						   // user_email= row.User.email;
-						   user_email= 'estherpushpa04@gmail.com';
+						    user_email= row.User.email;
 
 							var queryObjEmailTemplate = {};
 							var emailTemplateModel = "EmailTemplate";
@@ -65,12 +64,12 @@ export function updateStatus(req, res) {
 										var email = user_email;
 										var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 										var body;
-							 			body = response.body.replace('%ORDER_MSG%', order_status);
-							            body = response.body.replace('%ORDER_NUMBER%', purchase_order_id);
+
+										body = response.body.replace('%ORDER_MSG%', order_status);
+										body = body.replace('%ORDER_TYPE%', 'Order Status');
+							            body = body.replace('%ORDER_NUMBER%', purchase_order_id);
 							      		//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 	
-										console.log("----------------------",email,subject,body);
-
 										sendEmail({
 											to: email,
 											subject: subject,
