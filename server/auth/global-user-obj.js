@@ -11,33 +11,33 @@ const status = require('../config/status');
 var validateJwt = expressJwt({
 	secret: config.secrets.accessToken,
 	requestProperty: 'gtcGlobalUserObj',
-	getToken: function (req) {
-		if(req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']){
-			return req.cookies['gtc_access_token']; 
+	getToken: function(req) {
+		if (req.cookies && req.cookies['gtc_access_token'] && req.cookies['gtc_refresh_token']) {
+			return req.cookies['gtc_access_token'];
 		}
 		return null;
-	  }
+	}
 });
 
 function isGlobalObj() {
 	return compose()
 		.use(function(req, res, next) {
-				validateJwt(req, res, next);
+			validateJwt(req, res, next);
 		})
-		.use(function(err, req, res, next){
-			if(err.name === 'UnauthorizedError') {
+		.use(function(err, req, res, next) {
+			if (err.name === 'UnauthorizedError') {
 				next();
 			}
 		})
-	 	.use(function(req, res, next) {
-			if(req.gtcGlobalUserObj && req.gtcGlobalUserObj.userId){
+		.use(function(req, res, next) {
+			if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.userId) {
 
 				let queryObj = {};
 
 				queryObj['status'] = {
 					'$eq': status["ACTIVE"]
 				}
-				
+
 				queryObj['id'] = req.gtcGlobalUserObj.userId;
 
 				model['User'].findOne({
@@ -49,24 +49,28 @@ function isGlobalObj() {
 					if (userObj) {
 						req.gtcGlobalUserObj = userObj.toJSON();
 						req.gtcGlobalUserObj['isAvailable'] = true;
-						
+
 						let vendorQueryObj = {};
 
 						vendorQueryObj['status'] = {
 							'$eq': status["ACTIVE"]
 						}
-						
+
 						vendorQueryObj['user_id'] = req.gtcGlobalUserObj.id;
 
 						model['Vendor'].findOne({
 							where: vendorQueryObj,
-							include: [
-								{ model: model['Country'] },
-								{ model: model['Currency'] },
-								{ model: model['Timezone'] },
-								{ model: model['VendorPlan']},
-								{ model: model['VendorVerification']}
-							]
+							include: [{
+								model: model['Country']
+							}, {
+								model: model['Currency']
+							}, {
+								model: model['Timezone']
+							}, {
+								model: model['VendorPlan']
+							}, {
+								model: model['VendorVerification']
+							}]
 						}).then(function(vendorObj) {
 							if (vendorObj) {
 								req.gtcGlobalUserObj['Vendor'] = vendorObj.toJSON();
@@ -80,7 +84,6 @@ function isGlobalObj() {
 							req.gtcGlobalUserObj['Vendor'] = false;
 							next();
 						});
-						//next();
 					} else {
 						req.gtcGlobalUserObj = {};
 						req.gtcGlobalUserObj['isAvailable'] = false;
@@ -92,11 +95,11 @@ function isGlobalObj() {
 					next();
 				});
 
-			}else{
+			} else {
 				req.gtcGlobalUserObj = {};
 				req.gtcGlobalUserObj['isAvailable'] = false;
 				next();
-			} 
+			}
 		});
 }
 
