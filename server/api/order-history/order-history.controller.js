@@ -69,6 +69,8 @@ export function updateStatus(req, res) {
 							            body = response.body.replace('%ORDER_NUMBER%', purchase_order_id);
 							      		//body = body.replace('%LINK%', config.baseUrl + '/user-verify?email=' + email + "&email_verified_token=" + email_verified_token);
 	
+										console.log("----------------------",email,subject,body);
+
 										sendEmail({
 											to: email,
 											subject: subject,
