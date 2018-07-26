@@ -182,38 +182,60 @@ export function addProduct(req, res) {
 	req.query.created_on = new Date();
 	req.query.created_by = req.user.Vendor.vendor_name;
 
-	var arrayEle = JSON.parse(req.body.data);
-
 	service.createRow('Product', req.query)
 		.then(function(row) {
 			var product_id = row.id;
-			if (arrayEle) {
-				arrayEle.forEach(function(element) {
-					element.product_id = product_id;
-					console.log(element);
 
-					service.createRow('ProductMedia', element)
-						.then(function(result) {
-							console.log(result);
-							res.status(200).send("Created");
-							return;
-						})
-						.catch(function(error) {
-							console.log('Error:::', error);
-							res.status(500).send("Internal server error");
-							return;
-						});
-				})
-			} else {
-				console.log("no image sucess")
-				res.status(200).send("Created");
-				return;
+			if (req.body.data) {
+				var arrayEle = JSON.parse(req.body.data);
+				updateProductMedia(arrayEle, product_id);
 			}
+
+			if (req.body.attributeArr) {
+				var attributeEle = JSON.parse(req.body.attributeArr);
+				updateProductAttribute(attributeEle, product_id);
+			}
+			return res.status(200).send(row);
 		}).catch(function(error) {
 			console.log('Error:::', error);
 			res.status(500).send("Internal server error");
 			return;
 		})
+}
+
+function updateProductMedia(arrayEle, product_id) {
+	arrayEle.forEach(function(element) {
+		element.product_id = product_id;
+		console.log(element);
+
+		service.createRow('ProductMedia', element)
+			.then(function(result) {
+				return;
+			})
+	});
+}
+
+function updateProductAttribute(attributeEle, product_id) {
+	var i = 0;
+	async.mapSeries(attributeEle, function(attributeElement, callback) {
+
+		attributeElement.product_id = product_id;
+		attributeElement.attribute_id = attributeEle[i].name;
+		attributeElement.status = 1;
+		delete attributeElement.name;
+
+		service.createRow('ProductAttribute', attributeElement)
+			.then(function(result) {
+				return callback(null, result);
+			})
+			.catch(function(error) {
+				console.log('Error:::', error);
+				return callback(null);
+			});
+		i++;
+	}, function(err, results) {
+		return;
+	});
 }
 
 export function editProduct(req, res) {

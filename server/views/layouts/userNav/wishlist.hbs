@@ -18,20 +18,29 @@
 	}
 </script>
 <script type="text/javascript">
-	function CartUpdate() {
+	function CartUpdate(e) {
+		let allCartInfo = {};
+
+		allCartInfo["cartUpdateArray"] = [];
+
 		var dataInfo = {};
 		var quantity = 0;
-		dataInfo.product_id = $('input[name=product_id]').val();
-		dataInfo.quantity = quantity = $('input[name=quantity]').val();
+		dataInfo.product_id = $("#product_id" + e).val();
+		dataInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
+		dataInfo.cart_item_id = 0;
+		allCartInfo['cartUpdateArray'].push(dataInfo);
 		if (quantity) {
 			$.ajax({
-				type: 'PUT',
-				url: '/api/wishlist/cart',
-				data: dataInfo,
-				success: function (data, text) {
-					window.location.href = '/wishlist';
+				type: 'POST',
+				url: '/api/cart/update-cart',
+				data: JSON.stringify(allCartInfo),
+				contentType: "application/json",
+				success: function(data, text) {
+					console.log("data", data.message_details)
+					console.log("text", text)
+					window.location.href = "/cart";
 				},
-				error: function (request, status, error) {
+				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
@@ -48,7 +57,6 @@
 				chkArray.push($(this).val());
 			}
 		});
-
 		if (chkArray.length) {
 			$.ajax({
 				type: 'PUT',
@@ -175,17 +183,16 @@
 											<td>Life style</td>
 											{{/ifCond}} {{!--End Type --}}
 											<td class="text_black_color">{{this.Product.price}}</td>
-											<input type="hidden" id="product_id" name="product_id" value="{{this.product_id}}"> {{!--
+											<input type="hidden" id="product_id{{this.id}}" name="product_id" value="{{this.product_id}}"> {{!--
 											<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
 											<td class="text_blue_color">
-												<input type="number" name="quantity" id="inputQuantity" min="1" max="{{this.Product.quantity_available}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-												 placeholder="1" onchange="quantityCheck(this)">
-												<a href="#">
-													Update </a>
+												<input type="number" name="product_quantity" id="inputQuantity{{this.id}}" min="1" max="{{this.Product.quantity_available}}" placeholder="1" onchange="quantityCheck(this)">
+												{{!-- <a href="#"> --}}
+													{{!-- Update </a> --}}
 											</td>
 											<td class="text_blue_color ">
-												<i class="fas fa-credit-card" onclick="CartUpdate()">
-													<a href="#"> Add to cart </a>
+												<i class="fas fa-credit-card" onclick="CartUpdate({{this.id}})">
+													<a href="/"> Add to cart </a>
 												</i>
 											</td>
 										</tr>

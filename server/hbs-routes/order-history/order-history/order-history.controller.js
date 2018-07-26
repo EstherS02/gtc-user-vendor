@@ -41,6 +41,7 @@ export function orderHistory(req, res) {
 			start_date = moment();
 		} else if (dateSelect == "yesterday") {
 			start_date = moment().add(-1, 'd').toDate();
+			end_date = start_date;
 		} else if (dateSelect == "last7day") {
 			start_date = moment().add(-7, 'd').toDate();
 		} else if (dateSelect == "last15day") {
@@ -48,38 +49,40 @@ export function orderHistory(req, res) {
 		} else if (dateSelect == "last30day") {
 			start_date = moment().add(-30, 'd').toDate();
 		} else {
-			if (from_date) {
-				start_date = from_date;
-			} else {
-				start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
-			}
-			if (to_date) {
-				end_date = to_date;
-			} else {
-				end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
-			}
+			// if (from_date) {
+			// 	start_date = from_date;
+			// } else {
+			// 	start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
+			// }
+			// if (to_date) {
+			// 	end_date = to_date;
+			// } else {
+			// 	end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
+			// }
 		}
-	} else {
-		if (from_date) {
-			start_date = from_date;
-		} else {
-			start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
-		}
-		if (to_date) {
-			end_date = to_date;
-		} else {
-			end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
-		}
-		orderQueryObj['ordered_date'] = {
-			$between: [start_date, end_date]
-		};
 	}
-
+	// } else {
+	// 	if (from_date) {
+	// 		start_date = from_date;
+	// 	} else {
+	// 		start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
+	// 	}
+	// 	if (to_date) {
+	// 		end_date = to_date;
+	// 	} else {
+	// 		end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
+	// 	}
+	// 	orderQueryObj['ordered_date'] = {
+	// 		$between: [start_date, end_date]
+	// 	};
+	// }
+if (dateSelect) {
 	orderQueryObj['ordered_date'] = {
 		$between: [start_date, end_date]
 	};
 	queryURI['start_date'] = start_date;
 	queryURI['end_date'] = end_date;
+}
 
 
 	if (marketType) {
@@ -182,7 +185,8 @@ export function orderHistory(req, res) {
 		if (results.orderHistory.count > 0) {
 			results.orderHistory.rows.forEach((value, index) => {
 				total_transaction += parseFloat(value.total_price);
-				results.orderHistory.rows[index]['final_price'] = (parseFloat(value.total_price)).toFixed(2);
+				// results.orderHistory.rows[index]['final_price'] = (parseFloat(value.total_price)).toFixed(2);
+				results.orderHistory.rows[index]['final_price']=((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 			});
 		}
 		if (!err) {
