@@ -22,12 +22,12 @@ export function featureMany(req, res) {
         arr.push(obj);
     }
     model["FeaturedProduct"].bulkCreate(arr, {
-            ignoreDuplicates: true
-        }) 
-        .then(function(row) {
+        ignoreDuplicates: true
+    })
+        .then(function (row) {
             res.status(201).send("Created");
             return;
-        }).catch(function(error) {
+        }).catch(function (error) {
             if (error) {
                 res.status(500).send(error);
                 return;
@@ -83,10 +83,10 @@ export function create(req, res) {
     bodyParams['created_on'] = new Date();
 
     service.createRow(productModelName, bodyParams)
-        .then(function(product) {
+        .then(function (product) {
             return res.status(201).send(product);
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.log('Error:::', error);
             return res.status(500).send("Internal server error.");
         })
@@ -94,7 +94,7 @@ export function create(req, res) {
 
 export function featureOne(req, res) {
     model["Product"].findById(req.params.id)
-        .then(function(row) {
+        .then(function (row) {
             if (row) {
                 var obj = {};
                 obj['product_id'] = row.id;
@@ -102,11 +102,11 @@ export function featureOne(req, res) {
                 obj['start_date'] = new Date();
                 obj['created_on'] = new Date();
                 model["FeaturedProduct"].upsert(obj)
-                    .then(function(row) {
+                    .then(function (row) {
                         res.status(201).send("Created");
                         return;
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                         if (error) {
                             res.status(500).send(error);
                             return;
@@ -116,7 +116,7 @@ export function featureOne(req, res) {
                 res.status(404).send("Not found");
                 return;
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log('Error:::', error);
             res.status(500).send("Internal server error");
             return;
@@ -125,17 +125,17 @@ export function featureOne(req, res) {
 
 export function addProduct(req, res) {
 
-    if(req.query.marketplace == 'Private Wholesale Marketplace')
-    req.query.marketplace_id = marketplace.WHOLESALE;
+    if (req.query.marketplace == 'Private Wholesale Marketplace')
+        req.query.marketplace_id = marketplace.WHOLESALE;
 
-    if(req.query.marketplace == 'Public Marketplace')
-    req.query.marketplace_id = marketplace.PUBLIC;
+    if (req.query.marketplace == 'Public Marketplace')
+        req.query.marketplace_id = marketplace.PUBLIC;
 
-    if(req.query.marketplace == 'Services Marketplace')
-    req.query.marketplace_id = marketplace.SERVICE;
+    if (req.query.marketplace == 'Services Marketplace')
+        req.query.marketplace_id = marketplace.SERVICE;
 
-    if(req.query.marketplace == 'Lifestyle Marketplace')
-    req.query.marketplace_id = marketplace.LIFESTYLE;
+    if (req.query.marketplace == 'Lifestyle Marketplace')
+        req.query.marketplace_id = marketplace.LIFESTYLE;
 
     delete req.query.marketplace;
 
@@ -144,42 +144,64 @@ export function addProduct(req, res) {
     }
     req.query.status = status['ACTIVE'];
     req.query.publish_date = new Date();
-    req.query.product_slug= string_to_slug(req.query.product_name);
-    req.query.created_on= new Date();
-    req.query.created_by= req.user.Vendor.vendor_name;
-
-    var arrayEle =JSON.parse(req.body.data);
+    req.query.product_slug = string_to_slug(req.query.product_name);
+    req.query.created_on = new Date();
+    req.query.created_by = req.user.Vendor.vendor_name;
 
     service.createRow('Product', req.query)
-        .then(function(row) {
+        .then(function (row) {
             var product_id = row.id;
-            if (arrayEle) {
-                arrayEle.forEach(function(element){
-                    element.product_id=product_id;
-                    console.log(element);
-            
-                    service.createRow('ProductMedia', element)
-                    .then(function(result) {
-                        console.log(result);
-                        res.status(200).send("Created");
-                        return;
-                    })
-                    .catch(function(error) {
-                        console.log('Error:::', error);
-                        res.status(500).send("Internal server error");
-                        return;
-                    }); 
-                })
-            } else {
-                console.log("no image sucess")
-                res.status(200).send("Created");
-                return;
+
+            if (req.body.data) {
+                var arrayEle = JSON.parse(req.body.data);
+                updateProductMedia(arrayEle,product_id);
             }
-        }).catch(function(error) {
+
+            if (req.body.attributeArr) {
+                var attributeEle = JSON.parse(req.body.attributeArr);
+                updateProductAttribute(attributeEle,product_id);
+            }
+            return res.status(200).send(row);
+        }).catch(function (error) {
             console.log('Error:::', error);
             res.status(500).send("Internal server error");
             return;
         })
+}
+
+function updateProductMedia(arrayEle,product_id) {
+    arrayEle.forEach(function (element) {
+        element.product_id = product_id;
+        console.log(element);
+
+        service.createRow('ProductMedia', element)
+            .then(function (result) {
+                return;
+            })
+    });
+}
+
+function updateProductAttribute(attributeEle,product_id){    
+        var i = 0;
+        async.mapSeries(attributeEle, function (attributeElement, callback) {
+
+            attributeElement.product_id = product_id;
+            attributeElement.attribute_id = attributeEle[i].name;
+            attributeElement.status = 1;
+            delete attributeElement.name;
+
+            service.createRow('ProductAttribute', attributeElement)
+                .then(function (result) {
+                   return callback(null, result);
+                })
+                .catch(function (error) {
+                    console.log('Error:::', error);
+                    return callback(null);
+                });
+            i++;
+        }, function (err, results) {
+            return;
+        });
 }
 
 export function editProduct(req, res) {
@@ -196,29 +218,29 @@ export function editProduct(req, res) {
         where: {
             id: id
         }
-    }).then(function(row) {
+    }).then(function (row) {
         if (row) {
             res.status(200).send("Created");
         } else {
             res.status(500).send("Internal server error");
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         res.status(500).send(error);
     })
 }
 
-export function discount(req,res){
-    var arrayEle =JSON.parse(req.body.data);
-    arrayEle.forEach(function(element){
+export function discount(req, res) {
+    var arrayEle = JSON.parse(req.body.data);
+    arrayEle.forEach(function (element) {
 
         service.createRow('Discount', element)
-        .then(function(discount) {
-            return res.status(201).send(discount);
-        })
-        .catch(function(error) {
-            console.log('Error:::', error);
-            return res.status(500).send("Internal server error.");
-        }) 
+            .then(function (discount) {
+                return res.status(201).send(discount);
+            })
+            .catch(function (error) {
+                console.log('Error:::', error);
+                return res.status(500).send("Internal server error.");
+            })
     });
 }
 

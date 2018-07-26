@@ -26,16 +26,17 @@
     }
 </style>
 <script>
-    var allFiles = [];
+    var allFiles = [], attributeArr=[];
     function addProduct(obj, input) {
+
         if ($('#productForm').valid()) {
+             obj.attributeArr= JSON.stringify(attributeArr);
             $.ajax({
                 type: 'POST',
                 url: '/api/product/add-product?' + input,
                 data: obj,
                 success: function (data) {
-                    
-                  
+
                     $('#gtc-add-to-cart').prop('disabled', false);
                     $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
                     $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
@@ -74,7 +75,7 @@
         });
 
         var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-        var fileDetails = {}; var dataURLFileName, index= 0;;
+        var fileDetails = {}; var dataURLFileName, index= 0;
 
         $('#crop-profile-image').click(function () {
             
@@ -97,7 +98,6 @@
             $('#profile-picture-modal').modal('hide');
         index++;
         });
-
 
         $('#profile-picture-modal').on('shown.bs.modal', function () {
             cropper = new Cropper(cropperInputImage, {
@@ -166,6 +166,29 @@
                     console.log("Error", error);
                 }
             });
+
+            $.ajax({
+                url: '/api/category-attributes?populate=Attribute&category_id='+category_id,
+                type: 'GET',
+                success: function (result) {
+                    $("#attribute").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var attri;
+                        attri="<tr><td>"+result.rows[i].Attribute.attr_name+"</td><td>"+
+                                "<input type='text' min='1'name="+result.rows[i].Attribute.id+" class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
+                        $("#attribute").append(attri);
+                    }
+                },
+                error: function (error) {
+                    console.log("Error", error);    
+                }
+            });
+            var domElement = "<label class='label-control'  >Add Attribute</label><div class='input-group'>"+
+                             "<div class='custom-file'> <i class='fas fa-plus' data-toggle='modal'"+
+                             "data-target='#exampleModal' data-whatever='@mdo'></i></div> </div>"
+
+         $('#attributePopup').append(domElement);
+    
         });
 
         $("#productForm").validate({
@@ -281,10 +304,18 @@
                 });
             } else {
                 var obj = {};
-                obj.url = null;
+                obj.data = null;
                 addProduct(obj, input);
             }
         });
+
+        $("#productAttr").submit(function(e){
+            e.preventDefault();
+                
+            attributeArr = $("#productAttr :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serializeArray();
+        })
     });
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -474,9 +505,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="preview"></div>
                                     </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group" id="attributePopup">
+                                             
+                                          </div>
+                                    </div> 
+                                     <div class="preview"></div> 
                                 </div>
+                                <br/>
                                 <br/>
 
                                 <div class="row">
@@ -494,3 +531,33 @@
     </div>
 </div>
 {{> footer/bottom-footer}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content" style="background-color: #CCCCCC;">
+			<form id="productAttr">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Product Attributes</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+                    <div class="container">
+						<table class="table table-hover">
+                            <thead>
+								<tr>
+									<th class="shop_list_title"><b>Attribute</b></th>
+                                    <th class="shop_list_title"><b>Value</b></th>
+                                </tr>
+                            </thead>
+                            <tbody id="attribute"></tbody>
+                        </table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-submit" aria-hidden="true">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
