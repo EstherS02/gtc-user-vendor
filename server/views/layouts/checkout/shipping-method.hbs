@@ -6,6 +6,9 @@ $(document).ready(function(){
 		window.location.href = "/order-checkout/payment-method" + window.location.search;
 	});
 });
+function CartPage(){
+	 window.location.href = "/cart";
+}
 </script>
 <section>
 	<div class="" >
@@ -73,11 +76,14 @@ $(document).ready(function(){
 					</div>
 					<div class="row">
 						<div class="col-md-6 col-6">
-							<input type="submit" value="RETURN TO CART" class="cont_shopping"/>
+							{{!-- <input  onclick = "CartPage()" value="RETURN TO CART" class="cont_shopping"/> --}}
+							<button class="ladda-button btn cont_shopping" onclick = "CartPage()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span></button>
 						</div>
 						<div class="col-md-6 col-6">
 							<a href="#">
-								<input type="submit" id="continue" value="CONTINUE TO PAYMENT METHOD" class="update_cart"/>
+								{{!-- <input type="submit" id="continue" value="CONTINUE TO PAYMENT METHOD" 
+								class="update_cart"/> --}}
+								<button type="submit" class="ladda-button btn update_cart" id="continue" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">CONTINUE TO PAYMENT METHOD</span><span class="ladda-spinner"></span></button>
 							</a>
 						</div>
                       </div>

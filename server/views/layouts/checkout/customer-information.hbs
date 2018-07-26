@@ -120,6 +120,9 @@ function editBillingAddressButton() {
 	$('#edit-billing-address').show();
 	$('input[name="billing_address_id"]').val('');
 }
+function CartPage(){
+	 window.location.href = "/cart";
+}
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -363,7 +366,7 @@ function editBillingAddressButton() {
 								
 								<div class="row">
 									<div class="col-md-6 col-12">
-										<input type="submit" value="RETURN TO CART" class="cont_shopping"/>
+										<input  onclick = "CartPage()" value="RETURN TO CART" class="cont_shopping"/>
 									</div>
 									<div class="col-md-6 col-12">
 										<a href="#">

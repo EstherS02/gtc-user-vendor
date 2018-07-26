@@ -65,15 +65,42 @@ export function makePayment(req, res) {
             status: status['ACTIVE'],
             payment_response: JSON.stringify(charge)
         };
-        service.createRow('Payment', paymentModel).then(paymentRow => {
-            return res.status(200).send({
-                createdOrders: createdOrders,
-                payment: paymentRow
-            });
-        }).catch(err => {
-            return Promise.reject(err);
+        return service.createRow('Payment', paymentModel);
+    }).then(paymentRow => {
+      let orderPayments = [];
+      for (let i = 0; i < createdOrders.length; i++){
+        var orderPaymentObj = {
+            order_id: createdOrders[i].order.id,
+            payment_id: paymentRow.id,
+            status: status['ACTIVE'],
+            created_on: new Date(),
+            created_by: req.user.first_name
+        }
+        orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
+      }
+      return Promise.all(orderPayments);
+    }).then(orderPaymentRows => {
+        let statusPromises = [];
+        for (var i = 0; i < createdOrders.length; i++) {
+            createdOrders[i].order.order_status = orderStatus['PROCESSINGORDER'];
+            statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
+        }
+        return Promise.all(statusPromises);
+      }).then(orderUpdatedRows => {
+        let clearCart = [];
+        let allCartItems = checkoutObj.cartItems.rows;
+        for(let j = 0; j < allCartItems.length; j++){
+            console.log(allCartItems[j]);
+            clearCart.push(allCartItems[j].id)
+        }
+        service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
+            if ( !(_.isNull(clearedCartRow))) {
+                return res.status(200).send({
+                    createdOrders: createdOrders
+                });
+            } else return res.status(500).send(err);
         });
-    }).catch(err => {
+      }).catch(err => {
         console.log("err3", err);
         if (createdOrders && createdOrders.length > 0) {
             var promises = [];
@@ -283,6 +310,7 @@ function processCheckout(req) {
             checkoutObj.ordersByVendor = ordersByVendor;
             checkoutObj.totalPriceByVendor = totalPriceByVendor;
             checkoutObj.totalPrice = totalPrice;
+            checkoutObj.cartItems = cartItems;
 
             resolve(checkoutObj);
 
@@ -343,6 +371,22 @@ function savePaymentSetting(user, card, isPrimary) {
 
     return service.createRow('PaymentSetting', paymentSetting);
 }
+
+export function cancelOrder(req, res) {
+
+
+
+
+
+
+
+    return;
+
+}
+
+
+
+
 
 export function deleteCard(req, res) {
     service.findRow('PaymentSetting', {id: req.body.paymentSettingId}, [])

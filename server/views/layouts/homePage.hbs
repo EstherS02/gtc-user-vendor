@@ -1,15 +1,11 @@
 <script type="text/javascript" src="//platform.linkedin.com/in.js">
-    api_key: 81q1ljfijajynj
+    api_key: 81q1ljfijajynj;
     authorize: false
 </script>
 
 <script src="js/login.js"></script>
 
-<script>
-</script>
-
 {{> header/top-header LoggedInUser = LoggedInUser}}
-
 
 <section class="box1" style="margin-bottom:0">
     <div class="container-fluid full_view_pad">
@@ -96,6 +92,7 @@
         </div>
     </div>
 </section>
+
 <div class="header-lg bg-wholesale">
     <div class="gtc-container">
         <div class="row">
@@ -105,536 +102,495 @@
         </div>
     </div>
 </div>
-<section style="margin-bottom:20px;">
-    <div class="marketplace-category-header-box"></div>
-    <div class="container-fluid clearfix full_view_pad m-t-n-marketplace-category">
+<div class="marketplace-type-bg"></div>
+<div class="gtc-container">
+    <div class="marketplace-type-headers">
         <div class="row">
-            <div class="col-md-3 col-lg-3 col-xl-3 no-padding">
-                <div class="wts1 gtc-box-title">
-                    <h6 class="float-left">WTS - Want To Sell</h6>
-                    <p class="float-right see_all">
-                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-3 no-padding">
+                <div class="wts-header-bg">
+                    <h4 class="header-md-text">
+                        <b>WTS</b> - Want To Sell <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTS}}">SEE ALL</a>
+                    </h4>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each wantToSell}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each wantToSell}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="wholesale/{{this.product_slug}}/{{this.id}}">WTS - {{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>MOQ: {{this.minimum_order_quantity}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>
-                                        {{starCount product_rating}}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
-            <div class="col-md-3 col-lg-3 col-xl-3 no-padding">
-                <div class="wts2 gtc-box-title">
-                    <h6 class="float-left">WTB - Want To Buy</h6>
-                    <p class="float-right see_all">
-                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-3 no-padding">
+                <div class="wtb-header-bg">
+                    <h4 class="header-md-text">
+                        <b>WTB</b> - Want To Buy <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
+                    </h4>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each wantToBuy}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each wantToBuy}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTB - {{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="wholesale/{{this.product_slug}}/{{this.id}}">WTB - {{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>MOQ: {{this.minimum_order_quantity}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
-            <div class="col-md-3 col-lg-3 col-xl-3 no-padding">
-                <div class="wts3 gtc-box-title">
-                    <h6 class="float-left">WTT - Want To Trade</h6>
-                    <p class="float-right see_all">
-                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-3 no-padding">
+                <div class="wtt-header-bg">
+                    <h4 class="header-md-text">
+                        <b>WTT</b> - Want To Trade <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTT}}">SEE ALL</a>
+                    </h4>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each wantToTrade}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each wantToTrade}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTT - {{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="wholesale/{{this.product_slug}}/{{this.id}}">WTT - {{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>MOQ: {{this.minimum_order_quantity}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
-            <div class="col-md-3 col-lg-3 col-xl-3 no-padding">
-                <div class="wts4 gtc-box-title">
-                    <h6 class="float-left">RFQ - Request For Quote</h6>
-                    <p class="float-right see_all">
-                        <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-3 no-padding">
+                <div class="rfq-header-bg">
+                    <h4 class="header-md-text">
+                        <b>RFQ</b> - Request For Quote <a href="/wholesale/search?marketplace_type={{marketPlaceType.RFQ}}">SEE ALL</a>
+                    </h4>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each requestForQuote}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each requestForQuote}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">RFQ - {{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-4 col-4 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="wholesale/{{this.product_slug}}/{{this.id}}">RFQ - {{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>MOQ: {{this.minimum_order_quantity}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-
-<section style="margin-bottom: 20px;">
-    <div class="marketplace-header-box"></div>
-    <div class="container-fluid clearfix full_view_pad m-t-n-marketplace">
+</div>
+<div class="other-marketplace-bg"></div>
+<div class="gtc-container">
+    <div class="other-marketplace-headers">
         <div class="row">
-            <div class="col-md-4 col-lg-4 col-xl-4 no-padding">
-                <div class="gtc-box-market-title pmp1">
-                    <h6 class="float-left">PUBLIC MARKETPLACE</h6>
-                    <p class="float-right see_all">
-                        <a href="/shop/search">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-4 no-padding">
+                <div class="header-lg bg-shop">
+                    <h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL</a></h2>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each publicMarketplace}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each publicMarketplace}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="/shop/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                {{!-- <small class="text-red">24h 12m left</small> --}}
+                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="/shop/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p class="doller_value">${{this.product_price}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{ starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4 col-xl-4 no-padding">
-                <div class="gtc-box-market-title pmp2">
-                    <h6 class="float-left">SERVICES MARKETPLACE</h6>
-                    <p class="float-right see_all">
-                        <a href="/services/search">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-4 no-padding">
+                <div class="header-lg bg-service">
+                    <h2 class="header-lg-text">SERVICES MARKETPLACE <a class="see-all" href="/services/search">SEE ALL</a></h2>
+                    <div class="product-list-body"></div>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each serviceMarketplace}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each serviceMarketplace}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="services/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                {{!-- <small class="text-red">24h 12m left</small> --}}
+                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="services/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p class="doller_value">${{this.product_price}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{ starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4 col-xl-4 no-padding">
-                <div class="gtc-box-market-title pmp3">
-                    <h6 class="float-left">LIFESTYLE MARKETPLACE</h6>
-                    <p class="float-right see_all">
-                        <a href="/lifestyle/search">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-4 no-padding">
+                <div class="header-lg bg-lifestyle">
+                    <h2 class="header-lg-text">LIFESTYLE MARKETPLACE <a class="see-all" href="/lifestyle/search">SEE ALL</a></h2>
+                    <div class="product-list-body"></div>
                 </div>
-                <div class="layout-group common_top">
-                    <div class="row">
-                        {{#each lifestyleMarketplace}}
-                        <div class="col-md-3 col-3 col-lg-3 col-xl-3 common_bottom">
-                            <img src="{{this.product_base_image}}" class="img_fixed_height">
+                <div class="product-list-body">
+                    {{#each lifestyleMarketplace}}
+                    <div class="product-body">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr class="d-flex">
+                                        <td class="col-2">
+                                            <div class="product-left-col">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                            </div>
+                                        </td>
+                                        <td class="col-7">
+                                            <div class="product-middle-col">
+                                                <h3>
+                                                    <a href="lifestyle/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+                                                </h3>
+                                                <div class="row no-margins">
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Origin</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <span class="text-500">{{this.country_name}}</span>
+                                                    </div>
+                                                    <div class="col-md-3 col-9 no-padding">
+                                                        <span>Category</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                        <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                    </div>
+                                                    <div class="col-md-3 col-3 no-padding">
+                                                        <span>Seller</span>
+                                                    </div>
+                                                    <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                    {{#if ../LoggedInUser.email}}
+                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                    {{else}}
+                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                    {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-3">
+                                            <div class="product-right-col">
+                                                {{!-- <small class="text-red">24h 12m left</small> --}}
+                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <div class="prc-bottom">
+                                                    <p>Seller Rating</p>
+                                                    <div class="p-rating pull-right">
+                                                        {{starCount product_rating}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-md-9 col-9 col-lg-9 col-xl-9 common_bottom">
-                            <div class="row common_padding">
-                                <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                    <p class="wts_header">
-                                        <a class="header_title" href="lifestyle/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p class="doller_value">${{this.product_price}}</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Origin</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p>{{this.country_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>&nbsp;</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Category</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>Seller Rating</p>
-                                </div>
-                            </div>
-                            <div class="row common_padding">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <p>Seller</p>
-                                </div>
-                                <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                    {{#if ../LoggedInUser.email}}
-                                    <p>
-                                        <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                    </p>
-                                    {{else}}
-                                    <p>
-                                        <a href="/login">
-                                            <b>(Login for Seller Info)</b>
-                                        </a>
-                                    </p>
-                                    {{/if}}
-                                </div>
-                                <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                    <p>{{ starCount product_rating}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
     </div>
-</section>
-
+</div>
 
 <div class="jumbotron text-center why_global" style="margin-bottom:0">
     <h1>So why use Global Trade Connect?</h1>
@@ -685,74 +641,63 @@
     </div>
 </div>
 
-<section style="margin-bottom: 20px;">
-    <div class="marketplace-header-box"></div>
-    <div class="container-fluid clearfix full_view_pad m-t-n-marketplace">
+<div class="other-marketplace-bg"></div>
+<div class="gtc-container">
+    <div class="other-marketplace-headers">
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 no-padding">
-                <div class="gtc-box-market-title ts1">
-                    <h6 class="float-left">TOP SELLERS</h6>
-                    <p class="float-right see_all">
-                        <a href="/directory/search">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-6 no-padding">
+                <div class="header-lg bg-topseller">
+                    <h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/directory/search">SEE ALL</a></h2>
                 </div>
-                <div class="layout-group common_top">
+                <div class="product-list-body">
                     <div class="row">
                         {{#each topSellers}}
-                        <div class="col-md-6 col-lg-6 col-xl-6 common_bottom">
-                            <div class="row">
-                                <div class="col-md-2 col-2 col-lg-2 col-xl-2">
-                                    <p class="hash_num">#{{SUMFloat @index 1}}</p>
-                                </div>
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <img src="{{this.url}}" class="img_fixed_height">
-                                </div>
-                                <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                    <div class="row common_padding">
-                                        <div class="col-md-12">
-                                            <p class="wts_header">
-                                                <a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                    <div class="row common_padding">
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p>Origin</p>
-                                        </div>
-                                        <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                            <p>{{this.origin}}</p>
-                                        </div>
-                                    </div>
-                                    {{!--
-                                    <div class="row common_padding">
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p>Category</p>
-                                        </div>
-                                        <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                            <p>Electronic - Phones</p>
-                                        </div>
-                                    </div> --}}
-                                    <div class="row common_padding">
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p>Inventory</p>
-                                        </div>
-                                        <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                            <p>
-                                                <b>{{this.product_count}} Products</b> Listed
-                                                <span class="wts_header_red">on Sale</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row common_padding">
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p>Seller Rating</p>
-                                        </div>
-                                        <div class="col-md-7 col-7 col-lg-7 col-xl-7">
-                                            <p>{{starCount rating}}</p>
-                                        </div>
-                                    </div>
+                        <div class="col-md-6">
+                            <div class="product-body">
+                                <div class="table-responsive">
+                                    <table class="table shoping-cart-table">
+                                        <tbody>
+                                            <tr class="d-flex">
+                                                <td class="col-2">
+                                                    <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+                                                </td>
+                                                <td class="col-3">
+                                                    <div class="product-left-col">
+                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                    </div>
+                                                </td>
+                                                <td class="col-7">
+                                                    <div class="product-middle-col">
+                                                        <h3>
+                                                            <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+                                                        </h3>
+                                                        <div class="row no-margins">
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Origin</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                                <span class="text-500">{{this.origin}}</span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Inventory</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Seller Rating</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <div class="v-rating">
+                                                                    {{starCount rating}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -760,76 +705,57 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-6 col-xl-6 no-padding">
-                <div class="gtc-box-market-title ts2">
-                    <h6 class="float-left">FEATURED PRODUCTS</h6>
-                    <p class="float-right see_all">
-                        <a href="/product/search?is_featured_product=1">SEE ALL</a>
-                        <i class="fa fa-caret-right"></i>
-                    </p>
+            <div class="col-md-6 no-padding">
+                <div class="header-lg bg-featured-product">
+                    <h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/product/search?is_featured_product=1">SEE ALL</a></h2>
                 </div>
-                <div class="layout-group common_top">
+                <div class="product-list-body">
                     <div class="row">
                         {{#each featuredProducts}}
-                        <div class="col-md-6 col-lg-6 col-xl-6 common_bottom_extra">
-                            <div class="row">
-                                <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                    <img src="{{this.product_base_image}}" class="img_fixed_height">
-                                </div>
-                                <div class="col-md-9 col-9 col-lg-9 col-xl-9">
-                                    <div class="row common_padding">
-                                        <div class="col-md-8 col-8 col-lg-8 col-xl-8">
-                                            <p class="wts_header_red">
-                                                <a class="header_title" href="/product/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                            </p>
-                                        </div>
-                                        <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                            <p class="doller_value_red">${{this.product_price}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row common_padding">
-                                        <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                            <p>Origin</p>
-                                        </div>
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p>{{this.country_name}}</p>
-                                        </div>
-                                        <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                            <p>&nbsp;</p>
-                                        </div>
-                                    </div>
-                                    <div class="row common_padding">
-                                        <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                            <p>Category</p>
-                                        </div>
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            <p class="text_lowercase">{{this.category_name}} > {{this.sub_category_name}}</p>
-                                        </div>
-                                        <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                            <p>Seller Rating</p>
-                                        </div>
-                                    </div>
-                                    <div class="row common_padding">
-                                        <div class="col-md-3 col-3 col-lg-3 col-xl-3">
-                                            <p>Seller</p>
-                                        </div>
-                                        <div class="col-md-5 col-5 col-lg-5 col-xl-5">
-                                            {{#if ../LoggedInUser.email}}
-                                            <p>
-                                                <a href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                            </p>
-                                            {{else}}
-                                            <p>
-                                                <a href="/login">
-                                                    <b>(Login for Seller Info)</b>
-                                                </a>
-                                            </p>
-                                            {{/if}}
-                                        </div>
-                                        <div class="col-md-4 col-4 col-lg-4 col-xl-4">
-                                            <p>{{ starCount product_rating}}</p>
-                                        </div>
-                                    </div>
+                        <div class="col-md-6">
+                            <div class="product-body">
+                                <div class="table-responsive">
+                                    <table class="table shoping-cart-table">
+                                        <tbody>
+                                            <tr class="d-flex">
+                                                <td class="col-3">
+                                                    <div class="product-left-col">
+                                                        <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                                    </div>
+                                                </td>
+                                                <td class="col-9">
+                                                    <div class="product-middle-col">
+                                                        <h3><a href="/product/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
+                                                        <div class="row no-margins">
+                                                            <div class="col-md-12 col-12 no-padding">
+                                                                <h2 class="text-red price">${{this.product_price}}</h2>
+                                                            </div>
+                                                            <div class="col-md-4 col-4 no-padding">
+                                                                <span>Origin</span>
+                                                            </div>
+                                                            <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                                <span class="text-500">{{this.country_name}}</span>
+                                                            </div>
+                                                            <div class="col-md-4 col-4 no-padding">
+                                                                <span>Category</span>
+                                                            </div>
+                                                            <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                                <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                            </div>
+                                                            <div class="col-md-4 col-4 no-padding">
+                                                                <span>Seller Rating</span>
+                                                            </div>
+                                                            <div class="col-md-8 col-8 no-padding">
+                                                                <div class="v-rating">
+                                                                    {{ starCount product_rating}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -839,7 +765,7 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
 
 <section>

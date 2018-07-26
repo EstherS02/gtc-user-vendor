@@ -57,6 +57,13 @@ let Stripe = {
         }
         chargeObj.statement_descriptor = STMT_DESCRIPTOR;
         return stripe.charges.create(chargeObj);
+    },
+    refundCustomerCard: function(chargeId, refundAmount){
+        let refundObj = {
+            charge: chargeId,
+            amount: parseInt(refundAmount * 100)
+        }
+        return stripe.refunds.create(refundObj);
     }
 };
 
