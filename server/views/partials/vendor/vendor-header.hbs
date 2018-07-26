@@ -74,7 +74,6 @@
 										{{else}}
 										<img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified"/>
 										{{/if}}
-								{{!-- <img src="gtc-assets/img/gtc-verified.png"> --}}
 								{{#if LoggedInUser.id}}
 											{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
 												{{#if VendorDetail.VendorFollowers}}
@@ -89,7 +88,7 @@
 												{{else}}
 												<a  href="" id="followVendor"><img src="../img/follow.png" alt="Follow"  /></a>
 												{{/if}}
-										{{/if}}{{!-- <img src="gtc-assets/img/follow.png"> --}}
+										{{/if}}
 							</div>
 							<div class="vp-navmenu d-inline-block">
 								<ul class="navbar-nav vp-nav">

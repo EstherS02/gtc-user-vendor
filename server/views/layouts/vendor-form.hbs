@@ -4,35 +4,35 @@
     }
 </style>
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#gtc-form-alert").hide();
         var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
         var cropperOutputImage;
         var fileDetails = {};
-        var imagesPreview = function (uploader, placeToInsertImagePreview) {
+        var imagesPreview = function(uploader, placeToInsertImagePreview) {
             if (uploader.files && uploader.files[0]) {
                 fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
                 $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
                 cropperInputImage = document.getElementById('uploaded-profile-picture');
                 $('#profile-picture-modal').modal('show');
             }
         };
-        $('#icon').on('change', function () {
+        $('#icon').on('change', function() {
             imagesPreview(this);
             test = 'div.icon';
         });
-        $('#cover_pic').on('change', function () {
+        $('#cover_pic').on('change', function() {
             imagesPreview(this);
             test = 'div.cov_pic';
         });
-        $('#profile-picture-modal').on('shown.bs.modal', function () {
+        $('#profile-picture-modal').on('shown.bs.modal', function() {
             if (test == 'div.icon') {
                 cropper = new Cropper(cropperInputImage, {
                     aspectRatio: 16 / 16,
                     minCropBoxHeight: 280,
                     minCropBoxWidth: 1364,
-                    ready: function () {
+                    ready: function() {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
                 });
@@ -41,19 +41,19 @@
                     aspectRatio: 16 / 9,
                     minCropBoxHeight: 280,
                     minCropBoxWidth: 1364,
-                    ready: function () {
+                    ready: function() {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
                 });
             }
-        }).on('hidden.bs.modal', function () {
+        }).on('hidden.bs.modal', function() {
             cropBoxData = cropper.getCropBoxData();
             canvasData = cropper.getCanvasData();
             cropper.destroy();
         });
-        $('#crop-profile-image').click(function () {
-            cropper.getCroppedCanvas().toBlob(function (blob) {
-             
+        $('#crop-profile-image').click(function() {
+            cropper.getCroppedCanvas().toBlob(function(blob) {
+
                 cropperOutputImage = blob;
                 fileDetails["croppedExtension"] = blob["type"].split("/")[1];
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -79,7 +79,7 @@
                 dataType: 'json',
                 processData: false,
                 contentType: false,
-                success: function (data) {
+                success: function(data) {
                     if (test == 'div.icon') {
                         vendor_profile_pic_url = data.imageURL;
                         console.log('vendor_profile_pic_url', vendor_profile_pic_url);
@@ -88,14 +88,14 @@
                         console.log('vendor_cover_pic_url', vendor_cover_pic_url);
                     }
                 },
-                error: function (error) {
+                error: function(error) {
                     console.log("Error", error);
                 }
             })
         }
-        $("#vendorForm").submit(function (e) {
+        $("#vendorForm").submit(function(e) {
             e.preventDefault();
-            let input = $("#vendorForm :input").filter(function (index, element) {
+            let input = $("#vendorForm :input").filter(function(index, element) {
                 return $(element).val() != '';
             }).serialize();
 
@@ -106,26 +106,26 @@
                     url: '/api/vendor/starter-seller',
                     type: 'POST',
                     data: formInput,
-                    success: function (result) {
-                        window.location.href = '/vendor-landing';
+                    success: function(result) {
+                        window.location.href = '/dashboard-vendor-connect';
                     },
-                    error: function (error) {
+                    error: function(error) {
                         $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
                         $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
-                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function () {
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
                             $("#gtc-form-alert").slideUp(500);
                         });
                     }
                 });
             }
         })
-        $("#country").change(function () {
+        $("#country").change(function() {
             var country_id = $('#country').val();
 
             $.ajax({
                 url: '/api/states?country_id=' + country_id,
                 type: 'GET',
-                success: function (result) {
+                success: function(result) {
                     $("#state").empty();
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
@@ -133,7 +133,7 @@
                         $("#state").append(options)
                     }
                 },
-                error: function (error) {
+                error: function(error) {
                     console.log("Error", error);
                 }
             });
@@ -316,7 +316,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                        <button type="submit" class="btn btn-gray btn-sm">Cancel</button>
+                                        <button type="button" class="btn btn-gray btn-sm">Cancel</button>
                                     </div>
                                 </div>
                             </form>

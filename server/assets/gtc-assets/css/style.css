@@ -186,7 +186,7 @@ select {
 }
 .gtc-top-header {
     position: relative;
-    z-index: 9999;
+    z-index: 999;
     font-size: 10px;
     font-weight: inherit;
     background: #154a7f;
@@ -601,7 +601,6 @@ ul.footer-social-links li a img {
 .vendor-nav .nav-link {
     text-shadow: none;
     font-size: 13px;
-    font-weight: 100;
     color: #515352 !important;
     padding-right: 15px !important;
     padding-left: 15px !important;
@@ -609,7 +608,6 @@ ul.footer-social-links li a img {
 #vendorNavBar .support {
     text-shadow: none;
     font-size: 13px;
-    font-weight: 100;
     color: #515352 !important;
     padding-left: 25px;
 }
@@ -847,7 +845,7 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
 }
 .content-txt {
     font-size: 13px;
-    font-weight: 100;
+    font-weight: inherit;
     text-decoration: none;
     text-shadow: none;
     text-indent: inherit;
@@ -1032,4 +1030,30 @@ label {
 }
 .export-btn:hover{
     background-color: rgba(128, 128, 128, 0.86);
+}
+.landing {
+    text-align: center;
+    padding: 40px;
+}
+.landing h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2em;
+    font-weight: 400;
+}
+.landing .import img {
+    width: 170px;
+    object-fit: contain;
+    height: 60px;
+}
+.icon-import svg {
+    width: 54px;
+}
+.modal-open .modal {
+    z-index: 9999;
+}
+.modal-title {
+    font-size: 1rem;
+}
+.modal-header .close {
+    font-size: 1rem;
 }

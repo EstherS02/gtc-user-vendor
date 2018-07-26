@@ -53,6 +53,9 @@
 		padding-right: 62px;*/
 		border-bottom-left-radius: 10px;
 	}
+	.landing {
+		margin: 0 150px;
+	}
 }
 
 /*@media screen and (min-width: 1300px) and (max-width: 1440px) {
@@ -95,6 +98,9 @@
 		padding-left: 10px;
 		/*padding-right: 96px;*/
 		border-bottom-left-radius: 10px;
+	}
+	.landing {
+		margin: 0 150px;
 	}
 }
 

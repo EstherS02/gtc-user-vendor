@@ -1,15 +1,13 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
 var async = require('async');
+const service = require('../../api/service');
+const status = require('../../config/status');
+const roles = require('../../config/roles');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function vendorForm(req, res) {
-	
+
 	var countryModel = "Country";
 	var currencyModel = "Currency";
 	var timezoneModel = "Timezone";
@@ -80,21 +78,25 @@ export function vendorForm(req, res) {
 					return callback(null);
 				});
 		}
-	}, function(err, results) {
-		if (!err) {
-			res.render('vendor-form', {
-				title: "Global Trade Connect",
-				categories: results.categories,
-				bottomCategory: bottomCategory,
-				LoggedInUser: LoggedInUser,
-				country: results.country,
-				currency: results.currency,
-				timezone: results.timezone,
-				selectedPage: 'vendor-form',
-				vendorPlan: vendorPlan
-			});
+	}, function(error, results) {
+		if (!error) {
+			if (LoggedInUser.role == roles['VENDOR']) {
+				res.redirect('/')
+			} else {
+				res.render('vendor-form', {
+					title: "Global Trade Connect",
+					categories: results.categories,
+					bottomCategory: bottomCategory,
+					LoggedInUser: LoggedInUser,
+					country: results.country,
+					currency: results.currency,
+					timezone: results.timezone,
+					selectedPage: 'vendor-form',
+					vendorPlan: vendorPlan
+				});
+			}
 		} else {
-			res.render('vendor-form', err);
+			res.render('vendor-form', error);
 		}
 	});
 }

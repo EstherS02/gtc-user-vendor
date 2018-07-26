@@ -1,75 +1,132 @@
- <script>
-    function addProduct() {
-      location.href = 'listings/shop';
-    }
-    
-    function skip(){
-       location.href = 'reporting'; 
-    }
-  </script>
-  <style>
-      #addProduct{
-          cursor: pointer;
-      }
-  </style>
+{{> header/top-header LoggedInUser = LoggedInUser}}
+{{> vendor/vendor-menu}}
 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#importForm").submit(function(e) {
+			e.preventDefault();
+
+			var credentials = {};
+
+			if ($('#importForm').valid()) {
+				credentials['store_url'] = $('#inputStoreURL').val();
+				credentials['consumer_key'] = $('#inputConsumerKey').val();
+				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
+
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-woocommerce',
+					data: credentials,
+					success: function(data, text) {
+						
+					},
+					error: function(request, status, error) {
+
+					}
+				});
+			}
+		});
+
+		$("#importForm").validate({
+			rules: {
+				store_url: "required",
+				consumer_key: "required",
+				consumer_secret: "required"
+			},
+			messages: {
+				store_url: "Please enter store url.",
+				consumer_key: "Please enter consumer key.",
+				consumer_secret: "Please select consumer secret."
+			}
+		});
+	});
+</script>
 
 <div class="wrapper-content bg-gray">
-	<div class="gtc-container">
-		<div class="row">
-			<div class="col-sm-2">
-				{{> vendor/vendor-side-navbar}}
-			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-						</div>
-						<div class="content-body text-center">                    
-                    <i class="fas fa-download ven_cnt_dwn_icon"></i>
-                    <p class="ven_cnt_h1_title" style="font-size: 30px;font-family: 'Oswald', sans-serif;">BUILD YOUR STORE</p>
-                    <p class="ven_cnt_h1_title">Create your Global Trade Connect database now! You can import from the following online services or add
-                        your first product manually</p>
-                    <div class="row">
-                        <div class="col-md-3" style="margin: auto;">
-                            <a href="#">
-                                <img src="../../img/import-ebay.png" alt="ebay" style="width: 100%;margin: auto;" />
-                            </a>
-                            <a href="#" class="imp_text_style">IMPORT FROM EBAY</a>
-                        </div>
-                        <div class="col-md-3 " style="margin: auto;">
-                            <a href="#">
-                                <img src="../../img/import-aliexpress.png" alt="ebay" style="width: 100%;margin: auto;" />
-                            </a>
-                            <a href="#" class="imp_text_style">IMPORT FROM ALIEXPRESS</a>
-                        </div>
-                        <div class="col-md-3 " style="margin: auto;">
-                            <a href="#">
-                                <img src="../../img/import-wordpress.png" alt="ebay" style="width: 100%;margin: auto;" />
-                            </a>
-                            <a href="#" class="imp_text_style">IMPORT FROM WORDPRESS</a>
-                        </div>
-                        <div class="col-md-3 " style="margin: auto;">
-                            <a href="#">
-                                <img src="../../img/import-amazon.png" alt="ebay" style="width: 100%;margin: auto;" />
-                            </a>
-                            <a href="#" class="imp_text_style">IMPORT FROM AMAZON</a>
-                        </div>
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="landing bg-white">
+                    <div class="icon-import">
+                    	<svg xmlns="http://www.w3.org/2000/svg" width="73.5" height="58" viewBox="0 0 73.5 58"><g fill="#D9D9DA"><path d="M0 33.4c3.2.1 6.5.1 9.7.2h2.5v12.2h49V33.4h12.3V58H0V33.4zM54.8 15.2c-6.2 6.1-12.1 12-17.8 17.7L19.3 15.2h8.3V0H46v15.2h8.8z"/></g></svg>
                     </div>
-                    <p class="ven_cnt_h1_title">or</p>
-                    <input class="list_butt_2" type="submit" id="addProduct" onclick="addProduct(); return false;" value="ADD YOUR FIRST PRODUCT" />
-                    <p class="ven_cnt_h1_title">
-                        <a href="javascript:void(0)" onclick="skip(); return false;" class="text_blue_color">Skip this step</a>
-                    </p>
-                    <p class="ven_cnt_h1_title">Please note: Global Trade Connect is not responsible for any information not imported and it is recommend
-                        <br/>that they check the products to ensure the information has been relayed properly</p>
-						</div>
-					</div>
-				</div>
+                    <h1 class="m-t-sm">BUILD YOUR STORE</h1>
+                    <p class="m-t-lg content-txt">Create your Global Trade Connect database now! You can import from the following online services or add your first product manually.</p>
+                    <div class="row m-t-lg">
+                    	<div class="col-md-3">
+                    		<div class="import">
+                    			<img src="gtc-assets/img/import-ebay.png" alt="import ebay" title="import from ebay">
+                    			<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM EBAY</p>
+                    		</div>
+                    	</div>
+                    	<div class="col-md-3">
+                    		<div class="import">
+                    			<img src="gtc-assets/img/import-aliexpress.png" alt="import aliexpress" title="import from aliexpress">
+                    			<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM ALIEXPRESS</p>
+                    		</div>
+                    	</div>
+                    	<div class="col-md-3">
+                    		<div class="import">
+                    			<a href="#" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">
+                    				<img src="gtc-assets/img/import-wordpress.png" alt="import wordpress" title="import from wordpress">
+                    				<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM WORDPRESS</p>
+                    			</a>
+                    		</div>
+                    	</div>
+                    	<div class="col-md-3">
+                    		<div class="import">
+                    			<img src="gtc-assets/img/import-amazon.png" alt="import amazon" title="import from amazon">
+                    			<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM AMAZON</p>
+                    		</div>
+                    	</div>
+                    </div>
+                    <div class="row m-t-lg">
+                    	<div class="col-md-12">
+                    		<p><small>or</small></p>
+                    		<button class="btn btn-small font-weight-bold">ADD YOUR FIRST PRODUCT</button>
+                    		<p class="m-t-lg"><small>Please note: Global Trade Connect is not responsible for any information not imported and it is recommend that the check the products to ensure the information has been relayed properly.</small></p>
+                    	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Import Products From Wordpress</h5>
 			</div>
+			<form id="importForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control">Your store URL</label>
+	                            <input type="text" id="inputStoreURL" name="store_url" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+	                    <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control">Your consumer key</label>
+	                            <input type="text" id="inputConsumerKey" name="consumer_key" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+	                    <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control">Your consumer secret</label>
+	                            <input type="text" id="inputConsumerSecret" name="consumer_secret" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><b>Submit</b></button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
-{{> footer/bottom-footer}}
-

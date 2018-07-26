@@ -177,7 +177,8 @@ function hasRole(roleRequired) {
 		where: {
 			status: status['ACTIVE']
 		},
-		attributes: ['id', 'name', 'code', 'continent_id', 'currency_id', 'status']
+		attributes: ['id', 'name', 'code', 'currency_id', 'status']
+		/*attributes: ['id', 'name', 'code', 'continent_id', 'currency_id', 'status']*/
 	}, {
 		model: model["Currency"],
 		where: {
