@@ -139,13 +139,18 @@ export function addProduct(req, res) {
 
     delete req.query.marketplace;
 
-    req.query.vendor_id = req.user.Vendor.id;
-    req.query.status = 1;
+    if (req.user.role === roles['VENDOR']) {
+        req.query.vendor_id = req.user.Vendor.id;
+    }
+    req.query.status = status['ACTIVE'];
     req.query.publish_date = new Date();
+    req.query.product_slug= string_to_slug(req.query.product_name);
+    req.query.created_on= new Date();
+    req.query.created_by= req.user.Vendor.vendor_name;
 
     var arrayEle =JSON.parse(req.body.data);
 
-    model["Product"].create(req.query)
+    service.createRow('Product', req.query)
         .then(function(row) {
             var product_id = row.id;
             if (arrayEle) {
