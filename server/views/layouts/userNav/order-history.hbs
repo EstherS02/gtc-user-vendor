@@ -165,7 +165,7 @@
 								<div class="col-sm-12">
 									<div class="cart-top-header">
 										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{count}} items total from {{formatTime queryURI.start_date "MMM D, Y"}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+											<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
 										</div>
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">

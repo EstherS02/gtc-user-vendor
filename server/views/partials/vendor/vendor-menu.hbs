@@ -16,7 +16,11 @@
                 </button>
                 <div class="navbar-collapse collapse" id="vendorNavBar">
                     <ul class="navbar-nav vendor-nav">
-                        <li class="nav-item"><a href="#" class="nav-link">Wholesale</a></li>
+                        {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
+                            <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
+                        {{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
+                            <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
+                        {{/ifCond}}
                         <li class="nav-item"><a href="#" class="nav-link">Messages</a></li>
                         <li class="nav-item"><a href="/notifications" class="nav-link">Notifications</a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promotte Your Store</a></li>

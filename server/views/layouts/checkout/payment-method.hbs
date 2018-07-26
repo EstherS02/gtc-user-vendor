@@ -62,7 +62,7 @@
 															<div id="gtc-stripe-card-element" class="pyt_field"></div>
 														</label>
 													</div>
-													<div id="stripe-error-validation" class="alert alert-danger" style="display:none;"></div>
+													<div id="stripe-error-validation" class="alert" style="display:none;"></div>
 
 													{{!-- <input type="submit" id="complete-order-submit" value="COMPLETE 
 													ORDER" class="shop_checkout_btn" style="float:right;" /> --}}
@@ -294,6 +294,7 @@ $('#stripe-card-transaction-form').submit(function(e){
 		if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
 			errorElement.text("Card Holder Name is required");
 			errorElement.css("display","block");
+			errorElement.removeClass('alert-success').addClass('alert-danger');
 
 			$('#complete-order-submit').prop('disabled', false);
 			$('#complete-order-submit').css({'cursor' : "pointer"});
@@ -310,6 +311,7 @@ $('#stripe-card-transaction-form').submit(function(e){
 				
 				errorElement.text(result.error.message);
 				errorElement.css("display","block");
+				errorElement.removeClass('alert-success').addClass('alert-danger');
 
 				$('#complete-order-submit').prop('disabled', false);
 				$('#complete-order-submit').css({'cursor' : "pointer"});
@@ -350,6 +352,7 @@ function makePayment(paymentSettingId) {
 		success: function (data) {
 			errorElement.text("Payment Success");
 			errorElement.css("display","block");
+			errorElement.removeClass('alert-danger').addClass('alert-success');
 
 			setTimeout(function() {
 				window.location = '/order-checkout/confirmation';

@@ -1,12 +1,13 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('.multiSelect').select2();
+		$('#gtc-message-alert').hide();
 	});
 </script>
 <script type="text/javascript"> 
 	$(function () {
 		$("#inputExpiryDate").datepicker({
-			format: 'dd-mm-yyyy',
+			format: 'yyyy-mm-dd',
 			autohide: true,
 
 		});
@@ -16,7 +17,6 @@
 	$(document).ready(function () {
 
 		$("#couponSubmitBtn").click(function (e) {
-			alert("hai")
 			var newCouponProducts = [];
 			var newCouponExcludeProducts = [];
 			var newCouponCategories = [];
@@ -65,20 +65,21 @@
 	});
 
 function ouputPopup(data) {
-      $('#gtc-shipping').prop('disabled', false);
-      $('#gtc-shipping').removeClass('alert-danger').addClass('alert-success');
-      $('#gtc-shipping .cart-message').text(data);
-      $("#gtc-shipping").fadeTo(2000, 500).slideUp(500, function () {
-        $("#gtc-shipping").slideUp(500);
-        location.reload();
+      $('#gtc-message-alert').prop('disabled', false);
+      $('#gtc-message-alert').removeClass('alert-danger').addClass('alert-success');
+      $('#gtc-message-alert .alert-message').text(data);
+      $("#gtc-message-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#gtc-message-alert").slideUp(500);
+        // location.reload();
+        window.location.href="/coupons";
     });
   }
   function ouputErrorPopup(data) {
-      $('#gtc-shipping').prop('disabled', false);
-      $('#gtc-shipping').removeClass('alert-success').addClass('alert-danger');
-      $('#gtc-shipping .cart-message').text(data);
-      $("#gtc-shipping").fadeTo(7000, 500).slideUp(500, function () {
-        $("#gtc-shipping").slideUp(500);
+      $('#gtc-message-alert').prop('disabled', false);
+      $('#gtc-message-alert').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-message-alert .alert-message').text(data);
+      $("#gtc-message-alert").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-message-alert").slideUp(500);
     });
   }
 
@@ -138,11 +139,14 @@ function ouputPopup(data) {
 			url: '/api/coupon/update',
 			data: newCoupon,
 			success: function (data, text) {
-				alert("Updated successfully");
-				location.reload();
+				// alert("Updated successfully");
+				// location.reload();
+				// window.location.href="/coupons"
+				ouputPopup("Updated successfully");
 			},
 			error: function (request, status, error) {
 				console.log('status', status);
+				ouputErrorPopup(error);
 				console.log('error', error);
 			}
 		});
@@ -204,6 +208,12 @@ function ouputPopup(data) {
 						<div class="content-body">
 
 							<form id="couponForm">
+								<div class="alert" id="gtc-message-alert">
+									<button type="button" class="close" data-dismiss="alert">
+										<span aria-hidden="true">&times;</span>
+									</button>
+									<span class="alert-message"></span>
+								</div>
 								<div class="row">
 									<div class="col-md-12 required">
 										<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle required"
@@ -305,9 +315,11 @@ function ouputPopup(data) {
 								<div class="row">
 									<div class="col-md-12">
 										{{#if coupon.id}}
-										<button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button>
+										<button class="ladda-button btn update-btn" id="couponUpdateBtn"  data-style="expand-left" ><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
+										{{!-- <button class="list_butt_1" type="button" id="couponUpdateBtn">Update</button> --}}
 										{{else}}
-										<button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button>
+										<button class="ladda-button btn update-btn" id="couponSubmitBtn" data-style="expand-left"><span class="ladda-label">Submit</span><span class="ladda-spinner"></span></button>
+										{{!-- <button class="list_butt_1" type="button" id="couponSubmitBtn">Submit</button> --}}
 										{{/if}}
 										<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>
 									</div>

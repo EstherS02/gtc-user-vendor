@@ -43,9 +43,11 @@ export function salesHistory(req, res) {
         queryURI['dateSelect'] = dateSelect;
         end_date = moment().add(0, 'd').toDate();
         if (dateSelect == "today") {
-            start_date = moment();
+           start_date = moment();
+            end_date = start_date;
         } else if (dateSelect == "yesterday") {
             start_date = moment().add(-1, 'd').toDate();
+            end_date = start_date;
         } else if (dateSelect == "last7day") {
             start_date = moment().add(-7, 'd').toDate();
         } else if (dateSelect == "last15day") {
@@ -53,40 +55,42 @@ export function salesHistory(req, res) {
         } else if (dateSelect == "last30day") {
             start_date = moment().add(-30, 'd').toDate();
         } else {
-            if (from_date) {
-                start_date = from_date;
-            } else {
-                start_date = moment().add(-70, 'd').toDate();
-            }
-            if (to_date) {
-                end_date = to_date;
-            } else {
-                end_date = moment().add(0, 'd').toDate();
-                // end_date= moment().toDate();
-            }
-        }
+        //     if (from_date) {
+        //         start_date = from_date;
+        //     } else {
+        //         start_date = moment().add(-70, 'd').toDate();
+        //     }
+        //     if (to_date) {
+        //         end_date = to_date;
+        //     } else {
+        //         end_date = moment().add(0, 'd').toDate();
+        //         // end_date= moment().toDate();
+        //     }
+        // }
 
-    } else {
-        if (from_date) {
-            start_date = from_date;
-        } else {
-            start_date = moment().add(-70, 'd').toDate();
-        }
-        if (to_date) {
-            end_date = to_date;
-        } else {
-            end_date = moment().add(0, 'd').toDate();
-        }
-        orderQueryObj['ordered_date'] = {
-            $between: [start_date, end_date]
-        };
+    } 
+    // else {
+    //     if (from_date) {
+    //         start_date = from_date;
+    //     } else {
+    //         start_date = moment().add(-70, 'd').toDate();
+    //     }
+    //     if (to_date) {
+    //         end_date = to_date;
+    //     } else {
+    //         end_date = moment().add(0, 'd').toDate();
+    //     }
+    //     orderQueryObj['ordered_date'] = {
+    //         $between: [start_date, end_date]
+    //     };
     }
-
+    if(dateSelect){
     orderQueryObj['ordered_date'] = {
         $between: [start_date, end_date]
     };
     queryURI['start_date'] = start_date;
     queryURI['end_date'] = end_date;
+}
 
 
     if (marketType) {
