@@ -10,9 +10,9 @@
 
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
-					url: '/api/orders/' + {{ order.id }},
-			type: 'PUT',
-				data: input,
+					url: '/api/order-history/' + {{ order.id }},
+			       type: 'PUT',
+				    data: input,
 					success: function (result) {
 						location. reload(true);
 					},
@@ -21,7 +21,7 @@
 			}
 		});
 	}
-	 });
+});
 
 	$("#orderStatusChange").validate({
 		rules: {

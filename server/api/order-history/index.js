@@ -8,7 +8,7 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.put('/update-status', controller.updateStatus);
+router.put('/:id', controller.updateStatus);
 // router.put('/add-country', controller.addCountry);
 // router.put('/vendor-update',controller.updateVendor)
 

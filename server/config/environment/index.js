@@ -55,7 +55,9 @@ var all = {
     //Email
     email: {
         templates: {
-            userCreate: 'USER-CREATE'
+            userCreate: 'USER-CREATE',
+            orderMail:'ORDER-MAIL'
+
         }
     },
 
