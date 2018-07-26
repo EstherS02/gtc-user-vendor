@@ -31,9 +31,12 @@ export function remove(req, res) {
 }
 
 export function cart(req, res) {
+
+	console.log("********************************************************************",req.body);
+	// return;
 	const data = req.body;
-	data['user_id'] = 62;
-	data['status'] = 1;
+	data['user_id'] = req.user.id;
+	data['status'] = status['ACTIVE'];
 	data['created_by'] = 'devan vendor';
 	data['created_on'] = new Date();
 	// console.log(req.body.product_id);
