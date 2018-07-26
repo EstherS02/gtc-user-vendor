@@ -2,10 +2,10 @@
 
 var express = require('express');
 var router = express.Router();
-var globalUser = require('../../auth/global-user-obj');
+var auth = require('../../auth/auth.service');
 
 var controller = require('./login.controller');
 
-router.get('/', globalUser.isGlobalObj(), controller.index);
+router.get('/', auth.isLoggedIn(), controller.login);
 
 module.exports = router;

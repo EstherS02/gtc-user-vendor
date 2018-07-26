@@ -817,7 +817,7 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
     font-size: 12px;
     color: #afafae;
     padding: 0;
-    font-weight: lighter;
+    font-weight: 400;
 }
 .ibox {
     clear: both;
