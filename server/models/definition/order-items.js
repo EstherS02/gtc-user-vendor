@@ -68,7 +68,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         reason_for_cancellation: {
-            type: DataTypes.STRING(24),
+            type: DataTypes.STRING(64),
             field: 'reason_for_cancellation',
             allowNull: true
         },
