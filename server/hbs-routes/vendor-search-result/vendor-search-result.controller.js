@@ -77,6 +77,14 @@ export function index(req, res) {
 	var vendorModel = "VendorUserProduct";
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -162,6 +170,7 @@ export function index(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				locations: results.locations,
 				vendors: results.vendors,
+				cartheader: results.cartCounts,
 				selectedMarketPlace: results.marketPlace,
 				LoggedInUser: LoggedInUser,
 				marketplaceURl: marketplaceURl,

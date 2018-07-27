@@ -30,6 +30,14 @@ export function services(req, res) {
 	queryObj['marketplace_id'] = 3;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -99,6 +107,7 @@ export function services(req, res) {
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,
 				servicesProviders: results.servicesProviders,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

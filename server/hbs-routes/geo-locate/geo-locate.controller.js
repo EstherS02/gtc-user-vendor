@@ -11,14 +11,22 @@ import series from 'async/series';
 var async = require('async');
 
 export function geoLocate(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory ={};
+    var LoggedInUser = {};
+    var bottomCategory = {};
 
-	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
+    if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+        LoggedInUser = req.gtcGlobalUserObj;
 
-	async.series({
-			categories: function(callback) {
+    async.series({
+            cartCounts: function(callback) {
+                service.cartHeader(LoggedInUser).then(function(response) {
+                    return callback(null, response);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+            },
+            categories: function(callback) {
                 var includeArr = [];
                 const categoryOffset = 0;
                 const categoryLimit = null;
@@ -40,17 +48,18 @@ export function geoLocate(req, res) {
                         return callback(null);
                     });
             }
-		},
-		function(err, results) {
-			if (!err) {
-				res.render('geo-locate', {
-					title: "Global Trade Connect",
-					categories: results.categories,
-                bottomCategory: bottomCategory,
-					LoggedInUser: LoggedInUser
-				});
-			} else {
-				res.render('wishlist', err);
-			}
-		});
+        },
+        function(err, results) {
+            if (!err) {
+                res.render('geo-locate', {
+                    title: "Global Trade Connect",
+                    categories: results.categories,
+                    bottomCategory: bottomCategory,
+                    cartheader: results.cartCounts,
+                    LoggedInUser: LoggedInUser
+                });
+            } else {
+                res.render('wishlist', err);
+            }
+        });
 }

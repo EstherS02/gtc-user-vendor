@@ -39,6 +39,14 @@ export function userProfile(req, res) {
 
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		vendor: function (callback) {
 			service.findOneRow(vendorModel, { user_id:user_id }, vendorIncludeArr)
 				.then(function (vendor) {
@@ -115,6 +123,7 @@ export function userProfile(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage:'user-profile',
 				vendorPlan:vendorPlan,
+				cartheader: results.cartCounts,
 				bottomCategory: bottomCategory,
 				categories: results.categories	
 			});

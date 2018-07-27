@@ -31,6 +31,14 @@ export function performance(req, res) {
     let user_id = LoggedInUser.id;
 
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
             products: function(callback) {
                 queryObj['vendor_id'] = LoggedInUser.Vendor.id;
                 service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -79,6 +87,7 @@ export function performance(req, res) {
                     selectedPage: 'performance',
                     vendorPlan: vendorPlan,
                     dropDownUrl: dropDownUrl,
+                    cartheader: results.cartCounts,
                 });
             } else {
                 res.render('vendorNav/reporting/performance', err);

@@ -109,8 +109,8 @@ export function importWoocommerce(req, res) {
 
 	var WooCommerce = new WooCommerceAPI({
 		url: req.body.store_url,
-		consumerKey: req.body.consumer_key, //ck_c696872add535c84c82134947e0b29679ea2779d
-		consumerSecret: req.body.consumer_secret, //cs_a99004fefd5ba8dc48f553c18f4c146096c08953
+		consumerKey: req.body.consumer_key,
+		consumerSecret: req.body.consumer_secret,
 		wpAPI: true,
 		version: 'wc/v2'
 	});

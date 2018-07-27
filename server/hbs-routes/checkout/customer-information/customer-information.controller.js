@@ -24,6 +24,14 @@ function processCheckout(req, res, callback) {
     let user_id = LoggedInUser.id;
 
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         address : function(cb) {
 
             let searchObj = {};
@@ -307,6 +315,7 @@ function processCheckout(req, res, callback) {
                 totalPriceList: totalPrice,
                 categories: results.categories,
                 bottomCategory: bottomCategory,
+                cartheader:results.cartCounts,
                 couponData: [],
                 couponUpdateError: "",
                 couponUpdateErrorMessage: "",

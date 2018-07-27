@@ -78,6 +78,14 @@ export function wholesale(req, res) {
 					return callback(null);
 				});
 		},
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		wantToSell: function(callback) {
 			queryObj['marketplace_type_id'] = 1;
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -182,6 +190,7 @@ export function wholesale(req, res) {
 				featuredProducts: results.featuredProducts,
 				wholesalers: results.wholesalers,
 				country: results.country,
+				cartheader:results.cartCounts,
 				type: results.type,
 				LoggedInUser: LoggedInUser
 			});

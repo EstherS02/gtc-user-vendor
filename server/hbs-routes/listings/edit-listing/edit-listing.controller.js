@@ -42,6 +42,14 @@ export function editListing(req, res) {
 		searchObj["product_slug"] = req.params.product_slug;
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		product: function(callback) {
 
 			service.findOneRow(productModel, searchObj, productIncludeArr)
@@ -118,6 +126,7 @@ export function editListing(req, res) {
 				subCategory: results.subCategory,
 				LoggedInUser: LoggedInUser,
 				marketplaceType: results.marketplaceType,
+				cartheader:results.cartCounts,
 				type: type,
 				vendorPlan: vendorPlan,
 				feature: results.feature,

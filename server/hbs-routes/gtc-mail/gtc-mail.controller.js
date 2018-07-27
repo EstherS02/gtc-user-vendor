@@ -19,6 +19,14 @@ export function gtcMail(req, res) {
 
 	let user_id = LoggedInUser.id;
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			categories: function(callback) {
 				var includeArr = [];
 				const categoryOffset = 0;
@@ -49,6 +57,7 @@ export function gtcMail(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
+					cartheader:results.cartCounts,
 					selectedPage: 'gtc-mail',
 					vendorPlan:vendorPlan
 				});

@@ -6,7 +6,6 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
-
 const async = require('async');
 
 export function directory(req, res) {
@@ -30,6 +29,14 @@ export function directory(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -150,6 +157,7 @@ export function directory(req, res) {
 				servicesProviders: results.servicesProviders,
 				subscriptionProviders: results.subscriptionProviders,
 				depart: results.depart,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				marketplace: marketplace
 			});

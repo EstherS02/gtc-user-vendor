@@ -20,6 +20,14 @@ export function paymentSettings(req, res) {
 	let user_id = LoggedInUser.id;
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
@@ -54,6 +62,7 @@ export function paymentSettings(req, res) {
 					categories: results.categories,
                 	bottomCategory: bottomCategory,
 					selectedPage: 'payment-settings',
+					cartheader: results.cartCounts,
 					vendorPlan: vendorPlan
 				});
 			} else {

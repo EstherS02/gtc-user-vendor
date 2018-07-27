@@ -59,6 +59,14 @@ export function vendorShop(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		publicShop: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
@@ -162,6 +170,7 @@ export function vendorShop(req, res) {
 				bottomCategory: bottomCategory,
 				categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,
+				cartheader:results.cartCounts,
 				selectedPage: 'shop',
 				Plan: Plan,
 			});

@@ -27,6 +27,14 @@ export function vendorForm(req, res) {
 	}
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -89,6 +97,7 @@ export function vendorForm(req, res) {
 					bottomCategory: bottomCategory,
 					LoggedInUser: LoggedInUser,
 					country: results.country,
+					cartheader: results.cartCounts,
 					currency: results.currency,
 					timezone: results.timezone,
 					selectedPage: 'vendor-form',

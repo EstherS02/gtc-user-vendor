@@ -43,6 +43,14 @@ export function addProduct(req, res) {
     };
 
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
@@ -95,6 +103,7 @@ export function addProduct(req, res) {
                 country: results.country,
                 marketplaceType: results.marketplaceType,
                 LoggedInUser: LoggedInUser,
+                cartheader:results.cartCounts,
                 vendorPlan: vendorPlan,
                 type: type,
                 dropDownUrl: dropDownUrl,

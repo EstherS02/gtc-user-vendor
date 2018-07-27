@@ -26,6 +26,14 @@ export function vendorAbout(req, res) {
 	let user_id = LoggedInUser.id;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		VendorDetail: function(callback) {
 		var vendorIncludeArr = [{
 				model: model['Country']
@@ -117,6 +125,7 @@ export function vendorAbout(req, res) {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
 				follower: results.Follower,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'about',
 				Plan: Plan,
