@@ -386,14 +386,13 @@ function resMessage(message, messageDetails){
 export function cancelOrder(req, res) {
     if(!req.body)
         return res.status(400).send(resMessage("BAD_REQUEST", "Missing one or more required Parameters"));
-    if(req.body.reason_for_cancellation)
+    if(!req.body.reason_for_cancellation)
         return res.status(400).send(resMessage("BAD_REQUEST", "No Reason for cancellation"));
 
     let orderItem, paymentObj, refundObj;
 
         processCancelOrder(req)
         .then(orderItemObj => {
-            console.log(orderItemObj)
             orderItem = orderItemObj;
             let includeArray = [];
             includeArray = populate.populateData("Payment");
@@ -401,7 +400,6 @@ export function cancelOrder(req, res) {
         }).then(paymentRow => {
             paymentObj = JSON.parse(JSON.stringify(paymentRow));
             let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
-            console.log(chargedPaymentRes);
             let refundAmt = parseInt(orderItem.final_price);
             return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
         }).then(refundRow => {
