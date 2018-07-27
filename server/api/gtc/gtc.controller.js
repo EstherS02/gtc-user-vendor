@@ -389,7 +389,7 @@ export function destroyMany(req, res) {
 export function destroy(req, res) {
 	const paramsID = req.params.id;
 
-	service.findRow(req.endpoint, paramsID)
+	service.findIdRow(req.endpoint, paramsID)
 		.then(function (row) {
 			if (row) {
 				service.destroyRow(req.endpoint, paramsID)

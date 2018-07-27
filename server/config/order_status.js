@@ -1,6 +1,6 @@
 module.exports = {
     "NEWORDER":1,
-    "AWAITINGORDER":2,
+    "ORDERCONFIRMED":2,
     "PROCESSINGORDER":3,
     "DISPATCHEDORDER":4,
     "DELIVEREDORDER":5,

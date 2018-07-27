@@ -137,7 +137,9 @@
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{orderItems.Product.price}}</div>
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{orderItems.Product.price}}</p>
+												</div>
 										</div>
 									</td>
 									<td>
@@ -150,7 +152,12 @@
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{quantityPrice orderItems.quantity orderItems.Product.price}}</div>
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{quantityPrice orderItems.quantity orderItems.Product.price}}</p>
+                                               <a id="remove-cart-{{orderItems.id}}" onclick="removeGtcCart(`{{orderItems.id}}`)" href="javascript:;">
+													<p class="shop_total_remove text-center">CANCEL</p>
+												</a>
+											</div>
 										</div>
 									</td>
 								</tr>
@@ -181,6 +188,7 @@
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status" id="inputGroupSelect02">
 											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
+											<option value="2">Confirmed Order</option>
 											<option value="3">Processing Order</option>
 											<option value="4">Dispatched Order</option>
 											<option value="5">Delivered Order</option>

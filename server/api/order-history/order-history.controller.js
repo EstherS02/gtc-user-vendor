@@ -15,6 +15,10 @@ export function updateStatus(req, res) {
 	var order_status,purchase_order_id,user_email;
 	var includeArr=['User'];
 
+	if(bodyParams.order_status == orderStaus.ORDERCONFIRMED ){
+		order_status='confirmed';
+	}
+
 	if(bodyParams.order_status == orderStaus.PROCESSINGORDER ){
 		order_status='processed';
 	}
