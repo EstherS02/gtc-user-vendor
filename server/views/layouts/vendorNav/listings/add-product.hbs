@@ -153,6 +153,7 @@
 
         $("#category").change(function () {
             var category_id = $('#category').val();
+            $('#attributePopup').empty();
 
             $.ajax({
                 url: '/api/sub-categories?category_id=' + category_id,
