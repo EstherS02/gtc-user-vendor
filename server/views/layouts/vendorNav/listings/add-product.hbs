@@ -67,8 +67,10 @@
     }
 
     function remove(e, index){
-        allFiles.splice(index, 1);
-        $(e).parents(".pip").remove();    
+
+        console.log($(this))
+        //allFiles.splice(index, 1);
+        //$(e).parents(".pip").remove();    
     }
 
     $(document).ready(function () {
@@ -178,10 +180,10 @@
                 success: function (result) {
                     $("#attribute").empty();
                     for (var i = 0; i < result.rows.length; i++) {
-                        var attri;
-                        attri="<tr><td>"+result.rows[i].Attribute.attr_name+"</td><td>"+
+                        var productAttribute;
+                        productAttribute="<tr><td>"+result.rows[i].Attribute.attr_name+"</td><td>"+
                                 "<input type='text' min='1'name="+result.rows[i].Attribute.id+" class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
-                        $("#attribute").append(attri);
+                        $("#attribute").append(productAttribute);
                     }
                 },
                 error: function (error) {
