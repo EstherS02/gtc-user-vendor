@@ -144,6 +144,14 @@ export function salesHistory(req, res) {
         }]
     }];
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
             orderHistory: function(callback) {
                 service.findRows(modelName, orderQueryObj, offset, limit, field, order, includeArr)
                     .then(function(results) {
@@ -204,6 +212,7 @@ export function salesHistory(req, res) {
                     bottomCategory: bottomCategory,
                     queryUrl: queryUrl,
                     selectedPage: 'sales-history',
+                    cartheader: results.cartCounts,
                     totalTransaction: (total_transaction).toFixed(2),
                     orderStatus: orderStatus,
                     // pagination
@@ -238,7 +247,14 @@ export function orderView(req, res) {
     orderIncludeArr = populate.populateData('Shipping');
 
     async.series({
-
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
@@ -383,6 +399,7 @@ export function orderView(req, res) {
                 seperatedItemsList: seperatedItems,
                 totalPriceList: totalPrice,
                 orderStatus: orderStatus,
+                cartheader: results.cartCounts,
                 categories: results.categories,
                 bottomCategory: bottomCategory
             }

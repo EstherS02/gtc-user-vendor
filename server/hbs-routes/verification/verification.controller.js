@@ -32,6 +32,14 @@ export function verification(req, res) {
 	var includeArr = [];
 
     	async.series({
+    		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			verification: function(callback) {
 				service.findOneRow(modelName, queryObj, includeArr)
 					.then(function(response) {
@@ -80,6 +88,7 @@ export function verification(req, res) {
 					categories: results.categories,
                 	bottomCategory: bottomCategory,
 					verificationStatus: verificationStatus,
+					cartheader: results.cartCounts,
 					vendorPlan:vendorPlan
 				});
 			} else {

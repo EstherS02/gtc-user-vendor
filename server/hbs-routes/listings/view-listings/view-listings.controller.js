@@ -83,6 +83,14 @@ export function viewListings(req, res) {
 	};
 	// console.log(queryParams)
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		products: function(callback) {
 
 			service.findRows(productModel, queryParams, offset, limit, field, order)
@@ -125,6 +133,7 @@ export function viewListings(req, res) {
 				products: results.products.rows,
 				collectionSize: results.products.count,
 				categories: results.categories,
+				cartheader:results.cartCounts,
 				page: page,
 				bottomCategory: bottomCategory,
 				pageSize: limit,

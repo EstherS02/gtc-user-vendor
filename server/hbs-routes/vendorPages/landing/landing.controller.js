@@ -33,6 +33,14 @@ export function vendor(req, res) {
 	queryObj['vendor_id'] = vendor_id;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -147,6 +155,7 @@ export function vendor(req, res) {
 				featuredProducts: results.featuredProducts,
 				topSelling: results.topSelling,
 				topRating: results.topRating,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				Plan: Plan,
 				// selectedPage:'shop'

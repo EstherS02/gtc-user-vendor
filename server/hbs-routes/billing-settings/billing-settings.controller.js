@@ -26,6 +26,14 @@ export function billingSettings(req, res) {
         status: statusCode['ACTIVE']
     };
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -75,6 +83,7 @@ export function billingSettings(req, res) {
                     categories: results.categories,
                     cards: results.cards,
 				    bottomCategory: bottomCategory,
+                    cartheader: results.cartCounts,
                     selectedPage: 'billing-settings',
                     vendorPlan: vendorPlan,
                     stripePublishableKey: config.stripeConfig.keyPublishable

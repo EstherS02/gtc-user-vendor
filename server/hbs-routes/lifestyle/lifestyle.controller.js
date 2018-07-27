@@ -7,7 +7,7 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
-
+const _ = require('lodash');
 const async = require('async');
 import series from 'async/series';
 
@@ -31,6 +31,14 @@ export function lifestyle(req, res) {
 	queryObj['marketplace_id'] = 4;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -103,6 +111,7 @@ export function lifestyle(req, res) {
 				featuredProducts: results.featuredProducts,
 				lifestyle: results.lifestyle,
 				subscriptionProviders: results.subscriptionProviders,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

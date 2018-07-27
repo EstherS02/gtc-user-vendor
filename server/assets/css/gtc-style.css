@@ -799,7 +799,7 @@ margin-bottom: 0px;
 }
 .scrolled{background-image:url(../img/bg-footer.jpg);}
 ul.breadcrumb {
-    padding: 40px 10px 16px 20px;
+    /*padding: 40px 10px 16px 20px;*/
     list-style: none;
     background-color: #fff;
     margin-bottom: 0px;
@@ -1431,14 +1431,14 @@ margin-bottom:0px;
     display: block;
     padding: 2px;
     margin-bottom: -1px;
-    background-color: #E7E7E9;
+    background-color: inherit;
     border: 0px solid rgba(0,0,0,.125);
     color: #000;
 }
 .cat_bg_title
 {
 	background-color: #D88505;
-	padding: 3px;
+	padding: 5px;
 	color: #fff;
 }
 .wts_header a

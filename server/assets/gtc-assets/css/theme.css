@@ -10,6 +10,9 @@
 .text-muted {
   color: #737373;
 }
+.text-sm {
+  font-size: 0.688em;
+}
 .gray-bg, .bg-muted {
   background-color: #f3f3f4;
 }
@@ -106,6 +109,9 @@
 }
 .btn-gtc {
   border-radius: 0 !important;
+  background: #fff;
+}
+.btn-white {
   background: #fff;
 }
 .btn-gray {
@@ -557,6 +563,7 @@
 }
 table.shoping-cart-table {
 	margin-bottom: 0;
+  overflow: hidden;
 }
 table.shoping-cart-table tr td div.product-middle-col, table.shoping-cart-table tr td:first-child {
     text-align: left;
@@ -568,7 +575,7 @@ table.shoping-cart-table tr td {
 .product-left-col {
 	text-align: center;
     height: 60px;
-    overflow: auto;
+    overflow: hidden;
     width: 100%;
     background-color: #f8f8f9;
 }
@@ -656,6 +663,9 @@ div.product-right-col h2 {
     margin-bottom: 5px;
     line-height: 1.6;
     font-weight: 600;
+}
+.search-list-body .product-right-col h2 {
+  font-size: 1.5em;
 }
 .overflow-txt a {
   overflow: hidden;

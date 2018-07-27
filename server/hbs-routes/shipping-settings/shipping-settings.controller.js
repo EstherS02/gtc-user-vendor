@@ -27,6 +27,14 @@ export function shippingSettings(req, res) {
 	var vendorModelName = "VendorShippingLocation";
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			Countries: function(callback) {
 				service.findRows(modelName, {}, 0, null, 'id', 'asc', [])
 					.then(function(results) {
@@ -90,6 +98,7 @@ export function shippingSettings(req, res) {
 					LoggedInUser:LoggedInUser,
 					categories: results.categories,
                 	bottomCategory: bottomCategory,
+                	cartheader: results.cartCounts,
 					vendorCountry:results.vendorCountries,
 					selectedPage:"shipping-settings",
 					vendorPlan:vendorPlan

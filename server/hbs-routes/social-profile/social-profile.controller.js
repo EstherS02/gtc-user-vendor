@@ -22,6 +22,14 @@ export function socialProfile(req, res) {
     let user_id = LoggedInUser.id;
 
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         vendorInfo: function (callback) {
             var id = LoggedInUser.Vendor.id;
             service.findIdRow(vendorModel,id )
@@ -65,6 +73,7 @@ export function socialProfile(req, res) {
                 categories: results.categories,
                 bottomCategory: bottomCategory,
                 LoggedInUser: LoggedInUser,
+                cartheader: results.cartCounts,
                 selectedPage:'social-profile',
                 vendorPlan:vendorPlan
 			});

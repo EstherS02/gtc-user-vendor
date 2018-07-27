@@ -142,6 +142,14 @@ if (dateSelect) {
 		status: statusCode['ACTIVE']
 	};
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -200,6 +208,7 @@ if (dateSelect) {
 				LoggedInUser: LoggedInUser,
 				marketPlace: marketPlace,
 				statusCode: statusCode,
+				cartheader:results.cartCounts,
 				orderStatus: orderStatus,
 				totalTransaction: (total_transaction).toFixed(2),
 				page: page,
