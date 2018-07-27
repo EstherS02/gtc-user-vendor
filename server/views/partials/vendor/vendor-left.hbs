@@ -21,18 +21,26 @@
     </div>
     <div class="col-md-7 col-7"  >
       <p class="profile_logged_in_body2_font_2">
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' 1}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.WHOLESALER}}
         Wholesale
         {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' 2}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.BULK_BUYER}}
+        Bulk buyer
+        {{/ifCond}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.PUBLIC_SELLER}}
         Shop
         {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' 3}}
-        Service
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' 4}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.LIFESTYLE_PROVIDER}}
         Lifestyle
         {{/ifCond}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.SERVICE_PROVIDER}}
+        Service
+        {{/ifCond}}
+        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plans.STARTER_SELLER}}
+        Start seller
+        {{/ifCond}}
+        {{!-- {{VendorDetail.VendorPlans.[0].plan_id}} --}}
+       
       </p>
     </div>
   </div>

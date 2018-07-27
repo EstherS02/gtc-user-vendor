@@ -102,17 +102,17 @@
 										</li>
 										<li class="tot-amt dropdown cursor-pointer">
 											{{#if LoggedInUser.id}}
-											<a id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span class="badge">0</span>
+											<a id="dropdownMenuButton2"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="badge">{{#if cartheader.cartItemsCount}}{{cartheader.cartItemsCount}}{{else}}0{{/if}} </span>
 												<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-												<span class="m-l-xs">$00.00</span>
+												<span class="m-l-xs">{{currency cartheader.totalPrice.grandTotal '$'}}</span>
 											</a>
 											<div class="dropdown-menu dropdown-menu-list cart-list" aria-labelledby="dropdownMenuButton2">
 												<h4>MY CART</h4>
-												<p class="wholesale-cart-txt">0 Wholesale items</p>
-												<p class="shop-cart-txt">0 Shop items</p>
-												<p class="service-cart-txt">0 Service items</p>
-												<p class="subscription-cart-txt">0 Subscription items</p>
+												<p class="wholesale-cart-txt">{{cartheader.marketplaceCount.PWM}} Wholesale items</p>
+												<p class="shop-cart-txt">{{cartheader.marketplaceCount.PM}} Shop items</p>
+												<p class="service-cart-txt">{{cartheader.marketplaceCount.SM}} Service items</p>
+												<p class="subscription-cart-txt">{{cartheader.marketplaceCount.LM}} Subscription items</p>
 												<a href="/cart" class="btn btn-sm btn-primary">VIEW CART</a>
 											</div>
 											{{else}}
@@ -245,4 +245,8 @@
 			}
 		});
 	}
+
+	$('#dropdownMenuButton2').click(function() {
+
+	});
 </script>

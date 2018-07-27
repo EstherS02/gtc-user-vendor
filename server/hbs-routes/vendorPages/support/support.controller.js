@@ -22,6 +22,14 @@ export function vendorSupport(req, res) {
 	var vendor_id = req.params.id;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -88,6 +96,7 @@ export function vendorSupport(req, res) {
 				bottomCategory: bottomCategory,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
+				cartheader:results.cartCounts,
 				selectedPage: 'support',
 				Plan: Plan,
 			});

@@ -191,25 +191,27 @@
 									</li>
 									{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
 									<li class="nav-item dropdown">
-										<a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+										<a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
 											<i class="fas fa-ellipsis-h"></i>
 										</a>
-										<div class="dropdown-menu">
-											<a class="dropdown-item" href="/edit-listing">Edit Listings</a>
-											<a class="dropdown-item" href="/vendor/order-history">Order History</a>
-											<a class="dropdown-item" href="/coupons">Edit/Add Coupons</a>
-											<a class="dropdown-item" href="/reporting/performance">Reporting</a>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="/reviews">See My Reviews</a>
-											<a class="dropdown-item" href="/promote-store">Store Branding</a>
-											<a class="dropdown-item" href="/notifications">Notification Settings</a>
-											<a class="dropdown-item" href="/social-profile">Social Profile Settings</a>
-											<a class="dropdown-item" href="/shipping-settings">Shipping Settings</a>
-											<a class="dropdown-item" href="/payment-settings">Payment Settings</a>
-											<a class="dropdown-item" href="/verification">Get GTC Verified</a>
-											<a class="dropdown-item" href="/gtc-talk">GTC Talk Settings</a>
-											<a class="dropdown-item" href="#">GTC Mail Settings</a>
-										</div>
+										<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
+												<ul>
+													<li><a href="/edit-listing">Edit Listings</a></li>
+													<li><a href="/edit-listing">Edit Listings</a></li>
+													<li><a href="/vendor/order-history">Order History</a></li>
+													<li><a href="/coupons">Edit/Add Coupons</a></li>
+													<li><a href="/reporting/performance">Reporting</a></li>
+													<div class="hr-line-solid"></div>
+													<li><a href="/reviews">See My Reviews</a></li>
+													<li><a href="/promote-store">Store Branding</a></li>
+													<li><a href="/notifications">Notification Settings</a></li>
+													<li><a href="/social-profile">Social Profile Settings</a></li>
+													<li><a href="/shipping-settings">Shipping Settings</a></li>
+													<li><a href="/payment-settings">Payment Settings</a></li>
+													<li><a href="/verification">Get GTC Verified</a></li>
+													<li><a href="/gtc-talk">GTC Talk Settings</a></li>
+												</ul>
+											</div>
 									</li>
 									{{/ifCond}}
 								</ul>

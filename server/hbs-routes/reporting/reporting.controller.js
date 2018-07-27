@@ -27,6 +27,14 @@ export function reporting(req, res) {
 
     let user_id = LoggedInUser.id;
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
             categories: function(callback) {
                 var includeArr = [];
                 const categoryOffset = 0;
@@ -123,6 +131,7 @@ export function performance(req, res) {
                     category: results.category,
                     selectedPage: 'performance',
                     vendorPlan: vendorPlan,
+                    cartheader: results.cartCounts,
                     dropDownUrl: dropDownUrl,
                 });
             } else {
@@ -164,6 +173,7 @@ export function accounting(req, res) {
                     selectedPage: 'accounting',
                     orderStatus: orderStatus,
                     vendorPlan: vendorPlan,
+                    cartheader: results.cartCounts,
                     LoggedInUser: LoggedInUser,
                     dropDownUrl: dropDownUrl,
                     // pagination

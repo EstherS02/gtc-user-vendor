@@ -29,7 +29,7 @@ export function coupons(req, res) {
 	var offset = 0;
 	var limit = 10;
 	var queryObj = {};
-	var bottomCategory ={};
+	var bottomCategory = {};
 	var couponModel = 'Coupon';
 	var categoryModel = "Category";
 
@@ -66,10 +66,18 @@ export function coupons(req, res) {
 	queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
-	 var queryObjCategory = {
-        status: status['ACTIVE']
-    };
+	var queryObjCategory = {
+		status: status['ACTIVE']
+	};
 	async.series({
+			cartCounts: function(callback) {
+				service.cartHeader(LoggedInUser).then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			},
 			Coupons: function(callback) {
 				service.findRows(couponModel, queryObj, offset, limit, field, order)
 					.then(function(response) {
@@ -80,29 +88,29 @@ export function coupons(req, res) {
 						return callback(null);
 					});
 			},
-		categories: function(callback) {
-			var categoryModel = "Category";
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
+			categories: function(callback) {
+				var categoryModel = "Category";
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				const categoryQueryObj = {};
 
 
-			categoryQueryObj['status'] = status["ACTIVE"];
+				categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function(category) {
-					var categories = category.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
 
 		},
 		function(err, results) {
@@ -119,14 +127,15 @@ export function coupons(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					selectedPage:'coupons',
+					cartheader:results.cartCounts,
+					selectedPage: 'coupons',
 					// pagination
 					page: page,
 					maxSize: maxSize,
 					pageSize: limit,
 					collectionSize: results.count,
 					// End pagination
-					vendorPlan:vendorPlan
+					vendorPlan: vendorPlan
 				});
 			} else {
 				res.render('vendorNav/coupons/view-coupons', err);
@@ -143,21 +152,29 @@ export function addCoupon(req, res) {
 
 	var productModel = "Product";
 	var categoryModel = "Category";
-	
+
 
 	var offset, limit, field, order;
 	var productQueryObj = {};
 	var categoryQueryObj = {};
-	var bottomCategory={};
+	var bottomCategory = {};
 	field = "id";
 	order = "asc";
 
 	productQueryObj['status'] = status["ACTIVE"];
 	categoryQueryObj['status'] = status["ACTIVE"];
-	
+
 	productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		products: function(callback) {
 			service.findRows(productModel, productQueryObj, offset, limit, field, order)
 				.then(function(products) {
@@ -168,7 +185,7 @@ export function addCoupon(req, res) {
 				});
 		},
 
-			categories: function(callback) {
+		categories: function(callback) {
 			var categoryModel = "Category";
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -200,8 +217,9 @@ export function addCoupon(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
+				cartheader:results.cartCounts,
 				vendorPlan: vendorPlan,
-				selectedPage:'coupons',
+				selectedPage: 'coupons',
 			});
 		} else {
 			res.render('vendorNav/coupons/add-coupon', err);
@@ -212,7 +230,7 @@ export function addCoupon(req, res) {
 export function editCoupons(req, res) {
 
 	var LoggedInUser = {};
-	var bottomCategory={};
+	var bottomCategory = {};
 	if (req.user)
 		LoggedInUser = req.user;
 	let user_id = LoggedInUser.id;
@@ -233,6 +251,14 @@ export function editCoupons(req, res) {
 	order = "asc";
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		coupon: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
 				.then(function(coupon) {
@@ -261,24 +287,24 @@ export function editCoupons(req, res) {
 		},
 		categories: function(callback) {
 			var includeArr = [];
-            const categoryOffset = 0;
-            const categoryLimit = null;
-            const categoryField = "id";
-            const categoryOrder = "asc";
-            const categoryQueryObj = {};
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                .then(function(category) {
-                    var categories = category.rows;
-                    bottomCategory['left'] = categories.slice(0, 8);
-                    bottomCategory['right'] = categories.slice(8, 16);
-                    return callback(null, category.rows);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
 		couponProducts: function(callback) {
 			var couponProductsQueryObj = {};
@@ -390,9 +416,10 @@ export function editCoupons(req, res) {
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
-				vendorPlan:vendorPlan,
-				selectedPage:'coupons',
+				vendorPlan: vendorPlan,
+				selectedPage: 'coupons',
 			});
 
 		} else {

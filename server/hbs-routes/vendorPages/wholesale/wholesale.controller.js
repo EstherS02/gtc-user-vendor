@@ -54,6 +54,14 @@ export function vendorWholesale(req, res) {
 	// order = "asc";
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		wantToSell: function(callback) {
 
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
@@ -226,6 +234,7 @@ export function vendorWholesale(req, res) {
 				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'wholesale',
 				Plan: Plan,

@@ -54,6 +54,14 @@ export function refund(req, res) {
 	};
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		item: function(callback) {
 			service.findOneRow(itemModel, searchObj, productIncludeArr)
 				.then(function(item) {
@@ -95,6 +103,7 @@ export function refund(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
+				cartheader: results.cartCounts,
 				vendorPlan: vendorPlan
 			});
 		} else {

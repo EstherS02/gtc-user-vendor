@@ -31,6 +31,14 @@ export function products(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -138,6 +146,7 @@ export function products(req, res) {
 				subscriptions: results.subscriptions,
 				subCategory: results.subCategory,
 				country: results.country,
+				cartheader:results.cartCounts,
 				depart: results.depart,
 				LoggedInUser: LoggedInUser
 			});
