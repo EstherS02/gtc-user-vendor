@@ -75,6 +75,7 @@ export function makePayment(req, res) {
         var orderPaymentObj = {
             order_id: createdOrders[i].order.id,
             payment_id: paymentRow.id,
+            order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
             status: status['ACTIVE'],
             created_on: new Date(),
             created_by: req.user.first_name
@@ -85,7 +86,7 @@ export function makePayment(req, res) {
     }).then(orderPaymentRows => {
         let statusPromises = [];
         for (var i = 0; i < createdOrders.length; i++) {
-            createdOrders[i].order.order_status = orderStatus['PROCESSINGORDER'];
+            createdOrders[i].order.order_status = orderStatus['NEWORDER'];
             statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
         }
         return Promise.all(statusPromises);
@@ -93,7 +94,6 @@ export function makePayment(req, res) {
         let clearCart = [];
         let allCartItems = checkoutObj.cartItems.rows;
         for(let j = 0; j < allCartItems.length; j++){
-            console.log(allCartItems[j]);
             clearCart.push(allCartItems[j].id)
         }
         service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
@@ -396,7 +396,11 @@ export function cancelOrder(req, res) {
             orderItem = orderItemObj;
             let includeArray = [];
             includeArray = populate.populateData("Payment");
-            return service.findRow('OrderPayment', { order_id: orderItemObj.order_id }, includeArray);
+            let orderPaymentQueryObj = { 
+                order_id: orderItemObj.order_id, 
+                order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'] 
+            }
+            return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray);
         }).then(paymentRow => {
             paymentObj = JSON.parse(JSON.stringify(paymentRow));
             let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
@@ -437,21 +441,7 @@ export function cancelOrder(req, res) {
             return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
         }).catch(error => {
             console.log("Error", error)
-            if(!refundObj){
-                let updateCancelledOrderItem = {
-                    reason_for_cancellation: req.body.reason_for_cancellation,
-                    cancelled_on: new Date(),
-                    order_item_status: ORDER_ITEM_STATUS['REFUND_FAILED'],
-                    last_updated_by: req.user.first_name,
-                    last_updated_on: new Date()
-                }
-                service.updateRow('OrderItem', updateCancelledOrderItem , orderItem.id)
-                .then(updatedSuccess => {                    
-                    return res.status(500).send(resMessage("ERROR", "Failed to Refund"));
-                }).catch(err =>{
-                    return res.status(500).send(resMessage("ERROR", err));
-                });
-            }
+            return res.status(500).send(error);
         });
 
 }
@@ -459,19 +449,30 @@ export function cancelOrder(req, res) {
 function processCancelOrder(req) {
   return new Promise((resolve, reject) => {
     let includeArray = [];
-    includeArray = populate.populateData("Order");
+    includeArray = populate.populateData("Order,Product");
     service.findRow('OrderItem', { id: req.params.orderItemId }, includeArray)
       .then(orderItemRow => {
         orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
+        if(orderItemRow.order_item_status === ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'] || orderItemRow.order_item_status === ORDER_ITEM_STATUS['REFUND_FAILED'])
+            return reject(resMessage("BAD_REQUEST", "Refund already processing"));
+
         if(orderItemRow.Order.user_id === req.user.id)
             return resolve(orderItemRow);
-        else
-            return reject("Access Denied, Not Authorized to cancel the order")
+        else if(req.user.VendorStatus && req.user.Vendor && (orderItemRow.Product.vendor_id === req.user.Vendor.id))
+            return resolve(orderItemRow);
+        else 
+            return reject(resMessage("BAD_REQUEST", "Access Denied, Not Authorized to cancel the order"));
       }).catch(err => {
-        return reject("Not Found");
+        return reject(resMessage("BAD_REQUEST", "Order item Not Found"));
       });
 
   });
+}
+
+function checkAlreadyRefunded(orderItemRow, resolve, reject){
+    
+    
+    
 }
 
 export function deleteCard(req, res) {

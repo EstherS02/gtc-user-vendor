@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         attr_required: {
             type: DataTypes.INTEGER,
             field: 'attr_required',
-            allowNull: false
+            allowNull: true
         },
         unit: {
             type: DataTypes.STRING(10),

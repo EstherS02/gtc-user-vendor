@@ -11,18 +11,17 @@
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			       type: 'PUT',
-				    data: input,
+			type: 'PUT',
+				data: input,
 					success: function (result) {
-						location. reload(true);
+						location.reload(true);
 					},
 			error: function (error) {
 				console.log("error", error);
 			}
 		});
 	}
-});
-
+      });
 	$("#orderStatusChange").validate({
 		rules: {
 			order_status: "required"
@@ -31,7 +30,42 @@
 			order_status: "Please Select Order Status"
 		}
 	});
+
+	$("#cancelReason").submit(function(e){
+          e.preventDefault();
+          var cancelInput = $("#cancelReason :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+
+		  $.ajax({
+					url: '/api/payment/cancel-order/20',
+                   type: 'POST',
+				data: cancelInput,
+					success: function (result) {
+						console.log("========================================",result);
+					},
+			error: function (error) {
+				console.log("error", error);
+			}
+		});
+        });
+
    });
+
+	
+
+	$(function() {
+    $('input.required').click(function() {
+        var checked = $('input.required:checked').length;
+
+        if (checked != 0) {
+            $('#submitBtn').removeAttr('disabled');
+        }
+        else {
+            $('#submitBtn').attr('disabled', 'disabled');
+        }
+    });
+});
 </script>
 <section>
 	<div class="">
@@ -137,7 +171,9 @@
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{orderItems.Product.price}}</div>
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{orderItems.Product.price}}</p>
+											</div>
 										</div>
 									</td>
 									<td>
@@ -150,26 +186,32 @@
 									</td>
 									<td>
 										<div class="row">
-											<div class="col-md-12">${{quantityPrice orderItems.quantity orderItems.Product.price}}</div>
+											<div class="col-md-12">
+												<p class="shop_price_doller">${{quantityPrice orderItems.quantity orderItems.Product.price}}</p>
+												{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
+												<a id="remove-cart-{{orderItems.id}}"  href="javascript:;">
+													<p class="shop_total_remove text-center" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">CANCEL</p>
+												</a>
+												{{/ifCond}}
+                                            </div>
 										</div>
+										
 									</td>
 								</tr>
 								{{/ifCond}} {{/each}}
 							</tbody>
 						</table>
 					</div>
-					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
+					{{/each}} {{#ifCond this.type '==' ' sales-history '}}
 					<form id="orderStatusChange">
 						<div class="alert" id="gtc-form-alert">
-								<button type="button" class="close" data-dismiss="alert">
-									<span aria-hidden="true">&times;</span>
-								</button>
-								<span class="form-message"></span>
-							</div>
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div>
 						<div class="row text-center">
-							
-
-							<div class="col-md-3">
+                            <div class="col-md-3">
 								<p>
 									<b>Change Order Status:
 										<span class="text-danger">*</span>
@@ -181,6 +223,7 @@
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status" id="inputGroupSelect02">
 											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
+											<option value="2">Confirmed Order</option>
 											<option value="3">Processing Order</option>
 											<option value="4">Dispatched Order</option>
 											<option value="5">Delivered Order</option>
@@ -202,14 +245,14 @@
 					<div class="container">
 
 						{{#each marketPlaces as |marketplace|}} {{#each ../totalPriceList as |totalPrice|}} {{#ifCond marketplace.code '==' @key}}
-						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
+						<h6 class="{{cartPageClass marketplace ' CART-RIGHT '}}">{{cartPageClass marketplace 'LABEL '}} Summary</h6>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
+								<p class="shop_subtotal float-right">{{currency totalPrice.price '$ '}}</p>
 							</div>
 						</div>
 						<div class="row">
@@ -217,7 +260,7 @@
 								<p class="shop_shipping">Shipping Ground</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
+								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$ '}}</p>
 							</div>
 						</div>
 						<div class="row">
@@ -225,19 +268,19 @@
 								<p class="shop_subtotal">Subtotal</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
+								<p class="shop_subtotal float-right">{{currency totalPrice.total '$ '}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
 								<p class="shop_subtotal">
-									<b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b>
+									<b>{{cartPageClass marketplace 'LABEL '}} TOTAL</b>
 								</p>
 							</div>
 							<div class="col-md-4">
 								<p class="shop_subtotal float-right">
-									<b>{{currency totalPrice.total '$'}}</b>
+									<b>{{currency totalPrice.total '$ '}}</b>
 								</p>
 							</div>
 						</div>
@@ -252,37 +295,11 @@
 							</div>
 							<div class="col-md-4">
 								<p class="shop_subtotal float-right">
-									<b>{{currency totalPriceList.grandTotal '$'}}</b>
-								</p>
-							</div>
-						</div>
-						<hr class="common_margin" /> {{#ifCond couponData.length '>' 0}} {{#each couponData}}
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">
-									<b>DISCOUNT</b>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">
-									<b>{{currency this.discount_price '$'}}</b>
+									<b>{{currency totalPriceList.grandTotal '$ '}}</b>
 								</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">
-									<b>GRAND TOTAL</b>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">
-									<b>{{currency this.final_price '$'}}</b>
-								</p>
-							</div>
-						</div>
-						{{/each}} {{/ifCond}}
 					</div>
 					<div class="container">
 
@@ -382,7 +399,6 @@
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/if}}
-
 					</div>
 				</div>
 			</div>
@@ -390,3 +406,30 @@
 	</div>
 </section>
 {{> footer/bottom-footer}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content" style="background-color: #CCCCCC;">
+			<form id="cancelReason">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Reason for Cancellation</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+                    <div class="form-group">
+						<label for="email_id" class="col-form-label">Please enter the reason for order cancellation:</label>
+						<textarea class="form-control" name="reason_for_cancellation"></textarea>
+					</div>
+                    <div class="form-group">
+						<input class="required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;"/> Are you sure you want to cancel this item from you order?	
+					</div>
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" id="submitBtn" disabled="disabled" class="btn btn-submit">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
