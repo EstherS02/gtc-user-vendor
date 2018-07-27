@@ -86,7 +86,7 @@ export function makePayment(req, res) {
     }).then(orderPaymentRows => {
         let statusPromises = [];
         for (var i = 0; i < createdOrders.length; i++) {
-            createdOrders[i].order.order_status = orderStatus['PROCESSINGORDER'];
+            createdOrders[i].order.order_status = orderStatus['NEWORDER'];
             statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
         }
         return Promise.all(statusPromises);
