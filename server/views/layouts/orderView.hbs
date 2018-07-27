@@ -38,12 +38,12 @@
 			}).serialize();
 
 		  $.ajax({
-					url: '/api/payment/cancel-order/20',
-                   type: 'POST',
+				url: '/api/payment/cancel-order/186',
+                type: 'POST',
 				data: cancelInput,
 					success: function (result) {
 						console.log("========================================",result);
-					},
+				},
 			error: function (error) {
 				console.log("error", error);
 			}
@@ -51,8 +51,6 @@
         });
 
    });
-
-	
 
 	$(function() {
     $('input.required').click(function() {
