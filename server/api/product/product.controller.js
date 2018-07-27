@@ -147,16 +147,23 @@ export function importWoocommerce(req, res) {
 								.then(function(existingProductCount) {
 									var remainingProductLength = maximumProductLimit - existingProductCount;
 									if (allProducts.length <= remainingProductLength) {
+										var skippedProduct = 0;
+										var successProduct = 0;
 										async.eachSeries(allProducts, function iterater(product, callback) {
 											productService.importWooCommerceProducts(product, req)
 												.then((result) => {
+													successProduct += 1;
 													callback(null, result);
 												})
 												.catch(function(error) {
-													callback(error, null);
+													skippedProduct += 1;
+													callback(null, error);
 												});
 										}, function done() {
-											return res.status(200).send("Imported product successfully.");
+											var responseObj = {};
+											responseObj['skippedProduct'] = skippedProduct;
+											responseObj['successProduct'] = successProduct;
+											return res.status(200).send(responseObj);
 										});
 									} else {
 										return res.status(403).send("Limit exceeded to add product.");

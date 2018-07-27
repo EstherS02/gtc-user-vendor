@@ -8,7 +8,10 @@
 
 			var credentials = {};
 
+			$(':input[type="submit"]').prop('disabled', true);
+
 			if ($('#importForm').valid()) {
+				credentials['marketplace_id'] = 2;
 				credentials['store_url'] = $('#inputStoreURL').val();
 				credentials['consumer_key'] = $('#inputConsumerKey').val();
 				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
@@ -18,13 +21,13 @@
 					url: '/api/product/import-woocommerce',
 					data: credentials,
 					success: function(data, response) {
-						console.log("response", response);
-						console.log("response", response);
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products added and ' + data.skippedProduct + ' products failed.</p>');
+						 $('#importModal').modal('toggle');
 					},
 					error: function(request, status, error) {
 						console.log("request", request);
 						console.log("status", status);
-						console.log("error", error);
+						console.log("status", status);
 					}
 				});
 			}
@@ -50,6 +53,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="landing bg-white">
+                	<div id="logMessage"></div>
                     <div class="icon-import">
                     	<svg xmlns="http://www.w3.org/2000/svg" width="73.5" height="58" viewBox="0 0 73.5 58"><g fill="#D9D9DA"><path d="M0 33.4c3.2.1 6.5.1 9.7.2h2.5v12.2h49V33.4h12.3V58H0V33.4zM54.8 15.2c-6.2 6.1-12.1 12-17.8 17.7L19.3 15.2h8.3V0H46v15.2h8.8z"/></g></svg>
                     </div>
@@ -86,7 +90,7 @@
                     <div class="row m-t-lg">
                     	<div class="col-md-12">
                     		<p><small>or</small></p>
-                    		<button class="btn btn-small font-weight-bold">ADD YOUR FIRST PRODUCT</button>
+                    		<a href="listings/shop/add-product" class="btn btn-gray button-small font-weight-bold">ADD YOUR FIRST PRODUCT</a>
                     		<p class="m-t-lg"><small>Please note: Global Trade Connect is not responsible for any information not imported and it is recommend that the check the products to ensure the information has been relayed properly.</small></p>
                     	</div>
                     </div>
