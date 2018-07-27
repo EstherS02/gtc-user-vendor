@@ -170,33 +170,51 @@
 		const pathname = location.pathname.split('/')[1];
 		if (pathname == "directory") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH DIRECTORY');
+			$(".marketplace-dropdown:first-child").html('SEARCH DIRECTORY');
 			$(".directory-b-b").addClass("directory-menu");
 			$(".marketplace-dropdown").addClass("directory-menu");
+			$("#searchListCategory").addClass("directory-menu");
+			$("#searchListMarketplace").addClass("directory-menu");
+			$("#searchListLocation").addClass("directory-menu");
 		} else if (pathname == "wholesale") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH WHOLESALE');
+			$(".marketplace-dropdown:first-child").html('SEARCH WHOLESALE');
 			$(".wholesale-b-b").addClass("wholesale-menu");
 			$(".marketplace-dropdown").addClass("wholesale-menu");
+			$("#searchListCategory").addClass("wholesale-menu");
+			$("#searchListMarketplace").addClass("wholesale-menu");
+			$("#searchListLocation").addClass("wholesale-menu");
 		} else if (pathname == "shop") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH SHOP');
+			$(".marketplace-dropdown:first-child").html('SEARCH SHOP');
 			$(".shop-b-b").addClass("shop-menu");
 			$(".marketplace-dropdown").addClass("shop-menu");
+			$("#searchListCategory").addClass("shop-menu");
+			$("#searchListMarketplace").addClass("shop-menu");
+			$("#searchListLocation").addClass("shop-menu");
 		} else if (pathname == "services") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH SERVICES');
+			$(".marketplace-dropdown:first-child").html('SEARCH SERVICES');
 			$(".service-b-b").addClass("service-menu");
 			$(".marketplace-dropdown").addClass("service-menu");
+			$("#searchListCategory").addClass("service-menu");
+			$("#searchListMarketplace").addClass("service-menu");
+			$("#searchListLocation").addClass("service-menu");
 		} else if (pathname == "lifestyle") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH LIFESTYLE');
+			$(".marketplace-dropdown:first-child").html('SEARCH LIFESTYLE');
 			$(".lifestyle-b-b").addClass("lifestyle-menu");
 			$(".marketplace-dropdown").addClass("lifestyle-menu");
+			$("#searchListCategory").addClass("lifestyle-menu");
+			$("#searchListMarketplace").addClass("lifestyle-menu");
+			$("#searchListLocation").addClass("lifestyle-menu");
 		} else if (pathname == "products") {
 			$("#topSearchForm").removeClass("search-form-home");
-			$(".btn:first-child").html('SEARCH PRODUCTS');
+			$(".marketplace-dropdown:first-child").html('SEARCH PRODUCTS');
 			$(".products-b-b").addClass("products-menu");
+			$("#searchListCategory").addClass("products-menu");
+			$("#searchListMarketplace").addClass("products-menu");
+			$("#searchListLocation").addClass("products-menu");
 		} else {
 			$("#searchBtnGrp").css("display", "none");
 		}

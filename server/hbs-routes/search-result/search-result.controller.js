@@ -14,7 +14,6 @@ export function index(req, res) {
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 
-
 	var selectedLocation = 0;
 	var selectedCategory = 0;
 	var selectedSubCategory = 0;
@@ -132,7 +131,7 @@ export function index(req, res) {
 		queryParameters['field'] = req.query.field;
 	}
 	queryParameters['status'] = status["ACTIVE"];
-	selectedMarketPlace = req.query.marketplace;
+	//selectedMarketPlace = req.query.marketplace;
 	async.series({
 		categories: function(callback) {
 			var includeArr = [];
@@ -333,7 +332,6 @@ export function index(req, res) {
 				});
 		}
 	}, function(error, results) {
-		console.log(LoggedInUser)
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('search', {

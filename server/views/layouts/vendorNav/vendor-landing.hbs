@@ -17,11 +17,14 @@
 					type: 'POST',
 					url: '/api/product/import-woocommerce',
 					data: credentials,
-					success: function(data, text) {
-						
+					success: function(data, response) {
+						console.log("response", response);
+						console.log("response", response);
 					},
 					error: function(request, status, error) {
-
+						console.log("request", request);
+						console.log("status", status);
+						console.log("error", error);
 					}
 				});
 			}
