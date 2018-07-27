@@ -38,6 +38,14 @@ export function notifications(req, res) {
 		};
 
 		async.series({
+			cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			notifications: function(callback) {
 
 				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
@@ -81,6 +89,7 @@ export function notifications(req, res) {
 					notification: results.notifications.rows,
 					categories: results.categories,
                     bottomCategory: bottomCategory,
+                    cartheader:results.cartCounts,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'notifications',
 					vendorPlan: vendorPlan

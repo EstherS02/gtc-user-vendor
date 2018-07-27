@@ -52,6 +52,14 @@ export function wishlist(req, res) {
 		attributes:['first_name','last_name']
 	}];
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
@@ -93,6 +101,7 @@ export function wishlist(req, res) {
 					count: results.wishlist.count,
 					categories: results.categories,
 				    bottomCategory: bottomCategory,
+				    cartheader: results.cartCounts,
 					LoggedInUser: LoggedInUser,
 					vendorPlan:vendorPlan
 				});

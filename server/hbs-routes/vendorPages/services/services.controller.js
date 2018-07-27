@@ -60,6 +60,14 @@ export function vendorServices(req, res) {
 
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		publicService: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(response) {
@@ -163,6 +171,7 @@ export function vendorServices(req, res) {
 				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
+				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services',
 				Plan: Plan,

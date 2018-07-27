@@ -53,6 +53,14 @@ export function reviews(req, res) {
 	var maxSize;
 	// End pagination
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 		var includeArr = [];
             const categoryOffset = 0;
@@ -164,6 +172,7 @@ export function reviews(req, res) {
 					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
+					cartheader: results.cartCounts,
                     bottomCategory: bottomCategory,
 					// pagination
 					page: page,

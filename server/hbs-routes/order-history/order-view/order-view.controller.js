@@ -26,7 +26,14 @@ export function orderView(req, res) {
     orderIncludeArr = populate.populateData('Shipping');
 
     async.series({
-
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
@@ -171,6 +178,7 @@ export function orderView(req, res) {
                 totalPriceList: totalPrice,
                 orderStatus: orderStatus,
                 categories: results.categories,
+                cartheader:results.cartCounts,
                 bottomCategory: bottomCategory
             }
             return res.status(200).render('orderView', result_obj);

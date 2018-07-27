@@ -25,6 +25,14 @@ export function cart(req, res) {
 
 
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
         cartItems: function(cb) {
 
             var queryObj = {};
@@ -178,6 +186,7 @@ export function cart(req, res) {
                 LoggedInUser: LoggedInUser,
                 categories: results.categories,
                 bottomCategory: bottomCategory,
+                cartheader:results.cartCounts,
                 couponData: [],
                 couponUpdateError: "",
                 couponUpdateErrorMessage: ""

@@ -23,6 +23,14 @@ export function tax(req, res) {
 
     let user_id = LoggedInUser.id;
     async.series({
+        cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
             categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
@@ -59,6 +67,7 @@ export function tax(req, res) {
                     selectedPage: 'tax',
                     orderStatus: orderStatus,
                     vendorPlan: vendorPlan,
+                    cartheader: results.cartCounts,
                     LoggedInUser: LoggedInUser,
                     dropDownUrl: dropDownUrl,
                     // pagination

@@ -134,6 +134,14 @@ export function index(req, res) {
 	queryParameters['status'] = status["ACTIVE"];
 	selectedMarketPlace = req.query.marketplace;
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -357,6 +365,7 @@ export function index(req, res) {
 				locations: results.locations,
 				categoriesWithCount: results.categoriesWithCount,
 				marketplaceURl: marketplaceURl,
+				cartheader: results.cartCounts,
 			});
 		} else {
 			res.render('search', error);

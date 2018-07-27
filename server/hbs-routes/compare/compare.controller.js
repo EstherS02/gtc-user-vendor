@@ -19,6 +19,14 @@ export function compare(req, res) {
 
 	let user_id = LoggedInUser.id;
 	async.series({
+            cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 			categories: function(callback) {
                 var includeArr = [];
                 const categoryOffset = 0;
@@ -48,6 +56,7 @@ export function compare(req, res) {
 					title: "Global Trade Connect",
 					categories: results.categories,
                 	bottomCategory: bottomCategory,
+                    cartheader:results.cartCounts,
 					LoggedInUser: LoggedInUser
 				});
 			} else {

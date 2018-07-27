@@ -55,6 +55,14 @@ export function vendorDiscussion(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		discussion: function(callback) {
 			service.findRows(discussModel, queryObj, offset, limit, field, order)
 				.then(function(response) {
@@ -141,6 +149,7 @@ var vendorIncludeArr = [{
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail : results.VendorDetail,
 				marketPlace: marketplace,
+				cartheader:results.cartCounts,
 				queryURI:queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,

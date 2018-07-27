@@ -47,6 +47,14 @@ export function GetProductDetails(req, res) {
 	var product_id;
 	var queryURI = {};
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -311,6 +319,7 @@ export function GetProductDetails(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				marketplace: marketplace,
 				selectedPage: selectedPage,
+				cartheader:results.cartCounts,
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser,
 				Plan: Plan,
@@ -371,6 +380,14 @@ export function GetProductReview(req, res) {
 	var includeArr = [];
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		Product: function(callback) {
 			var includeArr1 = [{
 				model: model["ProductMedia"],
@@ -610,6 +627,7 @@ export function GetProductReview(req, res) {
 				pageSize: limit,
 				collectionSize: results.Review.count,
 				queryParams: queryParams,
+				cartheader:results.cartCounts,
 				Plan: Plan,
 			});
 		} else {
