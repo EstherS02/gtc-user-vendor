@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         sku: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(32),
             field: 'sku',
             allowNull: false
         },
