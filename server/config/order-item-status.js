@@ -1,0 +1,4 @@
+module.exports = {
+    "ORDER_CANCELLED_AND_REFUND_INITIATED": 1,
+    "REFUND_FAILED": 2
+}

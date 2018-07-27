@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        order_payment_type: {
+            type: DataTypes.INTEGER,
+            field: 'order_payment_type',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
