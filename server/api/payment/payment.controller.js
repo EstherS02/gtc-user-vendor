@@ -4,11 +4,14 @@ const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
 const paymentMethod = require('../../config/payment-method');
 const _ = require('lodash');
 const moment = require('moment');
+const ORDER_ITEM_STATUS = require('../../config/order-item-status');
+const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 
 
 const stripe = require('../../payment/stripe.payment');
@@ -372,21 +375,104 @@ function savePaymentSetting(user, card, isPrimary) {
     return service.createRow('PaymentSetting', paymentSetting);
 }
 
+
+function resMessage(message, messageDetails){
+    return {
+        message: message,
+        messageDetails: messageDetails
+    };
+}
+
 export function cancelOrder(req, res) {
+    if(!req.body)
+        return res.status(400).send(resMessage("BAD_REQUEST", "Missing one or more required Parameters"));
+    if(!req.body.reason_for_cancellation)
+        return res.status(400).send(resMessage("BAD_REQUEST", "No Reason for cancellation"));
 
+    let orderItem, paymentObj, refundObj;
 
-
-
-
-
-
-    return;
+        processCancelOrder(req)
+        .then(orderItemObj => {
+            orderItem = orderItemObj;
+            let includeArray = [];
+            includeArray = populate.populateData("Payment");
+            return service.findRow('OrderPayment', { order_id: orderItemObj.order_id }, includeArray);
+        }).then(paymentRow => {
+            paymentObj = JSON.parse(JSON.stringify(paymentRow));
+            let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
+            let refundAmt = parseInt(orderItem.final_price);
+            return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
+        }).then(refundRow => {
+            refundObj = refundRow;
+            let paymentModel = {
+                refund_date: new Date(refundRow.created),
+                refund_amount: refundRow.amount / 100.0,
+                payment_method: paymentMethod['STRIPE'],
+                status: status['ACTIVE'],
+                payment_response: JSON.stringify(refundRow),
+                created_by: req.user.first_name, 
+                created_on: new Date()
+            };
+            return service.createRow('Payment', paymentModel);
+        }).then(createdPaymentRow => {
+            let orderPaymentModel = {
+                order_id: orderItem.order_id,
+                payment_id: createdPaymentRow.id,
+                order_payment_type : ORDER_PAYMENT_TYPE['REFUND'],
+                status: status['ACTIVE'], 
+                created_by: req.user.first_name, 
+                created_on: new Date()
+            }
+            return service.createRow('OrderPayment', orderPaymentModel);
+        }).then(createdOrderPaymentRow => {
+            let updateOrderItem = {
+                reason_for_cancellation: req.body.reason_for_cancellation,
+                cancelled_on: new Date(),
+                order_item_status: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'],
+                last_updated_by: req.user.first_name,
+                last_updated_on: new Date()
+            }
+            return service.updateRow('OrderItem', updateOrderItem , orderItem.id);
+        }).then(successPromise => {
+            return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+        }).catch(error => {
+            console.log("Error", error)
+            if(!refundObj){
+                let updateCancelledOrderItem = {
+                    reason_for_cancellation: req.body.reason_for_cancellation,
+                    cancelled_on: new Date(),
+                    order_item_status: ORDER_ITEM_STATUS['REFUND_FAILED'],
+                    last_updated_by: req.user.first_name,
+                    last_updated_on: new Date()
+                }
+                service.updateRow('OrderItem', updateCancelledOrderItem , orderItem.id)
+                .then(updatedSuccess => {                    
+                    return res.status(500).send(resMessage("ERROR", "Failed to Refund"));
+                }).catch(err =>{
+                    return res.status(500).send(resMessage("ERROR", err));
+                });
+            }
+        });
 
 }
 
+function processCancelOrder(req) {
+  return new Promise((resolve, reject) => {
+    let includeArray = [];
+    includeArray = populate.populateData("Order");
+    service.findRow('OrderItem', { id: req.params.orderItemId }, includeArray)
+      .then(orderItemRow => {
+        orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
+        if(orderItemRow.Order.user_id === req.user.id)
+            return resolve(orderItemRow);
+        else
+            return reject("Access Denied, Not Authorized to cancel the order")
+      }).catch(err => {
+        return reject("Not Found");
+      });
 
-
-
+  });
+}
 
 export function deleteCard(req, res) {
     service.findRow('PaymentSetting', {id: req.body.paymentSettingId}, [])

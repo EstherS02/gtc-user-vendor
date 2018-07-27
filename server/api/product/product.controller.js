@@ -6,6 +6,7 @@ const WooCommerceAPI = require('woocommerce-api');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const productService = require('./product.service');
 const marketplace = require('../../config/marketplace.js');
 const marketplaceType = require('../../config/marketplace_type.js');
 const status = require('../../config/status');
@@ -147,7 +148,15 @@ export function importWoocommerce(req, res) {
 									var remainingProductLength = maximumProductLimit - existingProductCount;
 									if (allProducts.length <= remainingProductLength) {
 										async.eachSeries(allProducts, function iterater(product, callback) {
-											console.log('product::::::::', product);
+											productService.importWooCommerceProducts(product, req)
+												.then((result) => {
+													callback(null, result);
+												})
+												.catch(function(error) {
+													callback(error, null);
+												});
+										}, function done() {
+											return res.status(200).send("Imported product successfully.");
 										});
 									} else {
 										return res.status(403).send("Limit exceeded to add product.");

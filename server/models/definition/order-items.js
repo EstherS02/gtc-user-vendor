@@ -67,6 +67,21 @@ module.exports = (sequelize, DataTypes) => {
             field: 'final_price',
             allowNull: false
         },
+        reason_for_cancellation: {
+            type: DataTypes.STRING(24),
+            field: 'reason_for_cancellation',
+            allowNull: true
+        },
+        order_item_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_item_status',
+            allowNull: true
+        },
+        cancelled_on: {
+            type: DataTypes.DATE,
+            field: 'cancelled_on',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

@@ -19,6 +19,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'paid_amount',
             allowNull: true
         },
+        refund_date: {
+            type: DataTypes.DATE,
+            field: 'refund_date',
+            allowNull: true
+        },
+        refund_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'refund_amount',
+            allowNull: true
+        },
         payment_method: {
             type: DataTypes.INTEGER,
             field: 'payment_method',
