@@ -14,7 +14,7 @@
     
 }
 
-@media screen and (min-width: 1281px) and (max-width: 1360px) {
+@media screen and (min-width: 1281px) and (max-width: 1375px) {
     .gtc-container {
     	max-width: 1230px;
     }
@@ -25,7 +25,7 @@
 		display: table;
 	}
 	.main-nav .nav-link {
-		font-size: 12px;
+		font-size: 0.75em;
 	}
 	ul.main-nav li.nav-item {
 		display: table-cell;
@@ -33,40 +33,24 @@
 	.brand-logo, .main-navbar {
 		margin-top: 12px;
 	}
-	.navbar-dark .main-nav .nav-link {
-		text-align: center;
-	}
-	/*ul.vp-nav li.nav-item {
-		display: table-cell;
-	}*/
-	.top-header {
-		margin-bottom: -26px;
-	}
-	.col-5x {
-	    max-width: 45%;
-	    flex: 0 0 45%;
-	}
-	.col-6x {
-	    max-width: 55%;
-	    flex: 0 0 55%;
-	}
 	.gtc-top-header {
 		padding-left: 10px;
-		/*margin-left: 19px;
-		padding-right: 62px;*/
 		border-bottom-left-radius: 10px;
 	}
 	.landing {
 		margin: 0 150px;
 	}
+	.signup-left {
+		border-right: 3px solid #d98636;
+	}
 }
 
-@media screen and (min-width: 1361px) and (max-width: 1440px) {
- 	 .gtc-container {
+@media screen and (min-width: 1376px) and (max-width: 1440px) {
+    .gtc-container {
     	max-width: 1293px;
     }
     .gtc-top-header {
-    	margin-right: -12%;
+    	margin-right: -11%;
     }
     .main-nav {
 		display: table;
