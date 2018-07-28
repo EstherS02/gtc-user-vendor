@@ -15,7 +15,7 @@
 			e.preventDefault();
 
 			var credentials = {};
-
+			$("#popupError p").remove();
 			$(':input[type="submit"]').prop('disabled', true);
 
 			if ($('#importForm').valid()) {
