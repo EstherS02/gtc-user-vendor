@@ -219,15 +219,24 @@
                   />
                   <label for="passport" class="upload-id-card">National Id card</label>
                   <br>
+                  <div class="input-group">
                   <input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
                   />
                   <label for="passport" class="upload-id-card">Driving license</label>
-                  <div class="custom-file">
+                 {{!--  <div class="custom-file">
                     <input id="personalIdProof" type="file" class="custom-file-input file-uploade">
                     <label for="personalIdProof" class="custom-file-label">Browse...</label>
+                  </div> --}}
+                  
+                      <div class="custom-file custom_error_message">
+                          <input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof">
+                          <label class="custom-file-label customized-file-label" for="personalIdProof">Choose file</label>
+                      </div>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
                   </div>
+               
                   {{!-- <input class="upload-btn1" type="button" id="personalId" value="SUBMIT">  --}}
-                  <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  
                   {{#if verification.personal_id_verification_file_link }}
                   <img id="img1_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
                   /> {{/if}}
@@ -263,13 +272,20 @@
                   Please atleast one utility bill which has the name of the Personal Address you've registered on it
                 </p>
                 <div class="col-md-8">
-                  <div class="custom-file">
+                  {{!-- <div class="custom-file">
                     <input id="personalAddressProof" type="file" class="custom-file-input file-uploade">
                     <label for="personalAddressProof" class="custom-file-label">Browse...
                     </label>
-                  </div>
+                  </div> --}}
                   {{!-- <input class="upload-btn1" type="button" id="personalAddress" value="SUBMIT"> --}}
-                    <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                    {{!-- <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button> --}}
+                    <div class="input-group">
+                        <div class="custom-file custom_error_message">
+                          <input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof">
+                          <label class="custom-file-label customized-file-label" for="personalAddressProof">Choose file</label>
+                      </div>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  </div>
 
                   <br>
                   <input type="hidden" id="personal_address_verification_file_link"> {{#if verification.personal_address_verification_file_link }}
@@ -310,13 +326,21 @@
                   Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
                 </p>
                 <div class="col-md-8">
-                  <div class="custom-file">
+                  {{!-- <div class="custom-file">
                     <input id="businessIdProof" type="file" class="custom-file-input file-uploade">
                     <label for="businessIdProof" class="custom-file-label">Browse...
                     </label>
                   </div>
+                   <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button> --}}
                   {{!-- <input class="upload-btn1" type="button" id="businessId" value="SUBMIT"> --}}
-                   <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+
+                   <div class="input-group">
+                        <div class="custom-file custom_error_message">
+                          <input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof">
+                          <label class="custom-file-label customized-file-label" for="businessIdProof">Choose file</label>
+                      </div>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  </div>
                   <br>
                   <img id="img3" alt="your image" class="verification-id" style="object-fit: contain;" />
                   <input type="hidden" id="business_verification_file_link"> {{#if verification.business_verification_file_link }}
@@ -351,12 +375,20 @@
                 <br>
                 <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
                 <div class="col-md-8">
-                  <div class="custom-file">
+                  {{!-- <div class="custom-file">
                     <input id="businessAddressProof" type="file" class="custom-file-input file-uploade">
                     <label for="businessAddressProof" class="custom-file-label">Browse...</label>
                   </div>
+                  <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button> --}}
                   {{!-- <input class="upload-btn1" type="button" id="businessAddress" value="SUBMIT"> --}}
-                  <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  
+                  <div class="input-group">
+                        <div class="custom-file custom_error_message">
+                          <input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof">
+                          <label class="custom-file-label customized-file-label" for="businessAddressProof">Choose file</label>
+                      </div>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  </div>
                   <br>
                   <br>
                   <img id="img4" alt="your image" class="verification-id" style="object-fit: contain;" />

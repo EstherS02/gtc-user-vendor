@@ -309,9 +309,7 @@ a:hover {
 .home-banner {
     background: url(../img/signup-hero-home.jpg);
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: left center;
-    min-height: 380px;
+    background-size: 56% auto;
 }
 .home-banner-right h1 {
     font-family: 'Oswald', sans-serif;
@@ -755,7 +753,7 @@ ul.footer-social-links li a img {
     margin-bottom: 5px;
 }
 .label-control {
-    font-size: 13px;
+    font-size: 0.813em;
     margin-bottom: 5px;
     line-height: 1.6;
 }
@@ -1113,4 +1111,45 @@ label {
 .search-list-body {
     background: #ffffff;
     padding: 0 15px;   
+}
+#signUpForm input {
+    background: none;
+}
+.category-section {
+    padding: 3rem 0;
+}
+.category-section .category-title {
+    font-size: 0.813em;
+    font-weight: 500;
+    text-decoration: none;
+    text-shadow: none;
+}
+.product_banner{
+    color: #fff;
+    background-color:#505968;
+}
+.vendor-public-left-side {
+    font-size: 0.688em;
+    padding: 10px 5px;
+    line-height: 1.6;
+}
+.vendor-product {
+    padding: 10px 0;
+}
+.p-categories ul.categories-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.p-categories ul.categories-list li a {
+    font-size: 0.688em;
+}
+.p-categories ul.sub-categories-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.p-categories ul.sub-categories-list li a {
+    font-size: 0.688em;
+    padding-left: 5px;
 }

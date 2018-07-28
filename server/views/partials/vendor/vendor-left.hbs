@@ -1,78 +1,24 @@
-  <div class="row profile_logged_in_body2_bg_color_1  " >
-    {{#navbarSetting LoggedInUser.Vendor.id selectedPage}}
-    <div class="col-md-5 col-5 "  >
-      <p class="profile_logged_in_body2_font_1">joined:</p>
+<div class="vendor-public-left-side">
+  {{#navbarSetting LoggedInUser.Vendor.id selectedPage}}
+  <div class="row no-margins">
+    <div class="col-6 no-padding">Joined</div>
+    <div class="col-6 no-padding">{{formatTime VendorDetail.created_on "MMMM Y"}}</div>
+    <div class="col-6 no-padding">Location</div>
+    <div class="col-6 no-padding">
+      <img src="../img/flag-ca.png"> {{VendorDetail.Country.name}}
     </div>
-    <div class="col-md-7 col-7"  >
-      <p class="jan_style">{{formatTime VendorDetail.created_on "MMMM Y"}}</p>
-    </div>
-  </div>
-  <div class="row profile_logged_in_body2_bg_color_1  " >
-    <div class="col-md-5 col-5 "  >
-      <p class="profile_logged_in_body2_font_1">Location:</p>
-    </div>
-    <div class="col-md-7 col-7"  >
-      <p class="profile_logged_in_body2_font_2"><img src="../img/flag-ca.png"> {{VendorDetail.Country.name}}</p>
-    </div>
-  </div>
-  <div class="row profile_logged_in_body2_bg_color_1  " >
-    <div class="col-md-5 col-5 "  >
-      <p class="profile_logged_in_body2_font_1">Catagory:</p>
-    </div>
-    <div class="col-md-7 col-7"  >
-      <p class="profile_logged_in_body2_font_2">
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.WHOLESALER}}
-        Wholesale
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.BULK_BUYER}}
-        Bulk buyer
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.PUBLIC_SELLER}}
-        Shop
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.LIFESTYLE_PROVIDER}}
-        Lifestyle
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plan.SERVICE_PROVIDER}}
-        Service
-        {{/ifCond}}
-        {{#ifCond VendorDetail.VendorPlans.[0].plan_id '==' Plans.STARTER_SELLER}}
-        Start seller
-        {{/ifCond}}
-        {{!-- {{VendorDetail.VendorPlans.[0].plan_id}} --}}
-       
-      </p>
-    </div>
-  </div>
-  <div class="row profile_logged_in_body2_bg_color_1  " >
-    <div class="col-md-5 col-5 "  >
-      <p class="profile_logged_in_body2_font_1">User Rating:</p>
-    </div>
-    <div class="col-md-7 col-7"  >
-      <p style="margin-bottom: 0px;font-size: 10px;">
-        {{#if VendorDetail.VendorRatings.[0].rating}}
+    <div class="col-6 no-padding">User Rating</div>
+    <div class="col-6 no-padding">
+      {{#if VendorDetail.VendorRatings.[0].rating}}
         {{starCount VendorDetail.VendorRatings.[0].rating}}
         {{else}}
         {{starCount 0}}
-        {{/if}}
-      </p>
-      <p class="profile_logged_in_body2_font_2"><a href="/vendor-rating">(Ratings-See All)</a></p>
+      {{/if}}
+      <a href="/vendor-rating">(Ratings-See All)</a>
     </div>
   </div>
-
-  <div class=" row col-md-12 col-12" style="margin-top: 10px;padding-right: 0px;" >
-    <a href="{{VendorDetail.facebook_url}}"><i class="fab fa-facebook-f social_logged"></i></a>
-    <a href="{{VendorDetail.youtube_url}}"><i class="fab fa-youtube social_logged"></i></a>
-    <a href="{{VendorDetail.twitter_url}}"><i class="fab fa-twitter social_logged"></i></a>
-    <a href="{{VendorDetail.instagram_url}}"><i class="fab fa-instagram social_logged"></i></a>
-    <a href="{{VendorDetail.linkedin_url}}"><i class="fab fa-linkedin-in social_logged"></i></a>
-    <a href="{{VendorDetail.flickr_url}}"><i class="fab fa-flickr social_logged"></i></a>
-    <p class="profile_logged_in_body2_font_3">Accepted Payment Methods:</p>
-    <img width="100%" src="../img/payment-methods.jpg">
-    <p class="profile_logged_in_body2_font_1">
-      At {{VendorDetail.vendor_name}} ,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans they need to buy a vehicle.
-    </p>
-    {{else}}
-    {{/navbarSetting }}
-  </div>
-
+  <span class="m-t-sm d-block m-b-xs">Accepted Payment Methods</span>
+  <img src="../img/payment-methods.jpg" class="img-fluid">
+  <p class="m-t-xs">At {{VendorDetail.vendor_name}} ,getting your car loan with bad credit or no credit isn't just possible,it's easy!We get Canadians the loans they need to buy a vehicle.</p>
+  {{/navbarSetting }}
+</div>

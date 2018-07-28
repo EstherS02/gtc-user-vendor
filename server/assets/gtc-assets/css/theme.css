@@ -40,6 +40,9 @@
 	background: #8bb0dd;
   	color: #FFFFFF;		
 }
+.bg-transparent {
+  background: transparent;
+}
 .bg-shop {
   background: #0f478c;
   color: #fff;
@@ -198,10 +201,10 @@
   border-top: 0 !important;
 }
 .p-n-r {
-    padding-right: 0;
+    padding-right: 0 !important;
 }
 .p-n-l {
-    padding-left: 0;
+    padding-left: 0 !important;
 }
 .gtc-p-l-r {
   padding-left: 25px;
