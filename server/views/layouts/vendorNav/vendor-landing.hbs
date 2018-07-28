@@ -3,6 +3,14 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('#btnFaSpinner').hide();
+
+		$('input[type="text"]').keyup(function() {
+			if ($(this).val() != '') {
+				$(':input[type="submit"]').prop('disabled', false);
+			}
+		});
+
 		$("#importForm").submit(function(e) {
 			e.preventDefault();
 
@@ -15,19 +23,19 @@
 				credentials['store_url'] = $('#inputStoreURL').val();
 				credentials['consumer_key'] = $('#inputConsumerKey').val();
 				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
-
+				$('#btnFaSpinner').show()
 				$.ajax({
 					type: 'POST',
 					url: '/api/product/import-woocommerce',
 					data: credentials,
 					success: function(data, response) {
-						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products added and ' + data.skippedProduct + ' products failed.</p>');
-						 $('#importModal').modal('toggle');
+						$('#btnFaSpinner').hide();
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products added successfully.</p>');
+						$('#importModal').modal('toggle');
 					},
-					error: function(request, status, error) {
-						console.log("request", request);
-						console.log("status", status);
-						console.log("status", status);
+					error: function(response, status, error) {
+						$('#btnFaSpinner').hide();
+						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
 					}
 				});
 			}
@@ -111,13 +119,13 @@
 					<div class="row">
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
-	                            <label class="label-control">Your store URL</label>
+	                            <label class="label-control d-block">Your store URL <a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#requirements">Requirements for woocommerce setup</a></label>
 	                            <input type="text" id="inputStoreURL" name="store_url" class="form-control-customized form-control-sm" required/>
 	                        </div>
 	                    </div>
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
-	                            <label class="label-control">Your consumer key</label>
+	                            <label class="label-control d-block">Generating API Key and Secret <a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#rest-api-keys">Requirements for woocommerce setup</a></label>
 	                            <input type="text" id="inputConsumerKey" name="consumer_key" class="form-control-customized form-control-sm" required/>
 	                        </div>
 	                    </div>
@@ -127,11 +135,12 @@
 	                            <input type="text" id="inputConsumerSecret" name="consumer_secret" class="form-control-customized form-control-sm" required/>
 	                        </div>
 	                    </div>
+	                    <div class="col-lg-12" id="popupError"></div>
 	                </div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" class="btn btn-small btn-primary"><b>Submit</b></button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
 				</div>
 			</form>
 		</div>

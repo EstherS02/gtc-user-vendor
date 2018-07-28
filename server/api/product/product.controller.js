@@ -187,7 +187,7 @@ export function importWoocommerce(req, res) {
 			}
 		}).catch(function(error) {
 			console.log("Error::::", error);
-			return res.status(500).send('Internal server error.');
+			return res.status(400).send(error);
 		});
 }
 
@@ -199,17 +199,19 @@ function getWooCommerceProducts(perPageLimit, WooCommerce) {
 		function callWooCommerceMethod(pageCount) {
 			pageCount += 1;
 			WooCommerce.get('products?per_page=' + perPageLimit + '&page=' + pageCount, function(error, data, response) {
-				if (response !== null) {
-					var responseProduct = JSON.parse(response);
-					if (responseProduct.length < perPageLimit) {
-						products = products.concat(responseProduct);
+				var resp = JSON.parse(response);
+				if (Array.isArray(resp)) {
+					if (resp.length < perPageLimit) {
+						products = products.concat(resp);
 						resolve(products);
 					} else {
-						products = products.concat(responseProduct);
+						products = products.concat(resp);
 						callWooCommerceMethod(pageCount);
 					}
+				} else if (resp.code == 'woocommerce_rest_authentication_error') {
+					reject("Invalid signature - provided signature does not match.");
 				} else {
-					resolve(products);
+					reject(error);
 				}
 			});
 		}
