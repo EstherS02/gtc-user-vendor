@@ -19,7 +19,7 @@
                     <div class="col-md-6 col-6" style="padding-left: 8px; padding-right: 0px;">
                         <h5 class="log_doller_value">${{this.product_price}}</h5>
                         <p class="profile_logged_in_body2_font_para">SAVE $20 <span class="log_left_style">12m left</span></p>
-                        <p class="profile_logged_in_body2_font_para_1">{{this.product_name}}Free-15off for the month Augest</p>
+                        <p class="profile_logged_in_body2_font_para_1"><a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>  -Free 15%off for the month Augest</p>
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-4 col-4">
@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                         </div>
-                        <input type="submit" value="VIEW" class="profile_logged_in_body2_view_buttion"/>
+                        <a href="/products/{{this.product_slug}}/{{this.id}}" class="profile_logged_in_body2_view_buttion btn" style="color:#fff">VIEW</a>
                     </div>
                 </div>
                 {{/each}}
@@ -44,7 +44,7 @@
                         <img width="100%" src="{{this.product_base_image}}" style="border-radius:50%" height="90px">
                     </div>
                     <div class="col-md-8 col-8" style="margin-top:10px;">
-                        <P class="profile_logged_in_body2_font_para_1">{{this.product_name}}-Free 20% off </P>
+                        <P class="profile_logged_in_body2_font_para_1"><a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>-Free 20% off </P>
                         {{#if product_quantity}}
                         <p class="profile_logged_in_body2_font_para_1">Availability {{this.product_quantity}} Remaining</p>{{/if}}
                         <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20 <span class="log_left_style">12m left!</span></p>
@@ -64,7 +64,7 @@
                         <img width="100%" src="{{this.product_base_image}}" style="border-radius:50%" height="90px">
                     </div>
                     <div class="col-md-8 col-8" style="margin-top:10px;">
-                        <P class="profile_logged_in_body2_font_para_1">{{this.product_name}}-Free 20% off </P>
+                        <P class="profile_logged_in_body2_font_para_1"><a href="/products/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>-Free 20% off </P>
                         {{#if product_quantity}}
                         <p class="profile_logged_in_body2_font_para_1">Availability {{this.product_quantity}} Remaining</p>{{/if}}
                         <p class="profile_logged_in_body2_font_para"> ${{this.product_price}} - Save $20 <span class="log_left_style">12m left!</span></p>

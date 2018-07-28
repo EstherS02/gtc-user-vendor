@@ -130,6 +130,25 @@
 	}
 
 </script>
+<script type="text/javascript">
+function compareProduct(e){
+	var productSpecs = {{{DisplayJSON product}}}
+	var compareData = JSON.parse(sessionStorage.getItem("compareProducts"));
+	console.log(compareData.length)
+	var len = compareData.length; 
+	if(len==3){
+		compareData.splice(0,1);
+		compareData.push(productSpecs);
+		sessionStorage.setItem("compareProducts", JSON.stringify(compareData));
+	}
+	if(len<3){
+		compareData.push(productSpecs);
+		sessionStorage.setItem("compareProducts", JSON.stringify(compareData));
+	}
+	console.log(compareData)
+	console.log(compareData.length)
+}
+</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <section>
@@ -305,12 +324,12 @@
 										<hr style="margin-top: 3px; margin-bottom: 3px;" />
 										<div class="row">
 											<div class="col-md-4 col-6">
-												<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;">
+												<a class="text_blue_color" onclick="compareProduct()" style="font-size: 12px;margin-bottom: 0px;">
 													<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare
-												</p>
+												</a>
 											</div>
 											<div class="col-md-4 col-6 common_padding1">
-												<p class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
+												<a class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
 													{{#if LoggedInUser.id}}
 
 													{{#if wishList}}
@@ -323,7 +342,7 @@
 													<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
 													{{/if}}
 													Add to Wishlist
-												</p>
+												</a>
 											</div>
 											<div class="col-md-4 col-6 float-right">
 												<img src="../../img/social-icons/linked-in.png" style="width: 15%;" alt="geo">
