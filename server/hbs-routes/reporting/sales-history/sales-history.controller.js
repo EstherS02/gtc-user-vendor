@@ -10,6 +10,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const marketPlace = require('../../../config/marketplace');
 const orderStatus = require('../../../config/order_status');
+const orderItemStatus = require('../../../config/order-item-status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
 const populate = require('../../../utilities/populate');
@@ -298,7 +299,7 @@ export function orderView(req, res) {
                queryObj["order_id"] = req.params.id;
 
             queryObj['status'] = {
-                '$eq': statusCode["ACTIVE"]
+                '$ne': statusCode["DELETED"]
             }
 
             return model["OrderItem"].findAndCountAll({
@@ -401,7 +402,9 @@ export function orderView(req, res) {
                 orderStatus: orderStatus,
                 cartheader: results.cartCounts,
                 categories: results.categories,
-                bottomCategory: bottomCategory
+                bottomCategory: bottomCategory,
+                statusCode: statusCode,
+                orderItemStatus: orderItemStatus
             }
             return res.status(200).render('orderView', result_obj);
         }

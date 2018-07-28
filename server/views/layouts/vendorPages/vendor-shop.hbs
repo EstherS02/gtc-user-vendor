@@ -136,7 +136,7 @@ window.location.href = queries;
 </div>
 {{/ifCond}}
 <div class="col-md-6">
-    <p class="showing_res1">Showing
+    <label class="label-control">Showing
         <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
         <b>{{publicShop.count}}</b> Products matching
         {{#if queryPaginationObj.keyword}}
@@ -144,7 +144,7 @@ window.location.href = queries;
         {{#if selectedMarketPlace}}
         in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
         {{/if}}
-    </p>
+    </label>
 </div>
                             </div>
                         </div>
