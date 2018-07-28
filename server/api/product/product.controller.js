@@ -107,6 +107,8 @@ export function importWoocommerce(req, res) {
 		return;
 	}
 
+	const limit = config.wooCommercePerPageLimit;
+
 	var WooCommerce = new WooCommerceAPI({
 		url: req.body.store_url,
 		consumerKey: req.body.consumer_key,
@@ -115,73 +117,103 @@ export function importWoocommerce(req, res) {
 		version: 'wc/v2'
 	});
 
-	WooCommerce.get('products', function(error, data, response) {
-		if (response !== null) {
-			var allProducts = JSON.parse(response);
+	getWooCommerceProducts(limit, WooCommerce)
+		.then((allProducts) => {
+			if (allProducts.length != 0) {
+				if (req.user.role === roles['ADMIN']) {
 
-			if (req.user.role === roles['ADMIN']) {
+				} else if (req.user.role === roles['VENDOR']) {
+					var queryObjProduct = {};
+					var queryObjPlanLimit = {};
+					var productModelName = "Product";
+					var planLimitModelName = "PlanLimit";
+					var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+					var planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
+					var planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
 
-			} else if (req.user.role === roles['VENDOR']) {
-				var queryObjProduct = {};
-				var queryObjPlanLimit = {};
-				var productModelName = "Product";
-				var planLimitModelName = "PlanLimit";
-				var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
-				var planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
-				var planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
+					queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
+					queryObjPlanLimit['status'] = status['ACTIVE'];
 
-				queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
-				queryObjPlanLimit['status'] = status['ACTIVE'];
+					queryObjProduct['vendor_id'] = req.user.Vendor.id;
+					queryObjProduct['created_on'] = {
+						'$gte': planStartDate,
+						'$lte': planEndDate
+					}
 
-				queryObjProduct['vendor_id'] = req.user.Vendor.id;
-				queryObjProduct['created_on'] = {
-					'$gte': planStartDate,
-					'$lte': planEndDate
+					service.findOneRow(planLimitModelName, queryObjPlanLimit)
+						.then(function(planLimit) {
+							if (planLimit) {
+								const maximumProductLimit = planLimit.maximum_product;
+								service.countRows(productModelName, queryObjProduct)
+									.then(function(existingProductCount) {
+										var remainingProductLength = maximumProductLimit - existingProductCount;
+										if (allProducts.length <= remainingProductLength) {
+											var skippedProduct = 0;
+											var successProduct = 0;
+											async.eachSeries(allProducts, function iterater(product, callback) {
+												productService.importWooCommerceProducts(product, req)
+													.then((result) => {
+														successProduct += 1;
+														callback(null, result);
+													})
+													.catch(function(error) {
+														skippedProduct += 1;
+														callback(null, error);
+													});
+											}, function done() {
+												var responseObj = {};
+												responseObj['skippedProduct'] = skippedProduct;
+												responseObj['successProduct'] = successProduct;
+												return res.status(200).send(responseObj);
+											});
+										} else {
+											return res.status(403).send("Limit exceeded to add product.");
+										}
+									}).catch(function(error) {
+										console.log("Error::::", error);
+										return res.status(500).send('Internal server error.');
+									});
+							}
+						})
+						.catch(function(error) {
+							console.log("Error::::", error);
+							return res.status(500).send('Internal server error.');
+						});
+				} else {
+					return res.status(403).send('Forbidden');
 				}
-
-				service.findOneRow(planLimitModelName, queryObjPlanLimit)
-					.then(function(planLimit) {
-						if (planLimit) {
-							const maximumProductLimit = planLimit.maximum_product;
-							service.countRows(productModelName, queryObjProduct)
-								.then(function(existingProductCount) {
-									var remainingProductLength = maximumProductLimit - existingProductCount;
-									if (allProducts.length <= remainingProductLength) {
-										var skippedProduct = 0;
-										var successProduct = 0;
-										async.eachSeries(allProducts, function iterater(product, callback) {
-											productService.importWooCommerceProducts(product, req)
-												.then((result) => {
-													successProduct += 1;
-													callback(null, result);
-												})
-												.catch(function(error) {
-													skippedProduct += 1;
-													callback(null, error);
-												});
-										}, function done() {
-											var responseObj = {};
-											responseObj['skippedProduct'] = skippedProduct;
-											responseObj['successProduct'] = successProduct;
-											return res.status(200).send(responseObj);
-										});
-									} else {
-										return res.status(403).send("Limit exceeded to add product.");
-									}
-								}).catch(function(error) {
-									console.log("Error::::", error);
-									return res.status(500).send('Internal server error.');
-								});
-						}
-					})
-					.catch(function(error) {
-						console.log("Error::::", error);
-						return res.status(500).send('Internal server error.');
-					});
+			} else {
+				return res.status(404).send('Products not found.');
 			}
-		} else {
-			res.status(404).send('Products not found.');
-			return;
+		}).catch(function(error) {
+			console.log("Error::::", error);
+			return res.status(500).send('Internal server error.');
+		});
+}
+
+function getWooCommerceProducts(perPageLimit, WooCommerce) {
+	var products = [];
+	return new Promise(function(resolve, reject) {
+		callWooCommerceMethod(0);
+
+		function callWooCommerceMethod(vid) {
+			vid += 1;
+			WooCommerce.get('products?per_page=' + perPageLimit + '&page=' + vid, function(error, data, response) {
+				console.log("vid", vid);
+				if (response !== null) {
+					var responseProduct = JSON.parse(response);
+					console.log("responseProduct.length", responseProduct.length);
+					if (responseProduct.length < perPageLimit) {
+						products = products.concat(responseProduct);
+						resolve(products);
+					} else {
+						products = products.concat(responseProduct);
+						callWooCommerceMethod(vid);
+					}
+				} else {
+					resolve(products);
+				}
+			});
 		}
 	});
 }
