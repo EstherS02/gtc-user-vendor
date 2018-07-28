@@ -45,7 +45,7 @@
                     <a href="#" class="active">North America</a>
                 </li>
                 <li>
-                    <a href="#" class="active">Private Wholesale</a>
+                    <a href="#" class="active">{{Titlecase marketplaceURl}}</a>
                 </li>
                 <li>Search</li>
             </ul>
@@ -181,7 +181,7 @@
 								            <td class="col-7">
 								                <div class="product-middle-col">
 								                    <h3>
-								                        <a href="/products/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+								                        <a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 								                    </h3>
 								                    <div class="row no-margins">
 								                        <div class="col-md-4 col-4 no-padding">
@@ -252,7 +252,7 @@
 								            <td class="col-7">
 								                <div class="product-middle-col">
 								                    <h3>
-								                        <a href="/products/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+								                        <a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 								                    </h3>
 								                    <div class="row no-margins">
 								                        <div class="col-md-4 col-4 no-padding">
