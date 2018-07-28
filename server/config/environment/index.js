@@ -36,6 +36,8 @@ var all = {
 
     paginationLimit: 10,
 
+    wooCommercePerPageLimit: process.env.WOO_COMMERCE_PER_PAGE_LIMIT || 50,
+
     clientURL: process.env.CLIENT_BASE_URL,
 
     images_base_path: process.env.BASE_URL_LOCAL_UPLOAD,
@@ -56,7 +58,7 @@ var all = {
     email: {
         templates: {
             userCreate: 'USER-CREATE',
-            orderMail:'ORDER-MAIL'
+            orderMail: 'ORDER-MAIL'
 
         }
     },
