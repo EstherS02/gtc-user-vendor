@@ -309,9 +309,7 @@ a:hover {
 .home-banner {
     background: url(../img/signup-hero-home.jpg);
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: left center;
-    min-height: 380px;
+    background-size: 56% auto;
 }
 .home-banner-right h1 {
     font-family: 'Oswald', sans-serif;
@@ -1113,4 +1111,16 @@ label {
 .search-list-body {
     background: #ffffff;
     padding: 0 15px;   
+}
+#signUpForm input {
+    background: none;
+}
+.category-section {
+    padding: 3rem 0;
+}
+.category-section .category-title {
+    font-size: 0.813em;
+    font-weight: 500;
+    text-decoration: none;
+    text-shadow: none;
 }
