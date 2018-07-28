@@ -27,6 +27,7 @@
 						$('#gtc-cart-alert .cart-message').text(res.message_details)
 						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-cart-alert").slideUp(500);
+							location.reload();
 						});
 						console.log(res)
 					}

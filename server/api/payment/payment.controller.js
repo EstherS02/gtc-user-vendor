@@ -12,6 +12,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
+const uuidv1 = require('uuid/v1');
 
 
 const stripe = require('../../payment/stripe.payment');
@@ -274,6 +275,10 @@ function processCheckout(req) {
                             order['ordered_date'] = new Date();
                             order['order_status'] = orderStatus['NEWORDER'];
                             order['status'] = status['ACTIVE'];
+                            order['invoice_id'] = uuidv1();
+                            order['purchase_order_id'] = 'PO-'+ uuidv1();
+                            order['created_by'] = req.user.first_name;
+                            order['created_on'] = new Date();
                             order['billing_address_id'] = req.body.selected_billing_address_id;
                             order['shipping_address_id'] = req.body.selected_shipping_address_id;
 
@@ -467,12 +472,6 @@ function processCancelOrder(req) {
       });
 
   });
-}
-
-function checkAlreadyRefunded(orderItemRow, resolve, reject){
-    
-    
-    
 }
 
 export function deleteCard(req, res) {

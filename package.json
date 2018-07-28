@@ -59,6 +59,7 @@
     "sprint-js": "~0.1.0",
     "sqlite3": "~3.1.1",
     "stripe": "^6.2.1",
+    "uuid": "^3.3.2",
     "woocommerce-api": "^1.4.2"
   },
   "devDependencies": {

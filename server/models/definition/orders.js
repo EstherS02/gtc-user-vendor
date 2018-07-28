@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         purchase_order_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(64),
             field: 'purchase_order_id',
             allowNull: true
         },
