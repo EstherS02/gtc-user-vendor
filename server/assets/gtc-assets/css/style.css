@@ -1124,3 +1124,7 @@ label {
     text-decoration: none;
     text-shadow: none;
 }
+.product_banner{
+    color: #fff;
+    background-color:#505968;
+}

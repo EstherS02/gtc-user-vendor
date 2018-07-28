@@ -92,7 +92,7 @@
         </div>
     </div>
 </section> -->
-
+ {{#if LoggedInUser.email}} {{else}}
 <div class="home-banner">
     <div class="gtc-container banner-padding">
         <div class="row">
@@ -112,21 +112,24 @@
                     <div class="row">
                         <div class="col-md-10 offset-md-0">
                             <div class="signup-box">
+                                <div class="col-md-6 offset-md-6">
+                                    <small id="signUpErrorLog" class="error"></small>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="signup-left">
                                             <ul>
                                                 <li>
-                                                    <a href="#"><img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook"></a>
+                                                    <a id="gtc-fb-login"><img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook"></a>
                                                 </li>
                                                 <li>
-                                                    <a href="#"><img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google"></a>
+                                                    <a id="gtc-google-login"><img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google"></a>
                                                 </li>
                                                 <li>
-                                                    <a href="#"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
+                                                    <a id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
                                                 </li>
                                                 <li>
-                                                    <a href="#"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
+                                                    <a id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -137,19 +140,19 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-group m-b-xs">
-                                                        <input type="email" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Email">
+                                                        <input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Email"  required="true">
                                                     </div>
                                                     <div class="form-group m-b-xs">
-                                                        <input type="text" class="form-control-customized form-control-sm rounded form-control-border" placeholder="First Name">
+                                                        <input type="text" id="inputFirstname" name="first_name"  class="form-control-customized form-control-sm rounded form-control-border" placeholder="First Name"  required="true">
                                                     </div>
                                                     <div class="form-group m-b-xs">
-                                                        <input type="password" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password">
+                                                        <input type="password" id="inputPassword" name="password"  class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password"  required="true">
                                                     </div>
                                                     <div class="form-group">
                                                         <input type="checkbox" id="inputTerms" name="input_terms" required="true"> <small>Accept terms and conditions</small>
                                                     </div>
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-small btn-block btn-danger"><strong>CREATE ACCOUNT</strong></button>
+                                                        <button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger"><strong>CREATE ACCOUNT</strong></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -164,7 +167,7 @@
         </div>
     </div>
 </div>
-
+ {{/if}}
 <div class="header-lg bg-wholesale">
     <div class="gtc-container">
         <div class="row">

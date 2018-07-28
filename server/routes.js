@@ -82,7 +82,7 @@ export default function(app) {
   app.use('/:vendorType(wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
 
   //should be last route
-  app.use('/:marketPlaceType(shop|wholesale|services|lifestyle|products)', require('./hbs-routes/product-view'));
+  app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/product-view'));
   app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/search-result'));
   
   

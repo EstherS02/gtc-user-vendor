@@ -314,25 +314,26 @@
   </div>
 </div>
 
-<section class=" jumbotron product_global">
-  <h5 class="product_global_search">Search the Global Trade Connect Directory by Category </h5>
-  <div class="container-fluid full_view_pad1 ">
-    <div class="row  ">
-      {{#each_limit categories 10}}
-      <div class="col-md-3 col-12 why_global1">
-        <p class="global_para_head">{{convertUpperCase this.name}}</p>
-        {{#each_upto ../subCategory 10 this.id}} 
-        <p class="global_para ">
-          <a href="/products/search?category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
-          </a>    
-        </p>
-        {{/each_upto}}
-        <p class = "global_para">
-          <a href="/products/search?category={{this.id}}" style="color:white">...see more</a>
-        </p>
-      </div>
-      {{/each_limit}}
+<div class="category-section product_banner">
+    <div class="gtc-container">
+        <h5 class="text-center">Search the Global Trade Connect Directory by Category</h5>
+        <div class="row">
+            {{#each_limit categories 10}}
+            <div class="col-md-3 m-t-md w-20">
+                <p class="category-title m-b-sm">{{convertUpperCase this.name}}</p>
+                <ul class="footer-menu-list">
+                    {{#each_upto ../subCategory 10 this.id}} 
+                    <li class="m-l-xs">
+                        <a href="/products/search?category={{../this.id}}&sub_category={{this.id}}">{{ this.name}}</a>
+                    </li>
+                    {{/each_upto}}
+                    <li class="m-l-xs">
+                    <a href="/products/search?category={{this.id}}">see more...</a>
+                  </li>
+                </ul>
+            </div>
+            {{/each_limit}}
+        </div>
     </div>
-  </div>
-</section>
+</div>
 {{> footer/bottom-footer}}

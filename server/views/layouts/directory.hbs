@@ -332,9 +332,12 @@
                 <ul class="footer-menu-list">
                     {{#each_upto ../subCategory 10 this.id}} 
                     <li class="m-l-xs">
-                        <a href="/directory/search?category={{this.id}}">{{ this.name}}</a>
+                        <a href="/directory/search?category={{../this.id}}&sub_category={{this.id}}">{{ this.name}}</a>
                     </li>
                     {{/each_upto}}
+                    <li class="m-l-xs">
+                    <a href="/directory/search?category={{this.id}}">see more...</a>
+                  </li>
                 </ul>
             </div>
             {{/each_limit}}
