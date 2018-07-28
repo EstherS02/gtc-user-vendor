@@ -15,7 +15,7 @@ export function updateStatus(req, res) {
 	var order_status,purchase_order_id,user_email;
 	var includeArr=['User'];
 
-	if(bodyParams.order_status == orderStaus.ORDERCONFIRMED ){
+	if(bodyParams.order_status == orderStaus.CONFIRMEDORDER ){
 		order_status='confirmed';
 	}
 

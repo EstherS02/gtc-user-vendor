@@ -38,13 +38,10 @@
 	$("#cancelReason").submit(function (e) {
 		e.preventDefault();
 		var item_id = $('#item_id').val();
+		var cancelInput={};
 
-		var cancelInput = $("#cancelReason :input").filter(function (index, element) {
-			return $(element).val() != '';
-		}).serialize();
-
-		 if ($('#cancelReason').valid()) {
-
+		cancelInput.reason_for_cancellation= $("#reason_for_cancellation").val();
+  
 		$.ajax({
 			url: '/api/payment/cancel-order/' + item_id,
 			type: 'POST',
@@ -66,7 +63,6 @@
 				});
 			}
 		});
-		 }
 
 	});
 
@@ -509,13 +505,13 @@
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
 	                            <label class="label-control">Please enter the reason for order cancellation:<span class="text-danger">*</span></label>
-								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_cancellation" class="required"></textarea>
-	                        </div>
+								<textarea type="text" class="form-control-customized form-control-sm"  name="reason_for_cancellation" id="reason_for_cancellation" required></textarea>
+							</div>
 	                    </div>
-						<input type="hidden" id="item_id" value="">
+						<input type="hidden" id="item_id" name="item_id_name" value="">
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
-								<input class=" required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;"/>
+								<input class=" required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;" name="checkbox"/>
 								 <label class="label-control">Are you sure you want to cancel this item from you order?</label>
 							</div>
 	                    </div>
