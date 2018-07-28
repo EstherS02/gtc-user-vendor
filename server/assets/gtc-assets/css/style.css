@@ -309,9 +309,35 @@ a:hover {
 .home-banner {
     background: url(../img/signup-hero-home.jpg);
     background-repeat: no-repeat;
-    background-size: 50% auto;
+    background-size: contain;
     background-position: left center;
-    min-height: 300px;
+    min-height: 380px;
+}
+.home-banner-right h1 {
+    font-family: 'Oswald', sans-serif;
+    color: #e23644;
+    font-size: 2em;
+}
+.home-banner-right p {
+    font-size: 0.813em;
+}
+.signup-box {
+    position: relative;
+}
+.signup-left ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.signup-left ul li {
+    margin-bottom: 5px;
+}
+.signup-left ul li a {
+    display: block;
+}
+.signup-left ul li a img {
+    max-width: 90%;
+    height: auto;
 }
 .search-header {
     padding: 10px 0px;
