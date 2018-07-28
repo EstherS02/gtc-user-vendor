@@ -196,19 +196,17 @@ function getWooCommerceProducts(perPageLimit, WooCommerce) {
 	return new Promise(function(resolve, reject) {
 		callWooCommerceMethod(0);
 
-		function callWooCommerceMethod(vid) {
-			vid += 1;
-			WooCommerce.get('products?per_page=' + perPageLimit + '&page=' + vid, function(error, data, response) {
-				console.log("vid", vid);
+		function callWooCommerceMethod(pageCount) {
+			pageCount += 1;
+			WooCommerce.get('products?per_page=' + perPageLimit + '&page=' + pageCount, function(error, data, response) {
 				if (response !== null) {
 					var responseProduct = JSON.parse(response);
-					console.log("responseProduct.length", responseProduct.length);
 					if (responseProduct.length < perPageLimit) {
 						products = products.concat(responseProduct);
 						resolve(products);
 					} else {
 						products = products.concat(responseProduct);
-						callWooCommerceMethod(vid);
+						callWooCommerceMethod(pageCount);
 					}
 				} else {
 					resolve(products);
