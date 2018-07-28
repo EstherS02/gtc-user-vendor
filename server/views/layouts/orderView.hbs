@@ -200,7 +200,7 @@
 							</tbody>
 						</table>
 					</div>
-					{{/each}} {{#ifCond this.type '==' ' sales-history '}}
+					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
 					<form id="orderStatusChange">
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
@@ -243,7 +243,7 @@
 					<div class="container">
 
 						{{#each marketPlaces as |marketplace|}} {{#each ../totalPriceList as |totalPrice|}} {{#ifCond marketplace.code '==' @key}}
-						<h6 class="{{cartPageClass marketplace ' CART-RIGHT '}}">{{cartPageClass marketplace 'LABEL '}} Summary</h6>
+						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
 						<hr class="common_margin" />
 						<div class="row">
 							<div class="col-md-8">
