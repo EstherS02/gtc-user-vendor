@@ -38,7 +38,10 @@ window.location.href = queries;
             </div>
             <div class="col-md-10">
                 <div class="header-lg bg-shop">
-                    <h2 class="header-lg-text">PRODUCT SHOP</h2>
+                <h2 class="header-lg-text">PRODUCT SHOP <p class="see-all">{{#if publicShop.count}} Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
+                        <b>{{publicShop.count}}</b>{{/if}}
+                    </p></h2>
                 </div>
                 <div class="row">
                     <div class="col-md-9">
@@ -79,11 +82,11 @@ window.location.href = queries;
                                                                             <span>Seller</span>
                                                                         </div>
                                                                         <div class="col-md-9 col-9 no-padding overflow-txt">
-                                                                        {{#if ../LoggedInUser.email}}
+                                                                            {{#if ../LoggedInUser.email}}
                                                                             <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                                                        {{else}}
+                                                                            {{else}}
                                                                             <a class="text-500" href="/login">(Login for Seller Info)</a>
-                                                                        {{/if}}
+                                                                            {{/if}}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -108,44 +111,44 @@ window.location.href = queries;
                                     </div>
                                     {{/each}}
                                 </div>
-{{#ifCond publicShop.count '>' queryPaginationObj.limit}}
-<div class="row">
-    <div class="col-md-3">
-    </div>
-    <div class="col-md-7">
-        {{#pagination publicShop.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                {{#unless startFromFirstPage}}
-                <li class="page-item">
-                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-                </li>
-                {{/unless}} {{#each pages}}
-                <li class="page-item {{#if isCurrent}} active {{/if}}">
-                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-                </li>
-                {{/each}} {{#unless endAtLastPage}}
-                <li class="page-item">
-                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-                </li>
-                {{/unless}}
-            </ul>
-        </nav>
-        {{/pagination}}
-    </div>
-</div>
-{{/ifCond}}
-<div class="col-md-6">
-    <p class="showing_res1">Showing
-        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
-        <b>{{publicShop.count}}</b> Products matching
-        {{#if queryPaginationObj.keyword}}
-        <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
-        {{#if selectedMarketPlace}}
-        in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
-        {{/if}}
-    </p>
-</div>
+                                {{#ifCond publicShop.count '>' queryPaginationObj.limit}}
+                                <div class="row">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-7">
+                                        {{#pagination publicShop.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                {{#unless startFromFirstPage}}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                                                </li>
+                                                {{/unless}} {{#each pages}}
+                                                <li class="page-item {{#if isCurrent}} active {{/if}}">
+                                                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                                                </li>
+                                                {{/each}} {{#unless endAtLastPage}}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                                                </li>
+                                                {{/unless}}
+                                            </ul>
+                                        </nav>
+                                        {{/pagination}}
+                                    </div>
+                                </div>
+                                {{/ifCond}}
+                                <div class="col-md-6">
+                                    <p class="showing_res1">Showing
+                                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
+                                        <b>{{publicShop.count}}</b> Products matching
+                                        {{#if queryPaginationObj.keyword}}
+                                        <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
+                                        {{#if selectedMarketPlace}}
+                                        in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
+                                        {{/if}}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -165,7 +168,7 @@ window.location.href = queries;
         </div>
     </div>
 </section>
- 
+
 <!-- <section>
    <div class="logged_in_cont">
         <div class="container">
