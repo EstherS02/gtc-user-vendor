@@ -696,3 +696,12 @@ div.product-right-col h2 {
   content: '';
   display: inline-block;
 }
+/*#wrapper-fixed-header {
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
+#fixed-header-below {
+  position: relative;
+  margin-top: 90px;
+}*/

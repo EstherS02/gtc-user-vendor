@@ -18,7 +18,7 @@ export function orderTrack(req, res) {
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
-
+	var orderModel = "Order";
 	async.series({
 			cartCounts: function(callback) {
 				service.cartHeader(LoggedInUser).then(function(response) {
@@ -50,6 +50,20 @@ export function orderTrack(req, res) {
 						return callback(null);
 					});
 
+			},
+			orderTrack: function (callback) {
+				var queryObj={
+					id: 142
+				};
+				var includeArr = [];
+				service.findRow(orderModel, queryObj, includeArr)
+				.then(function(result) {
+						return callback(null, result);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+
 			}
 		},
 		function(err, results) {
@@ -60,6 +74,7 @@ export function orderTrack(req, res) {
 					bottomCategory: bottomCategory,
 					LoggedInUser: LoggedInUser,
 					cartheader: results.cartCounts,
+					orderTrack:results.orderTrack,
 					vendorPlan: vendorPlan
 				});
 			} else {

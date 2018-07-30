@@ -27,6 +27,7 @@
 						$('#gtc-cart-alert .cart-message').text(res.message_details)
 						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-cart-alert").slideUp(500);
+							location.reload();
 						});
 						console.log(res)
 					}
@@ -134,8 +135,12 @@
 function compareProduct(e){
 	var productSpecs = {{{DisplayJSON product}}}
 	var compareData = JSON.parse(sessionStorage.getItem("compareProducts"));
-	console.log(compareData.length)
-	var len = compareData.length; 
+	var len = 0;
+	if(compareData){
+	len = compareData.length; 
+	}else{
+		compareData = [];
+	}
 	if(len==3){
 		compareData.splice(0,1);
 		compareData.push(productSpecs);
