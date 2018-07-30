@@ -22,65 +22,67 @@
 								</div>
 							</div>
 							<div class="row" style="margin-bottom: 10px;">
-								<div class="col-md-9">
+								<div class="col-md-10">
 									<div class="progress">
 										<div class="progress-bar" style="width:70%"></div>
 									</div>
 								</div>
 							</div>
 							<div class="row" style="font-size: 11px;">
-								<div class="col-md-9">
+								<div class="col-md-10">
 									<div class="row">
 										<div class="col-md-2">
 											<p>
 												<b>Ordered</b>
 											</p>
-											<p>10 Dec</p>
+											<p>{{formatTime orderTrack.ordered_date "D MMM"}}</p>
 										</div>
 										<div class="col-md-2">
 											<p>
 												<b>Shipped</b>
 											</p>
-											<p>11 Dec</p>
+											<p>{{formatTime orderTrack.shipped_on "D MMM"}}</p>
 										</div>
 										<div class="col-md-8 ">
 											<p style="text-align:right !important;">
-												<b>Delivered on 13 Dec</b>
-												<br>Delivered on 13 Dec</p>
+												<b>Delivered on {{formatTime orderTrack.delivered_on "D MMM"}}</b>
+												<br>Delivered on {{formatTime orderTrack.delivered_on "D MMM"}}</p>
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-9">
+								<div class="col-md-10">
 									<div class="row">
-										<div class="col-md-7">
+										<div class="col-md-6">
 										</div>
-										<div class="col-md-5">
+										{{#if orderTrack.Shipping}}
+										<div class="col-md-6">
 											<p class="order_track_ship_det">SHIPMENT DETAILS</p>
-											<p class="vend_edit_lists_textstyle1" style="width: 100%">Last update: Wednesday, 13 Dec</p>
+											<p class="vend_edit_lists_textstyle1" style="width: 100%">Last update: {{formatTime orderTrack.last_updated_on "dddd, D MMM"}}</p></p>
 											<div class="row" style="padding: 10px">
 												<div class="col-md-3">
-													<p style="font-size: 12px;">11:30am</p>
+													<p style="font-size: 12px;">{{formatTime orderTrack.last_updated_on "hh:mma"}}</p>
 												</div>
 												<div class="col-md-9">
 													<p style="font-size: 12px;">Your Package was delivered</p>
 													<div class="row">
 														<div class="col-md-3">
-															<p class="text_blue_color">Carrier</p>
-															<p class="text_blue_color">Tracking#</p>
+															<p class="text_blue_color">Carrier:</p>
+															<p class="text_blue_color">Tracking#:</p>
 														</div>
 														<div class="col-md-9">
 															<p class="text_blue_color">Cintel Courier Canada Inc.</p>
-															<p class="text_blue_color">#1700014</p>
+															<p class="text_blue_color">#{{orderTrack.tracking_id}} </p>
 															<p class="text_blue_color">
-																<b>View Order Details</b>
+																<a href="/order-history/{{orderTrack.id}}"><b>View Order Details</b></a>
 															</p>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
+										{{/if}}
 									</div>
 								</div>
 							</div>

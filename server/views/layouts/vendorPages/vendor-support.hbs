@@ -1,5 +1,61 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<section>
+{{> vendor/vendor-header VendorDetail = VendorDetail}}
+<section class="vendor-product bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-md-2">
+				{{> vendor/vendor-left VendorDetail = VendorDetail}}
+			</div>
+			<div class="col-md-10">
+				<div class="header-lg ">
+					<h2 class="header-lg-text">SUPPORT </h2>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="ibox">
+							<div class="row">
+								<div class="col-md-5" style="background-color:#fff;padding: 30px;">
+									<p class="terms_head">SHIPPING POLICY </p>
+									<p class="terms_para_head">Free In-Store Pick Up</p>
+									<p class="terms_para">Shop online from the comfort of your home and pick up at the store location of your choice with no additional charge! When your order</p>
+									<p class="terms_para">arrives at the store and is ready for you to pick up, the store will call you to come and pick it up-it's that easy. </p>
+									<p class="terms_para">NOTE: You will still receive tracking confirmation details when you select this option as the item may be shipped from another store to the</p>
+									<p class="terms_para">pickup location of your choice. Regular processing and shipping times still apply.</p>
+									<p class="terms_para">Order Processing Times &amp; Order Tracking </p>
+									<p class="terms_para">Orders typically take 1-3 days to process before they ship-excluding weekends and holidays. You will receive an email confirmation with</p>
+									<p class="terms_para">the shipping tracking number when your order ships. Occasionally, we may ship multiple piece orders out from multiple location to get your</p>
+									<p class="terms_para">order to you as fast as possible. In this case, you will receive an email oulining what was shipped and what is pending. You can also</p>
+									<p class="terms_para">track your order in My Account.</p>
+									<p class="terms_para">Pre-Authorization Holds</p>
+									<p class="terms_para">to ensure customers are charged for their purchase only when items are shipped, a preauthorization equal to the amount of the order will</p>
+									<p class="terms_para">be applied to the credit/debit card used for the transaction at the time of order.              Preauthorization is the common practice within the banking</p>
+									<p class="terms_para">industry of authorizing electronic transactions done with credit/debit card and holding the balance as unavailable either until the merchant</p>
+									<p class="terms_para">settles the transaction or the hold is removed. Depending on the cardholder's banking institution, a preauthorized hold may initially appear as a charge.</p>
+									<p class="terms_para">This bank hold is temporary,and only the actual charge will be applied to the card when the order is shipped.</p>
+									<p class="terms_para">Orders including multiple items may be shipped separately. Each individual shipment may have an additional preauthorization equal to the individual shipment.</p>
+								</div>
+
+								<div class="col-md-3">
+									<div class="dis_side_bar">
+										<p class="terms_topics_head">SUPPORT TOPICS</p>
+										<p class="terms_topics-para">Submit A Support Ticket</p>
+										<p class="terms_topics-para">Submit A Return </p>
+										<p class="terms_topics-para">Shipping Policy </p> 
+										<p class="terms_topics-para">Return Policy </p>
+										<p class="terms_topics-para">Terms of Use </p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{{!-- <section>
 	{{> vendor/vendor-header VendorDetail = VendorDetail}}
 	<div class="logged_in_cont" >
 		<div class="container">
@@ -49,5 +105,5 @@
 			</div>
 		</div>
 	</div>
-</section>                     
+</section> --}}                     
 {{> footer/bottom-footer}}

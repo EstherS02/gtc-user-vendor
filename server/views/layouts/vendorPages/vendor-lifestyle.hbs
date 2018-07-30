@@ -25,7 +25,7 @@ $(document).on('change', "#sortListing", function() {
 });
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<section>
+{{!-- <section>
    {{> vendor/vendor-header VendorDetail = VendorDetail}}
    <div class="logged_in_cont">
     <div class="container">
@@ -70,7 +70,6 @@ $(document).on('change', "#sortListing", function() {
                                                        </div>
                                                        <div class="col-md-4 col-4">
                                                         <p class="">${{this.product_price}}CAD</p>
-                                                        {{!-- //doller_value --}}
                                                     </div>
                                                 </div>
                                                 <div class="row common_padding">
@@ -144,6 +143,145 @@ $(document).on('change', "#sortListing", function() {
             </div>
         </div>
     </div>
-</section>
+</section> --}}
+{{> vendor/vendor-header VendorDetail = VendorDetail}}
 
+<section class="vendor-product bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-md-2">
+                {{> vendor/vendor-left VendorDetail = VendorDetail}}
+            </div>
+            <div class="col-md-10">
+                <div class="header-lg bg-lifestyle">
+                    <h2 class="header-lg-text">LIFESTYLE MARKETPLACE<p class="see-all">{{#if publicLifestyle.count}} Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
+                        <b>{{publicLifestyle.count}}</b>{{/if}}
+                    </p></h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="ibox">
+                            <div class="ibox-content">
+                                <div class="row">
+                                    {{#each publicLifestyle.rows}}
+                                    <div class="col-md-6">
+                                        <div class="product-body">
+                                            <div class="table-responsive">
+                                                <table class="table shoping-cart-table">
+                                                    <tbody>
+                                                        <tr class="d-flex">
+                                                            <td class="col-2">
+                                                                <div class="product-left-col">
+                                                                    <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-7">
+                                                                <div class="product-middle-col">
+                                                                    <h3>
+                                                                        <a href="/lifestyle/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a>
+                                                                    </h3>
+                                                                    <div class="row no-margins">
+                                                                        <div class="col-md-3 col-3 no-padding">
+                                                                            <span>Origin</span>
+                                                                        </div>
+                                                                        <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                                            <span class="text-500">{{this.country_name}}</span>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-3 no-padding">
+                                                                            <span>Category</span>
+                                                                        </div>
+                                                                        <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-3 no-padding">
+                                                                            <span>Seller</span>
+                                                                        </div>
+                                                                        <div class="col-md-9 col-9 no-padding overflow-txt">
+                                                                            {{#if ../LoggedInUser.email}}
+                                                                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                                            {{else}}
+                                                                            <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                                            {{/if}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-3">
+                                                                <div class="product-right-col">
+                                                                    {{!-- <small class="text-red">24h 12m left</small> --}}
+                                                                    <h2 class="text-red">${{this.product_price}}</h2>
+                                                                    <div class="prc-bottom">
+                                                                        <p>Seller Rating</p>
+                                                                        <div class="p-rating pull-right">
+                                                                            {{starCount product_rating}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                                {{#ifCond publicLifestyle.count '>' queryPaginationObj.limit}}
+                                <div class="row">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-7">
+                                        {{#pagination publicLifestyle.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                {{#unless startFromFirstPage}}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                                                </li>
+                                                {{/unless}} {{#each pages}}
+                                                <li class="page-item {{#if isCurrent}} active {{/if}}">
+                                                    <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+                                                </li>
+                                                {{/each}} {{#unless endAtLastPage}}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                                                </li>
+                                                {{/unless}}
+                                            </ul>
+                                        </nav>
+                                        {{/pagination}}
+                                    </div>
+                                </div>
+                                {{/ifCond}}
+                                <div class="col-md-6">
+                                <label class="label-control">Showing
+                                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
+                                        <b>{{publicLifestyle.count}}</b> Products matching
+                                        {{#if queryPaginationObj.keyword}}
+                                        <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
+                                        {{#if selectedMarketPlace}}
+                                        in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
+                                        {{/if}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="ibox">
+                            <div class="ibox-content p-n-l p-n-r bg-transparent">
+                                <div class="showing_categ">
+                                    <p><b>FILTER BY CATEGORY</b></p>
+                                    <p class="cat_bg_title_lg">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+                                    {{> vendor/vendor-category }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {{> footer/bottom-footer}}
