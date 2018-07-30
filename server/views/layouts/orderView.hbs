@@ -1,5 +1,8 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
+
 <script type="text/javascript">
+var type = {{{DisplayJSON this.type}}}
+
 	$(document).ready(function () {
 
 		$("#gtc-form-alert").hide();
@@ -14,12 +17,12 @@
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			type: 'PUT',
-				data: input,
+			        type: 'PUT',
+			    	data: input,
 					success: function (result) {
 						location.reload(true);
 					},
-			error: function (error) {
+		    	error: function (error) {
 				console.log("error", error);
 			        }
 		        });
@@ -39,8 +42,13 @@
 		e.preventDefault();
 		var item_id = $('#item_id').val();
 		var cancelInput={};
+		var mailInput={};
 
 		cancelInput.reason_for_cancellation= $("#reason_for_cancellation").val();
+		mailInput.item_id= item_id;
+		mailInput.reason_for_cancellation= $("#reason_for_cancellation").val();
+
+         if ($('#cancelReason').valid()) {
   
 		$.ajax({
 			url: '/api/payment/cancel-order/' + item_id,
@@ -48,11 +56,30 @@
 			data: cancelInput,
 			success: function (result) {
 				console.log(result);
-				$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
+
+			/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
 				$('#gtc-cancel-alert .cancel-message').text(result.responseText)
 				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
 				});
+
+				$("#cancelReason")[0].reset();*/
+				location.reload(true);
+				
+				if(type == 'sales-history'){
+
+		          $.ajax({
+					  url:'/api/order-history/vendor-cancel/'+{{ order.id }},
+					  type: 'POST',
+					  data:mailInput,
+					  success: function(){
+						  console.log(result);
+					  },
+					  error: function(error){
+                          console.log("error:",error);
+					  }
+				  })
+				}
 			},
 			error: function (error) {
 				console.log("error", error);
@@ -61,17 +88,24 @@
 				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
 				});
+				$("#cancelReason")[0].reset();
 			}
 		});
-
+		 }
 	});
 
 	$("#cancelReason").validate({
             rules: {
-				reason_for_cancellation:"required"
+				reason_for_cancellation:{
+                    required: true,
+                    maxlength: 64
+				},		
 			},
 			messages:{
-                 reason_for_cancellation:"Please enter the reason for order cancellation"
+                 reason_for_cancellation:{
+					required: "Please enter the reason for order cancellation",
+                    maxlength: "Maximum 64 characters"
+				 }	 
 			}
 	});
 	$('.data-value').click(function () {
