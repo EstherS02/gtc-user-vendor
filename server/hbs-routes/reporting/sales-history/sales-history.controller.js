@@ -234,12 +234,13 @@ export function salesHistory(req, res) {
 // Ends salesHistory
 
 export function orderView(req, res) {
-    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
+    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, productQueryObj={}, itemIncludeArr = [], orderIncludeArr=[];
     var order_id;
     var marketPlaceModel = 'Marketplace';
     var orderItemsModel = 'OrderItem';
     var orderModel = 'Order';
     var categoryModel = "Category";
+    productQueryObj['vendor_id'] = req.user.Vendor.id;
 
     if (req.user)
         LoggedInUser = req.user;
@@ -302,12 +303,13 @@ export function orderView(req, res) {
                 '$ne': statusCode["DELETED"]
             }
 
-            return model["OrderItem"].findAndCountAll({
+        return model["OrderItem"].findAndCountAll({
                 where: queryObj,
                 include: [{
                     model: model["Order"],
                     }, {
                     model: model["Product"],
+                    where: productQueryObj,
                     include: [{
                         model: model["Vendor"]
                     }, {

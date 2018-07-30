@@ -272,6 +272,7 @@
 						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
 							$("#gtc-pwdreset-alert").slideUp(500);
 						});
+						$("#changePwd")[0].reset();
 					},
 					error: function (error) {
 						$('#gtc-pwdreset-alert').removeClass('alert-success').addClass('alert-danger');
@@ -279,6 +280,7 @@
 						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
 							$("#gtc-pwdreset-alert").slideUp(500);
 						});
+						$("#changePwd")[0].reset();
 					}
 				})
 			};
@@ -575,6 +577,57 @@
 {{> footer/bottom-footer}}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Change Password</h5>
+			</div>
+			<div class="alert" id="gtc-pwdreset-alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span>
+					</button>
+						<span class="pwdreset-message"></span>
+			</div>
+			<form id="changePwd" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                   <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Email Address:</label>
+	                            <input type="text" id="email_id" name="email_id" value="{{user.email}}" readonly class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+						<div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Old Password:</label>
+	                            <input type="text" id="old_password" name="old_password" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+						<div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">New Password:</label>
+	                            <input type="text" id="new_password" name="new_password" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+						<div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Confirm Password:</label>
+	                            <input type="text" id="new_confirm_password" name="new_confirm_password" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+                     </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary"><b>Submit</b></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{!-- 
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content" style="background-color: #CCCCCC;">
 			<form id="changePwd">
@@ -617,4 +670,4 @@
 			</form>
 		</div>
 	</div>
-</div>
+</div> --}}

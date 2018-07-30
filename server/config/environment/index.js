@@ -58,7 +58,8 @@ var all = {
     email: {
         templates: {
             userCreate: 'USER-CREATE',
-            orderMail: 'ORDER-MAIL'
+            orderMail: 'ORDER-MAIL',
+            itemCancel:'ITEM-CANCEL-BY-VENDOR-MAIL'
 
         }
     },
