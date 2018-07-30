@@ -106,11 +106,11 @@ export function updateStatus(req, res) {
 
 export function vendorCancel(req, res) {
 
-	var item_name,vendor_name,reason_for_cancellation;
+	var item_name,user_email, vendor_name,reason_for_cancellation;
 
 	var paramsID = req.params.id;
 	var bodyParams = req.body;
-	var includeArr = populate.populateData("User,OrderItem,OrderItem.Product");
+	var includeArr = populate.populateData("User,OrderItem,OrderItem.Product,OrderItem.Product.Vendor");
 
 	service.findIdRow("Order", paramsID, includeArr)
 		.then(function (row) {
@@ -136,9 +136,7 @@ export function vendorCancel(req, res) {
 								reason_for_cancellation= bodyParams.reason_for_cancellation;
 								var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 								var body;
-
-								body = response.body.replace('%ORDER_MSG%', order_status);
-								body = body.replace('%ORDER_TYPE%', 'Order Status');
+								body = response.body.replace('%ORDER_TYPE%', 'Order Status');
 								body = body.replace('%ORDER_NUMBER%',purchase_order_id);
 								body = body.replace('%ITEM_NAME%',item_name);
 								body = body.replace('%VENDOR_NAME%',vendor_name);
@@ -151,9 +149,9 @@ export function vendorCancel(req, res) {
 									subject: subject,
 									html: body
 								});
-								return res.status(201).send(result);
+								return res.status(201).send(response);
 							} else {
-								return res.status(201).send(result);
+								return res.status(201).send(response);
 							}
 						}).catch(function (error) {
 							console.log('Error :::', error);
@@ -162,7 +160,6 @@ export function vendorCancel(req, res) {
 						});
 				}
 			});
-
 		}).catch(function (error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");

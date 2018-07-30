@@ -57,14 +57,15 @@ var type = {{{DisplayJSON this.type}}}
 			success: function (result) {
 				console.log(result);
 
-				$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
+			/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
 				$('#gtc-cancel-alert .cancel-message').text(result.responseText)
 				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
 				});
 
-				$("#cancelReason")[0].reset();
-
+				$("#cancelReason")[0].reset();*/
+				location.reload(true);
+				
 				if(type == 'sales-history'){
 
 		          $.ajax({

@@ -47,7 +47,6 @@ export function create(req, res) {
 	req.checkBody('marketplace_id', 'Missing Query Param').notEmpty();
 	req.checkBody('product_category_id', 'Missing Query Param').notEmpty();
 	req.checkBody('sub_category_id', 'Missing Query Param').notEmpty();
-	req.checkBody('price', 'Missing Query Param').notEmpty();
 	req.checkBody('product_location', 'Missing Query Param').notEmpty();
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
