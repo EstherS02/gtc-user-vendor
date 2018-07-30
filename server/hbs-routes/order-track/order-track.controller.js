@@ -55,9 +55,14 @@ export function orderTrack(req, res) {
 				var queryObj={
 					id: 142
 				};
-				var includeArr = [];
+				var includeArr = [{
+					model:model['Address']
+				},{
+					model:model['Shipping']
+				}];
 				service.findRow(orderModel, queryObj, includeArr)
 				.then(function(result) {
+					console.log("result-----------========================------------------",result)
 						return callback(null, result);
 					}).catch(function(error) {
 						console.log('Error :::', error);
