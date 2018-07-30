@@ -30,6 +30,7 @@
     }
 </style>
 <script>
+
     var allFiles = [], attributeArr=[];
     function addProduct(obj, input) {
 
@@ -151,6 +152,29 @@
                     console.log("Error", error);
                 }
             });
+        });
+
+         $("#marketplace_type_id").change(function () {
+            var marketplace_type_id = $('#marketplace_type_id').val();
+
+            if (marketplace_type_id== {{marketplaceTypeCode.WTT}} || marketplace_type_id== {{marketplaceTypeCode.RFQ}}){
+               $(".priceDiv").hide();
+               $('#price').removeAttr('value');
+            }
+            else{
+                $(".priceDiv").show();
+                $("price").attr('value');
+            }
+
+            if (marketplace_type_id== {{marketplaceTypeCode.WTB}} || marketplace_type_id== {{marketplaceTypeCode.WTT}} || marketplace_type_id== {{marketplaceTypeCode.RFQ}}){
+               $(".shippingDiv").hide();
+               $('#shipping_cost').removeAttr('value');
+            }
+            else{
+                $(".shippingDiv").show();
+                $("shipping_cost").attr('value');
+            }
+          
         });
 
         $("#category").change(function () {
@@ -397,7 +421,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-control">Type</label>
-                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id">
+                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id" id="marketplace_type_id">
                                                 <option disabled selected>Select Category...</option>
                                                 {{#each marketplaceType}}
                                                 <option value="{{this.id}}">{{ Titlecase this.name}}</option>
@@ -406,10 +430,10 @@
                                         </div>
                                     </div>
                                     {{/ifCond}}
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-4 shippingDiv">
                                         <div class="form-group">
                                             <label class="label-control">Shipping Cost</label>
-                                            <input type="text" class="form-control-customized form-control-sm" name="shipping_cost">
+                                            <input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -482,11 +506,11 @@
                                             <input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" required>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-4 priceDiv">
                                         <div class="form-group">
                                             <label class="label-control">Price
                                             </label>
-                                            <input type="text" name="price" class="form-control-customized form-control-sm" required>
+                                            <input type="text" name="price" id="price" class="form-control-customized form-control-sm">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
