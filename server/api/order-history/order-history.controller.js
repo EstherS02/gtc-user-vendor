@@ -14,9 +14,11 @@ export function updateStatus(req, res) {
 	var bodyParams = req.body;
 	var order_status, purchase_order_id, user_email;
 	var includeArr = ['User'];
+	var date = new Date();
 
 	if (bodyParams.order_status == orderStaus.CONFIRMEDORDER) {
 		order_status = 'confirmed';
+		bodyParams['expected_delivery_date']=new Date(date.getTime() + (7 * 24 * 60 * 60 * 1000));
 	}
 
 	if (bodyParams.order_status == orderStaus.PROCESSINGORDER) {
@@ -25,18 +27,22 @@ export function updateStatus(req, res) {
 
 	if (bodyParams.order_status == orderStaus.DISPATCHEDORDER) {
 		order_status = 'dispatched';
+		bodyParams['shipped_on']= date;
 	}
 
 	if (bodyParams.order_status == orderStaus.DELIVEREDORDER) {
 		order_status = 'delivered';
+		bodyParams['delivered_on']= date;
 	}
 
 	if (bodyParams.order_status == orderStaus.RETURNEDORDER) {
 		order_status = 'returned';
+		bodyParams['returned_on']= date;
 	}
 
 	if (bodyParams.order_status == orderStaus.CANCELLEDORDER) {
 		order_status = 'cancelled';
+		bodyParams['cancelled_on']= date;
 	}
 
 	if (bodyParams.order_status == orderStaus.FAILEDORDER) {
