@@ -1,7 +1,7 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <script type="text/javascript">
-var type = {{{DisplayJSON this.type}}}
+	var type = {{{ DisplayJSON this.type }}}
 
 	$(document).ready(function () {
 
@@ -17,16 +17,16 @@ var type = {{{DisplayJSON this.type}}}
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			        type: 'PUT',
-			    	data: input,
+			type: 'PUT',
+				data: input,
 					success: function (result) {
 						location.reload(true);
 					},
-		    	error: function (error) {
+			error: function (error) {
 				console.log("error", error);
-			        }
-		        });
-	        }
+			}
+		});
+	}
         });
 
 	$("#orderStatusChange").validate({
@@ -41,72 +41,72 @@ var type = {{{DisplayJSON this.type}}}
 	$("#cancelReason").submit(function (e) {
 		e.preventDefault();
 		var item_id = $('#item_id').val();
-		var cancelInput={};
-		var mailInput={};
+		var cancelInput = {};
+		var mailInput = {};
 
-		cancelInput.reason_for_cancellation= $("#reason_for_cancellation").val();
-		mailInput.item_id= item_id;
-		mailInput.reason_for_cancellation= $("#reason_for_cancellation").val();
+		cancelInput.reason_for_cancellation = $("#reason_for_cancellation").val();
+		mailInput.item_id = item_id;
+		mailInput.reason_for_cancellation = $("#reason_for_cancellation").val();
 
-         if ($('#cancelReason').valid()) {
-  
-		$.ajax({
-			url: '/api/payment/cancel-order/' + item_id,
-			type: 'POST',
-			data: cancelInput,
-			success: function (result) {
-				console.log(result);
+		if ($('#cancelReason').valid()) {
 
-			/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
-				$('#gtc-cancel-alert .cancel-message').text(result.responseText)
-				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$.ajax({
+				url: '/api/payment/cancel-order/' + item_id,
+				type: 'POST',
+				data: cancelInput,
+				success: function (result) {
+					console.log(result);
+
+					/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-cancel-alert .cancel-message').text(result.responseText)
+						$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-cancel-alert").slideUp(500);
+						});
+		
+						$("#cancelReason")[0].reset();*/
+					location.reload(true);
+
+					if (type == 'sales-history') {
+
+						$.ajax({
+							url: '/api/order-history/vendor-cancel/' + {{ order.id }},
+					type: 'POST',
+						data: mailInput,
+							success: function() {
+								console.log(result);
+							},
+					error: function(error) {
+						console.log("error:", error);
+					}
+				})
+		}
+	},
+		error: function (error) {
+			console.log("error", error);
+			$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-cancel-alert .cancel-message').text(error.responseText);
+			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
-				});
-
-				$("#cancelReason")[0].reset();*/
-				location.reload(true);
-				
-				if(type == 'sales-history'){
-
-		          $.ajax({
-					  url:'/api/order-history/vendor-cancel/'+{{ order.id }},
-					  type: 'POST',
-					  data:mailInput,
-					  success: function(){
-						  console.log(result);
-					  },
-					  error: function(error){
-                          console.log("error:",error);
-					  }
-				  })
-				}
-			},
-			error: function (error) {
-				console.log("error", error);
-				$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
-				$('#gtc-cancel-alert .cancel-message').text(error.responseText);
-				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
-				$("#gtc-cancel-alert").slideUp(500);
-				});
-				$("#cancelReason")[0].reset();
-			}
+			});
+			$("#cancelReason")[0].reset();
+		}
 		});
 		 }
 	});
 
 	$("#cancelReason").validate({
-            rules: {
-				reason_for_cancellation:{
-                    required: true,
-                    maxlength: 64
-				},		
+		rules: {
+			reason_for_cancellation: {
+				required: true,
+				maxlength: 64
 			},
-			messages:{
-                 reason_for_cancellation:{
-					required: "Please enter the reason for order cancellation",
-                    maxlength: "Maximum 64 characters"
-				 }	 
+		},
+		messages: {
+			reason_for_cancellation: {
+				required: "Please enter the reason for order cancellation",
+				maxlength: "Maximum 64 characters"
 			}
+		}
 	});
 	$('.data-value').click(function () {
 		var item_id = $(this).data('id');
@@ -253,9 +253,7 @@ var type = {{{DisplayJSON this.type}}}
 													{{/ifCond}}
 													<hr class="common_margin" />
 												</div>
-
 												<div class="row">
-
 													<div class="col-md-5">
 														<p class="shop_subtotal">
 															<b>Cancelled On:</b>
@@ -302,7 +300,7 @@ var type = {{{DisplayJSON this.type}}}
 												<div class="row">
 													<div class="col-md-12">
 														<p class="shop_price_doller">${{quantityPrice orderItems.quantity orderItems.Product.price}}</p>
-														{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
+														{{#ifCond ../../order.order_status '< ' ../../orderStatus.PROCESSINGORDER }}
                                                 <a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
 													<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">CANCEL</p>
 												</a>
@@ -354,6 +352,7 @@ var type = {{{DisplayJSON this.type}}}
 						</div>
 					</form>
 					{{/ifCond}}
+					<a href="/order-track/{{order.id}}">Click here to track your order</a>
 				</div>
 				<div class="col-md-3 your_order_bg">
 					<div class="container">
@@ -437,7 +436,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.ordered_date}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.ordered_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
@@ -449,7 +448,7 @@ var type = {{{DisplayJSON this.type}}}
 							</div>
 							{{#if order.shipped_on}}
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.shipped_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
 							</div>
 							{{else}}
 							<div class="col-md-7">
@@ -465,7 +464,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.expected_delivery_date}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
@@ -487,7 +486,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.cancelled_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/ifCond}} {{#if order.shipped_on}}
@@ -545,7 +544,7 @@ var type = {{{DisplayJSON this.type}}}
 						<input type="hidden" id="item_id" name="item_id_name" value="">
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
-								<input class=" required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;" name="checkbox"/>
+								<input class=" required" type="checkbox" onclick ="document.getElementById(' submitBtn ').disabled=false;" name="checkbox"/>
 								 <label class="label-control">Are you sure you want to cancel this item from you order?</label>
 							</div>
 	                    </div>
