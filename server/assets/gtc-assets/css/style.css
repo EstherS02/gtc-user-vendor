@@ -782,6 +782,8 @@ ul.footer-social-links li a img {
     padding: 10px;
     min-width: 170px;
     min-height: 170px;
+    max-width: 170px;
+    max-height: 170px;
 }
 ul.vp-nav {
     padding: 0 10px;
