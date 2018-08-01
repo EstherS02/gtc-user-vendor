@@ -13,7 +13,7 @@ const populate = require('../../utilities/populate')
 export function updateStatus(req, res) {
 	var paramsID = req.params.id;
 	var bodyParams = req.body;
-	var order_status, purchase_order_id, user_email;
+	var order_status;
 	var includeArr = ['User'];
 	var date = new Date();
 	var shippingInput = {};
@@ -65,23 +65,29 @@ export function updateStatus(req, res) {
 
 	if (shippingInput === '{}') {
 		console.log("no shipping details");
-		orderStatusUpdate(paramsID,includeArr,bodyParams);
+		orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
+			console.log(response);
+		});
 	}
 	else {
 		shippingInput['status'] = statusCode.ACTIVE;
 		service.createRow('Shipping', shippingInput)
 			.then(function (res) {
 				bodyParams["shipping_id"]=res.id;
-				console.log("=======");
-		        orderStatusUpdate(paramsID,includeArr,bodyParams);
+		        orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
+                    console.log(response);
+				});
 			}).catch(function (err) {
 				console.log(err);
-				orderStatusUpdate(paramsID,includeArr,bodyParams);
+				orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
+                    console.log(response);
+				});
 			})
 	}
+	return res.status(201).send("Updated");
 }
 
-function orderStatusUpdate(paramsID,includeArr,bodyParams){
+function orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, res){
 
 	service.findIdRow("Order", paramsID, includeArr)
 		.then(function (row) {
@@ -93,8 +99,8 @@ function orderStatusUpdate(paramsID,includeArr,bodyParams){
 					.then(function (result) {
 						if (result) {
 
-							purchase_order_id = row.purchase_order_id;
-							user_email = row.User.email;
+							var purchase_order_id = row.purchase_order_id;
+							var user_email = row.User.email;
 
 							var queryObjEmailTemplate = {};
 							var emailTemplateModel = "EmailTemplate";
@@ -117,29 +123,26 @@ function orderStatusUpdate(paramsID,includeArr,bodyParams){
 											subject: subject,
 											html: body
 										});
-										return res.status(201).send(result);
+										return result;
 									} else {
-										return res.status(201).send(result);
+										return result;
 									}
 								}).catch(function (error) {
 									console.log('Error :::', error);
-									res.status(500).send("Internal server error");
-									return;
+									return error;
 								});
-						} else {
-							return res.status(404).send("Unable to update");
-						}
-					}).catch(function (error) {
-						console.log('Error :::', error);
-						res.status(500).send("Internal server error");
-						return
-					})
+						 } else {
+						 	return "Unable to sent" ;
+						 }
+					 }).catch(function (error) {
+					 	console.log('Error :::', error);
+					 	return error;
+					 })
 			}
-		}).catch(function (error) {
-			console.log('Error :::', error);
-			res.status(500).send("Internal server error");
-			return
-		});
+		 }).catch(function (error) {
+		 	console.log('Error :::', error);
+		 	return error;
+		 });
 }
 
 export function vendorCancel(req, res) {
