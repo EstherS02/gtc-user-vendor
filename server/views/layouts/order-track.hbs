@@ -47,11 +47,11 @@
 								<div class="col-md-10">
 									<div class="progress">
 										{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
-										<div class="progress-bar" style="width:10%;"></div>
+										<div class="progress-bar" style="width:5%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
-										<div class="progress-bar" style="width:20%;"></div>
+										<div class="progress-bar" style="width:10%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
-										<div class="progress-bar" style="width:30%;"></div>
+										<div class="progress-bar" style="width:10%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
 										<div class="progress-bar" style="width:50%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
@@ -142,15 +142,13 @@
 															</div>
 														</div>
                                                           {{/if}}
-														<div class="row">
-															
-																<p class="">
+														{{!-- <div class="row">
+															<p class="">
 																	<a href="#">
 																		<b><small>Order Details</small> </b>
 																	</a>
 																</p>
-
-													</div>
+                                                        </div> --}}
 												</div>
 											</div>
 										</div>
