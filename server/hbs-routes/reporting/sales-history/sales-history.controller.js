@@ -13,6 +13,7 @@ const orderStatus = require('../../../config/order_status');
 const orderItemStatus = require('../../../config/order-item-status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
+const carriersCode = require('../../../config/carriers');
 const populate = require('../../../utilities/populate');
 
 
@@ -216,6 +217,7 @@ export function salesHistory(req, res) {
                     cartheader: results.cartCounts,
                     totalTransaction: (total_transaction).toFixed(2),
                     orderStatus: orderStatus,
+                    
                     // pagination
                     page: page,
                     maxSize: maxSize,
@@ -234,7 +236,8 @@ export function salesHistory(req, res) {
 // Ends salesHistory
 
 export function orderView(req, res) {
-    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, productQueryObj={}, itemIncludeArr = [], orderIncludeArr=[];
+    var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, 
+    productQueryObj={}, itemIncludeArr = [], orderIncludeArr=[];
     var order_id;
     var marketPlaceModel = 'Marketplace';
     var orderItemsModel = 'OrderItem';
@@ -283,7 +286,7 @@ export function orderView(req, res) {
             if (req.params.id)
                 var id = req.params.id;
 
-               return service.findIdRow(orderModel, id,[])
+               return service.findIdRow(orderModel, id,orderIncludeArr)
                 .then(function(order){
                     return cb(null, order)
                 }).catch(function(error){
@@ -406,7 +409,8 @@ export function orderView(req, res) {
                 categories: results.categories,
                 bottomCategory: bottomCategory,
                 statusCode: statusCode,
-                orderItemStatus: orderItemStatus
+                orderItemStatus: orderItemStatus,
+                carriersCode:carriersCode
             }
             return res.status(200).render('orderView', result_obj);
         }
