@@ -10,15 +10,15 @@
 
 		$("#orderStatusChange").submit(function (e) {
 			e.preventDefault();
-			let input = $("#orderStatusChange :input").filter(function (index, element) {
+			let statusInput = $("#orderStatusChange :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
 
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			type: 'PUT',
-				data: input,
+			        type: 'PUT',
+				    data: statusInput,
 					success: function (result) {
 						location.reload(true);
 					},
@@ -31,10 +31,26 @@
 
 	$("#orderStatusChange").validate({
 		rules: {
-			order_status: "required"
+			order_status: "required",
+			provider_name: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			},
+			tracking_url: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			}
 		},
 		messages: {
-			order_status: "Please Select Order Status"
+			order_status: "Please select Order Status",
+			provider_name: "Please select the carrier name",
+			tracking_url: "Please enter tracking url"
 		}
 	});
 
@@ -47,7 +63,7 @@
 		cancelInput.reason_for_cancellation = $("#reason_for_cancellation").val();
 		mailInput.item_id = item_id;
 		mailInput.reason_for_cancellation = $("#reason_for_cancellation").val();
-
+		
 		if ($('#cancelReason').valid()) {
 
 			$.ajax({
@@ -322,7 +338,8 @@
 							</button>
 							<span class="form-message"></span>
 						</div>
-						<div class="row text-center">
+						<div class="row">
+					
                             <div class="col-md-3">
 								<p>
 									<b>Change Order Status:
@@ -346,10 +363,52 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-2">
+                        </div>
+                        <div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Select Carrier:
+									
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02">
+										   {{#if order.Shipping.provider_name}}
+										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+										   {{else}}
+										   <option disabled selected>Select Carrier</option>
+										   {{/if}}
+										   	{{#each carriersCode}}
+												<option value="{{this}}">{{@key}}</option>
+											{{/each}}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+								<div class="col-md-3">
+									<p>
+										<b>Enter Tracking Url:
+											
+										</b>
+									</p>
+								</div>
+								<div class="col-md-5">
+									<div class="form-group">
+										<div class="input-group">
+											<input type="text" name="tracking_url" value="{{order.Shipping.tracking_url}}" class="form-control-customized form-control-sm">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
 								<button type="submit" class="btn btn-primary btn-sm">Change</button>
 							</div>
 						</div>
+						
 					</form>
 					{{/ifCond}}
 					<a href="/order-track/{{order.id}}">Click here to track your order</a>
@@ -497,11 +556,11 @@
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.Shipping.provider_name}}</p>
+								<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
-						<div class="row">
+						<div class="row">	
 							<div class="col-md-8">
 								<p class="shop_subtotal">
 									<b>Tracking URL</b>

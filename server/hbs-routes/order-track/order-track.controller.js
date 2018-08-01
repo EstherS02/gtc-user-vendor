@@ -11,6 +11,7 @@ const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const populate = require('../../utilities/populate');
 const orderStatus = require('../../config/order_status');
+const carriersCode = require('../../config/carriers');
 
 export function orderTrack(req, res) {
 	var LoggedInUser = {}, order_id;
@@ -96,7 +97,8 @@ export function orderTrack(req, res) {
 					cartheader: results.cartCounts,
 					orderTrack: results.orderTrack,
 					vendorPlan: vendorPlan,
-					orderStatus: orderStatus
+					orderStatus: orderStatus,
+					carriersCode: carriersCode
 				});
 			} else {
 				res.render('order-track', err);

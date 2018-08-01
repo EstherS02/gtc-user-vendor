@@ -38,15 +38,21 @@
 							<div class="row" style="margin-bottom: 10px;">
 								<div class="col-md-10">
 									<div class="progress">
-										{{#if orderTrack.cancelled_on}}
-										<div class="progress-bar" style="width:100%; background-color:red"></div>
-										{{else if orderTrack.delivered_on}}
-										<div class="progress-bar" style="width:100%"></div>
-										{{else if orderTrack.shipped_on}}
-										<div class="progress-bar" style="width:70%;"></div>
-										{{else}}
+										{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
 										<div class="progress-bar" style="width:10%;"></div>
-										{{/if}}
+										{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
+										<div class="progress-bar" style="width:20%;"></div>
+										{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
+										<div class="progress-bar" style="width:30%;"></div>
+										{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
+										<div class="progress-bar" style="width:50%;"></div>
+										{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
+										<div class="progress-bar" style="width:100%;"></div>
+										{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
+										<div class="progress-bar" style="width:100%; background-color:red"></div>
+										{{else}}
+										<div class="progress-bar" style="width:20%;"></div>
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>
@@ -110,19 +116,19 @@
 													<div class="col-md-3"></div>
 													<div class="col-md-9">
 														<div class="row">
-															<div class="col-md-3">
-																<p class="">Carrier:</p>
+															<div class="col-md-4">
+																<p class=""><small>Carrier:</small></p>
 															</div>
-															<div class="col-md-9">
-																<p class="">{{orderTrack.Shipping.provider_name}}</p>
+															<div class="col-md-8">
+																<p class=""><small>{{ objectKey carriersCode orderTrack.Shipping.provider_name}}</small></p>
 															</div>
 														</div>
 														<div class="row">
-															<div class="col-md-3">
-																<p class="">Tracking#:</p>
+															<div class="col-md-4">
+																<p class=""><small>Tracking#:</small></p>
 															</div>
-															<div class="col-md-9">
-																<p class="">{{orderTrack.Shipping.tracking_url}}</p>
+															<div class="col-md-8">
+																<p class=""><small>{{orderTrack.Shipping.tracking_url}}</small></p>
 															</div>
 														</div>
 														<div class="row">
@@ -132,7 +138,7 @@
 															<div class="col-md-9">
 																<p>
 																	<a href="/order-history/{{orderTrack.id}}">
-																		<b>View Order Details</b>
+																		<b><small>Order Details</small> </b>
 																	</a>
 																</p>
 															</div>
