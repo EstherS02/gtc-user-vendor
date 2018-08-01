@@ -31,10 +31,26 @@
 
 	$("#orderStatusChange").validate({
 		rules: {
-			order_status: "required"
+			order_status: "required",
+			provider_name: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			},
+			tracking_url: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			}
 		},
 		messages: {
-			order_status: "Please Select Order Status"
+			order_status: "Please select Order Status",
+			provider_name: "Please select the carrier name",
+			tracking_url: "Please enter tracking url"
 		}
 	});
 

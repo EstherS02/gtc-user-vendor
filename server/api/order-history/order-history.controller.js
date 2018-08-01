@@ -72,6 +72,7 @@ export function updateStatus(req, res) {
 		service.createRow('Shipping', shippingInput)
 			.then(function (res) {
 				bodyParams["shipping_id"]=res.id;
+				console.log("=======");
 		        orderStatusUpdate(paramsID,includeArr,bodyParams);
 			}).catch(function (err) {
 				console.log(err);
