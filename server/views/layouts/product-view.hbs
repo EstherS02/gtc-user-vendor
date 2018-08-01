@@ -132,26 +132,22 @@
 
 </script>
 <script type="text/javascript">
+var productSpecs = {{{DisplayJSON product}}}
+var newData = {};
+newData.product_id = productSpecs.id;
 function compareProduct(e){
-	var productSpecs = {{{DisplayJSON product}}}
-	var compareData = JSON.parse(sessionStorage.getItem("compareProducts"));
-	var len = 0;
-	if(compareData){
-	len = compareData.length; 
-	}else{
-		compareData = [];
-	}
-	if(len==3){
-		compareData.splice(0,1);
-		compareData.push(productSpecs);
-		sessionStorage.setItem("compareProducts", JSON.stringify(compareData));
-	}
-	if(len<3){
-		compareData.push(productSpecs);
-		sessionStorage.setItem("compareProducts", JSON.stringify(compareData));
-	}
-	console.log(compareData)
-	console.log(compareData.length)
+	$.ajax({
+		type: 'POST',
+		url: '/api/product-view/add-to-compare',
+		data: newData,
+		success: function(data, text) {
+			location.reload();
+		},
+		error: function(request, status, error) {
+			console.log('status', status);
+			console.log('error', error);
+		}
+	});
 }
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
