@@ -39,7 +39,7 @@ export function index(req, res) {
             [field, order]
         ],
         raw: true
-    }).then(function(rows) {
+    }).then(function (rows) {
         if (rows.length > 0) {
             res.status(200).send(rows);
             return;
@@ -47,7 +47,7 @@ export function index(req, res) {
             res.status(200).send(rows);
             return;
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log('Error :::', error);
         res.status(500).send("Internal server error");
         return
@@ -90,7 +90,7 @@ export function create(req, res) {
 
     model['User'].findOne({
         where: queryObj
-    }).then(function(user) {
+    }).then(function (user) {
         if (user) {
             res.status(409).send("Email address already exists");
             return;
@@ -100,7 +100,7 @@ export function create(req, res) {
             bodyParams["status"] = status["ACTIVE"];
 
             model['User'].create(bodyParams)
-                .then(function(userObj) {
+                .then(function (userObj) {
                     if (userObj) {
                         const user = userObj.toJSON();
                         var email_verified_token = user.email_verified_token;
@@ -114,7 +114,7 @@ export function create(req, res) {
                         queryObjEmailTemplate['name'] = config.email.templates.userCreate;
 
                         service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-                            .then(function(response) {
+                            .then(function (response) {
                                 if (response) {
                                     var username = user["first_name"];
                                     var email = user["email"];
@@ -132,7 +132,7 @@ export function create(req, res) {
                                 } else {
                                     return res.status(201).send(user);
                                 }
-                            }).catch(function(error) {
+                            }).catch(function (error) {
                                 console.log('Error :::', error);
                                 res.status(500).send("Internal server error");
                                 return;
@@ -141,13 +141,13 @@ export function create(req, res) {
                         return res.status(400).send("Failed to create.");
                     }
                 })
-                .catch(function(error) {
+                .catch(function (error) {
                     console.log('Error :::', error);
                     res.status(500).send("Internal server error");
                     return;
                 });
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log('Error :::', error);
         res.status(500).send("Internal server error");
         return
@@ -162,7 +162,7 @@ export function userAuthenticate(req, res) {
     queryObj.email_verified_token = req.body.email_verified_token;
     queryObj.email = req.body.email;
     service.findOneRow(UserModel, queryObj, includeArr)
-        .then(function(resp) {
+        .then(function (resp) {
             if (resp) {
                 var expiryTime = moment(resp.email_verified_token_generated).add(24, 'hours').valueOf();
                 var currentTime = moment().valueOf();
@@ -171,11 +171,11 @@ export function userAuthenticate(req, res) {
                         var updateObj = {};
                         updateObj.email_verified = 1;
                         service.updateRow(UserModel, updateObj, resp.id)
-                            .then(function(updateRsp) {
+                            .then(function (updateRsp) {
                                 res.status(200).send("Email has been registered Successfully");
                                 return;
                             })
-                            .catch(function(err) {
+                            .catch(function (err) {
                                 res.status(500).send("Unable to update");
                                 return;
                             })
@@ -194,7 +194,7 @@ export function userAuthenticate(req, res) {
             }
 
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.log('Error :::', error);
             res.status(500).send("Internal server error");
             return;
@@ -220,7 +220,7 @@ export function destroy(req, res) {
         where: {
             id: ids
         }
-    }).then(function(row) {
+    }).then(function (row) {
         if (row > 0) {
             res.status(200).send("Users deleted successfully");
             return;
@@ -228,7 +228,7 @@ export function destroy(req, res) {
             res.status(404).send("Cannot delete users");
             return
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log('Error :::', error);
         res.status(500).send("Internal server error");
         return
@@ -280,14 +280,14 @@ export function changePassword(req, res) {
     }
     var UserModel = "User";
     var userId = req.user.id;
-    service.findIdRow(UserModel, userId, []).then(function(result) {
+    service.findIdRow(UserModel, userId, []).then(function (result) {
         if (authenticate(req.body.old_password, result)) {
             var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
             var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
             var bodyParams = {
                 hashed_pwd: hashedPassword
             };
-            service.updateRow(UserModel, bodyParams, userId).then(function(response) {
+            service.updateRow(UserModel, bodyParams, userId).then(function (response) {
                 if (response) {
                     res.status(200).send("Password Updated successfully")
                     return;
@@ -306,104 +306,67 @@ export function changePassword(req, res) {
 
 export function userProfile(req, res) {
 
-    let userUpdate = JSON.parse(req.body.userUpdate);
-    let billingUpdate = JSON.parse(req.body.billingUpdate);
-    let shippingUpdate = JSON.parse(req.body.shippingUpdate);
-    console.log(shippingUpdate);
-    let user_id = req.user.id;
+    var userUpdate = JSON.parse(req.body.userUpdate);
+    var billingUpdate = JSON.parse(req.body.billingUpdate);
+    var shippingUpdate = JSON.parse(req.body.shippingUpdate);
+    var user_id = req.user.id;
     billingUpdate['user_id'] = req.user.id;
     billingUpdate['status'] = 1;
     shippingUpdate['user_id'] = req.user.id;
     shippingUpdate['status'] = 1;
+    var billing_address_type = 1;
+    var shipping_address_type = 2;
 
     service.updateRow('User', userUpdate, user_id)
-        .then(function(row) {
-            service.findRow('Address', {
-                    user_id: user_id,
-                    address_type: 1
-                }, [])
-                .then(function(row) {
-                    if (row) {
-                        service.updateRow('Address', billingUpdate, row.id)
-                            .then(function(update) {
-                                service.findRow('Address', {
-                                        user_id: user_id,
-                                        address_type: 2
-                                    }, [])
-                                    .then(function(row) {
-                                        if (row) {
-                                            service.updateRow('Address', shippingUpdate, row.id)
-                                                .then(function(update) {
-                                                    res.status(200).send("Updated");
-                                                    return;
-                                                }).catch(function(err) {
-                                                    res.status(500).send(err);
-                                                    return;
-                                                });
-                                        } else {
-                                            service.createRow('Address', shippingUpdate)
-                                                .then(function(update) {
-                                                    res.status(200).send("Updated");
-                                                    return;
-
-                                                }).catch(function(err) {
-                                                    res.status(500).send(err);
-                                                    return;
-                                                })
-                                        }
-                                    }).catch(function(err) {
-                                        res.status(500).send(err);
-                                        return;
-                                    });
-
-                            }).catch(function(err) {
-                                res.status(500).send(err);
-                                return;
-                            });
-                    } else {
-                        service.createRow('Address', billingUpdate)
-                            .then(function(update) {
-                                service.findRow('Address', {
-                                        user_id: user_id,
-                                        address_type: 2
-                                    }, [])
-                                    .then(function(row) {
-                                        if (row) {
-                                            service.updateRow('Address', shippingUpdate, row.id)
-                                                .then(function(update) {
-                                                    res.status(200).send("Updated");
-                                                    return;
-                                                }).catch(function(err) {
-                                                    res.status(500).send(err);
-                                                    return;
-                                                });
-                                        } else {
-                                            service.createRow('Address', shippingUpdate)
-                                                .then(function(update) {
-                                                    res.status(200).send("Updated");
-                                                    return;
-
-                                                }).catch(function(err) {
-                                                    res.status(500).send(err);
-                                                    return;
-                                                })
-                                        }
-                                    }).catch(function(err) {
-                                        res.status(500).send(err);
-                                        return;
-                                    });
-                            }).catch(function(err) {
-                                res.status(500).send(err);
-                                return;
-                            })
-                    }
-                }).catch(function(err) {
-                    res.status(500).send(err);
-                    return;
-                });
+        .then(function (row) {
+            
+            if(billingUpdate){
+                addressUpdate(user_id, billing_address_type, billingUpdate);
+            }
+            if(shippingUpdate){
+                addressUpdate(user_id, shipping_address_type, shippingUpdate);
+            }
+            return res.status(200).send(row);
         })
-        .catch(function(err) {
+        .catch(function (err) {
             res.status(500).send(err);
+            return;
+        })
+}
+
+function addressUpdate(user_id, address_type, obj) {
+    service.findRow('Address', {
+        user_id: user_id,
+        address_type: address_type
+    }, [])
+        .then(function (row) {
+            if (row) {
+                updateAddress(obj, row.id);
+                return;
+            }
+            else {
+                createAddress(obj);
+                return;
+            }
+        }).catch(function (err) {
+            return;
+        })
+}
+
+function createAddress(obj) {
+    service.createRow('Address', obj)
+        .then(function (create) {
+            return;
+        }).catch(function (err) {
+            return;
+        })
+}
+
+function updateAddress(obj, id) {
+    service.updateRow('Address', obj, id)
+        .then(function (update) {
+            return;
+        }).catch(function (err) {
             return;
         })
 }
@@ -418,7 +381,7 @@ export function vendorFollow(req, res) {
     var modelName = "VendorFollower";
     model[modelName].findOne({
         where: queryObj
-    }).then(function(result) {
+    }).then(function (result) {
         console.log("result", result.id);
         if (result) {
             var newStatus;
@@ -428,14 +391,14 @@ export function vendorFollow(req, res) {
                 newStatus = 1;
             }
             model[modelName].update({
-                    status: newStatus,
-                    last_updated_on: new Date()
-                }, {
+                status: newStatus,
+                last_updated_on: new Date()
+            }, {
                     where: {
                         id: result.id
                     }
                 })
-                .then(function(response) {
+                .then(function (response) {
                     res.status(200).send(response);
                     return;
                 });
@@ -445,7 +408,7 @@ export function vendorFollow(req, res) {
             bodyParam.user_id = req.user.id;
             bodyParam.status = 1;
             bodyParam.created_on = new Date();
-            service.createRow(modelName, bodyParam).then(function(response) {
+            service.createRow(modelName, bodyParam).then(function (response) {
                 res.status(200).send(response);
                 return;
             });
