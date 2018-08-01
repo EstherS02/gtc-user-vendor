@@ -24,7 +24,7 @@ export function compare(req, res) {
         console.log("req.session['compare']==================================", req.session['compare'])
         ids = req.session['compare'];
     }
-    ids = [1, 18];
+    ids = [1, 18,2];
     let user_id = LoggedInUser.id;
     var includeArr = [{
         model: model["ProductMedia"],
@@ -59,6 +59,15 @@ export function compare(req, res) {
     async.series({
             compare: function(callback) {
                 service.findAllRows('Product', includeArr, queryObj, 0, null, field, order)
+                    .then(function(response) {
+                        return callback(null, response);
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            },
+            attribute:function(callback){
+                service.findAllRows('Attribute', [], {status:status['ACTIVE']}, 0, null, field, order)
                     .then(function(response) {
                         return callback(null, response);
                     }).catch(function(error) {
@@ -101,22 +110,39 @@ export function compare(req, res) {
             if (!err) {
                 var compare = results.compare;
                 var average = [];
+                var Attributes = [];
+                var att_id =[];
                 if (results.compare.rows) {
                     _.forOwn(compare.rows, function(element) {
                         var avg = _.meanBy(element.Reviews, (p) => p.rating);
                         element.avg_rating = (avg > 0) ? avg : 0;
                         element.review_count = element.Reviews.length;
+
+                        Attributes.push(element.Category.CategoryAttributes);
+                        
                     });
                 }
-                // result = Object.assign(...a.map((v, i) => b.includes(v) && {
-                //     [i]: v
-                // }));
+                _.forOwn(Attributes, function(element) {
+                    var newData=[];
+                    element.filter(obj => {
+                        newData.push(obj. attribute_id);
+                        })
+                    att_id.push(newData);
+                 });
+                
+                att_id[1].push(1,18);
+                att_id[0].push(18);
+                console.log(att_id);
+                
+                var attribute_field = Object.assign(...att_id[0].map((v, i) => att_id[1].includes(v) && { [i]: v }));
                 res.render('compare', {
                     title: "Global Trade Connect",
                     categories: results.categories,
                     bottomCategory: bottomCategory,
                     cartheader: results.cartCounts,
-                    compare: results.compare,
+                    compare: compare,
+                    attribute:results.attribute.rows,
+                    attribute_field:attribute_field,
                     LoggedInUser: LoggedInUser,
                 });
             } else {

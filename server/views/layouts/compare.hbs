@@ -175,66 +175,22 @@
                                 {{/each}}
 
                             </tr>
+                            {{#if attribute_field}}
+                            {{#each attribute_field}}
                             <tr>
-                                <th>Weight</th>
+                                <th>{{Attributes this ../attribute }}</th>
+                                {{#each ../compare.rows}}
                                 <td>
-                                    <p class="com_product_stock">24K (4.4ibs)</p>
+                                    <p class="com_product_stock">
+                                    {{#each this.ProductAttributes}}
+                                    {{#ifCond this.attribute_id "==" ../../this}}{{this.value}} {{/ifCond}}
+                                    {{/each}}
+                                    </p>
                                 </td>
-                                <td>
-                                    <p class="com_product_stock">24K (4.4ibs)</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">24K (4.4ibs)</p>
-                                </td>
+                                {{/each}}
                             </tr>
-                            <tr>
-                                <th>Dimensions</th>
-                                <td>
-                                    <p class="com_product_stock">30*20cm (1ft*8in)</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">30*20cm (1ft*8in)</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">30*20cm (1ft*8in)</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Brand</th>
-                                <td>
-                                    <p class="com_product_stock">Dr.Dre</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">Dr.Dre</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">Dr.Dre</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Color</th>
-                                <td>
-                                    <p class="com_product_stock">Black</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">Black</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">Black</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>EAN</th>
-                                <td>
-                                    <p class="com_product_stock">#1245734</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">#1245734</p>
-                                </td>
-                                <td>
-                                    <p class="com_product_stock">#1245734</p>
-                                </td>
-                            </tr>
+                            {{/each}}
+                            {{/if}}
                             <tr>
                                 <th>Add to Bag</th>
                                 {{#each compare.rows}}
