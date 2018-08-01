@@ -100,7 +100,7 @@
 									<div class="row">
 										<div class="col-md-6">
 										</div>
-										{{#if orderTrack.Shipping}}
+										
 										<div class="col-md-6">
 											<p class="order_track_ship_det">SHIPMENT DETAILS</p>
 											{{#if orderTrack.last_updated_on}}
@@ -119,9 +119,11 @@
 													</div>
 													{{/if}}
 												</div>
-												<div class="row">
+                                                 
+                                                <div class="row">
 													<div class="col-md-3"></div>
 													<div class="col-md-9">
+                                                        {{#if orderTrack.Shipping}}
 														<div class="row">
 															<div class="col-md-4">
 																<p class=""><small>Carrier:</small></p>
@@ -138,23 +140,24 @@
 																<p class=""><small>{{orderTrack.Shipping.tracking_url}}</small></p>
 															</div>
 														</div>
-														<div class="row">
-															<div class="col-md-3">
+                                                          {{/if}}
+														{{!-- <div class="row">
+															<div class="col-md-4">
 																<p class=""></p>
 															</div>
-															<div class="col-md-9">
-																<p>
-																	<a href="/order-history/{{orderTrack.id}}">
+															<div class="col-md-8">
+																<p class="">
+																	<a href="#">
 																		<b><small>Order Details</small> </b>
 																	</a>
 																</p>
 															</div>
-														</div>
+														</div> --}}
+
 													</div>
 												</div>
 											</div>
 										</div>
-										{{/if}}
 									</div>
 								</div>
 							</div>
