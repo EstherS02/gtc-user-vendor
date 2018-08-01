@@ -195,6 +195,7 @@
 													<th scope="col">Method</th>
 													<th scope="col">Status</th>
 													<th scope="col"></th>
+													<th scope="col"></th>
 													<th scope="col">Amount</th>
 												</tr>
 											</thead>
@@ -210,6 +211,7 @@
 				  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 				  				<td>Stripe</td>
 				  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+								  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
 				  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
 				  				<td>${{this.final_price}} CAD</td>
 				  			</tr>
