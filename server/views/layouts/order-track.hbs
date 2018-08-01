@@ -16,6 +16,7 @@
 						<div class="content-body">
 							<img src="{{orderTrack.OrderItems.[0].Product.ProductMedia.[0].url}}" alt="iphone" style="width:5%;margin-bottom: 10px;margin-left:16px"
 							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+							
 							{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
