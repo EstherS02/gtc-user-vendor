@@ -24,7 +24,6 @@ export function compare(req, res) {
         console.log("req.session['compare']==================================", req.session['compare'])
         ids = req.session['compare'];
     }
-    ids = [1, 18,2];
     let user_id = LoggedInUser.id;
     var includeArr = [{
         model: model["ProductMedia"],
@@ -130,11 +129,12 @@ export function compare(req, res) {
                     att_id.push(newData);
                  });
                 
-                att_id[1].push(1,18);
-                att_id[0].push(18);
                 console.log(att_id);
-                
-                var attribute_field = Object.assign(...att_id[0].map((v, i) => att_id[1].includes(v) && { [i]: v }));
+                var attribute_field = [];
+                if(att_id.length>0){
+                   attribute_field = array_intersect(att_id);
+                   console.log(attribute_field)
+                }
                 res.render('compare', {
                     title: "Global Trade Connect",
                     categories: results.categories,
@@ -151,3 +151,14 @@ export function compare(req, res) {
         });
 
 }
+function array_intersect(arrayOfArrays) {
+    return arrayOfArrays
+        .reduce((acc,array,index) => { // Intersect arrays
+            if (index === 0)
+                return array;
+            return array.filter((value) => acc.includes(value));
+        }, [])
+        .filter((value, index, self) => self.indexOf(value) === index) // Make values unique;
+    
+}
+
