@@ -1180,3 +1180,18 @@ label {
     padding: 3px;
     color: #fff;
 }
+
+
+/*sumithra*/
+p.com_product_desc{
+    /*white-space: nowrap;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+tr>th.compare-header-width{
+    width: 10%!important;
+}
+tr>td.compare-width{
+ width: 30%!important;   
+}

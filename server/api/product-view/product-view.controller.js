@@ -75,7 +75,10 @@ export function AddToCompare(req, res) {
 	}
 	req.session['compare'] = compare;
 	console.log("req.session.compare", req.session['compare']);
-	return res.status(200).send('OK');
+	return res.status(200).json({
+						message : "SUCCESS",
+						message_details : "The One Product Added to your compare list",
+					});
 } 
 
 export function removeFromCompare(req,res) {
@@ -93,5 +96,8 @@ export function removeFromCompare(req,res) {
 	}
 	req.session['compare'] = compare;
 	console.log("req.session.compare", req.session['compare']);
-	return res.status(200).send('OK');
+	return res.status(200).json({
+						message : "SUCCESS",
+						message_details : "The One Product remove from your compare list",
+					});
 }

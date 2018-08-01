@@ -28,7 +28,6 @@
     }
 
     function removeFromCompare(argument) {
-        alert(argument);
         var newData = {};
             newData.product_id = argument;
         $.ajax({
@@ -37,7 +36,7 @@
             data: newData,
             success: function(res) {
                 $('#gtc-add-to-cart').prop('disabled', false);
-                if (res && res.message === "SUCCESS") {
+               if (res && res.message === "SUCCESS") {
                     outputPop(res.message_details);
                     console.log(res)
                 }
@@ -55,8 +54,8 @@
 
     function outputPop(argument) {
         $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-cart-alert .cart-message').text(res.message_details)
-        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+        $('#gtc-cart-alert .cart-message').text(argument)
+        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
             $("#gtc-cart-alert").slideUp(500);
             location.reload();
         });
@@ -108,18 +107,18 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>&nbsp;</th>
+                            <th class="compare-header-width">&nbsp;</th>
                             {{#each compare.rows}}
-                            <td align="center">
+                            <td align="center" class="compare-width">
                                 <img src="{{this.ProductMedia.[0].url}}" style="width: 60px" alt="iphone">
 
                             </td>
                             {{/each}}
                         </tr>
                         <tr>
-                            <th>Product</th>
+                            <th class="compare-header-width">Product</th>
                             {{#each compare.rows}}
-                            <td>
+                            <td class="compare-width">
                                 <a href="#">
                                     <p class="com_product_title">{{this.product_name}}</p>
                                 </a>
@@ -127,17 +126,17 @@
                             {{/each}}
                         </tr>
                         <tr>
-                            <th>Price</th>
+                            <th class="compare-header-width">Price</th>
                             {{#each compare.rows}}
-                            <td>
+                            <td class="compare-width">
                                 <p class="com_product_title">${{this.price}}</p>
                             </td>
                             {{/each}}
                             </tr>
                             <tr>
-                                <th>Availability</th>
+                                <th class="compare-header-width">Availability</th>
                                 {{#each compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <p class="com_product_stock">{{this.quantity_available}}</p>
                                 </td>
                                 {{/each}}
@@ -145,16 +144,16 @@
                             <tr>
                                 <th>Description</th>
                                 {{#each compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <p class="com_product_desc">{{this.description}}</p>
                                 </td>
                                 {{/each}}
                             </tr>
                             <tr>
-                                <th>Seller</th>
+                                <th class="compare-header-width">Seller</th>
                                 {{#each compare.rows}}
                                 {{#if ../LoggedInUser.id}}
-                                <td>
+                                <td class="compare-width">
                                     <p class="com_product_title">{{this.Vendor.vendor_name}}</p>
                                 </td>
                                 {{else}}
@@ -165,9 +164,9 @@
                                 {{/each}}
                             </tr>
                             <tr>
-                                <th scope="row">User Rating</th>
+                                <th scope="row" class="compare-header-width">User Rating</th>
                                 {{#each compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <p class="com_product_title">
                                         {{starCount this.avg_rating}} <a href="products/{{this.product_slug}}/{{this.id}}/allReviews">({{this.review_count}} Ratings-See All)</a>
                                     </p>
@@ -178,9 +177,9 @@
                             {{#if attribute_field}}
                             {{#each attribute_field}}
                             <tr>
-                                <th>{{Attributes this ../attribute }}</th>
+                                <th class="compare-header-width">{{Attributes this ../attribute }}</th>
                                 {{#each ../compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <p class="com_product_stock">
                                     {{#each this.ProductAttributes}}
                                     {{#ifCond this.attribute_id "==" ../../this}}{{this.value}} {{/ifCond}}
@@ -192,9 +191,9 @@
                             {{/each}}
                             {{/if}}
                             <tr>
-                                <th>Add to Bag</th>
+                                <th class="compare-header-width">Add to Bag</th>
                                 {{#each compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <div class="row">
                                         <div class="col-md-2 col-12">
                                             <p class="com_product_stock">Qty:</p>
@@ -216,9 +215,9 @@
                                 {{/each}}
                             </tr>
                             <tr>
-                                <th scope="row">Remove</th>
+                                <th scope="row" class="compare-header-width">Remove</th>
                                 {{#each compare.rows}}
-                                <td>
+                                <td class="compare-width">
                                     <a href="javascript:;" class="span_swichaccount" style="custor:pointer" onclick="removeFromCompare({{this.id}})" >REMOVE FROM COMPARE</a>
                                 </td>
                                 {{/each}}
