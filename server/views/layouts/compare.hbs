@@ -14,6 +14,7 @@
                 if (res && res.message === "SUCCESS") {
                    outputPop(res.message_details);
                     console.log(res)
+                    location.reload(true);
                 }
             },
             error: function(error) {
@@ -22,6 +23,7 @@
                     if (error.status === 401)
                         return location.href = "/login";
                     outputErrorPop(error);
+                    location.reload(true);
                 }
             }
         });
@@ -38,7 +40,7 @@
                 $('#gtc-add-to-cart').prop('disabled', false);
                if (res && res.message === "SUCCESS") {
                     outputPop(res.message_details);
-                    console.log(res)
+                    location.reload(true);
                 }
             },
             error: function(error) {
@@ -47,6 +49,7 @@
                     if (error.status === 401)
                         return location.href = "/login";
                     outputErrorPop(error);
+                    location.reload(true);
                 }
             }
         });
@@ -149,10 +152,10 @@
                                 </td>
                                 {{/each}}
                             </tr>
-                            <tr>
+                            {{!-- <tr>
                                 <th class="compare-header-width">Seller</th>
                                 {{#each compare.rows}}
-                                {{#if ../LoggedInUser.id}}
+                                {{#if ../LoggedInUser}}
                                 <td class="compare-width">
                                     <p class="com_product_title"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></p>
                                 </td>
@@ -162,7 +165,7 @@
                                 </td>
                                 {{/if}}
                                 {{/each}}
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <th scope="row" class="compare-header-width">User Rating</th>
                                 {{#each compare.rows}}
