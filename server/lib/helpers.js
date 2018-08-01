@@ -404,13 +404,13 @@ Handlebars.registerHelper('currency', function(amt, symbol) {
     return numeral(amt).format(symbol + '0,0.00');
 });
 
-Handlebars.registerHelper('Attributes', function(id, arrayEle,options) {
-    // att_Object.forEach()
+Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
+    let name;
     arrayEle.forEach(function(element) {
         if(element.id == id){
         console.log("helper",element.attr_name)
-        var name= element.attr_name;
-            return name;
+            name= element.attr_name;    
         }
     });
+    return name;
 });

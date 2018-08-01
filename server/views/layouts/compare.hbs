@@ -28,7 +28,6 @@
     }
 
     function removeFromCompare(argument) {
-        alert(argument);
         var newData = {};
             newData.product_id = argument;
         $.ajax({
@@ -37,8 +36,8 @@
             data: newData,
             success: function(res) {
                 $('#gtc-add-to-cart').prop('disabled', false);
-                if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
+                if (res) {
+                    outputPop(res);
                     console.log(res)
                 }
             },
