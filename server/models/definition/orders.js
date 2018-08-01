@@ -191,12 +191,14 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsTo(Address, {
+        as: "shippingAddress",
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
+        as: "billingAddress",
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
