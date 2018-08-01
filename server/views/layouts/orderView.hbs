@@ -24,9 +24,9 @@
 					},
 			error: function (error) {
 				console.log("error", error);
-			}
-		});
-	}
+			        }
+		        });
+	        }
         });
 
 	$("#orderStatusChange").validate({
@@ -44,13 +44,20 @@
                             if($("select[name=order_status]").val() == 4){
                             return true;
                             } else { return false; }
-                        }
+                        },
+				minlength: 8
 			}
 		},
 		messages: {
 			order_status: "Please select Order Status",
-			provider_name: "Please select the carrier name",
-			tracking_url: "Please enter tracking url"
+			provider_name: {
+				required: "Please select the carrier name"
+			},
+			tracking_url: {
+				required:"Please enter tracking url",
+				minlength:"Please enter valid url"
+			}
+			
 		}
 	});
 
@@ -73,13 +80,6 @@
 				success: function (result) {
 					console.log(result);
 
-					/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
-						$('#gtc-cancel-alert .cancel-message').text(result.responseText)
-						$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
-						$("#gtc-cancel-alert").slideUp(500);
-						});
-		
-						$("#cancelReason")[0].reset();*/
 					location.reload(true);
 
 					if (type == 'sales-history') {

@@ -15,18 +15,25 @@
 						<div> {{orderTrack.OrderItems.[0].Product.[0].ProductMedia.id}} </div>
 						<div class="content-body">
 							<img src="{{orderTrack.OrderItems.[0].Product.ProductMedia.[0].url}}" alt="iphone" style="width:5%;margin-bottom: 10px;margin-left:16px"
-							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{#if orderTrack.cancelled_on}}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Order has been Cancelled</span>
+							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+							{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been confirmed by vendor</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been proccessed</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been dispatched</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been delivered</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been cancelled</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.RETURNEDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been returned</span>
+							{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
+							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
+							{{/ifCond}}
 
-							{{else if orderTrack.delivered_on}}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Order has been delivered</span>
-
-							{{else if orderTrack.shipped_on}}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">On the way</span>
-
-							{{else}}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Not shipped yet</span>
-							{{/if}}
 							<div class="row">
 								<div class="col-md-9">
 									<p class="text_blue_color float-right" style="margin: 10px">
