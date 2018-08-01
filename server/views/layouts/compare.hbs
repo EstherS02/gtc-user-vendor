@@ -119,7 +119,7 @@
                             <th class="compare-header-width">Product</th>
                             {{#each compare.rows}}
                             <td class="compare-width">
-                                <a href="#">
+                                <a href="/products/{{this.product_slug}}/{{this.id}}">
                                     <p class="com_product_title">{{this.product_name}}</p>
                                 </a>
                             </td>
@@ -154,7 +154,7 @@
                                 {{#each compare.rows}}
                                 {{#if ../LoggedInUser.id}}
                                 <td class="compare-width">
-                                    <p class="com_product_title">{{this.Vendor.vendor_name}}</p>
+                                    <p class="com_product_title"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></p>
                                 </td>
                                 {{else}}
                                 <td>
@@ -224,6 +224,84 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="marketplace-type-bg"></div>
+<div class="gtc-container">
+  <div class="marketplace-type-headers">
+    <div class="row">
+      <div class="col-md-12 no-padding">
+        <div class="wts-header-bg">
+          <h4 class="header-md-text">
+            Related Products
+          </h4>
+        </div>
+      </div>
+      {{#each RelatedProducts.rows}}
+      <div class="col-md-4 no-padding">
+        <div class="product-list-body">
+          <div class="product-body">
+            <div class="table-responsive">
+              <table class="table shoping-cart-table">
+                <tbody>
+                  <tr class="d-flex">
+                    <td class="col-2">
+                      <div class="product-left-col">
+                        <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                      </div>
+                    </td>
+                    <td class="col-7">
+                      <div class="product-middle-col">
+                        <h3>
+                          <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
+                        </h3>
+                        <div class="row no-margins">
+                          <div class="col-md-4 col-4 no-padding">
+                            <span>Origin</span>
+                          </div>
+                          <div class="col-md-8 col-8 no-padding overflow-txt">
+                            <span class="text-500">{{this.country_name}}</span>
+                          </div>
+                          <div class="col-md-4 col-4 no-padding">
+                            <span>Category</span>
+                          </div>
+                          <div class="col-md-8 col-8 no-padding overflow-txt">
+                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                          </div>
+                          <div class="col-md-4 col-4 no-padding">
+                            <span>Seller</span>
+                          </div>
+                          <div class="col-md-8 col-8 no-padding overflow-txt">
+                            {{#if ../LoggedInUser.email}}
+                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                            {{else}}
+                            <a class="text-500" href="/login">(Login for Seller Info)</a>
+                            {{/if}}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="col-3">
+                      <div class="product-right-col">
+                        <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                        <div class="prc-bottom">
+                          <p>Seller Rating</p>
+                          <div class="p-rating pull-right">
+                            {{starCount product_rating}}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+
+    </div>
+  </div>
+</div>
                 </div> 
                 {{!-- <div class="row">
                     <div class="col-md-12 col-12 ts2">

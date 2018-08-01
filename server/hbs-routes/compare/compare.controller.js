@@ -55,11 +55,39 @@ export function compare(req, res) {
     };
     var field = 'id';
     var order = 'asc';
+    var average = [];
+    var Attributes = [];
+    var att_id =[];
+    var product_related = 1;
     async.series({
             compare: function(callback) {
                 service.findAllRows('Product', includeArr, queryObj, 0, null, field, order)
                     .then(function(response) {
+                        if(response){
+                             if (response.rows) {
+                                _.forOwn(response.rows, function(element) {
+                                    var avg = _.meanBy(element.Reviews, (p) => p.rating);
+                                    element.avg_rating = (avg > 0) ? avg : 0;
+                                    element.review_count = element.Reviews.length;
+                                    Attributes.push(element.Category.CategoryAttributes);
+                                    product_related = element.Category.id;
+                                });
+                            }
+                        }
                         return callback(null, response);
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
+            },
+            RelatedProducts: function(callback) {
+                var queryObj2 = {
+                    category_id: product_related,
+                };
+                includeArr = [];
+                service.findAllRows("MarketplaceProduct", includeArr, queryObj2, 0, 9, field, order)
+                    .then(function(RelatedProducts) {
+                        return callback(null, RelatedProducts);
                     }).catch(function(error) {
                         console.log('Error :::', error);
                         return callback(null);
@@ -107,20 +135,6 @@ export function compare(req, res) {
         },
         function(err, results) {
             if (!err) {
-                var compare = results.compare;
-                var average = [];
-                var Attributes = [];
-                var att_id =[];
-                if (results.compare.rows) {
-                    _.forOwn(compare.rows, function(element) {
-                        var avg = _.meanBy(element.Reviews, (p) => p.rating);
-                        element.avg_rating = (avg > 0) ? avg : 0;
-                        element.review_count = element.Reviews.length;
-
-                        Attributes.push(element.Category.CategoryAttributes);
-                        
-                    });
-                }
                 _.forOwn(Attributes, function(element) {
                     var newData=[];
                     element.filter(obj => {
@@ -128,8 +142,6 @@ export function compare(req, res) {
                         })
                     att_id.push(newData);
                  });
-                
-                console.log(att_id);
                 var attribute_field = [];
                 if(att_id.length>0){
                    attribute_field = array_intersect(att_id);
@@ -140,7 +152,8 @@ export function compare(req, res) {
                     categories: results.categories,
                     bottomCategory: bottomCategory,
                     cartheader: results.cartCounts,
-                    compare: compare,
+                    compare: results.compare,
+                    RelatedProducts: results.RelatedProducts,
                     attribute:results.attribute.rows,
                     attribute_field:attribute_field,
                     LoggedInUser: LoggedInUser,
