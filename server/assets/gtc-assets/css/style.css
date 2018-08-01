@@ -1189,3 +1189,9 @@ p.com_product_desc{
     text-overflow: ellipsis;
     max-width: 100%;
 }
+tr>th.compare-header-width{
+    width: 10%!important;
+}
+tr>td.compare-width{
+ width: 30%!important;   
+}

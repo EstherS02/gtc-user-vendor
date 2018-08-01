@@ -23,12 +23,13 @@
 				success: function(res) {
 					$('#gtc-add-to-cart').prop('disabled', false);
 					if (res && res.message === "SUCCESS") {
-						$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-						$('#gtc-cart-alert .cart-message').text(res.message_details)
-						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-cart-alert").slideUp(500);
-							location.reload();
-						});
+						outputPop(res.message_details);
+						// $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+						// $('#gtc-cart-alert .cart-message').text(res.message_details)
+						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+						// 	$("#gtc-cart-alert").slideUp(500);
+						// 	location.reload();
+						// });
 						console.log(res)
 					}
 				},
@@ -38,11 +39,13 @@
 						if (error.status === 401)
 							return location.href = "/login";
 
-						$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-						$('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
-						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-cart-alert").slideUp(500);
-						});
+						outputErrorPop(error);
+						// $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+						// $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
+						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+						// 	$("#gtc-cart-alert").slideUp(500);
+						// });
+
 					}
 				}
 			});
@@ -140,16 +143,39 @@ function compareProduct(e){
 		type: 'POST',
 		url: '/api/product-view/add-to-compare',
 		data: newData,
-		success: function(data, text) {
-			location.reload();
+		success: function(res) {
+			if (res && res.message === "SUCCESS") {
+                    outputPop(res.message_details);
+                    console.log(res)
+                }
 		},
-		error: function(request, status, error) {
-			console.log('status', status);
+		error: function(error) {
+			if (error) {
+                    if (error.status === 401)
+                        return location.href = "/login";
+                    outputErrorPop(error);
+                }
 			console.log('error', error);
 		}
 	});
 
 }
+ function outputPop(argument) {
+        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+        $('#gtc-cart-alert .cart-message').text(argument)
+        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
+            $("#gtc-cart-alert").slideUp(500);
+            location.reload();
+        });
+    }
+
+    function outputErrorPop(argument) {
+        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+        $('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
+        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+            $("#gtc-cart-alert").slideUp(500);
+        });
+    }
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
