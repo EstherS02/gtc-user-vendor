@@ -18,7 +18,7 @@ import lusca from 'lusca';
 import config from './environment';
 import globalUser from '../auth/global-user-obj';
 import expressJwt from 'express-jwt'
-//import session from 'express-session';
+import session from 'express-session';
 //import sequelizeDB from '../sqldb';
 //import expressSequelizeSession from 'express-sequelize-session';
 //var Store = expressSequelizeSession(session.Store);
@@ -62,7 +62,23 @@ export default function(app) {
 	});
 	app.use(expressValidator());
 	app.use(methodOverride());
-	app.use(cookieParser());
+	app.use(cookieParser(config.secrets.session));
+	app.use(session({
+		secret: config.secrets.session,
+		saveUninitialized: false,
+		resave: true,
+		cookie: {
+			secure: false
+		}
+	}));
+
+	app.use(function(req, res, next) {
+		console.log("req.session", req.session['compare']);
+		if (!req.session['compare']) {
+			req.session['compare'] = [];
+		}
+		next();
+	});
 
 	if (env === 'development') {
 		const webpackDevMiddleware = require('webpack-dev-middleware');

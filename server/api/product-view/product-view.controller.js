@@ -4,12 +4,13 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 var async = require('async');
+var pageScope;
 
 
 export function addOrRemoveWishlist(req, res) {
 	var LoggedInUser = {};
 
-	if(req.user)
+	if (req.user)
 		LoggedInUser = req.user;
 
 	var item = JSON.parse(req.body.data);
@@ -29,7 +30,7 @@ export function addOrRemoveWishlist(req, res) {
 				return model[modelName].create(data)
 					.then(function(response) {
 
-						console.log("create",response)
+						console.log("create", response)
 						return res.status(200).send(response);
 						//  {
 						// 	response: response,
@@ -44,8 +45,8 @@ export function addOrRemoveWishlist(req, res) {
 					where: queryObj
 				})
 				.then(function(response) {
-					console.log("create",response)
-					return res.status(200).send(response); 
+					console.log("create", response)
+					return res.status(200).send(response);
 					// {
 					// 	response: response,
 					// 	created: false
@@ -55,5 +56,42 @@ export function addOrRemoveWishlist(req, res) {
 }
 export function vendorFollow(req, res) {
 
+
+}
+
+export function AddToCompare(req, res) {
+	req.checkBody('product_id', 'Missing Product').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send(errors);
+		return;
+	}
+	var compare = req.session['compare'] || [];  
+	if (compare.length < 3) {
+		compare.push(req.body.product_id);
+	} else {
+		compare.splice(0,1);
+		compare.push(req.body.product_id);
+	}
+	req.session['compare'] = compare;
+	console.log("req.session.compare", req.session['compare']);
+	return res.status(200).send('OK');
+} 
+
+export function removeFromCompare(req,res) {
 	
+	req.checkBody('product_id', 'Missing Product Value').notEmpty();
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send(errors);
+		return;
+	}
+	var compare = req.session['compare'] || [];  
+	var index = compare.indexOf(req.body.product_id);
+	if (index > -1) {
+	  compare.splice(index, 1);
+	}
+	req.session['compare'] = compare;
+	console.log("req.session.compare", req.session['compare']);
+	return res.status(200).send('OK');
 }
