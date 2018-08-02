@@ -190,6 +190,7 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Country = model.Country;
     const Currency = model.Currency;
+    const TermsAndCond = model.TermsAndCond;
     const Timezone = model.Timezone;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
@@ -241,6 +242,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(VendorNotificationSetting, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(TermsAndCond, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
