@@ -12,33 +12,33 @@
             success: function(res) {
                 $('#gtc-add-to-cart').prop('disabled', false);
                 if (res && res.message === "SUCCESS") {
-                   outputPop(res.message_details);
-                    console.log(res)
-                    location.reload(true);
-                }
-            },
-            error: function(error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    outputErrorPop(error);
-                    location.reload(true);
-                }
+                 outputPop(res.message_details);
+                 console.log(res)
+                 location.reload(true);
+             }
+         },
+         error: function(error) {
+            $('#gtc-add-to-cart').prop('disabled', false);
+            if (error) {
+                if (error.status === 401)
+                    return location.href = "/login";
+                outputErrorPop(error);
+                location.reload(true);
             }
-        });
+        }
+    });
     }
 
     function removeFromCompare(argument) {
         var newData = {};
-            newData.product_id = argument;
+        newData.product_id = argument;
         $.ajax({
             type: "POST",
             url: "/api/product-view/remove-from-compare/",
             data: newData,
             success: function(res) {
                 $('#gtc-add-to-cart').prop('disabled', false);
-               if (res && res.message === "SUCCESS") {
+                if (res && res.message === "SUCCESS") {
                     outputPop(res.message_details);
                     location.reload(true);
                 }
@@ -72,8 +72,8 @@
         });
     }
     $(function() {
-    $("#gtc-cart-alert").hide();
-});
+        $("#gtc-cart-alert").hide();
+    });
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <section>
@@ -90,15 +90,21 @@
                 </div>
                 <div class="col-md-6 col-12">
                     <p class="logged_in_username">
+                    {{#if LoggedInUser.id}}
                         <span style="color: #5B8AC4;">
-                            <a href="" style="color:#4178bb"><b>Login</b></a>
+                            <a href="javascript:;" onclick="gtcLogout()" style="color:#4178bb"><b>switch your account</b></a>
+                        </span> </p>
+                        {{else}}
+                        <span style="color: #5B8AC4;">
+                            <a href="/login" style="color:#4178bb"><b>Login</b></a>
                         </span> to see seller information</p>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="alert" id="gtc-cart-alert">
-                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                        <span class="cart-message"></span>
-                    </div>
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+                    <span class="cart-message"></span>
+                </div>
                 <table class="table table-responsive-sm table_td_style">
                     <tbody>
                         <tr>
@@ -135,27 +141,27 @@
                                 <p class="com_product_title">${{this.price}}</p>
                             </td>
                             {{/each}}
-                            </tr>
+                        </tr>
+                        <tr>
+                            <th class="compare-header-width">Availability</th>
+                            {{#each compare.rows}}
+                            <td class="compare-width">
+                                <p class="com_product_stock">{{this.quantity_available}}</p>
+                            </td>
+                            {{/each}}
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            {{#each compare.rows}}
+                            <td class="compare-width">
+                                <p class="com_product_desc">{{this.description}}</p>
+                            </td>
+                            {{/each}}
+                        </tr>
                             <tr>
-                                <th class="compare-header-width">Availability</th>
-                                {{#each compare.rows}}
-                                <td class="compare-width">
-                                    <p class="com_product_stock">{{this.quantity_available}}</p>
-                                </td>
-                                {{/each}}
-                            </tr>
-                            <tr>
-                                <th>Description</th>
-                                {{#each compare.rows}}
-                                <td class="compare-width">
-                                    <p class="com_product_desc">{{this.description}}</p>
-                                </td>
-                                {{/each}}
-                            </tr>
-                            {{!-- <tr>
                                 <th class="compare-header-width">Seller</th>
                                 {{#each compare.rows}}
-                                {{#if ../LoggedInUser}}
+                                {{#if ../LoggedInUser.id}}
                                 <td class="compare-width">
                                     <p class="com_product_title"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></p>
                                 </td>
@@ -165,7 +171,7 @@
                                 </td>
                                 {{/if}}
                                 {{/each}}
-                            </tr> --}}
+                            </tr>
                             <tr>
                                 <th scope="row" class="compare-header-width">User Rating</th>
                                 {{#each compare.rows}}
@@ -184,9 +190,9 @@
                                 {{#each ../compare.rows}}
                                 <td class="compare-width">
                                     <p class="com_product_stock">
-                                    {{#each this.ProductAttributes}}
-                                    {{#ifCond this.attribute_id "==" ../../this}}{{this.value}} {{/ifCond}}
-                                    {{/each}}
+                                        {{#each this.ProductAttributes}}
+                                        {{#ifCond this.attribute_id "==" ../../this}}{{this.value}} {{/ifCond}}
+                                        {{/each}}
                                     </p>
                                 </td>
                                 {{/each}}
@@ -225,636 +231,87 @@
                                 </td>
                                 {{/each}}
                             </tr>
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
                     <div class="marketplace-type-bg"></div>
-<div class="gtc-container">
-  <div class="marketplace-type-headers">
-    <div class="row">
-      <div class="col-md-12 no-padding">
-        <div class="wts-header-bg">
-          <h4 class="header-md-text">
-            Related Products
-          </h4>
-        </div>
-      </div>
-      {{#each RelatedProducts.rows}}
-      <div class="col-md-4 no-padding">
-        <div class="product-list-body">
-          <div class="product-body">
-            <div class="table-responsive">
-              <table class="table shoping-cart-table">
-                <tbody>
-                  <tr class="d-flex">
-                    <td class="col-2">
-                      <div class="product-left-col">
-                        <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
-                      </div>
-                    </td>
-                    <td class="col-7">
-                      <div class="product-middle-col">
-                        <h3>
-                          <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
-                        </h3>
-                        <div class="row no-margins">
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Origin</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            <span class="text-500">{{this.country_name}}</span>
-                          </div>
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Category</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-                          </div>
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Seller</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            {{#if ../LoggedInUser.email}}
-                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                            {{else}}
-                            <a class="text-500" href="/login">(Login for Seller Info)</a>
-                            {{/if}}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="col-3">
-                      <div class="product-right-col">
-                        <h4>MOQ : {{this.minimum_order_quantity}}</h4>
-                        <div class="prc-bottom">
-                          <p>Seller Rating</p>
-                          <div class="p-rating pull-right">
-                            {{starCount product_rating}}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/each}}
-
-    </div>
-  </div>
-</div>
-                </div> 
-                {{!-- <div class="row">
-                    <div class="col-md-12 col-12 ts2">
-                      <h6 class="float-left" style="color:#fff;font-family: sans-serif;font-size: 21px;margin-top: 8px;margin-left: 10px;margin-bottom: 0px;">Related Products</h6>
-                  </div>
-                  <section class="box6" style="margin-bottom: 20px;">
-                    <div class="container clearfix">
+                    <div class="gtc-container">
+                      <div class="marketplace-type-headers">
                         <div class="row">
-                            <div class="col-md-4 col-12 common_top">
-                                <div class="row">
-                                    <div class="col-md-3 col-2">
-                                        <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                    </div>
-                                    <div class="col-md-9 col-10">
-                                        <div class="row common_padding">
-                                            <div class="col-md-8 col-8">
-                                                <p class="wts_header">
-                                                    <a href="#">Dr. Dre Headphones Beats by Dre with Bluetooth Capability</a>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-4 col-4">
-                                                <p class="doller_value">$79.99</p>
-                                            </div>
-                                        </div>
-                                        <div class="row common_padding">
-                                            <div class="col-md-3 col-3">
-                                                <p>Origin</p>
-                                            </div>
-                                            <div class="col-md-5 col-5">
-                                                <p>Canada</p>
-                                            </div>
-                                            <div class="col-md-4 col-4">
-                                                <p>&nbsp;</p>
-                                            </div>
-                                        </div>
-                                        <div class="row common_padding">
-                                            <div class="col-md-3 col-3">
-                                                <p>Category</p>
-                                            </div>
-                                            <div class="col-md-5 col-5">
-                                                <p>Electronic - Phones</p>
-                                            </div>
-                                            <div class="col-md-4 col-4">
-                                                <p>Seller Rating</p>
-                                            </div>
-                                        </div>
-                                        <div class="row common_padding">
-                                            <div class="col-md-3 col-3">
-                                                <p>Seller</p>
-                                            </div>
-                                            <div class="col-md-5 col-5">
-                                                <p>(
-                                                    <b>Login for Seller Info</b>)</p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p>
-                                                        <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-12 common_top">
-                                    <div class="row">
-                                        <div class="col-md-3 col-2">
-                                            <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                        </div>
-                                        <div class="col-md-9 col-10">
-                                            <div class="row common_padding">
-                                                <div class="col-md-8 col-8">
-                                                    <p class="wts_header">
-                                                        <a href="#">Historic & Natural Walking Tour Expeditions</a>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p class="doller_value">$79.99</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Origin</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>Canada</p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p>&nbsp;</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Category</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>Electronic - Phones</p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p>Seller Rating</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Seller</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>(
-                                                        <b>Login for Seller Info</b>)</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Real Estate Interior Photography & Drone Photography</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>&nbsp;</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(
-                                                            <b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Dr. Dre Headphones Beats by Dre with Bluetooth Capability</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_red">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_save">Save $20</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(
-                                                            <b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Historic & Natural Walking Tour Expeditions</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_red">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_save">Save $20</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(
-                                                            <b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Real Estate Interior Photography & Drone Photography</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_red">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value_save">Save $20</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(
-                                                            <b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Dr. Dre Headphones Beats by Dre with Bluetooth Capability</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>&nbsp;</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(<b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-12 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Historic & Natural Walking Tour Expeditions</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>&nbsp;</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(<b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 common_top">
-                                        <div class="row">
-                                            <div class="col-md-3 col-2">
-                                                <img src="../img/iphone.png" style="width: 30px; height: 70px;">
-                                            </div>
-                                            <div class="col-md-9 col-10">
-                                                <div class="row common_padding">
-                                                    <div class="col-md-8 col-8">
-                                                        <p class="wts_header">
-                                                            <a href="#">Real Estate Interior Photography & Drone Photography</a>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p class="doller_value">$79.99</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Canada</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>&nbsp;</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>Electronic - Phones</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>(
-                                                            <b>Login for Seller Info</b>)
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                            <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-12 no-padding">
+                                <div class="wts-header-bg">
+                                    <h4 class="header-md-text">
+                                     Related Products
+                                    </h4>
                                 </div>
                             </div>
+                            {{#each RelatedProducts.rows}}
+                            <div class="col-md-4 no-padding">
+                                <div class="product-list-body">
+                                  <div class="product-body">
+                                    <div class="table-responsive">
+                                      <table class="table shoping-cart-table">
+                                        <tbody>
+                                            <tr class="d-flex">
+                                                <td class="col-2">
+                                                    <div class="product-left-col">
+                                                    <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                                    </div>
+                                                </td>
+                                                <td class="col-7">
+                                                    <div class="product-middle-col">
+                                                        <h3>
+                                                          <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
+                                                        </h3>
+                                                         <div class="row no-margins">
+                                                            <div class="col-md-4 col-4 no-padding">
+                                                                <span>Origin</span>
+                                                            </div>
+                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                            <span class="text-500">{{this.country_name}}</span>
+                                                        </div>
+                                                        <div class="col-md-4 col-4 no-padding">
+                                                            <span>Category</span>
+                                                        </div>
+                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                        </div>
+                                                        <div class="col-md-4 col-4 no-padding">
+                                                            <span>Seller</span>
+                                                        </div>
+                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                            {{#if ../LoggedInUser.email}}
+                                                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                            {{else}}
+                                                            <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                            {{/if}}
+                                                        </div>
+                                                    </div>
+                                                 </td>
+                                                <td class="col-3">
+                                                    <div class="product-right-col">
+                                                        <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                                        <div class="prc-bottom">
+                                                          <p>Seller Rating</p>
+                                                          <div class="p-rating pull-right">
+                                                            {{starCount product_rating}}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                            {{/each}}
+
                         </div>
+                      </div>
                     </div>
-                </div> --}}
-            </section>
+                </div> 
+            </div>
         </div>
     </div>
-</div>
 </section>
 {{> footer/bottom-footer}}
