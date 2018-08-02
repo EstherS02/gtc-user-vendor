@@ -89,12 +89,15 @@
                     </ul>
                 </div>
                 <div class="col-md-6 col-12">
-                    <p class="logged_in_username">
                     {{#if LoggedInUser.id}}
-                        <span style="color: #5B8AC4;">
-                            <a href="javascript:;" onclick="gtcLogout()" style="color:#4178bb"><b>switch your account</b></a>
-                        </span> </p>
+
+                   
+                        {{!-- <span style="color: #5B8AC4;">
+                            <a href="javascript:;" onclick="gtcLogout()" style="color:#4178bb"><b>Switch</b></a>
+                        </span>  your account</p> --}}
+                        <p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a onclick="gtcLogout()" href="javascript::" class="span_swichaccount">SWITCH ACCOUNT</a></p>
                         {{else}}
+                         <p class="logged_in_username">
                         <span style="color: #5B8AC4;">
                             <a href="/login" style="color:#4178bb"><b>Login</b></a>
                         </span> to see seller information</p>

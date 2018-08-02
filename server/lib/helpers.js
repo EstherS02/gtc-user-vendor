@@ -408,7 +408,6 @@ Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     let name;
     arrayEle.forEach(function(element) {
         if(element.id == id){
-        console.log("helper",element.attr_name)
             name= element.attr_name;    
         }
     });

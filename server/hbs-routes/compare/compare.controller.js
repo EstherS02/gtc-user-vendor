@@ -24,6 +24,7 @@ export function compare(req, res) {
         console.log("req.session['compare']==================================", req.session['compare'])
         ids = req.session['compare'];
     }
+    // ids = [1,2,18];
     let user_id = LoggedInUser.id;
     var includeArr = [{
         model: model["ProductMedia"],
@@ -57,14 +58,14 @@ export function compare(req, res) {
     var order = 'asc';
     var average = [];
     var Attributes = [];
-    var att_id =[];
+    var att_id = [];
     var product_related = 1;
     async.series({
             compare: function(callback) {
                 service.findAllRows('Product', includeArr, queryObj, 0, null, field, order)
                     .then(function(response) {
-                        if(response){
-                             if (response.rows) {
+                        if (response) {
+                            if (response.rows) {
                                 _.forOwn(response.rows, function(element) {
                                     var avg = _.meanBy(element.Reviews, (p) => p.rating);
                                     element.avg_rating = (avg > 0) ? avg : 0;
@@ -93,8 +94,10 @@ export function compare(req, res) {
                         return callback(null);
                     });
             },
-            attribute:function(callback){
-                service.findAllRows('Attribute', [], {status:status['ACTIVE']}, 0, null, field, order)
+            attribute: function(callback) {
+                service.findAllRows('Attribute', [], {
+                        status: status['ACTIVE']
+                    }, 0, null, field, order)
                     .then(function(response) {
                         return callback(null, response);
                     }).catch(function(error) {
@@ -136,16 +139,20 @@ export function compare(req, res) {
         function(err, results) {
             if (!err) {
                 _.forOwn(Attributes, function(element) {
-                    var newData=[];
+                    var newData = [];
                     element.filter(obj => {
-                        newData.push(obj. attribute_id);
-                        })
+                        newData.push(obj.attribute_id);
+                    })
                     att_id.push(newData);
-                 });
+                });
                 var attribute_field = [];
-                if(att_id.length>0){
-                   attribute_field = array_intersect(att_id);
-                   console.log(attribute_field)
+                // att_id[0].push(1,2,3,4);
+                // att_id[1].push(3,4,5,6);
+                // att_id[2].push(5,6,7,8);
+                console.log(att_id)
+                if (att_id.length > 0) {
+                    attribute_field = array_intersect(att_id);
+                    console.log(attribute_field)
                 }
                 res.render('compare', {
                     title: "Global Trade Connect",
@@ -154,24 +161,35 @@ export function compare(req, res) {
                     cartheader: results.cartCounts,
                     compare: results.compare,
                     RelatedProducts: results.RelatedProducts,
-                    attribute:results.attribute.rows,
-                    attribute_field:attribute_field,
+                    attribute: results.attribute.rows,
+                    attribute_field: attribute_field,
                     LoggedInUser: LoggedInUser,
                 });
             } else {
                 res.render('compare', err);
             }
         });
-
 }
+
 function array_intersect(arrayOfArrays) {
-    return arrayOfArrays
-        .reduce((acc,array,index) => { // Intersect arrays
-            if (index === 0)
-                return array;
-            return array.filter((value) => acc.includes(value));
-        }, [])
-        .filter((value, index, self) => self.indexOf(value) === index) // Make values unique;
-    
-}
+    if (arrayOfArrays.length < 3) {
+        return arrayOfArrays
+            .reduce((acc, array, index) => { // Intersect arrays
+                if (index === 0)
+                    return array;
+                return array.filter((value) => acc.includes(value));
+            }, [])
+            .filter((value, index, self) => self.indexOf(value) === index) // Make values unique;
+    }else {
+        var array1 = [];
+        _.forOwn(arrayOfArrays, function(array2) {
+            Array.prototype.push.apply(array1, array2);
 
+        });
+        console.log(array1)
+        return array1.reduce(function(acc, el, i, arr) {
+            if (arr.indexOf(el) !== i && acc.indexOf(el) < 0) acc.push(el);
+            return acc;
+        }, []);
+    }
+}

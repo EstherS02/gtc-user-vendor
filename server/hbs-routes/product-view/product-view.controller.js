@@ -46,6 +46,17 @@ export function GetProductDetails(req, res) {
 	var field = "created_on";
 	var product_id;
 	var queryURI = {};
+	var followQuery={};
+	if (LoggedInUser.id) {
+		followQuery = {
+			status: status['ACTIVE'],
+			user_id: LoggedInUser.id,
+		};
+	} else {
+		followQuery = {
+			status: status['ACTIVE']
+		};
+	}
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
@@ -142,9 +153,7 @@ export function GetProductDetails(req, res) {
 
 			},{
 				model: model['VendorFollower'],
-				where:{
-					status: status['ACTIVE']
-				},
+				where:followQuery,
 				required:false
 			},{
 				model: model['VendorVerification'],
