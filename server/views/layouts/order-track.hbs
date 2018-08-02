@@ -157,15 +157,15 @@
 															</div>
 															<div class="col-md-8">
 																<p class="">
-																	<a href="/">
-                                                                    <b><small>Carrier Tracking</small></b>
+																	<a href="{{ objectKey trackingUrl orderTrack.Shipping.provider_name}}/{{orderTrack.Shipping.tracking_url}}">
+                                                                    <b><small>
+																		Carrier Tracking</small></b>
 																	</a>
 																	
 																</p>
 															</div>
 														</div>
-
-														{{/if}} 
+                                                       {{/if}} 
 														{{!-- <div class="row">
 															<a href="/">
 																	<b>

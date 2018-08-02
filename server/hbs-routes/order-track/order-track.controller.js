@@ -12,6 +12,7 @@ const vendorPlan = require('../../config/gtc-plan');
 const populate = require('../../utilities/populate');
 const orderStatus = require('../../config/order_status');
 const carriersCode = require('../../config/carriers');
+const trackingUrl = require('../../config/tracking-url');
 
 export function orderTrack(req, res) {
 	var LoggedInUser = {}, order_id;
@@ -122,7 +123,8 @@ export function orderTrack(req, res) {
 					orderTrack: results.orderTrack,
 					vendorPlan: vendorPlan,
 					orderStatus: orderStatus,
-					carriersCode: carriersCode
+					carriersCode: carriersCode,
+					trackingUrl:trackingUrl
 				});
 			} else {
 				res.render('order-track', err);
