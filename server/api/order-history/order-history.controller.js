@@ -30,7 +30,6 @@ export function updateStatus(req, res) {
 
 	if (bodyParams.order_status == orderStaus.CONFIRMEDORDER) {
 		order_status = 'confirmed';
-		bodyParams['expected_delivery_date'] = new Date(date.getTime() + (7 * 24 * 60 * 60 * 1000));
 	}
 
 	if (bodyParams.order_status == orderStaus.PROCESSINGORDER) {
