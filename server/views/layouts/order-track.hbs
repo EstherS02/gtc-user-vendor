@@ -12,12 +12,12 @@
 						<div class="ibox-title">
 							<h2>Track Your Order</h2>
 						</div>
+						{{#if orderTrack}}
 						<div> {{orderTrack.OrderItems.[0].Product.[0].ProductMedia.id}} </div>
 						<div class="content-body">
 							<img src="{{orderTrack.OrderItems.[0].Product.ProductMedia.[0].url}}" alt="iphone" style="width:5%;margin-bottom: 10px;margin-left:16px"
-							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-							
-							{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
+							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{#ifCond orderTrack.order_status
+							'==' orderStatus.NEWORDER}}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been confirmed by vendor</span>
@@ -34,8 +34,7 @@
 							{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
 							{{/ifCond}}
-
-							<div class="row">
+                            <div class="row">
 								<div class="col-md-9">
 									<p class="text_blue_color float-right" style="margin: 10px">
 										{{orderTrack.shippingAddress.address_line1}} {{orderTrack.shippingAddress.address_line2}},{{orderTrack.shippingAddress.city}}
@@ -53,11 +52,13 @@
 										{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
 										<div class="progress-bar" style="width:10%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
-										<div class="progress-bar" style="width:50%;"></div>
+										<div class="progress-bar" style="width:25%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
 										<div class="progress-bar" style="width:100%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
-										<div class="progress-bar" style="width:100%; background-color:red"></div>
+										<div class="progress-bar" style="width:50%; background-color:red"></div>
+										{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
+										<div class="progress-bar" style="width:50%; background-color:red"></div>
 										{{else}}
 										<div class="progress-bar" style="width:20%;"></div>
 										{{/ifCond}}
@@ -101,8 +102,7 @@
 									<div class="row">
 										<div class="col-md-6">
 										</div>
-										
-										<div class="col-md-6">
+                                        <div class="col-md-6">
 											<p class="order_track_ship_det">SHIPMENT DETAILS</p>
 											{{#if orderTrack.last_updated_on}}
 											<p class="vend_edit_lists_textstyle1" style="width: 100%">Last update: {{formatTime orderTrack.last_updated_on "dddd, D MMM"}}</p>
@@ -120,35 +120,67 @@
 													</div>
 													{{/if}}
 												</div>
-                                                 
-                                                <div class="row">
+
+												<div class="row">
 													<div class="col-md-3"></div>
 													<div class="col-md-9">
-                                                        {{#if orderTrack.Shipping}}
+														{{#if orderTrack.Shipping}}
 														<div class="row">
 															<div class="col-md-4">
-																<p class=""><small>Carrier:</small></p>
-															</div>
-															<div class="col-md-8">
-																<p class=""><small>{{ objectKey carriersCode orderTrack.Shipping.provider_name}}</small></p>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-md-4">
-																<p class=""><small>Tracking#:</small></p>
-															</div>
-															<div class="col-md-8">
-																<p class=""><small>{{orderTrack.Shipping.tracking_url}}</small></p>
-															</div>
-														</div>
-                                                          {{/if}}
-														{{!-- <div class="row">
-															<p class="">
-																	<a href="#">
-																		<b><small>Order Details</small> </b>
-																	</a>
+																<p class="">
+																	<small>Carrier:</small>
 																</p>
-                                                        </div> --}}
+															</div>
+															<div class="col-md-8">
+																<p class="">
+																	<small>{{ objectKey carriersCode orderTrack.Shipping.provider_name}}</small>
+																</p>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-4">
+																<p class="">
+																	<small>Tracking#:</small>
+																</p>
+															</div>
+															<div class="col-md-8">
+																<p class="">
+																	<small>{{orderTrack.Shipping.tracking_url}}</small>
+																</p>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-4">
+																<p class="">
+																	<small></small>
+																</p>
+															</div>
+															<div class="col-md-8">
+																<p class="">
+																	<a href="/">
+                                                                    <b><small>Carrier Tracking</small></b>
+																	</a>
+																	
+																</p>
+															</div>
+														</div>
+
+														{{/if}} 
+														{{!-- <div class="row">
+															<a href="/">
+																	<b>
+																		<small>View Order Details</small>
+																	</b>
+																</a>
+													   	</div>
+														<div class="row">
+															<a href="/">
+															<b>
+																<small>More Orders</small>
+															</b>
+															</a>
+														</div> --}}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -156,8 +188,28 @@
 								</div>
 							</div>
 						</div>
+						{{else}}
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-12">
+								
+								You are not having any recent order to track. Please place an order to track.</div>
+								</div><br/>
+							<div class="row">
+								<div class="col-md-4">
+								</div>
+								<div class="col-md-8">
+									<a href="/order-history">
+										<b>
+											<small>View Orders</small>
+										</b>
+									</a>
+								</div>
+							</div>
+						</div>
+					{{/if}}
 					</div>
-				</div>
+                </div>
 			</div>
 		</div>
 	</div>

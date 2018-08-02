@@ -150,7 +150,7 @@
                           <input type="checkbox">
                         </th>
                         <th scope="col">Invoice#</th>
-                        <th scope="col">purchase order id</th>
+                        <th style="display:none" scope="col">purchase order id</th>
                         <th scope="col">Date</th>
                         <th scope="col">Method</th>
                         <th scope="col">Status</th>
@@ -164,8 +164,8 @@
                       {{#each OrderItems}}
                       <tr>
                         <td><input type="checkbox" value="{{this.id}}"></td>
-                        <td><a href="/reporting/sales-history/{{this.id}}">{{this.invoice_id}}</a></td>
-                        <td>{{this.purchase_order_id}}</td>
+                        <td><a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a></td>
+                        <td style="display:none">{{this.purchase_order_id}}</td>
                         <td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
                         <td>Stripe</td>
                         <td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
