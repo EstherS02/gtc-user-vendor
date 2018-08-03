@@ -17,8 +17,10 @@ router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);
 router.post('/:endpoint/bulk-create', middleware.validateEndpoint(), controller.createBulk);
 router.post('/:endpoint', middleware.validateEndpoint(), controller.create);
+router.put('/:endpoint/upsert', middleware.validateEndpoint(), controller.upsert);
 router.put('/:endpoint/delete', middleware.validateEndpoint(), controller.destroyMany);
 router.put('/:endpoint/:id', middleware.validateEndpoint(), controller.update);
 router.put('/:endpoint/delete/:id', middleware.validateEndpoint(), controller.destroy);
+
 
 module.exports = router;

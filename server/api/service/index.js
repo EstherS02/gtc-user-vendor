@@ -218,16 +218,11 @@ export function destroyRow(modelName, id) {
     });
 }
 
-export function upsert(modelName, data) {
+export function upsertRow(modelName, data) {
     return new Promise((resolve, reject) => {
-        console.log('data', data);
         model[modelName].upsert(data)
             .then(function(row) {
-                if (row) {
-                    resolve(row);
-                } else {
-                    resolve(null);
-                }
+                    resolve(row);   
             }).catch(function(error) {
                 reject(error);
             })

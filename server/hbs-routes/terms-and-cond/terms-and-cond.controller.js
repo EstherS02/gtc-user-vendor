@@ -12,8 +12,9 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function termsAndCond(req, res) {
-	var LoggedInUser = {};
+	var LoggedInUser = {}, termsAndCondQueryObj={};
 	var bottomCategory = {};
+	var termsAndCondModel = 'TermsAndCond'
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -31,16 +32,16 @@ export function termsAndCond(req, res) {
                 return callback(null);
             });
         },
-			categories: function(callback) {
-				var includeArr = [];
-				const categoryOffset = 0;
-				const categoryLimit = null;
-				const categoryField = "id";
-				const categoryOrder = "asc";
-				var categoryModel = "Category";
-				const categoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
 
-				categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
@@ -53,10 +54,24 @@ export function termsAndCond(req, res) {
 						return callback(null);
 					});
 
-			}
+		},
+        termsAndCond: function(callback){
+
+			termsAndCondQueryObj['vendor_id'] = LoggedInUser.Vendor.id;
+			termsAndCondQueryObj['status'] = statusCode['ACTIVE'];
+			
+			service.findOneRow(termsAndCondModel, termsAndCondQueryObj, [])
+				.then(function(termsAndCond) {
+					return callback(null, termsAndCond);
+				})
+				.catch(function(error) {
+					consolelog('Error:::', error);
+					return callback(error, null);
+				})
+
+		}
 		},
 		function(err, results) {
-			console.log(results)
 			if (!err) {
 				res.render('vendorNav/terms-and-cond', {
 					title: "Global Trade Connect",
@@ -65,7 +80,8 @@ export function termsAndCond(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
 					selectedPage: 'terms-and-cond',
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					termsAndCond: results.termsAndCond
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);
