@@ -1,29 +1,29 @@
 <script type="text/javascript">
 function userLike(e){
 	// alert(e);
-	
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
-				data: cartInfo,
-				success: function(res) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (res && res.message === "SUCCESS") {
-						outputPop(res.message_details);
-						console.log(res)
-					}
-				},
-				error: function(error) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (error) {
-						if (error.status === 401)
-							return location.href = "/login";
-
-						outputErrorPop(error);
-
-					}
+	var dataInfo={};
+	dataInfo.id = e;
+		$.ajax({
+			type: "POST",
+			url: "/api/vendor-props/blog-like",
+			data: dataInfo,
+			success: function(res) {
+				$('#gtc-add-to-cart').prop('disabled', false);
+				if (res && res.message === "SUCCESS") {
+					outputPop(res.message_details);
+					console.log(res)
 				}
-			});
+			},
+			error: function(error) {
+				$('#gtc-add-to-cart').prop('disabled', false);
+				if (error) {
+					if (error.status === 401)
+						return location.href = "/login";
+
+					outputErrorPop(error);
+				}
+			}
+		});
 }
 
 </script>

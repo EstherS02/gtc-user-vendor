@@ -62,10 +62,6 @@ export function vendorDiscussion(req, res) {
 				attributes: {
 					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 				},
-			include:[{
-				model:model['DiscussionBoardPostLike'],
-				where:{status:status['Active']}
-			}]
 		}]
 	},{
 		model:model['Vendor']
@@ -113,7 +109,8 @@ export function vendorDiscussion(req, res) {
 			}, {
 				model: model['VendorRating'],
 				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
 				],
 				group: ['VendorRating.vendor_id'],
 				required: false,

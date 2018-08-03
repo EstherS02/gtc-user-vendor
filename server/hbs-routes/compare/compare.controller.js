@@ -21,7 +21,6 @@ export function compare(req, res) {
     var ids = [];
 
     if (req.session && req.session['compare']) {
-        console.log("req.session['compare']==================================", req.session['compare'])
         ids = req.session['compare'];
     }
     // ids = [1,2,18];

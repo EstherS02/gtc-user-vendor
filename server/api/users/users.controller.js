@@ -390,7 +390,6 @@ export function vendorFollow(req, res) {
             } else {
                 newStatus = 1;
             }
-            console.log("result=====================================", newStatus);
             model[modelName].update({
                 status: newStatus,
                 last_updated_on: new Date()
