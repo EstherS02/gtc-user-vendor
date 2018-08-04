@@ -1,18 +1,22 @@
 <script type="text/javascript">
-function userLike(e){
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	function userLike(e){
 	// alert(e);
-	var dataInfo={};
-	dataInfo.id = e;
+	
+	if(userInfo.email){
+		var dataInfo={};
+		dataInfo.id = e;
 		$.ajax({
 			type: "POST",
 			url: "/api/vendor-props/blog-like",
 			data: dataInfo,
 			success: function(res) {
 				$('#gtc-add-to-cart').prop('disabled', false);
-				if (res && res.message === "SUCCESS") {
-					outputPop(res.message_details);
+				// if (res && res.message === "SUCCESS") {
+					// outputPop(res.message_details);
+					location.reload();
 					console.log(res)
-				}
+				// }
 			},
 			error: function(error) {
 				$('#gtc-add-to-cart').prop('disabled', false);
@@ -20,10 +24,71 @@ function userLike(e){
 					if (error.status === 401)
 						return location.href = "/login";
 
-					outputErrorPop(error);
+					// outputErrorPop(error);
 				}
 			}
 		});
+	}else{
+		window.location.href="/login";
+	}
+}
+function postBlog(){
+
+}
+function postComment(e){
+	var formData={};
+	formData.discussion_board_post_id=e;
+	formData.status=1;
+	formData.comment = $("#comment_text"+e).val();
+	var imgVal = $("#selectedFile"+e).val();
+			var form = new FormData();
+
+			form.append("file", $("#selectedFile"+e)[0].files[0]);
+			var url = '/api/vendor-props/blog-comment';
+			alert(imgVal);
+			if (imgVal) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/TalkSetting/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						console.log(data);
+						formData.comment_type = 2;
+						formData.comment_media_url = data.imageURL;
+						apiCall(url,formData);
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				});
+			} else {
+				if($("#comment_text"+e).val()){
+				formData.comment_type = 1;
+				apiCall(url,formData);
+			}else{
+				console.log("Please enter the value")
+			}
+			}
+}
+function apiCall(url, data) {
+	// alert(data);
+
+	$.ajax({
+		type: 'POST',
+		url: url,
+		data:data,
+		success: function(data, text) {
+			location.reload();
+		},
+		error: function(request, status, error) {
+			console.log('status', status);
+			console.log('error', error);
+		}
+	});
 }
 
 </script>
@@ -43,106 +108,115 @@ function userLike(e){
 					<div class="col-md-12">
 						<div class="ibox">
 							{{!-- <div class="ibox-content"> --}}
-								<div class="row">
-									<div class="col-md-6" style="background-color:#fff">
-										{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
-											<div class="row">
-												<div class="col-md-2  discussion_para_bg">
-													<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}">
-												</div>
-												<div class="col-md-10 col-9 discussion_para_bg " >
-													<div class="discussion_text">
-														<div class="input-group">
-															<input type="text" class="form-control promo_code_text1" placeholder="Ask Hayden Agencies a question or post" style="width: 80%">
-															<span class="promo_code_text_span1"><i class="fas fa-camera"></i></span>
-															<button class="discussion_butt">Post</button>
-														</div>
+							<div class="row">
+								<div class="col-md-6" style="background-color:#fff">
+									{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
+									<div class="row">
+										<div class="col-md-2  discussion_para_bg">
+											<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}">
+										</div>
+										<div class="col-md-10 col-9 discussion_para_bg " >
+											<div class="discussion_text">
+												<div class="input-group">
+													<input type="text" id="blog_text{{this.id}}" class="form-control promo_code_text1" placeholder="Write Comment">
+													<div class="input-group-append">
+														<span class=" input-group-text" onclick="document.getElementById('selectedFile{{this.id}}').click();">
+															<i class="fas fa-camera"></i>
+															<input type="file" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url{{this.id}}" />
+														</span>
 													</div>
+													<button class="discussion_butt" onclick="postBlog({{this.id}})">Post</button>
 												</div>
 											</div>
-											<div class="row showing_categ" style="padding: 3px;margin: 10px auto;">
+										</div>
+										<div class="row showing_categ" style="padding: 3px;margin: 10px auto;">
+										</div>
+										<hr>
+										{{/ifCond}}
+										{{#if discussionBoard.rows}}
+										{{#each discussionBoard.rows}}
+										<div class="row">
+											<div class="col-md-2 col-2 discussion_para_bg">
+												<img style="width: 45px; height:44px " class = "img-border-page" src="{{this.Vendor.vendor_profile_pic_url}}">
 											</div>
-											<hr>
-											{{/ifCond}}
-											{{#if discussionBoard.rows}}
-											{{#each discussionBoard.rows}}
-											<div class="row">
-												<div class="col-md-2 col-2 discussion_para_bg">
-													<img style="width: 45px; height:44px " class = "img-border-page" src="{{this.Vendor.vendor_profile_pic_url}}">
-												</div>
-												<div class="col-md-10 col-10 discussion_para_bg">
-													<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>-{{this.post_message}}- <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
-													<img src="{{this.post_media_url}}" alt="img" style="width: 100%;margin-top: 10px;">
-													<div class="row">    	
-														<div class="col-md-8 col-5  discussion_com">
-															<p>Comments({{this.DiscussionBoardPostComments.length}})</p>
-														</div>
-														<div class="col-md-2 col-4 common_padding1 discussion_lin">
-															<p>{{this.DiscussionBoardPostLikes.length}} Likes</p>
-														</div>
-														<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript::" class="discussion_butt btn" onclick="userLike({{this.id}})">Like</a></div>
+											<div class="col-md-10 col-10 discussion_para_bg">
+												<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>-{{this.post_message}}- <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
+												<img src="{{this.post_media_url}}" alt="img" style="width: 100%;margin-top: 10px;">
+												<div class="row">    	
+													<div class="col-md-8 col-5  discussion_com">
+														<p>Comments({{this.DiscussionBoardPostComments.length}})</p>
 													</div>
-													<hr>
-													{{#each this.DiscussionBoardPostComments}}
-														<div class="row" style="margin-bottom: 10px;">
-															<div class="col-md-2 col-2">
-																<img style="width: 40px;height:39px " class = "img-border-page"src="{{ProfilePicture this.User}}">
-															</div>
-															<div class="col-md-10 col-10">
-																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#ifCond this.comment_type "==" 1}}<p><img src="{{this.comment_media_url}}" width="25%" height="25%"></p>{{/ifCond}}{{#if this.comment}}-{{this.comment}} {{/if}} - <span class="discussion_day">{{FormatDate this.created_on}}</span></p>
-															</div>
-														</div>
-													{{/each}}
-													<div class="row">
-														<div class="col-md-2 col-2">
-															<img style="width: 40px;height:39px " class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
-														</div>
-														<div class="col-md-10 col-10">
-															<div class="discussion_text">
-																<div class="input-group">
-																	<input type="text" class="form-control promo_code_text1" placeholder="Write Comment">
-																	<span class="promo_code_text_span1"><i class="fas fa-camera"></i></span>
-																	<button class="discussion_butt">Post</button>
+													<div class="col-md-2 col-4 common_padding1 discussion_lin">
+														<p>{{this.DiscussionBoardPostLikes.length}} Likes</p>
+													</div>
+													<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript::" class="discussion_butt btn" onclick="userLike({{this.id}})">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
+												</div>
+												<hr>
+												{{#each this.DiscussionBoardPostComments}}
+												<div class="row" style="margin-bottom: 10px;">
+													<div class="col-md-2 col-2">
+														<img style="width: 40px;height:39px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+													</div>
+													<div class="col-md-10 col-10">
+														<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}-{{this.comment}} {{/if}} -{{#ifCond this.comment_type "==" 2}}<p><img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+													</div>
+												</div>
+												{{/each}}
+												<div class="row">
+													<div class="col-md-2 col-2">
+														<img style="width: 40px;height:39px " class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
+													</div>
+													<div class="col-md-10 col-10">
+														<div class="discussion_text">
+															<div class="input-group">
+																<input type="text" id="comment_text{{this.id}}" class="form-control promo_code_text1" placeholder="Write Comment">
+																<div class="input-group-append">
+																	<span class=" input-group-text" onclick="document.getElementById('selectedFile{{this.id}}').click();">
+																		<i class="fas fa-camera"></i>
+																		<input type="file" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url" />
+																	</span>
 																</div>
+																<button class="discussion_butt" onclick="postComment({{this.id}})">Post</button>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
+										</div>
 										{{/each}}
-									{{/if}}
-									<div class="row showing_categ" style="padding: 3px; margin: 10px auto;">
-									</div>
+										{{/if}}
+										<div class="row showing_categ" style="padding: 3px; margin: 10px auto;">
+										</div>
 									</div>
 									<div class="col-md-3">
-									<div class="dis_side_bar">
-										<p class="discussion_most_head">MOST POPULAR POSTS</p>
-										<ul>
-											<li>It is Time to Color Your Business</li>
-											<li>Color Your Business Days with These Tips</li>
-											<li>90's Business Models Remain the Best</li>
-											<li>Why are Mondays Hated?</li>
-											<li>Technology can Improve Your Business</li>
-										</ul>
-									</div>
-									<div class="dis_side_bar">
-										<p class="discussion_most_head">MOST POPULAR POSTS</p>
-										<ul>
-											<li>It is Time to Color Your Business</li>
-											<li>Color Your Business Days with These Tips</li>
-											<li>90's Business Models Remain the Best</li>
-											<li>Why are Mondays Hated?</li>
-											<li>Technology can Improve Your Business</li>
-										</ul>
-									</div>
+										<div class="dis_side_bar">
+											<p class="discussion_most_head">MOST POPULAR POSTS</p>
+											<ul>
+												<li>It is Time to Color Your Business</li>
+												<li>Color Your Business Days with These Tips</li>
+												<li>90's Business Models Remain the Best</li>
+												<li>Why are Mondays Hated?</li>
+												<li>Technology can Improve Your Business</li>
+											</ul>
+										</div>
+										<div class="dis_side_bar">
+											<p class="discussion_most_head">MOST POPULAR POSTS</p>
+											<ul>
+												<li>It is Time to Color Your Business</li>
+												<li>Color Your Business Days with These Tips</li>
+												<li>90's Business Models Remain the Best</li>
+												<li>Why are Mondays Hated?</li>
+												<li>Technology can Improve Your Business</li>
+											</ul>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				{{!-- </div> --}}
+					{{!-- </div> --}}
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
-{{> footer/bottom-footer}}
+	</section>
+	{{> footer/bottom-footer}}
