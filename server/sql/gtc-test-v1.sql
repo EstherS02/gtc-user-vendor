@@ -283,7 +283,49 @@ CREATE VIEW `vendor_user_product` AS
     GROUP BY `vendor`.`vendor_name`
 
 
-
+CREATE VIEW `order_items_overview` AS SELECT
+    o.id AS id,
+    o.order_id AS order_id,
+    o.final_price AS final_price,
+    o.status AS order_status,
+    p.id AS product_id,
+    p.product_name AS product_name,
+    p.vendor_id AS vendor_id,
+    p.marketplace_id AS marketplace_id,
+    (
+    SELECT NAME
+FROM
+    marketplace mp
+WHERE
+    mp.id = p.marketplace_id
+LIMIT 1
+) AS marketplace_name, p.marketplace_type_id AS marketplace_type_id,(
+    SELECT NAME
+FROM
+    marketplace_type mptype
+WHERE
+    mptype.id = p.marketplace_type_id
+LIMIT 1
+) AS marketplace_type_name, p.product_category_id AS category_id,(
+    SELECT NAME
+FROM
+    category c
+WHERE
+    c.id = p.product_category_id
+LIMIT 1
+) AS category_name, p.sub_category_id AS sub_category_id,(
+    SELECT NAME
+FROM
+    sub_category subc
+WHERE
+    subc.id = p.sub_category_id
+LIMIT 1
+) AS sub_category_name, o.created_on AS item_created_on
+FROM
+    order_items AS o
+INNER JOIN product AS p
+ON
+    o.product_id = p.id
 
 
 

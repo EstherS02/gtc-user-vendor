@@ -81,6 +81,7 @@ function init(sequelize) {
     model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
     model.WishList = sequelize.import('./definition/wish-list.js');
+    model.OrderItemsOverview = sequelize.import('./definition/order-items-overview.js');
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
@@ -153,6 +154,7 @@ function init(sequelize) {
     require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
     require('./definition/wish-list.js').initRelations();
+    require('./definition/order-items-overview.js').initRelations();
     return model;
 }
 

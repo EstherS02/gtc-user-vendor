@@ -11,6 +11,7 @@ const marketPlace = require('../../../config/marketplace');
 const orderStatus = require('../../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
+const ReportService = require('../../../utilities/reports');
 
 export function reporting(req, res) {
     var LoggedInUser = {};
@@ -22,14 +23,14 @@ export function reporting(req, res) {
 
     let user_id = LoggedInUser.id;
     async.series({
-        cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+            cartCounts: function(callback) {
+                service.cartHeader(LoggedInUser).then(function(response) {
+                    return callback(null, response);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+            },
             categories: function(callback) {
                 var includeArr = [];
                 const categoryOffset = 0;
@@ -50,6 +51,50 @@ export function reporting(req, res) {
                         console.log('Error :::', error);
                         return callback(null);
                     });
+            },
+            topProducts: function(callback){
+                let orderItemQueryObj = {};
+                if (req.user.role == 2)
+                    orderItemQueryObj.vendor_id = req.user.Vendor.id;
+                    ReportService.topPerformingProducts(orderItemQueryObj).then((results) => {
+                       return callback(null, results);
+                    }).catch((err) => {
+                        console.log('topMarketPlace err', err);
+                        return callback(err);
+                    });
+            },
+            topMarketPlace: function(callback){
+                let orderItemQueryObj = {};
+                if (req.user.role == 2)
+                    orderItemQueryObj.vendor_id = req.user.Vendor.id;
+                    ReportService.topPerformingMarketPlaces(orderItemQueryObj).then((results) => {                               
+                       return callback(null, results);
+                    }).catch((err) => {
+                        console.log('topMarketPlace err', err);
+                        return callback(err);
+                    });
+            },
+            revenueChanges: function(callback){
+                let orderItemQueryObj = {};
+                if (req.user.role == 2)
+                    orderItemQueryObj.vendor_id = req.user.Vendor.id;
+                    ReportService.revenueChanges(orderItemQueryObj).then((results) => {
+                       return callback(null, results);
+                    }).catch((err) => {
+                        console.log('topMarketPlace err', err);
+                        return callback(err);
+                    });
+            },
+            revenueCounts: function(callback){
+                let orderItemQueryObj = {};
+                if (req.user.role == 2)
+                    orderItemQueryObj.vendor_id = req.user.Vendor.id;
+                    ReportService.revenueChangesCounts(orderItemQueryObj).then((results) => {
+                       return callback(null, results);
+                    }).catch((err) => {
+                        console.log('topMarketPlace err', err);
+                        return callback(err);
+                    });
             }
 
         },
@@ -68,6 +113,10 @@ export function reporting(req, res) {
                     vendorPlan: vendorPlan,
                     dropDownUrl: dropDownUrl,
                     cartheader: results.cartCounts,
+                    topProducts: results.topProducts,
+                    topMarketPlace: results.topMarketPlace,
+                    revenueChanges: results.revenueChanges,
+                    revenueCounts: results.revenueCounts
                 });
             } else {
                 res.render('vendorNav/reporting/reporting', err);
