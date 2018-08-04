@@ -382,10 +382,10 @@ export function vendorFollow(req, res) {
     model[modelName].findOne({
         where: queryObj
     }).then(function (result) {
-        console.log("result", result.id);
         if (result) {
+        
             var newStatus;
-            if (result.status == 1) {
+            if (result.status == status['ACTIVE']) {
                 newStatus = 0;
             } else {
                 newStatus = 1;

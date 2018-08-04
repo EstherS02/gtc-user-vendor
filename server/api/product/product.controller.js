@@ -1,7 +1,13 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const async = require('async');
 const moment = require('moment');
+const cheerio = require('cheerio');
+const puppeteer = require('puppeteer');
+const request = require('request');
+const AliexScrape = require('aliexscrape');
 const WooCommerceAPI = require('woocommerce-api');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -92,6 +98,152 @@ export function create(req, res) {
 			console.log('Error:::', error);
 			return res.status(500).send("Internal server error.");
 		})
+}
+
+export function importAliExpress(req, res) {
+
+	var products = [];
+	var parsedProducts = [];
+	var perPageLimit = 36;
+	var aliExpressProducts = [];
+	var importAliExpress = [];
+	var maximumProductLimit = 0;
+	var queryObjProduct = {};
+	var queryObjPlanLimit = {};
+	var productModelName = "Product";
+	var planLimitModelName = "PlanLimit";
+
+	req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+
+	(async () => {
+		const browser = await puppeteer.launch({
+			headless: true
+		});
+
+		const loginPage = await browser.newPage();
+
+		await loginPage.goto('https://login.aliexpress.com/buyer.htm', {
+			timeout: 80000
+		});
+
+		var frames = await loginPage.frames();
+
+		var loginFrame = frames.find((frame) => frame.url().indexOf("passport.aliexpress.com") > 0);
+
+		const loginId = await loginFrame.$("#fm-login-id");
+		await loginId.type(config.aliExpressLoginId);
+
+		const loginPassword = await loginFrame.$("#fm-login-password");
+		await loginPassword.type(config.aliExpressLoginPassword);
+
+		await loginPage.keyboard.press('Enter');
+
+		const vendorProductListPage = await browser.newPage();
+
+		callAliExpressMethod(0);
+
+		async function callAliExpressMethod(pageCount) {
+			pageCount += 1;
+
+			var store_url = "https://www.aliexpress.com/store/" + req.body.vendor_id + "/search/" + pageCount + ".html";
+			await vendorProductListPage.goto(store_url);
+			var content = await vendorProductListPage.content();
+			var $ = cheerio.load(content);
+			const listItems = $('.ui-box-body');
+
+			if ($(listItems).find('ul.items-list.util-clearfix').children().length < perPageLimit) {
+				await $(listItems).find('ul.items-list.util-clearfix').children().each((i, child) => {
+					var productLink = $(child).find('a.pic-rind').attr('href');
+					var productId = productLink.split(/[\s/]+/).pop().slice(0, -5).split('_')[1];
+					products.push(productId);
+				});
+				await browser.close();
+				if (products.length > 0) {
+					for (let i = 0; i < products.length; i++) {
+						aliExpressProducts.push(getAliExpressProducts(products[i]));
+					}
+				} else {
+					return res.status(404).send("products not found.");
+				}
+				return Promise.all(aliExpressProducts)
+					.then((results) => {
+						parsedProducts = results;
+						if (req.user.role === roles['ADMIN']) {
+
+						} else if (req.user.role === roles['VENDOR']) {
+							var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+							var planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
+							var planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
+
+							queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
+							queryObjPlanLimit['status'] = status['ACTIVE'];
+
+							queryObjProduct['vendor_id'] = req.user.Vendor.id;
+							queryObjProduct['created_on'] = {
+								'$gte': planStartDate,
+								'$lte': planEndDate
+							}
+							return service.findOneRow(planLimitModelName, queryObjPlanLimit);
+						} else {
+
+						}
+					})
+					.then((planLimit) => {
+						if (planLimit) {
+							maximumProductLimit = planLimit.maximum_product;
+							return service.countRows(productModelName, queryObjProduct)
+						} else {
+
+						}
+					})
+					.then((existingProductCount) => {
+						var remainingProductLength = maximumProductLimit - existingProductCount;
+						if (parsedProducts.length <= remainingProductLength) {
+							for (var i = 0; i < parsedProducts.length; i++) {
+								importAliExpress.push(productService.importAliExpressProducts(parsedProducts[i], req));
+							}
+							return Promise.all(importAliExpress);
+						} else {
+							return res.status(403).send("Limit exceeded to add product.");
+						}
+					})
+					.then((response) => {
+						return res.status(200).send("Imported successfully.");
+					})
+					.catch((error) => {
+						console.log("Error:::", error);
+						return res.status(500).send("Internal server error");
+					});
+			} else {
+				await $(listItems).find('ul.items-list.util-clearfix').children().each((i, child) => {
+					var productLink = $(child).find('a.pic-rind').attr('href');
+					var productId = productLink.split(/[\s/]+/).pop().slice(0, -5).split('_')[1];
+					products.push(productId);
+				});
+				callAliExpressMethod(pageCount);
+			}
+		}
+	})();
+}
+
+function getAliExpressProducts(productId) {
+	return new Promise(function(resolve, reject) {
+		AliexScrape(productId)
+			.then((response) => {
+				var parsedJSON = JSON.parse(response);
+				resolve(parsedJSON);
+			})
+			.catch((error) => {
+				reject(error);
+			});
+	});
 }
 
 export function importWoocommerce(req, res) {

@@ -132,3 +132,9 @@ export function userProfile(req, res) {
 		}
 	});
 }
+
+export function forgotPassword(req,res){
+			res.render('users/forgot-password', {
+				title: "Global Trade Connect",
+			})
+}

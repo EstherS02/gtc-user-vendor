@@ -1,33 +1,29 @@
 <div class="vendor-public-left-side">
+  {{#navbarSetting LoggedInUser.Vendor.id selectedPage}}
 	<div class="table-responsive">
 		<table class="table shoping-cart-table">
 			<tbody>
 				<tr>
 					<td><span class="text-muted">Joined</span></td>
-					<td class="text-left"><span><strong>January 2017</strong></span></td>
+					<td class="text-left"><span><strong>{{formatTime VendorDetail.created_on "MMMM Y"}}</strong></span></td>
 				</tr>
 				<tr>
 					<td><span class="text-muted">Location</span></td>
-					<td class="text-left"><img src="../img/flag-ca.png" class="img-fluid" alt="Canada" title="Canada" /><span class="m-l-xs" style="vertical-align: middle;"><strong>Canada</strong></span></td>
+					<td class="text-left"><img src="../img/flag-ca.png" class="img-fluid" alt="Canada" title="Canada" /><span class="m-l-xs" style="vertical-align: middle;"><strong>{{VendorDetail.Country.name}}</strong></span></td>
 				</tr>
 				<tr>
 					<td><span class="text-muted">User Rating</span></td>
 					<td>
 						<div class="p-rating">
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
+			               {{starCount VendorDetail.VendorRatings.[0].rating}}
 			            </div>
-			            <p><a href="#"><strong>(23 Ratings - See All)</strong></a></p>
+			            <p>{{#if VendorDetail.VendorRatings.[0].rating}}<a href="#"><strong>{{#if VendorDetail.VendorRatings.[0].count}}({{VendorDetail.VendorRatings.[0].count}} Ratings - See All)</strong></a>{{/if}}{{/if}}</p>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
+  {{/navbarSetting }}
 	<div class="p-v-social-icons">
 		{{!-- <ul>
 			<li>
