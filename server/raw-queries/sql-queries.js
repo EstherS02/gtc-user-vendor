@@ -6,6 +6,7 @@ const config = require('../config/environment');
 let sqlQueries = {
 
   geoLocateDistance: function (lat, lng) {
+      //Distance in Miles = 3959, Distance in Kilometers = 6371
     let query = `SELECT
         vendor.id AS vendor_id,
         vendor.vendor_name,
@@ -38,7 +39,7 @@ let sqlQueries = {
         LEFT JOIN marketplace ON product.marketplace_id = marketplace.id
         LEFT JOIN marketplace_type ON product.marketplace_type_id = marketplace_type.id
         HAVING
-            distance < 50
+            distance < 60
         ORDER BY
             distance`;
 
