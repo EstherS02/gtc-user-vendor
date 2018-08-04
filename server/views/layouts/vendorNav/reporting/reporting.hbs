@@ -96,22 +96,23 @@
                                         </div>
                                         <div class="col-md-6 total-sales">
                                             <div class="pts">
-                                                <p class="product-total-sale">$838,000</p>
-                                                <p class="product-total-sale1">+$21,000</p>
+                                                <p class="product-total-sale">{{currency topProducts.total '$'}}</p>
+                                                <p class="product-total-sale1">{{currency topProducts.diff_total '$'}}</p>
                                                 <br>
                                                 <br>
-                                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
+                                                <p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topProducts.current_total '$'}} vs {{currency topProducts.past_total '$'}}</p>
                                                 <br>
                                                 <p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
                                                 <br>
                                                 <div class="container horizontal flat">
+                                                    {{#each topProducts.rows as |item|}}
                                                     <div class="row">
                                                         <div class="col-md-12" style="padding: 0px;">
                                                             <div class="col-md-2" style="padding: 0px; float: left;">
-                                                                <p class="product-bar-chart">Product #1</p>
+                                                                <p class="product-bar-chart">{{item.product_name}}</p>
                                                             </div>
                                                             <div class="col-md-2" style="padding: 0px; float: right;">
-                                                                <p class="product-bar-chart">$343,000</p>
+                                                                <p class="product-bar-chart">{{currency item.amount '$'}}</p>
                                                             </div>
                                                             <div class="col-md-8" style="padding: 0px; float: right;">
                                                                 <div class="progress-bar horizontal">
@@ -125,10 +126,10 @@
 
                                                         </div>
                                                     </div>
+                                                    {{/each}}
 
 
-
-                                                    <div class="row">
+                                                    <!-- <div class="row">
                                                         <div class="col-md-12" style="padding: 0px;">
                                                             <div class="col-md-2" style="padding: 0px; float: left;">
                                                                 <p class="product-bar-chart">Product #2</p>
@@ -248,7 +249,7 @@
                                                             </div>
 
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                                 <p class="lt-more">
                                                     <a href="#" style="color: white;">More &#9658;</a>
@@ -257,16 +258,21 @@
                                         </div>
                                         <div class="col-md-6 total-sales" style="float: right;">
                                             <div class="pts">
-                                                <p class="product-total-sale">$838,000</p>
-                                                <p class="product-total-sale1">+$21,000</p>
+                                                <p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
+                                                <p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
                                                 <br>
                                                 <br>
-                                                <p class="product-total-sale2" style="margin-bottom: 0px;">$111,082 vs $90,082</p>
+                                                <p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
                                                 <br>
                                                 <p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
 
                                                 <ul class="chart">
-                                                    <li>
+                                                    {{#each topMarketPlace.rows as |item|}}
+                                                        <li>
+                                                        <span class="wholesale" style="height:60%" title="{{item.marketplace_name}}"></span>
+                                                        </li>
+                                                    {{/each}}
+                                                    <!-- <li>
                                                         <span class="wholesale" style="height:60%" title="Wholesale"></span>
                                                     </li>
                                                     <li>
@@ -277,7 +283,7 @@
                                                     </li>
                                                     <li>
                                                         <span class="subscription" style="height:10%" title="Subscription"></span>
-                                                    </li>
+                                                    </li> -->
                                                 </ul>
                                                 <p class="lt-more">
                                                     <a href="#" style="color: white;">More &#9658;</a>
@@ -493,29 +499,29 @@
                                     <div>
                                         <p class="line-chart-footer">Revenue($)</p>
                                         <p class="line-chart-footer">Revenue(%)</p>
-                                        <p class="line-chart-footer">Completed Transaction</p>
+                                        <p class="line-chart-footer">Completed</p>
                                         <p class="line-chart-footer">Returns</p>
                                         <p class="line-chart-footer">Disputes</p>
                                         <p class="line-chart-footer">Refunds</p>
                                         <p class="line-chart-footer">Cancelation</p>
                                     </div>
                                     <div>
-                                        <p class="line-chart-green1">$21,000</p>
-                                        <p class="line-chart-green2">36.79%</p>
-                                        <p class="line-chart-green3">+787</p>
-                                        <p class="line-chart-red1">+787</p>
-                                        <p class="line-chart-green4">$21,000</p>
-                                        <p class="line-chart-red2">+787</p>
-                                        <p class="line-chart-red3">+787</p>
+                                        <p class="line-chart-green1">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
+                                        <p class="line-chart-green2">{{revenueCounts.revenue_count.diff_count}}</p>
+                                        <p class="line-chart-green3">{{revenueCounts.completed_count.diff_completed}}</p>
+                                        <p class="line-chart-red1">{{revenueCounts.returns_count.diff_returned}}</p>
+                                        <p class="line-chart-green4">{{revenueCounts.disputes_count.diff_disputes}}</p>
+                                        <p class="line-chart-red2">{{revenueCounts.refunds_count.diff_refunds}}</p>
+                                        <p class="line-chart-red3">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
                                     </div>
                                     <div>
-                                        <p class="line-chart-vs" style="padding-left: 20px">$111,082 vs $90,082</p>
-                                        <p class="line-chart-vs">$1,082 vs $791</p>
-                                        <p class="line-chart-vs" style="padding-left: 38px;">$1,082 vs $791</p>
-                                        <p class="line-chart-vs" style="padding-left: 85px;">$1,082 vs $791</p>
-                                        <p class="line-chart-vs">$1,082 vs $791</p>
-                                        <p class="line-chart-vs">$1,082 vs $791</p>
-                                        <p class="line-chart-vs">$1,082 vs $791</p>
+                                        <p class="line-chart-vs" style="padding-left: 20px">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
+                                        <p class="line-chart-vs">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
+                                        <p class="line-chart-vs" style="padding-left: 38px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
+                                        <p class="line-chart-vs" style="padding-left: 85px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
+                                        <p class="line-chart-vs">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
+                                        <p class="line-chart-vs">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
+                                        <p class="line-chart-vs">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
