@@ -752,3 +752,9 @@ div.product-right-col h2 {
     top: 0;
     z-index: 1020;
 }
+.input-xs {
+	height: 26px;
+	padding: .375rem .75rem;
+	font-size: 0.75em;
+	line-height: 1.5;
+}

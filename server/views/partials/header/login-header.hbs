@@ -18,19 +18,20 @@
 							<div class="row">
 								<div class="col-lg-5">
 									<div class="form-group m-b-none">
-										<label class="login-label">Returning user? Sign in:</label>
-										<input type="email" name="vendor_name" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Email" id="loginInputEmail" name="email">
+										<label class="login-label">Returning user ? Sign in : </label>
+										<input type="email" name="vendor_name" class="form-control input-xs" placeholder="Email" id="loginInputEmail" name="email" autofocus="true">
 									</div>
 								</div>
 								<div class="col-lg-5">
 									<div class="form-group m-b-none">
-										<label class="login-label">Password | <a href="/user/forgot-password" style="color:#fff">Forgot Password?</a>
-									</label>
-										<input type="password" class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password" id="loginInputPassword" name="password">
+										<label class="login-label">Password </label>
+										<input type="password" class="form-control input-xs" placeholder="Password" id="loginInputPassword" name="password">
 									</div>
 								</div>
 								<div class="col-lg-2">
-									<button type="submit" class="btn btn-sm m-t-md btn-primary" style="margin-top: 30px;" id="btnLogin"><strong>LOG IN</strong></button>
+									<div class="form-group m-b-none m-t">
+										<button type="submit" class="btn btn-sm btn-primary" id="btnLogin"><strong>LOG IN</strong></button>
+									</div>
 								</div>
 								<div class="col-md-12">
 									<p class="login-error" id="loginErrorMessage"></p>

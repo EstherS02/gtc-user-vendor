@@ -84,6 +84,10 @@
 	    padding-right: 15px;
 	    padding-left: 15px;
 	}
+	.login-panel button {
+	    position: absolute;
+	    bottom: 0;
+	}
 }
 
 @media screen and (min-width: 1376px) and (max-width: 1440px) {
@@ -149,6 +153,10 @@
 	    min-height: 1px;
 	    padding-right: 15px;
 	    padding-left: 15px;
+	}
+	.login-panel button {
+	    position: absolute;
+	    bottom: 0;
 	}
 }
 
@@ -226,6 +234,10 @@
 	    min-height: 1px;
 	    padding-right: 15px;
 	    padding-left: 15px;
+	}
+	.login-panel button {
+	    position: absolute;
+	    bottom: 0;
 	}
 }
 
