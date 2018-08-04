@@ -467,7 +467,6 @@ exports.upload = function (req, res) {
 		}
 	});
 };
-
 function plainTextResponse(response) {
 	return response.get({
 		plain: true

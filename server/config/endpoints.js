@@ -65,4 +65,6 @@ module.exports = {
 	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",
 	"wish-list": "WishList"
+	
+
 }

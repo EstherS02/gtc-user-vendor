@@ -380,3 +380,37 @@ var queryObj = {};
                 }
             });
 }
+// Not use for limit getallfindrow query starts//
+export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
+    var result = {};
+    return new Promise((resolve, reject) => {
+        model[modelName].findAll({
+            include: includeArr,
+            where: queryObj,
+            order: [
+                [field, order]
+            ]
+        }).then(function(rows) {
+            var convertRowsJSON = [];
+            if (rows.length > 0) {
+                convertRowsJSON = JSON.parse(JSON.stringify(rows));
+                return model[modelName].count({
+                    where: queryObj
+                }).then(function(count) {
+                    result.count = count;
+                    result.rows = convertRowsJSON;
+                    return resolve(result);
+                }).catch(function(error) {
+                    return reject(error);
+                });
+            } else {
+                result.count = 0;
+                result.rows = convertRowsJSON;
+                return resolve(result);
+            }
+        }).catch(function(error) {
+            reject(error);
+        });
+    });
+}
+// Not use for limit getallfindrow query ends//
