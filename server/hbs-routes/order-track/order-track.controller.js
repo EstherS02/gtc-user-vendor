@@ -11,16 +11,15 @@ const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const populate = require('../../utilities/populate');
 const orderStatus = require('../../config/order_status');
+const carriersCode = require('../../config/carriers');
+const trackingUrl = require('../../config/tracking-url');
 
 export function orderTrack(req, res) {
 	var LoggedInUser = {}, order_id;
-	var bottomCategory = {};
+	var bottomCategory = {},userOrderObj={};
 
 	if (req.user)
 		LoggedInUser = req.user;
-
-	if (req.params.id)
-		order_id = req.params.id;
 
 	let user_id = LoggedInUser.id;
 	var orderModel = "Order";
@@ -75,7 +74,10 @@ export function orderTrack(req, res) {
 				}]
 			  }] }
 		];
-			service.findIdRow(orderModel, order_id, includeArr)
+
+	if (req.params.id){
+		order_id = req.params.id;
+		service.findIdRow(orderModel, order_id, includeArr)
 				.then(function (result) {
 
 					return callback(null, result);
@@ -83,8 +85,32 @@ export function orderTrack(req, res) {
 				}).catch(function (error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
+		});
+	}else
+	{
+		userOrderObj['user_id']= user_id;
+		userOrderObj['order_status']={
+			'$lt': orderStatus["DELIVEREDORDER"]
 		}
+		userOrderObj['status'] = statusCode["ACTIVE"];
+
+        model['Order'].findOne({
+            include: includeArr,
+			where: userOrderObj,
+			order: [ [ 'created_on', 'DESC' ]],
+			
+        }).then(function(result) {
+			if (result) {
+				return callback(null,result.toJSON());
+            } else {
+				return callback(null); 
+            }
+        }).catch(function(error) {
+			console.log('Error :::', error);
+			return callback(null);
+        });        
+	}
+}
 	},
 		function (err, results) {
 			if (!err) {
@@ -96,7 +122,9 @@ export function orderTrack(req, res) {
 					cartheader: results.cartCounts,
 					orderTrack: results.orderTrack,
 					vendorPlan: vendorPlan,
-					orderStatus: orderStatus
+					orderStatus: orderStatus,
+					carriersCode: carriersCode,
+					trackingUrl:trackingUrl
 				});
 			} else {
 				res.render('order-track', err);
