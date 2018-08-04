@@ -4,6 +4,8 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 const _ = require('lodash');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
@@ -232,6 +234,20 @@ export function upsert(modelName, data) {
                 reject(error);
             })
     })
+}
+
+
+export function geoLocationFetch(lat, lng) {
+  return new Promise((resolve, reject) => {
+    Sequelize_Instance.query(RawQueries.geoLocateDistance(lat, lng), {
+        model: model['Vendor']
+      }).then(geoLocationObj => {
+        resolve(JSON.parse(JSON.stringify(geoLocationObj)));
+      }).catch(function (error) {
+        console.log('Error:::', error);
+        reject(error);
+      });
+  });
 }
 
 export function getCategory(categoryQueryObj, productCountQueryParames) {
