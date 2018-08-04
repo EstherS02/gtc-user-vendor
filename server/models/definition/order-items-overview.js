@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'order_id',
             allowNull: false
         },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false
+        },
         product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
@@ -26,6 +31,16 @@ module.exports = (sequelize, DataTypes) => {
         vendor_id: {
             type: DataTypes.BIGINT,
             field: 'vendor_id',
+            allowNull: false
+        },
+        final_price: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'final_price',
+            allowNull: false
+        },
+        order_item_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_item_status',
             allowNull: false
         },
         order_status: {

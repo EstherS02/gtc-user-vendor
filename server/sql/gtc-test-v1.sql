@@ -284,14 +284,16 @@ CREATE VIEW `vendor_user_product` AS
 
 
 CREATE VIEW `order_items_overview` AS SELECT
-    o.id AS id,
-    o.order_id AS order_id,
-    o.final_price AS final_price,
-    o.status AS order_status,
+    oItem.id AS id,
+    oItem.order_id AS order_id,    
+    ord.user_id AS user_id,
     p.id AS product_id,
     p.product_name AS product_name,
     p.vendor_id AS vendor_id,
     p.marketplace_id AS marketplace_id,
+    oItem.final_price AS final_price,
+    oItem.order_item_status AS order_item_status,
+    ord.order_status AS order_status,
     (
     SELECT NAME
 FROM
@@ -320,12 +322,15 @@ FROM
 WHERE
     subc.id = p.sub_category_id
 LIMIT 1
-) AS sub_category_name, o.created_on AS item_created_on
+) AS sub_category_name, oItem.created_on AS item_created_on
 FROM
-    order_items AS o
+    order_items AS oItem
 INNER JOIN product AS p
 ON
-    o.product_id = p.id
+    oItem.product_id = p.id
+INNER JOIN orders AS ord
+ON
+    ord.id = oItem.order_id
 
 
 

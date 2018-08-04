@@ -7,6 +7,7 @@ const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const _ = require('lodash');
 const marketPlace = require('../../../config/marketplace');
 const orderStatus = require('../../../config/order_status');
 var async = require('async');
@@ -17,11 +18,25 @@ export function reporting(req, res) {
     var LoggedInUser = {};
     var bottomCategory = {};
     var categoryModel = "Category";
+    var lhsBetween = [];
+    var rhsBetween = [];
 
     if (req.user)
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
+
+    if(req.query.lhs_from && req.query.lhs_to){
+        lhsBetween.push(moment(req.query.lhs_from).format("YYYY-MM-DD hh:mm:ss"), moment(req.query.lhs_to).format("YYYY-MM-DD hh:mm:ss"))
+    } else {
+        lhsBetween.push(moment().subtract(14, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"));
+    }
+    if(req.query.rhs_from && req.query.rhs_to){
+        rhsBetween.push(moment(req.query.rhs_from).format("YYYY-MM-DD hh:mm:ss"), moment(req.query.rhs_to).format("YYYY-MM-DD hh:mm:ss"));
+    } else {
+        rhsBetween.push(moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().format("YYYY-MM-DD hh:mm:ss"));
+    }
+
     async.series({
             cartCounts: function(callback) {
                 service.cartHeader(LoggedInUser).then(function(response) {
@@ -56,7 +71,7 @@ export function reporting(req, res) {
                 let orderItemQueryObj = {};
                 if (req.user.role == 2)
                     orderItemQueryObj.vendor_id = req.user.Vendor.id;
-                    ReportService.topPerformingProducts(orderItemQueryObj).then((results) => {
+                    ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
                        return callback(null, results);
                     }).catch((err) => {
                         console.log('topMarketPlace err', err);
@@ -67,7 +82,7 @@ export function reporting(req, res) {
                 let orderItemQueryObj = {};
                 if (req.user.role == 2)
                     orderItemQueryObj.vendor_id = req.user.Vendor.id;
-                    ReportService.topPerformingMarketPlaces(orderItemQueryObj).then((results) => {                               
+                    ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {                               
                        return callback(null, results);
                     }).catch((err) => {
                         console.log('topMarketPlace err', err);
@@ -78,7 +93,7 @@ export function reporting(req, res) {
                 let orderItemQueryObj = {};
                 if (req.user.role == 2)
                     orderItemQueryObj.vendor_id = req.user.Vendor.id;
-                    ReportService.revenueChanges(orderItemQueryObj).then((results) => {
+                    ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
                        return callback(null, results);
                     }).catch((err) => {
                         console.log('topMarketPlace err', err);
@@ -89,7 +104,7 @@ export function reporting(req, res) {
                 let orderItemQueryObj = {};
                 if (req.user.role == 2)
                     orderItemQueryObj.vendor_id = req.user.Vendor.id;
-                    ReportService.revenueChangesCounts(orderItemQueryObj).then((results) => {
+                    ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {                        
                        return callback(null, results);
                     }).catch((err) => {
                         console.log('topMarketPlace err', err);

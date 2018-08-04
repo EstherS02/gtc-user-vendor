@@ -100,7 +100,7 @@ export function topMarketPlace(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().format("YYYY-MM-DD hh:mm:ss"));
 	}
-	ReportService.topPerformingMarketPlaces(orderItemQueryObj).then((results) => {
+	ReportService.topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('topMarketPlace err', err);
@@ -125,7 +125,7 @@ export function topCategories(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().format("YYYY-MM-DD hh:mm:ss"));
 	}
-	ReportService.topPerformingCategories(orderItemQueryObj).then((results) => {
+	ReportService.topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('topCategories err', err);
@@ -150,7 +150,7 @@ export function recentRevenueChanges(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().format("YYYY-MM-DD hh:mm:ss"));
 	}
-	ReportService.revenueChanges(orderItemQueryObj).then((results) => {
+	ReportService.revenueChanges(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('recentRevenueChanges err', err);
@@ -175,7 +175,7 @@ export function revenueChangesCount(req, res) {
 	} else {
 		rhsBetween.push(moment().subtract(7, 'days').format("YYYY-MM-DD hh:mm:ss"), moment().format("YYYY-MM-DD hh:mm:ss"));
 	}
-	ReportService.revenueChangesCounts(orderItemQueryObj).then((results) => {
+	ReportService.revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
 		return res.status(200).send(results);
 	}).catch((err) => {
 		console.log('recentRevenueChanges err', err);
