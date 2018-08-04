@@ -403,3 +403,25 @@ Handlebars.registerHelper('last2', function(str, isJson, key) {
 Handlebars.registerHelper('currency', function(amt, symbol) {
     return numeral(amt).format(symbol + '0,0.00');
 });
+
+Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
+    let name;
+    arrayEle.forEach(function(element) {
+        if(element.id == id){
+            name= element.attr_name;    
+        }
+    });
+    return name;
+});
+Handlebars.registerHelper("LikeUnlike",function(likes, user){
+ let name;
+    likes.forEach(function(element) {
+        if(element.user_id == user.id){
+            name= 'Unlike';    
+        }
+    });
+    if(name != 'Unlike'){
+        name="Like";
+    }
+    return name;
+});

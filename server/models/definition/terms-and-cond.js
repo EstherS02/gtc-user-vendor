@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Shipping', {
+    return sequelize.define('TermsAndCond', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,14 +9,30 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        provider_name: {
-            type: DataTypes.STRING(128),
-            field: 'provider_name',
+        vendor_id: {
+            type: DataTypes.BIGINT,
+            field: 'vendor_id',
+            allowNull: false,
+            references: {
+                model: 'vendor',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        terms_of_use: {
+            type: DataTypes.TEXT,
+            field: 'terms_of_use',
             allowNull: true
         },
-        tracking_url: {
+        return_policy: {
             type: DataTypes.TEXT,
-            field: 'tracking_url',
+            field: 'return_policy',
+            allowNull: true
+        },
+        shipping_policy: {
+            type: DataTypes.TEXT,
+            field: 'shipping_policy',
             allowNull: true
         },
         status: {
@@ -50,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'shipping',
+        tableName: 'terms_and_cond',
         timestamps: false
     });
 };
@@ -59,39 +75,12 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Shipping = model.Shipping;
-    const Order = model.Order;
-    const User = model.User;
-    const Address = model.Address;
+    const TermsAndCond = model.TermsAndCond;
+    const Vendor = model.Vendor;
 
-    Shipping.hasMany(Order, {
-        foreignKey: 'shipping_id',
+    TermsAndCond.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    Shipping.belongsToMany(User, {
-        through: Order,
-        foreignKey: 'shipping_id',
-        otherKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Shipping.belongsToMany(Address, {
-        through: Order,
-        foreignKey: 'shipping_id',
-        otherKey: 'shipping_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Shipping.belongsToMany(Address, {
-        through: Order,
-        foreignKey: 'shipping_id',
-        otherKey: 'billing_address_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
 };

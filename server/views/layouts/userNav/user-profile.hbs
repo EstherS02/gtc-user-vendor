@@ -115,7 +115,7 @@
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
 			vendorUpdate.contact_email = $('#contact_email').val();
-			billingUpdate.address_type = 1;
+			//billingUpdate.address_type = 1;
 			billingUpdate.company_name = $('#b_company_name').val();
 			billingUpdate.address_line1 = $('#b_address1').val();
 			billingUpdate.address_line2 = $('#b_address2').val();
@@ -123,7 +123,7 @@
 			billingUpdate.province_id = $('#b_state').val();
 			billingUpdate.city = $('#b_city').val();
 			billingUpdate.postal_code = $('#b_postal_code').val();
-			shippingUpdate.address_type = 2;
+			//shippingUpdate.address_type = 2;
 			shippingUpdate.company_name = $('#s_company_name').val();
 			shippingUpdate.address_line1 = $('#s_address1').val();
 			shippingUpdate.address_line2 = $('#s_address2').val();
@@ -184,34 +184,10 @@
 
 		$("#userForm").validate({
 			rules: {
-				first_name: "required",
-				b_company_name: "required",
-				b_address1: "required",
-				b_country: "required",
-				b_state: "required",
-				b_city: "required",
-				b_postal_code: "required",
-				s_company_name: "required",
-				s_address1: "required",
-				s_country: "required",
-				b_state: "required",
-				s_city: "required",
-				s_postal_code: "required"
+				first_name: "required"
 			},
 			messages: {
-				first_name: "Please enter first name",
-				b_company_name: "Please enter company",
-				b_address1: "Please enter billing address",
-				b_country: "Please select country",
-				b_state: "Please select state",
-				b_city: "Please enter billing city",
-				b_postal_code: "Please enter postal code",
-				s_company_name: "Please enter shipping address",
-				s_address1: "Please enter shipping address",
-				s_country: "Please select country",
-				s_state: "Please select state",
-				s_city: "Please enter shipping city",
-				s_postal_code: "Please enter postal code"
+				first_name: "Please enter first name"
 			}
 		});
 		$('#resetPassword').click(function () {
@@ -445,11 +421,11 @@
 											<div class="col-lg-8">
 												<div class="form-group">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="b_country" name="b_country"
-													 required>
+													 >
 														{{#if billingAddress.country_id}}
 														<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
 														{{else}}
-														<option disabled selected>Select Country...</option>
+														<option disabled selected>Country</option>
 														{{/if}} {{#each country}}
 														<option value="{{this.id}}">{{ this.name}}</option>
 														{{/each}}
@@ -464,11 +440,11 @@
 											<div class="col-lg-8">
 												<div class="form-group">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="b_state" id="b_state"
-													 required>
+													 >
 														{{#if billingAddress.province_id}}
 														<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
 														{{else}}
-														<option disabled selected>Select Country...</option>
+														<option disabled selected>Province/State</option>
 														{{/if}}
 													</select>
 												</div>
@@ -550,7 +526,7 @@
 														{{#if shippingAddress.country_id}}
 														<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
 														{{else}}
-														<option disabled selected>Select Country...</option>
+														<option disabled selected>Country</option>
 														{{/if}} {{#each country}}
 														<option value="{{this.id}}">{{ this.name}}</option>
 														{{/each}}
@@ -565,11 +541,11 @@
 											<div class="col-lg-8">
 												<div class="form-group">
 													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="s_state" id="s_state"
-													 required>
+													 >
 														{{#if shippingAddress.province_id}}
 														<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
 														{{else}}
-														<option disabled selected>Select Country...</option>
+														<option disabled selected>Province/State</option>
 														{{/if}}
 													</select>
 												</div>

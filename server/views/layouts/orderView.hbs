@@ -1,16 +1,19 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <script type="text/javascript">
-var type = {{{DisplayJSON this.type}}}
+	var type = {{{ DisplayJSON this.type }}}
+
+	$(function () {
+		$("#expected_delivery_date").datepicker();
+	});
 
 	$(document).ready(function () {
 
-		$("#gtc-form-alert").hide();
 		$("#gtc-cancel-alert").hide();
 
 		$("#orderStatusChange").submit(function (e) {
 			e.preventDefault();
-			let input = $("#orderStatusChange :input").filter(function (index, element) {
+			let statusInput = $("#orderStatusChange :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
 
@@ -18,11 +21,11 @@ var type = {{{DisplayJSON this.type}}}
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
 			        type: 'PUT',
-			    	data: input,
+				    data: statusInput,
 					success: function (result) {
 						location.reload(true);
 					},
-		    	error: function (error) {
+			error: function (error) {
 				console.log("error", error);
 			        }
 		        });
@@ -31,82 +34,108 @@ var type = {{{DisplayJSON this.type}}}
 
 	$("#orderStatusChange").validate({
 		rules: {
-			order_status: "required"
+			order_status: "required",
+			provider_name: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			},
+			tracking_url: {
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        },
+				minlength: 8
+			},
+			expected_delivery_date:{
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
+			}
 		},
 		messages: {
-			order_status: "Please Select Order Status"
+			order_status: "Please select Order Status",
+			provider_name: {
+				required: "Please select the carrier name"
+			},
+			tracking_url: {
+				required:"Please enter tracking url",
+				minlength:"Please enter valid url"
+			},
+			expected_delivery_date: {
+				required: "Please enter expected delivery date"
+			},
+			
 		}
 	});
 
 	$("#cancelReason").submit(function (e) {
 		e.preventDefault();
 		var item_id = $('#item_id').val();
-		var cancelInput={};
-		var mailInput={};
+		var cancelInput = {};
+		var mailInput = {};
 
-		cancelInput.reason_for_cancellation= $("#reason_for_cancellation").val();
-		mailInput.item_id= item_id;
-		mailInput.reason_for_cancellation= $("#reason_for_cancellation").val();
+		cancelInput.reason_for_cancellation = $("#reason_for_cancellation").val();
+		mailInput.item_id = item_id;
+		mailInput.reason_for_cancellation = $("#reason_for_cancellation").val();
+		
+		if ($('#cancelReason').valid()) {
 
-         if ($('#cancelReason').valid()) {
-  
-		$.ajax({
-			url: '/api/payment/cancel-order/' + item_id,
-			type: 'POST',
-			data: cancelInput,
-			success: function (result) {
-				console.log(result);
+			$.ajax({
+				url: '/api/payment/cancel-order/' + item_id,
+				type: 'POST',
+				data: cancelInput,
+				success: function (result) {
+					console.log(result);
 
-			/*	$('#gtc-cancel-alert').removeClass('alert-danger').addClass('alert-success');
-				$('#gtc-cancel-alert .cancel-message').text(result.responseText)
-				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
+					location.reload(true);
+
+					if (type == 'sales-history') {
+
+						$.ajax({
+							url: '/api/order-history/vendor-cancel/' + {{ order.id }},
+					type: 'POST',
+						data: mailInput,
+							success: function() {
+								console.log(result);
+							},
+					error: function(error) {
+						console.log("error:", error);
+					}
+				})
+		}
+	},
+		error: function (error) {
+			console.log("error", error);
+			$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-cancel-alert .cancel-message').text(error.responseText);
+			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
-				});
-
-				$("#cancelReason")[0].reset();*/
-				location.reload(true);
-				
-				if(type == 'sales-history'){
-
-		          $.ajax({
-					  url:'/api/order-history/vendor-cancel/'+{{ order.id }},
-					  type: 'POST',
-					  data:mailInput,
-					  success: function(){
-						  console.log(result);
-					  },
-					  error: function(error){
-                          console.log("error:",error);
-					  }
-				  })
-				}
-			},
-			error: function (error) {
-				console.log("error", error);
-				$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
-				$('#gtc-cancel-alert .cancel-message').text(error.responseText);
-				$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
-				$("#gtc-cancel-alert").slideUp(500);
-				});
-				$("#cancelReason")[0].reset();
-			}
+			});
+			$("#cancelReason")[0].reset();
+		}
 		});
 		 }
 	});
 
 	$("#cancelReason").validate({
-            rules: {
-				reason_for_cancellation:{
-                    required: true,
-                    maxlength: 64
-				},		
+		rules: {
+			reason_for_cancellation: {
+				required: true,
+				maxlength: 64
 			},
-			messages:{
-                 reason_for_cancellation:{
-					required: "Please enter the reason for order cancellation",
-                    maxlength: "Maximum 64 characters"
-				 }	 
+		},
+		messages: {
+			reason_for_cancellation: {
+				required: "Please enter the reason for order cancellation",
+				maxlength: "Maximum 64 characters"
 			}
+		}
 	});
 	$('.data-value').click(function () {
 		var item_id = $(this).data('id');
@@ -253,9 +282,7 @@ var type = {{{DisplayJSON this.type}}}
 													{{/ifCond}}
 													<hr class="common_margin" />
 												</div>
-
 												<div class="row">
-
 													<div class="col-md-5">
 														<p class="shop_subtotal">
 															<b>Cancelled On:</b>
@@ -302,7 +329,7 @@ var type = {{{DisplayJSON this.type}}}
 												<div class="row">
 													<div class="col-md-12">
 														<p class="shop_price_doller">${{quantityPrice orderItems.quantity orderItems.Product.price}}</p>
-														{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
+														{{#ifCond ../../order.order_status '< ' ../../orderStatus.PROCESSINGORDER }}
                                                 <a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
 													<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">CANCEL</p>
 												</a>
@@ -318,13 +345,8 @@ var type = {{{DisplayJSON this.type}}}
 					</div>
 					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
 					<form id="orderStatusChange">
-						<div class="alert" id="gtc-form-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="form-message"></span>
-						</div>
-						<div class="row text-center">
+						<div class="row">
+					
                             <div class="col-md-3">
 								<p>
 									<b>Change Order Status:
@@ -337,23 +359,79 @@ var type = {{{DisplayJSON this.type}}}
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status" id="inputGroupSelect02">
 											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
-											<option value="2">Confirmed Order</option>
-											<option value="3">Processing Order</option>
-											<option value="4">Dispatched Order</option>
-											<option value="5">Delivered Order</option>
-											<option value="6">Returned Order</option>
-											<option value="7">Cancelled Order</option>
-											<option value="8">Failed Order</option>
+											{{#each orderStatus}}
+											{{#ifCond this ">=" ../order.order_status}}
+												<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+												{{/ifCond}}
+											{{/each}}
 										</select>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-2">
+                        </div>
+						<div class="row">
+					
+                            <div class="col-md-3">
+								<p>
+									<b>Expected Delivery Date:
+										<span class="text-danger"></span>
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+									</div>
+								</div>
+							</div>
+                        </div>
+                        <div class="row">
+							<div class="col-md-3">
+								<p>
+									<b>Select Carrier:
+									
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02">
+										   {{#if order.Shipping.provider_name}}
+										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+										   {{else}}
+										   <option disabled selected>Select Carrier</option>
+										   {{/if}}
+										   	{{#each carriersCode}}
+												<option value="{{this}}">{{@key}}</option>
+											{{/each}}
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+								<div class="col-md-3">
+									<p>
+										<b>Enter Tracking Id:</b>
+									</p>
+								</div>
+								<div class="col-md-5">
+									<div class="form-group">
+										<div class="input-group">
+											<input type="text" name="tracking_url" value="{{order.Shipping.tracking_url}}" class="form-control-customized form-control-sm">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-2">
 								<button type="submit" class="btn btn-primary btn-sm">Change</button>
 							</div>
 						</div>
+						
 					</form>
 					{{/ifCond}}
+					<a href="/order-track/{{order.id}}">Click here to track your order</a>
 				</div>
 				<div class="col-md-3 your_order_bg">
 					<div class="container">
@@ -437,7 +515,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.ordered_date}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.ordered_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
@@ -449,7 +527,7 @@ var type = {{{DisplayJSON this.type}}}
 							</div>
 							{{#if order.shipped_on}}
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.shipped_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
 							</div>
 							{{else}}
 							<div class="col-md-7">
@@ -465,7 +543,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{order.expected_delivery_date}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
@@ -476,7 +554,7 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.delivered_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.delivered_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.CANCELLEDORDER}}
@@ -487,25 +565,25 @@ var type = {{{DisplayJSON this.type}}}
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.cancelled_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/ifCond}} {{#if order.shipped_on}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
-									<b>Provider Name</b>
+									<b>Provider Name:</b>
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.Shipping.provider_name}}</p>
+								<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" />
-						<div class="row">
+						<div class="row">	
 							<div class="col-md-8">
 								<p class="shop_subtotal">
-									<b>Tracking URL</b>
+									<b>Tracking URL:</b>
 								</p>
 							</div>
 							<div class="col-md-4">
@@ -545,7 +623,7 @@ var type = {{{DisplayJSON this.type}}}
 						<input type="hidden" id="item_id" name="item_id_name" value="">
 	                    <div class="col-lg-12">
 	                        <div class="form-group">
-								<input class=" required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;" name="checkbox"/>
+								<input class=" required" type="checkbox" onclick ="document.getElementById(' submitBtn ').disabled=false;" name="checkbox"/>
 								 <label class="label-control">Are you sure you want to cancel this item from you order?</label>
 							</div>
 	                    </div>

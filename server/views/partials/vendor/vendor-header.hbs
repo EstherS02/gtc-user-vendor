@@ -37,10 +37,10 @@
 			let formInput = $("#vendorSearchForm :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
-			if(marketPlaceType.marketplace_id){
-			window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
+			if(marketPlaceType == ''){
+			window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput;
 			}else{
-				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput
+				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
 			}
 		});
 	});
@@ -83,11 +83,11 @@
 												{{/if}}
 											{{/ifCond}}
 										{{else}}
-												{{#if VendorDetail.VendorFollowers}}
-												<a href="javascript:;" class="d-inline-block" id="followVendor"><img src="../img/unfollow.png" alt="Follow"  /></a>
-												{{else}}
-												<a  href="javascript:;" class="d-inline-block" id="followVendor"><img src="../img/follow.png" alt="Follow"  /></a>
-												{{/if}}
+												{{!-- {{#if VendorDetail.VendorFollowers}} --}}
+												<a href="/login" class="d-inline-block"><img src="../img/follow.png" alt="Follow"  /></a>
+												{{!-- {{else}}
+												<a  href="" id="followVendor"><img src="../img/follow.png" alt=" Follow"  />--}}</a>
+												{{!-- {{/if}} --}}
 										{{/if}}
 							</div>
 							<div class="vp-navmenu d-inline-block">

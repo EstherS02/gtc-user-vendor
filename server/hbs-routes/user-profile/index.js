@@ -9,6 +9,7 @@ var auth = require('../../auth/auth.service');
 /* Handlebars routes */
 var controller = require('./user-profile.controller');
 
-router.get('/', auth.isAuthenticated(), controller.userProfile);
+router.get('/my-profile', auth.isAuthenticated(), controller.userProfile);
+router.get('/forgot-password', controller.forgotPassword);
 
 module.exports = router;
