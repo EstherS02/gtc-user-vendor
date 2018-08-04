@@ -192,7 +192,7 @@ export function importAliExpress(req, res) {
 							}
 							return service.findOneRow(planLimitModelName, queryObjPlanLimit);
 						} else {
-
+							return res.status(403).send("Forbidden");
 						}
 					})
 					.then((planLimit) => {
@@ -200,7 +200,7 @@ export function importAliExpress(req, res) {
 							maximumProductLimit = planLimit.maximum_product;
 							return service.countRows(productModelName, queryObjProduct)
 						} else {
-
+							return res.status(404).send("plan limit not found.");
 						}
 					})
 					.then((existingProductCount) => {
