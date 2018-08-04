@@ -2,8 +2,23 @@
 <script>
     var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id }}};
 
+    function validate() {
+
+        if ($('#terms_of_use').val().length > 0 ||
+            $('#return_policy').val().length > 0 ||
+            $('#shipping_policy').val().length > 0) {
+            $("#submitBtn").removeAttr('disabled');
+        }
+        else {
+            $("#submitBtn").attr('disabled', 'disabled');
+        }
+    }
+
     $(document).ready(function () {
         $("#gtc-cart-alert").hide();
+
+        validate();
+        $('#terms_of_use, #return_policy, #shipping_policy').change(validate);
 
         $("#termsAndCondForm").submit(function (e) {
             e.preventDefault();
@@ -23,7 +38,7 @@
                     $('#gtc-cart-alert .cart-message').text("Updated Successfully")
                     $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
                         $("#gtc-cart-alert").slideUp(100);
-                        location.reload();
+                        // location.reload();
                     });
                 },
                 error: function (error) {
@@ -63,21 +78,21 @@
                                     <div class="col-lg-8">
                                         <div class="form-group">
                                             <p class="re_terms_pa">Terms Of Use</p>
-                                            <textarea class="form-control-customized" name="terms_of_use" rows="6">{{termsAndCond.terms_of_use}}</textarea>
+                                            <textarea class="form-control-customized" id="terms_of_use" name="terms_of_use" rows="6">{{termsAndCond.terms_of_use}}</textarea>
                                         </div>
                                         <div class="form-group">
                                             <p class="re_terms_pa">Return Policy</p>
-                                            <textarea class="form-control-customized" name="return_policy" rows="6">{{termsAndCond.return_policy}}</textarea>
+                                            <textarea class="form-control-customized" id="return_policy" name="return_policy" rows="6">{{termsAndCond.return_policy}}</textarea>
                                         </div>
                                         <div class="form-group">
                                             <p class="re_terms_pa">Shipping Policy</p>
-                                            <textarea class="form-control-customized" name="shipping_policy" rows="6">{{termsAndCond.shipping_policy}}</textarea>
+                                            <textarea class="form-control-customized" id="shipping_policy" name="shipping_policy" rows="6">{{termsAndCond.shipping_policy}}</textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <button type="submit" class="ladda-button btn btn-primary btn-sm"  data-style="expand-left">
+                                        <button type="submit" disabled="true" id="submitBtn" class="ladda-button btn btn-primary btn-sm" data-style="expand-left">
                                             <span class="ladda-label">Update</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
