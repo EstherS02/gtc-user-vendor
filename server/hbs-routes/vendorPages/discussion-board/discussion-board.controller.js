@@ -55,9 +55,11 @@ export function vendorDiscussion(req, res) {
 	queryPaginationObj['offset'] = offset;
 	var includeArr = [{
 		model:model['DiscussionBoardPostLike'],
+		// attributes: [[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']],
 		where:{
 			status:status['ACTIVE']
 		},
+		// group: ['DiscussionBoardPostLike.discussion_board_post_id'],
 		required:false
 	},{
 		model:model['DiscussionBoardPostComment'],

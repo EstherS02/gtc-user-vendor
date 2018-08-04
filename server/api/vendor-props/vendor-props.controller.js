@@ -63,11 +63,21 @@ export function blogComment(req, res) {
 	bodyParam.user_id = req.user.id;
 	bodyParam.status = 1;
 	bodyParam.created_on = new Date();
-	console.log("-------------------==================-------------",bodyParam)
 	service.createRow(modelName, bodyParam).then(function(response) {
-		// res.status(200).send(response);
-		console.log("-------------------==================-------------",response)
 		return res.status(200).send(response);
 	});
-	// console.log(i, "not in db")
+}
+
+export function blogPost(req, res) {
+	var modelName = "DiscussionBoardPost";
+	var bodyParam = {};
+	bodyParam.vendor_id = req.user.Vendor.id;
+	bodyParam.post_media_type = req.body.post_media_type;
+	bodyParam.post_message = req.body.post_message;
+	bodyParam.post_media_url = req.body.post_media_url;
+	bodyParam.status = 1;
+	bodyParam.created_on = new Date();
+	service.createRow(modelName, bodyParam).then(function(response) {
+		return res.status(200).send(response);
+	});
 }

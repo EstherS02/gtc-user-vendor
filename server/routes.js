@@ -65,7 +65,7 @@ export default function(app) {
   app.use('/gtc-talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/login', require('./hbs-routes/login'));
-  app.use('/user-profile', require('./hbs-routes/user-profile'));
+  app.use('/user', require('./hbs-routes/user-profile'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));
   app.use('/order-history', require('./hbs-routes/order-history'));
   app.use('/dashboard-vendor-connect', require('./hbs-routes/vendor-landing'));
