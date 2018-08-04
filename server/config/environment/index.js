@@ -37,6 +37,8 @@ var all = {
     paginationLimit: 10,
 
     wooCommercePerPageLimit: process.env.WOO_COMMERCE_PER_PAGE_LIMIT || 50,
+    aliExpressLoginId: process.env.ALI_EXPRESS_USER_ID || "chandrumail4u@gmail.com",
+    aliExpressLoginPassword: process.env.ALI_EXPRESS_USER_PASSWORD || "13229502",
 
     clientURL: process.env.CLIENT_BASE_URL,
 
