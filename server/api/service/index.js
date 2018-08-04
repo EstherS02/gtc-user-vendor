@@ -4,6 +4,8 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const model = require('../../sqldb/model-connect');
 const sequelize = require('sequelize');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 const _ = require('lodash');
 
 export function findRows(modelName, queryObj, offset, limit, field, order, includeArr) {
@@ -218,20 +220,29 @@ export function destroyRow(modelName, id) {
     });
 }
 
-export function upsert(modelName, data) {
+export function upsertRow(modelName, data) {
     return new Promise((resolve, reject) => {
-        console.log('data', data);
         model[modelName].upsert(data)
             .then(function(row) {
-                if (row) {
-                    resolve(row);
-                } else {
-                    resolve(null);
-                }
+                    resolve(row);   
             }).catch(function(error) {
                 reject(error);
             })
     })
+}
+
+
+export function geoLocationFetch(lat, lng) {
+  return new Promise((resolve, reject) => {
+    Sequelize_Instance.query(RawQueries.geoLocateDistance(lat, lng), {
+        model: model['Vendor']
+      }).then(geoLocationObj => {
+        resolve(JSON.parse(JSON.stringify(geoLocationObj)));
+      }).catch(function (error) {
+        console.log('Error:::', error);
+        reject(error);
+      });
+  });
 }
 
 export function getCategory(categoryQueryObj, productCountQueryParames) {
@@ -380,3 +391,37 @@ var queryObj = {};
                 }
             });
 }
+// Not use for limit getallfindrow query starts//
+export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
+    var result = {};
+    return new Promise((resolve, reject) => {
+        model[modelName].findAll({
+            include: includeArr,
+            where: queryObj,
+            order: [
+                [field, order]
+            ]
+        }).then(function(rows) {
+            var convertRowsJSON = [];
+            if (rows.length > 0) {
+                convertRowsJSON = JSON.parse(JSON.stringify(rows));
+                return model[modelName].count({
+                    where: queryObj
+                }).then(function(count) {
+                    result.count = count;
+                    result.rows = convertRowsJSON;
+                    return resolve(result);
+                }).catch(function(error) {
+                    return reject(error);
+                });
+            } else {
+                result.count = 0;
+                result.rows = convertRowsJSON;
+                return resolve(result);
+            }
+        }).catch(function(error) {
+            reject(error);
+        });
+    });
+}
+// Not use for limit getallfindrow query ends//

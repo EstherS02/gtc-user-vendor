@@ -1,3 +1,9 @@
+<style>
+	#addCompare {
+		cursor: pointer;
+	}
+</style>
+
 <script>
 
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
@@ -352,12 +358,12 @@ function compareProduct(e){
 										<hr style="margin-top: 3px; margin-bottom: 3px;" />
 										<div class="row">
 											<div class="col-md-4 col-6">
-												<a class="text_blue_color" onclick="compareProduct()" style="font-size: 12px;margin-bottom: 0px;">
-													<img src="../../img/Icons/icon-2-01.png" style="width: 12%;" alt="geo"> Add to compare
+												<a class="text_blue_color" onclick="compareProduct()" id="addCompare" style="font-size: 12px;margin-bottom: 0px;">
+													<img src="../../img/Icons/icon-2-01.png" style="width: 12%;"   alt="geo"> Add to compare
 												</a>
 											</div>
 											<div class="col-md-4 col-6 common_padding1">
-												<a class="text_blue_color" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
+												<a class="text_blue_color" href="javascript::" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
 													{{#if LoggedInUser.id}}
 
 													{{#if wishList}}

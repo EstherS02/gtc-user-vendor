@@ -3,9 +3,12 @@
 <script type="text/javascript">
 	var type = {{{ DisplayJSON this.type }}}
 
+	$(function () {
+		$("#expected_delivery_date").datepicker();
+	});
+
 	$(document).ready(function () {
 
-		$("#gtc-form-alert").hide();
 		$("#gtc-cancel-alert").hide();
 
 		$("#orderStatusChange").submit(function (e) {
@@ -46,6 +49,13 @@
                             } else { return false; }
                         },
 				minlength: 8
+			},
+			expected_delivery_date:{
+				required: function(){
+                            if($("select[name=order_status]").val() == 4){
+                            return true;
+                            } else { return false; }
+                        }
 			}
 		},
 		messages: {
@@ -56,7 +66,10 @@
 			tracking_url: {
 				required:"Please enter tracking url",
 				minlength:"Please enter valid url"
-			}
+			},
+			expected_delivery_date: {
+				required: "Please enter expected delivery date"
+			},
 			
 		}
 	});
@@ -332,12 +345,6 @@
 					</div>
 					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
 					<form id="orderStatusChange">
-						<div class="alert" id="gtc-form-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="form-message"></span>
-						</div>
 						<div class="row">
 					
                             <div class="col-md-3">
@@ -352,14 +359,29 @@
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status" id="inputGroupSelect02">
 											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
-											<option value="2">Confirmed Order</option>
-											<option value="3">Processing Order</option>
-											<option value="4">Dispatched Order</option>
-											<option value="5">Delivered Order</option>
-											<option value="6">Returned Order</option>
-											<option value="7">Cancelled Order</option>
-											<option value="8">Failed Order</option>
+											{{#each orderStatus}}
+											{{#ifCond this ">=" ../order.order_status}}
+												<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+												{{/ifCond}}
+											{{/each}}
 										</select>
+									</div>
+								</div>
+							</div>
+                        </div>
+						<div class="row">
+					
+                            <div class="col-md-3">
+								<p>
+									<b>Expected Delivery Date:
+										<span class="text-danger"></span>
+									</b>
+								</p>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
 									</div>
 								</div>
 							</div>
@@ -392,7 +414,7 @@
 						<div class="row">
 								<div class="col-md-3">
 									<p>
-										<b>Enter Tracking Url:</b>
+										<b>Enter Tracking Id:</b>
 									</p>
 								</div>
 								<div class="col-md-5">
@@ -532,7 +554,7 @@
 								</p>
 							</div>
 							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{order.delivered_on}}</p>
+								<p class="shop_subtotal float-right">{{formatTime order.delivered_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.CANCELLEDORDER}}
