@@ -96,7 +96,7 @@ export function login(req, res) {
 		}
 	}, function(err, response, body) {
 		if (response.statusCode != 200) {
-			res.status(401).send("Invalid login");
+			res.status(401).send("Username and password do not match.");
 			return;
 		}
 		var email = req.body.email;
