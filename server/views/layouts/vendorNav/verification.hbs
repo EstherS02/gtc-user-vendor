@@ -159,7 +159,7 @@
                   {{#if verification.vendor_verified_status}} {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
                   <span class="id-verified">
                     <i class="fas fa-check-circle"></i>
-                  </span>Your Document verification request is approved {{else}}
+                  </span><b>Your Document verification request is approved</b> {{else}}
                   <span class="exclamation">
                     <i class="fas fa-exclamation-circle"></i>
                   </span>You still have incomplete items to address below {{/ifCond}} {{else}}
@@ -194,7 +194,7 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status
                     }}
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
@@ -255,7 +255,7 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status
                     }}
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
@@ -309,7 +309,7 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status
+                    <b>Your Id verification request is approved </b>{{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status
                     }}
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
@@ -360,7 +360,7 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status
                     }}
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
