@@ -336,10 +336,6 @@ img {
   display: flex;
 }
 
-.text-muted {
-  color: #888888;
-}
-
 /*.label {
   font-weight: 600;
   padding: 3px 8px;
@@ -400,10 +396,6 @@ img {
 
 .collapse.show {
   display: block !important;
-}
-
-.collapse {
-  display: none !important;
 }
 
 .topbar {
@@ -773,10 +765,6 @@ p.p1 {
 
 .m-t-n-marketplace-category {
   margin-top: -48px;
-}
-
-.no-padding {
-  padding: 0 !important;
 }
 
 .common_bottom {
