@@ -67,6 +67,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'about',
             allowNull: true
         },
+        latitude: {
+			type: DataTypes.DECIMAL,
+			field: 'latitude',
+			allowNull: true
+        },
+        longitude: {
+			type: DataTypes.DECIMAL,
+			field: 'longitude',
+			allowNull: true
+		},
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

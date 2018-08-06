@@ -65,5 +65,6 @@ module.exports = {
 	"vendor-shipping-locations": "VendorShippingLocation",
 	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",
-	"wish-list": "WishList"
+	"wish-list": "WishList",
+	"order-items-overview": "OrderItemsOverview"
 }

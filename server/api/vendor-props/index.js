@@ -7,5 +7,7 @@ var auth = require('../../auth/auth.service');
 var controller = require('./vendor-props.controller');
 
 router.post('/blog-like', auth.isAuthenticated(), controller.blogLike);
+router.post('/blog-comment', auth.isAuthenticated(), controller.blogComment);
+router.post('/blog-post', auth.isAuthenticated(), controller.blogPost)
 
 module.exports = router;

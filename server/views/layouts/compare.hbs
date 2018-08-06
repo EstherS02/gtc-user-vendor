@@ -6,27 +6,28 @@
         cartInfo.product_quantity = $('#product-quantity').val();
 
         $.ajax({
-            type: "POST",
-            url: "/api/cart/add-cart/" + e,
-            data: cartInfo,
-            success: function(res) {
+                type: "POST",
+                url: "/api/cart/add-cart/" + e,
+                data: cartInfo,
+                success: function(res) {
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    if (res && res.message === "SUCCESS") {
+                     outputPop(res.message_details);
+                     console.log(res)
+                     location.reload(true);
+                 }
+             },
+             error: function(error) {
                 $('#gtc-add-to-cart').prop('disabled', false);
-                if (res && res.message === "SUCCESS") {
-                 outputPop(res.message_details);
-                 console.log(res)
-                 location.reload(true);
-             }
-         },
-         error: function(error) {
-            $('#gtc-add-to-cart').prop('disabled', false);
-            if (error) {
-                if (error.status === 401)
-                    return location.href = "/login";
-                outputErrorPop(error);
-                location.reload(true);
+                if (error) {
+                    if (error.status === 401)
+                        return location.href = "/login";
+                    
+                    outputErrorPop(error);
+                    location.reload(true);
+                }
             }
-        }
-    });
+        });
     }
 
     function removeFromCompare(argument) {
@@ -308,7 +309,6 @@
                                 </div>
                             </div>
                             {{/each}}
-
                         </div>
                       </div>
                     </div>

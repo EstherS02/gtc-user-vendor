@@ -77,21 +77,21 @@
 								{{#if LoggedInUser.id}}
 											{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
 												{{#if VendorDetail.VendorFollowers}}
-												<a id="followVendor"><img src="../img/unfollow.png" alt="Follow"  /></a>
+												<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/unfollow.png" alt="Follow"  /></a>
 												{{else}}
-												<a id="followVendor"><img src="../img/follow.png" alt="Follow" /></a>
+												<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/follow.png" alt="Follow" /></a>
 												{{/if}}
 											{{/ifCond}}
 										{{else}}
 												{{!-- {{#if VendorDetail.VendorFollowers}} --}}
-												<a href="/login"><img src="../img/follow.png" alt="Follow"  /></a>
+												<a href="/login" class="d-inline-block"><img src="../img/follow.png" alt="Follow"  /></a>
 												{{!-- {{else}}
 												<a  href="" id="followVendor"><img src="../img/follow.png" alt=" Follow"  />--}}</a>
 												{{!-- {{/if}} --}}
 										{{/if}}
 							</div>
 							<div class="vp-navmenu d-inline-block">
-								<ul class="navbar-nav vp-nav">
+								<ul class="navbar-nav vp-nav d-inline-flex">
 								{{!-- WHOLESALER --}}
 									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.WHOLESALER}}
 
@@ -217,7 +217,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="col-md-4" style="margin: auto;">
+						<div class="col-md-4 p-n-r" style="margin: auto;">
 							<form id="vendorSearchForm" class="search-form-home">
 								<div class="input-group search-input-group">
 									<input type="search" class="form-control form-control-sm" id="inputVSearchText" name="keyword" placeholder="Search {{this.VendorDetail.vendor_name}}" aria-label="...">
