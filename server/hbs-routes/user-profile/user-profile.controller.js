@@ -134,7 +134,22 @@ export function userProfile(req, res) {
 }
 
 export function forgotPassword(req,res){
-			res.render('users/forgot-password', {
+
+	res.render('users/forgot-password', {
 				title: "Global Trade Connect",
 			})
+}
+
+export function resetPassword(req,res){
+
+	console.log(req.query);
+
+	var email_id= req.query.email;
+	var forgot_password_token = req.query.forgot_password_token;
+	
+	res.render('users/password-reset', {
+		title: "Global Trade Connect",
+		email_id: email_id,
+		forgot_password_token: forgot_password_token
+	})
 }
