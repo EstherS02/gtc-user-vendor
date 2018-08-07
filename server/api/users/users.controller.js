@@ -352,7 +352,7 @@ export function resetPassword(req, res) {
     }
         service.updateRow(UserModel, bodyParams, userId).then(function (response) {
             if (response) {
-                res.status(200).send("Password Updated successfully. Please login with the new password.")
+                res.status(200).send("Your password has been updated successfully. Please login with the new password.")
                 return;
             } else {
                 res.status(304).send("Password Unable to update")
@@ -522,7 +522,7 @@ export function forgotPassword(req, res) {
                                             subject: subject,
                                             html: body
                                         });
-                                        return res.status(201).send("Password reset link email has been sent to your email address.");
+                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
                                     } else {
                                         return res.status(404).send("Unable to reset password. Please try later.");
                                     }
