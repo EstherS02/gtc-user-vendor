@@ -10,6 +10,8 @@ const roles = require('../../config/roles');
 var router = express.Router();
 
 router.get('/:id', controller.productView);
+router.get('/:id/reviews', controller.productReviews);
+router.get('/:id/rating-counts', controller.productRatingsCount);
 router.post('/discount', controller.discount);
 router.post('/import-woocommerce', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importWoocommerce);
 router.post('/import-aliexpress', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAliExpress);

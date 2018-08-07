@@ -32,7 +32,47 @@ export function productView(req, res) {
 		.catch((error) => {
 			console.log("Error:::", error);
 			return res.status(500).send("Internal server error.");
+		});
+}
+
+export function productReviews(req, res) {
+	var queryObj = {};
+	var productID = req.params.id;
+	var offset, limit, field, order;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "created_on";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "DESC";
+	delete req.query.order;
+
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['product_id'] = productID;
+
+	productService.productReviews(queryObj, offset, limit, field, order)
+		.then((productReviews) => {
+			return res.status(200).send(productReviews);
 		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		});
+}
+
+export function productRatingsCount(req, res) {
+	var productID = req.params.id;
+
+	productService.productRatingsCount(productID)
+		.then((productRatings) => {
+			return res.status(200).send(productRatings);
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		});
 }
 
 export function featureMany(req, res) {
