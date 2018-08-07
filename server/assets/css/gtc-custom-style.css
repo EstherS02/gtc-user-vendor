@@ -1134,3 +1134,60 @@ button.update-btn1{
     font-family: 'heebo', sans-serif;
     margin-top: 2px;
   }
+
+/* vendor profile picture crop UserModel */
+.crop_edit_icon {
+  position: absolute;
+  margin-top: 100px;
+  font-size: 13px;
+  text-align: center;
+  right: 50%;
+}
+
+.edit_picture {
+  display: block;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.edit-icon-align {
+  right: 0px;
+  position: absolute;
+  background-color: #dbdadc;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.popover{
+  max-width: 100%; 
+}
+
+/* profile picture edit*/
+.profile_img_edit {
+  position: relative;
+}
+
+.profileediticon {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  padding: 0px 2px;
+  background-color: #dbdadc;
+  color: #383434;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.profilepicedit {
+  position: absolute;
+  display: block;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.icon_padding {
+  padding-right: 5px;
+}
