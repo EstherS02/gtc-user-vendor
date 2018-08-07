@@ -16,13 +16,6 @@ export function index(req, res) {
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 	console.log("marketPlaceUrl", marketplaceURl);
 
-	
-	if(layout_type!='' || layout_type!="undefined")
-	{
-		layout_type="grid"
-	}
-	var layout_type = get(fullUrl);
-	console.log("layout_type::From Home controller", layout_type);
 
 	var selectedLocation = 0;
 	var selectedCategory = 0;
@@ -60,7 +53,8 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "asc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
-	layout=req.query.layout ? req.query.layout : layout_type;
+	layout=req.query.layout ? req.query.layout : 'grid';
+	queryURI['layout'] = layout;
 	queryPaginationObj['layout'] = layout;
 	delete req.query.layout;
 
@@ -378,44 +372,10 @@ export function index(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				marketplaceURl: marketplaceURl,
 				cartheader: results.cartCounts,
-				layout_type: layout_type
+				layout_type: layout
 			});
 		} else {
 			res.render('search', error);
 		}
 	});
-}
-
-function get(fullUrl) {
-
-	var params = [];
-	var pair = null,
-		data = [],
-		searchName = "layout";
-	var searchField = fullUrl.split("?")[1];
-	console.log(searchField);
-
-	if (searchField.indexOf("&") > -1) {
-		params = searchField.split("&");
-		params.forEach(function (d) {
-			pair = d.split('=');
-			data.push({ key: pair[0], value: pair[1] });
-		});
-
-		var val = data.find(function (item) {
-			return item.key == searchName
-		});
-		return val.value;
-	} else {
-		params.push(searchField)
-		params.forEach(function (d) {
-			pair = d.split('=');
-			data.push({ key: pair[0], value: pair[1] });
-		});
-
-		var val = data.find(function (item) {
-			return item.key == searchName
-		});
-		return val.value;
-	}
 }

@@ -4,9 +4,10 @@ import Handlebars from 'handlebars';
 
 // {{#pagination productResults.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize queryPaginationObj.layout}}
 
-Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize, maxSize,layout,options ) {
-	var startPage, endPage, context,layout;
-	console.log("pagination",layout);
+Handlebars.registerHelper('pagination', function (collectionSize, page, pageSize, maxSize, options) {
+	var startPage, endPage, context, layout;
+
+	console.log("%%%%%%%%%", collectionSize,page,pageSize,maxSize,options);
 
 	var pageCount = Math.ceil(parseInt(collectionSize) / parseInt(pageSize));
 
@@ -23,8 +24,10 @@ Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize,
 		startPage = 1;
 	}
 
-	if(layout!=''){
-		layout=layout;
+	if (layout != '') {
+		layout = layout;
+	} else {
+		layout = "grid";
 	}
 
 	if (endPage > pageCount) {
@@ -40,7 +43,7 @@ Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize,
 		startFromFirstPage: false,
 		pages: [],
 		endAtLastPage: false,
-		layout:layout,
+		layout: layout,
 	};
 	if (startPage === 1) {
 		context.startFromFirstPage = true;
