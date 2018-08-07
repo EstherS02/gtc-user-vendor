@@ -1,11 +1,83 @@
 'use strict';
 
 var async = require("async");
+const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
+
+export function productView(productID) {
+	return new Promise((resolve, reject) => {
+		model['Product'].findOne({
+			where: {
+				id: productID,
+				status: status['ACTIVE']
+			},
+			include: [{
+				model: model['Marketplace'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'description', 'status']
+			}, {
+				model: model['MarketplaceType'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'status'],
+				required: false
+			}, {
+				model: model['Category'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'description', 'status']
+			}, {
+				model: model['SubCategory'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'status']
+			}, {
+				model: model['ProductMedia'],
+				where: {
+					status: status['ACTIVE']
+				},
+				limit: 4,
+				offset: 0,
+				attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status'],
+				required: false
+			}, {
+				model: model['Review'],
+				where: {
+					status: status['ACTIVE']
+				},
+				order: [
+					['created_on', 'DESC']
+				],
+				attributes: ['id', 'product_id', 'user_id', 'rating', 'title', 'comment', 'status', 'created_on'],
+				required: false,
+				include: [{
+					model: model['User'],
+					where: {
+						status: status['ACTIVE']
+					},
+					attributes: ['id', 'first_name', 'user_pic_url', 'status']
+				}]
+			}]
+		}).then((product) => {
+			if (product) {
+				resolve(product.toJSON());
+			} else {
+				resolve(null);
+			}
+		}).catch((error) => {
+			reject(error);
+		});
+	});
+}
 
 export function importAliExpressProducts(product, req) {
 	var productQueryObj = {};
