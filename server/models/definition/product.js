@@ -141,6 +141,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'moq',
             allowNull: true
         },
+        exchanging_product: {
+            type: DataTypes.STRING(255),
+            field: 'exchanging_product',
+            allowNull: true
+        },
+        exchanging_product_quantity: {
+            type: DataTypes.INTEGER,
+            field: 'exchanging_product_quantity',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
