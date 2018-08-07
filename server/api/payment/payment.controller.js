@@ -31,6 +31,8 @@ export function makePayment(req, res) {
 
     var createdOrders;
 
+    var orderIdStore = []; 
+
     processCheckout(req)
         .then(checkoutObjResult => {
             checkoutObj = checkoutObjResult;
@@ -90,6 +92,7 @@ export function makePayment(req, res) {
             let statusPromises = [];
             for (var i = 0; i < createdOrders.length; i++) {
                 createdOrders[i].order.order_status = orderStatus['NEWORDER'];
+                orderIdStore.push(createdOrders[i].order.id);
                 statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
             }
             return Promise.all(statusPromises);
@@ -99,112 +102,15 @@ export function makePayment(req, res) {
             for (let j = 0; j < allCartItems.length; j++) {
                 clearCart.push(allCartItems[j].id)
             }
-
             service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
                 if (!(_.isNull(clearedCartRow))) {
-
-                    var user_id = req.user.id;
-                    var item_id;
-                    var includeArr = populate.populateData("State,Country");
-                    var itemArr = populate.populateData("Product");
-
-                    service.findIdRow('User', user_id, [])
-                        .then(function (user) {
-
-                            var queryObjEmailTemplate = {};
-                            var emailTemplateModel = "EmailTemplate";
-                            queryObjEmailTemplate['name'] = config.email.templates.userOrderConformation;
-
-                            service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-                                .then(function (response) {
-
-                                    if (response) {
-                                        var email = user["email"];
-                                        var subject = response.subject;
-                                        var body;
-
-                                        console.log("------------------------------",createdOrders);
-
-                                        createdOrders.forEach(function (element) {
-
-                                            var shipping_address_id = element.order.shipping_address_id;
-                                            var order_id = element.order.id;
-                                            var total_price = element.order.total_price;
-
-                                            service.findIdRow('Address', shipping_address_id, includeArr)
-                                                .then(function (address) {
-
-                                                    console.log("-------------11------------------", order_id);
-
-
-                                                     body = response.body.replace('%ORDER_NUMBER%', order_id);
-                                                    body = body.replace('%COMPANY_NAME%', address.company_name);
-                                                    body = body.replace('%ADDRESS_LINE_1%', address.address_line1);
-                                                    body = body.replace('%ADDRESS_LINE_2%', address.address_line2);
-                                                    body = body.replace('%CITY%', address.city);
-                                                    body = body.replace('%STATE%', address.State.name);
-                                                    body = body.replace('%COUNTRY%', address.Country.name);
-                                                    body = body.replace('%ORDER_TOTAL%', total_price);
-
-                                                    //  }).then(function(){
-
-                                                    var items = [];
-                                                    var orderItems = element.items;
-
-                                                    orderItems.forEach(function (itemElement) {
-                                                        item_id = itemElement.id;
-
-                                                        console.log("---------------22----------------", order_id);
-
-                                                        service.findIdRow('OrderItem', item_id, itemArr)
-                                                            .then(function (item) {
-
-                                                                var obj = {
-                                                                    item_name: item.Product.product_name,
-                                                                    quantity: item.quantity,
-                                                                    item_price: item.Product.price
-                                                                }
-                                                                items.push(obj);
-                                                            }).then(function () {
-
-                                                                console.log("-----------33--------------------", order_id);
-
-                                                                console.log("items", items)
-                                                                var template = Handlebars.compile(body);
-                                                                var data = {
-                                                                    items: items
-                                                                };
-                                                                var result = template(data);
-                                                                sendEmail({
-                                                                    to: email,
-                                                                    subject: subject,
-                                                                    html: result
-                                                                });
-                                                            })
-                                                            .catch(function (error) {
-                                                                console.log("error");
-                                                            })
-                                                    })
-
-                                                }).catch(function (error) {
-                                                    console.log('Error :::', error);
-                                                })
-                                        });
-                                    } else {
-                                        console.log("Unable to sent email")
-                                    }
-                                }).catch(function (error) {
-                                    console.log('Error :::', error);
-                                });
-                        }).catch(function (error) {
-                            console.log('Error :::', error);
-                        })
-
                     return res.status(200).send({
                         createdOrders: createdOrders
                     });
                 } else return res.status(500).send(err);
             });
+            console.log("==================-orderIds-==============",orderIdStore)
+            sendOrderMail(orderIdStore);
         }).catch(err => {
             console.log("err3", err);
             if (createdOrders && createdOrders.length > 0) {
@@ -588,4 +494,10 @@ export function deleteCard(req, res) {
         }).catch(err => {
             return res.status(500).send(err);
         });
+}
+
+function sendOrderMail(orderIdStore){
+
+console.log(orderIdStore);
+// var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order)
 }
