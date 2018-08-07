@@ -65,6 +65,7 @@ function init(sequelize) {
     model.Talk = sequelize.import('./definition/talk.js');
     model.TalkSetting = sequelize.import('./definition/talk-setting.js');
     model.TalkThread = sequelize.import('./definition/talk-thread.js');
+    model.TermsAndCond = sequelize.import('./definition/terms-and-cond.js');
     model.Tax = sequelize.import('./definition/tax.js');
     model.Ticket = sequelize.import('./definition/ticket.js');
     model.TicketThread = sequelize.import('./definition/ticket-thread.js');
@@ -81,6 +82,7 @@ function init(sequelize) {
     model.VendorUserProduct = sequelize.import('./definition/vendor-user-product.js');
     model.VendorVerification = sequelize.import('./definition/vendor-verification.js');
     model.WishList = sequelize.import('./definition/wish-list.js');
+    model.OrderItemsOverview = sequelize.import('./definition/order-items-overview.js');
 
     // All models are initialized. Now connect them with relations.
     require('./definition/address.js').initRelations();
@@ -138,6 +140,7 @@ function init(sequelize) {
     require('./definition/talk-setting.js').initRelations();
     require('./definition/talk-thread.js').initRelations();
     require('./definition/tax.js').initRelations();
+    require('./definition/terms-and-cond.js').initRelations();
     require('./definition/ticket.js').initRelations();
     require('./definition/ticket-thread.js').initRelations();
     require('./definition/timezone.js').initRelations();
@@ -153,6 +156,7 @@ function init(sequelize) {
     require('./definition/vendor-user-product.js').initRelations();
     require('./definition/vendor-verification.js').initRelations();
     require('./definition/wish-list.js').initRelations();
+    require('./definition/order-items-overview.js').initRelations();
     return model;
 }
 

@@ -408,9 +408,20 @@ Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     let name;
     arrayEle.forEach(function(element) {
         if(element.id == id){
-        console.log("helper",element.attr_name)
             name= element.attr_name;    
         }
     });
+    return name;
+});
+Handlebars.registerHelper("LikeUnlike",function(likes, user){
+ let name;
+    likes.forEach(function(element) {
+        if(element.user_id == user.id){
+            name= 'Unlike';    
+        }
+    });
+    if(name != 'Unlike'){
+        name="Like";
+    }
     return name;
 });

@@ -7,6 +7,5 @@ module.exports = {
 	"Turtle Express": 6,
 	"Speedy Express": 7,
     "Sameday Delivery Service": 8,
-    "Hurrier":9,
-    "A-Way Express Courier":10
+    "A-Way Express Courier":9
 };

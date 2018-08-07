@@ -188,7 +188,7 @@
 														<input type="checkbox">
 													</th>
 													<th scope="col">Invoice#</th>
-													<th scope="col">purchase order id</th>
+													<th style="display:none" scope="col">purchase order id</th>
 													{{!-- <th scope="col">Vendor</th>
 													<th scope="col">Type</th> --}}
 													<th scope="col">Date</th>
@@ -203,8 +203,8 @@
 												{{#each OrderItems}}
 												<tr>
 													<td><input type="checkbox" value="{{this.id}}"></td>
-													<td><a href="/order-history/{{this.id}}">{{this.invoice_id}}</a></td>
-													<td>{{this.purchase_order_id}}</td>
+													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
+													<td style="display:none">{{this.purchase_order_id}}</td>
 				  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
 				  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
 				  				</td> --}}

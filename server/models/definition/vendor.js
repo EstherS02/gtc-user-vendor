@@ -67,6 +67,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'about',
             allowNull: true
         },
+        latitude: {
+			type: DataTypes.DECIMAL,
+			field: 'latitude',
+			allowNull: true
+        },
+        longitude: {
+			type: DataTypes.DECIMAL,
+			field: 'longitude',
+			allowNull: true
+		},
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -190,6 +200,7 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Country = model.Country;
     const Currency = model.Currency;
+    const TermsAndCond = model.TermsAndCond;
     const Timezone = model.Timezone;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
@@ -241,6 +252,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(VendorNotificationSetting, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(TermsAndCond, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

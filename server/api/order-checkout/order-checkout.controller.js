@@ -9,23 +9,24 @@ const discount = require('../../config/discount');
 const _ = require('lodash');
 const moment = require('moment');
 const ADDRESS_TYPE = require('../../config/address');
+const sendEmail = require('../../agenda/send-email');
 
-export function addCustomerInformation(req, res){
+export function addCustomerInformation(req, res) {
 
     console.log(req.body)
     var billing_address_id;
     var shipping_address_id;
 
     processBillingAddress(req)
-    .then(billing_address_id_result => {
-        billing_address_id = billing_address_id_result;
-        return processShippingAddress(req, billing_address_id);
-    }).then(shipping_address_id_result => {
-        shipping_address_id = shipping_address_id_result;
-        return res.status(200).send({billing_address_id: billing_address_id, shipping_address_id: shipping_address_id});
-    }).catch(err => {
-        return res.status(500).send(err);
-    });
+        .then(billing_address_id_result => {
+            billing_address_id = billing_address_id_result;
+            return processShippingAddress(req, billing_address_id);
+        }).then(shipping_address_id_result => {
+            shipping_address_id = shipping_address_id_result;
+            return res.status(200).send({ billing_address_id: billing_address_id, shipping_address_id: shipping_address_id });
+        }).catch(err => {
+            return res.status(500).send(err);
+        });
 }
 
 function processBillingAddress(req) {
@@ -37,7 +38,7 @@ function processBillingAddress(req) {
         } else {
             validateBillingAddress(req);
             let errors = req.validationErrors();
-            if(errors) {
+            if (errors) {
                 reject(errors);
             } else {
                 var billing_address = {
@@ -74,7 +75,7 @@ function processShippingAddress(req, billing_address_id) {
             } else {
                 validateShippingAddress(req);
                 let errors = req.validationErrors();
-                if(errors) {
+                if (errors) {
                     reject(errors);
                 } else {
                     var shipping_address = {
@@ -104,7 +105,7 @@ function processShippingAddress(req, billing_address_id) {
     });
 }
 
-function validateBillingAddress(req){
+function validateBillingAddress(req) {
     req.checkBody('billing_first_name', 'Billing Address First Name is Required').notEmpty();
     req.checkBody('billing_last_name', 'Billing Address Last Name is Required').notEmpty();
     req.checkBody('billing_addressline1', 'Billing Address Line 1 is Required').notEmpty();
@@ -113,12 +114,12 @@ function validateBillingAddress(req){
     req.checkBody('billing_state', 'Billing Address State is Required').notEmpty();
     req.checkBody('billing_postal', 'Billing Address Postal code is Required').notEmpty();
     req.checkBody('billing_phone', 'Billing Address Phone Number is Required').notEmpty();
-    
-    
+
+
     return;
 }
 
-function validateShippingAddress(req){
+function validateShippingAddress(req) {
     req.checkBody('shipping_first_name', 'Shipping Address First Name is Required').notEmpty();
     req.checkBody('shipping_last_name', 'Shipping Address Last Name is Required').notEmpty();
     req.checkBody('shipping_addressline1', 'Shipping Address Line 1 is Required').notEmpty();

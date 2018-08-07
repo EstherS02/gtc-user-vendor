@@ -335,6 +335,21 @@ export function create(req, res) {
 		});
 }
 
+export function upsert(req, res) {
+	var bodyParams = req.body;
+
+	bodyParams["last_updated_on"] = new Date();
+
+	service.upsertRow(req.endpoint, bodyParams)
+		.then(function (result) {
+				return res.status(201).send("Updated Successfully");	
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}
+
 export function update(req, res) {
 	var paramsID = req.params.id;
 	var bodyParams = req.body;
@@ -467,7 +482,6 @@ exports.upload = function (req, res) {
 		}
 	});
 };
-
 function plainTextResponse(response) {
 	return response.get({
 		plain: true

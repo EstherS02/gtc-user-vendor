@@ -25,7 +25,7 @@ export function vendorDiscussion(req, res) {
 	var discussModelComment = "DiscussionBoardPostComment";
 	var discussModelLike = "DiscussionBoardPostLike";
 	var discussModel = "DiscussionBoardPost";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryPaginationObj = {};
 	var queryObj = {};
 	var queryURI = {};
@@ -53,7 +53,25 @@ export function vendorDiscussion(req, res) {
 
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
-
+	var includeArr = [{
+		model:model['DiscussionBoardPostLike'],
+		// attributes: [[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']],
+		where:{
+			status:status['ACTIVE']
+		},
+		// group: ['DiscussionBoardPostLike.discussion_board_post_id'],
+		required:false
+	},{
+		model:model['DiscussionBoardPostComment'],
+		include:[{
+			model: model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				},
+		}]
+	},{
+		model:model['Vendor']
+	}];
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
@@ -64,17 +82,17 @@ export function vendorDiscussion(req, res) {
 			});
 		},
 		discussion: function(callback) {
-			service.findRows(discussModel, queryObj, offset, limit, field, order)
+			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
 				.then(function(response) {
+					console.log("----------======================------------------",JSON.stringify(response.rows))
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		VendorDetail: function(callback) {
-var vendorIncludeArr = [{
+			var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
@@ -96,7 +114,8 @@ var vendorIncludeArr = [{
 			}, {
 				model: model['VendorRating'],
 				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
 				],
 				group: ['VendorRating.vendor_id'],
 				required: false,
@@ -133,29 +152,30 @@ var vendorIncludeArr = [{
 		},
 	}, function(err, results) {
 		// console.log(results.discussion, queryObj)
-		if(results.discussion.count){
-			var maxSize = results.discussion.count/limit;
-			if(results.discussion.count%limit)
+		
+		if (!err) {
+			if (results.discussion) {
+			var maxSize = results.discussion.count / limit;
+			if (results.discussion.count % limit)
 				maxSize++;
 			queryPaginationObj['maxSize'] = maxSize;
 		}
-		
-		if (!err) {
+
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
-				discussionBoard : results.discussion,
+				discussionBoard: results.discussion,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				queryPaginationObj: queryPaginationObj,
-				VendorDetail : results.VendorDetail,
+				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
-				cartheader:results.cartCounts,
-				queryURI:queryURI,
+				cartheader: results.cartCounts,
+				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				// categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'discussion-board',
+				selectedPage: 'discussion-board',
 				Plan: Plan,
 			});
 		} else {
