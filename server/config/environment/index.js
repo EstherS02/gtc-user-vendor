@@ -63,7 +63,8 @@ var all = {
             orderMail: 'ORDER-MAIL',
             itemCancel:'ITEM-CANCEL-BY-VENDOR-MAIL',
             userOrderConformation: 'USER-ORDER-CONFORMATION-MAIL',
-            vendorOrderConformation: 'VENDOR-ORDER-CONFORMATION-MAIL'
+            vendorOrderConformation: 'VENDOR-ORDER-CONFORMATION-MAIL',
+            passwordReset: 'PASSWORD-RESET'
 
         }
     },

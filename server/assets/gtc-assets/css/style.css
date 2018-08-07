@@ -146,24 +146,15 @@ select {
 	border: 2px solid #f9a025;
 	border-bottom: none;
 }
-.brand-logo img {
-	padding: 10px;
-	width: 170px;
-	height: 76px
-}
 .main-nav {
 	padding: 0 5px;
 	width: 100%;
 }
-.main-nav li {
-	/*padding: 5px 2px;*/
-}
 .main-nav .nav-link {
 	font-family: 'Oswald', sans-serif;
 	text-shadow: none;
-	/*font-size: 13px;*/
 	font-weight: 400;
-	padding: 12px .35rem !important;
+	padding: 9px .35rem !important;
 	color: #fff;
 }
 .navbar-dark .main-nav .nav-link {
@@ -213,7 +204,8 @@ ul.top-menu-list li {
 }
 ul.top-menu-list li a {
 	display: block;
-	padding: 10px 5px;
+    text-align: center;
+	padding: 10px 0px;
 	text-decoration: none !important;
 }
 ul.top-menu-list li a svg {
@@ -311,11 +303,6 @@ a:hover {
 	cursor:pointer;
 	overflow: hidden;
 	outline:none;
-}
-.home-banner {
-	background: url(../img/signup-hero-home.jpg);
-	background-repeat: no-repeat;
-	background-size: 56% auto;
 }
 .home-banner-right h1 {
 	font-family: 'Oswald', sans-serif;
@@ -419,6 +406,9 @@ ul.breadcrumb li+li:before {
 }
 .nav-menu {
 	padding: 0;
+}
+.navbar-dark .navbar-toggler {
+    border: 0;
 }
 .search-right-result {
 	background: #fff;
@@ -590,6 +580,7 @@ ul.footer-social-links li a img {
 }
 .dropdown-menu-list ul li a {
 	font-size: 13px;
+    text-align: left;
 	color: #575757;
 	padding: 2px 15px;
 }
@@ -740,9 +731,9 @@ ul.footer-social-links li a img {
 .cart-list p.subscription-cart-txt {
 	color: #c76181;
 }
-#topSearchForm {
+.search-form-home {
 	font-weight: lighter;
-	font-size: 13px;
+	font-size: 0.813em;
 	text-shadow: none;
 	line-height: 1.6;
 }
@@ -780,6 +771,10 @@ ul.footer-social-links li a img {
 	height: 62px;
 	background: #e7f5f8;
 }
+.vp-menu nav {
+	background: #e7f5f8;
+	z-index: 999;
+}
 .vendor-logo {
 	margin-top: -112px;
 	background: #fff;
@@ -794,7 +789,7 @@ ul.footer-social-links li a img {
 	max-height: 170px;
 }
 ul.vp-nav {
-	padding: 0 10px;
+	/*padding: 0 10px;*/
 	width: 100%;
 }
 .vp-nav .nav-link {
@@ -824,6 +819,9 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
 }
 .vp-title {
 	margin-top: -53px;
+	max-height: 53px;
+	min-height: 53px;
+    overflow: hidden;
 }
 .vp-title h2 {
 	margin-left: 188px;
@@ -1210,7 +1208,7 @@ label {
 .right-header-sm {
 	margin-bottom: 5px;
 	font-size: 0.813em;
-	padding: 0 10px;
+	/*padding: 0 10px;*/
 }
 .right-header-xs {
 	margin-bottom: 5px;
@@ -1225,6 +1223,9 @@ ul.right-list-view {
 	font-size: 0.688em;
 	margin: 0;
 	padding: 0 10px;
+}
+ul.right-list-view li {
+	
 }
 ul.right-list-view li a {
 	color: #3f3f3f;
@@ -1386,7 +1387,6 @@ ul.inner-list-view li a {
 	color: #3e7bba;
 	text-shadow: none;
 }
-
 /* sumithra */
 /*p.com_product_desc{
 //white-space: nowrap;

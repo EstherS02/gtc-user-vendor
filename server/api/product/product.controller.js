@@ -18,6 +18,23 @@ const marketplaceType = require('../../config/marketplace_type.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 
+export function productView(req, res) {
+	var productID = req.params.id;
+
+	productService.productView(productID)
+		.then((product) => {
+			if (product) {
+				return res.status(200).send(product);
+			} else {
+				return res.status(404).send("Product not found.");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		})
+}
+
 export function featureMany(req, res) {
 	const ids = req.body.ids;
 	console.log("requestedIds", ids.length);

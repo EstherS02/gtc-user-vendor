@@ -1,15 +1,12 @@
 .text-primary {
 	color: #c28005 !important;
 }
-.text-right {
-	text-align: right !important;
-}
 .text-lighter {
 	font-weight: lighter !important;
 }
-.text-muted {
+/*.text-muted {
 	color: #737373;
-}
+}*/
 .text-light-muted {
 	color: #949494;
 }
@@ -23,15 +20,15 @@
 	background: #638ac5;
 	color: #fff;
 }
-.bg-wholesale {
+.bg-wholesale, .bg1 {
 	background: #d78636;
 	color: #fff;
 }
-.bg-service {
+.bg-service, .bg3 {
 	background: #55b82e;
 	color: #FFFFFF;
 }
-.bg-lifestyle {
+.bg-lifestyle, .bg4 {
 	background: #cb2f2a;
 	color: #FFFFFF;
 }
@@ -46,7 +43,7 @@
 .bg-transparent {
 	background: transparent;
 }
-.bg-shop {
+.bg-shop, .bg2 {
 	background: #0f478c;
 	color: #fff;
 }
@@ -764,4 +761,11 @@ div.product-right-col h2 {
 }
 .input-border {
     border: 2px solid #f3943d !important;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }
