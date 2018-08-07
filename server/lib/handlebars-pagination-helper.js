@@ -2,8 +2,11 @@
 
 import Handlebars from 'handlebars';
 
-Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize, maxSize, options) {
-	var startPage, endPage, context;
+// {{#pagination productResults.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize queryPaginationObj.layout}}
+
+Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize, maxSize,layout,options ) {
+	var startPage, endPage, context,layout;
+	console.log("pagination",layout);
 
 	var pageCount = Math.ceil(parseInt(collectionSize) / parseInt(pageSize));
 
@@ -20,6 +23,10 @@ Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize,
 		startPage = 1;
 	}
 
+	if(layout!=''){
+		layout=layout;
+	}
+
 	if (endPage > pageCount) {
 		endPage = pageCount;
 		if (endPage - parseInt(maxSize) + 1 > 0) {
@@ -33,6 +40,7 @@ Handlebars.registerHelper('pagination', function(collectionSize, page, pageSize,
 		startFromFirstPage: false,
 		pages: [],
 		endAtLastPage: false,
+		layout:layout,
 	};
 	if (startPage === 1) {
 		context.startFromFirstPage = true;

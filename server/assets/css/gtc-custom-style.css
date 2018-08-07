@@ -1539,3 +1539,32 @@ button.update-btn1{
     font-family: 'heebo', sans-serif;
     margin-top: 2px;
   }
+
+
+
+  /* list and grid view */
+  .item.list-group-item
+{
+	float: none;
+	width: 100%;
+	background-color:green;
+}
+.item.list-group-item:before,
+.item.list-group-item:after {
+  display: table;
+  content: " ";
+}
+
+.item.list-group-item img{float:left;}
+.item.list-group-item:after
+{
+	clear:both;
+}
+
+
+#container ul { list-style: none; }
+#container .buttons { margin-bottom: 20px; }
+
+#container .list li { width: 100%; border-bottom: 1px dotted #CCC; margin-bottom: 10px; padding-bottom: 10px; }
+
+#container .grid li { float: left; width: 20%; height: 50px; border-right: 1px dotted #CCC; border-bottom: 1px dotted #CCC; padding: 20px; }
