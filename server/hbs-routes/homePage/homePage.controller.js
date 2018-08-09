@@ -8,7 +8,6 @@ const model = require('../../sqldb/model-connect');
 const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
-const layout_type=require('../../config/layout_type')
 const config = require('../../config/environment');
 const _ = require('lodash');
 
@@ -241,7 +240,6 @@ export function homePage(req, res) {
 				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
-				layout_type:layout_type.grid,
 				wantToSell: results.wantToSell,
 				wantToBuy: results.wantToBuy,
 				wantToTrade: results.wantToTrade,

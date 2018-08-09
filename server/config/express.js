@@ -129,6 +129,7 @@ export default function(app) {
 			}
 			browserSync.reload();
 		});
+
 	}
 
 	if (env === 'development' || env === 'test') {
