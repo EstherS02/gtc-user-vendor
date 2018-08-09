@@ -18,11 +18,8 @@ router.post('/import-aliexpress', auth.hasRole(roles['VENDOR']), auth.hasPermiss
 router.post('/', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.create);
 router.post('/add-product', auth.isAuthenticated(), controller.addProduct);
 router.post('/edit-product', auth.isAuthenticated(), controller.editProduct);
-<<<<<<< HEAD
-router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
-=======
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
->>>>>>> 6e41a53be8064326b813c51ef1b2107d9054a096
+router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 
 module.exports = router;
