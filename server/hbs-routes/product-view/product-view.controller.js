@@ -13,6 +13,17 @@ const Plan = require('../../config/gtc-plan');
 const async = require('async');
 const _ = require('lodash');
 
+export function product(req, res) {
+	var productID;
+	var categoryModel = "Category";
+
+	if (req.params.product_id) {
+		productID = req.params.product_id;
+	}
+
+	console.log("req.isAuthenticated()", req.isAuthenticated());
+}
+
 export function GetProductDetails(req, res) {
 
 	var queryObj = {};
@@ -46,7 +57,7 @@ export function GetProductDetails(req, res) {
 	var field = "created_on";
 	var product_id;
 	var queryURI = {};
-	var followQuery={};
+	var followQuery = {};
 	if (LoggedInUser.id) {
 		followQuery = {
 			status: status['ACTIVE'],
@@ -151,11 +162,11 @@ export function GetProductDetails(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
-			},{
+			}, {
 				model: model['VendorFollower'],
-				where:followQuery,
-				required:false
-			},{
+				where: followQuery,
+				required: false
+			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
@@ -285,7 +296,7 @@ export function GetProductDetails(req, res) {
 			}, {
 				starCount: 6,
 				ratingCount: 0
-			},{
+			}, {
 				starCount: 5,
 				ratingCount: 0
 			}, {
@@ -329,9 +340,8 @@ export function GetProductDetails(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				marketplace: marketplace,
 				selectedPage: selectedPage,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				title: "Global Trade Connect",
-				LoggedInUser: LoggedInUser,
 				Plan: Plan,
 			});
 		} else {
@@ -378,7 +388,7 @@ export function GetProductReview(req, res) {
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
 	var productModel = 'Product';
-	var followQuery ={};
+	var followQuery = {};
 	if (LoggedInUser.id) {
 		followQuery = {
 			status: status['ACTIVE'],
@@ -468,11 +478,11 @@ export function GetProductReview(req, res) {
 				},
 				required: false
 
-			},{
+			}, {
 				model: model['VendorFollower'],
-				where:followQuery,
-				required:false
-			},{
+				where: followQuery,
+				required: false
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
@@ -656,7 +666,7 @@ export function GetProductReview(req, res) {
 				pageSize: limit,
 				collectionSize: results.Review.count,
 				queryParams: queryParams,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				Plan: Plan,
 			});
 		} else {
