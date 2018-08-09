@@ -23,6 +23,8 @@ import session from 'express-session';
 //import expressSequelizeSession from 'express-sequelize-session';
 //var Store = expressSequelizeSession(session.Store);
 
+var mw = require('../auth/middleware');
+
 export default function(app) {
 	var env = app.get('env');
 	app.use(config.imageUrlRewritePath.base, express.static(config.images_base_path));
@@ -60,6 +62,7 @@ export default function(app) {
 		res.set('Access-Control-Allow-Credentials', 'true');
 		next();
 	});
+	//app.use(mw());
 	app.use(expressValidator());
 	app.use(methodOverride());
 	app.use(cookieParser(config.secrets.session));
