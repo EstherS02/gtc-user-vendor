@@ -61,7 +61,7 @@ var all = {
         templates: {
             userCreate: 'USER-CREATE',
             orderMail: 'ORDER-MAIL',
-            itemCancel:'ITEM-CANCEL-BY-VENDOR-MAIL',
+            itemCancel: 'ITEM-CANCEL-BY-VENDOR-MAIL',
             userOrderDetail: 'USER-ORDER-DETAIL-MAIL',
             vendorNewOrder: 'VENDOR-NEW-ORDER',
             passwordReset: 'PASSWORD-RESET'

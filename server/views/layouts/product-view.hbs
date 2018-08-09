@@ -1,9 +1,33 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	var productSpecs = {{{DisplayJSON product}}}
+	var statusCode = {{{DisplayJSON status}}}
 
 	$(document).ready(function() {
 		$("#gtc-add-to-cart").click(function() {
-			console.log("yes");
+			var cartInfo = {};
+			cartInfo.product_quantity = $('#quantityInput').val();
+
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
+					location.reload();
+					/*$('#productCartMessage').empty();
+					$('#productCartMessage').append('<p class="product-cart-error text-success">' + response.message_details + '</p>');*/
+				},
+				error: function(error) {
+					$('#productCartMessage').empty();
+					if (error.status === 401) {
+						return location.href = "/login";
+					}
+					$('#productCartMessage').append('<p class="product-cart-error text-danger">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productCartMessage').empty();
+					}, 10000);
+				}
+			});
 		});
 	});
 </script>
@@ -99,6 +123,7 @@
 															<span class="m-l-xs align-middle">ADD TO BAG</span>
 														</a>
                             						</div>
+                            						<div id="productCartMessage"></div>
                             					</div>
                             				</div>
                             			</div>

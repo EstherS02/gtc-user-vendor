@@ -33,10 +33,8 @@ export function product(req, res) {
 	async.series({
 		cartCounts: function(callback) {
 			if (req['currentUser']) {
-				service.cartHeader({
-					user_id: req['currentUser'].id,
-					status: status["ACTIVE"]
-				}).then(function(response) {
+				service.cartHeader(LoggedInUser).then(function(response) {
+					console.log("response%%%%%%%%%%%%%%%%%%%%%%%%555", response);
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -234,6 +232,7 @@ export function product(req, res) {
 		} else {
 			selectedPage = null;
 		}
+		console.log("cartheader", results.cartCounts);
 		if (!error) {
 			res.render('product-view', {
 				title: "Global Trade Connect",

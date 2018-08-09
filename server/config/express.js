@@ -65,7 +65,6 @@ export default function(app) {
 	app.use(expressValidator());
 	app.use(methodOverride());
 	app.use(cookieParser(config.secrets.session));
-	app.use(mw());
 	app.use(session({
 		secret: config.secrets.session,
 		saveUninitialized: false,
@@ -81,6 +80,7 @@ export default function(app) {
 		}
 		next();
 	});
+	app.use(mw());
 
 	if (env === 'development') {
 		const webpackDevMiddleware = require('webpack-dev-middleware');

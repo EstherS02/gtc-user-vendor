@@ -51,6 +51,8 @@ module.exports = function() {
 					console.log('Error::::', error);
 					return next(error);
 				});
+			} else {
+				return next();
 			}
 		});
 }
