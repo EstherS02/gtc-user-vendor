@@ -146,49 +146,14 @@
 				<div class="alignright">
 					<label class="label-control m-r-md">View</label>
 
-					 {{#ifCond layout_type "==" 'grid'}} 
-					 {{#if_eq selectedMarketPlaceType 0}}
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=grid';"
-					 class="btn btn-sm rounded" id="grid">
-						<i class="fa fa-th-large"></i>
-					</button>
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=list';" class="btn btn-sm btn-white rounded"
-					 id="list">
-						<i class="fa fa-th-list"></i>
-					</button>
-					{{else}}
 					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
-					 class="btn btn-sm rounded" id="grid">
+					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}" id="grid">
 						<i class="fa fa-th-large"></i>
 					</button>
 					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
-					 class="btn btn-sm btn-white rounded" id="list">
+					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}" id="list">
 						<i class="fa fa-th-list"></i>
 					</button>
-					{{/if_eq}} 
-					{{/ifCond}} 
-
-					{{#ifCond layout_type "==" 'list'}} 
-					{{#if_eq selectedMarketPlaceType 0}}
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=grid';setcolor('');"
-					 class="btn btn-sm btn-white rounded" id="grid">
-						<i class="fa fa-th-large"></i>
-					</button>
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=list';" class="btn btn-sm rounded"
-					 id="list">
-						<i class="fa fa-th-list"></i>
-					</button>
-					{{else}}
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
-					 class="btn btn-sm btn-white rounded" id="grid">
-						<i class="fa fa-th-large"></i>
-					</button>
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
-					 class="btn btn-sm rounded" id="list">
-						<i class="fa fa-th-list"></i>
-					</button>
-					{{/if_eq}}
-					{{/ifCond}}
 
 				</div>
 			</div>
