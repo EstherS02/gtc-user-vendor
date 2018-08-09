@@ -2,13 +2,8 @@
 
 import Handlebars from 'handlebars';
 
-// {{#pagination productResults.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize queryPaginationObj.layout}}
-
 Handlebars.registerHelper('pagination', function (collectionSize, page, pageSize, maxSize, options) {
 	var startPage, endPage, context, layout;
-
-	console.log("%%%%%%%%%", collectionSize,page,pageSize,maxSize,options);
-
 	var pageCount = Math.ceil(parseInt(collectionSize) / parseInt(pageSize));
 
 	if (arguments.length === 3) {

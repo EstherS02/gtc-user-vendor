@@ -39,9 +39,71 @@
 		console.log(selectedMarketPlaceType);
 	}
 
+	$(document).ready(function () {
+			$("#grid").click(function () {
+				console.log("grid");
+				//set color list white
+			});
+
+			$("#list").click(function () {
+				console.log("list");
+				//set color grid white
+			});
+
+			$('.test').click(function () {
+				console.log("clickeddddddddddd")
+
+				$('.test1').text('loading . . .');
+
+				$.ajax({
+					type: "GET",
+					url: "http://localhost:9000/wholesale/search?marketplace_type=1",
+					success: function (data) {
+						console.log(data.responseText);
+						$('.test1').text(JSON.stringify(data.responseText));
+					},
+					dataType: 'jsonp',
+				});
+			});
+
+		//var showChar = 175; 
+		//var ellipsestext = "...";
+		// moretext = "see more ...";
+		//var lesstext = "see less ...";
+
+		//$('.description').each(function () {
+		//	var content = $(this).html();
+
+		//	if (content.length > showChar) {
+
+		//		var c = content.substr(0, showChar);
+		//		var h = content.substr(showChar, content.length - showChar);
+
+		//		var html = c + '<span class="moreellipses">' + ellipsestext + '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+		//		$(this).html(html);
+		//	}
+
+		//});
+
+		//$(".morelink").click(function () {
+		//	if ($(this).hasClass("less")) {
+		//		$(this).removeClass("less");
+		//		$(this).html(moretext);
+		//	} else {
+		//		$(this).addClass("less");
+		//		$(this).html(lesstext);
+		//	}
+		//	$(this).parent().prev().toggle();
+		//	$(this).prev().toggle();
+		//	return false;
+		//});
+
+	});
+
 </script> 
 
-{{> header/top-header LoggedInUser = LoggedInUser}} 
+{{> header/top-header LoggedInUser = LoggedInUser}}
 
 <div class="gtc-container">
 	<div class="search-list-header">
@@ -72,11 +134,9 @@
 			<div class="col-md-8">
 				<h3>Showing
 					<b>{{SUMFloat queryPaginationObj.offset 1}}-{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}}</b> of
-					<b>{{productResults.count}} Products</b> matching 
-					{{#if queryPaginationObj.keyword}}
+					<b>{{productResults.count}} Products</b> matching {{#if queryPaginationObj.keyword}}
 					<b>"{{queryPaginationObj.keyword}}"</b>
-					{{/if}} 
-					{{#if selectedMarketPlace}}in the
+					{{/if}} {{#if selectedMarketPlace}}in the
 					<b>{{selectedMarketPlace.name}}</b>
 					{{/if}}
 				</h3>
@@ -85,25 +145,51 @@
 			<div class="col-md-2">
 				<div class="alignright">
 					<label class="label-control m-r-md">View</label>
+
+					 {{#ifCond layout_type "==" 'grid'}} 
+					 {{#if_eq selectedMarketPlaceType 0}}
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=grid';"
+					 class="btn btn-sm rounded" id="grid">
+						<i class="fa fa-th-large"></i>
+					</button>
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=list';" class="btn btn-sm btn-white rounded"
+					 id="list">
+						<i class="fa fa-th-list"></i>
+					</button>
+					{{else}}
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
+					 class="btn btn-sm rounded" id="grid">
+						<i class="fa fa-th-large"></i>
+					</button>
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
+					 class="btn btn-sm btn-white rounded" id="list">
+						<i class="fa fa-th-list"></i>
+					</button>
+					{{/if_eq}} 
+					{{/ifCond}} 
+
+					{{#ifCond layout_type "==" 'list'}} 
 					{{#if_eq selectedMarketPlaceType 0}}
-						<button onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=grid';"
-						 class="btn btn-sm rounded" id="grid">
-							<i class="fa fa-th-large"></i>
-						</button>
-						<button onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=list';"
-						 class="btn btn-sm btn-white rounded" id="list">
-							<i class="fa fa-th-list"></i>
-						</button>
-					{{else}} 
-						<button onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
-						 class="btn btn-sm rounded" id="grid">
-							<i class="fa fa-th-large"></i>
-						</button>
-						<button onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
-						 class="btn btn-sm btn-white rounded" id="list">
-							<i class="fa fa-th-list"></i>
-						</button>
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=grid';setcolor('');"
+					 class="btn btn-sm btn-white rounded" id="grid">
+						<i class="fa fa-th-large"></i>
+					</button>
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?layout=list';" class="btn btn-sm rounded"
+					 id="list">
+						<i class="fa fa-th-list"></i>
+					</button>
+					{{else}}
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
+					 class="btn btn-sm btn-white rounded" id="grid">
+						<i class="fa fa-th-large"></i>
+					</button>
+					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
+					 class="btn btn-sm rounded" id="list">
+						<i class="fa fa-th-list"></i>
+					</button>
 					{{/if_eq}}
+					{{/ifCond}}
+
 				</div>
 			</div>
 			<div class="col-md-2">
@@ -199,7 +285,7 @@
 				<div class="alignleft">
 					<span class="text-sm">
 						<strong>TOP PRODUCTS &nbsp;|&nbsp;
-							<a href="/{{marketplaceURl}}/search?layout={{layout_type}}&{{QueryParams queryURI (FrameObject is_featured_product=1) 'null'}}">SEE ALL</strong>
+							<a href="/{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject is_featured_product=1) 'null'}}">SEE ALL</strong>
 						</a>
 					</span>
 				</div>
@@ -211,20 +297,13 @@
 				<div style="clear: both;"></div>
 			</div>
 
-			{{!-- <div id="search_grid">
-				<p>veera-grid</p>
-			</div>
-			<div id="serach_list">
-				<p>veera-list</p>
-			</div> --}}
-
 			<div class="search-list-body">
 				<div class="row">
 					{{#ifCond topFeaturedProducts.count '==' 0}}
 					<div class="col-md-12">
 						<p class="text-primary text-center no-margins">No featured products available.</p>
 					</div>
-					{{/ifCond}}
+					{{/ifCond}} 
 
 					{{#ifCond layout_type "==" 'grid'}} 
 					{{#each topFeaturedProducts.rows}}
@@ -242,7 +321,7 @@
 											<td class="col-6">
 												<div class="product-middle-col">
 													<h3>
-														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -292,71 +371,91 @@
 						</div>
 					</div>
 					{{/each}}
-					{{/ifCond}}
-					
-					{{#ifCond layout_type "==" "list"}}
-					{{#each topFeaturedProducts.rows}} 
-							<div id="GR_list" class="table-responsive">
-								<table class="table shoping-cart-table">
-									<tbody>
-										<tr class="d-flex">
-											<td class="col-2">
-												<div class="product-left-col">
-													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+					{{/ifCond}} 
+
+					{{#ifCond layout_type "==" "list"}} 
+					{{#each topFeaturedProducts.rows}}
+					<div id="GR_list" class="table-responsive">
+						<table class="table shoping-cart-table">
+							<tbody>
+								<tr class="d-flex">
+									<td class="col-2">
+										<div class="product-left-col">
+											<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+										</div>
+									</td>
+									<td class="col-7">
+										<div class="product-middle-col">
+											<h3>
+												<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+											</h3>
+
+											<div class="row no-margins">
+												<span>Origin&nbsp;:</span>
+												<span class="text-500">&nbsp;{{this.country_name}}&nbsp;|&nbsp;</span>
+
+												<span>Category&nbsp;</span>
+												<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}&nbsp;|&nbsp;</a>
+
+												<span>Seller&nbsp;</span>
+												{{#if ../LoggedInUser.email}}
+												<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+												{{else}}
+												<a class="text-500" href="/login">(Login for Seller Info)</a>
+												{{/if}}
+											</div>
+
+											
+											{{!--
+											<div class="col-md-4 col-4 no-padding">
+												<span>Origin</span>
+											</div>
+											<div class="col-md-8 col-8 no-padding overflow-txt">
+												<span class="text-500">{{this.country_name}}</span>
+											</div>
+
+											<div class="col-md-4 col-4 no-padding">
+												<span>Category</span>
+											</div>
+											<div class="col-md-8 col-8 no-padding overflow-txt">
+												<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+											</div>
+											<div class="col-md-4 col-4 no-padding">
+												<span>Seller</span>
+											</div>
+											<div class="col-md-8 col-8 no-padding overflow-txt">
+												{{#if ../LoggedInUser.email}}
+												<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+												{{else}}
+												<a class="text-500" href="/login">(Login for Seller Info)</a>
+												{{/if}}
+											</div> --}}
+										</div>
+
+										<div class="row no-margins">
+												<p class="description" >{{this.product_description}}</p>
+										</div>
+									</td>
+									<td class="col-3">
+										<div class="product-right-col">
+											{{#ifCond this.marketplace_id '==' 1}}
+											<h4>MOQ : {{this.minimum_order_quantity}}</h4>
+											{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
+											<h2 class="text-red">${{this.product_price}}</h2>
+											{{/ifCond}}
+											<div class="prc-bottom">
+												<p>Seller Rating</p>
+												<div class="p-rating pull-right">
+													{{starCount product_rating}}
 												</div>
-											</td>
-											<td class="col-7">
-												<div class="product-middle-col">
-													<h3>
-														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
-													</h3>
-													<div class="row no-margins">
-														<div class="col-md-4 col-4 no-padding">
-															<span>Origin</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<span class="text-500">{{this.country_name}}</span>
-														</div>
-														<div class="col-md-4 col-4 no-padding">
-															<span>Category</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-														</div>
-														<div class="col-md-4 col-4 no-padding">
-															<span>Seller</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															{{#if ../LoggedInUser.email}}
-															<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-															{{else}}
-															<a class="text-500" href="/login">(Login for Seller Info)</a>
-															{{/if}}
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="col-3">
-												<div class="product-right-col">
-													{{#ifCond this.marketplace_id '==' 1}}
-													<h4>MOQ : {{this.minimum_order_quantity}}</h4>
-													{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
-													<h2 class="text-red">${{this.product_price}}</h2>
-													{{/ifCond}}
-													<div class="prc-bottom">
-														<p>Seller Rating</p>
-														<div class="p-rating pull-right">
-															{{starCount product_rating}}
-														</div>
-													</div>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-					{{/each}} 
-					{{/ifCond}}
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					{{/each}} {{/ifCond}}
 				</div>
 			</div>
 
@@ -365,71 +464,91 @@
 
 			<div class="search-list-body">
 				<div class="row">
-					{{#ifCond layout_type "==" "list"}}
-					{{#each productResults.rows}} 
-							<div id="GR_list" class="table-responsive">
-								<table class="table shoping-cart-table">
-									<tbody>
-										<tr class="d-flex">
-											<td class="col-2">
-												<div class="product-left-col">
-													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+					{{#ifCond layout_type "==" "list"}} 
+					{{#each productResults.rows}}
+					<div id="GR_list" class="table-responsive">
+						<table class="table shoping-cart-table">
+							<tbody>
+								<tr class="d-flex">
+									<td class="col-2">
+										<div class="product-left-col">
+											<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+										</div>
+									</td>
+									<td class="col-7">
+										<div class="product-middle-col">
+											<h3>
+												<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+											</h3>
+
+											<div class="row no-margins">
+												<span>Origin&nbsp;:</span>
+												<span class="text-500">&nbsp;{{this.country_name}}&nbsp;|&nbsp;</span>
+
+												<span>Category&nbsp;</span>
+												<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}&nbsp;|&nbsp;</a>
+
+												<span>Seller&nbsp;</span>
+												{{#if ../LoggedInUser.email}}
+												<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+												{{else}}
+												<a class="text-500" href="/login">(Login for Seller Info)</a>
+												{{/if}}
+											</div>
+
+											{{!--
+											<div class="row no-margins">
+												<div class="col-md-4 col-4 no-padding">
+													<span>Origin</span>
 												</div>
-											</td>
-											<td class="col-7">
-												<div class="product-middle-col">
-													<h3>
-														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
-													</h3>
-													<div class="row no-margins">
-														<div class="col-md-4 col-4 no-padding">
-															<span>Origin</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<span class="text-500">{{this.country_name}}</span>
-														</div>
-														<div class="col-md-4 col-4 no-padding">
-															<span>Category</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-														</div>
-														<div class="col-md-4 col-4 no-padding">
-															<span>Seller</span>
-														</div>
-														<div class="col-md-8 col-8 no-padding overflow-txt">
-															{{#if ../LoggedInUser.email}}
-															<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-															{{else}}
-															<a class="text-500" href="/login">(Login for Seller Info)</a>
-															{{/if}}
-														</div>
-													</div>
+												<div class="col-md-8 col-8 no-padding overflow-txt">
+													<span class="text-500">{{this.country_name}}</span>
 												</div>
-											</td>
-											<td class="col-3">
-												<div class="product-right-col">
-													{{#ifCond this.marketplace_id '==' 1}}
-													<h4>MOQ : {{this.minimum_order_quantity}}</h4>
-													{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
-													<h2 class="text-red">${{this.product_price}}</h2>
-													{{/ifCond}}
-													<div class="prc-bottom">
-														<p>Seller Rating</p>
-														<div class="p-rating pull-right">
-															{{starCount product_rating}}
-														</div>
-													</div>
+
+												<div class="col-md-4 col-4 no-padding">
+													<span>Category</span>
 												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+												<div class="col-md-8 col-8 no-padding overflow-txt">
+													<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+												</div>
+												<div class="col-md-4 col-4 no-padding">
+													<span>Seller</span>
+												</div>
+												<div class="col-md-8 col-8 no-padding overflow-txt">
+													{{#if ../LoggedInUser.email}}
+													<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+													{{else}}
+													<a class="text-500" href="/login">(Login for Seller Info)</a>
+													{{/if}}
+												</div>
+											</div> --}}
+										</div>
+										<div class="row no-margins">
+											<p class="description">{{this.product_description}}</p>
+										</div>
+									</td>
+									<td class="col-3">
+										<div class="product-right-col">
+											{{#ifCond this.marketplace_id '==' 1}}
+											<h4>MOQ : {{this.minimum_order_quantity}}</h4>
+											{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
+											<h2 class="text-red">${{this.product_price}}</h2>
+											{{/ifCond}}
+											<div class="prc-bottom">
+												<p>Seller Rating</p>
+												<div class="p-rating pull-right">
+													{{starCount product_rating}}
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					{{/each}} 
-					{{/ifCond}}
-	
-					{{#ifCond layout_type "==" "grid"}}
+					{{/ifCond}} 
+					{{#ifCond layout_type "==" "grid"}} 
 					{{#each productResults.rows}}
 					<div class="col-md-4">
 						<div class="product-body">
@@ -445,7 +564,7 @@
 											<td class="col-6">
 												<div class="product-middle-col">
 													<h3>
-														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
+														<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -494,13 +613,12 @@
 							</div>
 						</div>
 					</div>
-					{{/each}} 
-					{{/ifCond}}
+					{{/each}} {{/ifCond}}
 				</div>
 			</div>
 
 			<div class="search-sm-header">
-			<br>
+				<br>
 			</div>
 
 			{{#ifCond productResults.count '>' queryPaginationObj.limit}}
@@ -513,14 +631,12 @@
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 							</li>
-							{{/unless}} 
-							{{#each pages}}
+							{{/unless}} {{#each pages}}
 							<li class="page-item 
 							{{#if isCurrent}} active {{/if}}">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 							</li>
-							{{/each}} 
-							{{#unless endAtLastPage}}
+							{{/each}} {{#unless endAtLastPage}}
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 							</li>
