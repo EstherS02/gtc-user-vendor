@@ -136,7 +136,9 @@
             }
         }
         /*End cover picture crop functions*/
+		$('.crop_edit_icon').hide();
 		if(userInfo.Vendor.id == vendorInfo.id) {
+			$('.crop_edit_icon').show();
 			$('#editPicture').click(function(){
 				$('.edit_picture').click();
 			});
@@ -234,7 +236,9 @@
                 $('#profile-picture-modal').modal('show');
             }
         }
+		$('.hide_edit').hide();
 		if(userInfo.Vendor.id == vendorInfo.id) {
+			$('.hide_edit').show();
 			$('#editProfileImg').click(function(){
 				$('.profilepicedit').click();
 			}); 
@@ -312,8 +316,10 @@
 			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
 				<a class="vendor-logo profile_img_edit">
 					<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} alt="logo" title="Global Trade Connect">
-					<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
-					<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					<span class="hide_edit">
+						<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
+						<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					</span>
 				</a>
 				<button class="navbar-toggler collapsed navbar-dark" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
