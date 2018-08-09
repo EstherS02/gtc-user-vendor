@@ -110,7 +110,6 @@ export function makePayment(req, res) {
                     });
                 } else return res.status(500).send(err);
             });
-            console.log("==================-orderIds-==============",orderIdStore)
             sendOrderMail(orderIdStore,req.user);
         }).catch(err => {
             console.log("err3", err);
@@ -499,9 +498,8 @@ export function deleteCard(req, res) {
         });
 }
 
-export function sendOrderMail(){
-    var orderIdStore = [294,295];
-    // var user
+export function sendOrderMail(orderIdStore,user){
+    var orderIdStore = orderIdStore;
     var includeArr = [{
         model: model['OrderItem'],
         include: [{
@@ -524,12 +522,11 @@ var field = 'created_on';
 var order = "asc";
 var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
                 if(OrderList){
-                    var user_email = 'sumiraja28@gmail.com';
+                    var user_email = user.email;
                     var orderNew = [];
                     var queryObjEmailTemplate = {};
                     var emailTemplateModel = "EmailTemplate";
                     queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
-                    console.log("=======----------------------------=================",OrderList)
                     service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
                         .then(function (response) {
                             if (response) {
@@ -538,17 +535,14 @@ var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, 
                                 var body;
                                 body = response.body.replace('%ORDER_TYPE%', 'Order Status');
                                _.forOwn(OrderList.rows, function (orders) {
-                                console.log("=======----------------------------=================",orders)
-                                    body = body.replace('%COMPANY_NAME%', 'sumithra');
-                                    body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1);
-                                    body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2);
-                                    body = body.replace('%CITY%', orders.shippingAddress.city);
-                                    body = body.replace('%STATE%', orders.shippingAddress.State.name);
-                                    body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name);
+                                    body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name? orders.shippingAddress.company_name:'');
+                                    body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1?orders.shippingAddress.address_line1:'');
+                                    body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2?orders.shippingAddress.address_line2:'');
+                                    body = body.replace('%CITY%', orders.shippingAddress.city? orders.shippingAddress.city:'');
+                                    body = body.replace('%STATE%', orders.shippingAddress.State.name?orders.shippingAddress.State.name:'');
+                                    body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name? orders.shippingAddress.Country.name:'');
                                     orderNew.push(orders);
                                 });
-                               console.log()
-                               // Promise.all(orderNew).then(result1 => {
                                     var template = Handlebars.compile(body);
                                 var data = {
                                     order: orderNew
@@ -559,9 +553,6 @@ var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, 
                                     subject: subject,
                                     html: result
                                 });
-                                // }).catch(error => {
-                                //     return res.status(500).send(err);
-                                // });
                                 return;
                             } else {
                                 return;
@@ -577,49 +568,3 @@ var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, 
                 return;
             });
 }
-
-
-                                                    // body = response.body.replace('%ORDER_NUMBER%', order_id);
-                                                    // body = body.replace('%COMPANY_NAME%', address.company_name);
-                                                    // body = body.replace('%ADDRESS_LINE_1%', address.address_line1);
-                                                    // body = body.replace('%ADDRESS_LINE_2%', address.address_line2);
-                                                    // body = body.replace('%CITY%', address.city);
-                                                    // body = body.replace('%STATE%', address.State.name);
-                                                    // body = body.replace('%COUNTRY%', address.Country.name);
-                                                    // body = body.replace('%ORDER_TOTAL%', total_price);
-
-                                                    // //  }).then(function(){
-
-                                                    // var items = [];
-                                                    // var orderItems = element.items;
-
-                                                    // orderItems.forEach(function(itemElement) {
-                                                    //     item_id = itemElement.id;
-
-                                                    //     console.log("---------------22----------------", order_id);
-
-                                                    //     service.findIdRow('OrderItem', item_id, itemArr)
-                                                    //         .then(function(item) {
-
-                                                    //             var obj = {
-                                                    //                 item_name: item.Product.product_name,
-                                                    //                 quantity: item.quantity,
-                                                    //                 item_price: item.Product.price
-                                                    //             }
-                                                    //             items.push(obj);
-                                                    //         }).then(function() {
-
-                                                    //             console.log("-----------33--------------------", order_id);
-
-                                                    //             console.log("items", items)
-                                                    //             var template = Handlebars.compile(body);
-                                                    //             var data = {
-                                                    //                 items: items
-                                                    //             };
-                                                    //             var result = template(data);
-                                                    //             sendEmail({
-                                                    //                 to: email,
-                                                    //                 subject: subject,
-                                                    //                 html: result
-                                                    //             });
-                                                    //         })
