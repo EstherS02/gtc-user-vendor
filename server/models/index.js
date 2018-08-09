@@ -52,6 +52,7 @@ function init(sequelize) {
     model.PlanLimit = sequelize.import('./definition/plan-limit.js');
     model.PlanMarketplace = sequelize.import('./definition/plan-marketplace.js');
     model.Product = sequelize.import('./definition/product.js');
+    model.ProductRatings = sequelize.import('./definition/product-ratings.js');
     model.ProductAdsSetting = sequelize.import('./definition/product-ads-setting.js');
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
     model.ProductMedia = sequelize.import('./definition/product-media.js');
@@ -126,6 +127,7 @@ function init(sequelize) {
     require('./definition/plan-limit.js').initRelations();
     require('./definition/plan-marketplace.js').initRelations();
     require('./definition/product.js').initRelations();
+    require('./definition/product-ratings.js').initRelations();
     require('./definition/product-ads-setting.js').initRelations();
     require('./definition/product-attribute.js').initRelations();
     require('./definition/product-media.js').initRelations();

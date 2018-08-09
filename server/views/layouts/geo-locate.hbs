@@ -3,7 +3,7 @@
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3 constant-height" style="height: 650px;overflow-y: scroll;">
+			<div class="col-md-3 constant-height" style="height: 650px;">
 				<div class="row" style="margin-bottom:20px;">
 					<div class="col-md-2 geo_arrow_bg">
 						<a href="geolocate_search.html" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
@@ -13,8 +13,9 @@
 						<select class="acc_textbox"> <option value="Alphabetical">Alphabetical </option></select>
 					</div>
 				</div>
+                <div style="height: 477px;overflow-y: scroll;overflow-x: hidden;">
                 {{#each geoLocateObj}}
-					<div class="row" >
+					<div class="row">
                       <div class="col-md-3 col-2" style="text-align: center;">
                           <img src="{{this.product_media_base_image}}" style="width: 75px; height: 70px;">
                       </div>
@@ -76,6 +77,7 @@
                   </div>
                   <hr/>
                 {{/each}}
+                </div>
 				  <div class="row">
                     <div class="col-md-12" style="background-color: #F0F0F0;">
                        <p class="geo_show">Showing <span class="geo_pro"> 1660 products </span></p>
