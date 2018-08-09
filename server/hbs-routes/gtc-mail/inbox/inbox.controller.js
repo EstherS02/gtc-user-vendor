@@ -1,16 +1,18 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const statusCode = require('../../config/status');
-const service = require('../../api/service');
-const sequelize = require('sequelize');
-const moment = require('moment');
-var async = require('async');
-const vendorPlan = require('../../config/gtc-plan');
+'use strict';
 
-export function gtcMail(req, res) {
+const async = require('async');
+const _ = require('lodash');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const statusCode = require('../../../config/status');
+const service = require('../../../api/service');
+const populate = require('../../../utilities/populate');
+const vendorPlan = require('../../../config/gtc-plan');
+
+export function inbox(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 	
@@ -52,17 +54,17 @@ export function gtcMail(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('vendorNav/gtc-mail', {
+				res.render('gtc-mail/inbox', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader:results.cartCounts,
-					selectedPage: 'gtc-mail',
+					selectedPage: 'inbox',
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('vendorNav/gtc-mail', err);
+				res.render('gtc-mail/inbox', err);
 			}
 		});
 }

@@ -49,23 +49,6 @@ export function productView(productID) {
 				offset: 0,
 				attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status'],
 				required: false
-			}, {
-				model: model['Review'],
-				where: {
-					status: status['ACTIVE']
-				},
-				order: [
-					['created_on', 'DESC']
-				],
-				attributes: ['id', 'product_id', 'user_id', 'rating', 'title', 'comment', 'status', 'created_on'],
-				required: false,
-				include: [{
-					model: model['User'],
-					where: {
-						status: status['ACTIVE']
-					},
-					attributes: ['id', 'first_name', 'user_pic_url', 'status']
-				}]
 			}]
 		}).then((product) => {
 			if (product) {
@@ -73,6 +56,111 @@ export function productView(productID) {
 			} else {
 				resolve(null);
 			}
+		}).catch((error) => {
+			reject(error);
+		});
+	});
+}
+
+export function productRatingsCount(productID) {
+	var productRating = [];
+
+	return new Promise((resolve, reject) => {
+		model['Review'].findAll({
+			where: {
+				product_id: productID,
+				status: status['ACTIVE']
+			},
+			attributes: [
+				'rating', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+			],
+			group: ['Review.rating']
+		}).then((ratings) => {
+			if (ratings.length > 0) {
+				ratings = JSON.parse(JSON.stringify(ratings));
+				for (var i = 0; i < 7; i++) {
+					if (ratings[i] && ((i + 1) == ratings[i].rating)) {
+						productRating.push({
+							"rating": ratings[i].rating,
+							"userCount": ratings[i].userCount
+						});
+					} else {
+						productRating.push({
+							"rating": i + 1,
+							"userCount": 0
+						});
+					}
+				}
+				resolve(productRating);
+			} else {
+				productRating = [{
+					"rating": 1,
+					"userCount": 0
+				}, {
+					"rating": 2,
+					"userCount": 0
+				}, {
+					"rating": 3,
+					"userCount": 0
+				}, {
+					"rating": 4,
+					"userCount": 0
+				}, {
+					"rating": 5,
+					"userCount": 0
+				}, {
+					"rating": 6,
+					"userCount": 0
+				}, {
+					"rating": 7,
+					"userCount": 0
+				}];
+				resolve(productRating);
+			}
+		}).catch((error) => {
+			reject(error);
+		});
+	});
+}
+
+export function productReviews(queryObj, offset, limit, field, order) {
+	var result = {};
+	return new Promise((resolve, reject) => {
+		model['Review'].findAll({
+			where: queryObj,
+			include: [{
+				model: model['User'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'first_name', 'user_pic_url', 'status']
+			}],
+			order: [
+				[field, order]
+			],
+			offset: offset,
+			limit: limit,
+			attributes: ['id', 'product_id', 'user_id', 'rating', 'title', 'comment', 'status', 'created_on'],
+			required: false
+		}).then((productReviews) => {
+			var convertRowsJSON = [];
+			if (productReviews.length > 0) {
+				convertRowsJSON = JSON.parse(JSON.stringify(productReviews));
+				model['Review'].count({
+					where: queryObj
+				}).then(function(count) {
+					result.count = count;
+					result.rows = convertRowsJSON;
+					resolve(result);
+				}).catch(function(error) {
+					reject(error);
+				});
+			} else {
+				result.count = 0;
+				result.rows = convertRowsJSON;
+				resolve(result);
+			}
+
 		}).catch((error) => {
 			reject(error);
 		});
