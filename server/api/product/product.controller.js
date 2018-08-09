@@ -249,8 +249,7 @@ export function featureOne(req, res) {
 }
 
 export function addProduct(req, res) {
-
-	if (req.query.marketplace == 'Private Wholesale Marketplace')
+     if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
 
 	if (req.query.marketplace == 'Public Marketplace')
@@ -292,6 +291,36 @@ export function addProduct(req, res) {
 			res.status(500).send("Internal server error");
 			return;
 		})
+}
+
+ export function importProduct(req, res)
+ { 
+    var bodyParamsArray = [];
+	for (var i = 0; i < req.body.length; i++) {
+			req.body.created_on = new Date();
+			req.body.created_by = req.user.Vendor.vendor_name;
+			bodyParamsArray.push(req.body[i]);
+	}
+	var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
+	req.endpoint ='Product';
+	service.createBulkRow(req.endpoint, finalresults)
+		.then(function (result) {
+			var productMediaArray = [];
+			for (var i = 0; i < result.length; i++) {
+				productMediaArray.push(result[i]);
+		     }
+			//var product_id = result.id;
+			if (result) {
+				return res.status(201).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+
 }
 
 function updateProductMedia(arrayEle, product_id) {
@@ -353,6 +382,7 @@ export function editProduct(req, res) {
 		res.status(500).send(error);
 	})
 }
+
 
 export function discount(req, res) {
 	var arrayEle = JSON.parse(req.body.data);
