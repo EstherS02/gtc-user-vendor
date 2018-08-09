@@ -413,3 +413,15 @@ Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     });
     return name;
 });
+Handlebars.registerHelper("LikeUnlike",function(likes, user){
+ let name;
+    likes.forEach(function(element) {
+        if(element.user_id == user.id){
+            name= 'Unlike';    
+        }
+    });
+    if(name != 'Unlike'){
+        name="Like";
+    }
+    return name;
+});

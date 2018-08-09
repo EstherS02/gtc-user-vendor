@@ -10,7 +10,7 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 const sendEmail = require('../../agenda/send-email');
 const service = require('../service');
-import moment from 'moment';
+const moment = require('moment');
 
 export function index(req, res) {
     var offset, limit, field, order;
@@ -303,6 +303,65 @@ export function changePassword(req, res) {
     });
 }
 
+export function resetPassword(req, res) {
+    var queryObj,forgot_password_token,current_time,expire_time1,expire_time2;
+
+    if (req.body) {
+        req.checkBody('email','Missing Query Param').notEmpty();
+        req.checkBody('new_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
+    }
+    var errors = req.validationErrors();
+    if (errors) {
+        console.log("error", errors)
+        res.status(400).send(errors);
+        return;
+    }
+    var UserModel = "User";
+
+    forgot_password_token = req.body.forgot_password_token;
+
+    queryObj = {
+        email: req.body.email
+    }
+
+    service.findOneRow(UserModel, queryObj, []).then(function (result) {
+        var userId = result.id;
+        var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
+        var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+        var bodyParams = {
+            hashed_pwd: hashedPassword,
+            forgot_password_token: null,
+            forgot_password_token_generated: null
+        };
+        
+
+    if(result.forgot_password_token != forgot_password_token){
+        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+        return;
+    }
+
+    current_time = new Date();
+    expire_time1 = result.forgot_password_token_generated;
+    expire_time2 = moment(expire_time1).add(24, 'hours');
+
+    if(current_time >= expire_time2){
+        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+        return;
+    }
+        service.updateRow(UserModel, bodyParams, userId).then(function (response) {
+            if (response) {
+                res.status(200).send("Your password has been updated successfully. Please login with the new password.")
+                return;
+            } else {
+                res.status(304).send("Password Unable to update")
+                return;
+            }
+        })
+    });
+}
+
 
 export function userProfile(req, res) {
 
@@ -319,11 +378,11 @@ export function userProfile(req, res) {
 
     service.updateRow('User', userUpdate, user_id)
         .then(function (row) {
-            
-            if(billingUpdate){
+
+            if (billingUpdate) {
                 addressUpdate(user_id, billing_address_type, billingUpdate);
             }
-            if(shippingUpdate){
+            if (shippingUpdate) {
                 addressUpdate(user_id, shipping_address_type, shippingUpdate);
             }
             return res.status(200).send(row);
@@ -383,7 +442,7 @@ export function vendorFollow(req, res) {
         where: queryObj
     }).then(function (result) {
         if (result) {
-        
+
             var newStatus;
             if (result.status == status['ACTIVE']) {
                 newStatus = 0;
@@ -412,9 +471,81 @@ export function vendorFollow(req, res) {
                 res.status(200).send(response);
                 return;
             });
-            // console.log(i, "not in db")
         }
     });
+}
+
+export function forgotPassword(req, res) {
+
+    var queryParams = {}, bodyParams = {}, user_id;
+    var userModel = 'User';
+    var randomCode = uuid.v1();
+    var queryParams = {
+        email: req.params.email
+    };
+
+    service.findOneRow(userModel, queryParams, [])
+        .then(function (user) {
+            if (user) {
+                user_id = user.id;
+                bodyParams['forgot_password_token'] = randomCode;
+                bodyParams['forgot_password_token_generated'] = new Date();
+
+                service.updateRow(userModel, bodyParams, user_id)
+                    .then(function (result) {
+
+                        if(result){
+
+                            var forgot_password_token = bodyParams['forgot_password_token'];
+                            delete user.salt;
+                            delete user.hashed_pwd;
+                            delete user.email_verified_token;
+                            delete user.email_verified_token_generated;
+    
+                            var queryObjEmailTemplate = {};
+                            var emailTemplateModel = "EmailTemplate";
+                            queryObjEmailTemplate['name'] = config.email.templates.passwordReset;
+    
+                            service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+                                .then(function (response) {
+                                    if (response) {
+                                        var username = user["first_name"];
+                                        var email = user["email"];
+
+                                        var subject = response.subject;
+                                        var body;
+                                        body = response.body.replace('%USERNAME%', username);
+                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email+"&forgot_password_token="+forgot_password_token);
+    
+                                        sendEmail({
+                                            to: email,
+                                            subject: subject,
+                                            html: body
+                                        });
+                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+                                    } else {
+                                        return res.status(404).send("Unable to reset password. Please try later.");
+                                    }
+                                }).catch(function (error) {
+                                    console.log('Error :::', error);
+                                    res.status(500).send("Internal server error. Please try later.");
+                                    return;
+                                });
+                        }else{
+                            res.status(404).send("Unable to reset password. Please try later");
+                            return;
+                        }
+                    })
+            }
+            else {
+                res.status(404).send("Your search did not return any results. Please try again with other information.");
+                return;
+            }
+        })
+        .catch(function (error) {
+            res.status(500).send("Internal server error. Please try later.")
+            return;
+        })
 }
 
 exports.authenticate = authenticate;

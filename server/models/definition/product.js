@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         product_name: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(255),
             field: 'product_name',
             allowNull: false
         },
         product_slug: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.STRING(255),
             field: 'product_slug',
             allowNull: true
         },
@@ -139,6 +139,16 @@ module.exports = (sequelize, DataTypes) => {
         moq: {
             type: DataTypes.INTEGER,
             field: 'moq',
+            allowNull: true
+        },
+        exchanging_product: {
+            type: DataTypes.STRING(255),
+            field: 'exchanging_product',
+            allowNull: true
+        },
+        exchanging_product_quantity: {
+            type: DataTypes.INTEGER,
+            field: 'exchanging_product_quantity',
             allowNull: true
         },
         created_by: {

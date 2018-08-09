@@ -1,164 +1,161 @@
-<div id="wrapper-fixed-header">
+<div id="sticky-header">
 	<div class="header-bg">
-		<div class="gtc-container">
+		<div class="gtc-container gtc-container-xs">
 			<div class="row">
-				<div class="col-md-6" style="padding-right:0">
-					<div class="header">
-						<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
-							<a class="brand-logo" href="/">
-								<img src="gtc-assets/img/logo.svg" alt="logo" title="Global Trade Connect">
-							</a>
-							<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-								<span class="navbar-toggler-icon"></span>
-							</button>
-							<div class="navbar-collapse main-navbar collapse" id="navbarsExample03">
-								<div class="row col no-margins no-padding">
-									<div class="col-md-12 gtc-text">
-										<span>A global approach to shopping</span>
-									</div>
-									<div class="col-md-12 col-12x no-padding">
-										<ul class="navbar-nav main-nav">
-											<li class="nav-item directory-b-b"><a href="/directory" class="nav-link">DIRECTORY</a></li>
-											<li class="nav-item wholesale-b-b"><a href="/wholesale" class="nav-link">WHOLESALE</a></li>
-											<li class="nav-item shop-b-b"><a href="/shop" class="nav-link">SHOP</a></li>
-											<li class="nav-item service-b-b"><a href="/services" class="nav-link">SERVICES</a></li>
-											<li class="nav-item lifestyle-b-b"><a href="/lifestyle" class="nav-link">LIFESTYLE</a></li>
-											<li class="nav-item products-b-b"><a href="/products" class="nav-link">PRODUCTS</a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</nav>
-					</div>
-				</div>
 				<div class="col-md-6">
-					<div class="top-header">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="gtc-top-header">
-									<ul class="top-menu-list" style="padding-right: 11%;">
-										<li class="geo-locate">
-											<a href="/geo-locate">
-												<svg xmlns="http://www.w3.org/2000/svg" width="20.6" height="20.6" viewBox="0 0 20.6 20.6"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" cx="10.3" cy="10.3" r="7.8"></circle><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M0 10.3h20.6M10.3 0v20.6"></path><circle fill="#154A80" cx="10.3" cy="10.3" r="4.8"></circle><circle fill="currentColor" cx="10.3" cy="10.3" r="2"></circle></svg>
-												<span class="top-menu-text">Geo Locate</span>
-											</a>
-										</li>
-										<li>
-											<a href="/order-track"> 
-												<svg xmlns="http://www.w3.org/2000/svg" width="17" height="22" viewBox="0 0 17 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.5 1C4.4 1 1 4.4 1 8.5S7.3 21 8.5 21 16 12.6 16 8.5 12.6 1 8.5 1z"></path><circle fill="currentColor" cx="8.5" cy="8.5" r="2"></circle></svg>
-												<span class="top-menu-text">Track your Order</span>
-											</a>
-										</li>
-										{{#if LoggedInUser.id}}
-										<li class="dropdown cursor-pointer">
-											<a id="dropdownMenuButton" {{#ifCond LoggedInUser.email_verified '==' 0}}class="text-warning"{{/ifCond}} data-toggle="dropdown" aria-haspopup="true" {{#ifCond LoggedInUser.email_verified '==' 0}} title="Your email is not verified."{{/ifCond}} aria-expanded="false">
-												<svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
-												<span class="top-menu-text">Welcome back, {{LoggedInUser.first_name}}</span>
-											</a>
-											<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
-												<ul>
-													<li><a href="/order-history">Order History</a></li>
-													<li><a href="#">My Downloads</a></li>
-													<li><a href="/wishlist">Wishlist</a></li>
-													<div class="hr-line-solid"></div>
-													<li><a href="/billing-settings">Billing Settings</a></li>
-													<li><a href="/user-profile">Profile Settings</a></li>
-													<li><a href="#">GTC Mail</a></li>
-													<div class="hr-line-solid"></div>
-													<li><a href="#">Contact</a></li>
-													<li><a href="#">Feed</a></li>
-													<li><a href="#">Support</a></li>
-													<div class="hr-line-solid"></div>
-													<li><a href="javascript:;" onclick="gtcLogout()">Logout</a></li>
-												</ul>
-											</div>
-										</li>
-										{{else}}
-										<li>
-			                                <a href="/login">
-			                                    <svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
-			                                    <span class="top-menu-text">Log In</span>
-			                                </a>
-			                            </li>
-			                            <li class="join-now">
-			                                <a href="/login">
-			                                    <span class="badge">+</span>
-			                                    <svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
-			                                    <span class="top-menu-text m-l-xs">JOIN NOW!</span>
-			                                </a>
-			                            </li>
-										{{/if}}
-										<li>
-											<a href="/compare">
-												<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
-												<span class="top-menu-text">Compare</span>
-											</a>
-										</li>
-										<li>
-											<a href="/wishlist">
-												<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
-												<span class="top-menu-text">Wishlist</span>
-											</a>
-										</li>
-										<li class="tot-amt dropdown cursor-pointer">
-											{{#if LoggedInUser.id}}
-											<a id="dropdownMenuButton2"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span class="badge">{{#if cartheader.cartItemsCount}}{{cartheader.cartItemsCount}}{{else}}0{{/if}} </span>
-												<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-												<span class="m-l-xs">{{currency cartheader.totalPrice.grandTotal '$'}}</span>
-											</a>
-											<div class="dropdown-menu dropdown-menu-list cart-list" aria-labelledby="dropdownMenuButton2">
-												<h4>MY CART</h4>
-												<p class="wholesale-cart-txt">{{cartheader.marketplaceCount.PWM}} Wholesale items</p>
-												<p class="shop-cart-txt">{{cartheader.marketplaceCount.PM}} Shop items</p>
-												<p class="service-cart-txt">{{cartheader.marketplaceCount.SM}} Service items</p>
-												<p class="subscription-cart-txt">{{cartheader.marketplaceCount.LM}} Subscription items</p>
-												<a href="/cart" class="btn btn-sm btn-primary">VIEW CART</a>
-											</div>
-											{{else}}
-											<a href="/cart">
-												<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-												<span class="top-menu-text">Cart</span>
-											</a>
-											{{/if}}
-										</li>
+					<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
+						<a class="brand-logo" href="/">
+							<img src="gtc-assets/img/logo.svg" alt="logo" title="Global Trade Connect">
+						</a>
+						<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#searchCollapseBar">
+							<svg xmlns="http://www.w3.org/2000/svg" width="22.6" height="23.6" viewBox="0 0 22.6 23.6"><g fill="none" stroke="#ddd" stroke-width="4" stroke-miterlimit="10"><circle cx="9.3" cy="9.3" r="7.3"/><path d="M14.2 14.6l6.9 7.6"/></g></svg>
+						</button>
+						<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#mainNavbar" style="margin-right: 30px;">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<div class="navbar-collapse main-navbar collapse" id="mainNavbar">
+							<div class="row no-margins no-padding">
+								<div class="col-md-12 gtc-text">
+									<span>A global approach to shopping</span>
+								</div>
+								<div class="col-md-12 col-12x no-padding">
+									<ul class="navbar-nav main-nav">
+										<li class="nav-item directory-b-b"><a href="/directory" class="nav-link">DIRECTORY</a></li>
+										<li class="nav-item wholesale-b-b"><a href="/wholesale" class="nav-link">WHOLESALE</a></li>
+										<li class="nav-item shop-b-b"><a href="/shop" class="nav-link">SHOP</a></li>
+										<li class="nav-item service-b-b"><a href="/services" class="nav-link">SERVICES</a></li>
+										<li class="nav-item lifestyle-b-b"><a href="/lifestyle" class="nav-link">LIFESTYLE</a></li>
+										<li class="nav-item products-b-b"><a href="/products" class="nav-link">PRODUCTS</a></li>
 									</ul>
 								</div>
 							</div>
-						</div> 
-						<div class="row">
-							<div class="col-md-12 col-12x" style="margin-top: 12px;">
-								<form id="topSearchForm" class="search-form-home">
-									<div class="input-group search-input-group">
-										<div id="searchBtnGrp" class="btn-group">
-											<a class="btn btn-secondary btn-sm dropdown-toggle marketplace-dropdown radius-left" data-toggle="dropdown" href="#">
-												SEARCH MARKETPLACE
-											</a>
-											<div class="dropdown-menu left-search-dropdown">
-												<a class="dropdown-item" href="/directory">DIRECTORY</a>
-												<a class="dropdown-item" href="/wholesale">WHOLESALE</a>
-												<a class="dropdown-item" href="/shop">SHOP</a>
-												<a class="dropdown-item" href="/services">SERVICES</a>
-												<a class="dropdown-item" href="/lifestyle">LIFESTYLE</a>
-												<a class="dropdown-item" href="/products">PRODUCTS</a>
-											</div>
+						</div>
+					</nav>
+				</div>
+				<div class="col-md-6">
+					<div class="row">
+						<div class="col-md-12 col-12x">
+							<div class="gtc-top-header">
+								<ul class="top-menu-list">
+									<li class="geo-locate">
+										<a href="/geo-locate">
+											<svg xmlns="http://www.w3.org/2000/svg" width="20.6" height="20.6" viewBox="0 0 20.6 20.6"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" cx="10.3" cy="10.3" r="7.8"></circle><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M0 10.3h20.6M10.3 0v20.6"></path><circle fill="#154A80" cx="10.3" cy="10.3" r="4.8"></circle><circle fill="currentColor" cx="10.3" cy="10.3" r="2"></circle></svg>
+											<span class="top-menu-text">Geo Locate</span>
+										</a>
+									</li>
+									<li>
+										<a href="/order-track"> 
+											<svg xmlns="http://www.w3.org/2000/svg" width="17" height="22" viewBox="0 0 17 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.5 1C4.4 1 1 4.4 1 8.5S7.3 21 8.5 21 16 12.6 16 8.5 12.6 1 8.5 1z"></path><circle fill="currentColor" cx="8.5" cy="8.5" r="2"></circle></svg>
+											<span class="top-menu-text">Track your Order</span>
+										</a>
+									</li>
+									{{#if LoggedInUser.id}}
+									<li class="dropdown cursor-pointer">
+										<a id="dropdownMenuButton" {{#ifCond LoggedInUser.email_verified '==' 0}}class="text-warning"{{/ifCond}} data-toggle="dropdown" aria-haspopup="true" {{#ifCond LoggedInUser.email_verified '==' 0}} title="Your email is not verified."{{/ifCond}} aria-expanded="false">
+											<svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
+											<span class="top-menu-text">Welcome back, {{LoggedInUser.first_name}}</span>
+										</a>
+										<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
+											<ul>
+												<li><a href="/order-history">Order History</a></li>
+												<li><a href="#">My Downloads</a></li>
+												<li><a href="/wishlist">Wishlist</a></li>
+												<div class="hr-line-solid"></div>
+												<li><a href="/billing-settings">Billing Settings</a></li>
+												<li><a href="/user/my-profile">Profile Settings</a></li>
+												<li><a href="#">GTC Mail</a></li>
+												<div class="hr-line-solid"></div>
+												<li><a href="#">Contact</a></li>
+												<li><a href="#">Feed</a></li>
+												<li><a href="#">Support</a></li>
+												<div class="hr-line-solid"></div>
+												<li><a href="javascript:;" onclick="gtcLogout()">Logout</a></li>
+											</ul>
 										</div>
-										<input type="search" class="form-control form-control-sm" id="inputSearchText" name="keyword" placeholder="Search the Globe" aria-label="...">
-										<div class="search-select">
-											<select class="form-control form-control-sm" id="inputSearchCategory" name="category">
-												<option disabled selected>Category</option>
-												{{#each categories}}
-												<option value={{this.id}}>{{#Titlecase this.name}}{{/Titlecase}}</option>
-												{{/each}}
-											</select>
+									</li>
+									{{else}}
+									<li>
+		                                <a href="/login">
+		                                    <svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
+		                                    <span class="top-menu-text">Log In</span>
+		                                </a>
+		                            </li>
+		                            <li class="join-now">
+		                                <a href="/login">
+		                                    <span class="badge">+</span>
+		                                    <svg xmlns="http://www.w3.org/2000/svg" width="19.9" height="22" viewBox="0 0 19.9 22"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M7.3 10.4c-2.9-2.8-3.2-5.7-.9-8 2-1.9 5.2-1.8 7.1.2 2.1 2.3 1.7 5.2-1.1 7.8.2.1.4.2.7.3 3.5 1.4 5.7 4.5 5.7 8.3 0 1.2-.7 2-2 2H2.9c-1.3 0-2-.8-2-2.1C1 15 3 12.3 6.5 10.7c.3-.1.6-.2.8-.3z"></path></svg>
+		                                    <span class="top-menu-text m-l-xs">JOIN NOW!</span>
+		                                </a>
+		                            </li>
+									{{/if}}
+									<li>
+										<a href="/compare">
+											<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
+											<span class="top-menu-text">Compare</span>
+										</a>
+									</li>
+									<li>
+										<a href="/wishlist">
+											<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
+											<span class="top-menu-text">Wishlist</span>
+										</a>
+									</li>
+									<li class="tot-amt dropdown cursor-pointer">
+										{{#if LoggedInUser.id}}
+										<a id="dropdownMenuButton2"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<span class="badge">{{#if cartheader.cartItemsCount}}{{cartheader.cartItemsCount}}{{else}}0{{/if}} </span>
+											<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
+											<span class="m-l-xs">{{currency cartheader.totalPrice.grandTotal '$'}}</span>
+										</a>
+										<div class="dropdown-menu dropdown-menu-list cart-list" aria-labelledby="dropdownMenuButton2">
+											<h4>MY CART</h4>
+											<p class="wholesale-cart-txt">{{cartheader.marketplaceCount.PWM}} Wholesale items</p>
+											<p class="shop-cart-txt">{{cartheader.marketplaceCount.PM}} Shop items</p>
+											<p class="service-cart-txt">{{cartheader.marketplaceCount.SM}} Service items</p>
+											<p class="subscription-cart-txt">{{cartheader.marketplaceCount.LM}} Subscription items</p>
+											<a href="/cart" class="btn btn-sm btn-primary">VIEW CART</a>
 										</div>
-										<button type="submit" class="btn btn-sm btn-gtc">
-											<i class="fa fa-search"></i>
-										</button>
-									</div>
-								</form>
+										{{else}}
+										<a href="/cart">
+											<svg width="21.4" height="20.8" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
+											<span class="top-menu-text">Cart</span>
+										</a>
+										{{/if}}
+									</li>
+								</ul>
 							</div>
-						</div>  
+						</div>
+						<div class="col-md-12 col-12 collapse" id="searchCollapseBar">
+							<form id="topSearchForm" class="search-form-home">
+								<div class="input-group search-input-group">
+									<div id="searchBtnGrp" class="btn-group">
+										<a class="btn btn-secondary btn-sm dropdown-toggle marketplace-dropdown radius-left" data-toggle="dropdown" href="#">
+											SEARCH MARKETPLACE
+										</a>
+										<div class="dropdown-menu left-search-dropdown">
+											<a class="dropdown-item" href="/directory">DIRECTORY</a>
+											<a class="dropdown-item" href="/wholesale">WHOLESALE</a>
+											<a class="dropdown-item" href="/shop">SHOP</a>
+											<a class="dropdown-item" href="/services">SERVICES</a>
+											<a class="dropdown-item" href="/lifestyle">LIFESTYLE</a>
+											<a class="dropdown-item" href="/products">PRODUCTS</a>
+										</div>
+									</div>
+									<input type="search" class="form-control form-control-sm" id="inputSearchText" name="keyword" placeholder="Search the Globe" aria-label="...">
+									<div class="search-select">
+										<select class="form-control form-control-sm" id="inputSearchCategory" name="category">
+											<option disabled selected>Category</option>
+											{{#each categories}}
+											<option value={{this.id}}>{{#Titlecase this.name}}{{/Titlecase}}</option>
+											{{/each}}
+										</select>
+									</div>
+									<button type="submit" class="btn btn-sm btn-gtc">
+										<i class="fa fa-search"></i>
+									</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -5,6 +5,7 @@ const uuid = require('node-uuid');
 const moment = require('moment');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
+const sequelize = require('sequelize');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');

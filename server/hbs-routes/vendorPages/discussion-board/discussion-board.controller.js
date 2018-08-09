@@ -54,7 +54,13 @@ export function vendorDiscussion(req, res) {
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var includeArr = [{
-		model:model['DiscussionBoardPostLike']
+		model:model['DiscussionBoardPostLike'],
+		// attributes: [[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']],
+		where:{
+			status:status['ACTIVE']
+		},
+		// group: ['DiscussionBoardPostLike.discussion_board_post_id'],
+		required:false
 	},{
 		model:model['DiscussionBoardPostComment'],
 		include:[{
@@ -78,9 +84,8 @@ export function vendorDiscussion(req, res) {
 		discussion: function(callback) {
 			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
 				.then(function(response) {
-					console.log(response.rows)
+					console.log("----------======================------------------",JSON.stringify(response.rows))
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
