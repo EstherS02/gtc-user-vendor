@@ -16,6 +16,12 @@ export function productView(productID) {
 				status: status['ACTIVE']
 			},
 			include: [{
+				model: model['Country'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: ['id', 'name', 'code', 'status']
+			}, {
 				model: model['Marketplace'],
 				where: {
 					status: status['ACTIVE']
@@ -48,6 +54,16 @@ export function productView(productID) {
 				limit: 4,
 				offset: 0,
 				attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status'],
+				required: false
+			}, {
+				model: model['Review'],
+				where: {
+					status: status['ACTIVE']
+				},
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('Reviews.rating')), 'productRating']
+				],
+				group: ['Reviews.user_id'],
 				required: false
 			}]
 		}).then((product) => {

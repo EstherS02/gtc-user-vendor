@@ -1,187 +1,11 @@
-<style>
-	#addCompare {
-		cursor: pointer;
-	}
-</style>
-
-<script>
-
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var productSpecs = {{{DisplayJSON product}}}
-	var statusCode = {{{DisplayJSON status}}}
-
-	$(function() {
-		$('#review-stars').barrating({
-			theme: 'fontawesome-stars'
-		});
-
-		$("#gtc-cart-alert").hide();
-		$("#gtc-add-to-cart").click(function() {
-			$('#gtc-add-to-cart').prop('disabled', true);
-
-			var cartInfo = {};
-			cartInfo.product_quantity = $('#quantityInput').val();
-
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
-				data: cartInfo,
-				success: function(res) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (res && res.message === "SUCCESS") {
-						outputPop(res.message_details);
-						// $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-						// $('#gtc-cart-alert .cart-message').text(res.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// 	location.reload();
-						// });
-						console.log(res)
-					}
-				},
-				error: function(error) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (error) {
-						if (error.status === 401)
-							return location.href = "/login";
-
-						outputErrorPop(error);
-						// $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-						// $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// });
-
-					}
-				}
-			});
-		});
-	});
-
-
-	$("#reviewForm").validate({
-		rules: {
-			reviewDetailComment: "required",
-			reviewTitle: "required"
-		},
-		messages: {
-			reviewDetailComment: "Please Enter your review Comment",
-			reviewTitle: "Please enter your Review title"
-		}
-	});
-
-	function reviewSubmit(id) {
-
-		let reviewObj = {};
-
-		if (userInfo.email) {
-			if ($("#reviewForm").valid()) {
-				reviewObj['rating'] = $('#review-stars').val();
-				reviewObj['title'] = $('#review-title').val();
-				reviewObj['comment'] = $('#review-detail-comment').val();
-				reviewObj['product_id'] = parseInt(id);
-				reviewObj['user_id'] = parseInt(userInfo.id);
-				reviewObj['status'] = 1;
-
-				console.log(reviewObj);
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function(result) {
-						if (result)
-							location.reload();
-					}
-				});
-			}
-		} else {
-			location.href = "/login"
-		}
-	}
-
-	function wishUpdate() {
-		if (userInfo.email) {
-			var newObj = {};
-			newObj.product_id = productSpecs.id;
-			newObj.user_id = userInfo.id;
-			if ($('input[name=wishID]').val()) {
-				newObj.status = 0;
-			} else {
-				newObj.status = statusCode.ACTIVE;
-			}
-			console.log(newObj);
-			var queryObj = {};
-			queryObj.product_id = productSpecs.id;
-			queryObj.user_id = userInfo.id;
-			var data = JSON.stringify({
-				queryObj: queryObj,
-				newObj: newObj
-			});
-			var newData = {};
-			newData.data = data;
-			$.ajax({
-				type: 'PUT',
-				url: '/api/product-view/addOrRemove',
-				data: newData,
-				success: function(data, text) {
-					location.reload();
-				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
-				}
-			});
-
-		} else {
-			location.href = "/login"
-		}
-
-	}
-
-</script>
 <script type="text/javascript">
-var productSpecs = {{{DisplayJSON product}}}
-var newData = {};
-newData.product_id = productSpecs.id;
-function compareProduct(e){
-	$.ajax({
-		type: 'POST',
-		url: '/api/product-view/add-to-compare',
-		data: newData,
-		success: function(res) {
-			if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
-                    console.log(res)
-                }
-		},
-		error: function(error) {
-			if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    outputErrorPop(error);
-                }
-			console.log('error', error);
-		}
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
+	$(document).ready(function() {
+		$("#gtc-add-to-cart").click(function() {
+			console.log("yes");
+		});
 	});
-
-}
- function outputPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-cart-alert .cart-message').text(argument)
-        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-            location.reload();
-        });
-    }
-
-    function outputErrorPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
-        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-        });
-    }
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -270,7 +94,7 @@ function compareProduct(e){
                             						<div class="add-to-bag text-right">
                             							<label class="m-r-xs text-light-muted">Quantity: </label>
                             							<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" value="1" min="1">
-														<a href="javascript:;" class="btn btn-primary">
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<svg width="18" height="16" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"/><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"/></g></svg>
 															<span class="m-l-xs align-middle">ADD TO BAG</span>
 														</a>
@@ -285,7 +109,7 @@ function compareProduct(e){
                             				<div class="alignleft icon">
                             					<ul>
                             						<li>
-                            							<a href="javascript:;" onclick="compareProduct()" id="addCompare">
+                            							<a href="javascript:;" onclick="compareProduct()">
 															<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
 															<span>Add to Compare</span>
 														</a>
@@ -329,19 +153,19 @@ function compareProduct(e){
 											</div>
 											<div class="m-l-sm block-1">
 												<h3 class="d-inline-block">Product Rating</h3>
-												<h3 class="d-inline-block m-r m-l text-primary"><b>{{avgRating}}</b></h3>
-												<h3 class="d-inline-block"><span class="text-black text-sm">Based on</span> <strong>23 Reviews</strong></h3>
+												<h3 class="d-inline-block text-primary"><b>{{product.rating}}</b></h3>
+												<h3 class="d-inline-block"><span class="text-black">Based on</span> <strong>{{productRecentReview.count}} Reviews</strong></h3>
 												<div class="row">
 													<div class="col-md-5 rating-content">
-														{{#each rating}}
+														{{#each productRatings}}
 														<div class="d-flex">
 															<div class="col-7 no-padding">
 																<div class="7star p-rating">
-																	{{starCount this.starCount}}
+																	{{starCount this.rating}}
 																</div>
 															</div>
 															<div class="col-5 no-padding">
-																<span class="tot-rating-count">(<a href="javascript:;">{{this.ratingCount}} Ratings</a>)</span>
+																<span class="tot-rating-count">(<a href="javascript:;">{{this.userCount}} Ratings</a>)</span>
 															</div>
 														</div>
 														{{/each}}
@@ -349,32 +173,29 @@ function compareProduct(e){
 													</div>
 													<div class="col-md-7 reviews-content">
 														<div class="feed-activity-list">
+															{{#each productRecentReview.rows}}
 															<div class="feed-element b-b-none">
-																<a class="float-left" href="profile.html">
-																	<img alt="image" class="rounded-circle" src="../../gtc-assets/images/a4.jpg">
+																<a class="float-left" href="javascript:;">
+																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
-																	<span class="review-title">"Great place, great food, warm hospitality"</span>
+																	<span class="review-title">{{this.title}}</span>
 																	<div class="m-b-xs m-t-xs">
 																		<div class="alignleft">
 																			<div class="p-rating">
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+																				{{starCount this.rating}}
 																			</div>
 																		</div>
 																		<div class="alignleft m-l-sm">
-																			<small class="float-right">3 days ago</small>
+																			<small class="float-right">{{FormatDate this.created_on}}</small>
 																		</div>
 																		<div style="clear: both;"></div>
 																	</div>
-																	<span>We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone`s radar. By the end of the conference most of ourattendees had arrived after all and had a fabulous time, Well done folks!</span>
+																	<span>{{this.comment}}</span>
+																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
 																</div>
 															</div>
+															{{/each}}
 														</div>
 														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
 													</div>
