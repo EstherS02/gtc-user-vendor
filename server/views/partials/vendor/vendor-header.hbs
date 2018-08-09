@@ -203,47 +203,49 @@
 					})
 				}
 
-			});
+            });
 
-			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
-				"<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this," + index + ")' aria-hidden='true'></i></span></span>"
+        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
 
-			$(domElement).insertAfter(".preview");
+            $(domElement).insertAfter(".preview");
 
-			$('#profile-picture-modal').modal('hide');
-			index++;
-		});
+            $('#profile-picture-modal').modal('hide');
+        index++;
+        });
 
-		$('#profile-picture-modal').on('shown.bs.modal', function() {
-			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
-				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
-				ready: function() {}
-			});
-		}).on('hidden.bs.modal', function() {
-			cropBoxData = cropper.getCropBoxData();
-			canvasData = cropper.getCanvasData();
-			cropper.destroy();
-		});
+        $('#profile-picture-modal').on('shown.bs.modal', function () {
+            cropper = new Cropper(cropperInputImage, {
+                aspectRatio: 16 / 16,
+                minCropBoxHeight: 280,
+                minCropBoxWidth: 1364,
+                ready: function () { }
+            });
+        }).on('hidden.bs.modal', function () {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
 
-		function fasterPreviews(uploader) {
-			if (uploader.files && uploader.files[0]) {
-				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+        function fasterPreviews(uploader) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
-				console.log(fileDetails, uploader.files[0])
-				$('#UploadedImage').attr('src',
-					window.URL.createObjectURL(uploader.files[0]));
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
-			}
-		}
-		if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
-			$('#editProfileImg').click(function() {
+                console.log(fileDetails, uploader.files[0])
+                $('#UploadedImage').attr('src',
+                    window.URL.createObjectURL(uploader.files[0]));
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
+            }
+        }
+		// $('.hide_edit').hide();
+		if(userInfo.Vendor.id == vendorInfo.id) {
+			// $('.hide_edit').show();
+			$('#editProfileImg').click(function(){
 				$('.profilepicedit').click();
 			});
 		}
@@ -302,7 +304,9 @@
 	<div class="vp-cover">
 		<div class="crop_edit_icon">
 			<input type="file" id="imageUpload" class="edit_picture" name="somename" size="chars">
+			{{#ifCond LoggedInUser.Vendor.id "==" this.VendorDetail.id}}
 			<span id="editPicture" class="edit-icon-align"><i class="fa fa-pencil icon_padding"></i><b>CHANGE COVER</b></span>
+			{{/ifCond}}
 		</div>
 		{{!-- <img src="https://media.istockphoto.com/photos/curvy-roads-silk-trading-route-between-china-and-india-picture-id523035682?s=2048x2048" class="object-fit"> --}}
 		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit">
@@ -315,10 +319,21 @@
 	<div class="vp-menu">
 		<div class="gtc-container">
 			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
-				<a class="vendor-logo profile_img_edit">
+				<a  class="vendor-logo profile_img_edit">
 					<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} alt="logo" title="Global Trade Connect">
+<<<<<<< HEAD
 					<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
 					<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+=======
+					{{#ifCond LoggedInUser.Vendor.id "==" this.VendorDetail.id}}
+					<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
+					<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					{{/ifCond}}
+					{{!-- <span class="hide_edit">
+						<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
+						<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					</span> --}}
+>>>>>>> 8342bea9f6822c0b8e028d0bbddef73ca9dcb6f8
 				</a>
 				<button class="navbar-toggler collapsed navbar-dark" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
