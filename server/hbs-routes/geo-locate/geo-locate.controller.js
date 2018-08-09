@@ -59,6 +59,34 @@ export function geoLocate(req, res) {
                     console.log('Error :::', error);
                     return callback(error);
                 });
+            },
+            categoriesWithCount: function(callback) {
+                var categoryQueryObj = {};
+                var productCountQueryParames = {};
+    
+                categoryQueryObj['status'] = statusCode["ACTIVE"];
+                productCountQueryParames['status'] = statusCode["ACTIVE"];
+               /*  if (vendor_id) {
+                    productCountQueryParames['vendor_id'] = vendor_id;
+                } */
+            /*     if (req.query.marketplace_type) {
+                    productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+                }
+                if (req.query.location) {
+                    productCountQueryParames['product_location'] = req.query.location;
+                }
+                if (req.query.keyword) {
+                    productCountQueryParames['product_name'] = {
+                        like: '%' + req.query.keyword + '%'
+                    };
+                } */
+                service.getCategory(categoryQueryObj, productCountQueryParames)
+                    .then(function(response) {
+                        return callback(null, JSON.parse(JSON.stringify(response)));
+                    }).catch(function(error) {
+                        console.log('Error :::', error);
+                        return callback(null);
+                    });
             }
         },
         function(err, results) {
@@ -72,6 +100,7 @@ export function geoLocate(req, res) {
                     cartheader: results.cartCounts,
                     geoLocateObj: results.geoLocateQuery,
                     geoLocateByVendor: geoLocateByVendor,
+                    categoriesWithCount: results.categoriesWithCount,
                     LoggedInUser: LoggedInUser
                 });
             } else {

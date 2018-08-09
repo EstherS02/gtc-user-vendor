@@ -1,9 +1,140 @@
- 
  {{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3 constant-height" style="height: 650px;">
+
+            <div class="col-md-3">
+                <div class="row">            
+                    <div class="col-md-10 geo_sort_bg">
+                        <p>Showing
+                            <b> 1660 products</b>
+                        </p>
+                    </div>
+                    <div class="col-md-2 geo_arrow_bg">
+                        <i class="fas fa-caret-right"></i>
+                    </div>
+                </div>
+                <div class="row">
+            
+                    <div class="col-md-12 col-12 showing_categ" style="background-color:#FFF">
+                        <p>
+                            <b>FILTER BY CATEGORY</b>
+                        </p>
+                        <p class="cat_bg_title">ALL CATEGORIES (293)</p>
+                        <div class="list-group panel ">
+                            <a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false" style="background-color:#FFF !important;">
+                                <i class="fas fa-caret-down"></i>
+                                <span class="hidden-sm-down">AGRICULTURE(293)</span>
+                            </a>
+                            <div class="collapse" id="menu1">
+                                <a href="#menu1sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false" style="background-color:#FFF !important;">Animals(93)</a>
+                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Aquaculture(93)</a>
+                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Building Construction(93)</a>
+                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Fram Machines &amp; Tools(93)</a>
+                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Flowers &amp; Plants(93)</a>
+                            </div>
+                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
+                                <i class="fas fa-caret-right"></i>
+                                <span class="hidden-sm-down">APPAREL &amp; FASHION(293)</span>
+                            </a>
+                            <a href="#menu3" style="background-color:#FFF !important;" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar"
+                                aria-expanded="false">
+                                <i class="fas fa-caret-right"></i>
+                                <span class="hidden-sm-down">ELECTRONICS &amp; ELECTRICAL(293) </span>
+                            </a>
+                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
+                                <i class="fas fa-caret-right"></i>
+                                <span class="hidden-sm-down">FOOD &amp; BEVERAGE(293)</span>
+                            </a>
+                            <a href="#">More ... (10 Categories)</a>
+                        </div>
+                        <p style="margin-top: 20px;">
+                            <b>FILTER BY LOCATION</b>
+                        </p>
+                        <p class="cat_bg_title">GLOBAL (293)</p>
+                        <div class="list-group panel " style="background-color:#FFF">
+                            <a href="#menu2" style="background-color:#FFF !important;" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar"
+                                aria-expanded="false">
+                                <i class="fas fa-caret-down"></i>
+                                <span class="hidden-sm-down">NORTH AMERICA(293)</span>
+                            </a>
+                            <div class="collapse" id="menu2" style="background-color:#FFF">
+                                <a href="#menu1sub1" style="background-color:#FFF !important;" class="list-group-item" data-toggle="collapse" aria-expanded="false">Canada(93)</a>
+                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">United States(93)</a>
+                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Mexico(93)</a>
+                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Hondures(93)</a>
+                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Ecuador(93)</a>
+                            </div>
+                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
+                                <i class="fas fa-caret-right"></i>
+                                <span class="hidden-sm-down">SOUTH AMERICA</span>
+                            </a>
+                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
+                                <i class="fas fa-caret-right"></i>
+                                <span class="hidden-sm-down">EUROPE</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="background-color: #FFF;">
+                        <p>
+                            <b class="geo_search_filter">FILTER BY PRICE</b>
+                        </p>
+                        <p>
+                            <input type="text" placeholder="From" class="geo_search_from" /> &nbsp;&nbsp;-
+                            <input type="text" placeholder="To" class="geo_search_to" />&nbsp;
+                            <button class="geo_search_update">UPDATE </button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+<!-- 
+    <div class="col-md-3">
+        <div class="ibox" style="height: 657px;overflow-y: scroll;overflow-x: hidden;">
+            <div class="ibox-content bg-transparent">
+                <h5 class="right-header-sm">SEARCH BY CATEGORY</h5>
+                <p class="right-header-xs bg{{product.Marketplace.id}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+                <ul class="right-list-view">
+                    {{#each categoriesWithCount.rows}}
+                    <li>
+                        <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a>
+                        <ul class="inner-list-view collapse" id="list{{this.name}}">
+                            {{#each this.SubCategories}}
+                            <li>
+                                <a href="../{{../../selectedPage}}/search?category={{../this.id}}&sub_category={{this.id}}&vendor_id={{../../VendorDetail.id}}">{{this.name}}</a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{#if marketPlaceTypes}}
+                <h5 class="right-header-sm m-t-sm">FILTER BY TYPE</h5>
+                <p class="right-header-xs bg{{product.Marketplace.id}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
+                <ul class="right-list-view">
+                    {{#each marketPlaceTypes.rows}}
+                    <li>
+                        <a href="../{{../selectedPage}}/search?&vendor_id={{../VendorDetail.id}}&marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">{{this.code}} - {{this.name}} ({{this.product_count}})</a>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+-->
+
+
+
+
+
+
+
+<!--
+		 <div class="col-md-3 constant-height" style="height: 650px;">
 				<div class="row" style="margin-bottom:20px;">
 					<div class="col-md-2 geo_arrow_bg">
 						<a href="geolocate_search.html" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
@@ -62,14 +193,8 @@
                                 {{/if}}
                             </div>
                               <div class="col-md-4 col-3">
-                                  <p style="font-size: 7px;">
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                  <p style="font-size: 9px;">
+                                     {{starCount this.product_rating}}
                                   </p>
                               </div>
                           </div>
@@ -84,11 +209,10 @@
                        <p class="geo_adv">Advanced Search / Filter</p> 
                     </div>
                     </div>
-			</div>
+			</div> 
 			<div class="col-md-9 common_padding1">
-						<div id="map" style=""></div>
-						<div id="bus_station" class="panel-collapse collapse"></div>
-			</div>
+				<div id="map" style=""></div>
+			</div> -->
 		</div>
 	</div>
 </section>
@@ -129,7 +253,7 @@
                 </p>`;
                 let more_content = "";
                 for(let j=0; j< mapObjProduct.length; j++){
-                    if(j === 3){
+                    if(j === 4){
                         break;
                     }
                     more_content = more_content + `<a href="#"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
