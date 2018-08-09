@@ -11,3 +11,4 @@ dist
 npm-debug.log
 coverage
 package-lock.json
+server/views/partials/dummy-chat-ui.hbs
