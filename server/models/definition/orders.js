@@ -86,6 +86,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'total_price',
             allowNull: false
         },
+         gtc_fees: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'gtc_fees',
+            allowNull: false
+        },
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',

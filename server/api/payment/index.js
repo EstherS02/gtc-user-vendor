@@ -7,7 +7,7 @@ var controller = require('./payment.controller');
 var permission = require('../../config/permission');
 
 var router = express.Router();
-
+router.get("/sendOrderMail",controller.sendOrderMail);
 router.post('/pay', auth.isAuthenticated(), controller.makePayment);
 router.post('/card', auth.isAuthenticated(), controller.createCard);
 router.post('/cancel-order/:orderItemId', auth.isAuthenticated(), controller.cancelOrder);
