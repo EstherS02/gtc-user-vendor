@@ -52,7 +52,7 @@ export function gtcMail(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('vendorNav/gtc-mail', {
+				res.render('gtc-mail/inbox', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
@@ -62,7 +62,7 @@ export function gtcMail(req, res) {
 					vendorPlan:vendorPlan
 				});
 			} else {
-				res.render('vendorNav/gtc-mail', err);
+				res.render('gtc-mail/inbox', err);
 			}
 		});
 }

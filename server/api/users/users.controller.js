@@ -331,8 +331,11 @@ export function resetPassword(req, res) {
         var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
         var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
         var bodyParams = {
-            hashed_pwd: hashedPassword
+            hashed_pwd: hashedPassword,
+            forgot_password_token: null,
+            forgot_password_token_generated: null
         };
+        
 
     if(result.forgot_password_token != forgot_password_token){
         res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
@@ -349,7 +352,7 @@ export function resetPassword(req, res) {
     }
         service.updateRow(UserModel, bodyParams, userId).then(function (response) {
             if (response) {
-                res.status(200).send("Password Updated successfully")
+                res.status(200).send("Your password has been updated successfully. Please login with the new password.")
                 return;
             } else {
                 res.status(304).send("Password Unable to update")
@@ -519,28 +522,28 @@ export function forgotPassword(req, res) {
                                             subject: subject,
                                             html: body
                                         });
-                                        return res.status(201).send(user);
+                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
                                     } else {
-                                        return res.status(201).send(user);
+                                        return res.status(404).send("Unable to reset password. Please try later.");
                                     }
                                 }).catch(function (error) {
                                     console.log('Error :::', error);
-                                    res.status(500).send(error);
+                                    res.status(500).send("Internal server error. Please try later.");
                                     return;
                                 });
                         }else{
-                            res.status(200).send("Unable to reset password. Please try later");
+                            res.status(404).send("Unable to reset password. Please try later");
                             return;
                         }
                     })
             }
             else {
-                res.status(200).send("Your search did not return any results. Please try again with other information.");
+                res.status(404).send("Your search did not return any results. Please try again with other information.");
                 return;
             }
         })
         .catch(function (error) {
-            res.status(500).send(error)
+            res.status(500).send("Internal server error. Please try later.")
             return;
         })
 }
