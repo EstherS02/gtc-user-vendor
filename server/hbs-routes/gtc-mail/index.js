@@ -17,6 +17,7 @@ router.get('/inbox', auth.isAuthenticated(), inboxCtrl.inbox);
 router.get('/sent', auth.isAuthenticated(), sentCtrl.sent);
 router.get('/drafts', auth.isAuthenticated(), draftsCtrl.drafts);
 router.get('/deleted', auth.isAuthenticated(), deletedCtrl.deleted);
+router.get('/compose',auth.isAuthenticated(),inboxCtrl.compose);
 
 
 module.exports = router;

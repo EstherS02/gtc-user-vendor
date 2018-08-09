@@ -31,19 +31,22 @@ export function makePayment(req, res) {
 
     var createdOrders;
 
-    var orderIdStore = []; 
+    var orderIdStore = [];
 
     processCheckout(req)
         .then(checkoutObjResult => {
             checkoutObj = checkoutObjResult;
-            return service.findOneRow('PaymentSetting', { id: paymentSettingId, user_id: user.id }, []);
+            return service.findOneRow('PaymentSetting', {
+                id: paymentSettingId,
+                user_id: user.id
+            }, []);
         }).then(paymentSettingResult => {
             paymentSetting = paymentSettingResult;
 
             var ordersByVendor = checkoutObj.ordersByVendor;
             var orderPromises = [];
 
-            _.forOwn(ordersByVendor, function (order, vendorId) {
+            _.forOwn(ordersByVendor, function(order, vendorId) {
                 orderPromises.push(createOrder(order));
             });
 
@@ -110,7 +113,7 @@ export function makePayment(req, res) {
                     });
                 } else return res.status(500).send(err);
             });
-            sendOrderMail(orderIdStore,req.user);
+            sendOrderMail(orderIdStore, req.user);
         }).catch(err => {
             console.log("err3", err);
             if (createdOrders && createdOrders.length > 0) {
@@ -147,7 +150,10 @@ function createOrder(orderWithItems) {
             orderItemsPromises.push(createOrderItem(orderItems[i]));
         }
         return Promise.all(orderItemsPromises).then(itemsResults => {
-            return Promise.resolve({ order: orderResult, items: itemsResults });
+            return Promise.resolve({
+                order: orderResult,
+                items: itemsResults
+            });
         }).catch(err => {
             return Promise.reject(err);
         });
@@ -208,7 +214,7 @@ function processCheckout(req) {
                     }
                 }]
             }]
-        }).then(function (data) {
+        }).then(function(data) {
             cartItems = JSON.parse(JSON.stringify(data));
             var searchObj = {};
             let includeArr = [];
@@ -218,7 +224,7 @@ function processCheckout(req) {
             }
 
             return service.findRows('Marketplace', searchObj, null, null, 'created_on', "asc", includeArr);
-        }).then(function (marketPlaceData) {
+        }).then(function(marketPlaceData) {
             marketPlaces = JSON.parse(JSON.stringify(marketPlaceData));
 
             var totalItems = cartItems.rows;
@@ -238,7 +244,7 @@ function processCheckout(req) {
             console.log("seperatedItems", seperatedItems);
             console.log("seperatedItemsByVendor", seperatedItemsByVendor);
 
-            _.forOwn(seperatedItems, function (itemsValue, itemsKey) {
+            _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
                 totalPrice[itemsKey]['price'] = 0;
                 totalPrice[itemsKey]['shipping'] = 0;
@@ -264,7 +270,7 @@ function processCheckout(req) {
             var ordersByVendor = {};
             var checkoutObj = {};
 
-            _.forOwn(seperatedItemsByVendor, function (itemsValue, vendorId) {
+            _.forOwn(seperatedItemsByVendor, function(itemsValue, vendorId) {
                 ordersByVendor[vendorId] = {};
 
                 totalPriceByVendor[vendorId] = {};
@@ -330,7 +336,7 @@ function processCheckout(req) {
 
             resolve(checkoutObj);
 
-        }).catch(function (error) {
+        }).catch(function(error) {
             console.log('Error:::', error);
             reject(error);
         });
@@ -463,7 +469,9 @@ function processCancelOrder(req) {
     return new Promise((resolve, reject) => {
         let includeArray = [];
         includeArray = populate.populateData("Order,Product");
-        service.findRow('OrderItem', { id: req.params.orderItemId }, includeArray)
+        service.findRow('OrderItem', {
+                id: req.params.orderItemId
+            }, includeArray)
             .then(orderItemRow => {
                 orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
                 if (orderItemRow.order_item_status === ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'] || orderItemRow.order_item_status === ORDER_ITEM_STATUS['REFUND_FAILED'])
@@ -483,7 +491,9 @@ function processCancelOrder(req) {
 }
 
 export function deleteCard(req, res) {
-    service.findRow('PaymentSetting', { id: req.body.paymentSettingId }, [])
+    service.findRow('PaymentSetting', {
+            id: req.body.paymentSettingId
+        }, [])
         .then(paymentSetting => {
             console.log("paymentSetting", paymentSetting);
             if (paymentSetting && paymentSetting.user_id === req.user.id) {
@@ -498,14 +508,14 @@ export function deleteCard(req, res) {
         });
 }
 
-export function sendOrderMail(orderIdStore,user){
+export function sendOrderMail(orderIdStore, user) {
     var orderIdStore = orderIdStore;
     var includeArr = [{
         model: model['OrderItem'],
         include: [{
             model: model['Product'],
         }]
-        }, {
+    }, {
         model: model['Address'],
         as: 'shippingAddress',
         include: [{
@@ -514,57 +524,57 @@ export function sendOrderMail(orderIdStore,user){
             model: model['Country']
         }, ]
     }]
-console.log(orderIdStore);
-var queryObj={
-    id: orderIdStore
-}
-var field = 'created_on';
-var order = "asc";
-var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
-                if(OrderList){
-                    var user_email = user.email;
-                    var orderNew = [];
-                    var queryObjEmailTemplate = {};
-                    var emailTemplateModel = "EmailTemplate";
-                    queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
-                    service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-                        .then(function (response) {
-                            if (response) {
-                                var email = user_email;
-                                var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
-                                var body;
-                                body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-                               _.forOwn(OrderList.rows, function (orders) {
-                                    body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name? orders.shippingAddress.company_name:'');
-                                    body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1?orders.shippingAddress.address_line1:'');
-                                    body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2?orders.shippingAddress.address_line2:'');
-                                    body = body.replace('%CITY%', orders.shippingAddress.city? orders.shippingAddress.city:'');
-                                    body = body.replace('%STATE%', orders.shippingAddress.State.name?orders.shippingAddress.State.name:'');
-                                    body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name? orders.shippingAddress.Country.name:'');
-                                    orderNew.push(orders);
-                                });
-                                    var template = Handlebars.compile(body);
-                                var data = {
-                                    order: orderNew
-                                };
-                                var result = template(data);
-                                sendEmail({
-                                    to: email,
-                                    subject: subject,
-                                    html: result
-                                });
-                                return;
-                            } else {
-                                return;
-                            }
-                        }).catch(function (error) {
-                            console.log('Error :::', error);
-                            return;
+    console.log(orderIdStore);
+    var queryObj = {
+        id: orderIdStore
+    }
+    var field = 'created_on';
+    var order = "asc";
+    var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
+        if (OrderList) {
+            var user_email = user.email;
+            var orderNew = [];
+            var queryObjEmailTemplate = {};
+            var emailTemplateModel = "EmailTemplate";
+            queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
+            service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+                .then(function(response) {
+                    if (response) {
+                        var email = user_email;
+                        var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+                        var body;
+                        body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+                        _.forOwn(OrderList.rows, function(orders) {
+                            body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
+                            body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
+                            body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
+                            body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
+                            body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
+                            body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
+                            orderNew.push(orders);
                         });
-                }
+                        var template = Handlebars.compile(body);
+                        var data = {
+                            order: orderNew
+                        };
+                        var result = template(data);
+                        sendEmail({
+                            to: email,
+                            subject: subject,
+                            html: result
+                        });
+                        return;
+                    } else {
+                        return;
+                    }
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return;
+                });
+        }
 
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return;
-            });
+    }).catch(function(error) {
+        console.log('Error :::', error);
+        return;
+    });
 }

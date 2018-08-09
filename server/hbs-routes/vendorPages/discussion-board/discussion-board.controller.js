@@ -84,7 +84,6 @@ export function vendorDiscussion(req, res) {
 		discussion: function(callback) {
 			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
 				.then(function(response) {
-					console.log("----------======================------------------",JSON.stringify(response.rows))
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);

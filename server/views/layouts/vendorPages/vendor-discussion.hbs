@@ -214,6 +214,8 @@ function apiCall(url, data) {
 										</div>
 									</div>
 									{{/each}}
+									{{else}}
+									<div>No blogs found</div>
 									{{/if}}
 									<div class="row showing_categ" style="padding: 3px; margin: 10px auto;">
 									</div>
@@ -222,7 +224,11 @@ function apiCall(url, data) {
 								<div class="dis_side_bar">
 									<p class="discussion_most_head">MOST POPULAR POSTS</p>
 									<ul>
+										{{#if discussionBoard.rows}}
 										<li>It is Time to Color Your Business</li>
+										{{else}}
+										<li>No blog Found</li>
+										{{/if}}
 									</ul>
 								</div>
 								</div>
