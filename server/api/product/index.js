@@ -16,5 +16,6 @@ router.post('/import-woocommerce', auth.hasRole(roles['VENDOR']), auth.hasPermis
 router.post('/', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.create);
 router.post('/add-product', auth.isAuthenticated(), controller.addProduct);
 router.post('/edit-product', auth.isAuthenticated(), controller.editProduct);
+router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 
 module.exports = router;
