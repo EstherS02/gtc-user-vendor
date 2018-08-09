@@ -13,6 +13,17 @@ const Plan = require('../../config/gtc-plan');
 const async = require('async');
 const _ = require('lodash');
 
+export function product(req, res) {
+	var productID;
+	var categoryModel = "Category";
+
+	if (req.params.product_id) {
+		productID = req.params.product_id;
+	}
+
+	console.log("req.isAuthenticated()", req.isAuthenticated());
+}
+
 export function GetProductDetails(req, res) {
 
 	var queryObj = {};
@@ -46,6 +57,17 @@ export function GetProductDetails(req, res) {
 	var field = "created_on";
 	var product_id;
 	var queryURI = {};
+	var followQuery = {};
+	if (LoggedInUser.id) {
+		followQuery = {
+			status: status['ACTIVE'],
+			user_id: LoggedInUser.id,
+		};
+	} else {
+		followQuery = {
+			status: status['ACTIVE']
+		};
+	}
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
@@ -140,13 +162,11 @@ export function GetProductDetails(req, res) {
 			}, {
 				model: model['VendorPlan'],
 
-			},{
+			}, {
 				model: model['VendorFollower'],
-				where:{
-					status: status['ACTIVE']
-				},
-				required:false
-			},{
+				where: followQuery,
+				required: false
+			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
@@ -156,7 +176,8 @@ export function GetProductDetails(req, res) {
 			}, {
 				model: model['VendorRating'],
 				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
 				],
 				group: ['VendorRating.vendor_id'],
 				required: false,
@@ -275,7 +296,7 @@ export function GetProductDetails(req, res) {
 			}, {
 				starCount: 6,
 				ratingCount: 0
-			},{
+			}, {
 				starCount: 5,
 				ratingCount: 0
 			}, {
@@ -319,9 +340,8 @@ export function GetProductDetails(req, res) {
 				marketPlaceTypes: results.marketPlaceTypes,
 				marketplace: marketplace,
 				selectedPage: selectedPage,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				title: "Global Trade Connect",
-				LoggedInUser: LoggedInUser,
 				Plan: Plan,
 			});
 		} else {
@@ -347,6 +367,9 @@ export function GetProductReview(req, res) {
 	var offset;
 	var order;
 	var limit;
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
@@ -365,6 +388,17 @@ export function GetProductReview(req, res) {
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
 	var productModel = 'Product';
+	var followQuery = {};
+	if (LoggedInUser.id) {
+		followQuery = {
+			status: status['ACTIVE'],
+			user_id: LoggedInUser.id,
+		};
+	} else {
+		followQuery = {
+			status: status['ACTIVE']
+		};
+	}
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
@@ -445,9 +479,14 @@ export function GetProductReview(req, res) {
 				required: false
 
 			}, {
+				model: model['VendorFollower'],
+				where: followQuery,
+				required: false
+			}, {
 				model: model['VendorRating'],
 				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
 				],
 				group: ['VendorRating.vendor_id'],
 				required: false,
@@ -627,7 +666,7 @@ export function GetProductReview(req, res) {
 				pageSize: limit,
 				collectionSize: results.Review.count,
 				queryParams: queryParams,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				Plan: Plan,
 			});
 		} else {

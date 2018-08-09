@@ -121,3 +121,11 @@
         </div>
     </div>
 </div>
+<script>
+ $(function(){
+// var socket= io.connect();
+var socket = io();
+console.log("hai this socket io-----------------------------------------")
+ socket.emit('connection');
+});
+</script>

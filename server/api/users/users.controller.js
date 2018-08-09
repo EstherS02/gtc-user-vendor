@@ -10,7 +10,7 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 const sendEmail = require('../../agenda/send-email');
 const service = require('../service');
-import moment from 'moment';
+const moment = require('moment');
 
 export function index(req, res) {
     var offset, limit, field, order;
@@ -303,6 +303,65 @@ export function changePassword(req, res) {
     });
 }
 
+export function resetPassword(req, res) {
+    var queryObj,forgot_password_token,current_time,expire_time1,expire_time2;
+
+    if (req.body) {
+        req.checkBody('email','Missing Query Param').notEmpty();
+        req.checkBody('new_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
+        req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
+    }
+    var errors = req.validationErrors();
+    if (errors) {
+        console.log("error", errors)
+        res.status(400).send(errors);
+        return;
+    }
+    var UserModel = "User";
+
+    forgot_password_token = req.body.forgot_password_token;
+
+    queryObj = {
+        email: req.body.email
+    }
+
+    service.findOneRow(UserModel, queryObj, []).then(function (result) {
+        var userId = result.id;
+        var saltWithEmail = new Buffer(result.salt + result.email.toString('base64'), 'base64');
+        var hashedPassword = crypto.pbkdf2Sync(req.body.new_password, saltWithEmail, 10000, 64, 'sha1').toString('base64');
+        var bodyParams = {
+            hashed_pwd: hashedPassword,
+            forgot_password_token: null,
+            forgot_password_token_generated: null
+        };
+        
+
+    if(result.forgot_password_token != forgot_password_token){
+        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+        return;
+    }
+
+    current_time = new Date();
+    expire_time1 = result.forgot_password_token_generated;
+    expire_time2 = moment(expire_time1).add(24, 'hours');
+
+    if(current_time >= expire_time2){
+        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+        return;
+    }
+        service.updateRow(UserModel, bodyParams, userId).then(function (response) {
+            if (response) {
+                res.status(200).send("Your password has been updated successfully. Please login with the new password.")
+                return;
+            } else {
+                res.status(304).send("Password Unable to update")
+                return;
+            }
+        })
+    });
+}
+
 
 export function userProfile(req, res) {
 
@@ -319,11 +378,11 @@ export function userProfile(req, res) {
 
     service.updateRow('User', userUpdate, user_id)
         .then(function (row) {
-            
-            if(billingUpdate){
+
+            if (billingUpdate) {
                 addressUpdate(user_id, billing_address_type, billingUpdate);
             }
-            if(shippingUpdate){
+            if (shippingUpdate) {
                 addressUpdate(user_id, shipping_address_type, shippingUpdate);
             }
             return res.status(200).send(row);
@@ -382,10 +441,10 @@ export function vendorFollow(req, res) {
     model[modelName].findOne({
         where: queryObj
     }).then(function (result) {
-        console.log("result", result.id);
         if (result) {
+
             var newStatus;
-            if (result.status == 1) {
+            if (result.status == status['ACTIVE']) {
                 newStatus = 0;
             } else {
                 newStatus = 1;
@@ -412,9 +471,318 @@ export function vendorFollow(req, res) {
                 res.status(200).send(response);
                 return;
             });
-            // console.log(i, "not in db")
         }
     });
 }
+
+export function forgotPassword(req, res) {
+
+    var queryParams = {}, bodyParams = {}, user_id;
+    var userModel = 'User';
+    var randomCode = uuid.v1();
+    var queryParams = {
+        email: req.params.email
+    };
+
+    service.findOneRow(userModel, queryParams, [])
+        .then(function (user) {
+            if (user) {
+                user_id = user.id;
+                bodyParams['forgot_password_token'] = randomCode;
+                bodyParams['forgot_password_token_generated'] = new Date();
+
+                service.updateRow(userModel, bodyParams, user_id)
+                    .then(function (result) {
+
+                        if(result){
+
+                            var forgot_password_token = bodyParams['forgot_password_token'];
+                            delete user.salt;
+                            delete user.hashed_pwd;
+                            delete user.email_verified_token;
+                            delete user.email_verified_token_generated;
+    
+                            var queryObjEmailTemplate = {};
+                            var emailTemplateModel = "EmailTemplate";
+                            queryObjEmailTemplate['name'] = config.email.templates.passwordReset;
+    
+                            service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+                                .then(function (response) {
+                                    if (response) {
+                                        var username = user["first_name"];
+                                        var email = user["email"];
+
+                                        var subject = response.subject;
+                                        var body;
+                                        body = response.body.replace('%USERNAME%', username);
+                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email+"&forgot_password_token="+forgot_password_token);
+    
+                                        sendEmail({
+                                            to: email,
+                                            subject: subject,
+                                            html: body
+                                        });
+                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+                                    } else {
+                                        return res.status(404).send("Unable to reset password. Please try later.");
+                                    }
+                                }).catch(function (error) {
+                                    console.log('Error :::', error);
+                                    res.status(500).send("Internal server error. Please try later.");
+                                    return;
+                                });
+                        }else{
+                            res.status(404).send("Unable to reset password. Please try later");
+                            return;
+                        }
+                    })
+            }
+            else {
+                res.status(404).send("Your search did not return any results. Please try again with other information.");
+                return;
+            }
+        })
+        .catch(function (error) {
+            res.status(500).send("Internal server error. Please try later.")
+            return;
+        })
+}
+
+
+//User Online
+export function userOnline(user) {
+    var queryObj = {};
+    queryObj._id = user._id;
+    console.log("queryObj", queryObj);
+    resourceModel["users"].findById(queryObj)
+        .exec().then(function(userResp) {
+            if (userResp) {
+                userResp.online = true;
+                userResp.save(function(err, user) {
+                    if (!err) {
+                        log.info("User Online");
+                    } else {
+                        log.error("Failed to update online field");
+                    }
+                })
+            } else {
+                log.info("user update error")
+            }
+        }).catch(function(err) {
+            log.info("err", err);
+        })
+}
+
+//User Offline
+export function userOffline(user) {
+    resourceModel["users"].findById({_id: user._id})
+        .exec().then(function(userResp) {
+            if (userResp) {
+                userResp.online = false;
+                userResp.save(function(err, user) {
+                    if (!err) {
+                        log.info("User Offline");
+                    } else {
+                        log.error("Failed to update online field");
+                    }
+                })
+            } else {
+                log.info("user update error")
+            }
+        }).catch(function(err) {
+            log.info("err", err);
+        })
+}
+
+export function viewContacts(req, res) {
+    var projectObj = {
+        "username": 1,
+        "online": 1,
+        "first_name": 1,
+        "last_name": 1,
+        "middle_name": 1,
+        "mobile": 1,
+        "role": 1,
+        "image_url": 1
+    }
+    if (req.user.role == 3) {
+        var contactsArr = {};
+
+        async.series([
+            function(callback) {
+                var queryObj = {};
+                queryObj.role = 3;
+                resourceModel['users'].aggregate([{
+                        $match: queryObj
+                    }, {
+                        $project: projectObj
+                    }])
+                    .exec().then(function(user) {
+                        contactsArr.users = user;
+                        callback(null, user);
+                        return null;
+                    })
+                    .catch(function(err) {
+                        callback(err, null);
+                    })
+            },
+            function(callback) {
+                resourceModel['employees'].distinct("user", {
+                        "created_by": req.user.id
+                    }).exec().then(function(employee) {
+                        var queryObj = {};
+                        queryObj._id = {
+                            $in: employee
+                        }
+                        console.log("queryObj in employee", employee);
+                        resourceModel["users"].aggregate([{
+                                $match: queryObj
+                            }, {
+                                $project: projectObj
+                            }])
+                            .exec().then(function(userRsp) {
+                                if (userRsp.length > 0) {
+                                    contactsArr.employees = userRsp;
+                                    callback(null, userRsp);
+                                    return null;
+                                }
+                            })
+                            .catch(function(err) {
+                                callback(err, null);
+                            })
+                    })
+                    .catch(function(err) {
+                        callback(err, null);
+                    })
+            }
+        ], function(err, result) {
+            if (err) {
+                console.log("err", err);
+            }
+            if (result) {
+                var contacts = _.union(contactsArr.users, contactsArr.employees);
+                sendRsp(res, 200, 'OK', {
+                    "contacts": contacts
+                })
+            }
+        })
+    } else {
+        var obj = {};
+        var contactsArr = {};
+        async.series([
+            function(callback) {
+                resourceModel['employees'].findOne({
+                    user: req.user.id
+                }).exec().then(function(employee) {
+                    obj.created_by = employee.created_by;
+                    obj.employee = employee;
+                    callback(null, employee);
+                }).catch(function(err) {
+                    callback(err, null);
+                })
+            },
+            function(callback) {
+                var queryObj = {};
+                queryObj.employees = {
+                    $in: [new ObjectId(obj.employee._id)]
+                }
+                resourceModel['stores'].aggregate([{
+                    $match: queryObj
+                }, {
+                    $unwind: "$employees"
+                }, {
+                    $group: {
+                        "_id": null,
+                        "emps": {
+                            $addToSet: "$employees"
+                        }
+                    }
+                }, {
+                    $addFields: {
+                        emps: {
+                            $filter: {
+                                input: "$emps",
+                                as: "emp",
+                                cond: {
+                                    $not: {
+                                        $in: ["$$emp", [new ObjectId(obj.employee._id)]]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }], function(err, storeResp) {
+                    console.log("err", err);
+                    if (err) {
+                        console.log("err", err);
+                        callback(err, null);
+                    }
+                    if (!err && storeResp) {
+                        if (storeResp.length > 0) {
+                            obj.emp_stores = storeResp;
+                            callback(null, storeResp)
+                        } else {
+                            callback(null, storeResp);
+                        }
+
+                    }
+                })
+
+            },
+            function(callback) {
+                console.log("obj.emp_stores.length", obj.emp_stores.length);
+                if (obj.emp_stores.length > 0) {
+                    resourceModel["employees"].distinct("user", {
+                        _id: {
+                            $in: obj.emp_stores[0].emps
+                        }
+                    }).exec().then(function(empResp) {
+                        obj.emp_ids = empResp;
+                        obj.emp_ids.push(obj.created_by);
+                        callback(null, empResp);
+                    }).catch(function(err) {
+                        console.log("err", err);
+                        callback(err, null);
+                    })
+                } else {
+                    callback(null, obj.emp_stores);
+                }
+            },
+            function(callback) {
+                var queryObj = {};
+                queryObj._id = {
+                    $in: obj.emp_ids
+                }
+                resourceModel["users"].aggregate([{
+                        $match: queryObj
+                    }, {
+                        $project: projectObj
+                    }])
+                    .exec().then(function(userRsp) {
+                        if (userRsp.length > 0) {
+                            contactsArr.user_ids = userRsp;
+                            callback(null, userRsp);
+                            return null;
+                        }
+                    })
+                    .catch(function(err) {
+                        callback(err, null);
+                    })
+
+            }
+        ], function(err, result) {
+            if (err) {
+                sendRsp(res, 500, "Error");
+            }
+            if (result) {
+                sendRsp(res, 200, "OK", {
+                    "contacts": contactsArr.user_ids
+                })
+            }
+        })
+
+    }
+}
+
 
 exports.authenticate = authenticate;

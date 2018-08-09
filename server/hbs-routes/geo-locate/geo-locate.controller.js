@@ -5,10 +5,11 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
-const sequelize = require('sequelize');
+const RawQueries = require('../../raw-queries/sql-queries');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const _ = require('lodash');
+
 
 export function geoLocate(req, res) {
     var LoggedInUser = {};
@@ -47,15 +48,30 @@ export function geoLocate(req, res) {
                         console.log('Error :::', error);
                         return callback(null);
                     });
+            },
+            geoLocateQuery: function(callback){
+                let lat = 13.07895029;
+                let lng = 80.1807242;
+
+                service.geoLocationFetch(lat, lng).then(function(geoLocationResp) {
+                    return callback(null, geoLocationResp);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(error);
+                });
             }
         },
         function(err, results) {
             if (!err) {
-                res.render('geo-locate', {
+               let geoLocateByVendor = _.groupBy(results.geoLocateQuery, "vendor_id");
+               
+                 res.render('geo-locate', {
                     title: "Global Trade Connect",
                     categories: results.categories,
                     bottomCategory: bottomCategory,
                     cartheader: results.cartCounts,
+                    geoLocateObj: results.geoLocateQuery,
+                    geoLocateByVendor: geoLocateByVendor,
                     LoggedInUser: LoggedInUser
                 });
             } else {

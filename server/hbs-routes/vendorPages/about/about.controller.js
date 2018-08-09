@@ -57,13 +57,15 @@ export function vendorAbout(req, res) {
 			}, {
 				model: model['VendorRating'],
 				attributes: [
-					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating']
+					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
+					[sequelize.fn('count', sequelize.col('VendorRatings.rating')), 'count']
 				],
 				group: ['VendorRating.vendor_id'],
 				required: false,
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
+					// console.log(response);
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -117,7 +119,7 @@ export function vendorAbout(req, res) {
 				});
 		}
 	}, function(err, results) {
-		console.log(LoggedInUser);
+		// console.log(LoggedInUser);
 		if (!err) {
 			res.render('vendorPages/vendor-about', {
 				categories: results.categories,

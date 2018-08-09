@@ -8,9 +8,9 @@
     $("#gtc-cart-alert").hide();
 
     // on change  for image name display on field
-    $('.custom-file-input1').on('change', function () {
+    $('.custom-file-input').on('change', function () {
       let fileName = $(this).val().split('\\').pop();
-      $(this).next('.custom-file-label').addClass("selected").html(fileName);
+      $(this).next('.customized-file-label').addClass("selected").html(fileName);
     });
     // End -- on change  for image name display on field
     // upload Personal id proof image
@@ -159,7 +159,7 @@
                   {{#if verification.vendor_verified_status}} {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
                   <span class="id-verified">
                     <i class="fas fa-check-circle"></i>
-                  </span>Your Document verification request is approved {{else}}
+                  </span><b>Your Document verification request is approved</b> {{else}}
                   <span class="exclamation">
                     <i class="fas fa-exclamation-circle"></i>
                   </span>You still have incomplete items to address below {{/ifCond}} {{else}}
@@ -183,7 +183,7 @@
                   <h5 class="gtc-title" style="padding-top: 2px; padding-left: 20px; float: left;">
                     Personal ID Verification
                   </h5>
-                  <p class="verificationerification-incomplete">
+                  <p class="verification-incomplete">
                     {{#if verification.personal_id_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status
                     }}
                     <span class="exclamation">
@@ -194,10 +194,10 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status
                     }}
                     <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
                     </span>
                     {{verification.personal_id_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_verification_file_status }}
                     {{else}}
@@ -230,9 +230,14 @@
                   
                       <div class="custom-file custom_error_message">
                           <input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof">
-                          <label class="custom-file-label customized-file-label" for="personalIdProof">Choose file</label>
+                          {{#if verification.personal_id_verification_file_link }}
+                         <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
+                         {{else}}
+                           <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
+                   {{/if}}
+                        
                       </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
                   </div>
                
                   {{!-- <input class="upload-btn1" type="button" id="personalId" value="SUBMIT">  --}}
@@ -255,10 +260,10 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status
                     }}
                     <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
                     </span>
                     {{verification. personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.personal_address_verification_file_status
                     }} {{else}}
@@ -282,9 +287,14 @@
                     <div class="input-group">
                         <div class="custom-file custom_error_message">
                           <input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof">
-                          <label class="custom-file-label customized-file-label" for="personalAddressProof">Choose file</label>
+                           {{#if verification.personal_address_verification_file_link }}
+                           <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
+                            {{else}}
+                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Choose file</label>
+                           {{/if}}
+                          
                       </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress"  style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
                   </div>
 
                   <br>
@@ -309,10 +319,10 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status
+                    <b>Your Id verification request is approved </b>{{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status
                     }}
                     <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
                     </span>
                     {{verification. personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_verification_file_status
                     }} {{else}}
@@ -337,9 +347,16 @@
                    <div class="input-group">
                         <div class="custom-file custom_error_message">
                           <input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof">
-                          <label class="custom-file-label customized-file-label" for="businessIdProof">Choose file</label>
+                         
+                            {{#if verification.business_verification_file_link }}
+                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
+                            {{else}}
+                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Choose file</label>
+                            
+                           {{/if}}
+                          
                       </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
                   </div>
                   <br>
                   <img id="img3" alt="your image" class="verification-id" style="object-fit: contain;" />
@@ -360,10 +377,10 @@
                     <span class="id-verified">
                       <i class="fas fa-check-circle"></i>
                     </span>
-                    Your Id verification request is approved {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status
+                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status
                     }}
                     <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
+                      <i class="fas fa-exclamation-circle"></i>
                     </span>
                     {{verification. personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_address_verification_file_status}}
                     {{else}}
@@ -385,9 +402,13 @@
                   <div class="input-group">
                         <div class="custom-file custom_error_message">
                           <input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof">
-                          <label class="custom-file-label customized-file-label" for="businessAddressProof">Choose file</label>
+                           {{#if verification.business_address_verification_file_link }}
+                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
+                            {{else}}
+                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Choose file</label>
+                           {{/if}}
                       </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress"  style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
                   </div>
                   <br>
                   <br>

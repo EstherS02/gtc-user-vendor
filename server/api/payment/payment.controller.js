@@ -1,9 +1,10 @@
 'use strict';
-
+// import Handlebars from 'handlebars';
 const async = require('async');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const Handlebars = require('handlebars');
 const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
@@ -13,6 +14,7 @@ const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
+const sendEmail = require('../../agenda/send-email');
 
 
 const stripe = require('../../payment/stripe.payment');
@@ -26,109 +28,118 @@ export function makePayment(req, res) {
     var checkoutObj;
 
     var paymentSetting;
-    
+
     var createdOrders;
 
+    var orderIdStore = [];
+
     processCheckout(req)
-    .then(checkoutObjResult => {
-        checkoutObj = checkoutObjResult;
-        return service.findOneRow('PaymentSetting', {id: paymentSettingId, user_id: user.id}, []);
-    }).then(paymentSettingResult => {
-        paymentSetting = paymentSettingResult;
-        
-        var ordersByVendor = checkoutObj.ordersByVendor;
-        var orderPromises = [];
+        .then(checkoutObjResult => {
+            checkoutObj = checkoutObjResult;
+            return service.findOneRow('PaymentSetting', {
+                id: paymentSettingId,
+                user_id: user.id
+            }, []);
+        }).then(paymentSettingResult => {
+            paymentSetting = paymentSettingResult;
 
-        _.forOwn(ordersByVendor, function(order, vendorId) {
-            orderPromises.push(createOrder(order));
-        });
+            var ordersByVendor = checkoutObj.ordersByVendor;
+            var orderPromises = [];
 
-        return Promise.all(orderPromises);
-
-    }).then(ordersWithItems => {
-        createdOrders = ordersWithItems;
-        var orderIds = [];
-        console.log("ordersWithItems", ordersWithItems);
-        for (var i = 0; i < ordersWithItems.length; i++) {
-            orderIds.push(ordersWithItems[i].order.id);
-        }
-        console.log("stripe calling");
-        let card_details = JSON.parse(paymentSetting.card_details);
-        var desc = "GTC ORDER";
-        var metadata = {};
-        metadata.orders = JSON.stringify(orderIds);
-        console.log("metadata", metadata);
-        let amt = checkoutObj.totalPrice['grandTotal'];
-        return stripe.chargeCustomerCard(user.stripe_customer_id, card_details.id, amt, desc, CURRENCY, metadata);
-    }).then(charge => {
-        console.log("charge", charge);
-        var paymentModel = {
-            paid_date: new Date(charge.created),
-            paid_amount: charge.amount / 100.0,
-            payment_method: paymentMethod['STRIPE'],
-            status: status['ACTIVE'],
-            payment_response: JSON.stringify(charge)
-        };
-        return service.createRow('Payment', paymentModel);
-    }).then(paymentRow => {
-      let orderPayments = [];
-      for (let i = 0; i < createdOrders.length; i++){
-        var orderPaymentObj = {
-            order_id: createdOrders[i].order.id,
-            payment_id: paymentRow.id,
-            order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
-            status: status['ACTIVE'],
-            created_on: new Date(),
-            created_by: req.user.first_name
-        }
-        orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
-      }
-      return Promise.all(orderPayments);
-    }).then(orderPaymentRows => {
-        let statusPromises = [];
-        for (var i = 0; i < createdOrders.length; i++) {
-            createdOrders[i].order.order_status = orderStatus['NEWORDER'];
-            statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
-        }
-        return Promise.all(statusPromises);
-      }).then(orderUpdatedRows => {
-        let clearCart = [];
-        let allCartItems = checkoutObj.cartItems.rows;
-        for(let j = 0; j < allCartItems.length; j++){
-            clearCart.push(allCartItems[j].id)
-        }
-        service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
-            if ( !(_.isNull(clearedCartRow))) {
-                return res.status(200).send({
-                    createdOrders: createdOrders
-                });
-            } else return res.status(500).send(err);
-        });
-      }).catch(err => {
-        console.log("err3", err);
-        if (createdOrders && createdOrders.length > 0) {
-            var promises = [];
-            for (var i = 0; i < createdOrders.length; i++) {
-                createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
-                promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
-            }
-            Promise.all(promises).then(result => {
-                return res.status(500).send(err);
-            }).catch(error => {
-                return res.status(500).send(err);
+            _.forOwn(ordersByVendor, function(order, vendorId) {
+                orderPromises.push(createOrder(order));
             });
-        } else {
-            return res.status(500).send(err);
-        }
-    });
-    
+
+            return Promise.all(orderPromises);
+
+        }).then(ordersWithItems => {
+            createdOrders = ordersWithItems;
+            var orderIds = [];
+            console.log("ordersWithItems", ordersWithItems);
+            for (var i = 0; i < ordersWithItems.length; i++) {
+                orderIds.push(ordersWithItems[i].order.id);
+            }
+            console.log("stripe calling");
+            let card_details = JSON.parse(paymentSetting.card_details);
+            var desc = "GTC ORDER";
+            var metadata = {};
+            metadata.orders = JSON.stringify(orderIds);
+            console.log("metadata", metadata);
+            let amt = checkoutObj.totalPrice['grandTotal'];
+            return stripe.chargeCustomerCard(user.stripe_customer_id, card_details.id, amt, desc, CURRENCY, metadata);
+        }).then(charge => {
+            console.log("charge", charge);
+            var paymentModel = {
+                paid_date: new Date(charge.created),
+                paid_amount: charge.amount / 100.0,
+                payment_method: paymentMethod['STRIPE'],
+                status: status['ACTIVE'],
+                payment_response: JSON.stringify(charge)
+            };
+            return service.createRow('Payment', paymentModel);
+        }).then(paymentRow => {
+            let orderPayments = [];
+            for (let i = 0; i < createdOrders.length; i++) {
+                var orderPaymentObj = {
+                    order_id: createdOrders[i].order.id,
+                    payment_id: paymentRow.id,
+                    order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
+                    status: status['ACTIVE'],
+                    created_on: new Date(),
+                    created_by: req.user.first_name
+                }
+                orderPayments.push(service.createRow('OrderPayment', orderPaymentObj));
+            }
+            return Promise.all(orderPayments);
+        }).then(orderPaymentRows => {
+            let statusPromises = [];
+            for (var i = 0; i < createdOrders.length; i++) {
+                createdOrders[i].order.order_status = orderStatus['NEWORDER'];
+                createdOrders[i].order.gtc_fees = 1.00;
+                orderIdStore.push(createdOrders[i].order.id);
+                statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
+            }
+            return Promise.all(statusPromises);
+        }).then(orderUpdatedRows => {
+            let clearCart = [];
+            let allCartItems = checkoutObj.cartItems.rows;
+            for (let j = 0; j < allCartItems.length; j++) {
+                clearCart.push(allCartItems[j].id)
+            }
+            service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
+                if (!(_.isNull(clearedCartRow))) {
+                    return res.status(200).send({
+                        createdOrders: createdOrders
+                    });
+                } else return res.status(500).send(err);
+            });
+            sendOrderMail(orderIdStore, req.user);
+        }).catch(err => {
+            console.log("err3", err);
+            if (createdOrders && createdOrders.length > 0) {
+                var promises = [];
+                for (var i = 0; i < createdOrders.length; i++) {
+                    createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
+                    createdOrders[i].order.gtc_fees = 1.00;
+                    promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
+                }
+                Promise.all(promises).then(result => {
+                    return res.status(500).send(err);
+                }).catch(error => {
+                    return res.status(500).send(err);
+                });
+            } else {
+                return res.status(500).send(err);
+            }
+        });
 }
 
 function createOrder(orderWithItems) {
     var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
     delete orderWithItems.items;
-    
+
     var order = orderWithItems;
+    order.gtc_fees = 1.00;
 
     return service.createRow('Order', order).then(orderResult => {
         order.id = orderResult.id;
@@ -139,9 +150,12 @@ function createOrder(orderWithItems) {
             orderItemsPromises.push(createOrderItem(orderItems[i]));
         }
         return Promise.all(orderItemsPromises).then(itemsResults => {
-            return Promise.resolve({ order: orderResult, items: itemsResults });
+            return Promise.resolve({
+                order: orderResult,
+                items: itemsResults
+            });
         }).catch(err => {
-            return Promise.reject(err);    
+            return Promise.reject(err);
         });
     }).catch(err => {
         return Promise.reject(err);
@@ -276,7 +290,7 @@ function processCheckout(req) {
                             order['order_status'] = orderStatus['NEWORDER'];
                             order['status'] = status['ACTIVE'];
                             order['invoice_id'] = uuidv1();
-                            order['purchase_order_id'] = 'PO-'+ uuidv1();
+                            order['purchase_order_id'] = 'PO-' + uuidv1();
                             order['created_by'] = req.user.first_name;
                             order['created_on'] = new Date();
                             order['billing_address_id'] = req.body.selected_billing_address_id;
@@ -314,7 +328,7 @@ function processCheckout(req) {
 
             console.log("ordersByVendor", ordersByVendor);
 
-            
+
             checkoutObj.ordersByVendor = ordersByVendor;
             checkoutObj.totalPriceByVendor = totalPriceByVendor;
             checkoutObj.totalPrice = totalPrice;
@@ -334,39 +348,39 @@ export function createCard(req, res) {
     var paymentSetting;
     if (_.isUndefined(user.stripe_customer_id) || _.isNull(user.stripe_customer_id)) {
         stripe.createCustomer(user, req.body.token.id)
-        .then(customer => {
-            user.stripe_customer_id = customer.id;
-            let card = customer.sources.data[0];
-            //console.log(card);
-            return savePaymentSetting(user, card, req.body.isPrimary); 
-        }).then(paymentSettingRes => {
-            //console.log(paymentSetting);
-            paymentSetting = paymentSettingRes;
-            return service.updateRow('User', user, user.id);
-        }).then(result => {
-            //console.log(result);
-            return res.status(200).send(paymentSetting);
-        }).catch(err => {
-            console.log(err);
-            return res.status(500).send(err);
-        });
+            .then(customer => {
+                user.stripe_customer_id = customer.id;
+                let card = customer.sources.data[0];
+                //console.log(card);
+                return savePaymentSetting(user, card, req.body.isPrimary);
+            }).then(paymentSettingRes => {
+                //console.log(paymentSetting);
+                paymentSetting = paymentSettingRes;
+                return service.updateRow('User', user, user.id);
+            }).then(result => {
+                //console.log(result);
+                return res.status(200).send(paymentSetting);
+            }).catch(err => {
+                console.log(err);
+                return res.status(500).send(err);
+            });
     } else {
         stripe.addCard(user.stripe_customer_id, req.body.token.id, req.body.isPrimary)
-        .then(card => {
-            //console.log("card", card);
-            return savePaymentSetting(user, card, req.body.isPrimary); 
-        }).then(result => {
-            //console.log("result", result);
-            paymentSetting = result;
-            return res.status(200).send(paymentSetting);
-        }).catch(err => {
-            console.log("err", err);
-            return res.status(500).send(err);
-        });
+            .then(card => {
+                //console.log("card", card);
+                return savePaymentSetting(user, card, req.body.isPrimary);
+            }).then(result => {
+                //console.log("result", result);
+                paymentSetting = result;
+                return res.status(200).send(paymentSetting);
+            }).catch(err => {
+                console.log("err", err);
+                return res.status(500).send(err);
+            });
     }
 }
 
-function savePaymentSetting(user, card, isPrimary) {    
+function savePaymentSetting(user, card, isPrimary) {
     let paymentSetting = {
         user_id: user.id,
         stripe_card_id: card.id,
@@ -381,7 +395,7 @@ function savePaymentSetting(user, card, isPrimary) {
 }
 
 
-function resMessage(message, messageDetails){
+function resMessage(message, messageDetails) {
     return {
         message: message,
         messageDetails: messageDetails
@@ -389,21 +403,21 @@ function resMessage(message, messageDetails){
 }
 
 export function cancelOrder(req, res) {
-    if(!req.body)
+    if (!req.body)
         return res.status(400).send(resMessage("BAD_REQUEST", "Missing one or more required Parameters"));
-    if(!req.body.reason_for_cancellation)
+    if (!req.body.reason_for_cancellation)
         return res.status(400).send(resMessage("BAD_REQUEST", "No Reason for cancellation"));
 
     let orderItem, paymentObj, refundObj;
 
-        processCancelOrder(req)
+    processCancelOrder(req)
         .then(orderItemObj => {
             orderItem = orderItemObj;
             let includeArray = [];
             includeArray = populate.populateData("Payment");
-            let orderPaymentQueryObj = { 
-                order_id: orderItemObj.order_id, 
-                order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'] 
+            let orderPaymentQueryObj = {
+                order_id: orderItemObj.order_id,
+                order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
             }
             return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray);
         }).then(paymentRow => {
@@ -419,7 +433,7 @@ export function cancelOrder(req, res) {
                 payment_method: paymentMethod['STRIPE'],
                 status: status['ACTIVE'],
                 payment_response: JSON.stringify(refundRow),
-                created_by: req.user.first_name, 
+                created_by: req.user.first_name,
                 created_on: new Date()
             };
             return service.createRow('Payment', paymentModel);
@@ -427,9 +441,9 @@ export function cancelOrder(req, res) {
             let orderPaymentModel = {
                 order_id: orderItem.order_id,
                 payment_id: createdPaymentRow.id,
-                order_payment_type : ORDER_PAYMENT_TYPE['REFUND'],
-                status: status['ACTIVE'], 
-                created_by: req.user.first_name, 
+                order_payment_type: ORDER_PAYMENT_TYPE['REFUND'],
+                status: status['ACTIVE'],
+                created_by: req.user.first_name,
                 created_on: new Date()
             }
             return service.createRow('OrderPayment', orderPaymentModel);
@@ -441,7 +455,7 @@ export function cancelOrder(req, res) {
                 last_updated_by: req.user.first_name,
                 last_updated_on: new Date()
             }
-            return service.updateRow('OrderItem', updateOrderItem , orderItem.id);
+            return service.updateRow('OrderItem', updateOrderItem, orderItem.id);
         }).then(successPromise => {
             return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
         }).catch(error => {
@@ -452,40 +466,115 @@ export function cancelOrder(req, res) {
 }
 
 function processCancelOrder(req) {
-  return new Promise((resolve, reject) => {
-    let includeArray = [];
-    includeArray = populate.populateData("Order,Product");
-    service.findRow('OrderItem', { id: req.params.orderItemId }, includeArray)
-      .then(orderItemRow => {
-        orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
-        if(orderItemRow.order_item_status === ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'] || orderItemRow.order_item_status === ORDER_ITEM_STATUS['REFUND_FAILED'])
-            return reject(resMessage("BAD_REQUEST", "Refund already processing"));
+    return new Promise((resolve, reject) => {
+        let includeArray = [];
+        includeArray = populate.populateData("Order,Product");
+        service.findRow('OrderItem', {
+                id: req.params.orderItemId
+            }, includeArray)
+            .then(orderItemRow => {
+                orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
+                if (orderItemRow.order_item_status === ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'] || orderItemRow.order_item_status === ORDER_ITEM_STATUS['REFUND_FAILED'])
+                    return reject(resMessage("BAD_REQUEST", "Refund already processing"));
 
-        if(orderItemRow.Order.user_id === req.user.id)
-            return resolve(orderItemRow);
-        else if(req.user.VendorStatus && req.user.Vendor && (orderItemRow.Product.vendor_id === req.user.Vendor.id))
-            return resolve(orderItemRow);
-        else 
-            return reject(resMessage("BAD_REQUEST", "Access Denied, Not Authorized to cancel the order"));
-      }).catch(err => {
-        return reject(resMessage("BAD_REQUEST", "Order item Not Found"));
-      });
+                if (orderItemRow.Order.user_id === req.user.id)
+                    return resolve(orderItemRow);
+                else if (req.user.VendorStatus && req.user.Vendor && (orderItemRow.Product.vendor_id === req.user.Vendor.id))
+                    return resolve(orderItemRow);
+                else
+                    return reject(resMessage("BAD_REQUEST", "Access Denied, Not Authorized to cancel the order"));
+            }).catch(err => {
+                return reject(resMessage("BAD_REQUEST", "Order item Not Found"));
+            });
 
-  });
+    });
 }
 
 export function deleteCard(req, res) {
-    service.findRow('PaymentSetting', {id: req.body.paymentSettingId}, [])
-    .then(paymentSetting => {
-        console.log("paymentSetting", paymentSetting);
-        if (paymentSetting && paymentSetting.user_id === req.user.id) {
-            return service.destroyRow('PaymentSetting', req.body.paymentSettingId);
-        } else {
-            return Promise.reject('Not Found');
+    service.findRow('PaymentSetting', {
+            id: req.body.paymentSettingId
+        }, [])
+        .then(paymentSetting => {
+            console.log("paymentSetting", paymentSetting);
+            if (paymentSetting && paymentSetting.user_id === req.user.id) {
+                return service.destroyRow('PaymentSetting', req.body.paymentSettingId);
+            } else {
+                return Promise.reject('Not Found');
+            }
+        }).then(result => {
+            return res.status(200).send({});
+        }).catch(err => {
+            return res.status(500).send(err);
+        });
+}
+
+export function sendOrderMail(orderIdStore, user) {
+    var orderIdStore = orderIdStore;
+    var includeArr = [{
+        model: model['OrderItem'],
+        include: [{
+            model: model['Product'],
+        }]
+    }, {
+        model: model['Address'],
+        as: 'shippingAddress',
+        include: [{
+            model: model['State']
+        }, {
+            model: model['Country']
+        }, ]
+    }]
+    console.log(orderIdStore);
+    var queryObj = {
+        id: orderIdStore
+    }
+    var field = 'created_on';
+    var order = "asc";
+    var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
+        if (OrderList) {
+            var user_email = user.email;
+            var orderNew = [];
+            var queryObjEmailTemplate = {};
+            var emailTemplateModel = "EmailTemplate";
+            queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
+            service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+                .then(function(response) {
+                    if (response) {
+                        var email = user_email;
+                        var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+                        var body;
+                        body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+                        _.forOwn(OrderList.rows, function(orders) {
+                            body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
+                            body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
+                            body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
+                            body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
+                            body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
+                            body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
+                            orderNew.push(orders);
+                        });
+                        var template = Handlebars.compile(body);
+                        var data = {
+                            order: orderNew
+                        };
+                        var result = template(data);
+                        sendEmail({
+                            to: email,
+                            subject: subject,
+                            html: result
+                        });
+                        return;
+                    } else {
+                        return;
+                    }
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return;
+                });
         }
-    }).then(result => {
-        return res.status(200).send({});
-    }).catch(err => {
-        return res.status(500).send(err);
+
+    }).catch(function(error) {
+        console.log('Error :::', error);
+        return;
     });
 }

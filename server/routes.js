@@ -31,9 +31,12 @@ export default function(app) {
   app.use('/api/coupon', require('./api/coupon'));
   app.use('/api/notification',require("./api/notification"));
   app.use('/api/verification', require('./api/verification'));
+  app.use('/api/vendor-props', require('./api/vendor-props'));
   app.use('/api/order-checkout', require('./api/order-checkout'));
   app.use('/api/payment', require('./api/payment'));
   app.use('/api/shipping-setting', require('./api/shipping-setting'));
+  app.use('/api/reports', require('./api/reports'));
+  app.use('/api/export-csv', require('./api/export-csv'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
@@ -63,7 +66,7 @@ export default function(app) {
   app.use('/gtc-talk', require('./hbs-routes/talk'));
   app.use('/search', require('./hbs-routes/search-result'));
   app.use('/login', require('./hbs-routes/login'));
-  app.use('/user-profile', require('./hbs-routes/user-profile'));
+  app.use('/user', require('./hbs-routes/user-profile'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));
   app.use('/order-history', require('./hbs-routes/order-history'));
   app.use('/dashboard-vendor-connect', require('./hbs-routes/vendor-landing'));
