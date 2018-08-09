@@ -1,4 +1,4 @@
-<script>
+ <script>
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -15,6 +15,7 @@
 			}
 		}
 	}
+	
 </script>
 <script type="text/javascript">
 	$(document).ready(function () {
@@ -51,8 +52,56 @@
 	function add(e) {
 		window.location.href = '/listings/' + e.name + '/add-product';
 	}
+	function importCSV()
+	{
+		var file = $("#csvfile")[0].files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        var output = document.getElementById("csvfile");
+        var texto = e.target.result;
+        csvJSON(texto);
+	};
+    reader.readAsText(file);
+	}
+	function csvJSON(csv) {
+	var lines = csv.split("\n");
+    var result = [];
+    var headers=lines[0].split(",");
+    for(var i=1;i<lines.length;i++){
+      var obj = {};
+	  var currentline=lines[i].split(",");
+	  for(var j=0;j<headers.length;j++)
+	  {
+	      if(currentline[j]!='')
+		  {
+           obj[headers[j]] = currentline[j];
+		  }
+	  }
+	       result.push(obj);
+      }
+   // console.log("result22"+JSON.stringify(result));
+    //return JSON.stringify(result); //JSON
+	var data = JSON.stringify(result);
+	$.ajax({
+    			url: '/api/product/import-product',
+				type: 'POST',
+				data: data,
+				cache: false,
+				dataType: 'json',
+				contentType: 'application/json',
+				success: function (data, text) {
+					$('#exampleModal').modal('hide');
+            	},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
 
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+	
+}
+
+</script>{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -90,7 +139,8 @@
 								<div class="col-md-5">
 									<form class="form-inline ml-auto pull-right">
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted">IMPORT</button>
+											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
+											{{!-- <button type="button" id="changePwd"  class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
 										</div>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
@@ -197,3 +247,32 @@
 	</div>
 </div>
 {{> footer/bottom-footer}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Import file</h5>
+			</div>
+			<form id="importFile" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Import files</label>
+								<input type="file"  id="csvfile" accept=".csv" name="file"/>
+							</div>
+						</div>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Close</button>
+					<button type="button" id="submitBtn" onclick="importCSV()" class="btn btn-small btn-primary">
+						
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
