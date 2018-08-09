@@ -404,14 +404,14 @@ Handlebars.registerHelper('currency', function(amt, symbol) {
     return numeral(amt).format(symbol + '0,0.00');
 });
 
-<<<<<<< HEAD
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
     if (a == b) {
         return opts.fn(this);
     } else {
         return opts.inverse(this);
     }
-=======
+});
+
 Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     let name;
     arrayEle.forEach(function(element) {
@@ -432,5 +432,4 @@ Handlebars.registerHelper("LikeUnlike",function(likes, user){
         name="Like";
     }
     return name;
->>>>>>> e84888e86f50ca2b9ae32bf857c49179c3399fa1
 });
