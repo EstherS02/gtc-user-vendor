@@ -9,58 +9,79 @@
         $('#facebook_url').change(function (e) {
 
             var value = $('#facebook_url').val();
+            if(value!='')
+            {
             if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value))
                 $("#facebook_append").html(domElement1);
             else
                 $("#facebook_append").html(domElement2);
+            }    
         });
 
         $('#twitter_url').change(function (e) {
             var value = $('#twitter_url').val();
+            if(value!='')
+            {
             if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value))
                 $("#twitter_append").html(domElement1);
             else
                 $("#twitter_append").html(domElement2);
+            }    
         });
 
         $('#google_plus_url').change(function (e) {
             var value = $('#google_plus_url').val();
+            if(value!='')
+            {
             if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value))
                 $("#google_append").html(domElement1);
             else
                 $("#google_append").html(domElement2);
+            }    
         });
 
         $('#linkedin_url').change(function (e) {
             var value = $('#linkedin_url').val();
+            if(value!='')
+            {
             if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value))
                 $("#linkedin_append").html(domElement1);
             else
                 $("#linkedin_append").html(domElement2);
+            }    
         });
 
         $('#youtube_url').change(function (e) {
             var value = $('#youtube_url').val();
+              if(value!='')
+            {
             if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value))
                 $("#youtube_append").html(domElement1);
             else
                 $("#youtube_append").html(domElement2);
+            }    
         });
 
         $('#instagram_url').change(function (e) {
             var value = $('#instagram_url').val();
+              if(value!='')
+            {
             if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value))
                 $("#instagram_append").html(domElement1);
             else
                 $("#instagram_append").html(domElement2);
+            }    
         });
 
         $('#flickr_url').change(function (e) {
             var value = $('#flickr_url').val();
+            if(value!='')
+            {
             if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value))
                 $("#flickr_append").html(domElement1);
             else
                 $("#flickr_append").html(domElement2);
+            }
         });
 
         $("#socialProfileForm").submit(function (e) {
@@ -86,40 +107,40 @@
     }
         });
 
-    $("#socialProfileForm").validate({
-        rules: {
-            facebook_url: {
-                fbValidation: true
-            },
-            google_plus_url: {
-                gplusValidation: true
-            },
-            twitter_url: {
-                twitterValidation: true
-            },
-            linkedin_url: {
-                linkedinValidation: true
-            },
-            youtube_url: {
-                utubeValidation: true
-            },
-            instagram_url: {
-                instagramValidation: true
-            },
-            flickr_url: {
-                flickrValidation: true
-            }
-        },
-        messages: {
-            facebook_url: "Please enter valid facebook url",
-            google_plus_url: "Please enter valid google url",
-            twitter_url: "Please enter valid twitter url",
-            linkedin_url: "Please enter valid linked url",
-            youtube_url: "Please enter valid youtube url",
-            instagram_url: "Please enter valid instagram url",
-            flickr_url: "Please enter valid flickr url"
-        }
-    });
+   // $("#socialProfileForm").validate({
+     //   rules: {
+     //       facebook_url: {
+     //           fbValidation: true
+    //        },
+     //       google_plus_url: {
+      //          gplusValidation: true
+      //      },
+      //      twitter_url: {
+        //        twitterValidation: true
+         //   },
+         //   linkedin_url: {
+           //     linkedinValidation: true
+           // },
+          //  youtube_url: {
+            //    utubeValidation: true
+           // },
+           // instagram_url: {
+             //   instagramValidation: true
+           // },
+           // flickr_url: {
+             //   flickrValidation: true
+            //}
+       // },
+       // messages: {
+        //    facebook_url: "Please enter valid facebook url",
+          //  google_plus_url: "Please enter valid google url",
+            //twitter_url: "Please enter valid twitter url",
+           // linkedin_url: "Please enter valid linked url",
+            //youtube_url: "Please enter valid youtube url",
+           // instagram_url: "Please enter valid instagram url",
+            //flickr_url: "Please enter valid flickr url"
+        //}
+    //});
 
     $.validator.addMethod("fbValidation",
         function (value, element) {
@@ -322,7 +343,7 @@
                                         {{!--
                                         <input class="list_butt_1" type="submit" value="UPDATE" style="padding: 5px 20px;"
                                         /> --}}
-                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left" onclick="updateFunction(this)" style="border-radius:0px">
+                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"  style="border-radius:0px">
                                             <span class="ladda-label">Update</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
@@ -331,7 +352,7 @@
                                         {{!--
                                         <input class="list_butt_2" type="reset" value="CANCEL" style="padding: 5px 20px;"
                                         /> --}}
-                                        <button type="reset" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+                                        <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
                                             <span class="ladda-label">Cancel</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
