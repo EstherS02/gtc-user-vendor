@@ -1,16 +1,18 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const statusCode = require('../../config/status');
-const service = require('../../api/service');
-const sequelize = require('sequelize');
-const moment = require('moment');
-var async = require('async');
-const vendorPlan = require('../../config/gtc-plan');
+'use strict';
 
-export function gtcMail(req, res) {
+const async = require('async');
+const _ = require('lodash');
+const config = require('../../../config/environment');
+const model = require('../../../sqldb/model-connect');
+const reference = require('../../../config/model-reference');
+const statusCode = require('../../../config/status');
+const service = require('../../../api/service');
+const populate = require('../../../utilities/populate');
+const vendorPlan = require('../../../config/gtc-plan');
+
+export function deleted(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 	
@@ -52,17 +54,20 @@ export function gtcMail(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('gtc-mail/inbox', {
+				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+				res.render('gtc-mail/deleted', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader:results.cartCounts,
-					selectedPage: 'gtc-mail',
-					vendorPlan:vendorPlan
+					selectedPage: 'deleted',
+					vendorPlan:vendorPlan,
+					dropDownUrl : dropDownUrl
 				});
 			} else {
-				res.render('gtc-mail/inbox', err);
+				res.render('gtc-mail/deleted', err);
 			}
 		});
 }

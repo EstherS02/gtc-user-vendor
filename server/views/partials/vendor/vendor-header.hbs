@@ -136,7 +136,9 @@
             }
         }
         /*End cover picture crop functions*/
+		$('.crop_edit_icon').hide();
 		if(userInfo.Vendor.id == vendorInfo.id) {
+			$('.crop_edit_icon').show();
 			$('#editPicture').click(function(){
 				$('.edit_picture').click();
 			});
@@ -234,7 +236,9 @@
                 $('#profile-picture-modal').modal('show');
             }
         }
+		// $('.hide_edit').hide();
 		if(userInfo.Vendor.id == vendorInfo.id) {
+			// $('.hide_edit').show();
 			$('#editProfileImg').click(function(){
 				$('.profilepicedit').click();
 			}); 
@@ -297,7 +301,9 @@
 	<div class="vp-cover">
 		<div class="crop_edit_icon">
 			<input type="file" id="imageUpload" class="edit_picture" name="somename" size="chars">
+			{{#ifCond LoggedInUser.Vendor.id "==" this.VendorDetail.id}}
 			<span id="editPicture" class="edit-icon-align"><i class="fa fa-pencil icon_padding"></i><b>CHANGE COVER</b></span>
+			{{/ifCond}}
 		</div>
 		{{!-- <img src="https://media.istockphoto.com/photos/curvy-roads-silk-trading-route-between-china-and-india-picture-id523035682?s=2048x2048" class="object-fit"> --}}
 		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit">
@@ -310,10 +316,16 @@
 	<div class="vp-menu">
 		<div class="gtc-container">
 			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
-				<a class="vendor-logo profile_img_edit">
+				<a  class="vendor-logo profile_img_edit">
 					<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} alt="logo" title="Global Trade Connect">
+					{{#ifCond LoggedInUser.Vendor.id "==" this.VendorDetail.id}}
 					<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
 					<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					{{/ifCond}}
+					{{!-- <span class="hide_edit">
+						<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
+						<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					</span> --}}
 				</a>
 				<button class="navbar-toggler collapsed navbar-dark" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>

@@ -224,7 +224,7 @@ export function upsertRow(modelName, data) {
     return new Promise((resolve, reject) => {
         model[modelName].upsert(data)
             .then(function(row) {
-                    resolve(row);   
+                resolve(row);
             }).catch(function(error) {
                 reject(error);
             })
@@ -233,16 +233,16 @@ export function upsertRow(modelName, data) {
 
 
 export function geoLocationFetch(lat, lng) {
-  return new Promise((resolve, reject) => {
-    Sequelize_Instance.query(RawQueries.geoLocateDistance(lat, lng), {
-        model: model['Vendor']
-      }).then(geoLocationObj => {
-        resolve(JSON.parse(JSON.stringify(geoLocationObj)));
-      }).catch(function (error) {
-        console.log('Error:::', error);
-        reject(error);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        Sequelize_Instance.query(RawQueries.geoLocateDistance(lat, lng), {
+            model: model['Vendor']
+        }).then(geoLocationObj => {
+            resolve(JSON.parse(JSON.stringify(geoLocationObj)));
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
 }
 
 export function getCategory(categoryQueryObj, productCountQueryParames) {
@@ -330,67 +330,68 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
 }
 
 export function cartHeader(user) {
-var queryObj = {};
-            let includeArr = [];
+    var queryObj = {};
+    let includeArr = [];
 
-            queryObj['user_id'] = user.id;
+    queryObj['user_id'] = user.id;
 
-            queryObj['status'] = {
-                '$eq': status["ACTIVE"]
-            }
-            return model["Cart"].findAndCountAll({
-                where: queryObj,
-                include: [{
-                    model: model["Product"],
-                    attributes: ['id', 'price', 'shipping_cost'],
-                    include: [{
-                        model: model["Marketplace"]
-                    }, {
-                        model: model["Country"]
-                    }]
-                }]
-            }).then(function(data) {
-                var result = JSON.parse(JSON.stringify(data));
-                if (result) {
-                    var cartheader = {};
-                    cartheader['totalPrice'] = 0;
-                    cartheader['cartItemsCount'] = result.count;
-                    var totalItems = result.rows;
-                    var totalPrice = {};
-                    var defaultShipping = 0;
-                    var marketplaceCount = {}
-                    marketplaceCount['PWM'] = 0;
-                    marketplaceCount['PM'] = 0;
-                    marketplaceCount['SM'] = 0;
-                    marketplaceCount['LM'] = 0;
-                    totalPrice['grandTotal'] = 0;
-                    var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-                    _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
-                        totalPrice[itemsKey] = {};
-                        totalPrice[itemsKey]['price'] = 0;
-                        totalPrice[itemsKey]['total'] = 0;
-                        totalPrice[itemsKey]['shipping'] = 0;
+    queryObj['status'] = {
+        '$eq': status["ACTIVE"]
+    }
+    return model["Cart"].findAndCountAll({
+        where: queryObj,
+        include: [{
+            model: model["Product"],
+            attributes: ['id', 'price', 'shipping_cost'],
+            include: [{
+                model: model["Marketplace"]
+            }, {
+                model: model["Country"]
+            }]
+        }]
+    }).then(function(data) {
+        var result = JSON.parse(JSON.stringify(data));
+        if (result) {
+            var cartheader = {};
+            cartheader['totalPrice'] = 0;
+            cartheader['cartItemsCount'] = result.count;
+            var totalItems = result.rows;
+            var totalPrice = {};
+            var defaultShipping = 0;
+            var marketplaceCount = {}
+            marketplaceCount['PWM'] = 0;
+            marketplaceCount['PM'] = 0;
+            marketplaceCount['SM'] = 0;
+            marketplaceCount['LM'] = 0;
+            totalPrice['grandTotal'] = 0;
+            var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
+            _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
+                totalPrice[itemsKey] = {};
+                totalPrice[itemsKey]['price'] = 0;
+                totalPrice[itemsKey]['total'] = 0;
+                totalPrice[itemsKey]['shipping'] = 0;
 
-                        for (var i = 0; i < itemsValue.length; i++) {
+                for (var i = 0; i < itemsValue.length; i++) {
 
-                            marketplaceCount[itemsKey] = marketplaceCount[itemsKey] + 1;
-                            if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-                                var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
+                    marketplaceCount[itemsKey] = marketplaceCount[itemsKey] + 1;
+                    if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
+                        var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
-                                totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-                                totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-                                totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-                            }
-                        }
-
-                        totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
-                    });
-                    cartheader['totalPrice'] = totalPrice;
-                    cartheader['marketplaceCount'] = marketplaceCount;
-                    return  cartheader;
+                        totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                        totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                        totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                    }
                 }
+
+                totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
             });
+            cartheader['totalPrice'] = totalPrice;
+            cartheader['marketplaceCount'] = marketplaceCount;
+            return cartheader;
+        }
+    });
 }
+
 // Not use for limit getallfindrow query starts//
 export function getAllFindRow(modelName, includeArr, queryObj, field, order) {
     var result = {};
