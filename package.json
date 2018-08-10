@@ -4,6 +4,7 @@
   "main": "server/index.js",
   "dependencies": {
     "@fengyuanchen/datepicker": "^0.6.5",
+    "agenda": "^2.0.0",
     "aliexscrape": "^1.0.10",
     "angular": "~1.6.0",
     "angular-animate": "~1.6.0",

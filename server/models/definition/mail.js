@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         from_id: {
             type: DataTypes.BIGINT,
@@ -22,13 +23,18 @@ module.exports = (sequelize, DataTypes) => {
         to_id: {
             type: DataTypes.BIGINT,
             field: 'to_id',
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'users',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        subject: {
+            type: DataTypes.STRING(255),
+            field: 'subject',
+            allowNull: false
         },
         message: {
             type: DataTypes.TEXT,

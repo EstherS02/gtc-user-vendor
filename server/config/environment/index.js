@@ -68,7 +68,9 @@ var all = {
 
         }
     },
-
+    jobs: {
+		"couponExpiry": "couponExpiry"
+	},
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,
         secretAccessKey: process.env.SES_SECRET_ACCESS_KEY,
