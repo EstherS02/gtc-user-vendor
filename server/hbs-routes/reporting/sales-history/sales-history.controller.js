@@ -45,10 +45,11 @@ export function salesHistory(req, res) {
         queryURI['dateSelect'] = dateSelect;
         end_date = moment().add(0, 'd').toDate();
         if (dateSelect == "today") {
-           start_date = moment();
-            end_date = start_date;
-        } else if (dateSelect == "yesterday") {
+           var convertMoment = moment();
+           start_date =  new Date(convertMoment);
+          } else if (dateSelect == "yesterday") {
             start_date = moment().add(-1, 'd').toDate();
+            console.log("start_date:::"+start_date);
             end_date = start_date;
         } else if (dateSelect == "last7day") {
             start_date = moment().add(-7, 'd').toDate();

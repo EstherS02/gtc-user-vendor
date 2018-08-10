@@ -38,6 +38,7 @@ function init(sequelize) {
     model.EmailTemplate = sequelize.import('./definition/email-template.js');
     model.FeaturedProduct = sequelize.import('./definition/featured-product.js');
     model.GlobalSetting = sequelize.import('./definition/global-setting.js');
+    model.Mail = sequelize.import('./definition/mail.js');
     model.Marketplace = sequelize.import('./definition/marketplace.js');
     model.MarketplaceType = sequelize.import('./definition/marketplace-type.js');
     model.MarketplaceProduct = sequelize.import('./definition/marketplace-products.js');
@@ -71,6 +72,7 @@ function init(sequelize) {
     model.TicketThread = sequelize.import('./definition/ticket-thread.js');
     model.Timezone = sequelize.import('./definition/timezone.js');
     model.UserOrder = sequelize.import('./definition/user-orders.js');
+    model.UserMail = sequelize.import('./definition/user-mail.js');
     model.User = sequelize.import('./definition/users.js');
     model.UserToken = sequelize.import('./definition/user-token.js');
     model.Vendor = sequelize.import('./definition/vendor.js');
@@ -112,6 +114,7 @@ function init(sequelize) {
     require('./definition/email-template.js').initRelations();
     require('./definition/featured-product.js').initRelations();
     require('./definition/global-setting.js').initRelations();
+    require('./definition/mail.js').initRelations();
     require('./definition/marketplace.js').initRelations();
     require('./definition/marketplace-type.js').initRelations();
     require('./definition/marketplace-products.js').initRelations();
@@ -144,6 +147,7 @@ function init(sequelize) {
     require('./definition/ticket.js').initRelations();
     require('./definition/ticket-thread.js').initRelations();
     require('./definition/timezone.js').initRelations();
+    require('./definition/user-mail.js').initRelations();
     require('./definition/user-orders.js').initRelations();
     require('./definition/users.js').initRelations();
     require('./definition/user-token.js').initRelations();

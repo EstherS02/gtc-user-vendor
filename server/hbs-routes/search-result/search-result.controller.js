@@ -12,7 +12,10 @@ const config = require('../../config/environment');
 
 export function index(req, res) {
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+	console.log("fullURL", fullUrl);
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
+	console.log("marketPlaceUrl", marketplaceURl);
+
 
 	var selectedLocation = 0;
 	var selectedCategory = 0;
@@ -31,7 +34,7 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var marketPlaceTypeSelected = {};
 
-	var offset, limit, field, order;
+	var offset, limit, field, order,layout;
 	var productEndPoint = "MarketplaceProduct";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
@@ -41,7 +44,7 @@ export function index(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 12;
+	limit = req.query.limit ? parseInt(req.query.limit) : 30;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
@@ -50,6 +53,10 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "asc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
+	layout=req.query.layout ? req.query.layout : 'grid';
+	queryURI['layout'] = layout;
+	queryPaginationObj['layout'] = layout;
+	delete req.query.layout;
 
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
@@ -78,6 +85,7 @@ export function index(req, res) {
 	}
 
 	if (marketplaceURl == 'wholesale') {
+		console.log("marketplaceURl", marketplaceURl);
 		selectedMarketPlace = marketplace['WHOLESALE'];
 		queryParameters['marketplace_id'] = marketplace['WHOLESALE'];
 	} else if (marketplaceURl == 'shop') {
@@ -133,15 +141,15 @@ export function index(req, res) {
 	queryParameters['status'] = status["ACTIVE"];
 	//selectedMarketPlace = req.query.marketplace;
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
-		categories: function(callback) {
+		cartCounts: function (callback) {
+			service.cartHeader(LoggedInUser).then(function (response) {
+				return callback(null, response);
+			}).catch(function (error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
+		categories: function (callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
 			const categoryLimit = null;
@@ -152,53 +160,53 @@ export function index(req, res) {
 			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function(category) {
+				.then(function (category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
 					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
-				}).catch(function(error) {
+				}).catch(function (error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		marketPlace: function(callback) {
+		marketPlace: function (callback) {
 			var marketPlaceModel = "Marketplace";
 			service.findIdRow(marketPlaceModel, selectedMarketPlace, includeArr)
-				.then(function(result) {
+				.then(function (result) {
 					return callback(null, result);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypeSelected: function(callback) {
+		marketPlaceTypeSelected: function (callback) {
 			var queryObj = {};
 			var marketPlaceTypeModel = "MarketplaceType";
 
 			queryObj['marketplace_id'] = selectedMarketPlace;
 			queryObj['id'] = selectedMarketPlaceType;
 			service.findOneRow(marketPlaceTypeModel, queryObj, includeArr)
-				.then(function(result) {
+				.then(function (result) {
 					return callback(null, result);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		products: function(callback) {
+		products: function (callback) {
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
-				.then(function(results) {
+				.then(function (results) {
 					return callback(null, results);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		topProducts: function(callback) {
+		topProducts: function (callback) {
 			var topOffset = 0;
 			var topLimit = 3;
 			var topOrderField;
@@ -208,15 +216,15 @@ export function index(req, res) {
 			queryParameters['is_featured_product'] = 1;
 
 			service.findAllRows(productEndPoint, includeArr, queryParameters, topOffset, topLimit, topOrderField, topOrderType)
-				.then(function(results) {
+				.then(function (results) {
 					return callback(null, results);
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypes: function(callback) {
+		marketPlaceTypes: function (callback) {
 			var result = {};
 			var marketplaceTypeQueryObj = {};
 			var productCountQueryParames = {};
@@ -241,15 +249,15 @@ export function index(req, res) {
 				};
 			}
 			service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
-				.then(function(response) {
+				.then(function (response) {
 					return callback(null, response);
 
-				}).catch(function(error) {
+				}).catch(function (error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		locations: function(callback) {
+		locations: function (callback) {
 			var result = {};
 			var locationQueryObj = {};
 			var productCountQueryParames = {};
@@ -285,16 +293,16 @@ export function index(req, res) {
 				}],
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['Country.id']
-			}).then(function(results) {
+			}).then(function (results) {
 				console.log(results.locations)
 				if (results.length > 0) {
 					model['Product'].count({
 						where: productCountQueryParames
-					}).then(function(count) {
+					}).then(function (count) {
 						result.count = count;
 						result.rows = JSON.parse(JSON.stringify(results));
 						return callback(null, result);
-					}).catch(function(error) {
+					}).catch(function (error) {
 						console.log('Error:::', error);
 						return callback(error, null);
 					});
@@ -303,12 +311,12 @@ export function index(req, res) {
 					result.rows = [];
 					return callback(null, result);
 				}
-			}).catch(function(error) {
+			}).catch(function (error) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
 		},
-		categoriesWithCount: function(callback) {
+		categoriesWithCount: function (callback) {
 			var result = {};
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
@@ -331,15 +339,15 @@ export function index(req, res) {
 				};
 			}
 			service.getCategory(categoryQueryObj, productCountQueryParames)
-				.then(function(response) {
+				.then(function (response) {
 					return callback(null, response);
 
-				}).catch(function(error) {
+				}).catch(function (error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		}
-	}, function(error, results) {
+	}, function (error, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('search', {
@@ -364,6 +372,7 @@ export function index(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				marketplaceURl: marketplaceURl,
 				cartheader: results.cartCounts,
+				layout_type: layout
 			});
 		} else {
 			res.render('search', error);

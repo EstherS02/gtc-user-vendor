@@ -23,6 +23,8 @@ import session from 'express-session';
 //import expressSequelizeSession from 'express-sequelize-session';
 //var Store = expressSequelizeSession(session.Store);
 
+var mw = require('../auth/middleware');
+
 export default function(app) {
 	var env = app.get('env');
 	app.use(config.imageUrlRewritePath.base, express.static(config.images_base_path));
@@ -73,12 +75,12 @@ export default function(app) {
 	}));
 
 	app.use(function(req, res, next) {
-		console.log("req.session", req.session['compare']);
 		if (!req.session['compare']) {
 			req.session['compare'] = [];
 		}
 		next();
 	});
+	app.use(mw());
 
 	if (env === 'development') {
 		const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -118,7 +120,6 @@ export default function(app) {
 		 * or send a fullscreen error message to the browser instead
 		 */
 		compiler.plugin('done', function(stats) {
-			console.log('webpack done hook');
 			if (stats.hasErrors() || stats.hasWarnings()) {
 				return browserSync.sockets.emit('fullscreen:message', {
 					title: 'Webpack Error:',
@@ -128,6 +129,7 @@ export default function(app) {
 			}
 			browserSync.reload();
 		});
+
 	}
 
 	if (env === 'development' || env === 'test') {

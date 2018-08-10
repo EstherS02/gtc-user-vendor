@@ -1,20 +1,19 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Review', {
+    return sequelize.define('UserMail', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        product_id: {
+        mail_id: {
             type: DataTypes.BIGINT,
-            field: 'product_id',
+            field: 'mail_id',
             allowNull: false,
             references: {
-                model: 'product',
+                model: 'mail',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -31,20 +30,10 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        rating: {
+        mail_status: {
             type: DataTypes.INTEGER,
-            field: 'rating',
+            field: 'mail_status',
             allowNull: false
-        },
-        title: {
-            type: DataTypes.STRING(128),
-            field: 'title',
-            allowNull: false
-        },
-        comment: {
-            type: DataTypes.TEXT,
-            field: 'comment',
-            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -77,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'reviews',
+        tableName: 'user_mail',
         timestamps: false
     });
 };
@@ -86,17 +75,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Review = model.Review;
-    const Product = model.Product;
+    const UserMail = model.UserMail;
+    const Mail = model.Mail;
     const User = model.User;
 
-    Review.belongsTo(Product, {
-        foreignKey: 'product_id',
+    UserMail.belongsTo(Mail, {
+        foreignKey: 'mail_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Review.belongsTo(User, {
+    UserMail.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

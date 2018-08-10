@@ -1,104 +1,61 @@
-<style>
-	#addCompare {
-		cursor: pointer;
-	}
-</style>
-
-<script>
-
+<script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
 	var statusCode = {{{DisplayJSON status}}}
 
-	$(function() {
+	$(document).ready(function() {
+
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
 		});
 
-		$("#gtc-cart-alert").hide();
 		$("#gtc-add-to-cart").click(function() {
-			$('#gtc-add-to-cart').prop('disabled', true);
-
 			var cartInfo = {};
-			cartInfo.product_quantity = $('#product-quantity').val();
+			cartInfo.product_quantity = $('#quantityInput').val();
 
 			$.ajax({
 				type: "POST",
 				url: "/api/cart/add-cart/" + productSpecs.id,
 				data: cartInfo,
-				success: function(res) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (res && res.message === "SUCCESS") {
-						outputPop(res.message_details);
-						// $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-						// $('#gtc-cart-alert .cart-message').text(res.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// 	location.reload();
-						// });
-						console.log(res)
-					}
+				success: function(response) {
+					location.reload();
 				},
 				error: function(error) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (error) {
-						if (error.status === 401)
-							return location.href = "/login";
-
-						outputErrorPop(error);
-						// $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-						// $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// });
-
+					$('#productCartMessage').empty();
+					if (error.status === 401) {
+						return location.href = "/login";
 					}
+					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productCartMessage').empty();
+					}, 10000);
 				}
 			});
 		});
 	});
 
+	var newData = {};
+	newData.product_id = productSpecs.id;
 
-	$("#reviewForm").validate({
-		rules: {
-			reviewDetailComment: "required",
-			reviewTitle: "required"
-		},
-		messages: {
-			reviewDetailComment: "Please Enter your review Comment",
-			reviewTitle: "Please enter your Review title"
-		}
-	});
-
-	function reviewSubmit(id) {
-
-		let reviewObj = {};
-
-		if (userInfo.email) {
-			if ($("#reviewForm").valid()) {
-				reviewObj['rating'] = $('#review-stars').val();
-				reviewObj['title'] = $('#review-title').val();
-				reviewObj['comment'] = $('#review-detail-comment').val();
-				reviewObj['product_id'] = parseInt(id);
-				reviewObj['user_id'] = parseInt(userInfo.id);
-				reviewObj['status'] = 1;
-
-				console.log(reviewObj);
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function(result) {
-						if (result)
-							location.reload();
-					}
-				});
+	function compareProduct(e) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product-view/add-to-compare',
+			data: newData,
+			success: function(response) {
+				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
 			}
-		} else {
-			location.href = "/login"
-		}
-	}
+		});
+	};
 
 	function wishUpdate() {
 		if (userInfo.email) {
@@ -124,487 +81,350 @@
 				type: 'PUT',
 				url: '/api/product-view/addOrRemove',
 				data: newData,
-				success: function(data, text) {
+				success: function(response) {
 					location.reload();
 				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
+				error: function(error) {
+					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productAlert').empty();
+					}, 10000);
 				}
 			});
-
 		} else {
 			location.href = "/login"
 		}
-
-	}
-
+	};
 </script>
-<script type="text/javascript">
-var productSpecs = {{{DisplayJSON product}}}
-var newData = {};
-newData.product_id = productSpecs.id;
-function compareProduct(e){
-	$.ajax({
-		type: 'POST',
-		url: '/api/product-view/add-to-compare',
-		data: newData,
-		success: function(res) {
-			if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
-                    console.log(res)
-                }
-		},
-		error: function(error) {
-			if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    outputErrorPop(error);
-                }
-			console.log('error', error);
-		}
-	});
 
-}
- function outputPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-cart-alert .cart-message').text(argument)
-        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-            location.reload();
-        });
-    }
-
-    function outputErrorPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
-        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-        });
-    }
-</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
+{{> vendor/vendor-header VendorDetail = VendorDetail}}
 
-<section>
-	{{> vendor/vendor-header VendorDetail = VendorDetail}}
-	<div class="logged_in_cont">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-2 col-12">
-					{{> vendor/vendor-left VendorDetail = VendorDetail}}
+<div class="bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="v-col-2 col-12 m-t-sm">
+				{{> vendor/vendor-left VendorDetail = VendorDetail}}
+			</div>
+			<div class="v-col-10 col-12 m-t-sm"> 
+				<div class="header-lg bg{{product.Marketplace.id}}">
+					<h2 class="header-lg-text">{{product.Marketplace.name}}</h2>
 				</div>
-				<div class="col-md-10 col-12">
-					<div class="alert" id="gtc-cart-alert">
-						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-						<span class="cart-message"></span>
-					</div>
-					<div class="row {{#bgColor product.Marketplace.id}}{{/bgColor}}" style="color:#fff">
-						<div class="col-md-12 col-12">
-							<h3>{{product.Marketplace.name}}</h3>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-9 col-12" style="background-color: #fff;">
-							<div class="row" style="margin-top: 20px;">
-								<div class="col-md-4">
-									<img src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 100%; margin-bottom: 10px;" />
-									<div class="row">
+				<div class="row no-margins">
+					<div class="col-md-9 no-padding">
+						<div class="ibox">
+                            <div class="ibox-content">
+                            	<div class="row">
+                            		<div class="col-md-4">
+                            			<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image">
 										<div class="row">
-											{{#each product.ProductMedia}} 
+											{{#each product.ProductMedia}}
 											{{#if @first}} 
 											{{else}} 
 											{{#ifCond @index '<' 4}}
 											<div class="col-md-4 col-4">
-												<img src="{{this.url}}" alt="logo" style="width: 100%" />
+												<img src="{{this.url}}" class="img-fluid" alt="product image">
 											</div>
 											{{/ifCond}}
 											{{/if}}
 											{{/each}}
 										</div>
-									</div>
-								</div>
-								<div class="col-md-8">
-									<div class="col-md-12">
-										<div class="row">
-											<div class="col-md-6 common_padding1">
-												<div class="row">
-													<!--new end-->
-													<div class="col-md-4 col-3">
-														<p class="product_view_ven">Origin</p>
-													</div>
-													<div class="col-md-8 col-9">
-														<p class="product_view_ven">{{product.Country.name}}</p>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-4 col-3">
-														<p class="product_view_ven">Category</p>
-													</div>
-													<div class="col-md-8 col-9">
-														<p class="product_view_ven">{{product.Category.name}} > {{product.SubCategory.name}}</p>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-4 col-3">
-														<p class="product_view_ven">SKU</p>
-													</div>
-													<div class="col-md-8 col-9">
-														<p class="product_view_ven">{{product.sku}}</p>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-4 col-3">
-														<p class="product_view_ven">MOQ</p>
-													</div>
-													<div class="col-md-8 col-9">
-														<p class="product_view_ven">{{product.moq}}</p>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col-md-4 col-3">
-														<p class="product_view_ven">Availability</p>
-													</div>
-													<div class="col-md-8 col-9">
-														<p class="text_green_color product_view_ven">{{product.quantity_available}} in stock
-														</p>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="row">
-													<div class="col-md-2 col-12" >
-														<p class="com_product_stock">Qty:</p>
-													</div>
-													<div class="col-md-3 col-12 common_padding1">
-														<input type="number" min="1" value="1" id="product-quantity" class="geo_textbox" />
-													</div>
-													<div class="col-md-7 col-12 common_padding1" >
-														{{#if LoggedInUser.email}}
-														<a href="javascript:;" id="gtc-add-to-cart" class="com_add_to_cart" > 
-															<i class="fas fa-shopping-bag"></i> ADD TO BAG
+                            		</div>
+                            		<div class="col-md-8">
+                            			<div class="product-desc">
+                            				<div class="row no-margins">
+                            					<div class="col-md-5 no-padding">
+                            						<div class="product-attr">
+			                            				<div class="d-flex">
+			                            					<div class="col-4 no-padding">
+			                            						<span>Origin</span>
+			                            					</div>
+			                            					<div class="col-8 no-padding">
+			                            						<span>{{product.Country.name}}</span>
+			                            					</div>
+			                            				</div>
+			                            				<div class="d-flex">
+			                            					<div class="col-4 no-padding">
+			                            						<span>Category</span>
+			                            					</div>
+			                            					<div class="col-8 no-padding">
+			                            						<span>{{product.Category.name}} > {{product.SubCategory.name}}</span>
+			                            					</div>
+			                            				</div>
+			                            				<div class="d-flex">
+			                            					<div class="col-4 no-padding">
+			                            						<span>SKU</span>
+			                            					</div>
+			                            					<div class="col-8 no-padding">
+			                            						<span>{{product.sku}}</span>
+			                            					</div>
+			                            				</div>
+			                            				{{#ifCond product.marketplace_id '==' 1}}
+			                            				<div class="d-flex">
+			                            					<div class="col-4 no-padding">
+			                            						<span>MOQ</span>
+			                            					</div>
+			                            					<div class="col-8 no-padding">
+			                            						<span>{{product.moq}}</span>
+			                            					</div>
+			                            				</div>
+			                            				{{/ifCond}}
+			                            				<div class="d-flex">
+			                            					<div class="col-4 no-padding">
+			                            						<span>Availability</span>
+			                            					</div>
+			                            					<div class="col-8 no-padding">
+			                            						<span><strong>{{product.quantity_available}}</strong> in stock</span>
+			                            					</div>
+			                            				</div>
+			                            			</div>
+                            					</div>
+                            					<div class="col-md-7 no-padding">
+                            						<div class="add-to-bag text-right">
+                            							<label class="m-r-xs text-light-muted">Quantity: </label>
+                            							<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" value="1" min="1">
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<svg width="18" height="16" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"/><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"/></g></svg>
+															<span class="m-l-xs align-middle">ADD TO BAG</span>
 														</a>
-														{{else}}
-														<a href="/login" class="com_add_to_cart">Login </a>
-														{{/if}}
-													</div>
-													<div class="modal fade"{{!--  id="myModal" --}}>
-														<div class="modal-dialog modal-dialog-centered">
-															<div class="modal-content">
-																<div class="col-md-12">
-																	<div class="row modal_geo_bgimg1">
-																		<h1>LIKE WHAT YOU SEE?</h1>
-																		<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.
-																		</p>
-																		<p class="modal_why_geo_p">If you'd like uniterupted access to our wholesale marketplace, we need you to create an
-																			account with Global Trade Connect
-																		</p>
-																		<div class="col-md-5 common_padding1">
-																			<a href="#">
-																				<img src="../../img/login-facebook.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-																			</a>
-																			<a href="#">
-																				<img src="../../img/login-google.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-																			</a>
-																			<a href="#">
-																				<img src="../../img/login-twitter.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-																			</a>
-																			<a href="#">
-																				<img src="../../img/login-linkedin.png" alt="facebook" style="margin-bottom: 3px;width: 100%;" />
-																			</a>
-																		</div>
-																		<div class="col-md-6">
-																			<input type="text" placeholder="Create a Username" class="modal_acc_textbox" />
-																			<input type="text" placeholder="Create a Password" class="modal_acc_textbox" />
-																			<input type="text" placeholder="Confirm Password" class="modal_acc_textbox" />
-																			<br/>
-																			<label class="modal_login-checkbox">
-																				<input type="checkbox">
-																				<i></i> Accept terms and conditions</label>
-																				<input type="submit" value="CREATE ACCOUNT" class="modal_acc_button" />
-																			</div>
-																		</div>
-																	</div>
+                            						</div>
+                            						<div id="productCartMessage"></div>
+                            					</div>
+                            				</div>
+                            			</div>
+                            			<h1 class="p-title m-t-sm">{{product.product_name}}</h1>
+                            			<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
+                            			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
+                            			<div class="p-social-compare">
+                            				<div class="alignleft icon">
+                            					<ul>
+                            						<li>
+                            							<a href="javascript:;" onclick="compareProduct()">
+															<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
+															<span>Add to Compare</span>
+														</a>
+                            						</li>
+                            						<li>
+                            							{{#if isWishlist}}
+                            							<a href="javascript:;" title="This product in your wishlist">
+                            								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
+															<span>Added Wishlist</span>
+                            							</a>
+                            							{{else}}
+                            							<a href="javascript:;" onclick="wishUpdate()">
+	                            							<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
+																<span>Add to Wishlist</span>
+														</a>
+                            							{{/if}}
+                            						</li>
+                            					</ul>
+                            				</div>
+                            				<div class="alignright text-right">
+                            					<a href="javascript:;">
+                            						<img src="../../gtc-assets/img/social-icons/linked-in.png" style="width: 15%;" alt="Linkedin" title="Linkedin">
+                            					</a>
+                            					<a href="javascript:;">
+                            						<img src="../../gtc-assets/img/social-icons/pintrest.png" style="width: 15%;" alt="Pintrest" title="Pintrest">
+                            					</a>
+                            					<a href="javascript:;">
+                            						<img src="../../gtc-assets/img/social-icons/twitter.png" style="width: 15%;" alt="Twitter" title="Twitter">
+                            					</a>
+												<a href="javascript:;">
+													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 15%;" alt="Plus" title="Plus">
+												</a>
+                            				</div>
+                            				<div style="clear: both;"></div>
+                            			</div>
+                            			<div id="productAlert"></div>
+                            			<div class="p-description">
+                            				<p class="text-muted">{{product.description}}</p>
+                            			</div>
+                            			<div class="p-hr"></div>
+                            			<div class="product-rating d-flex m-t-sm m-b-sm">
+											<div>
+												<i class="fa fa-star fa-circle-bg"></i>
+											</div>
+											<div class="m-l-sm block-1">
+												<h3 class="d-inline-block">Product Rating</h3>
+												<h3 class="d-inline-block text-primary"><b>{{product.rating}}</b></h3>
+												<h3 class="d-inline-block"><span class="text-black">Based on</span> <strong>{{productRecentReview.count}} Reviews</strong></h3>
+												<div class="row">
+													<div class="col-md-5 rating-content">
+														{{#each productRatings}}
+														<div class="d-flex">
+															<div class="col-7 no-padding">
+																<div class="7star p-rating">
+																	{{starCount this.rating}}
 																</div>
 															</div>
+															<div class="col-5 no-padding">
+																<span class="tot-rating-count">(<a href="javascript:;">{{this.userCount}} Ratings</a>)</span>
+															</div>
 														</div>
+														{{/each}}
+														<button type="button" data-toggle="modal" data-target="#reviewModal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
+													</div>
+													<div class="col-md-7 reviews-content">
+														<div class="feed-activity-list">
+															{{#each productRecentReview.rows}}
+															<div class="feed-element b-b-none">
+																<a class="float-left" href="javascript:;">
+																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+																</a>
+																<div class="media-body">
+																	<span class="review-title">{{this.title}}</span>
+																	<div class="m-b-xs m-t-xs">
+																		<div class="alignleft">
+																			<div class="p-rating">
+																				{{starCount this.rating}}
+																			</div>
+																		</div>
+																		<div class="alignleft m-l-sm">
+																			<small class="float-right">{{FormatDate this.created_on}}</small>
+																		</div>
+																		<div style="clear: both;"></div>
+																	</div>
+																	<p class="text-justify m-b-xs">{{this.comment}}</p>
+																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
+																</div>
+															</div>
+															{{/each}}
+														</div>
+														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
 													</div>
 												</div>
 											</div>
 										</div>
-										{{#if product.MarketplaceType}}
-										<div class="row">
-											<div class="col-md-12 col-9">
-												<p class="list_wts">{{product.MarketplaceType.name}}</p>
+										<div class="p-hr"></div>
+										<div class="ask-vendor d-flex m-t-sm">
+											<div>
+												<i class="fa fa-question-circle fa-circle-bg"></i>
 											</div>
-										</div>
-										{{/if}}
-										<div class="row">
-											<div class="col-md-12 col-9">
-												<p class="list_iphone">{{product.product_name}}</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-9">
-												<p class="list_doll">${{product.price}}
-													<!-- <sup>00 / 10</sup> -->
-												</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-9">
-												<p class="list_add">This Product has discount on bulk orders.</p>
-											</div>
-										</div>
-										<hr style="margin-top: 3px; margin-bottom: 3px;" />
-										<div class="row">
-											<div class="col-md-4 col-6">
-												<a class="text_blue_color" onclick="compareProduct()" id="addCompare" style="font-size: 12px;margin-bottom: 0px;">
-													<img src="../../img/Icons/icon-2-01.png" style="width: 12%;"   alt="geo"> Add to compare
-												</a>
-											</div>
-											<div class="col-md-4 col-6 common_padding1">
-												<a class="text_blue_color" href="javascript::" style="font-size: 12px;margin-bottom: 0px;" onclick="wishUpdate()">
-													{{#if LoggedInUser.id}}
-
-													{{#if wishList}}
-													<input type="hidden" name="wishID" value="{{wishList.[0].id}}">
-													<i class="fa fa-heart" aria-hidden="true"></i>
-													{{else}}
-													<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
-													{{/if}}
-													{{else}}
-													<img src="../../img/Icons/icon-6-01.png" style="width: 8%;" alt="geo" >
-													{{/if}}
-													Add to Wishlist
-												</a>
-											</div>
-											<div class="col-md-4 col-6 float-right">
-												<img src="../../img/social-icons/linked-in.png" style="width: 15%;" alt="geo">
-												<img src="../../img/social-icons/pintrest.png" style="width: 15%;" alt="geo">
-												<img src="../../img/social-icons/twitter.png" style="width: 15%;" alt="geo">
-												<img src="../../img/social-icons/plus.png" style="width: 15%;" alt="geo">
-											</div>
-										</div>
-										<hr style="margin-top: 3px; margin-bottom: 3px;" />
-										<div class="row">
-											<div class="col-md-12 col-12">
-												<p style="font-size: 10px;margin-top: 10px;margin-bottom: 10px;">{{product.description}}
-												</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-1 col-1">
-												<i class="fas fa-question-circle review_help_icon"></i>
-											</div>
-											<div class="col-md-11 col-10 product_submit">
-												<p class="review_help_title">Product Rating
-													<span class="product_rating_star" style="font-size:20px; font-weight: bold;">{{avgRating}}</span>
-													<span style="font-size: 12px;">Based on</span>
-													<span style="font-size: 12px;" class="text_blue_color">
-														<b>{{productReviewsList.count}} Reviews</b>
-													</span>
-												</p>
-												<div class="row">
-													<div class="col-md-5">
-														<div class="row">
-															{{#each rating}} 
-															<div class="col-md-8 col-7 com_pad">
-																<p class="product_rating_star1" style="font-size: 11px;">
-																	{{starCount this.starCount}}
-																</p>
-															</div>
-															<div class="col-md-4 col-5 common_padding1">
-																<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
-															</div>
-															{{/each}}
-														</div>
-														<div class="row">
-															<div class="col-md-12">
-																<button class="product_buttion">Submit Your Own Review</button>
-															</div>
-														</div>
-													</div>
-													<div class="col-md-7">
-														<div class="row">
-															{{#each productReviewsList.rows}} 
-															{{#ifCond @index '<' 1}}
-															<div class="col-md-2 col-3 product_img common_padding1">
-																<img width="100%" class="rounded-circle" src="{{ProfilePicture this.User}}" alt="profile-picture"/>
-															</div> 
-															<div class="col-md-10 col-9 product_great_bg">
-																<p class="product_great">{{this.title}}</p>
-																<p class="product_star">
-																	{{starCount this.rating '#fab547 '}}
-																	<span class="product_ago"> {{FormatDate this.created_on}} </span>
-																</p>
-																<p class="product_we">{{this.comment}}</p>
-																<p class="text_blue_color" style="font-size: 12px;">- {{this.User.first_name}} {{this.User.last_name}}
-																</p>
-															</div>
-															{{/ifCond}}
-															{{/each}}
-														</div>
-														<div class="row">
-															<div class="col-md-6 col-6">
-																<!-- <p class="text_blue_color" style="font-size: 12px;">Scott T</p> -->
-															</div>
-															<div class="col-md-6 col-6">
-																{{#ifCond productReviewsList.count '>' 0}}
-																<a class="product_buttion" href="/products/{{product.product_name}}/{{product.id}}/allReviews" style="background-color: #154881;padding: 3px 6px;">See All Reviews</a>
-																{{/ifCond}}
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 product_hr">
-												<hr>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-1 col-2">
-												<i class="fas fa-question-circle review_help_icon"></i>
-											</div>
-											<div class="col-md-11 col-10 product_submit">
-												<form name="reviewForm" id="reviewForm" onsubmit="return false">
-													<p class="review_help_title">Submit A Review Of This Product</p>
-													<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,please fill out the following it will be sent directly to the vendor.
-													</p>
-													<div>
-														<span class="product_submit_para">Please provide rating for this product</span>
-														<select id="review-stars" style="display:none !important;">
-															<option value=""></option>
-															<option value="1">1</option>
-															<option value="2">2</option>
-															<option value="3">3</option>
-															<option value="4">4</option>
-															<option value="5">5</option>
-															<option value="6">6</option>
-															<option value="7">7</option>
-														</select>
-													</div>
-													<div class="product_table_bg">
+											<div class="m-l-sm block-2">
+												<h3 class="m-b-xs">Ask the Vendor</h3>
+												<p class="text-light-muted">If you`d like to ask the vendor a specific question about this product, please fill out following. It will be sent directly to the vendor.</p>
+												<div class="ask-vendor-form">
+													<form class="form" id="AskVendorForm">
 														<div class="row">
 															<div class="col-md-10">
-																<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
-															</div>
-														</div>
-														<div class="row">
-															<div class="col-md-10">
-																<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
-																required></textarea>
+																<div class="form-group">
+																	<input type="text" class="form-control form-control-sm" placeholder="Subject">
+																</div>
+																<div class="form-group">
+																	<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
+																</div>
 															</div>
 															<div class="col-md-2">
-																<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
+																<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
 															</div>
 														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-										<div class="row showing_categ" style="padding: 3px;margin-top: 10px; margin-bottom: 10px;">
-										</div>
-									</div>
-								</div>
-								<section class="box3" style="margin-bottom:0; padding-left: 0px; padding-right: 0px;">
-									<div class="container clearfix">
-										<div class="row ">
-											<div class="col-md-12 col-12 wts4 ">
-												<h6 class="float-left">Related Product for this Vendor</h6>
-											</div>
-										</div>
-									</div>
-								</section>
-								<section class="box4" style="margin-bottom:20px;">
-									<div class="container clearfix">
-										<div class="row">
-											{{#ifCond RelatedProducts.length '==' 0}}
-											<div class="col-md-12 text-center list_add"> 
-												No Related Products
-											</div>
-											{{/ifCond}}
-											{{#each RelatedProducts}}
-											<div class="col-md-4 col-12 common_top">
-												<div class="row">
-													<div class="col-md-3 col-2">
-														<img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
-													</div>
-													<div class="col-md-9 col-10">
-														<div class="row common_padding">
-															<div class="col-md-8 col-8">
-																<p class="wts_header">
-																	<a href="#">{{this.product_name}}</a>
-																</p>
-															</div>
-															<div class="col-md-4 col-4">
-																<p>											
-																	{{#if minimum_order_quantity}}	
-																	MOQ:{{this.minimum_order_quantity}}
-																	{{else}}
-																	${{product_price}}
-																	{{/if}}
-																</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3 col-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-5 col-5">
-																<p>{{this.country_name}}</p>
-															</div>
-															<div class="col-md-4 col-4">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3 col-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-5 col-5">
-																<p>{{this.category_name}} > {{this.sub_category_name}}</p>
-															</div>
-															<div class="col-md-4 col-4">
-																<p>Seller Rating</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3 col-3">
-																<p>Seller</p>
-															</div>
-															<div class="col-md-5 col-5">
-																<p>
-																	{{#if ../LoggedInUser.email}}	
-																	<a>{{this.vendor_name}}</a>
-																	{{else}}
-																	<a href="/login">(Login for Seller Info)</a>
-																	{{/if}}
-																</p>
-															</div>
-															<div class="sm-text col-md-4 col-4">
-																{{ starCount product_rating}}
-															</div>
-														</div>
-													</div>
+													</form>
 												</div>
 											</div>
-											{{/each}}
 										</div>
-									</div>
-								</section>
-							</div>
-							<div class="col-md-3 showing_categ">
-								<p><b>FILTER BY CATEGORY</b></p>
-								<p class="cat_bg_title">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-								{{> vendor/vendor-category }} 
-							</div>
-						</div>
+                            		</div>
+                            	</div>
+                            </div>
+                        </div>
+					</div>
+					<div class="col-md-3 no-padding">
+						{{> vendor/vendor-category }}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
+			</div>
+			<form id="reviewForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                    	<div class="form-group">
+	                            <div class="inputRating text-center">
+	                            	<select id="review-stars" name="rating" style="display:none !important;" required/>
+										<option value=""></option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+									</select>
+	                            </div>
+	                        </div>
+	                    	<div class="form-group">
+	                            <label class="label-control d-block">Title </label>
+	                            <input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Comment </label>
+	                            <textarea class="form-control-customized" id="inputComment" name="comment" name="description" rows="3"></textarea>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			var productSpecs = {{{DisplayJSON product}}}
+			$('#btnFaSpinner').hide();
+			$('#review-stars').val(1);
+
+			$("#reviewForm").submit(function(e) {
+				e.preventDefault();
+
+				var reviewObj = {};
+				$(':input[type="submit"]').prop('disabled', true);
+
+				if ($('#reviewForm').valid()) {
+					reviewObj['rating'] = parseInt($('#review-stars').val());
+					reviewObj['product_id'] = productSpecs.id;
+					reviewObj['user_id'] = parseInt(userInfo.id);
+					reviewObj['status'] = 1;
+					if (!reviewObj['rating']) {
+						reviewObj['rating'] = 1;
+					}
+					reviewObj['title'] = $('#inputTitle').val();
+					if ($('#inputComment').val()) {
+						reviewObj['comment'] = $('#inputComment').val();
+					}
+					$('#btnFaSpinner').show()
+				}
+
+				console.log("reviewObj", reviewObj);
+
+				$.ajax({
+					type: "POST",
+					url: "/api/reviews",
+					data: reviewObj,
+					success: function(result) {
+						location.reload();
+					}
+				});
+			});
+
+			$("#reviewForm").validate({
+				rules: {
+					rating: "required",
+					title: "required"
+				},
+				messages: {
+					rating: "Rating is required.",
+					title: "Title is required."
+				}
+			});
+		</script>
+	</div>
+</div>
 {{> footer/bottom-footer}}

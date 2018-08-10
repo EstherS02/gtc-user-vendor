@@ -65,7 +65,7 @@ export function vendorAbout(req, res) {
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
-					console.log(response);
+					// console.log(response);
 					return callback(null, response);
 
 				}).catch(function(error) {
@@ -119,7 +119,7 @@ export function vendorAbout(req, res) {
 				});
 		}
 	}, function(err, results) {
-		console.log(LoggedInUser);
+		// console.log(LoggedInUser);
 		if (!err) {
 			res.render('vendorPages/vendor-about', {
 				categories: results.categories,

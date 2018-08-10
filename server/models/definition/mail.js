@@ -1,28 +1,16 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Review', {
+    return sequelize.define('Mail', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
             allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
+            primaryKey: true
         },
-        product_id: {
+        from_id: {
             type: DataTypes.BIGINT,
-            field: 'product_id',
-            allowNull: false,
-            references: {
-                model: 'product',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        user_id: {
-            type: DataTypes.BIGINT,
-            field: 'user_id',
+            field: 'from_id',
             allowNull: false,
             references: {
                 model: 'users',
@@ -31,19 +19,20 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        rating: {
-            type: DataTypes.INTEGER,
-            field: 'rating',
-            allowNull: false
+        to_id: {
+            type: DataTypes.BIGINT,
+            field: 'to_id',
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
-        title: {
-            type: DataTypes.STRING(128),
-            field: 'title',
-            allowNull: false
-        },
-        comment: {
+        message: {
             type: DataTypes.TEXT,
-            field: 'comment',
+            field: 'message',
             allowNull: true
         },
         status: {
@@ -77,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'reviews',
+        tableName: 'mail',
         timestamps: false
     });
 };
@@ -86,18 +75,32 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Review = model.Review;
-    const Product = model.Product;
+    const Mail = model.Mail;
+    const UserMail = model.UserMail;
     const User = model.User;
 
-    Review.belongsTo(Product, {
-        foreignKey: 'product_id',
+    Mail.hasMany(UserMail, {
+        foreignKey: 'mail_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    Review.belongsTo(User, {
-        foreignKey: 'user_id',
+    Mail.belongsTo(User, {
+        foreignKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Mail.belongsTo(User, {
+        foreignKey: 'to_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Mail.belongsToMany(User, {
+        through: UserMail,
+        foreignKey: 'mail_id',
+        otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

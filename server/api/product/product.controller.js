@@ -18,6 +18,63 @@ const marketplaceType = require('../../config/marketplace_type.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 
+export function productView(req, res) {
+	var productID = req.params.id;
+
+	productService.productView(productID)
+		.then((product) => {
+			if (product) {
+				return res.status(200).send(product);
+			} else {
+				return res.status(404).send("Product not found.");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		});
+}
+
+export function productReviews(req, res) {
+	var queryObj = {};
+	var productID = req.params.id;
+	var offset, limit, field, order;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "created_on";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "DESC";
+	delete req.query.order;
+
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['product_id'] = productID;
+
+	productService.productReviews(queryObj, offset, limit, field, order)
+		.then((productReviews) => {
+			return res.status(200).send(productReviews);
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		});
+}
+
+export function productRatingsCount(req, res) {
+	var productID = req.params.id;
+
+	productService.productRatingsCount(productID)
+		.then((productRatings) => {
+			return res.status(200).send(productRatings);
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error.");
+		});
+}
+
 export function featureMany(req, res) {
 	const ids = req.body.ids;
 	console.log("requestedIds", ids.length);
@@ -401,8 +458,7 @@ export function featureOne(req, res) {
 }
 
 export function addProduct(req, res) {
-
-	if (req.query.marketplace == 'Private Wholesale Marketplace')
+     if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
 
 	if (req.query.marketplace == 'Public Marketplace')
@@ -444,6 +500,36 @@ export function addProduct(req, res) {
 			res.status(500).send("Internal server error");
 			return;
 		})
+}
+
+ export function importProduct(req, res)
+ { 
+    var bodyParamsArray = [];
+	for (var i = 0; i < req.body.length; i++) {
+			req.body.created_on = new Date();
+			req.body.created_by = req.user.Vendor.vendor_name;
+			bodyParamsArray.push(req.body[i]);
+	}
+	var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
+	req.endpoint ='Product';
+	service.createBulkRow(req.endpoint, finalresults)
+		.then(function (result) {
+			var productMediaArray = [];
+			for (var i = 0; i < result.length; i++) {
+				productMediaArray.push(result[i]);
+		     }
+			//var product_id = result.id;
+			if (result) {
+				return res.status(201).send(result);
+			} else {
+				return res.status(404).send("Not found");
+			}
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+
 }
 
 function updateProductMedia(arrayEle, product_id) {
@@ -505,6 +591,7 @@ export function editProduct(req, res) {
 		res.status(500).send(error);
 	})
 }
+
 
 export function discount(req, res) {
 	var arrayEle = JSON.parse(req.body.data);

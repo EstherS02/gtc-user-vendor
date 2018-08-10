@@ -404,6 +404,14 @@ Handlebars.registerHelper('currency', function(amt, symbol) {
     return numeral(amt).format(symbol + '0,0.00');
 });
 
+Handlebars.registerHelper('if_eq', function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
+
 Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     let name;
     arrayEle.forEach(function(element) {

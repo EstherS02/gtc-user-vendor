@@ -23,8 +23,6 @@
 			location.href = "/login";
 		}
 	});
-
-
 </script>
 <script>
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
@@ -43,12 +41,264 @@
 				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
 			}
 		});
+
+		/*Start cover picture crop functions*/
+        $("#imageUpload").change(function () {
+            fasterPreview(this);
+        });
+
+        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, vendor_cover_pic_url;
+        var fileDetails = {}; var dataURLFileName, index= 0;
+
+        $('#crop-profile-cover-image').click(function () {
+            
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                var fileTempHold = {};
+				cropperOutputImage = blob;
+                fileTempHold['cropperOutputImage'] = blob;
+                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold ["croppedExtension"];
+                dataURLFileName = fileTempHold["fileName"];
+				// allFiles.push(fileTempHold);
+
+				var image = $("#imageUpload")[0].files[0];
+				var user_pic_url;
+				var vendor_ids = vendorInfo.id;
+				var form = new FormData();
+				form.append("file", cropperOutputImage, fileTempHold["fileName"]);
+
+				$.ajaxSetup({ async: false });
+				if (image) {
+					$.ajax({
+						type: 'POST',
+						url: '/api/vendors/upload',
+						data: form,
+						cache: false,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						success: function (data) {
+							vendor_cover_pic_url = data.imageURL;
+							$.ajax({
+								type: "PUT",
+								url: "/api/vendor/" + vendor_ids,
+								data: {vendor_cover_pic_url: vendor_cover_pic_url},
+								success: function(result) {
+									if (result)
+										location.reload();
+								}
+							});
+						},
+						error: function (error) {
+							console.log("Error", error);
+						}
+					})
+				}
+            });
+
+        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+
+        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
+
+            $(domElement).insertAfter(".preview");
+
+            $('#profile-cover-picture-modal').modal('hide');
+        index++;
+        });
+
+        $('#profile-cover-picture-modal').on('shown.bs.modal', function () {
+            cropper = new Cropper(cropperInputImage, {
+                aspectRatio: 40 / 16,
+                minCropBoxHeight: 280,
+                minCropBoxWidth: 1364,
+                ready: function () { }
+            });
+        }).on('hidden.bs.modal', function () {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
+
+        function fasterPreview(uploader) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+
+                console.log('fileDetails, uploader.files[0].name', fileDetails, uploader.files[0].File)
+                $('#UploadedImage').attr('src',
+                    window.URL.createObjectURL(uploader.files[0]));
+                $('#uploaded-profile-cover-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-cover-picture');
+                $('#profile-cover-picture-modal').modal('show');
+            }
+        }
+        /*End cover picture crop functions*/
+		$('.crop_edit_icon').hide();
+		if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
+			$('.crop_edit_icon').show();
+			$('#editPicture').click(function(){
+				$('.edit_picture').click();
+			});
+		}
+
+		/* Start profile picture crop functions */ 
+	    $("#profileimageupload").change(function () {
+            fasterPreviews(this);
+        });
+
+		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, vendor_profile_pic_url;
+        var fileDetails = {}; var dataURLFileName, index= 0;
+
+        $('#crop-profile-image').click(function () {
+            
+            cropper.getCroppedCanvas().toBlob(function (blob) {
+                var fileTempHold = {};
+				cropperOutputImage = blob;
+                fileTempHold['cropperOutputImage'] = blob;
+                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold ["croppedExtension"];
+                dataURLFileName = fileTempHold["fileName"];
+                // allFiles.push(fileTempHold);
+
+				var image = $("#profileimageupload")[0].files[0];
+				var user_pic_url;
+				var vendor_ids = vendorInfo.id;
+				var form = new FormData();
+				form.append("file", cropperOutputImage, fileTempHold["fileName"]);
+
+				$.ajaxSetup({ async: false });
+				if (image) {
+					$.ajax({
+						type: 'POST',
+						url: '/api/vendors/upload',
+						data: form,
+						cache: false,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						success: function (data) {
+							vendor_profile_pic_url = data.imageURL;
+							$.ajax({
+								type: "PUT",
+								url: "/api/vendor/" + vendor_ids,
+								data: {vendor_profile_pic_url: vendor_profile_pic_url},
+								success: function(result) {
+									if (result)
+										location.reload();
+								}
+							});
+						},
+						error: function (error) {
+							console.log("Error", error);
+						}
+					})
+				}
+
+            });
+
+        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+
+        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
+
+            $(domElement).insertAfter(".preview");
+
+            $('#profile-picture-modal').modal('hide');
+        index++;
+        });
+
+        $('#profile-picture-modal').on('shown.bs.modal', function () {
+            cropper = new Cropper(cropperInputImage, {
+                aspectRatio: 16 / 16,
+                minCropBoxHeight: 280,
+                minCropBoxWidth: 1364,
+                ready: function () { }
+            });
+        }).on('hidden.bs.modal', function () {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
+
+        function fasterPreviews(uploader) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+
+                console.log(fileDetails, uploader.files[0])
+                $('#UploadedImage').attr('src',
+                    window.URL.createObjectURL(uploader.files[0]));
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
+            }
+        }
+		$('.hide_edit').hide();
+		if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
+			$('.hide_edit').show();
+			$('#editProfileImg').click(function(){
+				$('.profilepicedit').click();
+			}); 
+		}
+		/* End profile picture crop functions */ 
 	});
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
+{{!-- Start Image crop modal window --}}
+<div class="modal fade" id="profile-cover-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-cover-picture-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profile-cover-picture-modalLabel">Crop Profile Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-right:35px">
+                <div class="container">
+                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-cover-picture" alt="Profile Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="crop-profile-cover-image">Crop Image</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="vendor-header">
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-right:35px">
+                <div class="container">
+                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- End Image crop modal window --}}
+<div class="vendor-header" style="position: relative;">
 	<div class="vp-cover">
+		<div class="crop_edit_icon">
+			<input type="file" id="imageUpload" class="edit_picture" name="somename" size="chars">
+			<span id="editPicture" class="edit-icon-align"><i class="fa fa-pencil icon_padding"></i><b>CHANGE COVER</b></span>
+		</div>
+		{{!-- <img src="https://media.istockphoto.com/photos/curvy-roads-silk-trading-route-between-china-and-india-picture-id523035682?s=2048x2048" class="object-fit"> --}}
 		<img {{#if VendorDetail.vendor_cover_pic_url}} src="{{VendorDetail.vendor_cover_pic_url}}"  {{else}}src="gtc-assets/images/inner_page_bnr.jpg"{{/if}} class="object-fit">
 	</div>
 	<div class="vp-title">
@@ -59,40 +309,39 @@
 	<div class="vp-menu">
 		<div class="gtc-container">
 			<nav class="navbar nav-menu navbar-expand-sm navbar-dark">
-				<a class="vendor-logo" href="/vendor/{{this.VendorDetail.id}}">
+				<a class="vendor-logo profile_img_edit">
 					<img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} alt="logo" title="Global Trade Connect">
+					<span class="hide_edit">
+						<input type="file" id="profileimageupload" class="profilepicedit" name="profilepic" size="chars">
+						<span id="editProfileImg" class="profileediticon"><i class="fa fa-pencil"></i></span>
+					</span>
 				</a>
-				<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
+				<button class="navbar-toggler collapsed navbar-dark" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse collapse" id="vendorNavBar">
 					<div class="row col no-margins no-padding">
 						<div class="col-md-8">
 							<div class="vp-verified-follow d-inline-block">
-							{{#if VendorDetail.VendorVerification}}
-										<img src="../img/gtc-verified.png" alt="GTC Verified" />
-										{{else}}
-										<img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified"/>
-										{{/if}}
+								{{#if VendorDetail.VendorVerification}}
+								<img src="../img/gtc-verified.png" alt="GTC Verified" />
+								{{else}}
+								<img src="../img/gtc-not-verified.jpg" alt="GTC Not Verified"/>
+								{{/if}}
 								{{#if LoggedInUser.id}}
-											{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
-												{{#if VendorDetail.VendorFollowers}}
-												<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/unfollow.png" alt="Follow"  /></a>
-												{{else}}
-												<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/follow.png" alt="Follow" /></a>
-												{{/if}}
-											{{/ifCond}}
+									{{#ifCond LoggedInUser.Vendor.id "!=" VendorDetail.id}}
+										{{#if VendorDetail.VendorFollowers}}
+										<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/unfollow.png" alt="Follow"  /></a>
 										{{else}}
-												{{!-- {{#if VendorDetail.VendorFollowers}} --}}
-												<a href="/login" class="d-inline-block"><img src="../img/follow.png" alt="Follow"  /></a>
-												{{!-- {{else}}
-												<a  href="" id="followVendor"><img src="../img/follow.png" alt=" Follow"  />--}}</a>
-												{{!-- {{/if}} --}}
+										<a href="javascript:;" id="followVendor" class="d-inline-block"><img src="../img/follow.png" alt="Follow" /></a>
 										{{/if}}
+									{{/ifCond}}
+								{{else}}
+										<a href="/login" class="d-inline-block"><img src="../img/follow.png" alt="Follow"  /></a></a>
+								{{/if}}
 							</div>
-							<div class="vp-navmenu d-inline-block">
+							<div class="vp-navmenu">
 								<ul class="navbar-nav vp-nav d-inline-flex">
-								{{!-- WHOLESALER --}}
 									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.WHOLESALER}}
 
 									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">
