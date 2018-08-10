@@ -16,6 +16,8 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 
+var agenda = require('./agenda').agenda;
+var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
 var app = express();
@@ -53,6 +55,15 @@ if (env === 'development') {
 }
 require('./config/express').default(app);
 require('./routes').default(app);
+
+agenda.define(config.jobs.couponExpiry, couponExpiry);
+
+agenda.on('ready', function() {
+	console.log('agenda onReady');
+	agenda.every('1 day', 'couponExpiry');
+	agenda.start();
+});
+app.set('agenda', agenda);
 
 // Start server
 function startServer() {

@@ -176,8 +176,8 @@
 													<td>{{this.discount_value}}</td>
 													{{!-- satusCode --}} {{#ifCond this.status "==" ../statusCode.ACTIVE}}
 													<td class="text_green_color">Active</td>
-													{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
-													<td class="text_orange_color">Suspended</td>
+													{{else ifCond this.status "==" ../statusCode.INACTIVE}}
+													<td class="text_orange_color">InActive</td>
 													{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
 													<td class="text_red_color">Sold Out</td>
 													{{/ifCond}} {{!-- End status Code--}}
