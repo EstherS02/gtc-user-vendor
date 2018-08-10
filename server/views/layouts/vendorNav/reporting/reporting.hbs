@@ -1,3 +1,22 @@
+<script>
+    $(function () {
+        $("#rep_from, #rep_to,#com_from,#com_to").datepicker();
+    });
+</script>
+
+<script type="text/javascript">
+    function onSearch(){
+        var from = $('#rep_from').val();
+        var to = $('#rep_to').val();
+        var Cfrom = $('#com_from').val();
+        var Cto = $('#com_to').val();
+        var Compare = $('#compare').val();
+
+        location.href = "/reporting?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
+    }
+</script>
+
+
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
     <div class="gtc-container">
@@ -22,14 +41,14 @@
                                                 </div>
                                                 <div class="col-sm-3" style="padding: 0px">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                                            id="datepicker3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                                <input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2" value="{{queryURI.rep_from}}"
+                                                 id="datepicker3" autocomplete="off">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                        <img class="calendar-icon" src="../../img/calendar.png">
+                                                    </span>
+                                                </div>
+                                            </div>
                                                 </div>
 
                                                 <div class="col-md-1 common_padding1">
@@ -37,13 +56,13 @@
                                                 </div>
                                                 <div class="col-sm-3" style="padding: 2px">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                                            id="datepicker4">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                                            </span>
-                                                        </div>
+                                                        <input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+                                                 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}"autocomplete="off">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                        <img class="calendar-icon" src="../../img/calendar.png">
+                                                    </span>
+                                                </div>
 
 
                                                     </div>
@@ -58,19 +77,19 @@
                                         <div class="col-sm-6" style="padding:0px; float: right; ">
                                             <div class="row">
                                                 <div class="col-md-3 charts">
-                                                    <input type="checkbox" style="width: 20%; margin-top: 5px;" checked>
+                                                    <input id="compare" type="checkbox" value="true" style="width: 20%; margin-top: 5px;" checked>
                                                     <p class="report_date-range1">Compare to</p>
                                                 </div>
                                                 <div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                                            id="datepicker5">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                                <input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_from}}"
+                                                 aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                        <img class="calendar-icon" src="../../img/calendar.png">
+                                                    </span>
+                                                </div>
+                                            </div>
                                                 </div>
 
                                                 <div class="col-md-1 common_padding1">
@@ -78,22 +97,22 @@
                                                 </div>
                                                 <div class="col-sm-3" style="padding: 2px">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon2"
-                                                            id="datepicker6">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text calender_face_1" id="basic-addon2">
-                                                                <img class="calendar-icon" src="../../img/calendar.png">
-                                                            </span>
-                                                        </div>
+                                                <input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_to}}"
+                                                 aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text calender_face_1" id="basic-addon2">
+                                                        <img class="calendar-icon" src="../../img/calendar.png">
+                                                    </span>
+                                                </div>
 
 
-                                                    </div>
+                                            </div>
                                                 </div>
                                                 <div class="col-md-1" style="padding: 0px">
-                                                    <button class="update-btn1" type="submit">Update</button>
+                                                    <button class="update-btn1" onclick="onSearch()">Update</button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> {{topProducts.past_total}}
                                         <div class="col-md-6 total-sales">
                                             <div class="pts">
                                                 <p class="product-total-sale">{{currency topProducts.total '$'}}</p>

@@ -425,3 +425,57 @@ Handlebars.registerHelper("LikeUnlike",function(likes, user){
     }
     return name;
 });
+
+function currencyFormat(amt) {
+    return numeral(amt).format('$' + '0,0.00').toString();
+};
+
+function calculatePercentage(amtA, amtB) {
+    let per = (amtA - amtB) / amtB * 100;
+    return numeral(per).format('0.00').toString() + '%';
+};
+
+function getTextColor(amtA, amtB) {
+    let total = (amtA - amtB);
+    if(total < 0)
+        return "text_red_color";
+    else
+        return "text_green_color";    
+};
+
+Handlebars.registerHelper('compareSalePerformance', function(obj, compareProducts) {   
+    var ret = '';
+    var matchedObj = _.find(compareProducts, function(aObj){
+        return aObj.product_id == obj.product_id;
+    });
+
+    if(matchedObj){
+        ret = `<td> ` + currencyFormat(obj.total_sales) + `
+         <span class = "`+ getTextColor(obj.total_sales,matchedObj.total_sales) +`">` + currencyFormat(obj.total_sales - matchedObj.total_sales) + `</span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.total_sales) + `(` + calculatePercentage(obj.total_sales - matchedObj.total_sales) + `) </span>
+         </td>
+         <td>` + currencyFormat(obj.vendor_fee) + `
+         <span class = "`+ getTextColor(obj.vendor_fee,matchedObj.vendor_fee) +`"> ` + currencyFormat(obj.vendor_fee - matchedObj.vendor_fee) + ` </span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.vendor_fee) + `(` + calculatePercentage(obj.vendor_fee - matchedObj.vendor_fee) + `) </span>
+         </td>
+         <td>` + currencyFormat(obj.gtc_fees) + `
+         <span class = "`+ getTextColor(obj.gtc_fees,matchedObj.gtc_fees) +`">` + currencyFormat(obj.gtc_fees - matchedObj.gtc_fees) + `</span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.gtc_fees) + `(` + calculatePercentage(obj.gtc_fees - matchedObj.gtc_fees) +`) </span>
+         </td>`
+    } else {
+        ret = `<td> `+ currencyFormat(obj.total_sales) + `
+         <span class = "text_red_color"> N/A </span>
+         <span class = "text_grey_color"> vs N/A (N/A % ) </span>
+         </td>
+         <td>` + currencyFormat(obj.vendor_fee) + `
+         <span class = "text_red_color"> N/A </span>
+         <span class = "text_grey_color"> vs N/A (N/A % ) </span>
+         </td>
+         <td>` + currencyFormat(obj.gtc_fees) + `
+         <span class = "text_red_color"> N/A </span>
+         <span class = "text_grey_color"> vs N/A (N/A % ) </span>
+         </td>`
+    }
+
+    return new Handlebars.SafeString(ret);
+});
