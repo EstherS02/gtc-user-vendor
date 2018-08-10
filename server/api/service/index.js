@@ -248,9 +248,35 @@ export function geoLocationFetch(lat, lng) {
 export function categoryAndSubcategoryCount() {
     return new Promise((resolve, reject) => {
         Sequelize_Instance.query(RawQueries.categoryAndSubcategoryCount(), {
-            model: model['product']
+            model: model['product'],
+            type: Sequelize_Instance.QueryTypes.SELECT
         }).then(resultObj => {
-            resolve(JSON.parse(JSON.stringify(resultObj)));
+            resultObj = JSON.parse(JSON.stringify(resultObj));
+            let groupByCategories = _.groupBy(resultObj, "product_category_id");
+            let categoryObj = [], totalCategoryProducts = 0;
+
+            console.log(groupByCategories[resultObj[1].product_category_id]);
+            console.log(resultObj[1])
+
+            for(var i = 0; i < resultObj.length; i++){
+                let tempCategory = groupByCategories[resultObj[i].product_category_id];
+                totalCategoryProducts = totalCategoryProducts + parseInt(resultObj[i].subCategoryCount);
+                let obj = {
+                    "product_category_id": tempCategory[0].product_category_id,
+                    "category_name": tempCategory[0].category_name,
+                    "categoryCount": tempCategory[0].categoryCount,
+                }
+                let index = categoryObj.findIndex(x => x.product_category_id == obj.product_category_id);
+                if(index === -1)
+                    categoryObj.push(obj);
+            }
+
+            resolve({
+                categoryObj : categoryObj,
+                subCategoryObj : resultObj,
+                totalCategoryProducts : totalCategoryProducts
+            });
+
         }).catch(function(error) {
             console.log('Error:::', error);
             reject(error);

@@ -60,51 +60,47 @@ export function geoLocate(req, res) {
                     return callback(error);
                 });
             },
-            categoriesWithCount: function(callback) {
-                var categoryQueryObj = {};
-                var productCountQueryParames = {};
-    
-                categoryQueryObj['status'] = statusCode["ACTIVE"];
-                productCountQueryParames['status'] = statusCode["ACTIVE"];
-               /*  if (vendor_id) {
-                    productCountQueryParames['vendor_id'] = vendor_id;
-                } */
-            /*     if (req.query.marketplace_type) {
-                    productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-                }
-                if (req.query.location) {
-                    productCountQueryParames['product_location'] = req.query.location;
-                }
-                if (req.query.keyword) {
-                    productCountQueryParames['product_name'] = {
-                        like: '%' + req.query.keyword + '%'
-                    };
-                } */
-                service.getCategory(categoryQueryObj, productCountQueryParames)
-                    .then(function(response) {
-                        return callback(null, JSON.parse(JSON.stringify(response)));
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return callback(null);
-                    });
+            categoriesCount: function(callback) {
+                service.categoryAndSubcategoryCount().then(function(result) {
+                    return callback(null, result);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(error);
+                });
             }
         },
         function(err, results) {
             if (!err) {
                let geoLocateByVendor = _.groupBy(results.geoLocateQuery, "vendor_id");
-               
-                 res.render('geo-locate', {
+
+              /*    res.json({
                     title: "Global Trade Connect",
                     categories: results.categories,
                     bottomCategory: bottomCategory,
                     cartheader: results.cartCounts,
                     geoLocateObj: results.geoLocateQuery,
                     geoLocateByVendor: geoLocateByVendor,
-                    categoriesWithCount: results.categoriesWithCount,
+                    categoriesCount: results.categoriesCount.categoryObj,
+                    subCategoriesCount: results.categoriesCount.subCategoryObj,
+                    totalCategoryProducts: results.categoriesCount.totalCategoryProducts,
+                    LoggedInUser: LoggedInUser
+                });  */
+               
+                res.render('geo-locate', {
+                    title: "Global Trade Connect",
+                    categories: results.categories,
+                    bottomCategory: bottomCategory,
+                    cartheader: results.cartCounts,
+                    geoLocateObj: results.geoLocateQuery,
+                    geoLocateByVendor: geoLocateByVendor,
+                    categoriesCount: results.categoriesCount.categoryObj,
+                    subCategoriesCount: results.categoriesCount.subCategoryObj,
+                    totalCategoryProducts: results.categoriesCount.totalCategoryProducts,
                     LoggedInUser: LoggedInUser
                 });
+
             } else {
-                res.render('wishlist', err);
+                res.render('geo-locate', err);
             }
         });
 }

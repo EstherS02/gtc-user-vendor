@@ -3,7 +3,7 @@
 	<div class="container-fluid">
 		<div class="row">
 
-            <div class="col-md-3">
+            {{!-- <div class="col-md-3">
                 <div class="row">            
                     <div class="col-md-10 geo_sort_bg">
                         <p>Showing
@@ -20,8 +20,8 @@
                         <p>
                             <b>FILTER BY CATEGORY</b>
                         </p>
-                        <p class="cat_bg_title">ALL CATEGORIES (293)</p>
-                        <div class="list-group panel ">
+                        <p class="cat_bg_title">ALL CATEGORIES</p>
+                        <div class="list-group panel">
                             <a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false" style="background-color:#FFF !important;">
                                 <i class="fas fa-caret-down"></i>
                                 <span class="hidden-sm-down">AGRICULTURE(293)</span>
@@ -88,49 +88,74 @@
                         </p>
                     </div>
                 </div>
-            </div>
+                </div>
+            --}}
 
-<!-- 
-    <div class="col-md-3">
-        <div class="ibox" style="height: 657px;overflow-y: scroll;overflow-x: hidden;">
-            <div class="ibox-content bg-transparent">
-                <h5 class="right-header-sm">SEARCH BY CATEGORY</h5>
-                <p class="right-header-xs bg{{product.Marketplace.id}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-                <ul class="right-list-view">
-                    {{#each categoriesWithCount.rows}}
-                    <li>
-                        <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a>
-                        <ul class="inner-list-view collapse" id="list{{this.name}}">
-                            {{#each this.SubCategories}}
+
+
+    <div class="col-md-3" style="height: 650px;overflow-y: scroll;overflow-x: hidden;">
+        <div class="row">			
+            <div class="col-md-10 geo_sort_bg">
+                <p>Showing <b> 1660 products</b></p>
+            </div>
+            <div class="col-md-2 geo_arrow_bg">
+                <i class="fas fa-caret-right"></i>
+            </div>
+		</div>
+        
+        <div class="row">
+            <div class="col-md-12 col-12" style="background-color:#FFF">
+                <div class="ibox" style="margin-bottom: 0px;">
+                    <div class="ibox-content bg-transparent">
+                        <p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY CATEGORY</b></p>
+                        <p class="right-header-xs bg1">ALL CATEGORIES ({{totalCategoryProducts}})</p>
+                        <ul class="right-list-view category-fixed">
+                            {{#each categoriesCount}}
                             <li>
-                                <a href="../{{../../selectedPage}}/search?category={{../this.id}}&sub_category={{this.id}}&vendor_id={{../../VendorDetail.id}}">{{this.name}}</a>
+                                <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.category_name}}">{{this.category_name}} ({{this.categoryCount}})</a>
+                                <ul class="inner-list-view collapse" id="list{{this.category_name}}">
+                                    {{#each ../subCategoriesCount}}
+                                        {{#ifCond this.product_category_id '==' ../this.product_category_id}}
+                                        <li>
+                                            <a href="/">{{this.sub_category_name}} ({{this.subCategoryCount}})</a>
+                                        </li>
+                                        {{/ifCond}}
+                                    {{/each}}
+                                </ul>
                             </li>
                             {{/each}}
                         </ul>
-                    </li>
-                    {{/each}}
-                </ul>
-                {{#if marketPlaceTypes}}
-                <h5 class="right-header-sm m-t-sm">FILTER BY TYPE</h5>
-                <p class="right-header-xs bg{{product.Marketplace.id}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
-                <ul class="right-list-view">
-                    {{#each marketPlaceTypes.rows}}
-                    <li>
-                        <a href="../{{../selectedPage}}/search?&vendor_id={{../VendorDetail.id}}&marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">{{this.code}} - {{this.name}} ({{this.product_count}})</a>
-                    </li>
-                    {{/each}}
-                </ul>
-                {{/if}}
+                    </div>
+                </div>
+
+                <div class="ibox" style="margin-bottom: 0px;">
+                    <div class="ibox-content bg-transparent" style="border-width: 0px 0;">
+                        <p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY CATEGORY</b></p>
+                        <p class="right-header-xs bg1">ALL CATEGORIES ({{totalCategoryProducts}})</p>
+                        <ul class="right-list-view category-fixed">
+                            {{#each categoriesCount}}
+                            <li>
+                                <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.category_name}}">{{this.category_name}} ({{this.categoryCount}})</a>
+                                <ul class="inner-list-view collapse" id="list{{this.category_name}}">
+                                    {{#each ../subCategoriesCount}}
+                                        {{#ifCond this.product_category_id '==' ../this.product_category_id}}
+                                        <li>
+                                            <a href="/">{{this.sub_category_name}} ({{this.subCategoryCount}})</a>
+                                        </li>
+                                        {{/ifCond}}
+                                    {{/each}}
+                                </ul>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+
     </div>
-
--->
-
-
-
-
-
 
 
 <!--
