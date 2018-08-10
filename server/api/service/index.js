@@ -245,6 +245,19 @@ export function geoLocationFetch(lat, lng) {
     });
 }
 
+export function categoryAndSubcategoryCount() {
+    return new Promise((resolve, reject) => {
+        Sequelize_Instance.query(RawQueries.categoryAndSubcategoryCount(), {
+            model: model['product']
+        }).then(resultObj => {
+            resolve(JSON.parse(JSON.stringify(resultObj)));
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+
 export function getCategory(categoryQueryObj, productCountQueryParames) {
     return new Promise((resolve, reject) => {
         var result = {};

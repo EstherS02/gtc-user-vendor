@@ -46,6 +46,32 @@ let sqlQueries = {
         distance`;
 
     return query;
+  },
+  categoryAndSubcategoryCount: function () {
+    let query = `SELECT
+    product_category_id,
+    sub_category_id,
+    category.name AS category_name,
+    sub_category.name AS sub_category_name,
+        (SELECT 
+                COUNT(*)
+            FROM
+                product
+            WHERE
+                product_category_id = P.product_category_id) AS categoryCount, P.subCategoryCount
+    FROM
+        (SELECT 
+            product_category_id,
+                sub_category_id,
+                COUNT(*) AS subCategoryCount
+        FROM
+            product
+        GROUP BY product_category_id , sub_category_id) P
+        
+    LEFT JOIN category ON category.id = product_category_id
+    LEFT JOIN sub_category ON sub_category.id = sub_category_id;`;
+
+    return query;
   }
 };
 
