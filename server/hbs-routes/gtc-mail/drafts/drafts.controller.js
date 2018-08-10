@@ -54,14 +54,17 @@ export function drafts(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
+				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 				res.render('gtc-mail/draft', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader:results.cartCounts,
-					selectedPage: 'draft',
-					vendorPlan:vendorPlan
+					selectedPage: 'drafts',
+					vendorPlan:vendorPlan,
+					dropDownUrl : dropDownUrl
 				});
 			} else {
 				res.render('gtc-mail/draft', err);

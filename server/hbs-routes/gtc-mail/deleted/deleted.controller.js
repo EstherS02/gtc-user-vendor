@@ -54,6 +54,8 @@ export function deleted(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
+				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 				res.render('gtc-mail/deleted', {
 					title: "Global Trade Connect",
 					LoggedInUser: LoggedInUser,
@@ -61,7 +63,8 @@ export function deleted(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader:results.cartCounts,
 					selectedPage: 'deleted',
-					vendorPlan:vendorPlan
+					vendorPlan:vendorPlan,
+					dropDownUrl : dropDownUrl
 				});
 			} else {
 				res.render('gtc-mail/deleted', err);

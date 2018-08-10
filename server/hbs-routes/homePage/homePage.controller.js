@@ -19,7 +19,7 @@ export function homePage(req, res) {
 	var offset, limit, field, order;
 	var queryObj = {};
 	var LoggedInUser = {};
-
+	
 	offset = 0;
 	limit = 5;
 	field = "id";
@@ -117,6 +117,7 @@ export function homePage(req, res) {
 			});
 		},
 		wantToSell: function(callback) {
+			console.log("wanttosell","wanttosell");
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -129,6 +130,7 @@ export function homePage(req, res) {
 				});
 		},
 		wantToBuy: function(callback) {
+			console.log("wantToBuy","wantToBuy");
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTB'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -141,6 +143,7 @@ export function homePage(req, res) {
 				});
 		},
 		wantToTrade: function(callback) {
+			console.log("wantToTrade","wantToTrade");
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTT'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -153,6 +156,7 @@ export function homePage(req, res) {
 				});
 		},
 		requestForQuote: function(callback) {
+			console.log("requestForQuote","requestForQuote");
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -165,6 +169,7 @@ export function homePage(req, res) {
 				});
 		},
 		publicMarketplace: function(callback) {
+			console.log("publicMarketplace","publicMarketplace");
 			delete queryObj['marketplace_type_id'];
 			queryObj['marketplace_id'] = marketplace['PUBLIC'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -177,6 +182,7 @@ export function homePage(req, res) {
 				});
 		},
 		serviceMarketplace: function(callback) {
+			console.log("serviceMarketplace","serviceMarketplace");
 			queryObj['marketplace_id'] = marketplace['SERVICE'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(serviceMarketplace) {
@@ -187,6 +193,7 @@ export function homePage(req, res) {
 				});
 		},
 		lifestyleMarketplace: function(callback) {
+			console.log("lifestyleMarketplace","lifestyleMarketplace");
 			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(lifestyleMarketplace) {
@@ -197,6 +204,7 @@ export function homePage(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
+			console.log("featuredProducts","featuredProducts");
 			delete queryObj['marketplace_id'];
 			queryObj['featured_position'] = position.HomePage;
 			queryObj['is_featured_product'] = 1;
@@ -210,6 +218,7 @@ export function homePage(req, res) {
 				});
 		},
 		topSellers: function(callback) {
+			console.log("topSellers","topSellers");
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';

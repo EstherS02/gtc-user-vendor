@@ -62,7 +62,6 @@ export default function(app) {
 		res.set('Access-Control-Allow-Credentials', 'true');
 		next();
 	});
-	//app.use(mw());
 	app.use(expressValidator());
 	app.use(methodOverride());
 	app.use(cookieParser(config.secrets.session));
@@ -76,12 +75,12 @@ export default function(app) {
 	}));
 
 	app.use(function(req, res, next) {
-		console.log("req.session", req.session['compare']);
 		if (!req.session['compare']) {
 			req.session['compare'] = [];
 		}
 		next();
 	});
+	app.use(mw());
 
 	if (env === 'development') {
 		const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -121,7 +120,6 @@ export default function(app) {
 		 * or send a fullscreen error message to the browser instead
 		 */
 		compiler.plugin('done', function(stats) {
-			console.log('webpack done hook');
 			if (stats.hasErrors() || stats.hasWarnings()) {
 				return browserSync.sockets.emit('fullscreen:message', {
 					title: 'Webpack Error:',
@@ -131,6 +129,7 @@ export default function(app) {
 			}
 			browserSync.reload();
 		});
+
 	}
 
 	if (env === 'development' || env === 'test') {
