@@ -38,7 +38,10 @@ export function orderHistory(req, res) {
 		queryURI['dateSelect'] = dateSelect;
 		end_date = moment().add(0, 'd').toDate();
 		if (dateSelect == "today") {
-			start_date = moment();
+			//start_date = moment();
+		   var convertMoment = moment();
+           start_date =  new Date(convertMoment);
+         
 		} else if (dateSelect == "yesterday") {
 			start_date = moment().add(-1, 'd').toDate();
 			end_date = start_date;

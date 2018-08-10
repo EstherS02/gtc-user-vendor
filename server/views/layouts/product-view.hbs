@@ -4,6 +4,11 @@
 	var statusCode = {{{DisplayJSON status}}}
 
 	$(document).ready(function() {
+
+		$('#review-stars').barrating({
+			theme: 'fontawesome-stars'
+		});
+
 		$("#gtc-add-to-cart").click(function() {
 			var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
@@ -14,8 +19,6 @@
 				data: cartInfo,
 				success: function(response) {
 					location.reload();
-					/*$('#productCartMessage').empty();
-					$('#productCartMessage').append('<p class="product-alert-msg text-success">' + response.message_details + '</p>');*/
 				},
 				error: function(error) {
 					$('#productCartMessage').empty();
@@ -344,13 +347,16 @@
 	                    <div class="col-lg-12">
 	                    	<div class="form-group">
 	                            <div class="inputRating text-center">
-	                            	<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+	                            	<select id="review-stars" name="rating" style="display:none !important;" required/>
+										<option value=""></option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+									</select>
 	                            </div>
 	                        </div>
 	                    	<div class="form-group">
@@ -359,7 +365,7 @@
 	                        </div>
 	                        <div class="form-group">
 	                            <label class="label-control d-block">Comment </label>
-	                            <textarea class="form-control-customized" name="description" rows="3"></textarea>
+	                            <textarea class="form-control-customized" id="inputComment" name="comment" name="description" rows="3"></textarea>
 	                        </div>
 	                    </div>
 	                </div>
@@ -370,6 +376,55 @@
 				</div>
 			</form>
 		</div>
+		<script type="text/javascript">
+			var productSpecs = {{{DisplayJSON product}}}
+			$('#btnFaSpinner').hide();
+			$('#review-stars').val(1);
+
+			$("#reviewForm").submit(function(e) {
+				e.preventDefault();
+
+				var reviewObj = {};
+				$(':input[type="submit"]').prop('disabled', true);
+
+				if ($('#reviewForm').valid()) {
+					reviewObj['rating'] = parseInt($('#review-stars').val());
+					reviewObj['product_id'] = productSpecs.id;
+					reviewObj['user_id'] = parseInt(userInfo.id);
+					reviewObj['status'] = 1;
+					if (!reviewObj['rating']) {
+						reviewObj['rating'] = 1;
+					}
+					reviewObj['title'] = $('#inputTitle').val();
+					if ($('#inputComment').val()) {
+						reviewObj['comment'] = $('#inputComment').val();
+					}
+					$('#btnFaSpinner').show()
+				}
+
+				console.log("reviewObj", reviewObj);
+
+				$.ajax({
+					type: "POST",
+					url: "/api/reviews",
+					data: reviewObj,
+					success: function(result) {
+						location.reload();
+					}
+				});
+			});
+
+			$("#reviewForm").validate({
+				rules: {
+					rating: "required",
+					title: "required"
+				},
+				messages: {
+					rating: "Rating is required.",
+					title: "Title is required."
+				}
+			});
+		</script>
 	</div>
 </div>
 {{> footer/bottom-footer}}
