@@ -161,6 +161,13 @@ export function product(req, res) {
 				},
 				required: false
 			}, {
+				model: model['VendorFollower'],
+				where: {
+					user_id: LoggedInUser.id,
+					status: 1
+				},
+				required: false
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
