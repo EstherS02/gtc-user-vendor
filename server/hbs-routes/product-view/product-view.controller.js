@@ -1,5 +1,9 @@
 'use strict';
 
+const _ = require('lodash');
+const async = require('async');
+var auth = require('../../auth/auth.service');
+var productService = require('../../api/product/product.service')
 const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -10,72 +14,58 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../config/marketplace');
 const Plan = require('../../config/gtc-plan');
-const async = require('async');
-const _ = require('lodash');
 
 export function product(req, res) {
-	var productID;
+	var LoggedInUser = {};
+	var bottomCategory = {};
 	var categoryModel = "Category";
+	var productModel = 'MarketplaceProduct';
+	var wishlistModel = 'WishList';
+	var vendorID, productID, categoryID, marketplaceID;
 
 	if (req.params.product_id) {
 		productID = req.params.product_id;
 	}
 
-	console.log("req.isAuthenticated()", req.isAuthenticated());
-}
-
-export function GetProductDetails(req, res) {
-
-	var queryObj = {};
-	var includeArr = [];
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var categoryModel = "Category";
-
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
 
-	if (req.params.product_id)
-		queryObj['id'] = req.params.product_id;
-
-	if (req.params.product_slug)
-		queryObj['product_slug'] = req.params.product_slug;
-	queryObj['status'] = status["ACTIVE"];
-	var wishQueryObj = {};
-	if (LoggedInUser.id) {
-		wishQueryObj = {
-			user_id: LoggedInUser.id,
-			status: {
-				'$eq': status["ACTIVE"]
-			}
-		}
-	}
-	var sub_category, vendor_id, marketplace_id;
-	var productModel = 'MarketplaceProduct';
-	var order = "desc";
-	var field = "created_on";
-	var product_id;
-	var queryURI = {};
-	var followQuery = {};
-	if (LoggedInUser.id) {
-		followQuery = {
-			status: status['ACTIVE'],
-			user_id: LoggedInUser.id,
-		};
-	} else {
-		followQuery = {
-			status: status['ACTIVE']
-		};
-	}
 	async.series({
 		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+			if (req['currentUser']) {
+				service.cartHeader(LoggedInUser).then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			} else {
 				return callback(null);
-			});
+			}
+		},
+		productWishlist(callback) {
+			if (req['currentUser']) {
+				var queryObj = {};
+				var includeArr = [];
+
+				queryObj['user_id'] = req['currentUser'].id;
+				queryObj['product_id'] = productID;
+				queryObj['status'] = status['ACTIVE'];
+
+				service.findOneRow(wishlistModel, queryObj, includeArr).then(function(exists) {
+					if (exists) {
+						return callback(null, exists);
+					} else {
+						return callback(null);
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			} else {
+				return callback(null);
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -98,81 +88,78 @@ export function GetProductDetails(req, res) {
 					return callback(null);
 				});
 		},
-		Product: function(callback) {
-			var includeArr1 = [{
-				model: model["Vendor"]
-			}, {
-				model: model["Marketplace"]
-			}, {
-				model: model["MarketplaceType"]
-			}, {
-				model: model["Category"]
-			}, {
-				model: model["SubCategory"]
-			}, {
-				model: model["Country"]
-			}, {
-				model: model["State"]
-			}, {
-				model: model["WishList"],
-				where: wishQueryObj,
-				required: false
-			}, {
-				model: model["ProductMedia"],
-				where: {
-					status: {
-						'$eq': status["ACTIVE"]
+		productDetail: function(callback) {
+			productService.productView(productID)
+				.then((product) => {
+					if (product.Reviews.length > 0) {
+						var newProductRating = parseFloat(product.Reviews[0].productRating);
+						product['rating'] = newProductRating.toFixed(1);
+					} else {
+						product['rating'] = 0;
 					}
-				}
-			}];
-			service.findOneRow('Product', queryObj, includeArr1)
-				.then(function(product) {
-					sub_category = product.sub_category_id;
-					marketplace_id = product.marketplace_id;
-					vendor_id = product.vendor_id;
+					vendorID = product.vendor_id;
+					marketplaceID = product.marketplace_id;
+					categoryID = product.product_category_id;
 					return callback(null, product);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		productRating: function(callback) {
+			productService.productRatingsCount(productID)
+				.then((productRatings) => {
+					return callback(null, productRatings);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		productRecentReview: function(callback) {
+			var queryObj = {};
+
+			queryObj['status'] = status['ACTIVE'];
+			queryObj['product_id'] = productID;
+
+			productService.productReviews(queryObj, null, 1, 'created_on', 'DESC')
+				.then((productLatestReview) => {
+					return callback(null, productLatestReview);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		RelatedProducts: function(callback) {
+			var order = "desc";
+			var includeArr = [];
+			var field = "created_on";
+			var queryObj = {
+				category_id: categoryID,
+				vendor_id: vendorID,
+				id: {
+					$ne: productID
+				}
+			};
+
+			service.findAllRows(productModel, includeArr, queryObj, 0, 9, field, order)
+				.then(function(RelatedProducts) {
+					return callback(null, RelatedProducts);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		AllReviews: function(callback) {
-			var reviewModel = "Review";
-			var queryObj1 = {
-				product_id: req.params.product_id,
-				status: status["ACTIVE"]
-			}
-			var includeArr2 = [{
-				model: model["User"],
-				attributes: {
-					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-				}
-			}];
-			service.findAllRows(reviewModel, includeArr2, queryObj1, null, null, 'rating', 'desc')
-				.then(function(AllReviews) {
-					return callback(null, AllReviews);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-				});
-		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
-
 			}, {
 				model: model['VendorPlan'],
-
-			}, {
-				model: model['VendorFollower'],
-				where: followQuery,
-				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: status['ACTIVE']
 				},
 				required: false
-
 			}, {
 				model: model['VendorRating'],
 				attributes: [
@@ -182,26 +169,9 @@ export function GetProductDetails(req, res) {
 				group: ['VendorRating.vendor_id'],
 				required: false,
 			}];
-			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
+			service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 				.then(function(response) {
 					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		RelatedProducts: function(callback) {
-			var queryObj2 = {
-				sub_category_id: sub_category,
-				vendor_id: vendor_id,
-				id: {
-					$ne: req.params.product_id
-				}
-			};
-			includeArr = [];
-			service.findAllRows(productModel, includeArr, queryObj2, 0, 9, field, order)
-				.then(function(RelatedProducts) {
-					return callback(null, RelatedProducts);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -214,8 +184,8 @@ export function GetProductDetails(req, res) {
 
 			categoryQueryObj['status'] = status["ACTIVE"];
 			productCountQueryParames['status'] = status["ACTIVE"];
-			if (vendor_id) {
-				productCountQueryParames['vendor_id'] = vendor_id;
+			if (vendorID) {
+				productCountQueryParames['vendor_id'] = vendorID;
 			}
 			if (req.query.marketplace_type) {
 				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
@@ -237,13 +207,12 @@ export function GetProductDetails(req, res) {
 				});
 		},
 		marketPlaceTypes: function(callback) {
-			if (marketplace_id == marketplace['WHOLESALE']) {
-				var result = {};
+			if (marketplaceID == marketplace['WHOLESALE']) {
 				var marketplaceTypeQueryObj = {};
 				var productCountQueryParames = {};
 
 				marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-				productCountQueryParames['vendor_id'] = vendor_id;
+				productCountQueryParames['vendor_id'] = vendorID;
 				marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 				productCountQueryParames['status'] = status["ACTIVE"];
@@ -271,78 +240,38 @@ export function GetProductDetails(req, res) {
 					});
 			} else {
 				return callback(null);
-
 			}
 		}
-	}, function(err, results) {
-		queryURI['marketplace_id'] = results.Product.Marketplace.id;
-		var productsList = JSON.parse(JSON.stringify(results.Product));
-
-		let productReviewsList = _.groupBy(results.AllReviews.rows, "rating");
+	}, function(error, results) {
 		var selectedPage;
-		if (productsList.Marketplace.id == 1) {
+		if (marketplaceID == marketplace['WHOLESALE']) {
 			selectedPage = "wholesale";
-		} else if (productsList.Marketplace.id == 2) {
+		} else if (marketplaceID == marketplace['PUBLIC']) {
 			selectedPage = "shop";
-		} else if (productsList.Marketplace.id == 3) {
+		} else if (marketplaceID == marketplace['SERVICE']) {
 			selectedPage = "services";
-		} else {
+		} else if (marketplaceID == marketplace['LIFESTYLE']) {
 			selectedPage = "lifestyle";
+		} else {
+			selectedPage = null;
 		}
-		if (!err) {
-			var productRating = [{
-				starCount: 7,
-				ratingCount: 0
-			}, {
-				starCount: 6,
-				ratingCount: 0
-			}, {
-				starCount: 5,
-				ratingCount: 0
-			}, {
-				starCount: 4,
-				ratingCount: 0
-			}, {
-				starCount: 3,
-				ratingCount: 0
-			}, {
-				starCount: 2,
-				ratingCount: 0
-			}, {
-				starCount: 1,
-				ratingCount: 0
-			}];
-
-			var total = 0;
-			var rating = results.AllReviews.rows;
-
-			for (let key in rating) {
-				total = total + rating[key].rating;
-				if (rating[key].rating <= 7)
-					productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
-			}
-			var productAvgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
-
+		if (!error) {
 			res.render('product-view', {
+				title: "Global Trade Connect",
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				product: productsList,
-				productReviewsList: results.AllReviews,
-				LoggedInUser: LoggedInUser,
-				rating: productRating,
-				status: status,
-				VendorDetail: results.VendorDetail,
-				wishList: productsList.WishLists,
-				avgRating: productAvgRating,
-				queryURI: queryURI,
-				categoriesWithCount: results.categoriesWithCount,
-				RelatedProducts: results.RelatedProducts.rows,
-				marketPlaceTypes: results.marketPlaceTypes,
-				marketplace: marketplace,
-				selectedPage: selectedPage,
 				cartheader: results.cartCounts,
-				title: "Global Trade Connect",
-				Plan: Plan,
+				product: results.productDetail,
+				isWishlist: results.productWishlist,
+				productRatings: results.productRating,
+				productRecentReview: results.productRecentReview,
+				VendorDetail: results.VendorDetail,
+				categoriesWithCount: results.categoriesWithCount,
+				marketPlaceTypes: results.marketPlaceTypes,
+				status: status,
+				LoggedInUser: LoggedInUser,
+				selectedPage: selectedPage,
+				Plan: Plan
 			});
 		} else {
 			res.render('product-view', {
