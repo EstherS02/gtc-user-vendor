@@ -15,14 +15,14 @@
 				success: function(response) {
 					location.reload();
 					/*$('#productCartMessage').empty();
-					$('#productCartMessage').append('<p class="product-cart-error text-success">' + response.message_details + '</p>');*/
+					$('#productCartMessage').append('<p class="product-alert-msg text-success">' + response.message_details + '</p>');*/
 				},
 				error: function(error) {
 					$('#productCartMessage').empty();
 					if (error.status === 401) {
 						return location.href = "/login";
 					}
-					$('#productCartMessage').append('<p class="product-cart-error text-danger">' + JSON.parse(error.responseText).message_details + '</p>');
+					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
 					var timer = setTimeout(function() {
 						$('#productCartMessage').empty();
 					}, 10000);
@@ -30,6 +30,68 @@
 			});
 		});
 	});
+
+	var newData = {};
+	newData.product_id = productSpecs.id;
+
+	function compareProduct(e) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product-view/add-to-compare',
+			data: newData,
+			success: function(response) {
+				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			}
+		});
+	};
+
+	function wishUpdate() {
+		if (userInfo.email) {
+			var newObj = {};
+			newObj.product_id = productSpecs.id;
+			newObj.user_id = userInfo.id;
+			if ($('input[name=wishID]').val()) {
+				newObj.status = 0;
+			} else {
+				newObj.status = statusCode.ACTIVE;
+			}
+			console.log(newObj);
+			var queryObj = {};
+			queryObj.product_id = productSpecs.id;
+			queryObj.user_id = userInfo.id;
+			var data = JSON.stringify({
+				queryObj: queryObj,
+				newObj: newObj
+			});
+			var newData = {};
+			newData.data = data;
+			$.ajax({
+				type: 'PUT',
+				url: '/api/product-view/addOrRemove',
+				data: newData,
+				success: function(response) {
+					location.reload();
+				},
+				error: function(error) {
+					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productAlert').empty();
+					}, 10000);
+				}
+			});
+		} else {
+			location.href = "/login"
+		}
+	};
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -140,15 +202,17 @@
 														</a>
                             						</li>
                             						<li>
-                            							<a href="javascript:;" onclick="wishUpdate()">
-                            								{{#if wishList}}
+                            							{{#if isWishlist}}
+                            							<a href="javascript:;" title="This product in your wishlist">
                             								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
 															<span>Added Wishlist</span>
-                            								{{else}}
-                            								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
-															<span>Add to Wishlist</span>
-                            								{{/if}}
+                            							</a>
+                            							{{else}}
+                            							<a href="javascript:;" onclick="wishUpdate()">
+	                            							<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
+																<span>Add to Wishlist</span>
 														</a>
+                            							{{/if}}
                             						</li>
                             					</ul>
                             				</div>
@@ -168,6 +232,7 @@
                             				</div>
                             				<div style="clear: both;"></div>
                             			</div>
+                            			<div id="productAlert"></div>
                             			<div class="p-description">
                             				<p class="text-muted">{{product.description}}</p>
                             			</div>
@@ -194,7 +259,7 @@
 															</div>
 														</div>
 														{{/each}}
-														<button type="button" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
+														<button type="button" data-toggle="modal" data-target="#reviewModal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
 													</div>
 													<div class="col-md-7 reviews-content">
 														<div class="feed-activity-list">
@@ -216,7 +281,7 @@
 																		</div>
 																		<div style="clear: both;"></div>
 																	</div>
-																	<span>{{this.comment}}</span>
+																	<p class="text-justify m-b-xs">{{this.comment}}</p>
 																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
 																</div>
 															</div>
@@ -264,6 +329,46 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
+			</div>
+			<form id="reviewForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                    	<div class="form-group">
+	                            <div class="inputRating text-center">
+	                            	<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+	                            </div>
+	                        </div>
+	                    	<div class="form-group">
+	                            <label class="label-control d-block">Title </label>
+	                            <input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Comment </label>
+	                            <textarea class="form-control-customized" name="description" rows="3"></textarea>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

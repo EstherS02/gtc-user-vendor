@@ -20,6 +20,7 @@ export function product(req, res) {
 	var bottomCategory = {};
 	var categoryModel = "Category";
 	var productModel = 'MarketplaceProduct';
+	var wishlistModel = 'WishList';
 	var vendorID, productID, categoryID, marketplaceID;
 
 	if (req.params.product_id) {
@@ -34,8 +35,30 @@ export function product(req, res) {
 		cartCounts: function(callback) {
 			if (req['currentUser']) {
 				service.cartHeader(LoggedInUser).then(function(response) {
-					console.log("response%%%%%%%%%%%%%%%%%%%%%%%%555", response);
 					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			} else {
+				return callback(null);
+			}
+		},
+		productWishlist(callback) {
+			if (req['currentUser']) {
+				var queryObj = {};
+				var includeArr = [];
+
+				queryObj['user_id'] = req['currentUser'].id;
+				queryObj['product_id'] = productID;
+				queryObj['status'] = status['ACTIVE'];
+
+				service.findOneRow(wishlistModel, queryObj, includeArr).then(function(exists) {
+					if (exists) {
+						return callback(null, exists);
+					} else {
+						return callback(null);
+					}
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -232,7 +255,6 @@ export function product(req, res) {
 		} else {
 			selectedPage = null;
 		}
-		console.log("cartheader", results.cartCounts);
 		if (!error) {
 			res.render('product-view', {
 				title: "Global Trade Connect",
@@ -240,11 +262,13 @@ export function product(req, res) {
 				bottomCategory: bottomCategory,
 				cartheader: results.cartCounts,
 				product: results.productDetail,
+				isWishlist: results.productWishlist,
 				productRatings: results.productRating,
 				productRecentReview: results.productRecentReview,
 				VendorDetail: results.VendorDetail,
 				categoriesWithCount: results.categoriesWithCount,
 				marketPlaceTypes: results.marketPlaceTypes,
+				status: status,
 				LoggedInUser: LoggedInUser,
 				selectedPage: selectedPage,
 				Plan: Plan
