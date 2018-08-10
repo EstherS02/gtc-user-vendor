@@ -1,24 +1,10 @@
-<style>
-	#addCompare {
-		cursor: pointer;
-	}
-</style>
-
-<script>
-
+<script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
 	var statusCode = {{{DisplayJSON status}}}
 
-	$(function() {
-		$('#review-stars').barrating({
-			theme: 'fontawesome-stars'
-		});
-
-		$("#gtc-cart-alert").hide();
+	$(document).ready(function() {
 		$("#gtc-add-to-cart").click(function() {
-			$('#gtc-add-to-cart').prop('disabled', true);
-
 			var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
 
@@ -26,79 +12,47 @@
 				type: "POST",
 				url: "/api/cart/add-cart/" + productSpecs.id,
 				data: cartInfo,
-				success: function(res) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (res && res.message === "SUCCESS") {
-						outputPop(res.message_details);
-						// $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-						// $('#gtc-cart-alert .cart-message').text(res.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// 	location.reload();
-						// });
-						console.log(res)
-					}
+				success: function(response) {
+					location.reload();
+					/*$('#productCartMessage').empty();
+					$('#productCartMessage').append('<p class="product-alert-msg text-success">' + response.message_details + '</p>');*/
 				},
 				error: function(error) {
-					$('#gtc-add-to-cart').prop('disabled', false);
-					if (error) {
-						if (error.status === 401)
-							return location.href = "/login";
-
-						outputErrorPop(error);
-						// $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-						// $('#gtc-cart-alert .cart-message').text(error.responseJSON.message + " : " + error.responseJSON.message_details)
-						// $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						// 	$("#gtc-cart-alert").slideUp(500);
-						// });
-
+					$('#productCartMessage').empty();
+					if (error.status === 401) {
+						return location.href = "/login";
 					}
+					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productCartMessage').empty();
+					}, 10000);
 				}
 			});
 		});
 	});
 
+	var newData = {};
+	newData.product_id = productSpecs.id;
 
-	$("#reviewForm").validate({
-		rules: {
-			reviewDetailComment: "required",
-			reviewTitle: "required"
-		},
-		messages: {
-			reviewDetailComment: "Please Enter your review Comment",
-			reviewTitle: "Please enter your Review title"
-		}
-	});
-
-	function reviewSubmit(id) {
-
-		let reviewObj = {};
-
-		if (userInfo.email) {
-			if ($("#reviewForm").valid()) {
-				reviewObj['rating'] = $('#review-stars').val();
-				reviewObj['title'] = $('#review-title').val();
-				reviewObj['comment'] = $('#review-detail-comment').val();
-				reviewObj['product_id'] = parseInt(id);
-				reviewObj['user_id'] = parseInt(userInfo.id);
-				reviewObj['status'] = 1;
-
-				console.log(reviewObj);
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function(result) {
-						if (result)
-							location.reload();
-					}
-				});
+	function compareProduct(e) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product-view/add-to-compare',
+			data: newData,
+			success: function(response) {
+				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
 			}
-		} else {
-			location.href = "/login"
-		}
-	}
+		});
+	};
 
 	function wishUpdate() {
 		if (userInfo.email) {
@@ -124,64 +78,20 @@
 				type: 'PUT',
 				url: '/api/product-view/addOrRemove',
 				data: newData,
-				success: function(data, text) {
+				success: function(response) {
 					location.reload();
 				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
+				error: function(error) {
+					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productAlert').empty();
+					}, 10000);
 				}
 			});
-
 		} else {
 			location.href = "/login"
 		}
-
-	}
-
-</script>
-<script type="text/javascript">
-var productSpecs = {{{DisplayJSON product}}}
-var newData = {};
-newData.product_id = productSpecs.id;
-function compareProduct(e){
-	$.ajax({
-		type: 'POST',
-		url: '/api/product-view/add-to-compare',
-		data: newData,
-		success: function(res) {
-			if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
-                    console.log(res)
-                }
-		},
-		error: function(error) {
-			if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    outputErrorPop(error);
-                }
-			console.log('error', error);
-		}
-	});
-
-}
- function outputPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-cart-alert .cart-message').text(argument)
-        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-            location.reload();
-        });
-    }
-
-    function outputErrorPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
-        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-        });
-    }
+	};
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -270,11 +180,12 @@ function compareProduct(e){
                             						<div class="add-to-bag text-right">
                             							<label class="m-r-xs text-light-muted">Quantity: </label>
                             							<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" value="1" min="1">
-														<a href="javascript:;" class="btn btn-primary">
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<svg width="18" height="16" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"/><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"/></g></svg>
 															<span class="m-l-xs align-middle">ADD TO BAG</span>
 														</a>
                             						</div>
+                            						<div id="productCartMessage"></div>
                             					</div>
                             				</div>
                             			</div>
@@ -285,21 +196,23 @@ function compareProduct(e){
                             				<div class="alignleft icon">
                             					<ul>
                             						<li>
-                            							<a href="javascript:;" onclick="compareProduct()" id="addCompare">
+                            							<a href="javascript:;" onclick="compareProduct()">
 															<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
 															<span>Add to Compare</span>
 														</a>
                             						</li>
                             						<li>
-                            							<a href="javascript:;" onclick="wishUpdate()">
-                            								{{#if wishList}}
+                            							{{#if isWishlist}}
+                            							<a href="javascript:;" title="This product in your wishlist">
                             								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
 															<span>Added Wishlist</span>
-                            								{{else}}
-                            								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
-															<span>Add to Wishlist</span>
-                            								{{/if}}
+                            							</a>
+                            							{{else}}
+                            							<a href="javascript:;" onclick="wishUpdate()">
+	                            							<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
+																<span>Add to Wishlist</span>
 														</a>
+                            							{{/if}}
                             						</li>
                             					</ul>
                             				</div>
@@ -319,6 +232,7 @@ function compareProduct(e){
                             				</div>
                             				<div style="clear: both;"></div>
                             			</div>
+                            			<div id="productAlert"></div>
                             			<div class="p-description">
                             				<p class="text-muted">{{product.description}}</p>
                             			</div>
@@ -329,52 +243,49 @@ function compareProduct(e){
 											</div>
 											<div class="m-l-sm block-1">
 												<h3 class="d-inline-block">Product Rating</h3>
-												<h3 class="d-inline-block m-r m-l text-primary"><b>{{avgRating}}</b></h3>
-												<h3 class="d-inline-block"><span class="text-black text-sm">Based on</span> <strong>23 Reviews</strong></h3>
+												<h3 class="d-inline-block text-primary"><b>{{product.rating}}</b></h3>
+												<h3 class="d-inline-block"><span class="text-black">Based on</span> <strong>{{productRecentReview.count}} Reviews</strong></h3>
 												<div class="row">
 													<div class="col-md-5 rating-content">
-														{{#each rating}}
+														{{#each productRatings}}
 														<div class="d-flex">
 															<div class="col-7 no-padding">
 																<div class="7star p-rating">
-																	{{starCount this.starCount}}
+																	{{starCount this.rating}}
 																</div>
 															</div>
 															<div class="col-5 no-padding">
-																<span class="tot-rating-count">(<a href="javascript:;">{{this.ratingCount}} Ratings</a>)</span>
+																<span class="tot-rating-count">(<a href="javascript:;">{{this.userCount}} Ratings</a>)</span>
 															</div>
 														</div>
 														{{/each}}
-														<button type="button" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
+														<button type="button" data-toggle="modal" data-target="#reviewModal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
 													</div>
 													<div class="col-md-7 reviews-content">
 														<div class="feed-activity-list">
+															{{#each productRecentReview.rows}}
 															<div class="feed-element b-b-none">
-																<a class="float-left" href="profile.html">
-																	<img alt="image" class="rounded-circle" src="../../gtc-assets/images/a4.jpg">
+																<a class="float-left" href="javascript:;">
+																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
-																	<span class="review-title">"Great place, great food, warm hospitality"</span>
+																	<span class="review-title">{{this.title}}</span>
 																	<div class="m-b-xs m-t-xs">
 																		<div class="alignleft">
 																			<div class="p-rating">
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
-																				<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+																				{{starCount this.rating}}
 																			</div>
 																		</div>
 																		<div class="alignleft m-l-sm">
-																			<small class="float-right">3 days ago</small>
+																			<small class="float-right">{{FormatDate this.created_on}}</small>
 																		</div>
 																		<div style="clear: both;"></div>
 																	</div>
-																	<span>We had a conference planned and a snow storm threatened to cancel everything. Prince George staff helped us pull it off, with grace, professionalism and not a blip on anyone`s radar. By the end of the conference most of ourattendees had arrived after all and had a fabulous time, Well done folks!</span>
+																	<p class="text-justify m-b-xs">{{this.comment}}</p>
+																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
 																</div>
 															</div>
+															{{/each}}
 														</div>
 														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
 													</div>
@@ -418,6 +329,46 @@ function compareProduct(e){
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
+			</div>
+			<form id="reviewForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                    	<div class="form-group">
+	                            <div class="inputRating text-center">
+	                            	<i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+									<i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+	                            </div>
+	                        </div>
+	                    	<div class="form-group">
+	                            <label class="label-control d-block">Title </label>
+	                            <input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Comment </label>
+	                            <textarea class="form-control-customized" name="description" rows="3"></textarea>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

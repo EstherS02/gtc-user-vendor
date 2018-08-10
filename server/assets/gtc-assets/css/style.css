@@ -1387,6 +1387,14 @@ ul.inner-list-view li a {
 	color: #3e7bba;
 	text-shadow: none;
 }
+.product-alert-msg {
+	font-size: 0.75em;
+	margin-bottom: 0;
+	font-weight: 500;
+}
+.inputRating i {
+	font-size: 32px;
+}
 /* sumithra */
 /*p.com_product_desc{
 //white-space: nowrap;

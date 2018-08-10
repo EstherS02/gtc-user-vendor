@@ -34,12 +34,12 @@ module.exports = (sequelize, DataTypes) => {
         rating: {
             type: DataTypes.INTEGER,
             field: 'rating',
-            allowNull: true
+            allowNull: false
         },
         title: {
             type: DataTypes.STRING(128),
             field: 'title',
-            allowNull: true
+            allowNull: false
         },
         comment: {
             type: DataTypes.TEXT,
