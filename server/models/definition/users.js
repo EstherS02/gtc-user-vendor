@@ -193,6 +193,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.hasMany(DiscussionBoardPost, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    
     User.hasMany(DiscussionBoardPostComment, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',

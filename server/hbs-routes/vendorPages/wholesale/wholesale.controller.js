@@ -67,6 +67,7 @@ export function vendorWholesale(req, res) {
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
+					console.log(wantToSell.rows)
 					return callback(null, wantToSell.rows);
 
 				}).catch(function(error) {

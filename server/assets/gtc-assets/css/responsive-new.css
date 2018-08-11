@@ -88,7 +88,16 @@
 }
 
 @media screen and (min-width: 721px) and (max-width: 1280px) {
-
+	.brand-logo img {
+		padding: 10px;
+		width: 210px;
+		height: 70px
+	}
+	#searchCollapseBar {
+		display: block;
+		position: absolute;
+		bottom: 5px;
+	}
 }
 
 @media screen and (min-width: 1281px) and (max-width: 1375px) {
