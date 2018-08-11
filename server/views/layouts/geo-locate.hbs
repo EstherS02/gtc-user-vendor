@@ -1,20 +1,38 @@
+ <script>
+     function priceUpdate(){
+         let price_min, price_max, newURL;
+         price_min = Math.abs($('#min_price_input').val());
+         price_max = Math.abs($('#max_price_input').val());
+         console.log(price_max, price_min)
+         newURL = window.location.href;
+
+        if(price_min)
+            newURL = updateQueryString(newURL,'price_min', price_min);
+        if(price_max)
+            newURL = updateQueryString(newURL,'price_max', price_max);
+        
+        location.href = newURL;
+     }
+ </script>
  
  {{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-3 constant-height" style="height: 650px;overflow-y: scroll;">
+
+		 <div class="col-md-3 constant-height" style="height: 650px;">
 				<div class="row" style="margin-bottom:20px;">
 					<div class="col-md-2 geo_arrow_bg">
-						<a href="geolocate_search.html" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
+						<a href="/geo-locate/search" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
 					</div>
 					<div class="col-md-10 geo_sort_bg">
 						Sort by 
 						<select class="acc_textbox"> <option value="Alphabetical">Alphabetical </option></select>
 					</div>
 				</div>
+                <div style="height: 477px;overflow-y: scroll;overflow-x: hidden;">
                 {{#each geoLocateObj}}
-					<div class="row" >
+					<div class="row">
                       <div class="col-md-3 col-2" style="text-align: center;">
                           <img src="{{this.product_media_base_image}}" style="width: 75px; height: 70px;">
                       </div>
@@ -61,14 +79,8 @@
                                 {{/if}}
                             </div>
                               <div class="col-md-4 col-3">
-                                  <p style="font-size: 7px;">
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
-                                    <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i>
+                                  <p style="font-size: 9px;">
+                                     {{starCount this.product_rating}}
                                   </p>
                               </div>
                           </div>
@@ -76,17 +88,17 @@
                   </div>
                   <hr/>
                 {{/each}}
+                </div>
 				  <div class="row">
                     <div class="col-md-12" style="background-color: #F0F0F0;">
                        <p class="geo_show">Showing <span class="geo_pro"> 1660 products </span></p>
-                       <p class="geo_adv">Advanced Search / Filter</p> 
+                       <p class="geo_adv"> <a href="/geo-locate/search">Advanced Search / Filter</a> </p> 
                     </div>
                     </div>
-			</div>
+			</div> 
 			<div class="col-md-9 common_padding1">
-						<div id="map" style=""></div>
-						<div id="bus_station" class="panel-collapse collapse"></div>
-			</div>
+				 <div id="map" style=""></div>
+			</div> 
 		</div>
 	</div>
 </section>
@@ -106,9 +118,10 @@
     }
 
 
-    var userLocation = {}, infowindow, map, marker, formattedLocation;
+    var userLocation = {}, infowindow, map, marker, formattedLocation, bounds;
     var vendorGroupedObj = {{{DisplayJSON geoLocateByVendor}}}
     var mapObjVendor = Object.keys(vendorGroupedObj)
+
 
      function initMap(geoUserLat, geoUserLng){
             formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
@@ -118,27 +131,31 @@
                 center: formattedLocation
             });
 
-            for(let i=0; i< mapObjVendor.length; i++){
+            bounds = new google.maps.LatLngBounds();
+
+           for(let i=0; i< mapObjVendor.length; i++){
                 let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
                 var content = `<p><img src="`+ mapObjProduct[0].vendor_profile_pic_url +`" style="width: 50px; height: 50px;">
                 <span style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</span>
-                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 32px;font-weight: bold;">2002 Product Listed</span>
-                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 40px;">Online Payments</span>
+                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
-                let more_content = "";
+                let more_content = "", title = mapObjProduct[0].vendor_name;;
                 for(let j=0; j< mapObjProduct.length; j++){
-                    if(j === 3){
+                    if(j === 4){
                         break;
                     }
-                    more_content = more_content + `<a href="#"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
+                    more_content = more_content + `<a href="javascript:;"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
                 }
-                content = content + `<p>`+ more_content + `<a href="#">See All</a></p>`;
-                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content);
+                content = content + `<p>`+ more_content + `<a href="javascript:;">See All</a></p>`;
+                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
             }
+
+
+            map.fitBounds(bounds);
 
         }
 
-        function createMarker(lat, lon, content){
+        function createMarker(lat, lon, content, title){
 
             var markerLocation = new google.maps.LatLng(lat, lon);
 
@@ -156,11 +173,12 @@
             marker = new google.maps.Marker({
                 position: markerLocation,
                 map: map,
-                title: 'Vendor Details'
+                title: title
                 
             });
 
-            //let more_content = '<span target="details">'+lat +','+ lon +'</span>';
+
+            bounds.extend(marker.position);
 
             google.maps.event.addListener(marker, 'mouseover', function () {
                 infowindow.setContent(content);
@@ -191,7 +209,13 @@
 
                 setCookie("userLocation", userLocation.location);
                 
-                initMap(geoUserLat, geoUserLng);
+                if(getUrlQueryString()['lat'] && getUrlQueryString()['lon']){
+                    initMap(geoUserLat, geoUserLng);
+                }else{
+                    newURL = window.location.href;
+                    newURL = updateQueryString(newURL,'lat', geoUserLat);
+                    location.href = updateQueryString(newURL,'lon', geoUserLng);
+                }
             }
 
             function geoLocationError(error) {
