@@ -105,26 +105,32 @@
 											</div>
 										</div>
 										<div class="col-md-1">
-											<button class="update-btn1" style="margin-left: 22px;" onclick="onSearch()">Update</button>
+											<button class="update-btn1" style="margin-left: 22px;background-color: green;
+    color: #fff" onclick="onSearch()">Update</button>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-2" style="left: 33px;">
+								<div class="col-md-2" style="left: 20px;">
 									{{!-- <select class="vend_edit_lists_buttonstyle float-right">
 										<option>EXPORT TO</option>
 									</select> --}}
 									<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
+											{{!-- <button class="btn btn-small btn-muted export-btn">EXPORT</button> --}}
+											<div class="select-container ">
+												<select class="form-control-customized form-control-sm" name="dateSelect">
+													<option disabled selected>Export</option>
+												</select>
+											</div>
 										</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-2">
-									<p>Select a metric</p> </div>
+									<p style="font-size:13px">Select a metric</p> </div>
 								
 								<div class="col-md-7">
 									
-										<div class="form-group" style="width:163px">
+										<div class="form-group" style="width:163px;margin-left:-63px">
 											
 											<div class="select-container ">
 												<select class="form-control-customized form-control-sm" name="dateSelect">
