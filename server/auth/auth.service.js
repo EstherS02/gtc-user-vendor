@@ -271,7 +271,7 @@ function hasRole(roleRequired) {
 				} else {
 					return res.status(403).send("Forbidden");
 				}
-			} else if (req.user.role === roles['USER']) {
+			} else if (roleRequired === roles['USER']) {
 				// allows admin, vendor admin user
 				if (req.user.role === roles['ADMIN']) {
 					service.findOneRow('Admin', queryObj)

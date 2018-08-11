@@ -158,6 +158,23 @@ export function createBulkRow(modelName, bodyParams) {
     })
 }
 
+export function updateRecord(modelName, bodyParams, queryObj) {
+    return new Promise((resolve, reject) => {
+        model[modelName].update(bodyParams, {
+            where: queryObj,
+            individualHooks: true
+        }).then(function(row) {
+            if (row) {
+                resolve(row[1][0].toJSON());
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    })
+}
+
 export function updateRow(modelName, bodyParams, id) {
     return new Promise((resolve, reject) => {
         model[modelName].update(bodyParams, {
@@ -220,6 +237,18 @@ export function destroyRow(modelName, id) {
     });
 }
 
+export function upsertRecord(modelName, bodyParams, queryObj) {
+    return model[modelName].findOne({
+        where: queryObj
+    }).then((exists) => {
+        if (exists) {
+            return exists.update(bodyParams);
+        } else {
+            return model[modelName].create(bodyParams);
+        }
+    });
+}
+
 export function upsertRow(modelName, data) {
     return new Promise((resolve, reject) => {
         model[modelName].upsert(data)
@@ -231,6 +260,23 @@ export function upsertRow(modelName, data) {
     })
 }
 
+export function destroyRecord(modelName, id) {
+    return new Promise((resolve, reject) => {
+        model[modelName].destroy({
+            where: {
+                id: id
+            }
+        }).then((row) => {
+            if (row > 0) {
+                resolve(row);
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    });
+}
 
 export function geoLocationFetch(lat, lng) {
     return new Promise((resolve, reject) => {

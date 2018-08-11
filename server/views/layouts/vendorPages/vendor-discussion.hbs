@@ -1,44 +1,61 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	function userLike(e){
-	// alert(e);
-	
-	if(userInfo.email){
-		var dataInfo={};
-		dataInfo.id = e;
-		$.ajax({
-			type: "POST",
-			url: "/api/vendor-props/blog-like",
-			data: dataInfo,
-			success: function(res) {
-				$('#gtc-add-to-cart').prop('disabled', false);
-				// if (res && res.message === "SUCCESS") {
-					// outputPop(res.message_details);
-					location.reload();
-					console.log(res)
-				// }
-			},
-			error: function(error) {
-				$('#gtc-add-to-cart').prop('disabled', false);
-				if (error) {
-					if (error.status === 401)
-						return location.href = "/login";
 
-					// outputErrorPop(error);
-				}
-			}
+	$(document).ready(function () {
+          
+        var cropBoxData, canvasData, cropper, cropperInputImage;
+        var cropperOutputImage;
+        var fileDetails = {};
+        var imagesPreview = function(uploader, placeToInsertImagePreview) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
+            }
+        };
+        $('#profile-picture-modal').on('shown.bs.modal', function() {
+                cropper = new Cropper(cropperInputImage, {
+                    aspectRatio: 16 / 16,
+                    minCropBoxHeight: 280,
+                    minCropBoxWidth: 1364,
+                    ready: function() {
+                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+                    }
+                });
+        }).on('hidden.bs.modal', function() {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
+
+        $('#crop-profile-image').click(function () {
+			cropper.getCroppedCanvas().toBlob(function (blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+			});
+			$('#selectedBlogFile').attr('src', cropper.getCroppedCanvas().toDataURL());
+			$('#profile-picture-modal').modal('hide');
+		})
+
+        $("#selectedBlogFile").change(function () {
+                imagesPreview(this);	
 		});
-	}else{
-		window.location.href="/login";
-	}
-}
-function postBlog(){
+
+
+
+	
+$('#postBlog').click(function () {
 	var formData={};
 	formData.post_message = $("#blog_text").val();
 	var imgVal = $("#selectedBlogFile").val();
 	var form = new FormData();
 
-	form.append("file", $("#selectedBlogFile")[0].files[0]);
+    form.append("file", cropperOutputImage, fileDetails["fileName"]);
+
+	//form.append("file", $("#selectedBlogFile")[0].files[0]);
 	var url = '/api/vendor-props/blog-post';
 	if (imgVal) {
 		$.ajax({
@@ -67,7 +84,7 @@ function postBlog(){
 			console.log("Please enter the blog Content")
 		}
 	}
-}
+});
 function postComment(e){
 	var formData={};
 	formData.discussion_board_post_id=e;
@@ -78,7 +95,6 @@ function postComment(e){
 
 	form.append("file", $("#selectedFile"+e)[0].files[0]);
 	var url = '/api/vendor-props/blog-comment';
-	alert(imgVal);
 	if (imgVal) {
 		$.ajax({
 			type: 'POST',
@@ -121,10 +137,64 @@ function apiCall(url, data) {
 		}
 	});
 }
+	});
+function userLike(e){
+	// alert(e);
+	
+	if(userInfo.email){
+		var dataInfo={};
+		dataInfo.id = e;
+		$.ajax({
+			type: "POST",
+			url: "/api/vendor-props/blog-like",
+			data: dataInfo,
+			success: function(res) {
+				$('#gtc-add-to-cart').prop('disabled', false);
+				// if (res && res.message === "SUCCESS") {
+					// outputPop(res.message_details);
+					location.reload();
+					console.log(res)
+				// }
+			},
+			error: function(error) {
+				$('#gtc-add-to-cart').prop('disabled', false);
+				if (error) {
+					if (error.status === 401)
+						return location.href = "/login";
 
+					// outputErrorPop(error);
+				}
+			}
+		});
+	}else{
+		window.location.href="/login";
+	}
+}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-right:35px">
+                <div class="container">
+                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="vendor-product bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -156,7 +226,7 @@ function apiCall(url, data) {
 															<input type="file" id="selectedBlogFile" style="display: none;" name="comment_media_url" />
 														</span>
 													</div>
-													<button class="discussion_butt" onclick="postBlog()">Post</button>
+													<button class="discussion_butt" id="postBlog">Post</button>
 												</div>
 											</div>
 										</div>
