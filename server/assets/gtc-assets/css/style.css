@@ -1405,4 +1405,29 @@ ul.inner-list-view li a {
 }
 .body-content-1 {
 	background: #f0f0f0;
+	margin-top: 5px;
 }
+.b-r-compare {
+	border-right: 1px solid #f1f1f1;
+}
+.compare-content .row {
+	background: #f1f1f1;
+}
+.compare-content .product-image {
+	padding: 15px 0;
+    text-align: center;
+}
+.compare-content .product-image img {
+	width: 100px;
+}
+.compare-content .product-title {
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+.compare-content #gtc-add-to-cart svg {
+	vertical-align: middle;
+}
+/*.compare-content {
+	border-bottom: 1px solid #f1f1f1;
+	border-right: 1px solid #f1f1f1;
+}*/
