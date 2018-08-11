@@ -209,6 +209,12 @@ $("#selectedBlogFile").change(function() {
     reader.readAsDataURL(input.files[0]);
   }
 }
+function removePic(){
+	$('#selectedBlogFile').attr('src', " ");
+	$('#blah').attr('src', "");
+	$('#selectedBlogFile').val("");
+	$('#blog_img').hide();
+}
 	function userLike(e){
 
 		if(userInfo.email){
@@ -295,6 +301,8 @@ aria-hidden="true">
 												</div>
 												<div id="blog_img" >
 												<img id="blah" src="#" height="35px" width="35px" alt="your image" />
+												<span class="close" onclick="removePic()">&times;</span>
+
 												</div>
 											</div>
 										</div>
