@@ -52,7 +52,7 @@ agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
 
 agenda.on('ready', function() {
-	agenda.every('1 day', 'couponExpiry');
+	agenda.every('0 0 * * *', 'couponExpiry');
 	agenda.start();
 });
 
