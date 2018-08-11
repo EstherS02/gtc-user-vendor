@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false,
+            references: {
+                model: 'user',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         post_message: {
             type: DataTypes.TEXT,
             field: 'post_message',
@@ -95,6 +106,12 @@ module.exports.initRelations = () => {
 
     DiscussionBoardPost.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    DiscussionBoardPost.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
