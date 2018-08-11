@@ -135,8 +135,6 @@ select {
 }
 .gtc-container {
 	width: 90%;
-    /*padding-right: 15px;
-    padding-left: 15px;*/
     margin-right: auto;
     margin-left: auto;
 }
@@ -341,6 +339,9 @@ a:hover {
 	font-size: 0.813em;
 	font-weight: inherit;
 	background: none;
+}
+ul.breadcrumb li {
+	font-size: 1em;
 }
 ul.breadcrumb li .active {
 	text-decoration: underline !important;
@@ -755,6 +756,7 @@ ul.footer-social-links li a img {
 	font-size: 0.813em;
 	margin-bottom: 5px;
 	line-height: 1.6;
+	font-weight: 400;
 }
 .vendor-header {
 	height: 296px;
@@ -1394,4 +1396,13 @@ ul.inner-list-view li a {
 }
 .br-theme-fontawesome-stars .br-widget a {
 	font-size: 32px !important;
+}
+.title-header-1 .text-sm {
+	font-size: 0.813em;
+}
+.title-header-1 .breadcrumb {
+	line-height: 2;
+}
+.body-content-1 {
+	background: #f0f0f0;
 }

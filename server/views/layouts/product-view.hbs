@@ -38,6 +38,8 @@
 	newData.product_id = productSpecs.id;
 
 	function compareProduct(e) {
+		$('#productAlert').empty();
+
 		$.ajax({
 			type: 'POST',
 			url: '/api/product-view/add-to-compare',
@@ -237,7 +239,7 @@
                             			</div>
                             			<div id="productAlert"></div>
                             			<div class="p-description">
-                            				<p class="text-muted">{{product.description}}</p>
+                            				{{{product.description}}}
                             			</div>
                             			<div class="p-hr"></div>
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
@@ -290,7 +292,11 @@
 															</div>
 															{{/each}}
 														</div>
+														{{#if productRecentReview.count}}
 														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
+														{{else}}
+														<span class="text-sm">There is no review about this product.</span>
+														{{/if}}
 													</div>
 												</div>
 											</div>
@@ -401,8 +407,6 @@
 					}
 					$('#btnFaSpinner').show()
 				}
-
-				console.log("reviewObj", reviewObj);
 
 				$.ajax({
 					type: "POST",
