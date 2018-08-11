@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script type="text/javascript">
         window.FontAwesomeConfig = {
@@ -28,6 +29,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="plugins/cropperjs/cropper.min.css">
     <link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css">
+    <link rel="stylesheet" href="plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
+
 
     <script src="https://apis.google.com/js/api:client.js"></script>
     <script type="text/javascript" src="gtc-assets/js/jquery-3.3.1.min.js"></script>
@@ -39,18 +42,17 @@
         $(window).scroll(function () {
             $('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
         });
-    </script> 
+    </script>
     <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
 </head>
+
 <body>
     {{> environment}}
     {{> global-scripts}}
 
-    {{{body}}}
 
-    
     <script src="plugins/jquery-ui/js/jquery-ui.min.js"></script>
-    
+
     <script src="plugins/datepicker/js/datepicker.min.js"></script>
     <script src="plugins/select2/js/select2.min.js"></script>
     <script src="plugins/jquery-bar-rating/jquery.barrating.min.js"></script>
@@ -60,39 +62,49 @@
     <script src="plugins/ladda/spin.min.js"></script>
     <script src="plugins/ladda/ladda.min.js"></script>
     <script src="plugins/ladda/ladda.jquery.min.js"></script>
- <script>
-    $(function (){
-        // Bind normal buttons
-        Ladda.bind( '.ladda-button',{ timeout: 2000 });
-        // Bind progress buttons and simulate loading progress
-        Ladda.bind( '.progress-demo .ladda-button',{
-            callback: function( instance ){
-                var progress = 0;
-                var interval = setInterval( function(){
-                    progress = Math.min( progress + Math.random() * 0.1, 1 );
-                    instance.setProgress( progress );
+    <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 
-                    if( progress === 1 ){
-                        instance.stop();
-                        clearInterval( interval );
-                    }
-                }, 200 );
-            }
+    <script>
+        $(function () {
+            // Bind normal buttons
+            Ladda.bind('.ladda-button', { timeout: 2000 });
+            // Bind progress buttons and simulate loading progress
+            Ladda.bind('.progress-demo .ladda-button', {
+                callback: function (instance) {
+                    var progress = 0;
+                    var interval = setInterval(function () {
+                        progress = Math.min(progress + Math.random() * 0.1, 1);
+                        instance.setProgress(progress);
+
+                        if (progress === 1) {
+                            instance.stop();
+                            clearInterval(interval);
+                        }
+                    }, 200);
+                }
+            });
+            var l = $('.ladda-button-demo').ladda();
+            l.click(function () {
+                // Start loading
+                l.ladda('start');
+
+                // Timeout example
+                // Do something in backend and then stop ladda
+                setTimeout(function () {
+                    l.ladda('stop');
+                }, 12000)
+            });
         });
-        var l = $( '.ladda-button-demo' ).ladda();
-        l.click(function(){
-            // Start loading
-            l.ladda( 'start' );
 
-            // Timeout example
-            // Do something in backend and then stop ladda
-            setTimeout(function(){
-                l.ladda('stop');
-            },12000)
-        });
-    });
+    </script>
 
-</script>
+    {{!-- <link href="plugins/summernote/summernote.css" rel="stylesheet">
+    <script type="text/javascript" src="plugins/summernote/summernote.js"></script> --}}
+    
+     
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
 
 </body>
+
 </html>
