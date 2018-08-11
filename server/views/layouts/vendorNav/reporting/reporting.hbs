@@ -17,16 +17,20 @@
 		//get the line chart canvas
 		var ctx = $("#line-chartcanvas");
 
-		var from = $('#rep_from').val();
-		var to = $('#rep_to').val();
-		var Cfrom = $('#com_from').val();
-		var Cto = $('#com_to').val();
-		var Compare = $('#compare').val();
-		var lhsData = [];
-		var rhsData = [];
+		var lhsData = [],
+			rhsData = [];
 
-		var start = $("#rep_from").datepicker("getDate"),
-			end = $("#rep_to").datepicker("getDate"),
+		var from = $('#rep_from').val(),
+			to = $('#rep_to').val(),
+		 	Cfrom = $('#com_from').val(),
+		 	Cto = $('#com_to').val(),
+		 	Compare = $('#compare').val();
+		
+		var dates = [from,to,Cfrom,Cto];
+		dates.sort();
+
+		var start = dates[0],
+			end = new Date(dates[dates.length - 1]),
 			currentDate = new Date(start),
 			between = [];
 
@@ -39,8 +43,7 @@
 		$.ajax({
 			type: "GET",
 			url: "http://localhost:9000/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
-			success: function(data) {
-				console.log('response data', data);
+			success: function(data) {				
 				between.forEach(function(aDate){
 					var objA = _.find(data.past_range, function(pastDate){
 						var pastDateVal = $.datepicker.formatDate('M dd', new Date(pastDate.item_created_on));
@@ -60,9 +63,6 @@
 					else
 						rhsData.push(null);
 				});				
-				console.log('between', between);
-				console.log('lhsData', lhsData);
-				console.log('rhsData', rhsData);
 				//line chart data
 				var data = {
 					labels: between,
@@ -93,7 +93,7 @@
 						display: true,
 						position: "top",
 						text: "",
-						fontSize: 18,
+						fontSize: 16,
 						fontColor: "#111"
 					},
 					legend: {
@@ -236,10 +236,10 @@
 																<p class="product-bar-chart">{{currency item.amount '$'}}</p>
 															</div>
 															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
+																<div class="progress-bar horizontal" style="width: {{percentage @root.topProducts.total item.amount}}">
 																	<div class="progress-track">
 																		<div class="progress-fill">
-																			<span style="display: none;">100%</span>
+																			<span style="display: none;">{{percentage @root.topProducts.total item.amount}}</span>
 																		</div>
 																	</div>
 																</div>
@@ -388,11 +388,7 @@
 												<p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
 
 												<ul class="chart">
-													{{#each topMarketPlace.rows as |item|}}
-														<li>
-														<span class="wholesale" style="height:60%" title="{{item.marketplace_name}}"></span>
-														</li>
-													{{/each}}
+													{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
 													<!-- <li>
 														<span class="wholesale" style="height:60%" title="Wholesale"></span>
 													</li>

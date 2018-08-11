@@ -30,14 +30,14 @@ export function reporting(req, res) {
 	let user_id = LoggedInUser.id;
 
 	if (req.query.lhs_from && req.query.lhs_to) {
-		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
+		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
-		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+		lhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 	if (req.query.rhs_from && req.query.rhs_to) {
-		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
+		rhsBetween.push(moment(req.query.rhs_from).format("YYYY/MM/DD"), moment(req.query.rhs_to).format("YYYY/MM/DD"));
 	} else {
-		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+		rhsBetween.push(moment().subtract(30, 'days').format("YYYY/MM/DD"), moment().format("YYYY/MM/DD"));
 	}
 
 	let orderItemQueryObj = {};
@@ -49,10 +49,10 @@ export function reporting(req, res) {
 		queryURI['compare'] = req.query.compare;
 	}*/
 
-	queryURI['rep_from'] = lhsBetween[0];
-	queryURI['rep_to'] = lhsBetween[1];
-	queryURI['com_from'] = rhsBetween[0];
-	queryURI['com_to'] = rhsBetween[1];
+	queryURI['rep_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
+	queryURI['rep_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");;
+	queryURI['com_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");;
+	queryURI['com_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");;
 
 	async.series({
 			cartCounts: function(callback) {
@@ -86,6 +86,7 @@ export function reporting(req, res) {
 			},
 			topProducts: function(callback) {
 				ReportService.topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween).then((results) => {
+					console.log('topProducts', results);
 					return callback(null, results);
 				}).catch((err) => {
 					console.log('topProducts err', err);

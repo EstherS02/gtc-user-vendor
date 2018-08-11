@@ -140,6 +140,9 @@ export function recentRevenueChanges(req, res) {
 	var rhsBetween = [];	
 	if (req.user.role == 2)
 		orderItemQueryObj.vendor_id = req.user.Vendor.id;
+	if(req.query.compare){
+		orderItemQueryObj.compare = req.query.compare;
+	}
 	if(req.query.lhs_from && req.query.lhs_to){
 		lhsBetween.push(moment(req.query.lhs_from).format("YYYY/MM/DD"), moment(req.query.lhs_to).format("YYYY/MM/DD"))
 	} else {
