@@ -85,7 +85,7 @@ export function drafts(req, res) {
 						"model": model['Mail'],
 						where : {
 							status : statusCode["ACTIVE"],
-							from_id : user_id	
+							//from_id : user_id	
 							   },
 						        include: [{
 								model: model['User'],

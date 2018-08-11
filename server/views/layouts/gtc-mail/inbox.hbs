@@ -1,9 +1,65 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
- <script>
-	 function compose(e) {
+ <style>
+	 tr:hover {
+    background: #000;
+}
+ </style>
+<script>
+	$(document).ready(function () {
+		$("#gtc-mail-alert").hide();
+	})
+	function compose(e) {
 		window.location.href = '/gtc-mail/compose';
 	}
-	</script>
+    function refresh(e){
+		location.reload(true);
+	}
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+
+	function deleteMail() {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+		var mail_id;
+		mail_id = chkArray.join(',');
+
+		if (chkArray.length == 1) {
+			$.ajax({
+				url: '/api/mail/delete/' + mail_id,
+				type: 'PUT',
+				success: function (result) {
+					$('#gtc-mail-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-mail-alert .cart-message').text('Deleted Successfully');
+					$("#gtc-mail-alert").fadeTo(7000, 500).slideUp(500, function () {
+					$("#gtc-mail-alert").slideUp(500);
+					});
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			});
+		}
+		else {
+			console.log("many were selected..");
+		}
+	}
+</script>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -20,18 +76,24 @@
 									<div class="form-inline">
 										<div class="form-group mb-2">
 											<button class="btn btn-small btn-muted" onclick="compose(this);">COMPOSE</button>
-									  </div>
+										</div>
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted">REFRESH</button>
+											<button class="btn btn-small btn-muted" onclick="refresh(this);">REFRESH</button>
 										</div>
 										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted">DELETE</button>
+											<button class="btn btn-small btn-muted" onclick="deleteMail(this)">DELETE</button>
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-12">
+									<div class="alert" id="gtc-mail-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="mail-message"></span>
+									</div>
 									<div class="cart-top-header">
 										<div class="alignleft cart-top-left">
 											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
@@ -55,7 +117,7 @@
 										<thead>
 											<tr>
 												<th scope="col">
-													<input type="checkbox">
+													<input type="checkbox" onclick="selectAll(this);">
 												</th>
 												<th scope="col">From</th>
 												<th scope="col">Subject</th>
@@ -64,10 +126,10 @@
 											</tr>
 										</thead>
 										<tbody>
-                                           {{#each inboxMail}}
+											{{#each inboxMail}}
 											<tr>
 												<td scope="row">
-													<input type="checkbox" name="selected">
+													<input type="checkbox" name="selected" value={{this.id}}>
 												</td>
 												<td scope="row">{{this.Mail.fromUser.first_name}}</td>
 												<td scope="row">{{this.Mail.subject}}</td>
@@ -75,30 +137,30 @@
 												<td></td>
 											</tr>
 											{{/each}}
-                                        </tbody>
+										</tbody>
 									</table>
 								</div>
 								{{#pagination collectionSize page pageSize maxSize}}
-										<nav aria-label="Page navigation example">
-											<ul class="pagination justify-content-center">
-												{{#unless startFromFirstPage}}
-												<li class="page-item">
-													<a class="page-link" href="gtc-mail/inbox?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
-												</li>
-												{{/unless}} {{#each pages}}
-												<li class="page-item {{#if isCurrent}} active {{/if}}">
-													<a class="page-link" href="gtc-mail/inbox?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-												</li>
-												{{/each}} {{#unless endAtLastPage}}
-												<li class="page-item">
-													<a class="page-link" href="gtc-mail/inbox?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
-												</li>
-												{{/unless}}
-											</ul>
-										</nav>
+								<nav aria-label="Page navigation example">
+									<ul class="pagination justify-content-center">
+										{{#unless startFromFirstPage}}
+										<li class="page-item">
+											<a class="page-link" href="gtc-mail/inbox?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+										</li>
+										{{/unless}} {{#each pages}}
+										<li class="page-item {{#if isCurrent}} active {{/if}}">
+											<a class="page-link" href="gtc-mail/inbox?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+										</li>
+										{{/each}} {{#unless endAtLastPage}}
+										<li class="page-item">
+											<a class="page-link" href="gtc-mail/inbox?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+										</li>
+										{{/unless}}
+									</ul>
+								</nav>
 								{{/pagination}}
 							</div>
-                        </div>
+						</div>
 					</div>
 				</div>
 			</div>

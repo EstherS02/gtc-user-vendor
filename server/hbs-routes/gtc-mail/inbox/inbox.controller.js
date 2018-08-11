@@ -87,7 +87,7 @@ export function inbox(req, res) {
 					"model": model['Mail'],
 					where : {
 						status : statusCode["ACTIVE"],
-						to_id : user_id	
+						//to_id : user_id	
 						   },
 					    include: [{
 							model: model['User'],

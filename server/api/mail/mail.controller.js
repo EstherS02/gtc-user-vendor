@@ -114,6 +114,7 @@ export function createDraf(req, res) {
 export function softDelete(req, res) {
 	var queryObj = {};
 
+	console.log("---------------------------",req.params.id);
 	queryObj['id'] = req.params.id;
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = req.user.id;
