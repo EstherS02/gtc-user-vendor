@@ -798,8 +798,8 @@ margin-bottom: 0px;
 	font-size: 7px;
 }
 .scrolled{background-image:url(../img/bg-footer.jpg);}
-ul.breadcrumb {
-    /*padding: 40px 10px 16px 20px;*/
+/*ul.breadcrumb {
+    padding: 40px 10px 16px 20px;
     list-style: none;
     background-color: #fff;
     margin-bottom: 0px;
@@ -828,7 +828,7 @@ ul.breadcrumb li .active {
 ul.breadcrumb li .active1 {
     color: #DC8C15;
 	font-weight: bold;
-}
+}*/
 .logged_in_username
 {
     font-size: 11px;
