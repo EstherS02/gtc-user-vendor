@@ -32,14 +32,14 @@ export function createMail(bodyParams, users) {
 			if (mailResponse) {
 				mail = mailResponse;
 				return service.upsertRecord(userMailModelName, {
-					mail_id: mailResponse.id,
-					user_id: mailResponse.from_id,
+					mail_id: mail.id,
+					user_id: mail.from_id,
 					mail_status: mailStatus['SENT'],
 					status: status['ACTIVE'],
 					created_on: new Date()
 				}, {
-					mail_id: mailResponse.id,
-					user_id: mailResponse.from_id
+					mail_id: mail.id,
+					user_id: mail.from_id
 				});
 			} else {
 				return Promise.reject(true);
@@ -49,6 +49,7 @@ export function createMail(bodyParams, users) {
 
 			mailObject['from'] = config.smtpTransport.from;
 			mailObject['subject'] = mail.subject;
+			mailObject['replyTo'] = "gtc-user-" + mail.from_id + "@gmail.com";
 			mailObject['html'] = mail.message;
 			mailObject['to'] = [];
 
@@ -108,4 +109,32 @@ export function drafMail(bodyParams) {
 			reject(error);
 		})
 	});
+}
+
+export function deleteMail(queryObj) {
+	var includeArr = [];
+	var mailModelName = 'Mail';
+	var userMailModelName = 'UserMail';
+
+	return new Promise((resolve, reject) => {
+		service.findOneRow(userMailModelName, queryObj, includeArr)
+			.then((exists) => {
+				if (exists) {
+					return service.updateRecord(userMailModelName, {
+						mail_status: mailStatus['DELETED']
+					}, queryObj)
+				} else {
+					return Promise.resolve(null);
+				}
+			}).then((result) => {
+				resolve(result);
+			}).catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+export function removeMail() {
+	var mailModelName = 'Mail';
+	var userMailModelName = 'UserMail';
 }
