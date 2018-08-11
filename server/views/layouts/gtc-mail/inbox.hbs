@@ -1,4 +1,9 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+ <script>
+	 function compose(e) {
+		window.location.href = '/gtc-mail/compose';
+	}
+	</script>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -14,12 +19,8 @@
 								<div class="col-md-7">
 									<div class="form-inline">
 										<div class="form-group mb-2">
-											{{!--
-											<button class="btn btn-small btn-muted">COMPOSE</button> --}}
-											<a href="#modalCompose" data-toggle="modal" title="Compose" class="btn btn-small btn-muted">
-												Compose
-											</a>
-										</div>
+											<button class="btn btn-small btn-muted" onclick="compose(this);">COMPOSE</button>
+									  </div>
 										<div class="form-group mx-sm-3 mb-2">
 											<button class="btn btn-small btn-muted">REFRESH</button>
 										</div>
@@ -33,15 +34,15 @@
 								<div class="col-sm-12">
 									<div class="cart-top-header">
 										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted"> items total</span>
+											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
 										</div>
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="listings/{{this.type}}?limit=10">10</a>
-												<a href="listings/{{this.type}}?limit=25">25</a>
-												<a href="listings/{{this.type}}?limit=100">100</a>
-												<a href="listings/{{this.type}}">All</a>
+												<a href="gtc-mail/inbox?limit=10">10</a>
+												<a href="gtc-mail/inbox?limit=25">25</a>
+												<a href="gtc-mail/inbox?limit=100">100</a>
+												<a href="gtc-mail/inbox">All</a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -63,106 +64,45 @@
 											</tr>
 										</thead>
 										<tbody>
+                                           {{#each inboxMail}}
 											<tr>
 												<td scope="row">
 													<input type="checkbox" name="selected">
 												</td>
-												<td scope="row"></td>
-												<td scope="row"></td>
-												<td scope="row"></td>
+												<td scope="row">{{this.Mail.fromUser.first_name}}</td>
+												<td scope="row">{{this.Mail.subject}}</td>
+												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
 												<td></td>
 											</tr>
-										</tbody>
+											{{/each}}
+                                        </tbody>
 									</table>
 								</div>
+								{{#pagination collectionSize page pageSize maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/inbox?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="gtc-mail/inbox?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/inbox?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+												</li>
+												{{/unless}}
+											</ul>
+										</nav>
+								{{/pagination}}
 							</div>
-
-						</div>
+                        </div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-{{!-- <!-- Modal -->
-<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade" style="display: none;">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-				<h4 class="modal-title">Compose</h4>
-			</div>
-			<div class="modal-body">
-				<form role="form" class="form-horizontal">
-					<div class="form-group">
-						<label class="col-lg-2 control-label">To</label>
-						<div class="col-lg-10">
-							<input type="text" placeholder="" id="inputEmail1" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label">Cc / Bcc</label>
-						<div class="col-lg-10">
-							<input type="text" placeholder="" id="cc" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label">Subject</label>
-						<div class="col-lg-10">
-							<input type="text" placeholder="" id="inputPassword1" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label">Message</label>
-						<div class="col-lg-10">
-							<textarea rows="10" cols="30" class="form-control" id="" name=""></textarea>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="col-lg-offset-2 col-lg-10">
-							<button class="btn btn-send" type="submit">Send</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal --> --}}
-<!-- /.modal compose message -->
-    <div class="modal show" id="modalCompose">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">Compose Message</h4>
-          </div>
-          <div class="modal-body">
-            <form role="form" class="form-horizontal">
-                <div class="form-group">
-                  <label class="col-sm-2" for="inputTo">To</label>
-                  <div class="col-sm-10"><input type="email" class="form-control" id="inputTo" placeholder="comma separated list of recipients"></div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2" for="inputSubject">Subject</label>
-                  <div class="col-sm-10"><input type="text" class="form-control" id="inputSubject" placeholder="subject"></div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-12" for="inputBody">Message</label>
-                  <div class="col-sm-12"><textarea class="form-control" id="inputBody" rows="18"></textarea></div>
-                </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button> 
-            <button type="button" class="btn btn-warning pull-left">Save Draft</button>
-            <button type="button" class="btn btn-primary ">Send <i class="fa fa-arrow-circle-right fa-lg"></i></button>
-            
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal compose message -->
 {{> footer/bottom-footer}}

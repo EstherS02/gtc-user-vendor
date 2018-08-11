@@ -1,4 +1,9 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+  <script>
+	 function compose(e) {
+		window.location.href = '/gtc-mail/compose';
+	}
+	</script>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -14,7 +19,7 @@
 								<div class="col-md-7">
 									<div class="form-inline">
 										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted">COMPOSE</button>
+											<button class="btn btn-small btn-muted" onclick="compose(this);">COMPOSE</button>
 										</div>
 										<div class="form-group mx-sm-3 mb-2">
 											<button class="btn btn-small btn-muted">REFRESH</button>
@@ -29,15 +34,15 @@
 								<div class="col-sm-12">
 									<div class="cart-top-header">
 										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted"> items total</span>
+											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
 										</div>
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="listings/{{this.type}}?limit=10">10</a>
-												<a href="listings/{{this.type}}?limit=25">25</a>
-												<a href="listings/{{this.type}}?limit=100">100</a>
-												<a href="listings/{{this.type}}">All</a>
+												<a href="gtc-mail/sent?limit=10">10</a>
+												<a href="gtc-mail/sent?limit=25">25</a>
+												<a href="gtc-mail/sent?limit=100">100</a>
+												<a href="gtc-mail/sent">All</a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -59,19 +64,39 @@
 											</tr>
 										</thead>
 										<tbody>
+											{{#each sentMail}}
 											<tr>
 												<td scope="row"><input type="checkbox" name="selected"></td>
-												<td scope="row"></td>
-												<td scope="row"></td>
-												<td scope="row"></td>
+												<td scope="row">{{this.Mail.toUser.first_name}}</td>
+												<td scope="row">{{this.Mail.subject}}</td>
+												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
 												<td></td>
 											</tr>
+											{{/each}}
 										</tbody>
 									</table>
 								</div>
+								{{#pagination collectionSize page pageSize maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/sent?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="gtc-mail/sent?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/sent?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+												</li>
+												{{/unless}}
+											</ul>
+										</nav>
+								{{/pagination}}
 							</div>
-
-						</div>
+                        </div>
 					</div>
 				</div>
 			</div>
