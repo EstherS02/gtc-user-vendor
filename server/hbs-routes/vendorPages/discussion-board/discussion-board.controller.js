@@ -10,6 +10,8 @@ const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
+const _ = require('lodash');
+
 import series from 'async/series';
 var async = require('async');
 
@@ -55,11 +57,9 @@ export function vendorDiscussion(req, res) {
 	queryPaginationObj['offset'] = offset;
 	var includeArr = [{
 		model:model['DiscussionBoardPostLike'],
-		// attributes: [[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']],
 		where:{
 			status:status['ACTIVE']
 		},
-		// group: ['DiscussionBoardPostLike.discussion_board_post_id'],
 		required:false
 	},{
 		model:model['DiscussionBoardPostComment'],
@@ -71,7 +71,25 @@ export function vendorDiscussion(req, res) {
 		}]
 	},{
 		model:model['Vendor']
+	},{
+			model: model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				},
+		}];
+		var includeArr1 = [{
+		model:model['DiscussionBoardPostLike'],
+		where:{
+			status:status['ACTIVE']
+		},
+		attributes: [
+					[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']
+				],
+				group: ['DiscussionBoardPostLikes.discussion_board_post_id'],
+				required: false,
 	}];
+
+
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
@@ -90,6 +108,15 @@ export function vendorDiscussion(req, res) {
 					return callback(null);
 				});
 		},
+		// mostPopular:function(callback){
+		// 	service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr1)
+		// 		.then(function(response) {
+		// 			return callback(null, response);
+		// 		}).catch(function(error) {
+		// 			console.log('Error :::', error);
+		// 			return callback(null);
+		// 		});
+		// },
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -153,10 +180,12 @@ export function vendorDiscussion(req, res) {
 		// console.log(results.discussion, queryObj)
 		
 		if (!err) {
+			var mostPopular = _.groupBy(results.discussion, 'DiscussionBoardPostLike');
+			console.log("------------==================-----------",results.discussion.count)
 			if (results.discussion) {
-			var maxSize = results.discussion.count / limit;
-			if (results.discussion.count % limit)
-				maxSize++;
+			var maxSize = 5;//results.discussion.count / limit;
+			// if (results.discussion.count % limit)
+				// maxSize++;
 			queryPaginationObj['maxSize'] = maxSize;
 		}
 
@@ -172,13 +201,14 @@ export function vendorDiscussion(req, res) {
 				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
+				mostPopular: results.discussion,
 				// categories: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'discussion-board',
 				Plan: Plan,
 			});
 		} else {
-			res.render('vendor-discussion', err);
+			res.render('vendorPages/vendor-discussion', err);
 		}
 	});
 }

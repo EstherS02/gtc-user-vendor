@@ -30,6 +30,10 @@
 	max-width: 25%;
 }
 
+.col-3-8 {
+	max-width: 27.77%;
+}
+
 .col-4-12 {
 	max-width: 33.33%;
 }

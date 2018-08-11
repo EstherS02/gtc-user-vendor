@@ -61,7 +61,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="form-group mb-2">
+										<div class="form-group mb-2" style="width:163px">
 											<div class="select-container ">
 												<select class="form-control-customized form-control-sm" name="dateSelect">
 													<option disabled selected>LAST 30 DAY</option>
@@ -70,7 +70,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-4" style="padding:0px;right:42px">
+								<div class="col-sm-4" style="padding:0px;">
 									<div class="row">
 										<div class="col-md-3">
 											<input id="compare" type="checkbox" value="{{queryURI.compare}}" style="width: 20%; margin-top: 5px;" checked>
@@ -105,23 +105,45 @@
 											</div>
 										</div>
 										<div class="col-md-1">
-											<button class="update-btn1" style="margin-left: 22px;" onclick="onSearch()">Update</button>
+											<button class="update-btn1" style="margin-left: 22px;background-color: green;
+    color: #fff" onclick="onSearch()">Update</button>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-2">
-									<select class="vend_edit_lists_buttonstyle float-right">
+								<div class="col-md-2" style="left: 20px;">
+									{{!-- <select class="vend_edit_lists_buttonstyle float-right">
 										<option>EXPORT TO</option>
-									</select>
+									</select> --}}
+									<div class="form-group mx-sm-3 mb-2">
+											{{!-- <button class="btn btn-small btn-muted export-btn">EXPORT</button> --}}
+											<div class="select-container ">
+												<select class="form-control-customized form-control-sm" name="dateSelect">
+													<option disabled selected>Export</option>
+												</select>
+											</div>
+										</div>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-9">
-									Select a metric
+								<div class="col-md-2">
+									<p style="font-size:13px">Select a metric</p> </div>
+								
+								<div class="col-md-7">
+									
+										<div class="form-group" style="width:163px;margin-left:-63px">
+											
+											<div class="select-container ">
+												<select class="form-control-customized form-control-sm" name="dateSelect">
+													<option disabled selected>TOP PERFORMING PRODUCTS</option>
+												</select>
+											</div>
+										</div>
+									{{!-- Select a metric
 									<select class="vend_edit_lists_buttonstyle" style="width: 250px;">
 										<option>TOP PERFORMING PRODUCTS</option>
-									</select>
+									</select> --}}
 								</div>
+								
 								<div class="col-md-3 float-right" style="padding-left: 52px;left: 15px;">
 									<div class="input-group">
 										<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
