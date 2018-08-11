@@ -134,7 +134,41 @@ export function deleteMail(queryObj) {
 	});
 }
 
-export function removeMail() {
+export function removeMail(queryObj) {
+	var includeArr = [];
+	var userMail = {};
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
+
+	console.log("queryObj", queryObj);
+
+	return new Promise((resolve, reject) => {
+		service.findOneRow(userMailModelName, queryObj, includeArr)
+			.then((exists) => {
+				if (exists) {
+					userMail = exists;
+					return service.destroyRecord(userMailModelName, userMail.id);
+				} else {
+					return Promise.reject(true);
+				}
+			}).then((destoryResponse) => {
+				if (destoryResponse) {
+					return service.countRows(userMailModelName, {
+						mail_id: userMail.mail_id
+					});
+				} else {
+					return Promise.reject(true);
+				}
+			}).then((userMailCount) => {
+				if (userMailCount > 0) {
+					return Promise.resolve(true);
+				} else {
+					return service.destroyRecord(mailModelName, userMail.mail_id);
+				}
+			}).then((result) => {
+				resolve(true);
+			}).catch((error) => {
+				reject(error);
+			});
+	});
 }

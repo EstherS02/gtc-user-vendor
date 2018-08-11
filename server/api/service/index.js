@@ -260,6 +260,23 @@ export function upsertRow(modelName, data) {
     })
 }
 
+export function destroyRecord(modelName, id) {
+    return new Promise((resolve, reject) => {
+        model[modelName].destroy({
+            where: {
+                id: id
+            }
+        }).then((row) => {
+            if (row > 0) {
+                resolve(row);
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    });
+}
 
 export function geoLocationFetch(lat, lng) {
     return new Promise((resolve, reject) => {

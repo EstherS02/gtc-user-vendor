@@ -138,5 +138,29 @@ export function softDelete(req, res) {
 }
 
 export function remove(req, res) {
-	console.log("req.params", req.params.id);
+	var queryObj = {};
+
+	queryObj['id'] = req.params.id;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['SENT']
+	}, {
+		mail_status: mailStatus['DRAFT']
+	}, {
+		mail_status: mailStatus['DELETED']
+	}];
+
+	mailService.removeMail(queryObj)
+		.then((response) => {
+			if (response) {
+				return res.status(200).send("Mail deleted successfully.");
+			} else {
+				return res.status(404).send("not found");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error");
+		});
 }
