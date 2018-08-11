@@ -24,7 +24,7 @@ function sumofPrice(modelName, queryObj) {
 			]
 		}).then(function(data) {
 			if(data.length > 0){				
-				total = typeof data[0].amount != 'undefined' ? data[0].amount : "0";
+				total = typeof data[0].amount != 'undefined' && data[0].amount != null ? data[0].amount : "0";
 			} else {
 				total = "0";
 			}
@@ -47,7 +47,7 @@ function sumofCount(modelName, queryObj) {
 			]
 		}).then(function(data) {
 			if(data.length > 0){
-				total = typeof data[0].count != 'undefined' ? data[0].count : "0";				
+				total = typeof data[0].count != 'undefined' && data[0].count != null ? data[0].count : "0";				
 			} else {
 				total = "0";
 			}
@@ -124,7 +124,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -144,6 +144,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
 				result.diff_total = result.past_total - result.current_total;
+				console.log(result);
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -173,7 +174,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -222,7 +223,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)

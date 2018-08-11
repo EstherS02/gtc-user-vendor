@@ -80,9 +80,9 @@ export function topSellingCities(req, res){
 		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
-			result.rows = results;
+			result = results;
 		else
-			result.rows = [];
+			result = [];
 		return res.status(200).send(result);
 	}).catch(function(error) {
 		console.log('Error:::', error);
@@ -121,9 +121,9 @@ export function topActiveBuyers(req, res){
 		limit: 5
 	}).then(function(results) {
 		if (results.length > 0)
-			result.rows = results;
+			result = results;
 		else
-			result.rows = [];
+			result = [];
 		return res.status(200).send(result);
 	}).catch(function(error) {
 		console.log('Error:::', error);
