@@ -4,6 +4,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#btnFaSpinner').hide();
+		$('#btnAliExpressFaSpinner').hide();
 
 		$('input[type="text"]').keyup(function() {
 			if ($(this).val() != '') {
@@ -11,14 +12,54 @@
 			}
 		});
 
-		$("#importForm").submit(function(e) {
+		$("#importAliExpressForm").submit(function(e) {
+			e.preventDefault();
+
+			var data = {}
+			$("#popupError p").remove();
+			$(':input[type="submit"]').prop('disabled', true);
+
+			if ($('#importAliExpressForm').valid()) {
+				data['marketplace_id'] = 2;
+				data['vendor_id'] = $('#inputSellerId').val();
+
+				$('#btnAliExpressFaSpinner').show();
+
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-aliexpress',
+					data: data,
+					success: function(data, response) {
+						$('#btnAliExpressFaSpinner').hide();
+						 $('#importWooCommerModal').modal('toggle');
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">products added successfully.</p>');
+						$('#importModal').modal('toggle');
+					},
+					error: function(response, status, error) {
+						$('#btnAliExpressFaSpinner').hide();
+						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+					}
+				});
+			}
+		});
+
+		$("#importAliExpressForm").validate({
+			rules: {
+				seller_id: "required"
+			},
+			messages: {
+				seller_id: "Please enter seller ID"
+			}
+		});
+
+		$("#importWooCommerceForm").submit(function(e) {
 			e.preventDefault();
 
 			var credentials = {};
 			$("#popupError p").remove();
 			$(':input[type="submit"]').prop('disabled', true);
 
-			if ($('#importForm').valid()) {
+			if ($('#importWooCommerceForm').valid()) {
 				credentials['marketplace_id'] = 2;
 				credentials['store_url'] = $('#inputStoreURL').val();
 				credentials['consumer_key'] = $('#inputConsumerKey').val();
@@ -41,7 +82,7 @@
 			}
 		});
 
-		$("#importForm").validate({
+		$("#importWooCommerceForm").validate({
 			rules: {
 				store_url: "required",
 				consumer_key: "required",
@@ -76,13 +117,15 @@
                     	</div>
                     	<div class="col-md-3">
                     		<div class="import">
-                    			<img src="gtc-assets/img/import-aliexpress.png" alt="import aliexpress" title="import from aliexpress">
-                    			<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM ALIEXPRESS</p>
+                    			<a href="#" data-toggle="modal" data-target="#importAliExpressModal" data-whatever="@mdo">
+                    				<img src="gtc-assets/img/import-aliexpress.png" alt="import aliexpress" title="import from aliexpress">
+                    				<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM ALIEXPRESS</p>
+                    			</a>
                     		</div>
                     	</div>
                     	<div class="col-md-3">
                     		<div class="import">
-                    			<a href="#" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">
+                    			<a href="#" data-toggle="modal" data-target="#importWooCommerModal" data-whatever="@mdo">
                     				<img src="gtc-assets/img/import-wordpress.png" alt="import wordpress" title="import from wordpress">
                     				<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM WORDPRESS</p>
                     			</a>
@@ -108,13 +151,40 @@
     </div>
 </div>
 
-<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="importAliExpressModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Import Products From Ali Express</h5>
+			</div>
+			<form id="importAliExpressForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Ali Express Seller ID :</label>
+	                            <input type="text" id="inputSellerId" name="seller_id" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+	                    <div class="col-lg-12" id="popupError"></div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnAliExpressFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="importWooCommerModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">Import Products From Wordpress</h5>
 			</div>
-			<form id="importForm" class="form">
+			<form id="importWooCommerceForm" class="form">
 				<div class="modal-body">
 					<div class="row">
 	                    <div class="col-lg-12">

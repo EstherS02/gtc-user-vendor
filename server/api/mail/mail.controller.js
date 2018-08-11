@@ -11,6 +11,7 @@ const status = require('../../config/status');
 const mailService = require('./mail.service');
 const provider = require('../../config/providers');
 const config = require('../../config/environment');
+const mailStatus = require('../../config/mail-status');
 
 export function create(req, res) {
 	var mailUser = [];
@@ -108,4 +109,58 @@ export function createDraf(req, res) {
 			console.log("Error:::", error);
 			return res.status(500).send("Internal server error");
 		})
+}
+
+export function softDelete(req, res) {
+	var queryObj = {};
+
+	queryObj['id'] = req.params.id;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['READ']
+	}, {
+		mail_status: mailStatus['UNREAD']
+	}];
+
+	mailService.deleteMail(queryObj)
+		.then((response) => {
+			if (response) {
+				return res.status(200).send("Mail deleted successfully.");
+			} else {
+				return res.status(404).send("not found");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error");
+		});
+}
+
+export function remove(req, res) {
+	var queryObj = {};
+
+	queryObj['id'] = req.params.id;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['SENT']
+	}, {
+		mail_status: mailStatus['DRAFT']
+	}, {
+		mail_status: mailStatus['DELETED']
+	}];
+
+	mailService.removeMail(queryObj)
+		.then((response) => {
+			if (response) {
+				return res.status(200).send("Mail deleted successfully.");
+			} else {
+				return res.status(404).send("not found");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error");
+		});
 }
