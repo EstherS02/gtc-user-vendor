@@ -33,18 +33,18 @@ window.location.href = queries;
 <section class="vendor-product bg-gray">
     <div class="gtc-container">
         <div class="row">
-            <div class="col-md-2">
+            <div class="v-col-2 col-12 m-t-sm">
                 {{> vendor/vendor-left VendorDetail = VendorDetail}}
             </div>
-            <div class="col-md-10">
+            <div class="v-col-10 col-12 m-t-sm">
                 <div class="header-lg bg-shop">
                 <h2 class="header-lg-text">PRODUCT SHOP <p class="see-all">{{#if publicShop.count}} Showing
                         <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
                         <b>{{publicShop.count}}</b>{{/if}}
                     </p></h2>
                 </div>
-                <div class="row">
-                    <div class="col-md-9">
+                <div class="row no-margins">
+                    <div class="col-md-9 no-padding">
                         <div class="ibox">
                             <div class="ibox-content">
                                 <div class="row">
@@ -152,164 +152,12 @@ window.location.href = queries;
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="ibox">
-                            <div class="ibox-content p-n-l p-n-r bg-transparent">
-                                <div class="showing_categ">
-                                    <p><b>FILTER BY CATEGORY</b></p>
-                                    <p class="cat_bg_title_shp">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-                                    {{> vendor/vendor-category }}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-3 no-padding">
+                        {{> vendor/vendor-category }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- <section>
-   <div class="logged_in_cont">
-        <div class="container">
-        <div class="row">
-            <div class="col-md-2 col-12 ">
-                
-            </div>
-            <div class="col-md-10 col-12">
-                <div class="row pmp1">
-                    <div class="col-md-5 col-12">
-                        <h5>PRODUCT SHOP</h5>
-                    </div>
-                    <div class="col-md-2 col-12 common_padding1">
-                       <p class="showing_res1">Showing
-                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
-                        <b>{{publicShop.count}}</b>
-                    </p>
-                </div>
-                <div class="col-md-2 col-12 common_padding1">
-                    <select class="geo_textbox" id="sortListing">
-                        <option>Select option</option>
-                        <option value="Newest">Sort by Newest</option>
-                        <option value="Oldest">Sort by order</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-9 col-12" style="background-color: #fff;">
-                    <section class="box6" style="margin-bottom: 20px;">
-                        <div class="container clearfix">
-                            <div class="row">
-                                {{#each publicShop.rows}}
-                                <div class="col-md-4 col-12 common_top">
-                                    <div class="row">
-                                        <div class="col-md-3 col-2">
-                                            <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
-                                        </div>
-                                        <div class="col-md-9 col-10">
-                                            <div class="row common_padding">
-                                                <div class="col-md-8 col-8">
-                                                    <p class="wts_header">
-                                                        <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p class="">${{this.product_price}}CAD</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Origin</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>{{this.country_name}}</p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p>&nbsp;</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Category</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>{{this.category_name}} - {{this.sub_category_name}}</p>
-                                                </div>
-                                                <div class="col-md-4 col-4">
-                                                    <p>Seller Rating</p>
-                                                </div>
-                                            </div>
-                                            <div class="row common_padding">
-                                                <div class="col-md-3 col-3">
-                                                    <p>Seller</p>
-                                                </div>
-                                                <div class="col-md-5 col-5">
-                                                    <p>{{#if ../LoggedInUser.email}}
-                                                      <a>{{this.vendor_name}}</a>
-                                                      {{else}}
-                                                      <a href="/login">(Login for Seller Info)</a>
-                                                      {{/if}}</p>
-                                                  </div>
-                                                  <div class="col-md-4 col-4">
-                                                    <p>{{ starCount product_rating}}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{/each}}
-                            </div>
-                        </div>
-                    </section>
-                    {{#ifCond publicShop.count '>' queryPaginationObj.limit}}
-                    <div class="row">
-                        <div class="col-md-3">
-                        </div>
-                        <div class="col-md-7">
-                            {{#pagination publicShop.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center">
-                                    {{#unless startFromFirstPage}}
-                                    <li class="page-item">
-                                        <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-                                    </li>
-                                    {{/unless}} {{#each pages}}
-                                    <li class="page-item {{#if isCurrent}} active {{/if}}">
-                                        <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-                                    </li>
-                                    {{/each}} {{#unless endAtLastPage}}
-                                    <li class="page-item">
-                                        <a class="page-link" href="../vendor/shop/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-                                    </li>
-                                    {{/unless}}
-                                </ul>
-                            </nav>
-                            {{/pagination}}
-                        </div>
-                    </div>
-                    {{/ifCond}}
-                    <div class="col-md-6">
-                        <p class="showing_res1">Showing
-                            <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
-                            <b>{{publicShop.count}}</b> Products matching
-                            {{#if queryPaginationObj.keyword}}
-                            <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
-                            {{#if selectedMarketPlace}}
-                            in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
-                            {{/if}}
-                        </p>
-                    </div>
-                    
-                </div>
-                <div class="col-md-3 col-12 showing_categ">
-                    <p><b>FILTER BY CATEGORY</b></p>
-                    <p class="cat_bg_title_shp">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-                    {{> vendor/vendor-category }}
-                </div>
-            </div>
-        </div>
-        </div>
-    </div>
-</section> -->
 {{> footer/bottom-footer}}

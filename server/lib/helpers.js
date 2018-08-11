@@ -243,7 +243,7 @@ Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, dele
     if (Object.keys(newObj).length > 0) {
         existingObj = Object.assign(existingObj, newObj);
     }
-    if (deleteKey != 'null') {
+    if (deleteKey != null) {
         var tmpArray = deleteKey.split('&');
         tmpArray.forEach(function(tmpKey) {
             delete existingObj[tmpKey];
@@ -434,12 +434,34 @@ Handlebars.registerHelper("LikeUnlike",function(likes, user){
     return name;
 });
 
+Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr) {        
+    var ret = '';
+    var mpKeyValue = {
+        "Private Wholesale Marketplace" : "wholesale",
+        "Public Marketplace" : "shop",
+        "Services Marketplace" : "service",
+        "Lifestyle Marketplace": "shop"
+    }
+    var option;
+    for (var i = 0, len = marketPlaceArr.length; i < len; i++) {        
+        option = `<li><span class = "`+mpKeyValue[marketPlaceArr[i].marketplace_name]+`" style = "height:`+calculatePercentage(totalAmt,marketPlaceArr[i].amount)+`" title = "`+marketPlaceArr[i].marketplace_name+`"></span></li>`
+        ret += option;
+    }
+    return new Handlebars.SafeString(ret);
+    
+});
+
+Handlebars.registerHelper('percentage', function(amtA, amtB) {    
+    let per = parseFloat(amtB) / parseFloat(amtA) * 100;
+    return numeral(per).format('0.00').toString() + '%';
+});
+
 function currencyFormat(amt) {
     return numeral(amt).format('$' + '0,0.00').toString();
 };
 
 function calculatePercentage(amtA, amtB) {
-    let per = (amtA - amtB) / amtB * 100;
+    let per = amtB / amtA * 100;
     return numeral(per).format('0.00').toString() + '%';
 };
 
@@ -460,15 +482,15 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
     if(matchedObj){
         ret = `<td> ` + currencyFormat(obj.total_sales) + `
          <span class = "`+ getTextColor(obj.total_sales,matchedObj.total_sales) +`">` + currencyFormat(obj.total_sales - matchedObj.total_sales) + `</span>
-         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.total_sales) + `(` + calculatePercentage(obj.total_sales - matchedObj.total_sales) + `) </span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.total_sales) + `(` + calculatePercentage(obj.total_sales, matchedObj.total_sales) + `) </span>
          </td>
          <td>` + currencyFormat(obj.vendor_fee) + `
          <span class = "`+ getTextColor(obj.vendor_fee,matchedObj.vendor_fee) +`"> ` + currencyFormat(obj.vendor_fee - matchedObj.vendor_fee) + ` </span>
-         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.vendor_fee) + `(` + calculatePercentage(obj.vendor_fee - matchedObj.vendor_fee) + `) </span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.vendor_fee) + `(` + calculatePercentage(obj.vendor_fee, matchedObj.vendor_fee) + `) </span>
          </td>
          <td>` + currencyFormat(obj.gtc_fees) + `
          <span class = "`+ getTextColor(obj.gtc_fees,matchedObj.gtc_fees) +`">` + currencyFormat(obj.gtc_fees - matchedObj.gtc_fees) + `</span>
-         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.gtc_fees) + `(` + calculatePercentage(obj.gtc_fees - matchedObj.gtc_fees) +`) </span>
+         <span class = "text_grey_color"> vs ` + currencyFormat(matchedObj.gtc_fees) + `(` + calculatePercentage(obj.gtc_fees, matchedObj.gtc_fees) +`) </span>
          </td>`
     } else {
         ret = `<td> `+ currencyFormat(obj.total_sales) + `

@@ -31,13 +31,13 @@
 						</div>
 						<div class="content-body">
 							<div class="row">
-								<div class="col-sm-6" style="padding-left: 15px; float: left;">
+								<div class="col-sm-6">
 									<div class="row">
-										<div class="col-md-2" style="padding-left: 15px;">
-											<p class="report_date-range">Date Range</p>
-										</div>
+						
+											<p class="report_date-range" style="margin-left: 13px;">Date Range</p>
+						
 										<div class="col-sm-3">
-											<div class="input-group">
+											<div class="input-group" style="width:103px">
 												<input class="form-control social_input" type="text" id="lhs_from" aria-label="Username" value="{{queryURI.lhs_from}}" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
 												 id="datepicker3" autocomplete="off">
 												<div class="input-group-prepend">
@@ -48,11 +48,10 @@
 											</div>
 										</div>
 
-										<div class="col-md-1 common_padding1">
-											<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-										</div>
+										<p style=" font-size: 12px;margin-left: 2px;"> to</p>
+										
 										<div class="col-sm-3">
-											<div class="input-group">
+											<div class="input-group" style="width:103px">
 												<input type="text" class="form-control social_input" id="lhs_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.lhs_to}}"
 												 aria-describedby="basic-addon2" id="datepicker4" autocomplete="off">
 												<div class="input-group-prepend">
@@ -62,8 +61,8 @@
 												</div>
 											</div>
 										</div>
-										<div class="form-group">
-											<div class="select-container">
+										<div class="form-group mb-2" style="width:163px">
+											<div class="select-container ">
 												<select class="form-control-customized form-control-sm" name="dateSelect">
 													<option disabled selected>LAST 30 DAY</option>
 												</select>
@@ -71,14 +70,14 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-4" style="padding:0px; float: right; ">
+								<div class="col-sm-4" style="padding:0px;">
 									<div class="row">
 										<div class="col-md-3">
 											<input id="compare" type="checkbox" value="{{queryURI.compare}}" style="width: 20%; margin-top: 5px;" checked>
 											<p class="report_date-range1">Compare to</p>
 										</div>
 										<div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
-											<div class="input-group">
+											<div class="input-group" style="width:103px">
 												<input type="text" class="form-control social_input" id="rhs_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.rhs_from}}"
 												 aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
 												<div class="input-group-prepend">
@@ -93,7 +92,7 @@
 											<p style="padding: 3px 17px; font-size: 12px;"> to</p>
 										</div>
 										<div class="col-sm-3" style="padding: 2px">
-											<div class="input-group">
+											<div class="input-group" style="width:103px">
 												<input type="text" class="form-control social_input" id="rhs_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.rhs_to}}"
 												 aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
 												<div class="input-group-prepend">
@@ -106,24 +105,46 @@
 											</div>
 										</div>
 										<div class="col-md-1">
-											<button class="update-btn1" onclick="onSearch()">Update</button>
+											<button class="update-btn1" style="margin-left: 22px;background-color: green;
+    color: #fff" onclick="onSearch()">Update</button>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-2">
-									<select class="vend_edit_lists_buttonstyle float-right" style="width: 118px">
+								<div class="col-md-2" style="left: 20px;">
+									{{!-- <select class="vend_edit_lists_buttonstyle float-right">
 										<option>EXPORT TO</option>
-									</select>
+									</select> --}}
+									<div class="form-group mx-sm-3 mb-2">
+											{{!-- <button class="btn btn-small btn-muted export-btn">EXPORT</button> --}}
+											<div class="select-container ">
+												<select class="form-control-customized form-control-sm" name="dateSelect">
+													<option disabled selected>Export</option>
+												</select>
+											</div>
+										</div>
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-9">
-									Select a metric
+								<div class="col-md-2">
+									<p style="font-size:13px">Select a metric</p> </div>
+								
+								<div class="col-md-7">
+									
+										<div class="form-group" style="width:163px;margin-left:-63px">
+											
+											<div class="select-container ">
+												<select class="form-control-customized form-control-sm" name="dateSelect">
+													<option disabled selected>TOP PERFORMING PRODUCTS</option>
+												</select>
+											</div>
+										</div>
+									{{!-- Select a metric
 									<select class="vend_edit_lists_buttonstyle" style="width: 250px;">
 										<option>TOP PERFORMING PRODUCTS</option>
-									</select>
+									</select> --}}
 								</div>
-								<div class="col-md-3 float-right">
+								
+								<div class="col-md-3 float-right" style="padding-left: 52px;left: 15px;">
 									<div class="input-group">
 										<input type="text" class="vend_edit_lists_searchstyle" placeholder="Search History">
 										<span class="promo_code_text_span">

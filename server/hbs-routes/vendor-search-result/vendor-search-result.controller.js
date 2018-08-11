@@ -26,7 +26,7 @@ export function index(req, res) {
 	var bottomCategory = {};
 	var categoryModel = "Category";
 
-	var offset, limit, field, order;
+	var offset, limit, field, order,layout;
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -43,6 +43,10 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
+	layout=req.query.layout ? req.query.layout : 'grid';
+	queryURI['layout'] = layout;
+	queryPaginationObj['layout'] = layout;
+	delete req.query.layout;
 
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
@@ -174,7 +178,8 @@ export function index(req, res) {
 				selectedMarketPlace: results.marketPlace,
 				LoggedInUser: LoggedInUser,
 				marketplaceURl: marketplaceURl,
-				selectedLocation: selectedLocation
+				selectedLocation: selectedLocation,
+				layout_type: layout
 			})
 		}
 	});
