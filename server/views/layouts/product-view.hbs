@@ -38,6 +38,8 @@
 	newData.product_id = productSpecs.id;
 
 	function compareProduct(e) {
+		$('#productAlert').empty();
+
 		$.ajax({
 			type: 'POST',
 			url: '/api/product-view/add-to-compare',
@@ -405,8 +407,6 @@
 					}
 					$('#btnFaSpinner').show()
 				}
-
-				console.log("reviewObj", reviewObj);
 
 				$.ajax({
 					type: "POST",

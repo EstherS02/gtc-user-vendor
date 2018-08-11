@@ -24,7 +24,7 @@ function sumofPrice(modelName, queryObj) {
 			]
 		}).then(function(data) {
 			total = data[0].amount ? data[0].amount : "0";
-			resolve(total);
+			resolve(parseFloat(total));
 		}).catch(function(err) {
 			reject(err);
 		});
@@ -43,7 +43,7 @@ function sumofCount(modelName, queryObj) {
 			]
 		}).then(function(data) {
 			total = data[0].count ? data[0].count : "0";
-			resolve(total);
+			resolve(parseInt(total));
 		}).catch(function(err) {
 			reject(err);
 		});
@@ -135,7 +135,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -184,7 +184,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -233,7 +233,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -305,7 +305,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 					}).then(function() {
 						return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_revenue = total;
-							result.diff_revenue = result.current_revenue - result.past_revenue;
+							result.diff_revenue = result.past_revenue - result.current_revenue;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -321,7 +321,8 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 					}).then(function() {
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_count = total;
-							result.diff_count = result.current_count - result.past_count;
+							let per = (result.past_count - result.current_count)/result.current_count * 100;							
+							result.diff_count = per.toString() + '%';							
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -339,7 +340,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["CONFIRMEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_completed = total;
-							result.diff_completed = result.current_completed - result.past_completed;
+							result.diff_completed = result.past_completed - result.current_completed;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -357,7 +358,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["RETURNEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_returned = total;
-							result.diff_returned = result.current_returned - result.past_returned;
+							result.diff_returned = result.past_returned - result.current_returned;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -375,7 +376,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_item_status = orderItemStatus["ORDER_CANCELLED_AND_REFUND_INITIATED"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_refunds = total;
-							result.diff_refunds = result.current_refunds - result.past_refunds;
+							result.diff_refunds = result.past_refunds - result.current_refunds;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -393,7 +394,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["CANCELLEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_cancelled = total;
-							result.diff_cancelled = result.current_cancelled - result.past_cancelled;
+							result.diff_cancelled = result.past_cancelled - result.current_cancelled;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -411,7 +412,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["DISPATCHEDORDER"];
 						return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_disputes = total;
-							result.diff_disputes = result.current_disputes - result.past_disputes;
+							result.diff_disputes = result.past_disputes - result.current_disputes;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
