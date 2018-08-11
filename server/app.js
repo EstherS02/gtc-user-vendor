@@ -16,7 +16,8 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 
-var agenda = require('./agenda').agenda;
+var agenda = require('./agenda');
+var sendEmailNew = require('./agenda/send-email-new');
 var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
@@ -41,29 +42,27 @@ var env = app.get('env');
 if (env === 'development') {
 	var privateKey = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.key'), 'utf8');
 	var ssl_certificate = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.crt'), 'utf8');
-
 	var ssl_credentials = {
 		key: privateKey,
 		cert: ssl_certificate
 	};
-
 }
+
+agenda.define(config.jobs.email, sendEmailNew);
+agenda.define(config.jobs.couponExpiry, couponExpiry);
+
+agenda.on('ready', function() {
+	agenda.every('1 day', 'couponExpiry');
+	agenda.start();
+});
 
 var httpServer = http.createServer(app);
 if (env === 'development') {
 	var httpsServer = https.createServer(ssl_credentials, app);
 }
+
 require('./config/express').default(app);
 require('./routes').default(app);
-
-agenda.define(config.jobs.couponExpiry, couponExpiry);
-
-agenda.on('ready', function() {
-	console.log('agenda onReady');
-	agenda.every('1 day', 'couponExpiry');
-	agenda.start();
-});
-app.set('agenda', agenda);
 
 // Start server
 function startServer() {

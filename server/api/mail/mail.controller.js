@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
+const _ = require('lodash');
 const moment = require('moment');
 const service = require('../service');
 const roles = require('../../config/roles');
@@ -33,7 +34,7 @@ export function create(req, res) {
 		return;
 	}
 
-	mailUser = req.body.to;
+	mailUser = _.uniqBy(req.body.to);
 	bodyParams = req.body;
 	if (bodyParams.to) {
 		delete bodyParams.to;

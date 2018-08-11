@@ -1,14 +1,17 @@
 'use strict';
 
+const agenda = require('../../agenda');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const service = require('../service');
+const config = require('../../config/environment');
 const mailStatus = require('../../config/mail-status');
 const model = require('../../sqldb/model-connect');
 
 export function createMail(bodyParams, users) {
-	var usersArray = [];
 	var mail = {};
+	var usersArray = [];
+	var mailArray = [];
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
 
@@ -42,7 +45,15 @@ export function createMail(bodyParams, users) {
 				return Promise.reject(true);
 			}
 		}).then((fromUserMailResponse) => {
+			var mailObject = {};
+
+			mailObject['from'] = config.smtpTransport.from;
+			mailObject['subject'] = mail.subject;
+			mailObject['html'] = mail.message;
+			mailObject['to'] = [];
+
 			for (var i = 0; i < users.length; i++) {
+				mailObject['to'].push(users[i].email);
 				usersArray.push(service.createRow(userMailModelName, {
 					mail_id: mail.id,
 					user_id: users[i].id,
@@ -51,8 +62,12 @@ export function createMail(bodyParams, users) {
 					created_on: new Date()
 				}));
 			}
+			mailArray.push(mailObject);
 			return Promise.all(usersArray);
 		}).then((result) => {
+			agenda.now(config.jobs.email, {
+				mailArray: mailArray
+			});
 			resolve("Mail sent successfully");
 		}).catch((error) => {
 			reject(error);
