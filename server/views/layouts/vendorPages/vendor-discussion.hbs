@@ -1,36 +1,37 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
 
 	$(document).ready(function () {
-          
-        var cropBoxData, canvasData, cropper, cropperInputImage;
-        var cropperOutputImage;
-        var fileDetails = {};
-        var imagesPreview = function(uploader, placeToInsertImagePreview) {
-            if (uploader.files && uploader.files[0]) {
-                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-picture');
-                $('#profile-picture-modal').modal('show');
-            }
-        };
-        $('#profile-picture-modal').on('shown.bs.modal', function() {
-                cropper = new Cropper(cropperInputImage, {
-                    aspectRatio: 16 / 16,
-                    minCropBoxHeight: 280,
-                    minCropBoxWidth: 1364,
-                    ready: function() {
+
+		var cropBoxData, canvasData, cropper, cropperInputImage;
+		var cropperOutputImage;
+		var fileDetails = {};
+		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+			}
+		};
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+				minCropBoxHeight: 280,
+				minCropBoxWidth: 1364,
+				ready: function() {
                         //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
                     }
                 });
-        }).on('hidden.bs.modal', function() {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
-        });
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
 
-        $('#crop-profile-image').click(function () {
+		$('#crop-profile-image').click(function () {
 			cropper.getCroppedCanvas().toBlob(function (blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
@@ -40,20 +41,22 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-        $("#selectedBlogFile").change(function () {
-                imagesPreview(this);	
+		$("#selectedBlogFile").change(function () {
+			imagesPreview(this);	
 		});
 
 
 
-	
-$('#postBlog').click(function () {
-	var formData={};
-	formData.post_message = $("#blog_text").val();
-	var imgVal = $("#selectedBlogFile").val();
-	var form = new FormData();
 
-    form.append("file", cropperOutputImage, fileDetails["fileName"]);
+		$('#postBlog').click(function () {
+			var formData={};
+			formData.post_message = $("#blog_text").val();
+			formData.vendor_id = vendorInfo.id;
+			formData.user_id = userInfo.id;
+			var imgVal = $("#selectedBlogFile").val();
+			var form = new FormData();
+
+			form.append("file", cropperOutputImage, fileDetails["fileName"]);
 
 	//form.append("file", $("#selectedBlogFile")[0].files[0]);
 	var url = '/api/vendor-props/blog-post';
@@ -77,123 +80,119 @@ $('#postBlog').click(function () {
 			}
 		});
 	} else {
-		if($("#blog_text"+e).val()){
+		if($("#blog_text").val()){
 			formData.post_media_type = 1;
 			apiCall(url,formData);
 		}else{
+			$('#blog_text').notify("Please enter the value", "error");
 			console.log("Please enter the blog Content")
 		}
 	}
 });
-function postComment(e){
-	var formData={};
-	formData.discussion_board_post_id=e;
-	formData.status=1;
-	formData.comment = $("#comment_text"+e).val();
-	var imgVal = $("#selectedFile"+e).val();
-	var form = new FormData();
+	});
+	function postComment(e){
+		var formData={};
+		formData.discussion_board_post_id=e;
+		formData.status=1;
+		formData.comment = $("#comment_text"+e).val();
+		var imgVal = $("#selectedFile"+e).val();
+		var form = new FormData();
 
-	form.append("file", $("#selectedFile"+e)[0].files[0]);
-	var url = '/api/vendor-props/blog-comment';
-	if (imgVal) {
+		form.append("file", $("#selectedFile"+e)[0].files[0]);
+		var url = '/api/vendor-props/blog-comment';
+		if (imgVal) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/TalkSetting/upload',
+				data: form,
+				cache: false,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: function (data) {
+					console.log(data);
+					formData.comment_type = 2;
+					formData.comment_media_url = data.imageURL;
+					apiCall(url,formData);
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		} else {
+			if($("#comment_text"+e).val()){
+				formData.comment_type = 1;
+				apiCall(url,formData);
+			}else{
+				console.log("Please enter the value")
+				$('#comment_text'+ e).notify("Please enter the value", "error");
+			}
+		}
+	}
+	function apiCall(url, data) {
 		$.ajax({
 			type: 'POST',
-			url: '/api/TalkSetting/upload',
-			data: form,
-			cache: false,
-			dataType: 'json',
-			processData: false,
-			contentType: false,
-			success: function (data) {
-				console.log(data);
-				formData.comment_type = 2;
-				formData.comment_media_url = data.imageURL;
-				apiCall(url,formData);
+			url: url,
+			data:data,
+			success: function(data, text) {
+				location.reload();
 			},
-			error: function (error) {
-				console.log("Error", error);
+			error: function(request, status, error) {
+				console.log('status', status);
+				console.log('error', error);
 			}
 		});
-	} else {
-		if($("#comment_text"+e).val()){
-			formData.comment_type = 1;
-			apiCall(url,formData);
-		}else{
-			console.log("Please enter the value")
-		}
 	}
-}
-function apiCall(url, data) {
-	$.ajax({
-		type: 'POST',
-		url: url,
-		data:data,
-		success: function(data, text) {
-			location.reload();
-		},
-		error: function(request, status, error) {
-			console.log('status', status);
-			console.log('error', error);
-		}
-	});
-}
-	});
-function userLike(e){
-	// alert(e);
-	
-	if(userInfo.email){
-		var dataInfo={};
-		dataInfo.id = e;
-		$.ajax({
-			type: "POST",
-			url: "/api/vendor-props/blog-like",
-			data: dataInfo,
-			success: function(res) {
-				$('#gtc-add-to-cart').prop('disabled', false);
-				// if (res && res.message === "SUCCESS") {
-					// outputPop(res.message_details);
-					location.reload();
-					console.log(res)
-				// }
-			},
-			error: function(error) {
-				$('#gtc-add-to-cart').prop('disabled', false);
-				if (error) {
-					if (error.status === 401)
-						return location.href = "/login";
 
-					// outputErrorPop(error);
+	function userLike(e){
+
+		if(userInfo.email){
+			var dataInfo={};
+			dataInfo.id = e;
+			$.ajax({
+				type: "POST",
+				url: "/api/vendor-props/blog-like",
+				data: dataInfo,
+				success: function(res) {
+					document.getElementById("LikeCount"+e).innerHTML = "<p id='LikeCount'>"+res.count+"Likes</p>";
+					document.getElementById("likeType"+e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('"+e+"')' id='likeType'>"+res.type+"</a>";
+					console.log(res)
+				},
+				error: function(error) {
+					if (error) {
+						if (error.status === 401)
+							return location.href = "/login";
+					}
 				}
-			}
-		});
-	}else{
-		window.location.href="/login";
+			});
+		}else{
+			window.location.href="/login";
+		}
 	}
-}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="margin-right:35px">
-                <div class="container">
-                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-            </div>
-        </div>
-    </div>
+aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body" style="margin-right:35px">
+			<div class="container">
+				<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+		</div>
+	</div>
+</div>
 </div>
 <section class="vendor-product bg-gray">
 	<div class="gtc-container">
@@ -211,10 +210,10 @@ function userLike(e){
 							{{!-- <div class="ibox-content"> --}}
 							<div class="row">
 								<div class="col-md-6" style="background-color:#fff">
-									{{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}}
+									{{!-- {{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}} --}}
 									<div class="row">
 										<div class="col-md-2  discussion_para_bg">
-											<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}">
+											<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
 										</div>
 										<div class="col-md-10 col-9 discussion_para_bg " >
 											<div class="discussion_text">
@@ -232,27 +231,34 @@ function userLike(e){
 										</div>
 									</div>
 									<hr>
-									{{/ifCond}}
+									{{!-- {{/ifCond}} --}}
 									{{#if discussionBoard.rows}}
 									{{#each discussionBoard.rows}}
 									<div class="row">
 										<div class="col-md-2 col-2 discussion_para_bg">
-											<img style="width: 45px; height:44px " class = "img-border-page" src="{{this.Vendor.vendor_profile_pic_url}}">
+											<img style="width: 45px; height:44px " class = "img-border-page" src="{{this.User.user_pic_url}}">
 										</div>
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>-{{this.post_message}}- <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
+											{{#if this.post_media_url}}
 											<img src="{{this.post_media_url}}" alt="img" style="width: 100%;margin-top: 10px;">
+											{{/if}}
 											<div class="row">    	
 												<div class="col-md-8 col-5  discussion_com">
+													{{#if this.DiscussionBoardPostComments.length}}
 													<p>Comments({{this.DiscussionBoardPostComments.length}})</p>
+													{{else}}
+													<p>Be the first to comment:</p>
+													{{/if}}
 												</div>
 												<div class="col-md-2 col-4 common_padding1 discussion_lin">
-													<p>{{this.DiscussionBoardPostLikes.length}} Likes</p>
+													<p id="LikeCount{{this.id}}">{{this.DiscussionBoardPostLikes.length}} Likes</p>
 												</div>
-												<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript::" class="discussion_butt btn" onclick="userLike({{this.id}})">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
+												<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
 											</div>
 											<hr>
 											{{#each this.DiscussionBoardPostComments}}
+											{{#ifCond @index '<' 2}}
 											<div class="row" style="margin-bottom: 10px;">
 												<div class="col-md-2 col-2">
 													<img style="width: 35px;height:35px " class = "img-border-page"src="{{ProfilePicture this.User}}">
@@ -261,6 +267,7 @@ function userLike(e){
 													<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}-{{this.comment}} {{/if}} -{{#ifCond this.comment_type "==" 2}}<p><img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
 												</div>
 											</div>
+											{{/ifCond}}
 											{{/each}}
 											<div class="row">
 												<div class="col-md-2 col-2">
@@ -277,6 +284,7 @@ function userLike(e){
 																</span>
 															</div>
 															<button class="discussion_butt" onclick="postComment({{this.id}})">Post</button>
+															<p id="commentError"></p>
 														</div>
 													</div>
 												</div>
@@ -290,17 +298,17 @@ function userLike(e){
 									<div class="row showing_categ" style="padding: 3px; margin: 10px auto;">
 									</div>
 								</div>
-							<div class="col-md-3">
-								<div class="dis_side_bar">
-									<p class="discussion_most_head">MOST POPULAR POSTS</p>
-									<ul>
-										{{#if discussionBoard.rows}}
-										<li>It is Time to Color Your Business</li>
-										{{else}}
-										<li>No blog Found</li>
-										{{/if}}
-									</ul>
-								</div>
+								<div class="col-md-3">
+									<div class="dis_side_bar">
+										<p class="discussion_most_head">MOST POPULAR POSTS</p>
+										<ul>
+											{{#if discussionBoard.rows}}
+											<li>It is Time to Color Your Business</li>
+											{{else}}
+											<li>No blog Found</li>
+											{{/if}}
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>

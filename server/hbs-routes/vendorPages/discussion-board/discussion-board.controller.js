@@ -36,7 +36,7 @@ export function vendorDiscussion(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	limit = req.query.limit ? parseInt(req.query.limit) : 40;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "created_on";
@@ -71,7 +71,12 @@ export function vendorDiscussion(req, res) {
 		}]
 	},{
 		model:model['Vendor']
-	}];
+	},{
+			model: model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				},
+		}];
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {

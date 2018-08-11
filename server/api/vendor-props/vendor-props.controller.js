@@ -9,9 +9,11 @@ const status = require('../../config/status');
 const service = require('../service');
 
 export function blogLike(req, res) {
+	var discussion_board_post_id = req.body.id;
+	var type = '';
 	var queryObj = {
 		user_id: req.user.id,
-		discussion_board_post_id: req.body.id
+		discussion_board_post_id: discussion_board_post_id
 	};
 	var modelName = "DiscussionBoardPostLike";
 	model[modelName].findOne({
@@ -21,8 +23,10 @@ export function blogLike(req, res) {
 			var newStatus;
 			if (result.status == status['ACTIVE']) {
 				newStatus = 0;
+				type='Like';
 			} else {
 				newStatus = 1;
+				type='Unlike';
 			}
 			model[modelName].update({
 					status: newStatus,
@@ -33,7 +37,19 @@ export function blogLike(req, res) {
 					}
 				})
 				.then(function(response) {
-					res.status(200).send(response);
+					LikeCount(req, res, function (err,obj) {
+						if (err) {
+			            return res.status(500).json({
+												count: 0,
+												type: type
+											});
+			        } else {
+			            return res.status(200).json({
+												count: obj.count ,
+												type: type
+											});
+			        }
+			    	});
 					return;
 				});
 		} else {
@@ -43,13 +59,40 @@ export function blogLike(req, res) {
 			bodyParam.status = 1;
 			bodyParam.created_on = new Date();
 			service.createRow(modelName, bodyParam).then(function(response) {
-				res.status(200).send(response);
+				// res.status(200).send(response);
+				LikeCount(req, res, function (err, obj) {
+			        if (err) {
+			            return res.status(500).json({
+												count: 0,
+												type: type
+											});
+			        } else {
+			            return res.status(200).json({
+												count: obj.count ,
+												type: type
+											});
+			        }
+			        
+			    	});
 				return;
 			});
 			// console.log(i, "not in db")
 		}
 	});
 
+}
+
+function LikeCount(req,res,callback){
+	var modelName = "DiscussionBoardPostLike";
+	var queryObj = {
+		discussion_board_post_id: req.body.id,
+		status : status['ACTIVE']
+	};
+	model[modelName].findAndCountAll({
+		where: queryObj
+	}).then(function(result) {
+        return callback(null, result)
+	});
 }
 
 export function blogComment(req, res) {
@@ -71,7 +114,8 @@ export function blogComment(req, res) {
 export function blogPost(req, res) {
 	var modelName = "DiscussionBoardPost";
 	var bodyParam = {};
-	bodyParam.vendor_id = req.user.Vendor.id;
+	bodyParam.vendor_id = req.body.vendor_id;
+	bodyParam.user_id = req.body.user_id;
 	bodyParam.post_media_type = req.body.post_media_type;
 	bodyParam.post_message = req.body.post_message;
 	bodyParam.post_media_url = req.body.post_media_url;
