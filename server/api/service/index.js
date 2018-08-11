@@ -255,9 +255,6 @@ export function categoryAndSubcategoryCount() {
             let groupByCategories = _.groupBy(resultObj, "product_category_id");
             let categoryObj = [], totalCategoryProducts = 0;
 
-            console.log(groupByCategories[resultObj[1].product_category_id]);
-            console.log(resultObj[1])
-
             for(var i = 0; i < resultObj.length; i++){
                 let tempCategory = groupByCategories[resultObj[i].product_category_id];
                 totalCategoryProducts = totalCategoryProducts + parseInt(resultObj[i].subCategoryCount);

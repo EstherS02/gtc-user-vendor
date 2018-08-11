@@ -243,7 +243,7 @@ Handlebars.registerHelper('QueryParams', function(existingQueryObj, newObj, dele
     if (Object.keys(newObj).length > 0) {
         existingObj = Object.assign(existingObj, newObj);
     }
-    if (deleteKey != 'null') {
+    if (deleteKey != null) {
         var tmpArray = deleteKey.split('&');
         tmpArray.forEach(function(tmpKey) {
             delete existingObj[tmpKey];

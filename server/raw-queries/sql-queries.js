@@ -43,7 +43,7 @@ let sqlQueries = {
     HAVING
         distance < 60
     ORDER BY
-        distance`;
+        product.product_name`;
 
     return query;
   },
@@ -72,7 +72,26 @@ let sqlQueries = {
     LEFT JOIN sub_category ON sub_category.id = sub_category_id;`;
 
     return query;
+  },
+
+  locationCount: function(){
+      let query = `SELECT 
+        COUNT(*) AS location_count,
+        product.id AS product_id,
+        country.name As country_name,
+        region.name As region_name,
+        product_location
+    FROM
+        product
+
+    LEFT JOIN country ON country.id = product.product_location
+    LEFT JOIN region ON region.id = country.region_id
+    GROUP BY product_location;`;
+
+    return query;
   }
+
+
 };
 
 module.exports = sqlQueries;

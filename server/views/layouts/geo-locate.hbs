@@ -1,168 +1,29 @@
+ <script>
+     function priceUpdate(){
+         let price_min, price_max, newURL;
+         price_min = Math.abs($('#min_price_input').val());
+         price_max = Math.abs($('#max_price_input').val());
+         console.log(price_max, price_min)
+         newURL = window.location.href;
+
+        if(price_min)
+            newURL = updateQueryString(newURL,'price_min', price_min);
+        if(price_max)
+            newURL = updateQueryString(newURL,'price_max', price_max);
+        
+        location.href = newURL;
+     }
+ </script>
+ 
  {{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
 
-            {{!-- <div class="col-md-3">
-                <div class="row">            
-                    <div class="col-md-10 geo_sort_bg">
-                        <p>Showing
-                            <b> 1660 products</b>
-                        </p>
-                    </div>
-                    <div class="col-md-2 geo_arrow_bg">
-                        <i class="fas fa-caret-right"></i>
-                    </div>
-                </div>
-                <div class="row">
-            
-                    <div class="col-md-12 col-12 showing_categ" style="background-color:#FFF">
-                        <p>
-                            <b>FILTER BY CATEGORY</b>
-                        </p>
-                        <p class="cat_bg_title">ALL CATEGORIES</p>
-                        <div class="list-group panel">
-                            <a href="#menu1" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar" aria-expanded="false" style="background-color:#FFF !important;">
-                                <i class="fas fa-caret-down"></i>
-                                <span class="hidden-sm-down">AGRICULTURE(293)</span>
-                            </a>
-                            <div class="collapse" id="menu1">
-                                <a href="#menu1sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false" style="background-color:#FFF !important;">Animals(93)</a>
-                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Aquaculture(93)</a>
-                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Building Construction(93)</a>
-                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Fram Machines &amp; Tools(93)</a>
-                                <a href="#" class="list-group-item" data-parent="#menu1" style="background-color:#FFF !important;">Flowers &amp; Plants(93)</a>
-                            </div>
-                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
-                                <i class="fas fa-caret-right"></i>
-                                <span class="hidden-sm-down">APPAREL &amp; FASHION(293)</span>
-                            </a>
-                            <a href="#menu3" style="background-color:#FFF !important;" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar"
-                                aria-expanded="false">
-                                <i class="fas fa-caret-right"></i>
-                                <span class="hidden-sm-down">ELECTRONICS &amp; ELECTRICAL(293) </span>
-                            </a>
-                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
-                                <i class="fas fa-caret-right"></i>
-                                <span class="hidden-sm-down">FOOD &amp; BEVERAGE(293)</span>
-                            </a>
-                            <a href="#">More ... (10 Categories)</a>
-                        </div>
-                        <p style="margin-top: 20px;">
-                            <b>FILTER BY LOCATION</b>
-                        </p>
-                        <p class="cat_bg_title">GLOBAL (293)</p>
-                        <div class="list-group panel " style="background-color:#FFF">
-                            <a href="#menu2" style="background-color:#FFF !important;" class="list-group-item collapsed" data-toggle="collapse" data-parent="#sidebar"
-                                aria-expanded="false">
-                                <i class="fas fa-caret-down"></i>
-                                <span class="hidden-sm-down">NORTH AMERICA(293)</span>
-                            </a>
-                            <div class="collapse" id="menu2" style="background-color:#FFF">
-                                <a href="#menu1sub1" style="background-color:#FFF !important;" class="list-group-item" data-toggle="collapse" aria-expanded="false">Canada(93)</a>
-                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">United States(93)</a>
-                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Mexico(93)</a>
-                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Hondures(93)</a>
-                                <a href="#" style="background-color:#FFF !important;" class="list-group-item" data-parent="#menu1">Ecuador(93)</a>
-                            </div>
-                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
-                                <i class="fas fa-caret-right"></i>
-                                <span class="hidden-sm-down">SOUTH AMERICA</span>
-                            </a>
-                            <a href="#" style="background-color:#FFF !important;" class="list-group-item collapsed" data-parent="#sidebar">
-                                <i class="fas fa-caret-right"></i>
-                                <span class="hidden-sm-down">EUROPE</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12" style="background-color: #FFF;">
-                        <p>
-                            <b class="geo_search_filter">FILTER BY PRICE</b>
-                        </p>
-                        <p>
-                            <input type="text" placeholder="From" class="geo_search_from" /> &nbsp;&nbsp;-
-                            <input type="text" placeholder="To" class="geo_search_to" />&nbsp;
-                            <button class="geo_search_update">UPDATE </button>
-                        </p>
-                    </div>
-                </div>
-                </div>
-            --}}
-
-
-
-    <div class="col-md-3" style="height: 650px;overflow-y: scroll;overflow-x: hidden;">
-        <div class="row">			
-            <div class="col-md-10 geo_sort_bg">
-                <p>Showing <b> 1660 products</b></p>
-            </div>
-            <div class="col-md-2 geo_arrow_bg">
-                <i class="fas fa-caret-right"></i>
-            </div>
-		</div>
-        
-        <div class="row">
-            <div class="col-md-12 col-12" style="background-color:#FFF">
-                <div class="ibox" style="margin-bottom: 0px;">
-                    <div class="ibox-content bg-transparent">
-                        <p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY CATEGORY</b></p>
-                        <p class="right-header-xs bg1">ALL CATEGORIES ({{totalCategoryProducts}})</p>
-                        <ul class="right-list-view category-fixed">
-                            {{#each categoriesCount}}
-                            <li>
-                                <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.category_name}}">{{this.category_name}} ({{this.categoryCount}})</a>
-                                <ul class="inner-list-view collapse" id="list{{this.category_name}}">
-                                    {{#each ../subCategoriesCount}}
-                                        {{#ifCond this.product_category_id '==' ../this.product_category_id}}
-                                        <li>
-                                            <a href="/">{{this.sub_category_name}} ({{this.subCategoryCount}})</a>
-                                        </li>
-                                        {{/ifCond}}
-                                    {{/each}}
-                                </ul>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ibox" style="margin-bottom: 0px;">
-                    <div class="ibox-content bg-transparent" style="border-width: 0px 0;">
-                        <p class="right-header-xs" style="font-size: 11px;"><b>FILTER BY CATEGORY</b></p>
-                        <p class="right-header-xs bg1">ALL CATEGORIES ({{totalCategoryProducts}})</p>
-                        <ul class="right-list-view category-fixed">
-                            {{#each categoriesCount}}
-                            <li>
-                                <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.category_name}}">{{this.category_name}} ({{this.categoryCount}})</a>
-                                <ul class="inner-list-view collapse" id="list{{this.category_name}}">
-                                    {{#each ../subCategoriesCount}}
-                                        {{#ifCond this.product_category_id '==' ../this.product_category_id}}
-                                        <li>
-                                            <a href="/">{{this.sub_category_name}} ({{this.subCategoryCount}})</a>
-                                        </li>
-                                        {{/ifCond}}
-                                    {{/each}}
-                                </ul>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-
-    </div>
-
-
-<!--
 		 <div class="col-md-3 constant-height" style="height: 650px;">
 				<div class="row" style="margin-bottom:20px;">
 					<div class="col-md-2 geo_arrow_bg">
-						<a href="geolocate_search.html" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
+						<a href="/geo-locate/search" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
 					</div>
 					<div class="col-md-10 geo_sort_bg">
 						Sort by 
@@ -231,13 +92,13 @@
 				  <div class="row">
                     <div class="col-md-12" style="background-color: #F0F0F0;">
                        <p class="geo_show">Showing <span class="geo_pro"> 1660 products </span></p>
-                       <p class="geo_adv">Advanced Search / Filter</p> 
+                       <p class="geo_adv"> <a href="/geo-locate/search">Advanced Search / Filter</a> </p> 
                     </div>
                     </div>
 			</div> 
 			<div class="col-md-9 common_padding1">
-				<div id="map" style=""></div>
-			</div> -->
+				 <div id="map" style=""></div>
+			</div> 
 		</div>
 	</div>
 </section>
@@ -257,9 +118,10 @@
     }
 
 
-    var userLocation = {}, infowindow, map, marker, formattedLocation;
+    var userLocation = {}, infowindow, map, marker, formattedLocation, bounds;
     var vendorGroupedObj = {{{DisplayJSON geoLocateByVendor}}}
     var mapObjVendor = Object.keys(vendorGroupedObj)
+
 
      function initMap(geoUserLat, geoUserLng){
             formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
@@ -269,27 +131,31 @@
                 center: formattedLocation
             });
 
-            for(let i=0; i< mapObjVendor.length; i++){
+            bounds = new google.maps.LatLngBounds();
+
+           for(let i=0; i< mapObjVendor.length; i++){
                 let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
                 var content = `<p><img src="`+ mapObjProduct[0].vendor_profile_pic_url +`" style="width: 50px; height: 50px;">
                 <span style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</span>
-                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 32px;font-weight: bold;">2002 Product Listed</span>
-                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 40px;">Online Payments</span>
+                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
-                let more_content = "";
+                let more_content = "", title = mapObjProduct[0].vendor_name;;
                 for(let j=0; j< mapObjProduct.length; j++){
                     if(j === 4){
                         break;
                     }
-                    more_content = more_content + `<a href="#"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
+                    more_content = more_content + `<a href="javascript:;"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
                 }
-                content = content + `<p>`+ more_content + `<a href="#">See All</a></p>`;
-                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content);
+                content = content + `<p>`+ more_content + `<a href="javascript:;">See All</a></p>`;
+                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
             }
+
+
+            map.fitBounds(bounds);
 
         }
 
-        function createMarker(lat, lon, content){
+        function createMarker(lat, lon, content, title){
 
             var markerLocation = new google.maps.LatLng(lat, lon);
 
@@ -307,11 +173,12 @@
             marker = new google.maps.Marker({
                 position: markerLocation,
                 map: map,
-                title: 'Vendor Details'
+                title: title
                 
             });
 
-            //let more_content = '<span target="details">'+lat +','+ lon +'</span>';
+
+            bounds.extend(marker.position);
 
             google.maps.event.addListener(marker, 'mouseover', function () {
                 infowindow.setContent(content);
@@ -342,7 +209,13 @@
 
                 setCookie("userLocation", userLocation.location);
                 
-                initMap(geoUserLat, geoUserLng);
+                if(getUrlQueryString()['lat'] && getUrlQueryString()['lon']){
+                    initMap(geoUserLat, geoUserLng);
+                }else{
+                    newURL = window.location.href;
+                    newURL = updateQueryString(newURL,'lat', geoUserLat);
+                    location.href = updateQueryString(newURL,'lon', geoUserLng);
+                }
             }
 
             function geoLocationError(error) {

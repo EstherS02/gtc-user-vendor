@@ -1395,3 +1395,17 @@ ul.inner-list-view li a {
 .br-theme-fontawesome-stars .br-widget a {
 	font-size: 32px !important;
 }
+.ibox-content-geo-locate{
+	padding: 15px 20px 6px 20px;
+}
+.category-fixed-geo-locate{
+    max-height: 160px;
+    overflow-y: scroll;
+}
+.filter-price-input{
+	height: 24px;
+	font-size: 12px;
+}
+.filter-geo-locate-update{
+	padding: 4px 10px;
+}
