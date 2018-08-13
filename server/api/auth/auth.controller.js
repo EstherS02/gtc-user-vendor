@@ -792,10 +792,10 @@ export function logout(req, res, next) {
 		},
 		returning: true
 	}).then(function(row) {
-		if (row > 0) {
-			res.status(200).send("Logout successfully");
-			return;
-		}
+		if (row > 0)
+			return res.status(200).send("Logout successfully");
+		else
+			return res.status(200).send("Already Logged Out");
 	}).catch(function(error) {
 		if (error) {
 			res.status(500).send("Internal server error");

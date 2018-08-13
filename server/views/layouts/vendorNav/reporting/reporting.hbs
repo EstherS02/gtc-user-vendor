@@ -131,7 +131,7 @@
 					});
 				}
 			});
-		}
+		}	
 
 		getTopSellingCities();	
 
@@ -394,7 +394,7 @@
 											
 										</div>
 										<div class="col-md-6 total-sales" style="float: right;">
-											<div class="pts report_border">
+											<div class="pts report_border"  style="height:353px">
 												<p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
 												<br>
@@ -639,16 +639,14 @@
 										<p class="line-chart-footer">Refunds</p>
 										<p class="line-chart-footer">Cancelation</p>
 									</div>
-
-									
-									<div>
-										<p class="line-chart-green1 line-chart-footer pd0" >{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
-										<p class="line-chart-green2 line-chart-footer pd0" >{{revenueCounts.revenue_count.diff_count}}</p>
-										<p class="line-chart-green3 line-chart-footer pd0" >{{revenueCounts.completed_count.diff_completed}}</p>
-										<p class="line-chart-red1 line-chart-footer pd0"  style="padding-left: 66px;">{{revenueCounts.returns_count.diff_returned}}</p>
-										<p class="line-chart-green4 line-chart-footer pd0" >{{revenueCounts.disputes_count.diff_disputes}}</p>
-										<p class="line-chart-red2 line-chart-footer pd0" style="margin-left: 20px;">{{revenueCounts.refunds_count.diff_refunds}}</p>
-										<p class="line-chart-red3 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
+                                      <div>
+										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
+										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
+										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.completed_count.diff_completed}}</p>
+										<p class="line-chart-green3 line-chart-footer pd0">{{revenueCounts.returns_count.diff_returned}}</p>
+										<p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
+										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
 									</div>
 									<div>
 										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 20px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
