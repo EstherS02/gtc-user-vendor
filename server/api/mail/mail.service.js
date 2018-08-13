@@ -49,7 +49,7 @@ export function createMail(bodyParams, users) {
 
 			mailObject['from'] = config.smtpTransport.from;
 			mailObject['subject'] = mail.subject;
-			mailObject['replyTo'] = "gtc-user-" + mail.from_id + "@gmail.com";
+			mailObject['replyTo'] = "gtc-user-" + mail.from_id + "@ibcpods.com";
 			mailObject['html'] = mail.message;
 			mailObject['to'] = [];
 

@@ -9,6 +9,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const verificationStatus = require('../../config/verification_status');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
@@ -157,7 +158,8 @@ export function product(req, res) {
 			}, {
 				model: model['VendorVerification'],
 				where: {
-					vendor_verified_status: status['ACTIVE']
+					// vendor_verified_status: status['ACTIVE']
+					vendor_verified_status: verificationStatus['APPROVED']
 				},
 				required: false
 			}, {
@@ -250,6 +252,7 @@ export function product(req, res) {
 			}
 		}
 	}, function(error, results) {
+		// console.log("----------------========================-------",results)
 		var selectedPage;
 		if (marketplaceID == marketplace['WHOLESALE']) {
 			selectedPage = "wholesale";
@@ -410,7 +413,8 @@ export function GetProductReview(req, res) {
 			}, {
 				model: model['VendorVerification'],
 				where: {
-					vendor_verified_status: status['ACTIVE']
+					// vendor_verified_status: status['ACTIVE']
+					vendor_verified_status: verificationStatus['APPROVED']
 				},
 				required: false
 
