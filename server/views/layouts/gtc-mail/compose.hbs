@@ -15,20 +15,18 @@
 			height: 200
 		});
 
-		$("#testInput").keyup(function () {
-			console.log("*****************************");
-		})
-
-		/*	$('#sent').click(function (e) {
+			$('#sent').click(function (e) {
 	
 				e.preventDefault();
 				var sentInput = {};
 	
-				sentInput.to = $('#to').val();
+				sentInput.to = $('#toAddress').val();
 				sentInput.subject = $('#subject').val();
 				sentInput.message = $('#message').val();
+
+				console.log("==================================",sentInput);
 	
-				$.ajax({
+				/*$.ajax({
 					url: 'api/mail',
 					type: 'POST',
 					data: sentInput,
@@ -38,9 +36,9 @@
 					error: function (error) {
 						console.log(error);
 					}
-				})
+				})*/
 			})
-			$('#draft').click(function (e) {
+		/*	$('#draft').click(function (e) {
 	
 				e.preventDefault();
 				var sentInput = {};
@@ -66,29 +64,24 @@
 	$(function () {
 		var availableTags;
 
-		$("#myTags").tagit({
+		$("#toAddress").tagit({
 			autocomplete: {
 				source: function (request, response) {
 					$.ajax({
-						url: "api/mail/autoCompleteFirstName",
-						dataType: "jsonp",
-						data: {
-							featureClass: "P",
-							style: "full",
-							maxRows: 12,
-							name_startsWith: request.term
-						},
-						success: function (data) {
-							availableTags = ["javascript", "javascript2", "mysql", "php"];
+						url: "api/mail/autoCompleteFirstName?keyword="+request.term,
+						type: 'GET',
+						dataType: "json",
+						success: function (users) {
 							response(
-								$.map(availableTags, function(val){							
+								$.map(users, function(user){							
 									return {
-										 label: val,
-										 value: 'id'+ val
+										 label: user.first_name,
+										 value: user.first_name
 									}
 								})
-								
 							);
+						},
+						error: function(error){
 						}
 					});
 				},
@@ -122,7 +115,7 @@
 										<form id="emailForm">
 											<div class="col-lg-12 p-0 message-box-input">
 												<div class="form-group">
-													<ul id="myTags"></ul>
+													<ul id="toAddress"></ul>
 													<input type="text" class="form-control" id="subject" name="subject" placeholder="Subject">
 													<textarea class="form-control" id="message" name="message"></textarea>
 												</div>

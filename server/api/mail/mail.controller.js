@@ -12,6 +12,7 @@ const mailService = require('./mail.service');
 const provider = require('../../config/providers');
 const config = require('../../config/environment');
 const mailStatus = require('../../config/mail-status');
+const model = require('../../sqldb/model-connect');
 
 export function create(req, res) {
 	var mailUser = [];
@@ -166,7 +167,27 @@ export function remove(req, res) {
 }
 
 export function autoCompleteFirstName(req,res){
+	 var queryObj = {}, includeArr=[];
 
-	console.log("//////////////////////////////////////////////////////////coming");
-
+	if (req.query.keyword) {
+		queryObj['first_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
+	model['User'].findAll({
+        where: queryObj,
+        attributes: ['id', 'first_name'],
+        raw: true
+    }).then(function (rows) {
+        if (rows.length > 0) {
+			res.status(200).send(rows);
+            return;
+        } else {
+			res.status(200).send(rows);
+            return;
+        }
+    }).catch(function (error) {
+        res.status(500).send("Internal server error");
+        return;
+    })
 }
