@@ -120,8 +120,7 @@
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/top-selling-cities",
-				success: function(data) {				
-					console.log('top-selling-cities', data);
+				success: function(data) {					
 					var topCities = [];
 					data.forEach(function(aObj){
 						topCities.push({
@@ -129,12 +128,23 @@
 							amount: aObj["total_sales"]
 						});
 					});
+					console.log('topCities', topCities);
+				}
+			});
+		}
+
+		function getActiveBuyers(){
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/active-buyers",
+				success: function(data) {				
+					console.log('activeBuyers', data);					
 				}
 			});
 		}
 
 		getTopSellingCities();	
-
+		getActiveBuyers();
 	});	
 </script>
 
