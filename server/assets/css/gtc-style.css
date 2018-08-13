@@ -549,9 +549,7 @@ a:hover
 {
 	font-family: 'Oswald', sans-serif;
 }
-
-
-@charset "utf-8";
+/* @charset "utf-8"; */
 /* CSS Document */
 
 /*    box_10      */
@@ -3348,7 +3346,7 @@ padding-left: 15px;
 	vertical-align: bottom;
 }
 
-<!---------------------------------------------------About---------------------------------------------------------------->
+/* ---------------------------------------------------About----------------------------------------------------------------> */
 .about_bg
 {
 	background-color:#F1F1F1;
@@ -3380,7 +3378,7 @@ padding-left: 15px;
 {
 	width:25px;
 }
-<!------------------------------product_terms----------------------------------->
+/* <!------------------------------product_terms-----------------------------------> */
 .terms_bg
 {
 	background-color:#F1F1F1;
@@ -4577,7 +4575,7 @@ p.line-chart-title {
 
 p.line-chart-footer {
     float: left;
-    padding: 26px 26px 0px 9px;
+    padding: 26px 26px 0px 18px;
     font-size: 12px;
 }
 
@@ -5324,5 +5322,48 @@ a.list-group-item.return_pr_re_pa2 {
 		width:360px;
 	}
 }
+/*Report css starts */
+.report-Date
+{
+width: 104px;
+right: 16px;
+}
+
+.check_report
+{
+width: 20%; 
+margin-top: 5px;
+margin-left: 15px;
+}
+p.toreport_date
+{
+padding: 3px 17px; 
+font-size: 12px;
+left: 6px;
+}
+.compare_first_date
+{
+ width: 103px;
+ right: 21px;
+}
+
+.compare_second_date
+{
+width: 103px;
+right: 31px;
+}
+.report_border
+{
+border: 1px solid #ccc;
+}
+.revenue_top
+{
+border-top-style: none;
+}
+p.pd0
+{
+padding-top: 0px;
+}
+/*Report css ends */
 
 
