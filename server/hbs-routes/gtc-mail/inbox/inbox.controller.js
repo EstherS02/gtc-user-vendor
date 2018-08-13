@@ -177,18 +177,6 @@ export function compose(req, res) {
 					return callback(null);
 				});
 		},
-		users: function (callback) {
-			service.findRows(userMOdel, queryObj, offset, limit, field, order)
-				.then(function (users) {
-
-					console.log("=========================================", users.rows);
-					return callback(null, users.rows);
-
-				}).catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}
 	},
 		function (err, results) {
 			if (!err) {
@@ -200,7 +188,6 @@ export function compose(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
-					users: results.users,
 					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl

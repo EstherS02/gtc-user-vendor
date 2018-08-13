@@ -1,9 +1,4 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
- <style>
-	 tr:hover {
-    background: #000;
-}
- </style>
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
@@ -30,7 +25,6 @@
 			}
 		}
 	}
-
 	function deleteMail() {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {

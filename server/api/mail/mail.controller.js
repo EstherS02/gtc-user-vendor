@@ -114,7 +114,6 @@ export function createDraf(req, res) {
 export function softDelete(req, res) {
 	var queryObj = {};
 
-	console.log("---------------------------",req.params.id);
 	queryObj['id'] = req.params.id;
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = req.user.id;
@@ -164,4 +163,10 @@ export function remove(req, res) {
 			console.log("Error:::", error);
 			return res.status(500).send("Internal server error");
 		});
+}
+
+export function autoCompleteFirstName(req,res){
+
+	console.log("//////////////////////////////////////////////////////////coming");
+
 }
