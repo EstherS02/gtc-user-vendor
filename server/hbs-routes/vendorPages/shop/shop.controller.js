@@ -4,6 +4,7 @@ const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
+const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
@@ -87,7 +88,7 @@ export function vendorShop(req, res) {
 			}, {
 				model: model['VendorVerification'],
 				where: {
-					vendor_verified_status: status['ACTIVE']
+					vendor_verified_status: verificationStatus['APPROVED']
 				},
 				required:false
 			}, {
@@ -157,6 +158,7 @@ export function vendorShop(req, res) {
 		},
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
+		console.log(results.VendorDetail)
 		if (!err) {
 			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",

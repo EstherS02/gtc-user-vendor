@@ -1445,3 +1445,26 @@ ul.inner-list-view li a {
 	border-bottom: 1px solid #f1f1f1;
 	border-right: 1px solid #f1f1f1;
 }*/
+#blog_img {
+    position: relative;
+    display: inline-block;
+}
+#blog_img .close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+    background-color: #FFF;
+    padding: 5px 2px 2px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: .2;
+    text-align: center;
+    font-size: 22px;
+    line-height: 10px;
+    border-radius: 50%;
+}
+#blog_img:hover .close {
+    opacity: 1;
+}

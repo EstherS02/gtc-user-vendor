@@ -49,13 +49,13 @@
 							</a>
 						</div> --}}
 						<div class="col-md-1">
-							<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
+							<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
 							 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}">
 								<i class="fa fa-th-large"></i>
 							</button>
 						</div>
 						<div class="col-md-1">
-							<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
+							<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
 							 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}">
 								<i class="fa fa-th-list"></i>
 							</button>
