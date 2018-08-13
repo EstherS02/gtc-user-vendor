@@ -42,7 +42,7 @@
 
 		$.ajax({
 			type: "GET",
-			url: "http://localhost:9000/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
+			url: "/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
 			success: function(data) {				
 				between.forEach(function(aDate){
 					var objA = _.find(data.past_range, function(pastDate){
@@ -114,7 +114,27 @@
 					options: options
 				});	
 			}
-		});		
+		});
+
+		function getTopSellingCities(){
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/top-selling-cities",
+				success: function(data) {				
+					console.log('top-selling-cities', data);
+					var topCities = [];
+					data.forEach(function(aObj){
+						topCities.push({
+							city: aObj["Product.city"],
+							amount: aObj["total_sales"]
+						});
+					});
+				}
+			});
+		}
+
+		getTopSellingCities();	
+
 	});	
 </script>
 
@@ -445,7 +465,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="row landing-tables">
+													<!-- <div class="row landing-tables">
 														<div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
@@ -461,7 +481,7 @@
 															</div>
 														</div>
 													</div>
-													<!-- <div class="row landing-tables">
+													<div class="row landing-tables">
 														<div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
@@ -533,7 +553,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="row landing-tables">
+													<!-- <div class="row landing-tables">
 														<div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
@@ -549,7 +569,7 @@
 															</div>
 														</div>
 													</div>
-													<!-- <div class="row landing-tables">
+													<div class="row landing-tables">
 														<div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
@@ -681,7 +701,7 @@
 														</div>
 													</div>
 												</div>
-												<div class="row landing-tables">
+												<!-- <div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">
 															<img src="../../img/img_avatar.png" class="avatar-img">
@@ -704,7 +724,7 @@
 														<p>1 hour ago</p>
 													</div>
 
-												</div>
+												</div> -->
 											</div>
 											<p class="lt-see-all">
 												<a href="#" style="color: white;">See All &#9658;</a>
@@ -713,20 +733,22 @@
 										<div class="col-md-6" style="padding: 10px 13px 10px 5px;">
 											<div class="outside-border">
 												<p class="top-selling-cities">Top Selling Cities</p>
+												<!-- {{#each topCities as |item|}}
 												<div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">
 															<img src="../../img/img_avatar.png" class="avatar-img">
 														</div>
 														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
+															<p class="lt-user-name">{{item.city}}</p>
 
 															<p class="ts-rate">Total sales:
-																<span> 101,010</span>
+																<span>{{currency item.amount '$'}}</span>
 															</p>
 														</div>
 													</div>
 												</div>
+												{{/each}} -->
 												<div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">

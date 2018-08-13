@@ -146,11 +146,11 @@
 				<div class="alignright">
 					<label class="label-control m-r-md">View</label>
 
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
+					<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
 					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}" >
 						<i class="fa fa-th-large"></i>
 					</button>
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
+					<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
 					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}" >
 						<i class="fa fa-th-list"></i>
 					</button>
@@ -597,17 +597,25 @@
 							{{#unless startFromFirstPage}}
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+								{{!-- <a class="page-link" >Previous</a> --}}
 							</li>
-							{{/unless}} {{#each pages}}
+							{{/unless}} 
+
+							{{#each pages}}
 							<li class="page-item 
-							{{#if isCurrent}} active {{/if}}">
+							{{#if isCurrent}} active 
+							{{/if}}">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 							</li>
-							{{/each}} {{#unless endAtLastPage}}
+							{{/each}}
+
+							 {{#unless endAtLastPage}}
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+								{{!-- <a class="page-link" >Next</a> --}}
 							</li>
-							{{/unless}}
+							{{/unless}} 
+
 						</ul>
 					</nav>
 					{{/pagination}}

@@ -23,7 +23,11 @@ function sumofPrice(modelName, queryObj) {
 				[sequelize.fn('sum', sequelize.col('final_price')), 'amount']
 			]
 		}).then(function(data) {
-			total = data[0].amount ? data[0].amount : "0";
+			if(data.length > 0){				
+				total = typeof data[0].amount != 'undefined' && data[0].amount != null ? data[0].amount : "0";
+			} else {
+				total = "0";
+			}
 			resolve(parseFloat(total));
 		}).catch(function(err) {
 			reject(err);
@@ -42,7 +46,11 @@ function sumofCount(modelName, queryObj) {
 				[sequelize.fn('count', 1), 'count']
 			]
 		}).then(function(data) {
-			total = data[0].count ? data[0].count : "0";
+			if(data.length > 0){
+				total = typeof data[0].count != 'undefined' && data[0].count != null ? data[0].count : "0";				
+			} else {
+				total = "0";
+			}
 			resolve(parseInt(total));
 		}).catch(function(err) {
 			reject(err);
@@ -116,7 +124,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -136,6 +144,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
 				result.diff_total = result.past_total - result.current_total;
+				console.log(result);
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -165,7 +174,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -214,7 +223,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
