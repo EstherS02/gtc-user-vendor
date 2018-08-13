@@ -6,6 +6,7 @@ const orderItemStatus = require('../config/order-item-status');
 const position = require('../config/position');
 const model = require('../sqldb/model-connect');
 const sequelize = require('sequelize');
+const SequelizeInstance = require('../sqldb/index');
 const async = require('async');
 const moment = require('moment');
 const _ = require('lodash');
@@ -22,8 +23,12 @@ function sumofPrice(modelName, queryObj) {
 				[sequelize.fn('sum', sequelize.col('final_price')), 'amount']
 			]
 		}).then(function(data) {
-			total = data[0].amount ? data[0].amount : "0";
-			resolve(total);
+			if(data.length > 0){				
+				total = typeof data[0].amount != 'undefined' && data[0].amount != null ? data[0].amount : "0";
+			} else {
+				total = "0";
+			}
+			resolve(parseFloat(total));
 		}).catch(function(err) {
 			reject(err);
 		});
@@ -41,13 +46,59 @@ function sumofCount(modelName, queryObj) {
 				[sequelize.fn('count', 1), 'count']
 			]
 		}).then(function(data) {
-			total = data[0].count ? data[0].count : "0";
-			resolve(total);
+			if(data.length > 0){
+				total = typeof data[0].count != 'undefined' && data[0].count != null ? data[0].count : "0";				
+			} else {
+				total = "0";
+			}
+			resolve(parseInt(total));
 		}).catch(function(err) {
 			reject(err);
 		});
 
 	});
+}
+
+function getAllPerformance(queryObj, limit, offset) {
+	return new Promise((resolve, reject) => {
+			SequelizeInstance.query(`SELECT
+				orders.id AS order_id,
+				order_items.product_id AS product_id,
+    			( SELECT product_name FROM product WHERE product.id = order_items.product_id 
+     				LIMIT 1 ) AS product_name,
+     			( SELECT url FROM product_media WHERE product_media.product_id = product.id
+					LIMIT 1 ) AS product_url,
+    			( SELECT NAME FROM marketplace WHERE product.marketplace_id = marketplace.id
+					LIMIT 1 ) AS marketplace_name,
+    			SUM(orders.total_price) AS total_sales,
+    			SUM(orders.total_price) - SUM(orders.gtc_fees) AS vendor_fee,
+    			SUM(orders.gtc_fees) AS gtc_fees
+				FROM
+    					orders
+					LEFT OUTER JOIN order_items ON orders.id = order_items.order_id
+					LEFT OUTER JOIN product ON order_items.product_id = product.id
+				WHERE
+    				product.vendor_id = :vendor_id and order_items.created_on between :from and :to
+				GROUP BY
+    				order_items.product_id
+    			ORDER BY SUM(orders.total_price) DESC
+				LIMIT :limit OFFSET :offset`, {
+			replacements: {
+				vendor_id: queryObj.vendor_id,
+				from: moment(queryObj.from).format("YYYY-MM-DD"),
+				to: moment(queryObj.to).format("YYYY-MM-DD"),
+				limit: limit,
+				offset: offset
+			},
+			type: sequelize.QueryTypes.SELECT
+		}).then(data => {
+			resolve(data);
+		}).catch(function(err){
+			console.log('getAllPerformance error ', err);
+			reject(err);
+		});
+	});
+
 }
 
 
@@ -63,6 +114,8 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 		currentRange.item_created_on = {
 			$between: rhsBetween
 		};
+		console.log('pastRange', pastRange);
+		console.log('currentRange', currentRange);
 		model['OrderItemsOverview'].findAll({
 			raw: true,
 			where: orderItemQueryObj,
@@ -71,7 +124,7 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -90,7 +143,8 @@ export function topPerformingProducts(orderItemQueryObj, lhsBetween, rhsBetween)
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
+				console.log(result);
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -120,7 +174,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -139,7 +193,7 @@ export function topPerformingMarketPlaces(orderItemQueryObj, lhsBetween, rhsBetw
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -169,7 +223,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 			order: [
 				[sequelize.fn('sum', sequelize.col('final_price')), 'DESC']
 			],
-			limit: 10,
+			limit: 5,
 			offset: 0
 		}).then(function(results) {
 			if (results.length > 0)
@@ -188,7 +242,7 @@ export function topPerformingCategories(orderItemQueryObj, lhsBetween, rhsBetwee
 		}).then(function() {
 			return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 				result.current_total = total;
-				result.diff_total = result.current_total - result.past_total;
+				result.diff_total = result.past_total - result.current_total;
 				return resolve(result);
 			});
 		}).catch(function(error) {
@@ -260,7 +314,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 					}).then(function() {
 						return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_revenue = total;
-							result.diff_revenue = result.current_revenue - result.past_revenue;
+							result.diff_revenue = result.past_revenue - result.current_revenue;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -276,7 +330,8 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 					}).then(function() {
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_count = total;
-							result.diff_count = result.current_count - result.past_count;
+							let per = (result.past_count - result.current_count)/result.current_count * 100;							
+							result.diff_count = per.toString() + '%';							
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -294,7 +349,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["CONFIRMEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_completed = total;
-							result.diff_completed = result.current_completed - result.past_completed;
+							result.diff_completed = result.past_completed - result.current_completed;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -312,7 +367,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["RETURNEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_returned = total;
-							result.diff_returned = result.current_returned - result.past_returned;
+							result.diff_returned = result.past_returned - result.current_returned;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -330,7 +385,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_item_status = orderItemStatus["ORDER_CANCELLED_AND_REFUND_INITIATED"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_refunds = total;
-							result.diff_refunds = result.current_refunds - result.past_refunds;
+							result.diff_refunds = result.past_refunds - result.current_refunds;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -348,7 +403,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["CANCELLEDORDER"];
 						return sumofCount('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_cancelled = total;
-							result.diff_cancelled = result.current_cancelled - result.past_cancelled;
+							result.diff_cancelled = result.past_cancelled - result.current_cancelled;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -366,7 +421,7 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 						currentRange.order_status = orderStatus["DISPATCHEDORDER"];
 						return sumofPrice('OrderItemsOverview', currentRange).then(function(total) {
 							result.current_disputes = total;
-							result.diff_disputes = result.current_disputes - result.past_disputes;
+							result.diff_disputes = result.past_disputes - result.current_disputes;
 							return callback(null, result);
 						});
 					}).catch(function(error) {
@@ -384,4 +439,34 @@ export function revenueChangesCounts(orderItemQueryObj, lhsBetween, rhsBetween) 
 			});
 	});
 
+}
+
+export function performanceChanges(queryObj, lhsBetween, rhsBetween, limit, offset) {
+	console.log('performanceChanges queryObj', queryObj);
+	const pastRange = _.assign({}, queryObj);
+	pastRange.from = lhsBetween[0];
+	pastRange.to = lhsBetween[1];
+	const currentRange = _.assign({}, queryObj);
+	currentRange.from = rhsBetween[0];
+	currentRange.to = rhsBetween[1];
+	
+	return new Promise((resolve, reject) => {
+		var result = {};
+		return getAllPerformance(pastRange, limit, offset).then(function(lhsResult) {
+			result.lhs_result = lhsResult;
+			return result;
+		}).then(function(){
+			if(queryObj.compare == 'true'){
+				return getAllPerformance(currentRange, limit, offset).then(function(rhsResult) {
+					result.rhs_result = rhsResult;				
+					resolve(result);
+				});
+			} else {
+				resolve(result);
+			}
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			reject(error);
+		});
+	});
 }

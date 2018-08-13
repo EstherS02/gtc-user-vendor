@@ -146,12 +146,12 @@
 				<div class="alignright">
 					<label class="label-control m-r-md">View</label>
 
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=grid';"
-					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}" id="grid">
+					<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
+					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}" >
 						<i class="fa fa-th-large"></i>
 					</button>
-					<button type="submit" onclick="location.href = 'http://localhost:9000/{{marketplaceURl}}/search?marketplace_type={{selectedMarketPlaceType}}&layout=list';"
-					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}" id="list">
+					<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
+					 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}" >
 						<i class="fa fa-th-list"></i>
 					</button>
 
@@ -420,7 +420,8 @@
 							</tbody>
 						</table>
 					</div>
-					{{/each}} {{/ifCond}}
+					{{/each}} 
+					{{/ifCond}}
 				</div>
 			</div>
 
@@ -528,7 +529,7 @@
 								            </td>
 								            <td class="col-7">
 								                <div class="product-middle-col">
-								                    <h3 class="overflow-txt">
+								                    <h3>
 								                        <a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{#if ../marketPlaceTypeSelected}}{{../marketPlaceTypeSelected.code}} - {{/if}}{{this.product_name}}</a>
 								                    </h3>
 								                    <div class="row no-margins">
@@ -596,17 +597,25 @@
 							{{#unless startFromFirstPage}}
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+								{{!-- <a class="page-link" >Previous</a> --}}
 							</li>
-							{{/unless}} {{#each pages}}
+							{{/unless}} 
+
+							{{#each pages}}
 							<li class="page-item 
-							{{#if isCurrent}} active {{/if}}">
+							{{#if isCurrent}} active 
+							{{/if}}">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 							</li>
-							{{/each}} {{#unless endAtLastPage}}
+							{{/each}}
+
+							 {{#unless endAtLastPage}}
 							<li class="page-item">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+								{{!-- <a class="page-link" >Next</a> --}}
 							</li>
-							{{/unless}}
+							{{/unless}} 
+
 						</ul>
 					</nav>
 					{{/pagination}}

@@ -11,15 +11,41 @@ const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
 const vendorPlan = require('../../../config/gtc-plan');
+const mailStatus = require('../../../config/mail-status');
 
 export function sent(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
+	var offset, limit, field, order, page, includeArray=[];
+
+	offset = 0;
+	limit = null;
+	field = "id";
+	order = "asc";
+	var mailModel = 'UserMail';
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
+	delete req.query.limit;
+
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+
 	
 	if (req.user)
 		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.id;
+	var user_id = LoggedInUser.id;
+
+	var queryObj = {
+		user_id : user_id,
+		mail_status : mailStatus["SENT"],
+		status : statusCode["ACTIVE"]
+	};
+
 	async.series({
 		cartCounts: function(callback) {
             service.cartHeader(LoggedInUser).then(function(response) {
@@ -50,6 +76,31 @@ export function sent(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			sentMail: function (callback) {
+
+				includeArray = [
+					{ 
+						"model": model['Mail'],
+						where : {
+							status : statusCode["ACTIVE"],
+							//from_id : user_id	
+							   },
+						    include: [{
+								model: model['User'],
+								as: 'toUser',
+								attributes: ['id', 'first_name']
+							}],
+					}];
+	
+				service.findRows(mailModel, queryObj, offset, limit, field, order,includeArray)
+					.then(function (mail) {
+						return callback(null, mail);
+	
+					}).catch(function (error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -63,6 +114,11 @@ export function sent(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader:results.cartCounts,
+					sentMail: results.sentMail.rows,
+					collectionSize: results.sentMail.count,
+					page: page,
+					pageSize: limit,
+					maxSize: 5,
 					selectedPage: 'sent',
 					vendorPlan:vendorPlan,
 					dropDownUrl : dropDownUrl

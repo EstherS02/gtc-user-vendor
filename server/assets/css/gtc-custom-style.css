@@ -1135,36 +1135,6 @@ button.update-btn1{
     margin-top: 2px;
   }
 
-<<<<<<< HEAD
-
-
-  /* list and grid view */
-  .item.list-group-item
-{
-	float: none;
-	width: 100%;
-	background-color:green;
-}
-.item.list-group-item:before,
-.item.list-group-item:after {
-  display: table;
-  content: " ";
-}
-
-.item.list-group-item img{float:left;}
-.item.list-group-item:after
-{
-	clear:both;
-}
-
-
-#container ul { list-style: none; }
-#container .buttons { margin-bottom: 20px; }
-
-#container .list li { width: 100%; border-bottom: 1px dotted #CCC; margin-bottom: 10px; padding-bottom: 10px; }
-
-#container .grid li { float: left; width: 20%; height: 50px; border-right: 1px dotted #CCC; border-bottom: 1px dotted #CCC; padding: 20px; }
-=======
 /* vendor profile picture crop UserModel */
 .crop_edit_icon {
   position: absolute;
@@ -1221,4 +1191,3 @@ button.update-btn1{
 .icon_padding {
   padding-right: 5px;
 }
->>>>>>> e84888e86f50ca2b9ae32bf857c49179c3399fa1

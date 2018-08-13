@@ -17,6 +17,11 @@ import http from 'http';
 import https from 'https';
 var socketMsg = require('./sockets/socket-messages').socketMsg;
 
+var mailListener = require('./components/mail-listener');
+var agenda = require('./agenda');
+var sendEmailNew = require('./agenda/send-email-new');
+var couponExpiry = require('./agenda/couponExpiry');
+
 // Setup server
 var app = express();
 var server = http.createServer(app);
@@ -46,18 +51,49 @@ var env = app.get('env');
 if (env === 'development') {
 	var privateKey = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.key'), 'utf8');
 	var ssl_certificate = fs.readFileSync(path.join(__dirname + '/ssl_certificate/server.crt'), 'utf8');
-
 	var ssl_credentials = {
 		key: privateKey,
 		cert: ssl_certificate
 	};
-
 }
+
+mailListener.start();
+
+mailListener.on("server:connected", function() {
+	console.log("imapConnected");
+});
+
+mailListener.on("server:disconnected", function() {
+	console.log("imapDisconnected");
+});
+
+mailListener.on("error", function(err) {
+	console.log("ERROR", err);
+});
+
+mailListener.on("mail", function(mail, seqno, attributes) {
+	// do something with mail object including attachments
+	console.log("emailParsed", mail);
+	// mail processing code goes here
+});
+
+mailListener.on("attachment", function(attachment) {
+	console.log("attachment.path", attachment.path);
+});
+
+agenda.define(config.jobs.email, sendEmailNew);
+agenda.define(config.jobs.couponExpiry, couponExpiry);
+
+agenda.on('ready', function() {
+	agenda.every('0 0 * * *', 'couponExpiry');
+	agenda.start();
+});
 
 var httpServer = http.createServer(app);
 if (env === 'development') {
 	var httpsServer = https.createServer(ssl_credentials, app);
 }
+
 require('./config/express').default(app);
 require('./routes').default(app);
 

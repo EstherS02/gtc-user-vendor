@@ -150,6 +150,7 @@ module.exports.initRelations = () => {
     const Cart = model.Cart;
     const DiscussionBoardPostComment = model.DiscussionBoardPostComment;
     const DiscussionBoardPostLike = model.DiscussionBoardPostLike;
+    const Mail = model.Mail;
     const Order = model.Order;
     const PaymentSetting = model.PaymentSetting;
     const Review = model.Review;
@@ -158,6 +159,7 @@ module.exports.initRelations = () => {
     const TalkThread = model.TalkThread;
     const Ticket = model.Ticket;
     const TicketThread = model.TicketThread;
+    const UserMail = model.UserMail;
     const UserToken = model.UserToken;
     const Vendor = model.Vendor;
     const VendorFollower = model.VendorFollower;
@@ -191,6 +193,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    User.hasMany(DiscussionBoardPost, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    
     User.hasMany(DiscussionBoardPostComment, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -199,6 +207,18 @@ module.exports.initRelations = () => {
 
     User.hasMany(DiscussionBoardPostLike, {
         foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(Mail, {
+        foreignKey: 'from_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(Mail, {
+        foreignKey: 'to_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -252,6 +272,12 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(TicketThread, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(UserMail, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -323,6 +349,24 @@ module.exports.initRelations = () => {
         through: DiscussionBoardPostLike,
         foreignKey: 'user_id',
         otherKey: 'discussion_board_post_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(User, {
+        as: 'fromUserId',
+        through: Mail,
+        foreignKey: 'from_id',
+        otherKey: 'to_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(User, {
+        as: 'toUserId',
+        through: Mail,
+        foreignKey: 'to_id',
+        otherKey: 'from_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -421,6 +465,14 @@ module.exports.initRelations = () => {
         through: TicketThread,
         foreignKey: 'user_id',
         otherKey: 'ticket_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.belongsToMany(Mail, {
+        through: UserMail,
+        foreignKey: 'user_id',
+        otherKey: 'mail_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

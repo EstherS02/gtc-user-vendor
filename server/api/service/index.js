@@ -158,6 +158,23 @@ export function createBulkRow(modelName, bodyParams) {
     })
 }
 
+export function updateRecord(modelName, bodyParams, queryObj) {
+    return new Promise((resolve, reject) => {
+        model[modelName].update(bodyParams, {
+            where: queryObj,
+            individualHooks: true
+        }).then(function(row) {
+            if (row) {
+                resolve(row[1][0].toJSON());
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    })
+}
+
 export function updateRow(modelName, bodyParams, id) {
     return new Promise((resolve, reject) => {
         model[modelName].update(bodyParams, {
@@ -220,6 +237,18 @@ export function destroyRow(modelName, id) {
     });
 }
 
+export function upsertRecord(modelName, bodyParams, queryObj) {
+    return model[modelName].findOne({
+        where: queryObj
+    }).then((exists) => {
+        if (exists) {
+            return exists.update(bodyParams);
+        } else {
+            return model[modelName].create(bodyParams);
+        }
+    });
+}
+
 export function upsertRow(modelName, data) {
     return new Promise((resolve, reject) => {
         model[modelName].upsert(data)
@@ -231,6 +260,23 @@ export function upsertRow(modelName, data) {
     })
 }
 
+export function destroyRecord(modelName, id) {
+    return new Promise((resolve, reject) => {
+        model[modelName].destroy({
+            where: {
+                id: id
+            }
+        }).then((row) => {
+            if (row > 0) {
+                resolve(row);
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    });
+}
 
 export function geoLocationFetch(lat, lng) {
     return new Promise((resolve, reject) => {
@@ -238,6 +284,42 @@ export function geoLocationFetch(lat, lng) {
             model: model['Vendor']
         }).then(geoLocationObj => {
             resolve(JSON.parse(JSON.stringify(geoLocationObj)));
+        }).catch(function(error) {
+            console.log('Error:::', error);
+            reject(error);
+        });
+    });
+}
+
+export function categoryAndSubcategoryCount() {
+    return new Promise((resolve, reject) => {
+        Sequelize_Instance.query(RawQueries.categoryAndSubcategoryCount(), {
+            model: model['product'],
+            type: Sequelize_Instance.QueryTypes.SELECT
+        }).then(resultObj => {
+            resultObj = JSON.parse(JSON.stringify(resultObj));
+            let groupByCategories = _.groupBy(resultObj, "product_category_id");
+            let categoryObj = [], totalCategoryProducts = 0;
+
+            for(var i = 0; i < resultObj.length; i++){
+                let tempCategory = groupByCategories[resultObj[i].product_category_id];
+                totalCategoryProducts = totalCategoryProducts + parseInt(resultObj[i].subCategoryCount);
+                let obj = {
+                    "product_category_id": tempCategory[0].product_category_id,
+                    "category_name": tempCategory[0].category_name,
+                    "categoryCount": tempCategory[0].categoryCount,
+                }
+                let index = categoryObj.findIndex(x => x.product_category_id == obj.product_category_id);
+                if(index === -1)
+                    categoryObj.push(obj);
+            }
+
+            resolve({
+                categoryObj : categoryObj,
+                subCategoryObj : resultObj,
+                totalCategoryProducts : totalCategoryProducts
+            });
+
         }).catch(function(error) {
             console.log('Error:::', error);
             reject(error);

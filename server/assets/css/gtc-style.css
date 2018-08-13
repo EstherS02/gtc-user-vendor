@@ -6,12 +6,12 @@
     font-style: normal;
 	
 }*/
-body{
+/*body{
 	margin: 0px;
 	padding: 0px;
 	font-family: 'Roboto', sans-serif;
 
-}
+}*/
 .its_free1
 {
 	color: #fff;
@@ -798,8 +798,8 @@ margin-bottom: 0px;
 	font-size: 7px;
 }
 .scrolled{background-image:url(../img/bg-footer.jpg);}
-ul.breadcrumb {
-    /*padding: 40px 10px 16px 20px;*/
+/*ul.breadcrumb {
+    padding: 40px 10px 16px 20px;
     list-style: none;
     background-color: #fff;
     margin-bottom: 0px;
@@ -828,7 +828,7 @@ ul.breadcrumb li .active {
 ul.breadcrumb li .active1 {
     color: #DC8C15;
 	font-weight: bold;
-}
+}*/
 .logged_in_username
 {
     font-size: 11px;
@@ -4457,6 +4457,7 @@ p.product-total-sale2 {
     display: table-cell;
     vertical-align: bottom;
     height: 160px;
+    font-size: 10px;
 }
 
 .chart span {
@@ -4505,7 +4506,7 @@ p.product-total-sale2 {
 
 .horizontal .progress-fill {
     position: relative;
-    background: #666;
+    background: #4077b9;
     height: 10px;
     width: 50%;
     color: #fff;
@@ -4576,7 +4577,7 @@ p.line-chart-title {
 
 p.line-chart-footer {
     float: left;
-    padding: 26px 26px 0px 9px;
+    padding: 26px 26px 0px 18px;
     font-size: 12px;
 }
 
@@ -5323,5 +5324,48 @@ a.list-group-item.return_pr_re_pa2 {
 		width:360px;
 	}
 }
+/*Report css starts */
+.report-Date
+{
+width: 104px;
+right: 16px;
+}
+
+.check_report
+{
+width: 20%; 
+margin-top: 5px;
+margin-left: 15px;
+}
+p.toreport_date
+{
+padding: 3px 17px; 
+font-size: 12px;
+left: 6px;
+}
+.compare_first_date
+{
+ width: 103px;
+ right: 21px;
+}
+
+.compare_second_date
+{
+width: 103px;
+right: 31px;
+}
+.report_border
+{
+border: 1px solid #ccc;
+}
+.revenue_top
+{
+border-top-style: none;
+}
+p.pd0
+{
+padding-top: 0px;
+}
+/*Report css ends */
 
 
