@@ -21,6 +21,11 @@ export function create(req, res) {
 	var validUsers = [];
 	var currentUser = req.user;
 
+	var to = JSON.parse(req.body.to);
+
+	delete req.body.to;
+	req.body.to = to;
+	
 	if (currentUser.provider != provider['OWN']) {
 		return res.status(400).send("This provider not allow");
 	}
@@ -51,9 +56,9 @@ export function create(req, res) {
 			return res.status(400).send("Email restricted to only one vendor");
 		}
 		queryObj['role'] = roles['VENDOR'];
-	} else {
+	} /* else {
 		queryObj['role'] = roles['USER'];
-	}
+	} */
 
 	for (var i = 0; i < mailUser.length; i++) {
 		var model = 'User';

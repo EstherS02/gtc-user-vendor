@@ -20,8 +20,8 @@ export function inbox(req, res) {
 
 	offset = 0;
 	limit = null;
-	field = "id";
-	order = "asc";
+	field = "created_on";
+	order = "desc";
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -117,6 +117,7 @@ export function inbox(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
 					inboxMail: results.inboxMail.rows,
+					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count,
 					page: page,
 					pageSize: limit,
@@ -130,17 +131,91 @@ export function inbox(req, res) {
 			}
 		});
 }
+
+
+export function message(req, res) {
+	var LoggedInUser = {}, queryObj={}, bottomCategory={},mail_id;
+	var includeArr = [];
+	var mailModal = "Mail";
+
+	if(req.params.id)
+		mail_id= req.params.id;
+	   
+
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+	async.series({
+		cartCounts: function (callback) {
+			service.cartHeader(LoggedInUser).then(function (response) {
+				return callback(null, response);
+			}).catch(function (error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
+		categories: function (callback) {
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
+
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function (category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		message: function(callback){
+
+			service.findIdRow(mailModal,mail_id,includeArr)
+			   .then(function(message){
+                 console.log("==========================",message);
+                return callback(null, message);
+			   })
+			   .catch(function(error){
+				console.log('Error :::', error);
+				return callback(null);
+			   })
+			
+
+		}
+	},
+		function (err, results) {
+			if (!err) {
+				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+				res.render('gtc-mail/messageView', {
+					title: "Global Trade Connect",
+					LoggedInUser: LoggedInUser,
+					categories: results.categories,
+					bottomCategory: bottomCategory,
+					cartheader: results.cartCounts,
+					message:results.message,
+					selectedPage: 'inbox',
+					vendorPlan: vendorPlan,
+					dropDownUrl: dropDownUrl
+				});
+			} else {
+				res.render('gtc-mail/messageView', err);
+			}
+		});
+}
+
+
 export function compose(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
-	var userMOdel = 'User';
-	var offset, limit, field, order;
-	var queryObj = {};
-
-	offset = 0;
-	limit = null;
-	field = "id";
-	order = "asc";
 
 	if (req.user)
 		LoggedInUser = req.user;
