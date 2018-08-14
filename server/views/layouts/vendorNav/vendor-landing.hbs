@@ -31,9 +31,8 @@
 					data: data,
 					success: function(data, response) {
 						$('#btnAliExpressFaSpinner').hide();
-						 $('#importWooCommerModal').modal('toggle');
+						 $('#importAliExpressModal').modal('toggle');
 						$('#logMessage').append('<p class="text-center text-primary m-b-xs">products added successfully.</p>');
-						$('#importModal').modal('toggle');
 					},
 					error: function(response, status, error) {
 						$('#btnAliExpressFaSpinner').hide();
@@ -72,7 +71,7 @@
 					success: function(data, response) {
 						$('#btnFaSpinner').hide();
 						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products added successfully.</p>');
-						$('#importModal').modal('toggle');
+						$('#importWooCommerModal').modal('toggle');
 					},
 					error: function(response, status, error) {
 						$('#btnFaSpinner').hide();
