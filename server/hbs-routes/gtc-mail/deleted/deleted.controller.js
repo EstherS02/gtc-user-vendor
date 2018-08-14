@@ -20,8 +20,8 @@ export function deleted(req, res) {
 
 	offset = 0;
 	limit = null;
-	field = "id";
-	order = "asc";
+	field = "deleted_at";
+	order = "desc";
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;

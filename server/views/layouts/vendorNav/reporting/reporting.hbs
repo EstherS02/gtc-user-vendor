@@ -131,7 +131,7 @@
 					});
 				}
 			});
-		}
+		}	
 
 		getTopSellingCities();	
 
@@ -393,8 +393,9 @@
 												</p>
 											
 										</div>
-										<div class="col-md-6 total-sales" style="float: right;">
-											<div class="pts report_border">
+										<div class="col-md-6 total-sales" style="float: right;padding-top:25px">
+											<div class=""></div>
+											<div class="pts report_border"  style="height:358px">
 												<p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
 												<br>
@@ -639,25 +640,33 @@
 										<p class="line-chart-footer">Refunds</p>
 										<p class="line-chart-footer">Cancelation</p>
 									</div>
+                                      <div>
+										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
+										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+                                          <p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
+										  {{else}}
+                                         <p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
+                                         {{/ifCond}}
 
-									
-									<div>
-										<p class="line-chart-green1 line-chart-footer pd0" >{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
-										<p class="line-chart-green2 line-chart-footer pd0" >{{revenueCounts.revenue_count.diff_count}}</p>
-										<p class="line-chart-green3 line-chart-footer pd0" >{{revenueCounts.completed_count.diff_completed}}</p>
-										<p class="line-chart-red1 line-chart-footer pd0"  style="padding-left: 66px;">{{revenueCounts.returns_count.diff_returned}}</p>
-										<p class="line-chart-green4 line-chart-footer pd0" >{{revenueCounts.disputes_count.diff_disputes}}</p>
-										<p class="line-chart-red2 line-chart-footer pd0" style="margin-left: 20px;">{{revenueCounts.refunds_count.diff_refunds}}</p>
-										<p class="line-chart-red3 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
+										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.completed_count.diff_completed}}</p>
+										<p class="line-chart-green3 line-chart-footer pd0">{{revenueCounts.returns_count.diff_returned}}</p>
+										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+										 <p class="line-chart-red1 line-chart-footer pd0" style="padding-left: 53px;">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										 {{else}}
+										 <p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										  {{/ifCond}}
+										
+										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
+										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
 									</div>
 									<div>
-										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 20px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
-										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 34px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
-										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 50px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
-										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 60px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
-										<p class="line-chart-vs line-chart-footer pd0">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
-										<p class="line-chart-vs line-chart-footer pd0">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
-										<p class="line-chart-vs line-chart-footer pd0" style="padding-left: 28px">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 20px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 34px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 50px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 60px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 28px">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -766,7 +775,7 @@
 												<div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
+															<img src="../.space_trap./img/img_avatar.png" class="avatar-img">
 														</div>
 														<div class="col-md-9" style="float: right;">
 															<p class="lt-user-name">User Name</p>
