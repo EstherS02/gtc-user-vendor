@@ -39,7 +39,7 @@ export function vendorDiscussion(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 8;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "created_on";
@@ -57,37 +57,37 @@ export function vendorDiscussion(req, res) {
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var includeArr = [{
-		model: model['DiscussionBoardPostLike'],
-		where: {
-			status: status['ACTIVE']
+		model:model['DiscussionBoardPostLike'],
+		where:{
+			status:status['ACTIVE']
 		},
-		required: false
-	}, {
-		model: model['DiscussionBoardPostComment'],
-		include: [{
+		required:false
+	},{
+		model:model['DiscussionBoardPostComment'],
+		include:[{
 			model: model["User"],
-			attributes: {
-				exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-			},
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				},
 		}]
-	}, {
-		model: model['Vendor']
-	}, {
-		model: model["User"],
-		attributes: {
-			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-		},
-	}];
-	var includeArr1 = [{
-		model: model['DiscussionBoardPostLike'],
-		where: {
-			status: status['ACTIVE']
+	},{
+		model:model['Vendor']
+	},{
+			model: model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				},
+		}];
+		var includeArr1 = [{
+		model:model['DiscussionBoardPostLike'],
+		where:{
+			status:status['ACTIVE']
 		},
 		attributes: [
-			[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']
-		],
-		group: ['DiscussionBoardPostLikes.discussion_board_post_id'],
-		required: false,
+					[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']
+				],
+				group: ['DiscussionBoardPostLikes.discussion_board_post_id'],
+				required: false,
 	}];
 
 
@@ -101,28 +101,23 @@ export function vendorDiscussion(req, res) {
 			});
 		},
 		discussion: function(callback) {
-			model['DiscussionBoardPost'].findAll({
-				where: queryObj,
-				include: [{
-					model: model['DiscussionBoardPostComment'],
-					where: {
-						status: status['ACTIVE']
-					}
-				}],
-				order: [
-					['id', 'DESC'],
-					[model['DiscussionBoardPostComment'], 'id', 'DESC']
-				],
-				offset: offset,
-				limit: limit
-			}).then((response) => {
-				var parseJSON = JSON.parse(JSON.stringify(response));
-				console.log("response", parseJSON[0]);
-			}).catch((error) => {
-				console.log("Dicussion Board Post FindAll Error:::", error);
-				return callback(null);
-			});
+			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
+		// mostPopular:function(callback){
+		// 	service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr1)
+		// 		.then(function(response) {
+		// 			return callback(null, response);
+		// 		}).catch(function(error) {
+		// 			console.log('Error :::', error);
+		// 			return callback(null);
+		// 		});
+		// },
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -185,15 +180,16 @@ export function vendorDiscussion(req, res) {
 		},
 	}, function(err, results) {
 		// console.log(results.discussion, queryObj)
-
+		
 		if (!err) {
 			var mostPopular = _.groupBy(results.discussion, 'DiscussionBoardPostLike');
+			console.log("------------==================-----------",results.discussion.count)
 			if (results.discussion) {
-				var maxSize = results.discussion.count / limit;
-				// if (results.discussion.count % limit)
+			var maxSize = 5;//results.discussion.count / limit;
+			// if (results.discussion.count % limit)
 				// maxSize++;
-				queryPaginationObj['maxSize'] = maxSize;
-			}
+			queryPaginationObj['maxSize'] = maxSize;
+		}
 
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
