@@ -509,6 +509,8 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 
     return new Handlebars.SafeString(ret);
 });
-
-
-  
+Handlebars.registerHelper('socialIcon', function(obj, options) {   
+        if(obj == '' || obj == null || obj == 'null')
+        return options.inverse(this);
+    return options.fn(this); 
+});
