@@ -7,11 +7,11 @@ const moment = require('moment');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 const request = require('request');
-const AliexScrape = require('aliexscrape');
 const WooCommerceAPI = require('woocommerce-api');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
+const scrape = require('../../components/scrape');
 const productService = require('./product.service');
 const marketplace = require('../../config/marketplace.js');
 const marketplaceType = require('../../config/marketplace_type.js');
@@ -204,6 +204,8 @@ export function importAliExpress(req, res) {
 
 		const vendorProductListPage = await browser.newPage();
 
+		const productPage = await browser.newPage();
+
 		callAliExpressMethod(0);
 
 		async function callAliExpressMethod(pageCount) {
@@ -221,10 +223,9 @@ export function importAliExpress(req, res) {
 					var productId = productLink.split(/[\s/]+/).pop().slice(0, -5).split('_')[1];
 					products.push(productId);
 				});
-				await browser.close();
 				if (products.length > 0) {
 					for (let i = 0; i < products.length; i++) {
-						aliExpressProducts.push(getAliExpressProducts(products[i]));
+						aliExpressProducts.push(getAliExpressProducts(products[i], productPage));
 					}
 				} else {
 					return res.status(404).send("products not found.");
@@ -290,9 +291,9 @@ export function importAliExpress(req, res) {
 	})();
 }
 
-function getAliExpressProducts(productId) {
+function getAliExpressProducts(productId, productPage) {
 	return new Promise(function(resolve, reject) {
-		AliexScrape(productId)
+		scrape.AliExpressProductScrape(productId, productPage)
 			.then((response) => {
 				var parsedJSON = JSON.parse(response);
 				resolve(parsedJSON);
@@ -458,7 +459,7 @@ export function featureOne(req, res) {
 }
 
 export function addProduct(req, res) {
-     if (req.query.marketplace == 'Private Wholesale Marketplace')
+	if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
 
 	if (req.query.marketplace == 'Public Marketplace')
@@ -502,29 +503,28 @@ export function addProduct(req, res) {
 		})
 }
 
- export function importProduct(req, res)
- { 
-    var bodyParamsArray = [];
+export function importProduct(req, res) {
+	var bodyParamsArray = [];
 	for (var i = 0; i < req.body.length; i++) {
-			req.body.created_on = new Date();
-			req.body.created_by = req.user.Vendor.vendor_name;
-			bodyParamsArray.push(req.body[i]);
+		req.body.created_on = new Date();
+		req.body.created_by = req.user.Vendor.vendor_name;
+		bodyParamsArray.push(req.body[i]);
 	}
 	var finalresults = bodyParamsArray.filter(o => Object.keys(o).length);
-	req.endpoint ='Product';
+	req.endpoint = 'Product';
 	service.createBulkRow(req.endpoint, finalresults)
-		.then(function (result) {
+		.then(function(result) {
 			var productMediaArray = [];
 			for (var i = 0; i < result.length; i++) {
 				productMediaArray.push(result[i]);
-		     }
+			}
 			//var product_id = result.id;
 			if (result) {
 				return res.status(201).send(result);
 			} else {
 				return res.status(404).send("Not found");
 			}
-		}).catch(function (error) {
+		}).catch(function(error) {
 			console.log('Error :::', error);
 			res.status(500).send("Internal server error");
 			return

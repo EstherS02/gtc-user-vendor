@@ -131,7 +131,7 @@
 					});
 				}
 			});
-		}
+		}	
 
 		getTopSellingCities();	
 
@@ -141,7 +141,7 @@
 
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
-	<div class="gtc-container">
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
@@ -158,11 +158,9 @@
 									<div class="col-md-8" style="padding: 0px;">
 										<div class="col-sm-6" style="padding: 0px; float: left;">
 											<div class="row">
-												<div class="col-md-2 charts">
-													<p class="report_date-range">Date Range</p>
-												</div>
-												<div class="col-sm-3" style="padding: 0px">
-													<div class="input-group">
+												<p class="report_date-range">Date Range</p>
+												<div class="col-sm-3">
+												<div class="input-group report-Date">
 												<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2" value="{{queryURI.rep_from}}"
 												 id="datepicker3" autocomplete="off">
 												<div class="input-group-prepend">
@@ -176,9 +174,9 @@
 												<div class="col-md-1 common_padding1">
 													<p style="padding: 3px 17px; font-size: 12px;"> to</p>
 												</div>
-												<div class="col-sm-3" style="padding: 2px">
-													<div class="input-group">
-														<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+												<div class="col-sm-3">
+													<div class="input-group report-Date">
+    												<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
 												 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}"autocomplete="off">
 												<div class="input-group-prepend">
 													<span class="input-group-text calender_face_1" id="basic-addon2">
@@ -189,22 +187,22 @@
 
 													</div>
 												</div>
-												<div class="col-md-2" style="padding: 0px">
-													<select class="acc-days1">
+												<div class="col-md-2">
+													<select class="acc-days1" style="width: 91px">
 														<option value="Last 30 Days" selected>Last 30 Days</option>
 													</select>
 												</div>
 											</div>
 										</div>
-										<div class="col-sm-6" style="padding:0px; float: right; ">
+										<div class="col-sm-6" style="padding:0px; float: right;">
 											<div class="row">
-												<div class="col-md-3 charts">
-													<input id="compare" type="checkbox" value="true" style="width: 20%; margin-top: 5px;" checked>
-													<p class="report_date-range1">Compare to</p>
-												</div>
-												<div class="col-sm-3" style="padding: 2px 0px 0px 0px;">
-													<div class="input-group">
-												<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_from}}"
+												<div class="col-md-3">
+													<input id="compare" type="checkbox" value="true" class="check_report" checked>
+													<p class="report_date-range1" style="padding-top: 1px;margin-left: 26px;">Compare to</p>
+    												</div>
+												<div class="col-sm-3">
+													<div class="input-group compare_first_date">
+    												<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_from}}"
 												 aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
 												<div class="input-group-prepend">
 													<span class="input-group-text calender_face_1" id="basic-addon2">
@@ -213,13 +211,10 @@
 												</div>
 											</div>
 												</div>
-
-												<div class="col-md-1 common_padding1">
-													<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-												</div>
-												<div class="col-sm-3" style="padding: 2px">
-													<div class="input-group">
-												<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_to}}"
+                                               	<p class="toreport_date"> to</p>
+												<div class="col-sm-3">
+											    <div class="input-group compare_second_date">
+                                               	<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_to}}"
 												 aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
 												<div class="input-group-prepend">
 													<span class="input-group-text calender_face_1" id="basic-addon2">
@@ -230,14 +225,13 @@
 
 											</div>
 												</div>
-												<div class="col-md-1" style="padding: 0px">
-													<button class="update-btn1" onclick="onSearch()" style="background-color: green;
-    color: #fff;">Update</button>
-												</div>
+												<div class="col-md-1">
+													<button class="update-btn1 report_update " onclick="onSearch()" style="background-color: green; color: #fff;font-size: 10px;padding: 5px 5px;margin-left: -12px;">Update</button>
+   												</div>
 											</div>
 										</div>
 										<div class="col-md-6 total-sales">
-											<div class="pts">
+											<div class="pts report_border">
 												<p class="product-total-sale">{{currency topProducts.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topProducts.diff_total '$'}}</p>
 												<br>
@@ -393,13 +387,15 @@
 														</div>
 													</div> -->
 												</div>
+												</div>
 												<p class="lt-more">
 													<a href="#" style="color: white;">More &#9658;</a>
 												</p>
-											</div>
+											
 										</div>
-										<div class="col-md-6 total-sales" style="float: right;">
-											<div class="pts">
+										<div class="col-md-6 total-sales" style="float: right;padding-top:25px">
+											<div class=""></div>
+											<div class="pts report_border"  style="height:358px">
 												<p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
 												<br>
@@ -423,10 +419,11 @@
 														<span class="subscription" style="height:10%" title="Subscription"></span>
 													</li> -->
 												</ul>
-												<p class="lt-more">
+												
+											</div>
+											<p class="lt-more">
 													<a href="#" style="color: white;">More &#9658;</a>
 												</p>
-											</div>
 										</div>
 
 									</div>
@@ -617,7 +614,7 @@
 							</div>
 							<div class="row">
 								<div class="col-md-8">
-									<div class="line-chart-container">
+									<div class="line-chart-container report_border revenue_top">
 										<div class="line-chart">
 											<p class="line-chart-title">RECENT REVENUE CHANGES</p>
 
@@ -643,23 +640,33 @@
 										<p class="line-chart-footer">Refunds</p>
 										<p class="line-chart-footer">Cancelation</p>
 									</div>
-									<div>
-										<p class="line-chart-green1">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
-										<p class="line-chart-green2">{{revenueCounts.revenue_count.diff_count}}</p>
-										<p class="line-chart-green3">{{revenueCounts.completed_count.diff_completed}}</p>
-										<p class="line-chart-red1">{{revenueCounts.returns_count.diff_returned}}</p>
-										<p class="line-chart-green4">{{revenueCounts.disputes_count.diff_disputes}}</p>
-										<p class="line-chart-red2">{{revenueCounts.refunds_count.diff_refunds}}</p>
-										<p class="line-chart-red3">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
+                                      <div>
+										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
+										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+                                          <p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
+										  {{else}}
+                                         <p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
+                                         {{/ifCond}}
+
+										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.completed_count.diff_completed}}</p>
+										<p class="line-chart-green3 line-chart-footer pd0">{{revenueCounts.returns_count.diff_returned}}</p>
+										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+										 <p class="line-chart-red1 line-chart-footer pd0" style="padding-left: 53px;">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										 {{else}}
+										 <p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										  {{/ifCond}}
+										
+										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
+										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
 									</div>
 									<div>
-										<p class="line-chart-vs" style="padding-left: 20px">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
-										<p class="line-chart-vs">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
-										<p class="line-chart-vs" style="padding-left: 38px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
-										<p class="line-chart-vs" style="padding-left: 85px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
-										<p class="line-chart-vs">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
-										<p class="line-chart-vs">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
-										<p class="line-chart-vs">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 20px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 34px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 50px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 60px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 28px">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -768,7 +775,7 @@
 												<div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
+															<img src="../.space_trap./img/img_avatar.png" class="avatar-img">
 														</div>
 														<div class="col-md-9" style="float: right;">
 															<p class="lt-user-name">User Name</p>

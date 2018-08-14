@@ -11,5 +11,6 @@ router.post('/draf', auth.hasRole(roles['USER']), controller.createDraf);
 router.post('/', auth.hasRole(roles['USER']), controller.create);
 router.put('/delete/:id', auth.hasRole(roles['USER']), controller.softDelete);
 router.delete('/remove/:id', auth.hasRole(roles['USER']), controller.remove);
+router.get('/autoCompleteFirstName', controller.autoCompleteFirstName);
 
 module.exports = router;

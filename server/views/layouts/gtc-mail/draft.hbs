@@ -39,11 +39,7 @@
 				url: '/api/mail/remove/' + mail_id,
 				type: 'DELETE',
 				success: function (result) {
-					$('#gtc-mail-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-mail-alert .cart-message').text('Deleted Successfully');
-					$("#gtc-mail-alert").fadeTo(7000, 500).slideUp(500, function () {
-					$("#gtc-mail-alert").slideUp(500);
-					});	
+					location.reload(true);
 				},
 				error: function (error) {
 					console.log(error);

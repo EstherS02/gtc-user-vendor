@@ -85,16 +85,19 @@
         });
 
         $("#socialProfileForm").submit(function (e) {
+            console.log("facebookURL:::"+$('#facebook_url').val());
             e.preventDefault();
-            let formInput = $("#socialProfileForm :input").filter(function (index, element) {
-                return $(element).val() != '';
-            }).serialize();
+            //let formInput = $("#socialProfileForm :input").filter(function (index, element) {
+             // return $(element).val() != '';$(element).val() != 'null';
+            //}).serialize();  
+            let formInput = $("#socialProfileForm :input").serialize();
+            //console.log("formInput:::"+formInput);
 
             if ($('#socialProfileForm').valid()) {
                 $.ajax({
                     url: '/api/vendor/' + {{ LoggedInUser.Vendor.id }},
-            type: 'PUT',
-                data: formInput,
+                    type: 'PUT',
+                    data: formInput,
                     success: function (updateData) {
                         // alert("Upadted");
                         ouputPopup("Profile Setting Updated Successfully");
