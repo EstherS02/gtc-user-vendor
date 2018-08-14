@@ -185,7 +185,6 @@ if (dateSelect) {
 		},
 
 	}, function(err, results) {
-		// console.log("results*****************************************",JSON.stringify(results.orderHistory.rows))
 		maxSize = results.orderHistory.count / limit;
 		if (results.orderHistory.count % limit)
 			maxSize++;
@@ -196,7 +195,6 @@ if (dateSelect) {
 		if (results.orderHistory.count > 0) {
 			results.orderHistory.rows.forEach((value, index) => {
 				total_transaction += parseFloat(value.total_price);
-				// results.orderHistory.rows[index]['final_price'] = (parseFloat(value.total_price)).toFixed(2);
 				results.orderHistory.rows[index]['final_price']=((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 			});
 		}
@@ -215,7 +213,6 @@ if (dateSelect) {
 				orderStatus: orderStatus,
 				totalTransaction: (total_transaction).toFixed(2),
 				page: page,
-				maxSize: maxSize,
 				pageSize: limit,
 				queryPaginationObj: queryPaginationObj,
 				collectionSize: results.orderHistory.count,

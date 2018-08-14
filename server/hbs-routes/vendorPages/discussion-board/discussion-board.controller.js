@@ -39,7 +39,7 @@ export function vendorDiscussion(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	limit = req.query.limit ? parseInt(req.query.limit) : 8;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "created_on";
@@ -69,7 +69,10 @@ export function vendorDiscussion(req, res) {
 				attributes: {
 					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 				},
-		}]
+		}],
+		order: [
+                ['created_on', 'desc']
+            ]
 	},{
 		model:model['Vendor']
 	},{
@@ -101,7 +104,7 @@ export function vendorDiscussion(req, res) {
 			});
 		},
 		discussion: function(callback) {
-			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
+			service.findAllRows(discussModel,includeArr, queryObj, offset, limit, field, order)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {
@@ -183,9 +186,8 @@ export function vendorDiscussion(req, res) {
 		
 		if (!err) {
 			var mostPopular = _.groupBy(results.discussion, 'DiscussionBoardPostLike');
-			console.log("------------==================-----------",results.discussion.count)
 			if (results.discussion) {
-			var maxSize = 5;//results.discussion.count / limit;
+			var maxSize = results.discussion.count / limit;
 			// if (results.discussion.count % limit)
 				// maxSize++;
 			queryPaginationObj['maxSize'] = maxSize;
