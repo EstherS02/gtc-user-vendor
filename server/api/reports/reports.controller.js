@@ -69,7 +69,7 @@ export function topSellingCities(req, res){
 		raw: true,
 		include: [{
 			model: model['Product'],
-			where: queryObj,
+			where: {},
 			attributes: ['city']
 		}],
 		attributes: [[sequelize.fn('sum', sequelize.col('final_price')), 'total_sales']],
@@ -131,6 +131,63 @@ export function topActiveBuyers(req, res){
 	});
 }
 
+export function latestTickets(req, res){
+	var queryObj = {};
+	var result = {};
+	if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;
+	model['TicketThread'].findAll({
+		raw: true,
+		where: {},
+		order: [
+			['created_on', 'DESC']
+		],
+		group: 'user_id',
+		include: [{
+			model: model['User'],
+			where: {},
+			attributes: ['first_name','last_name', 'user_pic_url']				
+		}],
+		attributes: ['id', 'user_id', 'message', 'status', 'created_on'],
+		limit: 5
+	}).then(function(results) {
+		if (results.length > 0)
+			result = results;
+		else
+			result = [];
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(200).send(error);
+	});
+}
+
+export function latestRefunds(req, res){
+	var queryObj = {};
+	var result = {};
+	/*if (req.user.role == 2)
+		queryObj.vendor_id = req.user.Vendor.id;*/
+	queryObj.status = 6;
+	model['UserOrder'].findAll({
+		raw: true,
+		where: queryObj,
+		attributes: ['id', 'first_name', 'last_name', 'status'],
+		group: ['id'],
+		order: [
+			['created_on', 'DESC']
+		],
+		limit: 5
+	}).then(function(results) {
+		if (results.length > 0)
+			result = results;
+		else
+			result = [];
+		return res.status(200).send(result);
+	}).catch(function(error) {
+		console.log('Error:::', error);
+		return res.status(200).send(error);
+	});
+}
 
 export function topProducts(req, res) {	
 	var orderItemQueryObj = {};	
