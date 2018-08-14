@@ -160,7 +160,7 @@
 											</td>
 											<td class="text_blue_color">
 												<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" />
-												<a href="#">{{this.Product.product_name}}</a>
+												<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
 											</td>
 											<td class="text_blue_color">
 												<a href="#">{{this.User.first_name}} {{this.User.last_name}}</a>
@@ -213,11 +213,43 @@
 									</p>
 								</div>
 							</div>
+							{{!-- Pagination starts --}}
+				  	{{#ifCond count '>' queryPaginationObj.limit}}
+				  	<div class="row">
+				  		<div class="col-md-3">
+				  		</div>
+				  		<div class="col-md-7">
+				  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+				  			<nav aria-label="Page navigation example">
+				  				<ul class="pagination justify-content-center">
+				  					{{#unless startFromFirstPage}}
+				  					<li class="page-item">
+				  						<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+				  					</li>
+				  					{{/unless}} {{#each pages}}
+				  					<li class="page-item {{#if isCurrent}} active {{/if}}">
+				  						<a class="page-link" href="../wishlist?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+				  					</li>
+				  					{{/each}} {{#unless endAtLastPage}}
+				  					<li class="page-item">
+				  						<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+				  					</li>
+				  					{{/unless}}
+				  				</ul>
+				  			</nav>
+				  			{{/pagination}}
+				  		</div>
+				  	</div>
+				  	{{/ifCond}}
+				  	{{!-- Pagination Ends --}}
 						</div>
 					</div>
+
 				</div>
 			</div>
+		
 		</div>
+
 	</div>
 </div>
 {{> footer/bottom-footer}}

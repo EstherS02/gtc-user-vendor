@@ -12,6 +12,7 @@ const mailService = require('./mail.service');
 const provider = require('../../config/providers');
 const config = require('../../config/environment');
 const mailStatus = require('../../config/mail-status');
+const model = require('../../sqldb/model-connect');
 
 export function create(req, res) {
 	var mailUser = [];
@@ -20,6 +21,11 @@ export function create(req, res) {
 	var validUsers = [];
 	var currentUser = req.user;
 
+	var to = JSON.parse(req.body.to);
+
+	delete req.body.to;
+	req.body.to = to;
+	
 	if (currentUser.provider != provider['OWN']) {
 		return res.status(400).send("This provider not allow");
 	}
@@ -50,9 +56,9 @@ export function create(req, res) {
 			return res.status(400).send("Email restricted to only one vendor");
 		}
 		queryObj['role'] = roles['VENDOR'];
-	} else {
+	} /* else {
 		queryObj['role'] = roles['USER'];
-	}
+	} */
 
 	for (var i = 0; i < mailUser.length; i++) {
 		var model = 'User';
@@ -114,7 +120,6 @@ export function createDraf(req, res) {
 export function softDelete(req, res) {
 	var queryObj = {};
 
-	console.log("---------------------------",req.params.id);
 	queryObj['id'] = req.params.id;
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = req.user.id;
@@ -164,4 +169,30 @@ export function remove(req, res) {
 			console.log("Error:::", error);
 			return res.status(500).send("Internal server error");
 		});
+}
+
+export function autoCompleteFirstName(req,res){
+	 var queryObj = {}, includeArr=[];
+
+	if (req.query.keyword) {
+		queryObj['first_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
+	model['User'].findAll({
+        where: queryObj,
+        attributes: ['id', 'first_name'],
+        raw: true
+    }).then(function (rows) {
+        if (rows.length > 0) {
+			res.status(200).send(rows);
+            return;
+        } else {
+			res.status(200).send(rows);
+            return;
+        }
+    }).catch(function (error) {
+        res.status(500).send("Internal server error");
+        return;
+    })
 }

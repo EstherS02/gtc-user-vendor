@@ -64,12 +64,12 @@
 			var newObj = {};
 			newObj.product_id = productSpecs.id;
 			newObj.user_id = userInfo.id;
-			if ($('input[name=wishID]').val()) {
-				newObj.status = 0;
-			} else {
-				newObj.status = statusCode.ACTIVE;
-			}
-			console.log(newObj);
+			// if ($('input[name=wishID]').val()) {
+			// 	newObj.status = 0;
+			// } else {
+			// 	newObj.status = statusCode.ACTIVE;
+			// }
+			// console.log(newObj);
 			var queryObj = {};
 			queryObj.product_id = productSpecs.id;
 			queryObj.user_id = userInfo.id;
@@ -208,7 +208,7 @@
                             						</li>
                             						<li>
                             							{{#if isWishlist}}
-                            							<a href="javascript:;" title="This product in your wishlist">
+                            							<a href="javascript:;" onclick="wishUpdate()" title="This product in your wishlist">
                             								<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
 															<span>Added Wishlist</span>
                             							</a>

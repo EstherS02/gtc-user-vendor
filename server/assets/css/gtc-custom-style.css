@@ -1191,3 +1191,7 @@ button.update-btn1{
 .icon_padding {
   padding-right: 5px;
 }
+
+.note-editor.note-frame.card{
+  z-index: 10;
+}

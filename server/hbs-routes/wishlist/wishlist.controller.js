@@ -15,15 +15,28 @@ export function wishlist(req, res) {
 	var categoryModel = "Category";
 	var bottomCategory = {};
 	var LoggedInUser = {};
+	var queryURI = {};
 	if (req.user)
 		LoggedInUser = req.user;
-
+	var queryPaginationObj={};
 	let user_id = LoggedInUser.id;
 
 	var field = 'id';
 	var order = "desc";
 	var offset = 0;
-	var limit = 10;
+	// var limit = 10;
+	var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
+	var page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = offset;
+	queryURI['page'] = limit;
+	delete req.query.page;
+	var field = "id";
+	 offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+	var maxSize;
 	// var vendor_id = req.user.Vendor.id;
 	var queryObj = {};
 	if (typeof req.query.limit !== 'undefined') {
@@ -37,7 +50,7 @@ export function wishlist(req, res) {
 	queryObj = {
 		user_id: req.user.id,
 		status: 1
-	};
+	}; 
 	var wishModel = 'WishList';
 	var includeArr = [{
 		model: model['Product'],
@@ -45,11 +58,12 @@ export function wishlist(req, res) {
 			model: model['ProductMedia'],
 			where:{
 				base_image:1
-			}
+			},
+			required:false
 		}]
 	}, {
 		model: model['User'],
-		attributes:['first_name','last_name']
+		attributes:['first_name','last_name'],
 	}];
 	async.series({
 		cartCounts: function(callback) {
@@ -63,7 +77,7 @@ export function wishlist(req, res) {
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
-						// console.log(category.rows)
+						console.log(category.rows)
 						return callback(null, category);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -93,8 +107,16 @@ export function wishlist(req, res) {
 			},
 		},
 		function(err, results) {
-			// console.log(JSON.stringify(results))
+			
 			if (!err) {
+				if(results.wishlist){
+				var maxSize = results.wishlist.count / limit;
+				if (results.wishlist.count % limit)
+					maxSize++;
+				queryPaginationObj['maxSize'] = maxSize;
+				}else{
+					queryPaginationObj['maxSize'] = 0;
+				}
 				res.render('userNav/wishlist', {
 					title: "Global Trade Connect",
 					wishlist: results.wishlist.rows,
@@ -103,7 +125,13 @@ export function wishlist(req, res) {
 				    bottomCategory: bottomCategory,
 				    cartheader: results.cartCounts,
 					LoggedInUser: LoggedInUser,
-					vendorPlan:vendorPlan
+					vendorPlan:vendorPlan,
+					page: offset,
+					maxSize: maxSize,
+					queryURI: queryURI,
+					pageSize: limit,
+					queryPaginationObj: queryPaginationObj,
+					selectedPage: "wishlist",
 				});
 			} else {
 				res.render('userNav/wishlist', err);

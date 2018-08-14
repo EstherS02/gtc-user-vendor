@@ -181,7 +181,8 @@ select {
 }
 .gtc-top-header {
 	position: relative;
-	z-index: 999;
+	/*z-index: 999;*/
+	z-index: 1;
 	font-size: 10px;
 	font-weight: inherit;
 	background: #154a7f;
@@ -775,7 +776,8 @@ ul.footer-social-links li a img {
 }
 .vp-menu nav {
 	background: #e7f5f8;
-	z-index: 999;
+	/*z-index: 999;*/
+	z-index: 1;
 }
 .vendor-logo {
 	margin-top: -112px;
@@ -1512,7 +1514,7 @@ ul.inner-list-view li a {
 	border-radius: 50%;
 }
 #blog_img:hover .close {
-	opacity: 1;
+    opacity: 1;
 }
 .col-sm-2half, .col-sm-10half {
 	position: relative;
@@ -1520,3 +1522,58 @@ ul.inner-list-view li a {
 	padding-right: 15px;
 	padding-left: 15px;
 }
+/* lightbox css*/
+/* The Modal (background) */
+.modal-lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: black;
+}
+
+/* Modal Content */
+.modal-content1 {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  width: 80%;
+  max-width: 75%;
+  max-height: 75%;
+}
+
+/* The Close Button */
+.close-box {
+  color: white;
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close-box:hover,
+.close-box:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mySlides {
+  display: none;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.demo {
+  opacity: 0.6;
+}
+/*end lightbox css*/
