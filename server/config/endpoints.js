@@ -49,6 +49,7 @@ module.exports = {
 	"talks": "Talk",
 	"talk-settings": "TalkSetting",
 	"talk-threads": "TalkThread",
+	"talk-thread-users": "TalkThreadUsers",
 	"terms-and-cond":"TermsAndCond",
 	"taxes": "Tax",
 	"tickets": "Ticket",
