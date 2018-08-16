@@ -38,9 +38,9 @@ export function createMail(bodyParams, users) {
 					status: status['ACTIVE'],
 					created_on: new Date()
 				}, {
-					mail_id: mail.id,
-					user_id: mail.from_id
-				});
+						mail_id: mail.id,
+						user_id: mail.from_id
+					});
 			} else {
 				return Promise.reject(true);
 			}
@@ -134,6 +134,19 @@ export function deleteMail(queryObj) {
 	});
 }
 
+export function deleteManyMail(queryObj) {
+	var userMailModelName = 'UserMail';
+	return new Promise((resolve, reject) => {
+		return service.updateManyRecord(userMailModelName, {
+			mail_status: mailStatus['DELETED']
+		}, queryObj)
+	}).then((result) => {
+		resolve(result);
+	}).catch((error) => {
+		reject(error);
+	});
+}
+
 export function removeMail(queryObj) {
 	var includeArr = [];
 	var userMail = {};
@@ -172,3 +185,38 @@ export function removeMail(queryObj) {
 			});
 	});
 }
+
+export function removeManyMail(queryObj) {
+	var includeArr = [];
+	var userMail = {};
+	var userMailModelName = 'UserMail';
+
+	console.log("queryObj", queryObj);
+
+	return new Promise((resolve, reject) => {
+		return service.destroyManyRecord(userMailModelName, queryObj.ids)
+			.then((destoryResponse) => {
+				if (destoryResponse) {
+					return service.countRows(userMailModelName, {
+						mail_id: userMail.mail_id
+					});
+				} else {
+					return Promise.reject(true);
+				}
+			}).then((userMailCount) => {
+				if (userMailCount > 0) {
+					return Promise.resolve(true);
+				} else {
+					return service.destroyRecord(mailModelName, userMail.mail_id);
+				}
+			}).then((result) => {
+				resolve(true);
+			}).catch((error) => {
+				reject(error);
+			});
+
+
+
+	});
+}
+

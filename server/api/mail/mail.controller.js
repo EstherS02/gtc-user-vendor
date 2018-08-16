@@ -144,9 +144,31 @@ export function softDelete(req, res) {
 }
 
 export function softDeleteMany(req, res) {
-	
 
+	var ids = JSON.parse(req.body.ids);
 
+	var queryObj = {};
+	queryObj['id'] = ids;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['READ']
+	}, {
+		mail_status: mailStatus['UNREAD']
+	}];
+
+	mailService.deleteManyMail(queryObj)
+	.then((response) => {
+		if (response) {
+			return res.status(200).send("Mail deleted successfully.");
+		} else {
+			return res.status(404).send("not found");
+		}
+	})
+	.catch((error) => {
+		console.log("Error:::", error);
+		return res.status(500).send("Internal server error");
+	});
 }
 
 export function remove(req, res) {
@@ -175,6 +197,37 @@ export function remove(req, res) {
 			console.log("Error:::", error);
 			return res.status(500).send("Internal server error");
 		});
+}
+
+export function removeMany(req, res) {
+	var queryObj = {};
+
+	var ids = JSON.parse(req.body.ids);
+
+	queryObj['ids'] = ids;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['SENT']
+	}, {
+		mail_status: mailStatus['DRAFT']
+	}, {
+		mail_status: mailStatus['DELETED']
+	}];
+
+
+	/*mailService.removeManyMail(queryObj)
+		.then((response) => {
+			if (response) {
+				return res.status(200).send("Mail deleted successfully.");
+			} else {
+				return res.status(404).send("not found");
+			}
+		})
+		.catch((error) => {
+			console.log("Error:::", error);
+			return res.status(500).send("Internal server error");
+		});*/
 }
 
 export function autoCompleteFirstName(req,res){
