@@ -444,7 +444,8 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
     }
     var option;
     for (var i = 0, len = marketPlaceArr.length; i < len; i++) {        
-        option = `<li><span class = "`+mpKeyValue[marketPlaceArr[i].marketplace_name]+`" style = "height:`+calculatePercentage(totalAmt,marketPlaceArr[i].amount)+`" title = "`+marketPlaceArr[i].marketplace_name+`"></span></li>`
+        var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
+        option = `<li><span class = "`+ mPlaceClass +`" style = "height:`+calculatePercentage(totalAmt,marketPlaceArr[i].amount)+`" title = "`+marketPlaceArr[i].marketplace_name+`"></span></li>`
         ret += option;
     }
     return new Handlebars.SafeString(ret);
@@ -509,10 +510,8 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 
     return new Handlebars.SafeString(ret);
 });
-
 Handlebars.registerHelper('socialIcon', function(obj, options) {   
         if(obj == '' || obj == null || obj == 'null')
         return options.inverse(this);
     return options.fn(this); 
 });
-

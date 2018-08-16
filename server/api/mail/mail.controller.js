@@ -143,6 +143,12 @@ export function softDelete(req, res) {
 		});
 }
 
+export function softDeleteMany(req, res) {
+	
+
+
+}
+
 export function remove(req, res) {
 	var queryObj = {};
 

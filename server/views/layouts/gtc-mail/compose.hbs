@@ -104,19 +104,11 @@
 
 	$(function () {
 
-		/*var data = {
-			id: 1,
-			text: 'Barn owl'
-		};
-
-
-		console.log(getUrlQueryString())
-
-
+        var data = getUrlQueryString();
+		
 		var newOption = new Option(data.text, data.id, false, false);
+		$('#toAddress').append(newOption).trigger('change');
 
-
-		$('#toAddress').append(newOption).trigger('change');*/
 		$(".select2-hidden-accessible").prop("disabled", true);
 		$("#toAddress").select2({
 			minimumInputLength: 2,
