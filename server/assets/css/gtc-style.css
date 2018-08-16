@@ -4596,6 +4596,8 @@ p.line-chart-green2 {
     font-size: 15px;
     color: #3bb804;
     padding-left: 50px;
+    /* padding-left: 33px; */
+    position: static;
     float: left;
 }
 
@@ -4617,7 +4619,8 @@ p.line-chart-red1 {
     float: left;
     color: #c80527;
     font-size: 15px;
-    padding-left: 105px;
+    padding-left: 81px;
+    /* padding-left: 73px; */
 }
 
 p.line-chart-red2 {
@@ -5363,6 +5366,10 @@ border-top-style: none;
 p.pd0
 {
 padding-top: 0px;
+}
+.space_trap
+{
+    margin-top: -13px;
 }
 /*Report css ends */
 

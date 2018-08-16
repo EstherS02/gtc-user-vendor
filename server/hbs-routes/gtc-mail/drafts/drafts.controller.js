@@ -21,8 +21,8 @@ export function drafts(req, res) {
 
 	offset = 0;
 	limit = null;
-	field = "id";
-	order = "asc";
+	field = "last_updated_on";
+	order = "desc";
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;

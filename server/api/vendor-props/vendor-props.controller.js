@@ -98,9 +98,11 @@ function LikeCount(req, res, callback) {
 				attributes: {
 					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 				},
-		}]
+		}],
+		order: [
+                ['created_on', 'desc']
+            ]
 	}).then(function(result) {
-		console.log("=-----------------------====================------------",result)
 		return callback(null, result)
 	});
 }

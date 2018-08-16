@@ -1,9 +1,4 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
- <style>
-	 tr:hover {
-    background: #000;
-}
- </style>
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
@@ -30,7 +25,6 @@
 			}
 		}
 	}
-
 	function deleteMail() {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
@@ -44,11 +38,7 @@
 				url: '/api/mail/delete/' + mail_id,
 				type: 'PUT',
 				success: function (result) {
-					$('#gtc-mail-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-mail-alert .cart-message').text('Deleted Successfully');
-					$("#gtc-mail-alert").fadeTo(7000, 500).slideUp(500, function () {
-					$("#gtc-mail-alert").slideUp(500);
-					});
+					location.reload(true);
 				},
 				error: function (error) {
 					console.log(error);
@@ -127,7 +117,11 @@
 										</thead>
 										<tbody>
 											{{#each inboxMail}}
-											<tr>
+											{{#ifCond this.mail_status '==' ../mailStatus.READ}}
+											<tr style="background-color:rgba(0, 0, 0, 0.06)">
+												{{else}}
+												<tr>
+												{{/ifCond}}
 												<td scope="row">
 													<input type="checkbox" name="selected" value={{this.id}}>
 												</td>
