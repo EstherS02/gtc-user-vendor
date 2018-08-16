@@ -1,16 +1,18 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
- <style>
-	 .clickable-row {cursor: pointer;}
- </style>
+<style>
+	.clickable-row {
+		cursor: pointer;
+	}
+</style>
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
-		 $(".clickable-row").click(function() {
-			 var statusObj= {
-				 	mail_status:1
-			 }
-			 $.ajax({
-				url: 'api/user-mails/'+this.id,
+		/*$(".clickable-row").click(function () {
+			var statusObj = {
+				mail_status: 1
+			}
+			$.ajax({
+				url: 'api/user-mails/' + this.id,
 				type: 'PUT',
 				data: statusObj,
 				success: function (data) {
@@ -20,15 +22,20 @@
 					console.log(error);
 				}
 			})
-       window.location = $(this).data("href");
-    });
-
+			window.location = $(this).data("href");
+		});*/
 	});
-	
+
+	function statusRead(id) {
+
+		console.log("-----------------------------------",id);
+		//window.location.href = '/gtc-mail/compose';
+	}
+
 	function compose(e) {
 		window.location.href = '/gtc-mail/compose';
 	}
-    function refresh(e){
+	function refresh(e) {
 		location.reload(true);
 	}
 	function selectAll(ele) {
@@ -138,21 +145,20 @@
 											</tr>
 										</thead>
 										<tbody>
-											{{#each inboxMail}}
-											{{#ifCond this.mail_status '==' ../mailStatus.READ}}
-											<tr class='clickable-row' id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}' style="background-color:rgba(0, 0, 0, 0.06)">
+											{{#each inboxMail}} {{#ifCond this.mail_status '==' ../mailStatus.READ}}
+											<tr style="background-color:rgba(0, 0, 0, 0.06)">
 												{{else}}
-												<tr class='clickable-row' id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>
-												{{/ifCond}}
-												<td scope="row">
-													<input type="checkbox" name="selected" value={{this.id}}>
-												</td>
-												<td scope="row">{{this.Mail.fromUser.first_name}}</td>
-												<td scope="row">{{this.Mail.subject}}</td>
-												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-												<td></td>
-											</tr>
-											{{/each}}
+												<tr>
+													{{/ifCond}}
+													<td scope="row">
+														<input type="checkbox" name="selected" value={{this.id}}>
+													</td>
+													<td class='clickable-row' scope="row" onclick="statusRead({{this.id}})" data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>
+													<td class='clickable-row' scope="row" onclick="statusRead({{this.id}})" data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.subject}}</td>
+													<td class='clickable-row' scope="row" onclick="statusRead({{this.id}})" data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+													<td class='clickable-row' scope="row" onclick="statusRead({{this.id}})" data-href='gtc-mail/inbox/{{this.Mail.id}}'></td>
+												</tr>
+												{{/each}}
 										</tbody>
 									</table>
 								</div>
