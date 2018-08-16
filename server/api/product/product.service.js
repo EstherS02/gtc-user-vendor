@@ -5,6 +5,8 @@ const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
@@ -326,6 +328,23 @@ export function importWooCommerceProducts(product, req) {
 			}).catch(function(error) {
 				reject(error);
 			});
+	});
+}
+
+export function compareProducts(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.compareProductQuery(params), {
+				model: model['product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
 	});
 }
 

@@ -1453,6 +1453,12 @@ ul.inner-list-view li a {
 	height: 120px;
 	margin: 10px 0;
 }
+.body-content-1 .cprlist div.empty-img {
+	width: 120px;
+	height: 120px;
+	margin: 10px 0;
+	background: #e8eff2;
+}
 .body-content-1 .cprlist .btn {
 	font-weight: 600;
 }
