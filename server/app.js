@@ -23,11 +23,8 @@ var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
 var app = express();
-<<<<<<< HEAD
-=======
-var server = http.createServer(app);
 
->>>>>>> 9a0d0c642b3cbf125f71a74292955de3133ea234
+var server = http.createServer(app);
 
 var hbs = exphbs.create({
 	extname: '.hbs',
