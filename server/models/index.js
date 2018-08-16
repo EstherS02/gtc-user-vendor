@@ -66,6 +66,7 @@ function init(sequelize) {
     model.SubscriptionSales = sequelize.import('./definition/subscription-sales.js');
     model.Talk = sequelize.import('./definition/talk.js');
     model.TalkSetting = sequelize.import('./definition/talk-setting.js');
+    model.TalkThreadUsers = sequelize.import('./definition/talk-thread-users.js');
     model.TalkThread = sequelize.import('./definition/talk-thread.js');
     model.TermsAndCond = sequelize.import('./definition/terms-and-cond.js');
     model.Tax = sequelize.import('./definition/tax.js');
@@ -144,6 +145,7 @@ function init(sequelize) {
     require('./definition/talk.js').initRelations();
     require('./definition/talk-setting.js').initRelations();
     require('./definition/talk-thread.js').initRelations();
+    require('./definition/talk-thread-users.js').initRelations();
     require('./definition/tax.js').initRelations();
     require('./definition/terms-and-cond.js').initRelations();
     require('./definition/ticket.js').initRelations();

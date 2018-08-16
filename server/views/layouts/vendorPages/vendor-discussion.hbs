@@ -1,3 +1,4 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
@@ -6,21 +7,6 @@
 		$('.hide').hide();
 		$('.allComments').hide();
 		$("#blog_img").hide();
-		// $('#hideAll').hide();
-		// $('#allComments').hide();
-		// $('#showAll').show();
-		// $('#showAll').click(function(){
-		// 	$('#showAll').hide();
-		// 	$('#hideAll').show();
-		// 	$('#allComments').show();
-		// });
-
-		// $('#hideAll').click(function(){
-		// 	$('#showAll').show();
-		// 	$('#hideAll').hide();
-		// 	$('#allComments').hide();
-		// });
-
 
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
@@ -137,7 +123,7 @@ $("#selectedBlogFile").change(function() {
 					console.log(data);
 					formData.comment_type = 2;
 					formData.comment_media_url = data.imageURL;
-					apiCallComment(url,formData);
+					apiCallComment(url,formData,e);
 				},
 				error: function (error) {
 					console.log("Error", error);
@@ -146,7 +132,7 @@ $("#selectedBlogFile").change(function() {
 		} else {
 			if($("#comment_text"+e).val()){
 				formData.comment_type = 1;
-				apiCallComment(url,formData);
+				apiCallComment(url,formData,e);
 			}else{
 				console.log("Please enter the value")
 				$('#comment_text'+ e).notify("Please enter the value", "error");
@@ -167,16 +153,35 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
-	function apiCallComment(url, data) {
+	function apiCallComment(url, data,e) {
 		$.ajax({
 			type: 'POST',
 			url: url,
 			data:data,
 			success: function(res) {
 				var count= res.result.count;
-				var result = res.result.rows;
+				var results = res.result.rows;
 				console.log(res.result)
-				location.reload();
+				var i=0;
+				// location.reload();
+				// alert("DiscussionBoardPostComments-"+e);
+				// var source   = document.getElementById("DiscussionBoardPostComments-"+e).innerHTML;
+				// var template = Handlebars.compile(source);
+				// var context = res.result;
+				// var html    = template(context);
+				// var domElement = `<div id="DiscussionBoardPostComments-`+e+`">`+ 
+				var newData = extract(results,e);
+				// alert("newPart1"+document.getElementById("newPart1"+e).innerHTML);
+				document.getElementById("newPart1"+e).innerHTML = newData.new1;
+				document.getElementById("newPart2"+e).innerHTML = newData.new2;
+				if(newData.new2){
+					$('#allComments'+e).hide();
+					$('#hideAll'+e).hide();
+					$('#showAll'+e).show();
+				}
+				$("#comment_text"+e).val("");
+				$("#selectedFile"+e).attr('src', "");
+											
 			},
 			error: function(request, status, error) {
 				console.log('status', status);
@@ -184,6 +189,73 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
+	function extract(data,e){
+		// return 'data';
+		var i=0;
+		var data1={};
+		var new1 = '';
+		var new2 = '';
+		data.forEach(function(element) {
+		  if(i<2){
+		  	new1 = new1 + ifPart(element);
+			}
+		   if(i>=2){
+		   	new2 = new2 + ifPart(element);
+		   }
+		  i++;
+
+		});
+		if(new2){
+			var upper = `<div id="showAll`+e+`" onclick="show(`+e+`)" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
+				</div>
+				<div id="allComments`+e+`" class="allComments">`;
+			var lower = `<div id="hideAll`+e+`" onclick="hide(`+e+`)" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
+														</div>
+													</div>`;
+			new2 = upper+new2+lower;
+
+		}
+		data1.new1 = new1;
+		data1.new2 = new2;
+		return data1;
+	}
+	function ifPart(element){
+		return `<div><div class="row" style="margin-bottom: 5px;">
+				<div class="col-md-2 col-2">
+					<img style="width: 30px;height:30px " class = "img-border-page" src="`+ProfilePicture(element.User)+`">
+				</div>
+				<div class="col-md-10 col-10">
+					<p class="discussion_here"><span class="discussion_hayden">`+element.User.first_name+element.User.last_name+`</span>&nbsp;- &nbsp;`+ comment(element) + commentType(element)+
+					`</p>
+				</div>
+			</div></div>`;
+
+	}
+	function ProfilePicture(context){
+		if (context && context.user_pic_url)
+        	return context.user_pic_url;
+
+    	return '/img/avatar.png'
+	}
+	function FormatDate(testDate){
+		return moment(testDate).fromNow();
+	}	
+	function comment(data){
+		var comment='';
+		if(data.comment){
+			comment= data.comment;
+		}
+		return comment; 
+	}
+	function commentType(data){
+		var comment = '';
+		if(data.comment_type == 2){
+			comment =  `<p>&nbsp;- &nbsp;<img src="`+data.comment_media_url+`" width="25%" height="25%">- <span class="discussion_day">`+FormatDate(data.created_on)+`</span></p>`;
+		} 
+		return comment;
+	}
+
+
 
 
 	function show(e){
@@ -241,6 +313,39 @@ function removePic(){
 		}
 	}
 
+function openModal() {
+  document.getElementById('myModal').style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById('myModal').style.display = "none";
+}
+
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demo");
+  var image = $('#originalLightbox'+n).attr('src');
+  $('#lightbox').attr('src', image);
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+  // captionText.innerHTML = dots[slideIndex-1].alt;
+}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -310,6 +415,7 @@ aria-hidden="true">
 									<hr>
 									{{!-- {{/ifCond}} --}}
 									{{#if discussionBoard.rows}}
+									
 									{{#each discussionBoard.rows}}
 									<div class="row">
 										<div class="col-md-2 col-2 discussion_para_bg">
@@ -318,7 +424,8 @@ aria-hidden="true">
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
 											{{#ifCond this.post_media_type "==" 2}}
-											<img src="{{this.post_media_url}}" alt="img" style="width: 100%;margin-top: 10px;">
+										    {{!-- <img src="{{this.post_media_url}}" style="width:100% margin-top: 10px;" onclick="openModal();currentSlide({{@index}})" > --}}
+											<img src="{{this.post_media_url}}" alt="img" onclick="openModal();currentSlide({{@index}})" style="width: 100%;margin-top: 10px;"  id="originalLightbox{{@index}}">
 											{{/ifCond}}
 											<div class="row">    	
 												<div class="col-md-8 col-5  discussion_com">
@@ -334,41 +441,47 @@ aria-hidden="true">
 												<div class="col-md-2 col-3  common_padding1 discussion_com "><a href="javascript:;" class="discussion_butt btn" onclick="userLike({{this.id}})" id="likeType{{this.id}}">{{#LikeUnlike this.DiscussionBoardPostLikes ../LoggedInUser}}Like{{/LikeUnlike}}</a></div>
 											</div>
 											<hr>
-											<div id="DiscussionBoardPostComments-"{{this.id}}>
-											{{#each this.DiscussionBoardPostComments}}
-											{{#ifCond @index '<' 2}}
-											<div class="row" style="margin-bottom: 5px;">
-												<div class="col-md-2 col-2">
-													<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
-												</div>
-												<div class="col-md-10 col-10">
-													<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
-												</div>
-											</div>
-											{{/ifCond}}
-											
-											{{/each}}
-											{{#ifCond this.DiscussionBoardPostComments.length ">" 2}}
-											<div id="showAll{{this.id}}" onclick="show({{this.id}})" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a></div>
-											
-											<div id="allComments{{this.id}}" class="allComments">
-												{{#each this.DiscussionBoardPostComments}}
-													{{#ifCond @index '>' 1}}
-														<div class="row"  style="margin-bottom: 5px;">
+											<div id="DiscussionBoardPostComments-{{this.id}}">
+													<div id ="newPart1{{this.id}}">
+													{{#each this.DiscussionBoardPostComments}}
+													{{#ifCond @index '<' 2}}
+														<div class="row" style="margin-bottom: 5px;" >
 															<div class="col-md-2 col-2">
 																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
 															</div>
 															<div class="col-md-10 col-10">
-																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
 															</div>
 														</div>
 													{{/ifCond}}
+
 												
 												{{/each}}
-												<div id="hideAll{{this.id}}" onclick="hide({{this.id}})" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
 												</div>
-											</div>
-											{{/ifCond}}
+												<div id ="newPart2{{this.id}}">
+												{{#ifCond this.DiscussionBoardPostComments.length ">" 2}}
+													<div id="showAll{{this.id}}" onclick="show({{this.id}})" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
+													</div>
+													<div id="allComments{{this.id}}" class="allComments">
+														{{#each this.DiscussionBoardPostComments}}
+															{{#ifCond @index '>' 1}}
+																<div class="row"  style="margin-bottom: 5px;" >
+																	<div class="col-md-2 col-2">
+																		<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+																	</div>
+																	<div class="col-md-10 col-10">
+																		<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+																	</div>
+																</div>
+															{{/ifCond}}
+														
+														{{/each}}
+														<div id="hideAll{{this.id}}" onclick="hide({{this.id}})" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
+														</div>
+													</div>
+												{{/ifCond}}
+												</div>
+
 											</div>
 											<div class="row">
 												<div class="col-md-2 col-2 ">
@@ -392,6 +505,7 @@ aria-hidden="true">
 											</div>
 										</div>
 									</div>
+									{{!-- </div> --}}
 									{{/each}}
 									{{else}}
 									<div>No blogs found</div>
@@ -408,7 +522,7 @@ aria-hidden="true">
                                             <ul class="pagination justify-content-center">
                                                 {{#unless startFromFirstPage}}
                                                 <li class="page-item">
-                                                    <a class="page-link" href="../vendor/discussion-board/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+                                                    <a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
                                                 </li>
                                                 {{/unless}} {{#each pages}}
                                                 <li class="page-item {{#if isCurrent}} active {{/if}}">
@@ -416,7 +530,7 @@ aria-hidden="true">
                                                 </li>
                                                 {{/each}} {{#unless endAtLastPage}}
                                                 <li class="page-item">
-                                                    <a class="page-link" href="../vendor/discussion-board/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+                                                    <a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
                                                 </li>
                                                 {{/unless}}
                                             </ul>
@@ -453,4 +567,14 @@ aria-hidden="true">
 		</div>
 	</div>
 </section>
+<div id="myModal" class="modal-lightbox">
+  <span class="close-box cursor" onclick="closeModal()">&times;</span>
+  <div class="modal-content1">
+
+    <div class="mySlides">
+      <img src="#" id="lightbox" style="width:100%">
+    </div>
+  </div>
+</div>
+
 {{> footer/bottom-footer}}

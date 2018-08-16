@@ -509,3 +509,11 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 
     return new Handlebars.SafeString(ret);
 });
+<<<<<<< HEAD
+=======
+Handlebars.registerHelper('socialIcon', function(obj, options) {   
+        if(obj == '' || obj == null || obj == 'null')
+        return options.inverse(this);
+    return options.fn(this); 
+});
+>>>>>>> 8d38bde2b8aa93242489a2be79551e4b15765c29

@@ -16,7 +16,7 @@ const mailStatus = require('../../../config/mail-status');
 export function inbox(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
-	var offset, limit, field, order, page, includeArray=[];
+	var offset, limit, field, order, page, includeArray = [];
 
 	offset = 0;
 	limit = null;
@@ -41,12 +41,12 @@ export function inbox(req, res) {
 	var user_id = LoggedInUser.id;
 
 	var queryObj = {
-		user_id : user_id,
-		'$or':[
-			{ mail_status: mailStatus["READ"]},
-			{ mail_status: mailStatus["UNREAD"] }	
+		user_id: user_id,
+		'$or': [
+			{ mail_status: mailStatus["READ"] },
+			{ mail_status: mailStatus["UNREAD"] }
 		],
-		status : statusCode["ACTIVE"],
+		status: statusCode["ACTIVE"],
 	};
 
 	async.series({
@@ -83,20 +83,20 @@ export function inbox(req, res) {
 		inboxMail: function (callback) {
 
 			includeArray = [
-				{ 
+				{
 					"model": model['Mail'],
-					where : {
-						status : statusCode["ACTIVE"],
+					where: {
+						status: statusCode["ACTIVE"],
 						//to_id : user_id	
-						   },
-					    include: [{
-							model: model['User'],
-							as: 'fromUser',
-							attributes: ['id', 'first_name']
-						}],
+					},
+					include: [{
+						model: model['User'],
+						as: 'fromUser',
+						attributes: ['id', 'first_name']
+					}],
 				}];
 
-			service.findRows(mailModel, queryObj, offset, limit, field, order,includeArray)
+			service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
 				.then(function (mail) {
 					return callback(null, mail);
 
@@ -122,7 +122,7 @@ export function inbox(req, res) {
 					page: page,
 					pageSize: limit,
 					maxSize: 5,
-                    selectedPage: 'inbox',
+					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
 				});
@@ -134,18 +134,23 @@ export function inbox(req, res) {
 
 
 export function message(req, res) {
-	var LoggedInUser = {}, queryObj={}, bottomCategory={},mail_id;
-	var includeArr = [];
+	var LoggedInUser = {}, queryObj = {}, bottomCategory = {}, mail_id;
+	var includeArr = [], messageArr = [];
 	var mailModal = "Mail";
-
-	if(req.params.id)
-		mail_id= req.params.id;
-	   
 
 	if (req.user)
 		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.id;
+	if (req.params.id)
+		mail_id = req.params.id;
+
+	messageArr = [
+		{
+			model: model['User'],
+			as: 'fromUser',
+			attributes: ['id', 'first_name']
+		}];
+
 	async.series({
 		cartCounts: function (callback) {
 			service.cartHeader(LoggedInUser).then(function (response) {
@@ -176,18 +181,18 @@ export function message(req, res) {
 					return callback(null);
 				});
 		},
-		message: function(callback){
+		message: function (callback) {
 
-			service.findIdRow(mailModal,mail_id,includeArr)
-			   .then(function(message){
-                 console.log("==========================",message);
-                return callback(null, message);
-			   })
-			   .catch(function(error){
-				console.log('Error :::', error);
-				return callback(null);
-			   })
-			
+			service.findIdRow(mailModal, mail_id, messageArr)
+				.then(function (message) {
+					console.log("==========================", message);
+					return callback(null, message);
+				})
+				.catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				})
+
 
 		}
 	},
@@ -201,7 +206,7 @@ export function message(req, res) {
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
-					message:results.message,
+					message: results.message,
 					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
@@ -220,7 +225,6 @@ export function compose(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
-	let user_id = LoggedInUser.id;
 	async.series({
 		cartCounts: function (callback) {
 			service.cartHeader(LoggedInUser).then(function (response) {
