@@ -7,90 +7,124 @@
             '<i class="fas fa-exclamation-circle"></i>' + '</div>'
 
         $('#facebook_url').change(function (e) {
-
             var value = $('#facebook_url').val();
-            if(value!='')
+            $("#facebook_append2").hide();
+            if((value=='') || (value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value))
+              if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value) || value == '')
+            {
                 $("#facebook_append").html(domElement1);
+            }
             else
-                $("#facebook_append").html(domElement2);
+            {
+               $("#facebook_append").html(domElement2);
+            }
             }    
         });
 
         $('#twitter_url').change(function (e) {
             var value = $('#twitter_url').val();
-            if(value!='')
+            $("#twitter_append2").hide();
+            if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value))
-                $("#twitter_append").html(domElement1);
+            if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value) || value == '')
+            {
+                  $("#twitter_append").html(domElement1);
+            }      
             else
+            {
                 $("#twitter_append").html(domElement2);
+            }
             }    
         });
 
         $('#google_plus_url').change(function (e) {
             var value = $('#google_plus_url').val();
-            if(value!='')
+            $("#google_append2").hide();
+           if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value))
+            if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value)|| value == '')
+            {
                 $("#google_append").html(domElement1);
+            }    
             else
+            {
                 $("#google_append").html(domElement2);
+            }
             }    
         });
 
         $('#linkedin_url').change(function (e) {
             var value = $('#linkedin_url').val();
-            if(value!='')
+             $("#linkedin_append2").hide();
+            if((value!='') ||(value!="null"))
             {
-            if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value))
+            if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value) ||  value == '')
+            {
                 $("#linkedin_append").html(domElement1);
+            }   
             else
+            {
                 $("#linkedin_append").html(domElement2);
+            }
             }    
         });
 
         $('#youtube_url').change(function (e) {
             var value = $('#youtube_url').val();
-              if(value!='')
+             $("#youtube_append2").hide();
+            if((value!='') ||(value!="null"))
             {
-            if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value))
-                $("#youtube_append").html(domElement1);
+            if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value) || value == '')
+            {
+               $("#youtube_append").html(domElement1);
+            }   
             else
+            {
                 $("#youtube_append").html(domElement2);
+            }    
             }    
         });
 
         $('#instagram_url').change(function (e) {
             var value = $('#instagram_url').val();
-              if(value!='')
+             $("#instagram_append2").hide();
+            if((value=='') ||(value!="null"))
             {
-            if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value))
+            if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value)  || value == '')
+            {
                 $("#instagram_append").html(domElement1);
+            }    
             else
+            {                   
                 $("#instagram_append").html(domElement2);
+            }
             }    
         });
 
         $('#flickr_url').change(function (e) {
             var value = $('#flickr_url').val();
-            if(value!='')
+             $("#flickr_append2").hide();
+             if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value))
+            if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value) || value == '')
+            {
                 $("#flickr_append").html(domElement1);
+            }    
             else
+            {
                 $("#flickr_append").html(domElement2);
+            }    
             }
         });
 
         $("#socialProfileForm").submit(function (e) {
-            console.log("facebookURL:::"+$('#facebook_url').val());
+          
             e.preventDefault();
-            //let formInput = $("#socialProfileForm :input").filter(function (index, element) {
-             // return $(element).val() != '';$(element).val() != 'null';
-            //}).serialize();  
-            let formInput = $("#socialProfileForm :input").serialize();
+            let formInput = $("#socialProfileForm :input").filter(function (index, element) {
+            return $(element).val() != "null";
+            }).serialize();  
+           // let formInput = $("#socialProfileForm :input").serialize();
             //console.log("formInput:::"+formInput);
 
             if ($('#socialProfileForm').valid()) {
@@ -109,72 +143,80 @@
         });
     }
         });
-
-   // $("#socialProfileForm").validate({
-     //   rules: {
-     //       facebook_url: {
-     //           fbValidation: true
-    //        },
-     //       google_plus_url: {
-      //          gplusValidation: true
-      //      },
-      //      twitter_url: {
-        //        twitterValidation: true
-         //   },
-         //   linkedin_url: {
-           //     linkedinValidation: true
-           // },
-          //  youtube_url: {
-            //    utubeValidation: true
-           // },
-           // instagram_url: {
-             //   instagramValidation: true
-           // },
-           // flickr_url: {
-             //   flickrValidation: true
-            //}
-       // },
-       // messages: {
-        //    facebook_url: "Please enter valid facebook url",
-          //  google_plus_url: "Please enter valid google url",
-            //twitter_url: "Please enter valid twitter url",
-           // linkedin_url: "Please enter valid linked url",
-            //youtube_url: "Please enter valid youtube url",
-           // instagram_url: "Please enter valid instagram url",
-            //flickr_url: "Please enter valid flickr url"
-        //}
-    //});
+ 
+  $("#socialProfileForm").validate({
+        rules: {
+            facebook_url: {
+               fbValidation: true
+            },
+            google_plus_url: {
+                gplusValidation: true
+            },
+            twitter_url: {
+                twitterValidation: true
+            },
+            linkedin_url: {
+                linkedinValidation: true
+            },
+            youtube_url: {
+                utubeValidation: true
+            },
+           instagram_url: {
+                instagramValidation: true
+            },
+            flickr_url: {
+                flickrValidation: true
+            }
+        },
+        messages: {
+            facebook_url: "Please enter valid facebook url",
+            google_plus_url: "Please enter valid google url",
+            twitter_url: "Please enter valid twitter url",
+            linkedin_url: "Please enter valid linked url",
+            youtube_url: "Please enter valid youtube url",
+            instagram_url: "Please enter valid instagram url",
+            flickr_url: "Please enter valid flickr url"
+        }
+    });
 
     $.validator.addMethod("fbValidation",
         function (value, element) {
-            return /^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value);
-        });
+            if(value!='') {return /^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value);}
+            else{return true;}
+           });
 
     $.validator.addMethod("gplusValidation",
         function (value, element) {
-            return /^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value);
-        });
+            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value);}
+            else {return true;}
+         });
 
     $.validator.addMethod("twitterValidation",
         function (value, element) {
-            return /^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value);
+            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value);}
+            else{return true;}
         });
-
     $.validator.addMethod("linkedinValidation",
         function (value, element) {
-            return /(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);
+            if(value!=''){return /(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);}
+            else{return true;}
+                      
         });
     $.validator.addMethod("utubeValidation",
         function (value, element) {
-            return /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value);
-        });
+            if(value!=''){return /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value);}
+            else{return true;}
+           });
     $.validator.addMethod("instagramValidation",
         function (value, element) {
-            return /^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value);
+            if(value!='') {return /^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value);}
+            else{return true;}
+            
         });
     $.validator.addMethod("flickrValidation",
         function (value, element) {
-            return /^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value);
+            if(value!=''){return /^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value);}
+            else{return true;}
         });      
     });
 
@@ -234,6 +276,13 @@
                                                 aria-label="Username" aria-describedby="basic-addon1">
                                         </div>
                                     </div>
+                                    <div id="facebook_append2">
+                                    {{#ifCond vendorInfo.facebook_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
+                                    </div>
                                     <div id="facebook_append"> </div>
                                 </div>
                                 <div class="row">
@@ -252,6 +301,13 @@
                                                 onChange="validate_g+(this);" aria-label="Username" aria-describedby="basic-addon1">
                                         </div>
                                     </div>
+                                    <div id="google_append2">
+                                         {{#ifCond vendorInfo.google_plus_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
+                                    </div>
                                     <div id="google_append"> </div>
                                 </div>
                                 <div class="row">
@@ -268,6 +324,13 @@
                                             <input type="text" class="form-control social_input" id="twitter_url" name="twitter_url" value="{{vendorInfo.twitter_url}}"
                                                 aria-label="Username" aria-describedby="basic-addon1">
                                         </div>
+                                    </div>
+                                     <div id="twitter_append2">
+                                         {{#ifCond vendorInfo.twitter_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
                                     </div>
                                     <div id="twitter_append"> </div>
                                 </div>
@@ -286,6 +349,13 @@
                                                 aria-label="Username" aria-describedby="basic-addon1">
                                         </div>
                                     </div>
+                                    <div id="linkedin_append2">
+                                         {{#ifCond vendorInfo.linkedin_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
+                                    </div>
                                     <div id="linkedin_append"> </div>
                                 </div>
                                 <div class="row">
@@ -302,6 +372,13 @@
                                             <input type="text" class="form-control social_input" id="youtube_url" name="youtube_url" aria-label="Username" value="{{vendorInfo.youtube_url}}"
                                                 aria-describedby="basic-addon1">
                                         </div>
+                                    </div>
+                                    <div id="youtube_append2">
+                                         {{#ifCond vendorInfo.youtube_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
                                     </div>
                                     <div id="youtube_append"> </div>
                                 </div>
@@ -320,6 +397,13 @@
                                                 aria-label="Username" aria-describedby="basic-addon1">
                                         </div>
                                     </div>
+                                    <div id="instagram_append2">
+                                     {{#ifCond vendorInfo.instagram_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
+                                    </div>
                                     <div id="instagram_append"> </div>
                                 </div>
                                 <div class="row">
@@ -337,6 +421,13 @@
                                                 aria-label="Username" aria-describedby="basic-addon1">
 
                                         </div>
+                                    </div>
+                                      <div id="flickr_append2">
+                                     {{#ifCond vendorInfo.flickr_url '!=' 'null'}}
+                                    <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
+                                    {{else}}
+                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
+                                    {{/ifCond}}
                                     </div>
                                     <div id="flickr_append"> </div>
                                 </div>
