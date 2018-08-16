@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('TalkThread', {
+    return sequelize.define('TalkThreadUsers', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,15 +9,27 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        group_name: {
-            type: DataTypes.STRING(64),
-            field: 'group_name',
-            allowNull: true
+        thread_id: {
+            type: DataTypes.BIGINT,
+            field: 'thread_id',
+            allowNull: false,
+            references: {
+                model: 'talk_thread',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
-        talk_thread_status: {
-            type: DataTypes.INTEGER,
-            field: 'talk_thread_status',
-            allowNull: false
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false,
+            references: {
+                model: 'talk_thread',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         status: {
             type: DataTypes.INTEGER,
@@ -50,27 +62,27 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'talk_thread',
-        timestamps: false
-    });
+            tableName: 'talk',
+            timestamps: false
+        });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Talk = model.Talk;
-    const TalkThread = model.TalkThread;
     const TalkThreadUsers = model.TalkThreadUsers;
+    const TalkThread = model.TalkThread;
+    const User = model.User;
 
-    TalkThread.hasMany(TalkThreadUsers, {
-        foreignKey: 'talk_thread_id',
+    TalkThreadUsers.belongsTo(TalkThread, {
+        foreignKey: 'thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    TalkThread.hasMany(Talk, {
-        foreignKey: 'talk_thread_id',
+    TalkThreadUsers.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

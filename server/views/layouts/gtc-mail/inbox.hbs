@@ -1,12 +1,35 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<style>
+	.clickable-row {
+		cursor: pointer;
+	}
+</style>
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
-	})
+		$(".clickable-row").click(function () {
+			var statusObj = {
+				mail_status: 1
+			}
+			$.ajax({
+				url: 'api/user-mails/' + this.id,
+				type: 'PUT',
+				data: statusObj,
+				success: function (data) {
+					console.log(data);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			})
+			window.location = $(this).data("href");
+		});
+	});
+
 	function compose(e) {
 		window.location.href = '/gtc-mail/compose';
 	}
-    function refresh(e){
+	function refresh(e) {
 		location.reload(true);
 	}
 	function selectAll(ele) {
@@ -26,15 +49,16 @@
 		}
 	}
 	function deleteMail() {
-		var chkArray = [];
-		$(':checkbox:checked').each(function (i) {
-			chkArray.push($(this).val());
+       var chkArray = [];
+        $(":checkbox:checked").each(function(i) {
+            if ($(this).val() != "on") {
+				chkArray.push($(this).val());
+			}
 		});
-		var mail_id;
-		mail_id = chkArray.join(',');
 
 		if (chkArray.length == 1) {
-			$.ajax({
+		var mail_id = chkArray.join(',');
+			 $.ajax({
 				url: '/api/mail/delete/' + mail_id,
 				type: 'PUT',
 				success: function (result) {
@@ -44,10 +68,24 @@
 					console.log(error);
 				}
 			});
-		}
+		 }
 		else {
-			console.log("many were selected..");
-		}
+			var ids={
+				ids:JSON.stringify(chkArray)
+			};
+	
+            $.ajax({
+				url: '/api/mail/deleteMany',
+				type: 'PUT',
+				data: ids,
+				success: function (result) {
+					location.reload(true);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			});
+		}		
 	}
 </script>
 <div class="wrapper-content bg-gray">
@@ -116,21 +154,20 @@
 											</tr>
 										</thead>
 										<tbody>
-											{{#each inboxMail}}
-											{{#ifCond this.mail_status '==' ../mailStatus.READ}}
+											{{#each inboxMail}} {{#ifCond this.mail_status '==' ../mailStatus.READ}}
 											<tr style="background-color:rgba(0, 0, 0, 0.06)">
 												{{else}}
 												<tr>
-												{{/ifCond}}
-												<td scope="row">
-													<input type="checkbox" name="selected" value={{this.id}}>
-												</td>
-												<td scope="row">{{this.Mail.fromUser.first_name}}</td>
-												<td scope="row">{{this.Mail.subject}}</td>
-												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-												<td></td>
-											</tr>
-											{{/each}}
+													{{/ifCond}}
+													<td scope="row">
+														<input type="checkbox" name="selected" value={{this.id}}>
+													</td>
+													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>
+													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.subject}}</td>
+													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'></td>
+												</tr>
+												{{/each}}
 										</tbody>
 									</table>
 								</div>
