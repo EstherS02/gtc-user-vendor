@@ -24,11 +24,8 @@ var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
 var app = express();
-var server = http.createServer(app);
 
-//Socket IO connect with server
-var io = require('socket.io')(server);
-socketMsg(io);
+
 
 
 
@@ -90,6 +87,11 @@ agenda.on('ready', function() {
 });
 
 var httpServer = http.createServer(app);
+
+//Socket IO connect with server
+var io = require('socket.io')(httpServer);
+socketMsg(io);
+
 if (env === 'development') {
 	var httpsServer = https.createServer(ssl_credentials, app);
 }

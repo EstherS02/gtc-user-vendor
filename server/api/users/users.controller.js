@@ -548,4 +548,54 @@ export function forgotPassword(req, res) {
         })
 }
 
+export function userOnline(user){
+    var queryObj = {
+        availability_status: 1
+    }
+    service.findRow('User', {
+        id: user.id
+    }, [])
+        .then(function (row) {
+            if (row) {
+            var rowJSON = JSON.parse(row);
+            service.updateRow('User', queryObj, rowJSON.id)
+                .then(function(update) {
+                    console.log("User Online updated");
+                }).catch(function(err) {
+                    console.log("User Online updation failed");
+                })
+            }
+            else {
+                console.log("user not found");
+            }
+        }).catch(function (err) {
+            console.log("Server error");
+        })
+}
+
+export function userOffline(user){
+    var queryObj = {
+        availability_status: 0
+    }
+    service.findRow('User', {
+        id: user.id
+    }, [])
+        .then(function (row) {
+            if (row) {
+            var rowJSON = JSON.parse(row);
+            service.updateRow('User', queryObj, rowJSON.id)
+                .then(function(update) {
+                    console.log("User Offline updated");
+                }).catch(function(err) {
+                    console.log("User Offline updation failed");
+                })
+            }
+            else {
+                console.log("user not found");
+            }
+        }).catch(function (err) {
+            console.log("Server error");
+        })
+}
+
 exports.authenticate = authenticate;

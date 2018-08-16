@@ -26,6 +26,9 @@
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
                 window.location = "/";
+                ///////////////////////////
+                /// Socket.IO functions User-JOIN///
+                ///////////////////////////
             }).catch(function(error) {
                 $('#loginErrorMessage').text(error.responseText);
             });

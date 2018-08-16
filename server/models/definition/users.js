@@ -49,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
+        availability_status: {
+            type: DataTypes.INTEGER,
+            field: 'availability_status',
+            allowNull: false
+        },
         salt: {
             type: DataTypes.STRING(128),
             field: 'salt',

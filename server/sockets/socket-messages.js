@@ -1,5 +1,8 @@
-var msgCreate;
 import _ from 'lodash';
+var msgCreate;
+var userJoin;
+var userLeave;
+
 export function socketMsg(io) {
 	console.log("Socket.IO is working");
 
@@ -15,14 +18,16 @@ export function socketMsg(io) {
 			} else {
 				console.log("user already connected");
 			}
+			userJoin(user);
 			//SET USER AS ONLINE
 		});
 
 		// {id: user_id}
 		socket.on('user:leave', function(user) {
 			socket.leave(user.id);
-			var userIndex = userArray.indexOf(user._id.toString());
+			var userIndex = userArray.indexOf(user.id.toString());
 			userArray.splice(userIndex, 1);
+			userLeave(user);
 			//SET USER AS OFFLINE
 		});
 
