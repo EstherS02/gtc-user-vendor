@@ -35,12 +35,12 @@ module.exports = (sequelize, DataTypes) => {
             field: 'talk_status',
             allowNull: false
         },
-        talk_thread_user_id: {
+        talk_thread_id: {
             type: DataTypes.BIGINT,
-            field: 'talk_thread_user_id',
+            field: 'talk_thread_id',
             allowNull: false,
             references: {
-                model: 'talk_thread_user',
+                model: 'talk_thread',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
@@ -86,13 +86,12 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Talk = model.Talk;    
-    const TalkThreadUsers = model.TalkThreadUsers;
+    const Talk = model.Talk; 
     const TalkThread = model.TalkThread;
     const User = model.User;
 
-    Talk.belongsTo(TalkThreadUsers, {
-        foreignKey: 'talk_thread_user_id',
+    Talk.belongsTo(TalkThread, {
+        foreignKey: 'talk_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
