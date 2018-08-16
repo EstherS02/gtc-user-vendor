@@ -11,9 +11,33 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
+							<h2>{{message.subject}}</h2>
+							<hr/>
 						</div>
 						<div class="content-body">
-                             <h1>hello</h1>
+							<div class="row">
+								<div class="col-md-7">
+									From: {{message.fromUser.first_name}}
+									To: me 
+								</div>
+								<div class="col-md-5">
+									<p class="pull-right">
+										{{formatTime message.created_on "MMM D, YYYY"}}
+									</p>
+								</div>
+							</div>
+							<div class="row justify-content-md-center">
+								<div class="col-sm-8" style="padding:20px;">
+									<div class="row justify-content-md-center">
+										{{message.message}}
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-7">
+									Click here to <a href="">Reply</a>
+								</div>
+							</div>
 
 						</div>
 					</div>

@@ -281,8 +281,8 @@
 	padding-left: 0 !important;
 }
 .gtc-p-l-r {
-	padding-left: 25px;
-	padding-right: 25px;
+	padding-left: 25px !important;
+	padding-right: 25px !important;
 }
 /* MARGINS & PADDINGS */
 .p-xxs {

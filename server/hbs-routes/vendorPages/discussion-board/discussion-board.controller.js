@@ -100,24 +100,42 @@ export function vendorDiscussion(req, res) {
 				return callback(null);
 			});
 		},
-		discussion: function(callback) {
-			service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr)
-				.then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
+		discussion: function(callback){
+			model['DiscussionBoardPost'].findAll({
+				where:queryObj,
+				include: includeArr,
+				offset: offset,
+            	limit: limit,
+            	order: [
+			    [ field, order ],
+			    [ model['DiscussionBoardPostComment'],field, order]
+			  ]
+			}).then(function(rows){
+				console.log("---------------===================",rows)
+				var result=[];
+				var convertRowsJSON = [];
+	            if (rows.length > 0) {
+	                convertRowsJSON = JSON.parse(JSON.stringify(rows));
+	                model['DiscussionBoardPost'].count({
+	                    where: queryObj
+	                }).then(function(count) {
+	                    result.count = count;
+	                    result.rows = convertRowsJSON;
+				console.log("---------------===================",result)
+
+	                    return callback(null,result);
+	                });
+	                 }
+	                else {
+	                result.count = 0;
+	                result.rows = convertRowsJSON;
+	                return callback(null,result);
+	            }
+			}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		// mostPopular:function(callback){
-		// 	service.findRows(discussModel, queryObj, offset, limit, field, order,includeArr1)
-		// 		.then(function(response) {
-		// 			return callback(null, response);
-		// 		}).catch(function(error) {
-		// 			console.log('Error :::', error);
-		// 			return callback(null);
-		// 		});
-		// },
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -128,7 +146,6 @@ export function vendorDiscussion(req, res) {
 			}, {
 				model: model['VendorVerification'],
 				where: {
-					// vendor_verified_status: status['ACTIVE']
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
 				required: false
@@ -183,7 +200,7 @@ export function vendorDiscussion(req, res) {
 		
 		if (!err) {
 			var mostPopular = _.groupBy(results.discussion, 'DiscussionBoardPostLike');
-			console.log("------------==================-----------",results.discussion.count)
+			// console.log("------------==================-----------",results.discussion.count)
 			if (results.discussion) {
 			var maxSize = 5;//results.discussion.count / limit;
 			// if (results.discussion.count % limit)
