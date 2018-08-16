@@ -137,6 +137,7 @@ export function message(req, res) {
 	var LoggedInUser = {}, queryObj = {}, bottomCategory = {}, mail_id;
 	var includeArr = [], messageArr = [];
 	var mailModal = "Mail";
+	var messageUserModel = "UserMail";
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -191,8 +192,22 @@ export function message(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				})
+		},
 
+		messageUserId: function (callback) {
 
+			queryObj = {
+				mail_id: req.params.id,
+				user_id: req.user.id
+			}
+			service.findRow(messageUserModel, queryObj, [])
+				.then(function (messageUser) {
+					return callback(null, messageUser.id);
+				})
+				.catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				})
 		}
 	},
 		function (err, results) {
@@ -206,6 +221,7 @@ export function message(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
 					message: results.message,
+					messageUserId: results.messageUserId,
 					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
