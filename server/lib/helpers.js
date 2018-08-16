@@ -509,6 +509,3 @@ Handlebars.registerHelper('compareSalePerformance', function(obj, compareProduct
 
     return new Handlebars.SafeString(ret);
 });
-
-
-  
