@@ -156,7 +156,7 @@ module.exports.initRelations = () => {
     const Review = model.Review;
     const Subscription = model.Subscription;
     const Talk = model.Talk;
-    const TalkThread = model.TalkThread;
+    const TalkThreadUsers = model.TalkThreadUsers;
     const Ticket = model.Ticket;
     const TicketThread = model.TicketThread;
     const UserMail = model.UserMail;
@@ -253,14 +253,8 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.hasMany(Talk, {
-        foreignKey: 'to_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    User.hasMany(TalkThread, {
-        foreignKey: 'from_id',
+    User.hasMany(TalkThreadUsers, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -411,13 +405,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.belongsToMany(TalkSetting, {
+   /* User.belongsToMany(TalkSetting, {
         through: Talk,
         foreignKey: 'from_id',
         otherKey: 'talk_setting_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    });*/
 
     User.belongsToMany(User, {
         as: 'fromUser',
@@ -428,38 +422,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    User.belongsToMany(TalkThread, {
-        through: Talk,
-        foreignKey: 'from_id',
-        otherKey: 'last_thread_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    User.belongsToMany(TalkSetting, {
+  /*  User.belongsToMany(TalkSetting, {
         through: Talk,
         foreignKey: 'to_id',
         otherKey: 'talk_setting_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
-
-    User.belongsToMany(User, {
-        as: 'toUser',
-        through: Talk,
-        foreignKey: 'to_id',
-        otherKey: 'from_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    User.belongsToMany(TalkThread, {
-        through: Talk,
-        foreignKey: 'to_id',
-        otherKey: 'last_thread_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    });*/
 
     User.belongsToMany(Ticket, {
         through: TicketThread,
