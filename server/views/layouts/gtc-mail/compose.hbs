@@ -134,7 +134,10 @@
 	$(function () {
 
         var data = getUrlQueryString();
-		
+		//var text = data.text;
+		//text.replace('%20', ' ');
+		//console.log('data.text',data.text)
+		//console.log('text',text)
 		var newOption = new Option(data.text, data.id, false, false);
 		$('#toAddress').append(newOption).trigger('change');
 
