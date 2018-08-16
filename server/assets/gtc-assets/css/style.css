@@ -1534,7 +1534,7 @@ ul.inner-list-view li a {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: black;
+  background-color: transparent;
 }
 
 /* Modal Content */
@@ -1550,7 +1550,7 @@ ul.inner-list-view li a {
 
 /* The Close Button */
 .close-box {
-  color: white;
+  color: black;
   position: absolute;
   top: 10px;
   right: 25px;
