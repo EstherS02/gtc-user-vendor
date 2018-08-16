@@ -185,7 +185,6 @@ export function message(req, res) {
 
 			service.findIdRow(mailModal, mail_id, messageArr)
 				.then(function (message) {
-					console.log("==========================", message);
 					return callback(null, message);
 				})
 				.catch(function (error) {
