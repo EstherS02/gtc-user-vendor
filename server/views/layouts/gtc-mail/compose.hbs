@@ -9,6 +9,8 @@
 </style>
 
 <script type="text/javascript">
+var userInfo = {{{DisplayJSON LoggedInUser}}}
+
 	$(document).ready(function () {
 
 		var message;
@@ -85,6 +87,7 @@
 					$('#dialog').append(message)
 					$("#dialog").dialog({
   					modal: true,
+  					title: "Success:",
   					close:function(ev, ui) 
 	                	{ 
 	                	$(".wrapper-content").attr('style','opacity:1; z-index:100;');	
@@ -107,9 +110,12 @@
 			if ($('#subject').val().length == 0) {
 				message = '<p>Please enter subject to save in draft.</p>';
 				$('#dialog').empty();
+				$('#dialog').text('Success:');
 				$('#dialog').append(message )
 				$(".wrapper-content").attr('style','opacity:.30; z-index:100;');
-				$("#dialog").dialog();
+				$("#dialog").dialog({
+					title: "Success:",
+				});
 				return;
 			}
 
@@ -128,18 +134,28 @@
 					console.log(error);
 				}
 			})
-		})
+		});
+
+		$('#discard').click(function () {
+			$("#toAddress").select2("val", "");
+			$("#subject").attr('value', "");
+			$('#message').summernote('code', '');
+			
+		});
+
 	});
+
 
 	$(function () {
 
         var data = getUrlQueryString();
-		//var text = data.text;
-		//text.replace('%20', ' ');
-		//console.log('data.text',data.text)
-		//console.log('text',text)
-		var newOption = new Option(data.text, data.id, false, false);
+		
+		if(data.text){
+			var text = data.text;
+		text = text.replace(/%20/g, ' ');
+		var newOption = new Option(text, data.id, false, false);
 		$('#toAddress').append(newOption).trigger('change');
+		}
 
 		$(".select2-hidden-accessible").prop("disabled", true);
 		$("#toAddress").select2({
@@ -159,6 +175,7 @@
 					return query;
 				},
 				processResults: function (data) {
+					console.log(data)
 					return {
 						results: $.map(data, function (item) {
 							return {
@@ -226,7 +243,7 @@
 										</div>
 										<button type="submit" class="btn btn-primary btn-sm" id="sent">Send</button>
 										<button type="submit" class="btn btn-secondary btn-sm" id="draft">Draft</button>
-										<button type="reset" class="btn btn-gray btn-sm">Discard</button>
+										<button type="reset"  class="btn btn-gray btn-sm" id="discard">Discard</button>
 										<div></div>
 									</div>
 								</div>

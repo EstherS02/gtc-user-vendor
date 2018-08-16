@@ -13,6 +13,6 @@ router.put('/delete/:id', auth.hasRole(roles['USER']), controller.softDelete);
 router.put('/deleteMany', auth.hasRole(roles['USER']), controller.softDeleteMany);
 router.delete('/remove/:id', auth.hasRole(roles['USER']), controller.remove);
 router.delete('/removeMany', auth.hasRole(roles['USER']), controller.removeMany);
-router.get('/autoCompleteFirstName', controller.autoCompleteFirstName);
+router.get('/autoCompleteFirstName',auth.isAuthenticated(), controller.autoCompleteFirstName);
 
 module.exports = router;

@@ -203,8 +203,6 @@ export function removeMany(req, res) {
 	var queryObj = {};
 
 	var ids = JSON.parse(req.body.ids);
-
-	queryObj['ids'] = ids;
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = req.user.id;
 	queryObj['$or'] = [{
@@ -214,20 +212,23 @@ export function removeMany(req, res) {
 	}, {
 		mail_status: mailStatus['DELETED']
 	}];
+	_.forOwn(ids, function(index) {
+		queryObj['id'] = index;
+		mailService.removeMail(queryObj)
+			.then((response) => {
+				if (response) {
+					return;
+				} else {
+					return;
+				}
+			})
+			.catch((error) => {
+				console.log("Error:::", error);
+				return res.status(500).send("Internal server error");
+			});
+	});
+	return res.status(200).send("Mail deleted successfully.");
 
-
-	/*mailService.removeManyMail(queryObj)
-		.then((response) => {
-			if (response) {
-				return res.status(200).send("Mail deleted successfully.");
-			} else {
-				return res.status(404).send("not found");
-			}
-		})
-		.catch((error) => {
-			console.log("Error:::", error);
-			return res.status(500).send("Internal server error");
-		});*/
 }
 
 export function autoCompleteFirstName(req,res){
@@ -237,6 +238,10 @@ export function autoCompleteFirstName(req,res){
 		queryObj['first_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
+		queryObj['id'] = {
+			$ne:req.user.id
+		}
+
 	}
 	model['User'].findAll({
         where: queryObj,
