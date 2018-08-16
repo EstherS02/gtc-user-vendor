@@ -116,25 +116,145 @@
 			}
 		});
 
+		function calHoursAgo(datetime){
+			var now = new Date();
+			var createdAt = new Date(datetime);
+			var sec_num = (now - createdAt) / 1000;
+			var days = Math.floor(sec_num / (3600 * 24));
+			var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+			var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+			var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
+
+			if (hours < 10) {
+				hours = "0" + hours;
+			}
+			if (minutes < 10) {
+				minutes = "0" + minutes;
+			}
+			if (seconds < 10) {
+				seconds = "0" + seconds;
+			}
+
+			return days + ' days ' + hours + ' hrs ' + minutes + ' min ago';
+		}
+
+		function getStatus(statusCode){
+			var status = {
+				1: "ACTIVE",
+				2: "INACTIVE",
+				3: "DELETED",
+				4: "OPEN",
+				5: "HOLD",
+				6: "CLOSED"
+			}
+			return status[statusCode] ? status[statusCode] : "OPEN";
+		}
+
 		function getTopSellingCities(){
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/top-selling-cities",
-				success: function(data) {				
-					console.log('top-selling-cities', data);
-					var topCities = [];
-					data.forEach(function(aObj){
-						topCities.push({
-							city: aObj["Product.city"],
-							amount: aObj["total_sales"]
-						});
-					});
+				success: function(data) {
+					data.forEach(function(aObj){						
+						var ulTopCities = $("#topCities");
+						var tag = `<div class="user-details">
+									<div class="col-md-3 latest-tickets">
+										<img src="../../img/img_avatar.png" class="avatar-img">
+									</div>
+									<div class="col-md-9" style="float: right;">
+										<p class="lt-user-name">`+aObj["Product.city"]+`</p>
+										<p class="ts-rate">Total sales:
+										<span>`+aObj["total_sales"]+`</span>
+										</p>
+									</div>
+								</div>`
+						ulTopCities.append(tag);
+					});					
 				}
 			});
 		}	
 
-		getTopSellingCities();	
+		function getActiveBuyers(){
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/active-buyers",
+				success: function(data) {
+					data.forEach(function(aObj){						
+						var activeBuyerList = $("#activeBuyers");
+						var tag =  `<div class="user-details">
+										<div class="col-md-3 latest-tickets">
+											<img src="../../img/img_avatar.png" class="avatar-img">
+										</div>
+										<div class="col-md-9" style="float: right;">
+											<p class="lt-user-name">`+aObj["User.first_name"]+`</p>
+											<p class="ts-rate">`+calHoursAgo(aObj["created_on"])+`</p>
+										</div>
+									</div>`
+						activeBuyerList.append(tag);
+					});
+				}
+			});
+		}
 
+		function getLatestTickets(){
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/latest-tickets",
+				success: function(data) {
+					data.forEach(function(aObj){						
+						var latestTicketList = $("#latestTickets");
+						var tag =  `<div class="user-details">
+										<div class="col-md-3 latest-tickets">
+											<img src="../../img/img_avatar.png" class="avatar-img">
+										</div>
+										<div class="col-md-9" style="float: right;">
+											<p class="lt-user-name">`+aObj["User.first_name"]+`</p>
+											<p>subject:
+												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+aObj["message"]+`</span>
+											</p>
+											<p>Status:
+												<span class="lt-status">`+getStatus(aObj["status"])+`</span>
+											</p>
+										</div>
+									</div>`
+						latestTicketList.append(tag);
+					});
+				}
+			});
+		}
+
+		function getLatestRefunds(){
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/latest-refunds",
+				success: function(data) {
+					data.forEach(function(aObj){						
+						var latestRefundList = $("#latestRefunds");
+						var tag =  `<div class="user-details">
+										<div class="col-md-3 latest-tickets">
+											<img src="../../img/img_avatar.png" class="avatar-img">
+										</div>
+										<div class="col-md-9" style="float: right;">
+											<p class="lt-user-name">`+aObj["first_name"]+`</p>
+											<p>subject:
+												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ `-` +`</span>
+											</p>
+											<p>Status:
+											<span class="lt-status">`+getStatus(aObj["status"])+`</span>
+											</p>
+										</div>
+									</div>`
+						latestRefundList.append(tag);
+					});
+				}
+			});
+		}
+
+		getTopSellingCities();	
+		getActiveBuyers();
+		getLatestTickets();
+		getLatestRefunds();
+		
 	});	
 </script>
 
@@ -284,108 +404,7 @@
 															</div>
 
 														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #3</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">60%</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #4</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">54%</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #5</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">32%</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-
-														</div>
-													</div>
-
-													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #6</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">20%</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #7</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">10%</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-
-														</div>
-													</div> -->
+													</div>-->
 												</div>
 												</div>
 												<p class="lt-more">
@@ -434,8 +453,8 @@
 											<div class="col-md-6" style="padding-right: 0px;">
 												<div class="outside-border">
 													<p class="latest-tickets-title">Latest Tickets</p>
-													<div class="row landing-tables">
-														<div class="user-details">
+													<div class="row landing-tables" id="latestTickets">
+														<!-- <div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
 															</div>
@@ -448,72 +467,8 @@
 																	<span class="lt-status">Open</span>
 																</p>
 															</div>
-														</div>
+														</div> -->
 													</div>
-													<div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<!-- <div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<div class="row landing-tables">
-
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-															<p>subject:
-																<span class="lt-user-name">1213345</span>
-															</p>
-															<p>Status:
-																<span class="lt-status">Open</span>
-															</p>
-														</div>
-
-													</div> -->
 												</div>
 												<p class="lt-see-all">
 													<a href="#" style="color: white;">See All &#9658;</a>
@@ -522,8 +477,8 @@
 											<div class="col-md-6" style="padding-right: 0px;">
 												<div class="outside-border">
 													<p class="latest-refund-title">Latest Refund</p>
-													<div class="row landing-tables">
-														<div class="user-details">
+													<div class="row landing-tables" id="latestRefunds">
+														<!-- <div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
 															</div>
@@ -536,72 +491,8 @@
 																	<span class="lt-status">Open</span>
 																</p>
 															</div>
-														</div>
+														</div> -->
 													</div>
-													<div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<!-- <div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<div class="row landing-tables">
-														<div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div>
-													</div>
-													<div class="row landing-tables">
-
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-															<p>subject:
-																<span class="lt-user-name">1213345</span>
-															</p>
-															<p>Status:
-																<span class="lt-status">Open</span>
-															</p>
-														</div>
-
-													</div> -->
 												</div>
 												<p class="lt-see-all">
 													<a href="#" style="color: white;">See All &#9658;</a>
@@ -674,41 +565,7 @@
 										<div class="col-md-6" style="padding: 10px;">
 											<div class="outside-border">
 												<p class="most-active-buyers">Most Active Buyers</p>
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p>1 hour ago</p>
-														</div>
-													</div>
-												</div>
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p>1 hour ago</p>
-														</div>
-													</div>
-												</div>
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p>1 hour ago</p>
-														</div>
-													</div>
+												<div class="row landing-tables" id="activeBuyers">
 												</div>
 												<!-- <div class="row landing-tables">
 													<div class="user-details">
@@ -721,19 +578,7 @@
 															<p>1 hour ago</p>
 														</div>
 													</div>
-												</div>
-												<div class="row landing-tables">
-
-													<div class="col-md-3 latest-tickets">
-														<img src="../../img/img_avatar.png" class="avatar-img">
-													</div>
-													<div class="col-md-9" style="float: right;">
-														<p class="lt-user-name">User Name</p>
-
-														<p>1 hour ago</p>
-													</div>
-
-												</div> -->
+												</div>-->
 											</div>
 											<p class="lt-see-all">
 												<a href="#" style="color: white;">See All &#9658;</a>
@@ -742,23 +587,8 @@
 										<div class="col-md-6" style="padding: 10px 13px 10px 5px;">
 											<div class="outside-border">
 												<p class="top-selling-cities">Top Selling Cities</p>
-												<!-- {{#each topCities as |item|}}
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">{{item.city}}</p>
-
-															<p class="ts-rate">Total sales:
-																<span>{{currency item.amount '$'}}</span>
-															</p>
-														</div>
-													</div>
-												</div>
-												{{/each}} -->
-												<div class="row landing-tables">
+												<div class="row landing-tables" id="topCities"></div>
+												<!-- <div class="row landing-tables">
 													<div class="user-details">
 														<div class="col-md-3 latest-tickets">
 															<img src="../../img/img_avatar.png" class="avatar-img">
@@ -771,50 +601,7 @@
 															</p>
 														</div>
 													</div>
-												</div>
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../.space_trap./img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p class="ts-rate">Total sales:
-																<span> 101,010</span>
-															</p>
-														</div>
-													</div>
-												</div>
-												<div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p class="ts-rate">Total sales:
-																<span> 101,010</span>
-															</p>
-														</div>
-													</div>
-												</div>
-												<div class="row landing-tables">
-
-													<div class="col-md-3 latest-tickets">
-														<img src="../../img/img_avatar.png" class="avatar-img">
-													</div>
-													<div class="col-md-9" style="float: right;">
-														<p class="lt-user-name">User Name</p>
-
-														<p class="ts-rate">Total sales:
-															<span> 101,010</span>
-														</p>
-													</div>
-
-												</div>
-											</div>
+												</div> -->											
 											<p class="lt-see-all">
 												<a href="#" style="color: white;">See All &#9658;</a>
 											</p>

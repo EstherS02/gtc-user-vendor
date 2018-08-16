@@ -74,13 +74,6 @@ module.exports.initRelations = () => {
     const TalkThreadUsers = model.TalkThreadUsers;
     const TalkThread = model.TalkThread;
     const User = model.User;
-    const Talk = model.Talk;
-
-    TalkThreadUsers.hasMany(Talk, {
-        foreignKey: 'talk',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
     TalkThreadUsers.belongsTo(TalkThread, {
         foreignKey: 'thread_id',
