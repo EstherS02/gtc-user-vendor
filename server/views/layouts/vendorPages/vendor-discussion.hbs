@@ -545,13 +545,13 @@ aria-hidden="true">
 									<div class="dis_side_bar">
 										<p class="discussion_most_head">MOST POPULAR POSTS</p>
 										<ul>
-											{{#if discussionBoard.rows}}
-											{{#each discussionBoard.rows}}
-											{{#ifCond @index "<" 5}}
+											{{#if mostPopular}}
+											{{#each mostPopular}}
+											{{!-- {{#ifCond @index "<" 5}} --}}
 											{{#if this.post_message}}
 											<li>{{this.post_message}}</li>
 											{{/if}}
-											{{/ifCond}}
+											{{!-- {{/ifCond}} --}}
 											{{/each}}
 											{{else}}
 											<li>No blog Found</li>

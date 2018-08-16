@@ -24,13 +24,6 @@ var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
 var app = express();
-var server = http.createServer(app);
-
-//Socket IO connect with server
-var io = require('socket.io')(server);
-socketMsg(io);
-
-
 
 var hbs = exphbs.create({
 	extname: '.hbs',

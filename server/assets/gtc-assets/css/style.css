@@ -1577,3 +1577,7 @@ ul.inner-list-view li a {
   opacity: 0.6;
 }
 /*end lightbox css*/
+.select2-container--default .select2-selection--multiple{
+	    background-color: #f3f3f2 !important;
+	    border:none !important;
+}
