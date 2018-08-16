@@ -26,12 +26,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         stripe_card_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'stripe_card_id',
             allowNull: true
         },
         stripe_customer_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'stripe_customer_id',
             allowNull: true
         },
@@ -44,6 +44,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        card_details: {
+            type: DataTypes.TEXT('medium'),
+            field: 'card_details',
+            allowNull: true
+        },
+        is_primary: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_primary',
+            defaultValue: false
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -81,26 +91,10 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const PaymentSetting = model.PaymentSetting;
-    const OrderPayment = model.OrderPayment;
     const User = model.User;
-    const Order = model.Order;
-
-    PaymentSetting.hasMany(OrderPayment, {
-        foreignKey: 'payment_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
 
     PaymentSetting.belongsTo(User, {
         foreignKey: 'user_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    PaymentSetting.belongsToMany(Order, {
-        through: OrderPayment,
-        foreignKey: 'payment_id',
-        otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

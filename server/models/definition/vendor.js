@@ -30,6 +30,27 @@ module.exports = (sequelize, DataTypes) => {
             field: 'contact_email',
             allowNull: true
         },
+        address: {
+            type: DataTypes.STRING(255),
+            field: 'address',
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING(128),
+            field: 'city',
+            allowNull: false
+        },
+        province_id: {
+            type: DataTypes.BIGINT,
+            field: 'province_id',
+            allowNull: false,
+            references: {
+                model: 'state',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         base_location: {
             type: DataTypes.BIGINT,
             field: 'base_location',
@@ -41,6 +62,21 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        about: {
+            type: DataTypes.TEXT,
+            field: 'about',
+            allowNull: true
+        },
+        latitude: {
+			type: DataTypes.DECIMAL,
+			field: 'latitude',
+			allowNull: true
+        },
+        longitude: {
+			type: DataTypes.DECIMAL,
+			field: 'longitude',
+			allowNull: true
+		},
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -152,20 +188,22 @@ module.exports.initRelations = () => {
     const BusinessHour = model.BusinessHour;
     const Coupon = model.Coupon;
     const DiscussionBoard = model.DiscussionBoard;
+    const DiscussionBoardPost = model.DiscussionBoardPost;
     const Product = model.Product;
     const TalkSetting = model.TalkSetting;
     const VendorFollower = model.VendorFollower;
     const VendorNotificationSetting = model.VendorNotificationSetting;
     const VendorPlan = model.VendorPlan;
+    const VendorRating = model.VendorRating;
     const VendorShippingLocation = model.VendorShippingLocation;
     const VendorVerification = model.VendorVerification;
     const User = model.User;
     const Country = model.Country;
     const Currency = model.Currency;
+    const TermsAndCond = model.TermsAndCond;
     const Timezone = model.Timezone;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
     const State = model.State;
@@ -184,6 +222,12 @@ module.exports.initRelations = () => {
     });
 
     Vendor.hasMany(DiscussionBoard, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(DiscussionBoardPost, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -213,7 +257,19 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Vendor.hasMany(TermsAndCond, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Vendor.hasMany(VendorPlan, {
+        foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.hasMany(VendorRating, {
         foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -255,6 +311,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Vendor.belongsToMany(Timezone, {
+        through: BusinessHour,
+        foreignKey: 'vendor_id',
+        otherKey: 'timezone_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Vendor.belongsToMany(Marketplace, {
         through: Product,
         foreignKey: 'vendor_id',
@@ -270,14 +334,6 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    /*Vendor.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'vendor_id',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
 
     Vendor.belongsToMany(Category, {
         through: Product,
@@ -323,6 +379,14 @@ module.exports.initRelations = () => {
         through: VendorPlan,
         foreignKey: 'vendor_id',
         otherKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.belongsToMany(User, {
+        through: VendorRating,
+        foreignKey: 'vendor_id',
+        otherKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

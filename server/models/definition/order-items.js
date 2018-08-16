@@ -36,22 +36,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'quantity',
             allowNull: false
         },
-        coupon_id: {
-            type: DataTypes.BIGINT,
-            field: 'coupon_id',
-            allowNull: true,
-            references: {
-                model: 'coupon',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        coupon_amount: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'coupon_amount',
-            allowNull: true
-        },
         tax_id: {
             type: DataTypes.BIGINT,
             field: 'tax_id',
@@ -68,10 +52,35 @@ module.exports = (sequelize, DataTypes) => {
             field: 'tax_amount',
             allowNull: true
         },
+        subtotal: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'subtotal',
+            allowNull: false
+        },
+        shipping_total: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'shipping_total',
+            allowNull: false
+        },
         final_price: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'final_price',
             allowNull: false
+        },
+        reason_for_cancellation: {
+            type: DataTypes.STRING(64),
+            field: 'reason_for_cancellation',
+            allowNull: true
+        },
+        order_item_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_item_status',
+            allowNull: true
+        },
+        cancelled_on: {
+            type: DataTypes.DATE,
+            field: 'cancelled_on',
+            allowNull: true
         },
         status: {
             type: DataTypes.INTEGER,
@@ -123,16 +132,10 @@ module.exports.initRelations = () => {
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    }); 
 
     OrderItem.belongsTo(Product, {
         foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    OrderItem.belongsTo(Coupon, {
-        foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -142,5 +145,4 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
 };

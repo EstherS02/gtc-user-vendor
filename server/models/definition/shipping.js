@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         provider_name: {
             type: DataTypes.STRING(128),
             field: 'provider_name',
-            allowNull: false
+            allowNull: true
         },
         tracking_url: {
             type: DataTypes.TEXT,

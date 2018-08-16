@@ -1,4 +1,5 @@
 /* eslint new-cap: "off", global-require: "off" */
+
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Address', {
         id: {
@@ -27,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         company_name: {
             type: DataTypes.STRING(128),
             field: 'company_name',
-            allowNull: false
+            allowNull: true
         },
         address_line1: {
             type: DataTypes.STRING(255),
@@ -75,6 +76,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+        },
+        first_name: {
+            type: DataTypes.STRING(255),
+            field: 'first_name',
+            allowNull: true
+        },
+        last_name: {
+            type: DataTypes.STRING(255),
+            field: 'last_name',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -165,7 +176,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'Address1',
+        as: 'shippingAddress',
         through: Order,
         foreignKey: 'shipping_address_id',
         otherKey: 'billing_address_id',
@@ -190,7 +201,7 @@ module.exports.initRelations = () => {
     });
 
     Address.belongsToMany(Address, {
-        as: 'Address2',
+        as: 'billingAddress',
         through: Order,
         foreignKey: 'billing_address_id',
         otherKey: 'shipping_address_id',

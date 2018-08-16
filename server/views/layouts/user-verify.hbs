@@ -1,0 +1,80 @@
+{{> header/top-header LoggedInUser = LoggedInUser}}
+<style type="text/css">
+.loader {
+	border: 16px solid #736DE5;
+	border-radius: 50%;
+	border-top: 16px solid #E7EEEF;
+	width: 20px;
+	height: 20px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */	
+	animation: spin 2s linear infinite;
+}
+
+.row.min {
+	height: 100vh;
+}
+
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+</style>
+
+<script type="text/javascript">
+	function getParameterByName(name, url) {
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+
+	$(document).ready(function() {
+		var email = getParameterByName('email');
+		var token = getParameterByName('email_verified_token');
+
+		if (email && token) {
+			var obj = {};
+			obj['email'] = email;
+			obj['email_verified_token'] = token;
+			$.ajax({
+				type: 'PUT',
+				url: '/api/users/user-authenticate',
+				data: obj,
+				success: function(data, text, request) {
+					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'>Your account has been verified successfully !. <a href='" + window.location.origin + "''>redirect to home</a></p>");
+					var timer = setTimeout(function() {
+						window.location.href = "/";
+					}, 10000);
+
+				},
+				error: function(request, status, error) {
+					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'> " + request.responseText + ". <a href='" + window.location.origin + "'>redirect to home</a></p>");
+				}
+			});
+		} else {
+			window.location.href = "/";
+		}
+	});
+</script>
+
+<section class="row1">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="verifyMsg">
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{{> footer/bottom-footer}}

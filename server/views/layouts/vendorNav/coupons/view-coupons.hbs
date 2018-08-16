@@ -1,0 +1,232 @@
+<script type="text/javascript">
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				console.log(i)
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+
+	function changeStatus(e) {
+		window.location.href = '/coupons?status=' + e.value;
+	}
+
+	function edit(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+		var selected;
+		selected = chkArray.join(',');
+		if (selected.length > 0) {
+			window.location.href = '/coupons/edit-coupons?id=' + selected;
+		} else {
+			// alert("Please at least check one of the checkbox");
+			ouputErrorPopup("Please at least check one of the checkbox");
+		}
+	}
+	function create(e) {
+		window.location.href = '/coupons/add-coupon';
+	}
+
+  function ouputErrorPopup(data) {
+      $('#gtc-coupon-alert').prop('disabled', false);
+      $('#gtc-coupon-alert').removeClass('alert-success').addClass('alert-danger');
+      $('#gtc-coupon-alert .coupon-message').text(data);
+      $("#gtc-coupon-alert").fadeTo(7000, 500).slideUp(500, function () {
+        $("#gtc-coupon-alert").slideUp(500);
+    });
+  }
+  $(document).ready(function(){
+  	$('#gtc-coupon-alert').hide();
+  });
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+						</div>
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-12" style="background-color: #fff;">
+									<p class="vend_edit_lists_pstyle"></p>
+									{{!-- <div class="row">
+										<div class="col-md-10">
+											<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" />
+											<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
+												<option disabled selected>CHANGE STATUS</option>
+												<option value="ACTIVE">Active</option>
+												<option value="INACTIVE">InActive</option>
+												<option value="SUSPENDED">Suspended</option>
+												<option value="SOLDOUT">Sold Out</option>
+											</select>
+											<input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
+										</div>
+										<div class="col-md-2">
+											<form>
+												<input type="text" name="keyword" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" onkeypress="searchName(event,this)"
+												/>
+											</form>
+										</div>
+									</div> --}}
+									<div class="alert" id="gtc-coupon-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="coupon-message"></span>
+									</div>
+									<div class="row">
+								<div class="col-md-7">
+									<div class="form-inline">
+										<div class="form-group mb-2">
+											<button class="btn btn-small btn-muted" onclick="create(this);" >ADD COUPON</button>
+										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<div class="select-container">
+												<select class="form-control-customized form-control-sm" onChange="changeStatus(this);">
+													<option disabled selected>CHANGE STATUS</option>
+													<option value="ACTIVE">Active</option>
+													<option value="INACTIVE">InActive</option>
+													{{!-- <option value="SUSPENDED">Suspended</option> --}}
+													{{!-- <option value="SOLDOUT">Sold Out</option> --}}
+												</select>
+											</div>
+										</div>
+										<div class="form-group mb-2">
+											<button type="submit" onclick="edit(this)" class="btn btn-small btn-muted">EDIT/FEATURE</button>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<form class="form-inline ml-auto pull-right">
+										<div class="form-group mb-2">
+											<div class="input-group gtc-rounded">
+												<input type="search" name="name" class="form-control form-control-sm" placeholder="Search Coupons">
+												<button type="submit" class="btn btn-sm btn-gtc" >
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+									<div class="row">
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+										</div>
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle float-right">Entries per page:
+												<a href="/coupons?limit=10"> 10</a>
+												<a href="/coupons?limit=25"> 25</a>
+												<a href="/coupons?limit=100"> 100</a>
+												<a href="/coupons?limit=10"> All </a>
+											</p>
+										</div>
+									</div>
+									<div class="row">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th>
+														<input type="checkbox" onclick="selectAll(this);">
+													</th>
+													<th>Coupon Name</th>
+													<th>Publish Date</th>
+													<th>Type</th>
+													<th>Sales</th>
+													<th>Discount</th>
+													<th>Status</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each Coupons}}
+												<tr>
+													<td>
+														<input type="checkbox" value="{{this.id}}">
+													</td>
+													<td class="text_blue_color">{{this.coupon_name}}</td>
+													<td>{{formatTime this.publish_date "MMM D YY"}}</td>
+													{{!-- DiscountType --}} {{#ifCond this.discount_type "==" ../discountType.Percentage}}
+													<td>Percentage</td>
+													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
+													<td>Fixed Price</td>
+													{{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
+													<td>Fixed Price Discount</td>
+													{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
+													<td>Fixed Cart Discount</td>
+													{{/ifCond}} {{!--End DiscountType --}}
+													<td class="text_blue_color">{{this.sales_count}}</td>
+													<td>{{this.discount_value}}</td>
+													{{!-- satusCode --}} {{#ifCond this.status "==" ../statusCode.ACTIVE}}
+													<td class="text_green_color">Active</td>
+													{{else ifCond this.status "==" ../statusCode.INACTIVE}}
+													<td class="text_orange_color">InActive</td>
+													{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
+													<td class="text_red_color">Sold Out</td>
+													{{/ifCond}} {{!-- End status Code--}}
+												</tr>
+												{{/each}}
+											</tbody>
+										</table>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+										</div>
+										<div class="col-md-6">
+											<p class="vend_edit_lists_pstyle float-right">Entries per page:
+												<a href="/coupons?limit=10"> 10</a>
+												<a href="/coupons?limit=25"> 25</a>
+												<a href="/coupons?limit=100"> 100</a>
+												<a href="/coupons?limit=10"> All </a>
+											</p>
+										</div>
+									</div>
+									{{!-- Pagination starts --}}
+									<div class="row">
+										<div style="margin:0 auto;width:100px;">
+											{{#pagination collectionSize page pageSize maxSize}}
+											<nav aria-label="Page navigation example">
+												<ul class="pagination justify-content-center">
+													{{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="coupons?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+													</li>
+													{{/each}}
+												</ul>
+											</nav>
+											{{/pagination}}
+										</div>
+									</div>
+									{{!-- Pagination starts --}}
+									<section>
+								</div>
+								<div class="col-md-2">
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}

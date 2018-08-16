@@ -6,72 +6,100 @@ const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function notifications(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory ={};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
+	if (req.user.Vendor.id) {
+		//pagination 
+		var page;
+		var offset;
+		var limit;
+		var order = "asc";
+		var field = "id";
+		var modelName = 'Notification';
+		var queryObj = {};
+		var includeArr = [{
+			model: model["VendorNotificationSetting"],
+			where: {
+				vendor_id: req.user.Vendor.id
+			},
+			required: false
+		}];
 
-	model["VendorUserProduct"].find({
-		where: 29
-	}).then(function(row) {
-		if (row.marketplace_id) {
+		var queryObjCategory = {
+			status: statusCode['ACTIVE']
+		};
 
-			if (row.marketplace_id == 1) {
-				var obj = {
-					visible_to_wholesaler: 1
-				}
-			}
-			if (row.marketplace_id == 2) {
-				var obj = {
-					visible_to_retailer: 1
-				}
-			}
-			if (row.marketplace_id == 4) {
-				var obj = {
-					visible_to_lifestyle_provider: 1
-				}
-			}
-			if (row.marketplace_id == 3) {
-				var obj = {
-					visible_to_service_provider: 1
-				}
-			}
-			model["Announcement"].findAndCountAll({
-				where: obj,
-				raw: true
-			}).then(function(results) {
-				if (results) {
-					res.render('notifications', {
-						title: 'Global Trade Connect',
-						Announcements: results.rows,
-						statusCode: statusCode,
-						LoggedInUser: LoggedInUser
+		async.series({
+			cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
+			notifications: function(callback) {
+
+				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
+					.then(function(results) {
+						return callback(null, results);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
 					});
-					return;
-				} else {
-					res.status(404).send("Not Found");
-					return;
-				}
-			}).catch(function(error) {
-				if (error) {
-					res.status(500).send(error);
-					return;
-				}
-			})
-		} else {
-			res.status(404).send("Not Found");
-			return;
+			},
+			categories: function(callback) {
+			var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+
 		}
-	}).catch(function(error) {
-		if (error) {
-			res.status(500).send(error);
-			return;
-		}
-	})
+		}, function(err, results) {
+			if (!err) {
+				res.render('vendorNav/notifications', {
+					title: "Global Trade Connect",
+					title: "Global Trade Connect",
+					count: results.notifications.count,
+					notification: results.notifications.rows,
+					categories: results.categories,
+                    bottomCategory: bottomCategory,
+                    cartheader:results.cartCounts,
+					LoggedInUser: LoggedInUser,
+					selectedPage: 'notifications',
+					vendorPlan: vendorPlan
+				});
+			} else {
+				res.render('notifications', err);
+			}
+
+		});
+	}
 }
 
 function plainTextResponse(response) {

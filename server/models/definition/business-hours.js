@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'NO ACTION'
         },
         from_day: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.INTEGER,
             field: 'from_day',
             allowNull: false
         },
         to_day: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.INTEGER,
             field: 'to_day',
             allowNull: false
         },
@@ -41,9 +41,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         timezone_id: {
-            type: DataTypes.TIME,
+            type: DataTypes.BIGINT,
             field: 'timezone_id',
-            allowNull: true
+            allowNull: false,
+            references: {
+                model: 'timezone',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         status: {
             type: DataTypes.INTEGER,
@@ -94,6 +100,7 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
     BusinessHour.belongsTo(Timezone, {
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',

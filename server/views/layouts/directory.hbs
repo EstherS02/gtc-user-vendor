@@ -1,233 +1,257 @@
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#searchDirectory").click(function(e) {
-            var depart = $('#depart').val();
-            var category = $('#category').val();
-            var location = $('#location').val();
-            if((depart != null) && (category != null) &&(location != null)){
-                window.location.href = '/search?depart='+depart+'&category='+category+'&location='+location;
-            }
-            else{
-                alert("Select  all three options");
-            }
+{{> header/top-header LoggedInUser = LoggedInUser}}
+<script>
+    $(document).ready(function () {
+        $('#depart').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#category').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $('#location').on('change', function () {
+            $('#searchSubmit').prop('disabled', !$(this).val());
+        }).trigger('change');
+        $("#searchForm").submit(function (e) {
+            e.preventDefault();
+            let formInput = $("#searchForm :input").filter(function (index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            window.location.href = '/directory/search?' + formInput;
         });
     });
-
 </script>
-{{> header/defaultHeader LoggedInUser = LoggedInUser}}
+
 <section class="directory_banner" style="margin-bottom: 0">
-    <div class="container clearfix">
-        <div class="row">
-            <div class="col-md-6 lstb1">
-                <img src="../img/direc_banner.png" alt="banner" />
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-12 lstb2 text-center">
+	<div class="container-fluid full_view_pad_eighty clearfix">
+      <div class="row">
+          <div class="col-md-6 col-12 lstb1">
+              <img src="../img/direc_banner.png" alt="banner" />
+          </div>
+          <div class="col-md-6 col-12">
+              <div class="row">
+                <div class="col-md-12 col-12 lstb2 text-center">
+                    <form id="searchForm">
                         <p>Search Our Global Directory of over</p>
-                        <p>21,000 Wholesalers, Retailers & Service Providers</p>
-                        <p class="adv_search">Advanced Search</p>
+                        <p>21,000 Wholesalers, Retails & Service Providers</p>
+                        <p class="adv_search">Advance Search</p>
                         <div class="row">
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="depart">
+                            <div class="col-md-4 col-12 common_padding1">
+                                <select class="geo_textbox" id="depart" name="marketplace">
                                     <option disabled selected>Department</option>
                                     {{#each depart}}
                                     <option value={{this.id}}>{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="category">
+                            <div class="col-md-4 col-12 common_padding1">
+                                <select class="geo_textbox" id="category" name="category">
                                     <option disabled selected>Category</option>
-                                    {{#each category}}
-                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    {{#each categories}}
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
-                            <div class="col-md-4 common_padding1">
-                                <select class="geo_textbox" id="location">
+                            <div class="col-md-4 col-12 common_padding1">
+                                <select class="geo_textbox" id="location" name="location">
                                     <option disabled selected>Location</option>
                                     {{#each country}}
-                                    <option value={{this.id}}>{{ this.name}}</option>
+                                    <option value="{{this.id}}">{{ this.name}}</option>
                                     {{/each}}
                                 </select>
                             </div>
                         </div>
-                        <input type="submit" value="SEARCH DIRECTORY" id ="searchDirectory" class="shop_checkout_btn" style="padding: 8px 20px;" />
-                    </div>
+                        <input type="submit" id="searchSubmit" value="SEARCH DIRECTORY" class="shop_checkout_btn" style="padding: 8px 20px;" />
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </section>
-<section class="custom-section">
-    <div class="marketplace-header-box"></div>
-    <div class="container my-custom-container m-t-n-marketplace">
+<div class="other-marketplace-bg"></div>
+<div class="gtc-container">
+    <div class="other-marketplace-headers">
         <div class="row">
             <div class="col-md-6 no-padding">
-                <div class="gtc-box">
-                    <div class="gtc-box-market-title header-box ">
-                        <h5>TOP SELLING WHOLESALERS </h5>
-                        <small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
-                    </div>
-                    <div class="gtc-box-content">
-                        <div class="row">
-                            {{#each wholesalers}}
-                            <div class="col-md-6">
-                                <div class="feed-element">
-                                    <div class="feed-product">
-                                        <p class="hash_num">#{{SUMFloat @index 1}}</p>
-                                    </div>
-                                    <div class="feed-product">
-                                        <img src="{{this.url}}">
-                                    </div>
-                                    <div class="product-info">
-                                        <div class="row m-l-none m-r-none">
-                                            <div class="col-md-12 no-padding">
-                                                <div class="product-title">
-                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
-                                                    <div class="row no-margins">
-                                                        <div class="col-md-4 no-padding">
-                                                            <div class="sm-text">Origin</div>
-                                                            {{!-- <div class="sm-text">Category</div> --}}
-                                                            <div class="sm-text">Inventory</div>
-                                                            <div class="sm-text">Seller Rating</div>
-                                                        </div>
-                                                        <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
-                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
-                                                            <div class="sm-text">
-                                                                <b>{{this.product_count}} Products</b> Listed</div>
-                                                            <div class="sm-text">{{ starCount rating}}</div>
+                <div class="header-lg bg-topseller">
+                    <h2 class="header-lg-text">TOP SELLING WHOLESALERS <a class="see-all" href="/wholesalers/search">SEE ALL</a></h2>
+                </div>
+                <div class="product-list-body">
+                    <div class="row">
+                        {{#each wholesalers}}
+                        <div class="col-md-6">
+                            <div class="product-body">
+                                <div class="table-responsive">
+                                    <table class="table shoping-cart-table">
+                                        <tbody>
+                                            <tr class="d-flex">
+                                                <td class="col-2">
+                                                    <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+                                                </td>
+                                                <td class="col-3">
+                                                    <div class="product-left-col">
+                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                    </div>
+                                                </td>
+                                                <td class="col-7">
+                                                    <div class="product-middle-col">
+                                                        <h3>
+                                                            <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+                                                        </h3>
+                                                        <div class="row no-margins">
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Origin</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                                <span class="text-500">{{this.origin}}</span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Inventory</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Seller Rating</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <div class="v-rating">
+                                                                    {{starCount rating}}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
-                                        </div>
-                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            {{/each}}
                         </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>
             <div class="col-md-6 no-padding">
-                <div class="gtc-box">
-                    <div class="gtc-box-market-title public-market-bg">
-                        <h5>TOP SELLING RETAILERS</h5>
-                        <small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
-                    </div>
-                    <div class="gtc-box-content">
-                        <div class="row">
-                            {{#each retailers}}
-                            <div class="col-md-6">
-                                <div class="feed-element">
-                                    <div class="feed-product">
-                                        <p class="hash_num">#{{SUMFloat @index 1}}</p>
-                                    </div>
-                                    <div class="feed-product">
-                                        <img src="{{this.url}}">
-                                    </div>
-                                    <div class="product-info">
-                                        <div class="row m-l-none m-r-none">
-                                            <div class="col-md-12 no-padding">
-                                                <div class="product-title">
-                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
+                <div class="header-lg bg-featured-product">
+                    <h2 class="header-lg-text">TOP SELLING RETAILERS <a class="see-all" href="/retailers/search">SEE ALL</a></h2>
+                </div>
+                <div class="product-list-body">
+                    <div class="row">
+                     {{#each retailers}}
+                     <div class="col-md-6">
+                        <div class="product-body">
+                            <div class="table-responsive">
+                                <table class="table shoping-cart-table">
+                                    <tbody>
+                                        <tr class="d-flex">
+                                            <td class="col-2">
+                                                <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+                                            </td>
+                                            <td class="col-3">
+                                                <div class="product-left-col">
+                                                    <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                </div>
+                                            </td>
+                                            <td class="col-7">
+                                                <div class="product-middle-col">
+                                                    <h3>
+                                                        <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+                                                    </h3>
                                                     <div class="row no-margins">
-                                                        <div class="col-md-4 no-padding">
-                                                            <div class="sm-text">Origin</div>
-                                                            {{!-- <div class="sm-text">Category</div> --}}
-                                                            <div class="sm-text">Inventory</div>
-                                                            <div class="sm-text">Seller Rating</div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Origin</span>
                                                         </div>
-                                                        <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
-                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
-                                                            <div class="sm-text">
-                                                                <b>{{this.product_count}} Products</b> Listed</div>
-                                                            <div class="sm-text">{{ starCount rating}}</div>
+                                                        <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                            <span class="text-500">{{this.origin}}</span>
+                                                        </div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Inventory</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                        </div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Seller Rating</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <div class="v-rating">
+                                                                {{starCount rating}}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
-                                        </div>
-                                    </div>
-                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            {{/each}}
                         </div>
                     </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
     </div>
-</section>
-<section class="custom-section">
-    <div class="marketplace-header-box"></div>
-    <div class="container my-custom-container m-t-n-marketplace">
-        <div class="row">
-            <div class="col-md-6 no-padding">
-                <div class="gtc-box">
-                    <div class="gtc-box-market-title service-market-bg">
-                        <h5>TOP SELLING SERVICES PROVIDERS </h5>
-                        <small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+</div>
+</div>
+
+<div class="other-marketplace-bg"></div>
+    <div class="gtc-container">
+        <div class="other-marketplace-headers">
+            <div class="row">
+                <div class="col-md-6 no-padding">
+                    <div class="header-lg bg-service">
+                        <h2 class="header-lg-text">TOP SELLING SERVICES PROVIDERS <a class="see-all" href="/services-providers/search">SEE ALL</a></h2>
                     </div>
-                    <div class="gtc-box-content">
+                    <div class="product-list-body">
                         <div class="row">
                             {{#each servicesProviders}}
                             <div class="col-md-6">
-                                <div class="feed-element">
-                                    <div class="feed-product">
-                                        <p class="hash_num">#{{SUMFloat @index 1}}</p>
-                                    </div>
-                                    <div class="feed-product">
-                                        <img src="{{this.url}}">
-                                    </div>
-                                    <div class="product-info">
-                                        <div class="row m-l-none m-r-none">
-                                            <div class="col-md-12 no-padding">
-                                                <div class="product-title">
-                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
-                                                    <div class="row no-margins">
-                                                        <div class="col-md-4 no-padding">
-                                                            <div class="sm-text">Origin</div>
-                                                            {{!-- <div class="sm-text">Category</div> --}}
-                                                            <div class="sm-text">Inventory</div>
-                                                            <div class="sm-text">Seller Rating</div>
+                                <div class="product-body">
+                                    <div class="table-responsive">
+                                        <table class="table shoping-cart-table">
+                                            <tbody>
+                                                <tr class="d-flex">
+                                                    <td class="col-2">
+                                                        <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+                                                    </td>
+                                                    <td class="col-3">
+                                                        <div class="product-left-col">
+                                                            <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
                                                         </div>
-                                                        <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
-                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
-                                                            <div class="sm-text">
-                                                                <b>{{this.product_count}} Products</b> Listed</div>
-                                                            <div class="sm-text">{{ starCount rating}}</div>
+                                                    </td>
+                                                    <td class="col-7">
+                                                        <div class="product-middle-col">
+                                                            <h3>
+                                                                <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+                                                            </h3>
+                                                            <div class="row no-margins">
+                                                                <div class="col-md-5 col-5 no-padding">
+                                                                    <span>Origin</span>
+                                                                </div>
+                                                                <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                                    <span class="text-500">{{this.origin}}</span>
+                                                                </div>
+                                                                <div class="col-md-5 col-5 no-padding">
+                                                                    <span>Inventory</span>
+                                                                </div>
+                                                                <div class="col-md-7 col-7 no-padding">
+                                                                    <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                                </div>
+                                                                <div class="col-md-5 col-5 no-padding">
+                                                                    <span>Seller Rating</span>
+                                                                </div>
+                                                                <div class="col-md-7 col-7 no-padding">
+                                                                    <div class="v-rating">
+                                                                        {{starCount rating}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
-                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -235,86 +259,90 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 no-padding">
-                <div class="gtc-box">
-                    <div class="gtc-box-market-title lifestyle-market-bg">
-                        <h5>TOP SELLING SUBSCRIPTION PROVIDERS</h5>
-                        <small class="pull-right m-t-xs">SEE ALL
-                            <i class="fa fa-caret-right"></i>
-                        </small>
+                <div class="col-md-6 no-padding">
+                    <div class="header-lg bg-lifestyle">
+                        <h2 class="header-lg-text">TOP SELLING SUBSCRIPTION PROVIDERS <a class="see-all" href="/subscription-providers/search">SEE ALL</a></h2>
                     </div>
-                    <div class="gtc-box-content">
+                    <div class="product-list-body">
                         <div class="row">
-                            {{#each subscriptionProviders}}
-                            <div class="col-md-6">
-                                <div class="feed-element">
-                                    <div class="feed-product">
-                                        <p class="hash_num">#{{SUMFloat @index 1}}</p>
-                                    </div>
-                                    <div class="feed-product">
-                                        <img src="{{this.url}}">
-                                    </div>
-                                    <div class="product-info">
-                                        <div class="row m-l-none m-r-none">
-                                            <div class="col-md-12 no-padding">
-                                                <div class="product-title">
-                                                    <h5 class="no-margins">{{Titlecase this.vendor_name}}</h5>
-                                                    <div class="row no-margins">
-                                                        <div class="col-md-4 no-padding">
-                                                            <div class="sm-text">Origin</div>
-                                                            {{!-- <div class="sm-text">Category</div> --}}
-                                                            <div class="sm-text">Inventory</div>
-                                                            <div class="sm-text">Seller Rating</div>
-                                                        </div>
-                                                        <div class="col-md-8 no-padding">
-                                                            <div class="sm-text">{{this.origin}}</div>
-                                                            {{!-- <div class="sm-text">Electronics > Phones</div> --}}
-                                                            <div class="sm-text">
-                                                                <b>{{this.product_count}} Products</b> Listed</div>
-                                                            <div class="sm-text">{{ starCount rating}}</div>
+                         {{#each subscriptionProviders}}
+                         <div class="col-md-6">
+                            <div class="product-body">
+                                <div class="table-responsive">
+                                    <table class="table shoping-cart-table">
+                                        <tbody>
+                                            <tr class="d-flex">
+                                                <td class="col-2">
+                                                    <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+                                                </td>
+                                                <td class="col-3">
+                                                    <div class="product-left-col">
+                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                    </div>
+                                                </td>
+                                                <td class="col-7">
+                                                    <div class="product-middle-col">
+                                                        <h3>
+                                                            <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+                                                        </h3>
+                                                        <div class="row no-margins">
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Origin</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                                <span class="text-500">{{this.origin}}</span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Inventory</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                            </div>
+                                                            <div class="col-md-5 col-5 no-padding">
+                                                                <span>Seller Rating</span>
+                                                            </div>
+                                                            <div class="col-md-7 col-7 no-padding">
+                                                                <div class="v-rating">
+                                                                    {{starCount rating}}
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            {{!--
-                                            <div class="col-md-3 no-padding">
-                                                <div class="sm-text pull-right" style="position: absolute; right: 0px; bottom: 15px;">Seller Rating</div>
-                                                <div class="sm-text pull-right absolute-b">{{ starCount rating}}</div>
-                                            </div> --}}
-                                        </div>
-                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            {{/each}}
                         </div>
+                        {{/each}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-<section class=" jumbotron global">
-    <h5 class="global_search">Search the Global Trade Connect Directory by Category </h5>
-    <div class="container ">
-        <div class="row  ">
-            {{#each category}}
-                <div class="col-md-3" style="max-width:20%">
-                    <p class="global_para_head">{{convertUpperCase this.name}}</p>
+</div>
+<div class="category-section directory_banner">
+    <div class="gtc-container">
+        <h5 class="text-center">Search the Global Trade Connect Directory by Category</h5>
+        <div class="row">
+            {{#each_limit categories 10}}
+            <div class="col-md-3 m-t-md w-20">
+                <p class="category-title m-b-sm">{{convertUpperCase this.name}}</p>
+                <ul class="footer-menu-list">
                     {{#each_upto ../subCategory 10 this.id}} 
-                            <p class="global_para ">
-                               
-                                    <a href="search/category={{../this.id}}&sub_category={{this.id}}" style="color:white">{{ this.name}}
-                                    </a>
-                                    
-                            </p>
+                    <li class="m-l-xs">
+                        <a href="/directory/search?category={{../this.id}}&sub_category={{this.id}}">{{ this.name}}</a>
+                    </li>
                     {{/each_upto}}
-                    <p class = "global_para">
-                        <a href="search" style="color:white">...see more</a>
-                    </p>
-                </div>
-            {{/each}}
+                    <li class="m-l-xs">
+                    <a href="/directory/search?category={{this.id}}">see more...</a>
+                  </li>
+                </ul>
+            </div>
+            {{/each_limit}}
         </div>
     </div>
-</section>
-{{> footer/footer}}
+</div>
+
+{{> footer/bottom-footer}}

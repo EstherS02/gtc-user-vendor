@@ -1,0 +1,656 @@
+<style>
+	#imageUpload {
+		display: none;
+	}
+
+	#profileImage,
+	#userUpdateBtn,
+	#userCancelBtn, #changePwd {
+		cursor: pointer;
+	}
+
+</style>
+<script>
+	$(document).ready(function () {
+
+		$("#gtc-profile-alert").hide();
+		$("#gtc-pwdreset-alert").hide();
+
+		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+		var fileDetails = {};
+		$('#crop-profile-image').click(function () {
+			cropper.getCroppedCanvas().toBlob(function (blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+			});
+			$('#UploadedImage').attr('src', cropper.getCroppedCanvas().toDataURL());
+			$('#profile-picture-modal').modal('hide');
+		})
+
+		$("#profileImage").click(function (e) {
+			$("#imageUpload").click();
+		});
+
+		$('#profile-picture-modal').on('shown.bs.modal', function () {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+				ready: function () { }
+			});
+		}).on('hidden.bs.modal', function () {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+
+		function fasterPreview(uploader) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#UploadedImage').attr('src',
+					window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+			}
+		}
+		$("#imageUpload").change(function () {
+			fasterPreview(this);
+		});
+		$("#b_country").change(function () {
+			var country_id = $('#b_country').val();
+			$.ajax({
+				url: '/api/states?country_id=' + country_id,
+				type: 'GET',
+				success: function (result) {
+					$("#b_state").empty();
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#b_state").append(options)
+					}
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		});
+
+		$('#s_country').change(function () {
+			var country_id = $('#s_country').val();
+			$.ajax({
+				url: '/api/states?country_id=' + country_id,
+				type: 'GET',
+				success: function (result) {
+					$("#s_state").empty();
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#s_state").append(options)
+					}
+				},
+				error: function (error) {
+					console.log("Error", error);
+				}
+			});
+		})
+
+		$("#sameAsAddr").change(function () {
+			$("#s_company_name").val($("#b_company_name").val());
+			$("#s_address1").val($("#b_address1").val());
+			$("#s_address2").val($("#b_address2").val());
+			//$("#s_country").val($("#b_country").val());
+			//$("#s_state").val($("#b_state").val());
+			$("#s_city").val($("#b_city").val());
+			$("#s_postal_code").val($("#b_postal_code").val());
+		});
+
+		$("#userForm").submit(function (e) {
+
+			e.preventDefault();
+			var userUpdate = {};
+			var vendorUpdate = {};
+			var billingUpdate = {};
+			var shippingUpdate = {};
+			userUpdate.first_name = $('#first_name').val();
+			userUpdate.last_name = $('#last_name').val();
+			vendorUpdate.contact_email = $('#contact_email').val();
+			//billingUpdate.address_type = 1;
+			billingUpdate.company_name = $('#b_company_name').val();
+			billingUpdate.address_line1 = $('#b_address1').val();
+			billingUpdate.address_line2 = $('#b_address2').val();
+			billingUpdate.country_id = $('#b_country').val();
+			billingUpdate.province_id = $('#b_state').val();
+			billingUpdate.city = $('#b_city').val();
+			billingUpdate.postal_code = $('#b_postal_code').val();
+			//shippingUpdate.address_type = 2;
+			shippingUpdate.company_name = $('#s_company_name').val();
+			shippingUpdate.address_line1 = $('#s_address1').val();
+			shippingUpdate.address_line2 = $('#s_address2').val();
+			shippingUpdate.country_id = $('#s_country').val();
+			shippingUpdate.province_id = $('#s_state').val();
+			shippingUpdate.city = $('#s_city').val();
+			shippingUpdate.postal_code = $('#s_postal_code').val();
+
+			var image = $("#imageUpload")[0].files[0];
+			var user_pic_url;
+			var form = new FormData();
+			form.append("file", cropperOutputImage, fileDetails["fileName"]);
+
+			$.ajaxSetup({ async: false });
+
+			if (image) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/vendors/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						userUpdate.user_pic_url = data.imageURL;
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				})
+			}
+
+			if ($('#userForm').valid()) {
+				$.ajax({
+					url: '/api/users/user-profile',
+					type: 'PUT',
+					data: {
+						userUpdate: JSON.stringify(userUpdate),
+						vendorUpdate: JSON.stringify(vendorUpdate),
+						billingUpdate: JSON.stringify(billingUpdate),
+						shippingUpdate: JSON.stringify(shippingUpdate)
+					},
+					success: function (updateData) {
+						$('#gtc-profile-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-profile-alert .profile-message').text("Profile Updated Successfully")
+						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-profile-alert").slideUp(500);
+						});
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				});
+			}
+			$.ajaxSetup({ async: true });
+		});
+
+		$("#userForm").validate({
+			rules: {
+				first_name: "required"
+			},
+			messages: {
+				first_name: "Please enter first name"
+			}
+		});
+		$('#resetPassword').click(function () {
+			var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
+			if (window.focus) {
+				newwindow.focus();
+			}
+			return false;
+		});
+
+		$('#changePwd').validate({
+			rules: {
+				old_password: {
+					required: true
+				},
+				new_password: {
+					required: true,
+					minlength: 6
+				},
+				new_confirm_password: {
+					required: true,
+					equalTo: "#new_password"
+				}
+			},
+			messages: {
+				old_password: {
+					required: "Please enter Old password",
+				},
+				new_password: {
+					required: "Please enter New password",
+					minlength: "Password must have atleast 6 character"
+				},
+				new_confirm_password: {
+					required: "Please enter Confirm password",
+					equalTo: "Please enter the same password again"
+				}
+			}
+		});
+
+		$("#changePwd").submit(function (e) {
+			e.preventDefault();
+
+			let input = $("#changePwd :input").filter(function (index, element) {
+				return $(element).val() != '';
+			}).serialize();
+
+			if ($('#changePwd').valid()) {
+				$.ajax({
+					url: 'api/users/change-password',
+					type: 'PUT',
+					data: input,
+					success: function (data) {
+						$('#gtc-pwdreset-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-pwdreset-alert .pwdreset-message').text("Password Changed Successfully")
+						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-pwdreset-alert").slideUp(500);
+						});
+						$("#changePwd")[0].reset();
+					},
+					error: function (error) {
+						$('#gtc-pwdreset-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-pwdreset-alert .pwdreset-message').text(error.responseText);
+						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-pwdreset-alert").slideUp(500);
+						});
+						$("#changePwd")[0].reset();
+					}
+				})
+			};
+		});
+	});	
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Profile Settings</h2>
+						</div>
+						<div class="alert" id="gtc-profile-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="profile-message"></span>
+						</div>
+
+						<div class="content-body">
+							<form id="userForm" class="form">
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="row">
+											<div class="col-md-8 text-center">
+												{{#if user.user_pic_url}}
+												<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
+												<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
+												<p id="profileImage" class="text_blue_color">Change Avatar</p>
+												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" capture>
+											</div>
+										</div>
+										<br/>
+										<br/>
+										<br/>
+										<br/>
+										<div class="row">
+											<div class="col-lg-4">
+												<p>Account Settings
+												</p>
+											</div>
+
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="form-control-customized form-control-sm"
+													 required/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="form-control-customized form-control-sm"
+													/>
+												</div>
+											</div>
+										</div>
+										{{#if LoggedInUser.Vendor}}
+
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id="contact_email" name="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="form-control-customized form-control-sm"
+													/>
+												</div>
+											</div>
+										</div>{{/if}}
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" readonly id="email" placeholder="Email" value="{{user.email}}" class="form-control-customized form-control-sm"
+													/>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<button type="button" id="changePwd" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<div class="col-lg-4">
+												<p>Billing Address</p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="b_country" name="b_country"
+													 >
+														{{#if billingAddress.country_id}}
+														<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
+														{{else}}
+														<option disabled selected>Country</option>
+														{{/if}} {{#each country}}
+														<option value="{{this.id}}">{{ this.name}}</option>
+														{{/each}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="b_state" id="b_state"
+													 >
+														{{#if billingAddress.province_id}}
+														<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
+														{{else}}
+														<option disabled selected>Province/State</option>
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
+													/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="checkbox" id="sameAsAddr"
+													  /><small>  My Shipping Address is the same as my billing address</small>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p>Shipping Address</p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="s_country" name="s_country">
+														{{#if shippingAddress.country_id}}
+														<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+														{{else}}
+														<option disabled selected>Country</option>
+														{{/if}} {{#each country}}
+														<option value="{{this.id}}">{{ this.name}}</option>
+														{{/each}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="s_state" id="s_state"
+													 >
+														{{#if shippingAddress.province_id}}
+														<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+														{{else}}
+														<option disabled selected>Province/State</option>
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
+													/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-8">
+												<div class="form-group">
+													<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<hr/>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn" id="userUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">Update</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+											<span class="ladda-label">Cancel</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{> footer/bottom-footer}}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Change Password</h5>
+			</div>
+			<div class="alert" id="gtc-pwdreset-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="pwdreset-message"></span>
+			</div>
+			<form id="changePwd" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Email Address:</label>
+								<input type="text" id="email_id" name="email_id" value="{{user.email}}" readonly class="form-control-customized form-control-sm"
+								 required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Old Password:</label>
+								<input type="text" id="old_password" name="old_password" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">New Password:</label>
+								<input type="text" id="new_password" name="new_password" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Confirm Password:</label>
+								<input type="text" id="new_confirm_password" name="new_confirm_password" class="form-control-customized form-control-sm"
+								 required/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Close</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

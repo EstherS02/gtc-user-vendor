@@ -1,0 +1,330 @@
+<style type="text/css">
+    .fas {
+        cursor: pointer;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#gtc-form-alert").hide();
+        var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
+        var cropperOutputImage;
+        var fileDetails = {};
+        var imagesPreview = function(uploader, placeToInsertImagePreview) {
+            if (uploader.files && uploader.files[0]) {
+                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+                cropperInputImage = document.getElementById('uploaded-profile-picture');
+                $('#profile-picture-modal').modal('show');
+            }
+        };
+        $('#icon').on('change', function() {
+            imagesPreview(this);
+            test = 'div.icon';
+        });
+        $('#cover_pic').on('change', function() {
+            imagesPreview(this);
+            test = 'div.cov_pic';
+        });
+        $('#profile-picture-modal').on('shown.bs.modal', function() {
+            if (test == 'div.icon') {
+                cropper = new Cropper(cropperInputImage, {
+                    aspectRatio: 16 / 16,
+                    minCropBoxHeight: 280,
+                    minCropBoxWidth: 1364,
+                    ready: function() {
+                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+                    }
+                });
+            } else {
+                cropper = new Cropper(cropperInputImage, {
+                    aspectRatio: 16 / 9,
+                    minCropBoxHeight: 280,
+                    minCropBoxWidth: 1364,
+                    ready: function() {
+                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+                    }
+                });
+            }
+        }).on('hidden.bs.modal', function() {
+            cropBoxData = cropper.getCropBoxData();
+            canvasData = cropper.getCanvasData();
+            cropper.destroy();
+        });
+        $('#crop-profile-image').click(function() {
+            cropper.getCroppedCanvas().toBlob(function(blob) {
+
+                cropperOutputImage = blob;
+                fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+                fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+                imgUp(cropperOutputImage, fileDetails["fileName"]);
+            });
+            if (test == 'div.icon') {
+                var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            } else {
+                var temp = $($.parseHTML('<img style="width:400px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+            }
+            $(test).html(temp);
+            $('#profile-picture-modal').modal('hide');
+        })
+
+        function imgUp(crop, file_name) {
+            var form = new FormData();
+            form.append("file", crop, file_name);
+            $.ajax({
+                type: 'POST',
+                url: '/api/vendors/upload',
+                data: form,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (test == 'div.icon') {
+                        vendor_profile_pic_url = data.imageURL;
+                        console.log('vendor_profile_pic_url', vendor_profile_pic_url);
+                    } else {
+                        vendor_cover_pic_url = data.imageURL;
+                        console.log('vendor_cover_pic_url', vendor_cover_pic_url);
+                    }
+                },
+                error: function(error) {
+                    console.log("Error", error);
+                }
+            })
+        }
+        $("#vendorForm").submit(function(e) {
+            e.preventDefault();
+            let input = $("#vendorForm :input").filter(function(index, element) {
+                return $(element).val() != '';
+            }).serialize();
+
+            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url=' + vendor_cover_pic_url
+
+            if ($('#vendorForm').valid()) {
+                $.ajax({
+                    url: '/api/vendor/starter-seller',
+                    type: 'POST',
+                    data: formInput,
+                    success: function(result) {
+                        window.location.href = '/dashboard-vendor-connect';
+                    },
+                    error: function(error) {
+                        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+                        $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+                            $("#gtc-form-alert").slideUp(500);
+                        });
+                    }
+                });
+            }
+        })
+        $("#country").change(function() {
+            var country_id = $('#country').val();
+
+            $.ajax({
+                url: '/api/states?country_id=' + country_id,
+                type: 'GET',
+                success: function(result) {
+                    $("#state").empty();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var options;
+                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+                        $("#state").append(options)
+                    }
+                },
+                error: function(error) {
+                    console.log("Error", error);
+                }
+            });
+        });
+        $("#vendorForm").validate({
+            rules: {
+                vendor_name: "required",
+                address: "required",
+                base_location: "required",
+                province_id: "required",
+                city: "required",
+                currency_id: "required",
+                vendorIcon: "required"
+            },
+            messages: {
+                vendor_name: "Please enter vendor name",
+                address: "Please enter vendor address",
+                base_location: "Please select base location",
+                province_id: "Please select province",
+                city: "Please enter city",
+                currency_id: "Please select currency",
+                vendorIcon: "Please choose vendor icon"
+            }
+        });
+    });
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-right:35px">
+                <div class="container">
+                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Become a Vendor</h2>
+                        </div>
+                        <div class="alert" id="gtc-form-alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="content-body">
+                            <form id="vendorForm" class="form">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Vendor Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Address <span class="text-danger">*</span></label>
+                                            <input type="text" name="address" class="form-control-customized form-control-sm" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-control">Base Location <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location" id="country" required>
+                                                    <option disabled selected>Select Location...</option>
+                                                    {{#each country}}
+                                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-control">Province <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="province_id" id="state" required>
+                                                    <option disabled selected>Select Province...</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-control">City <span class="text-danger">*</span></label>
+                                            <input type="text" name="city" class="form-control-customized form-control-sm" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="label-control">Currency <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id" id="inputGroupSelect02" required>
+                                                    <option disabled selected>Select Currency...</option>
+                                                    {{#each currency}}
+                                                    <option value="{{this.id}}">{{ this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="label-control">Timezone</label>
+                                            <div class="input-group">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="timezone_id" id="inputGroupSelect02">
+                                                    <option disabled selected>Select Timezone...</option>
+                                                    {{#each timezone}}
+                                                    <option value="{{this.id}}">{{ this.timezone}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label class="label-control">About</label>
+                                            <textarea class="form-control-customized" name="about" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Vendor Icon <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="custom-file custom_error_message">
+                                                    <input type="file" class="custom-file-input" id="icon" name="vendorIcon" required>
+                                                    <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="icon"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Cover Picture</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="cover_pic">
+                                                    <label class="custom-file-label customized-file-label" for="cover_pic">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="cov_pic"></div>
+                                    </div>
+                                </div><br/>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                        <button type="button" class="btn btn-gray btn-sm">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> footer/bottom-footer}}

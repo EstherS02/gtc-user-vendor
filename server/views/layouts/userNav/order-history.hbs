@@ -1,0 +1,265 @@
+	<script type="text/javascript"> 
+		$(function () {
+			$("#from").datepicker({
+				format: 'yyyy-mm-dd',
+				autohide: true, 
+
+			});
+
+			$("#to").datepicker({
+				format: 'yyyy-mm-dd',
+				autohide: true, 
+    		// endDate: new Date(),
+    		"endDate": {greaterStart: "#from"},
+    		onSelect: $('#selectDate').val("")
+
+    	});
+		});
+		$(function(){
+			$("#gtc-form-alert").hide();
+		});
+
+	</script>
+	<script type="text/javascript">
+		function selectAll(ele) {
+			var checkboxes = document.getElementsByTagName('input');
+			if (ele.checked) {
+				for (var i = 0; i < checkboxes.length; i++) {
+					if (checkboxes[i].type == 'checkbox') {
+						checkboxes[i].checked = true;
+					}
+				}
+			} else {
+				for (var i = 0; i < checkboxes.length; i++) {
+					console.log(i)
+					if (checkboxes[i].type == 'checkbox') {
+						checkboxes[i].checked = false;
+					}
+				}
+			}
+		}
+
+		function updateStatus(){
+			var chkArray = [];
+			$(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					chkArray.push($(this).val());
+				}
+			});
+
+			if (chkArray.length && $("#statusSelected option:selected").val()) {
+				var objData = {};
+				objData.id = JSON.stringify(chkArray);
+				objData.status = $("#statusSelected option:selected").val();
+
+				$.ajax({
+					type: 'PUT',
+					url: '/api/order-history/update-status',
+					data: objData,
+					success: function(data, text) {
+						location.reload();
+					},
+					error: function(request, status, error) {
+						console.log('request', request);
+						console.log('status', status);
+					}
+				});
+			} else {
+				alert("Select checkboxe and status before you update");
+			}
+		}
+
+	// function refund(e) {
+	// 	alert("hai");
+	// }
+
+
+</script>
+<script type="text/javascript">
+	function selectDatefun(){
+		var val = $( "#selectDate option:selected" ).val();
+		if(val){
+			$('#from').val("");
+			$('#to').val(""); 
+		}
+	}
+
+</script>
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Order History</h2>
+						</div>
+						<div class="alert" id="gtc-form-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div>
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-7">
+									<form class="form-inline" id="searchOrder">
+										<div class="form-group mb-2">
+											<div class="select-container">
+												<select class="form-control-customized form-control-sm" name="dateSelect"	>
+													<option disabled selected >Days</option>
+													<option value="today">Today</option>
+													<option value="yesterday">Yesterday</option>
+													<option value="last7day">LAST 7 DAY</option>
+													<option value="last15day">LAST 15 DAY</option>
+													<option value="last30day">LAST 30 DAY</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<div class="select-container"> 
+												<select class="form-control-customized form-control-sm" name="marketType">
+													<option disabled selected> Type</option>
+													{{#each marketPlace}}
+													<option value = "{{this}}">{{@key}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<div class="select-container">
+												<select class="form-control-customized form-control-sm" name="status">
+													<option disabled selected>STATUS</option>
+													{{#each orderStatus}}
+													<option value = "{{@key}}">{{@key}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+										<input type="submit" value="Search" class="btn btn-sm btn-success" style="margin-top: -8px;">
+									</form>
+								</div>
+								<div class="col-md-5">
+									<form class="form-inline ml-auto pull-right">
+										<div class="form-group mx-sm-3 mb-2">
+											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
+										</div>
+										<div class="form-group mb-2">
+											<div class="input-group gtc-rounded">
+												
+												<input type="text"  name="keyword" class="form-control form-control-sm" placeholder="Search Invoice" />
+												<button type="submit" class="btn btn-sm btn-gtc">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="cart-top-header">
+										<div class="alignleft cart-top-left">
+											<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+										</div>
+										<div class="alignright cart-top-right">
+											<span class="m-r-sm text-muted">
+												Entries per page : 
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+											</span>
+										</div>
+										<div style="clear: both;"></div>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table">
+											<thead>
+												<tr>
+													<th scope="col">
+														<input type="checkbox">
+													</th>
+													<th scope="col">Invoice#</th>
+													<th style="display:none" scope="col">purchase order id</th>
+													{{!-- <th scope="col">Vendor</th>
+													<th scope="col">Type</th> --}}
+													<th scope="col">Date</th>
+													<th scope="col">Method</th>
+													<th scope="col">Status</th>
+													<th scope="col"></th>
+													<th scope="col"></th>
+													<th scope="col">Amount</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each OrderItems}}
+												<tr>
+													<td><input type="checkbox" value="{{this.id}}"></td>
+													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
+													<td style="display:none">{{this.purchase_order_id}}</td>
+				  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
+				  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
+				  				</td> --}}
+				  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+				  				<td>Stripe</td>
+				  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+								  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
+				  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
+				  				<td>${{this.final_price}} CAD</td>
+				  			</tr>
+				  			{{/each}}
+				  			<tr>
+				  				<td colspan="6"></td>
+				  				<td class="text_blue_color">Total Transaction</td>
+				  				<td>${{totalTransaction}} CAD</td>
+				  			</tr>
+				  		</tbody>
+				  	</table>
+				  	{{!-- Pagination starts --}}
+				  	{{#ifCond count '>' queryPaginationObj.limit}}
+				  	<div class="row">
+				  		<div class="col-md-3">
+				  		</div>
+				  		<div class="col-md-7">
+				  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+				  			<nav aria-label="Page navigation example">
+				  				<ul class="pagination justify-content-center">
+				  					{{#unless startFromFirstPage}}
+				  					<li class="page-item">
+				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+				  					</li>
+				  					{{/unless}} {{#each pages}}
+				  					<li class="page-item {{#if isCurrent}} active {{/if}}">
+				  						<a class="page-link" href="../order-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+				  					</li>
+				  					{{/each}} {{#unless endAtLastPage}}
+				  					<li class="page-item">
+				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+				  					</li>
+				  					{{/unless}}
+				  				</ul>
+				  			</nav>
+				  			{{/pagination}}
+				  		</div>
+				  	</div>
+				  	{{/ifCond}}
+				  	{{!-- Pagination Ends --}}
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{{> footer/bottom-footer}}

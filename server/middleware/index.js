@@ -17,4 +17,12 @@ function validateEndpoint() {
 		});
 }
 
+function validateCart() {
+	return compose()
+		.use(function(req, res, next) {
+			
+		});
+}
+
 exports.validateEndpoint = validateEndpoint;
+exports.validateCart = validateCart;

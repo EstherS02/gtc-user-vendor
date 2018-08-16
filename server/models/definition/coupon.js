@@ -166,11 +166,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.hasMany(OrderItem, {
-        foreignKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Coupon.hasMany(OrderItem, {
+    //     foreignKey: 'coupon_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
     Coupon.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
@@ -210,28 +210,28 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Coupon.belongsToMany(Order, {
-        through: OrderItem,
-        foreignKey: 'coupon_id',
-        otherKey: 'order_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Coupon.belongsToMany(Order, {
+    //     through: OrderItem,
+    //     foreignKey: 'coupon_id',
+    //     otherKey: 'order_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
-    Coupon.belongsToMany(Product, {
-        through: OrderItem,
-        foreignKey: 'coupon_id',
-        otherKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Coupon.belongsToMany(Product, {
+    //     through: OrderItem,
+    //     foreignKey: 'coupon_id',
+    //     otherKey: 'product_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
-    Coupon.belongsToMany(Tax, {
-        through: OrderItem,
-        foreignKey: 'coupon_id',
-        otherKey: 'tax_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Coupon.belongsToMany(Tax, {
+    //     through: OrderItem,
+    //     foreignKey: 'coupon_id',
+    //     otherKey: 'tax_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
 };

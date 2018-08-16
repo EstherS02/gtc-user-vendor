@@ -1,0 +1,217 @@
+<style>
+	.message-box-input .form-control {
+		border-radius: unset;
+		box-shadow: none;
+		background-color: #f5f5f5;
+		margin: 8px;
+	}
+</style>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+
+		var message;
+
+		$("#dialog").hide();
+
+		$('#message').summernote({
+			placeholder: 'Type Message',
+			tabsize: 2,
+			height: 300
+		});
+
+		$('#sent').click(function (e) {
+
+			e.preventDefault();
+			var sentInput = {};
+
+			if ($('#toAddress').val().length == 0) {
+				message = '<p>Please specify at least one recipient.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$("#dialog").dialog();
+				return;
+			}
+
+			if ($('#subject').val().length == 0) {
+				message = '<p>Please enter the subject.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$("#dialog").dialog();
+				return;
+			}
+
+			if ($('#message').val().length == 0) {
+				message = '<p>Please enter the message.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$("#dialog").dialog();
+				return;
+			}
+
+			sentInput.to = JSON.stringify($('#toAddress').val());
+			sentInput.subject = $('#subject').val();
+			sentInput.message = $('#message').val();
+
+			$.ajax({
+				url: 'api/mail',
+				type: 'POST',
+				data: sentInput,
+				success: function (data) {
+					message = '<p>Message sent successfully.</p>';
+					$('#dialog').empty();
+					$('#dialog').append(message)
+					$("#dialog").dialog();
+					setTimeout(function () {
+						location.reload(true);
+					}, 1000);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			})
+		})
+		$('#draft').click(function (e) {
+
+			e.preventDefault();
+			var DraftInput = {};
+
+			if ($('#subject').val().length == 0) {
+				message = '<p>Please enter subject to save in draft.</p>';
+				$('#dialog').empty();
+				$('#dialog').append(message)
+				$("#dialog").dialog();
+				return;
+			}
+
+			DraftInput.to = JSON.stringify($('#toAddress').val());
+			DraftInput.subject = $('#subject').val();
+			DraftInput.message = $('#message').val();
+
+			$.ajax({
+				url: 'api/mail/draf',
+				type: 'POST',
+				data: DraftInput,
+				success: function (data) {
+					console.log(data);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			})
+		})
+	});
+
+	$(function () {
+
+		/*var data = {
+			id: 1,
+			text: 'Barn owl'
+		};
+
+
+		console.log(getUrlQueryString())
+
+
+		var newOption = new Option(data.text, data.id, false, false);
+
+
+		$('#toAddress').append(newOption).trigger('change');*/
+		$(".select2-hidden-accessible").prop("disabled", true);
+		$("#toAddress").select2({
+			minimumInputLength: 2,
+			multiple: true,
+			placeholder: "Recipients",
+
+			ajax: {
+				tyte: "GET",
+				url: 'api/mail/autoCompleteFirstName',
+				dataType: 'json',
+				contentType: "application/json",
+				data: function (params) {
+					var query = {
+						keyword: params.term
+					}
+					return query;
+				},
+				processResults: function (data) {
+					return {
+						results: $.map(data, function (item) {
+							return {
+								text: item.first_name,
+								id: item.id
+							}
+						})
+					};
+				}
+			},
+		});
+	});
+
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Compose Email</h2>
+						</div>
+						<div id="dialog" title="Error:">
+						</div>
+						<div class="content-body">
+							<form id="emailForm" class="form">
+								<div class="row justify-content-md-center">
+									<div class="col-lg-11 border" style="padding:10px;">
+										<div class="form-group">
+											<div class="row">
+												<div class="col-lg-2">
+													<label class="label-control float-right">
+														<b>To:</b> {{!--
+														<span class="text-danger">*</span> --}}
+													</label>
+												</div>
+												<div class="col-lg-10">
+													<select class="custom-select form-control-customized form-control-sm" id='toAddress' name="toAddress">
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="row">
+												<div class="col-lg-2">
+													<label class="label-control float-right">
+														<b>Subject:</b> {{!--
+														<span class="text-danger">*</span> --}}
+													</label>
+												</div>
+												<div class="col-lg-10">
+													<input type="text" class="form-control-customized form-control-sm" id="subject" name="subject">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-11 border" style="padding:10px;">
+										<div class="form-group" style="width:auto">
+											<textarea class="form-control-customized form-control-sm" id="message" name="message"></textarea>
+										</div>
+										<button type="submit" class="btn btn-primary btn-sm" id="sent">Send</button>
+										<button type="submit" class="btn btn-secondary btn-sm" id="draft">Draft</button>
+										<button type="reset" class="btn btn-gray btn-sm">Discard</button>
+										<div></div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}

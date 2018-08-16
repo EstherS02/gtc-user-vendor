@@ -16,86 +16,127 @@ var baseUrl = process.env.DOMAIN;
 // All configurations will extend these options
 // ============================================
 var all = {
-  env: process.env.NODE_ENV,
+	env: process.env.NODE_ENV,
 
-  // Root path of server
-  root: path.normalize(`${__dirname}/../../..`),
+	baseUrl: process.env.DOMAIN,
+	// Root path of server
+	root: path.normalize(`${__dirname}/../../..`),
 
-  // Browser-sync port
-  browserSyncPort: process.env.BROWSER_SYNC_PORT || 2000,
+	// Browser-sync port
+	browserSyncPort: process.env.BROWSER_SYNC_PORT || 2000,
 
-  // Server port
-  port: process.env.PORT || 9000,
+	// Server port
+	port: process.env.PORT || 9000,
 
-  // Server IP
-  ip: process.env.IP || '0.0.0.0',
+	// Server IP
+	ip: process.env.IP || '0.0.0.0',
 
-  // Should we populate the DB with sample data?
-  seedDB: false,
+	// Should we populate the DB with sample data?
+	seedDB: false,
 
-  paginationLimit: 10,
+	paginationLimit: 10,
 
-  clientURL: process.env.CLIENT_BASE_URL,
+	wooCommercePerPageLimit: process.env.WOO_COMMERCE_PER_PAGE_LIMIT || 50,
+	aliExpressLoginId: process.env.ALI_EXPRESS_USER_ID || "chandrumail4u@gmail.com",
+	aliExpressLoginPassword: process.env.ALI_EXPRESS_USER_PASSWORD || "13229502",
 
-  images_base_path: process.env.BASE_URL_LOCAL_UPLOAD,
+	clientURL: process.env.CLIENT_BASE_URL,
 
-  imageUrlRewritePath: {
-    base: "/images/"
-  },
+	images_base_path: process.env.BASE_URL_LOCAL_UPLOAD,
 
-  // Secret for session, you will want to change this and make it an environment variable
-  secrets: {
-    session: 'gtc-secret',
-    refTokenKey: process.env.REFRESH_TOKEN_KEY_SECRET,
-    globalAccessToken: process.env.GLOBAL_ACCESS_TOKEN_SECRET,
-    accessToken: process.env.ACCESS_TOKEN_SECRET,
-    refreshToken: process.env.REFRESH_TOKEN_SECRET
-  },
+	imageUrlRewritePath: {
+		base: "/images/"
+	},
 
-  googleLogin: {
-    googleClientId: process.env.GOOGLE_CLIENT_ID,
-    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
-    googleAccessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
-    googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
-  },
+	secrets: {
+		session: 'gtc-secret',
+		refTokenKey: process.env.REFRESH_TOKEN_KEY_SECRET,
+		globalAccessToken: process.env.GLOBAL_ACCESS_TOKEN_SECRET,
+		accessToken: process.env.ACCESS_TOKEN_SECRET,
+		refreshToken: process.env.REFRESH_TOKEN_SECRET
+	},
 
-  mysql: {
-    host: process.env.MYSQL_HOST,
-    database: process.env.MYSQL_DATABASE,
-    username: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    port: process.env.MYSQL_PORT
-  },
+	//Email
+	email: {
+		templates: {
+			userCreate: 'USER-CREATE',
+			orderMail: 'ORDER-MAIL',
+			itemCancel: 'ITEM-CANCEL-BY-VENDOR-MAIL',
+			userOrderDetail: 'USER-ORDER-DETAIL-MAIL',
+			vendorNewOrder: 'VENDOR-NEW-ORDER',
+			passwordReset: 'PASSWORD-RESET'
 
-  token: {
-    expiresInMinutes: process.env.TOKEN_EXPIRES_IN_MIN || 600
-  },
+		}
+	},
+	jobs: {
+		'email': 'email-notification',
+		"couponExpiry": "couponExpiry"
+	},
+	sesTransporter: {
+		accessKeyId: process.env.SES_ACCESS_KEY_ID,
+		secretAccessKey: process.env.SES_SECRET_ACCESS_KEY,
+		from: process.env.SES_TRANSPORTER_FROM
+	},
 
-  auth: {
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    url: baseUrl + "/auth/token",
-  },
+	smtpTransport: {
+		host: process.env.SMTP_HOST,
+		port: process.env.SMTP_PORT,
+		from: process.env.SMTP_FROM,
+		auth: {
+			user: process.env.SMTP_AUTH_USER,
+			pass: process.env.SMTP_AUTH_PASS
+		}
+	},
 
-  adminAuth: {
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    url: baseUrl + "/auth/admin-token",
-  },
+	googleLogin: {
+		googleClientId: process.env.GOOGLE_CLIENT_ID,
+		googleClientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
+		googleAccessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
+		googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
+	},
 
-  // MongoDB connection options
-  mongo: {
-    options: {
-      db: {
-        safe: true
-      }
-    }
-  }
+	mysql: {
+		host: process.env.MYSQL_HOST,
+		database: process.env.MYSQL_DATABASE,
+		username: process.env.MYSQL_USERNAME,
+		password: process.env.MYSQL_PASSWORD,
+		port: process.env.MYSQL_PORT
+	},
+
+	token: {
+		expiresInMinutes: process.env.TOKEN_EXPIRES_IN_MIN || 600
+	},
+
+	auth: {
+		clientId: process.env.CLIENT_ID,
+		clientSecret: process.env.CLIENT_SECRET,
+		url: baseUrl + "/auth/token",
+	},
+
+	adminAuth: {
+		clientId: process.env.CLIENT_ID,
+		clientSecret: process.env.CLIENT_SECRET,
+		url: baseUrl + "/auth/admin-token",
+	},
+
+	stripeConfig: {
+		keyPublishable: process.env.STRIPE_PUBLISHABLE_KEY,
+		keySecret: process.env.STRIPE_SECRET_KEY
+	},
+
+	// MongoDB connection options
+	mongo: {
+		options: {
+			db: {
+				safe: true
+			}
+		}
+	}
 };
 
 // Export the config object based on the NODE_ENV
 // ==============================================
 module.exports = _.merge(
-  all,
-  require('./shared'),
-  require(`./${process.env.NODE_ENV}.js`) || {});
+	all,
+	require('./shared'),
+	require(`./${process.env.NODE_ENV}.js`) || {});

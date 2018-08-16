@@ -1,0 +1,31 @@
+<div class="ibox">
+	<div class="ibox-content bg-transparent">
+		<h5 class="right-header-sm">SEARCH BY CATEGORY</h5>
+		<p class="right-header-xs bg{{product.Marketplace.id}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+		<ul class="right-list-view">
+			{{#each categoriesWithCount.rows}}
+			<li>
+				<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a>
+				<ul class="inner-list-view collapse" id="list{{this.name}}">
+					{{#each this.SubCategories}}
+					<li>
+						<a href="../{{../../selectedPage}}/search?category={{../this.id}}&sub_category={{this.id}}&vendor_id={{../../VendorDetail.id}}">{{this.name}}</a>
+					</li>
+					{{/each}}
+				</ul>
+			</li>
+			{{/each}}
+		</ul>
+		{{#if marketPlaceTypes}}
+		<h5 class="right-header-sm m-t-sm">FILTER BY TYPE</h5>
+		<p class="right-header-xs bg{{product.Marketplace.id}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
+		<ul class="right-list-view">
+			{{#each marketPlaceTypes.rows}}
+			<li>
+				<a href="../{{../selectedPage}}/search?&vendor_id={{../VendorDetail.id}}&marketplace={{../marketPlace.WHOLESALE}}&marketplace_type={{this.id}}">{{this.code}} - {{this.name}} ({{this.product_count}})</a>
+			</li>
+			{{/each}}
+		</ul>
+		{{/if}}
+	</div>
+</div>

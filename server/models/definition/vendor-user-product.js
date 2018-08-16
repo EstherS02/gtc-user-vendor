@@ -73,6 +73,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'origin',
             allowNull: false
         },
+        origin_id: {
+            type: DataTypes.BIGINT,
+            field: 'origin_id',
+            allowNull: false
+        },
         email_verified: {
             type: DataTypes.INTEGER,
             field: 'email_verified',

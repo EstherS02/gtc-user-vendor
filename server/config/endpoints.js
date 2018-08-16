@@ -38,7 +38,7 @@ module.exports = {
 	"product-ads-settings": "ProductAdsSetting",
 	"product-attributes": "ProductAttribute",
 	"product-medias": "ProductMedia",
-	"reviews":"Reviews",
+	"reviews":"Review",
 	"star-rating":"Review",
 	"regions": "Region",
 	"shippings": "Shipping",
@@ -49,6 +49,8 @@ module.exports = {
 	"talks": "Talk",
 	"talk-settings": "TalkSetting",
 	"talk-threads": "TalkThread",
+	"talk-thread-users": "TalkThreadUsers",
+	"terms-and-cond":"TermsAndCond",
 	"taxes": "Tax",
 	"tickets": "Ticket",
 	"ticket-threads": "TicketThread",
@@ -64,5 +66,6 @@ module.exports = {
 	"vendor-shipping-locations": "VendorShippingLocation",
 	"vendor-user-product": "VendorUserProduct",
 	"vendor-verifications": "VendorVerification",
-	"wish-list": "WishList"
+	"wish-list": "WishList",
+	"order-items-overview": "OrderItemsOverview"
 }

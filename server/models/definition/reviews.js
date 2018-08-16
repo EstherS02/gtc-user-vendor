@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         product_id: {
             type: DataTypes.BIGINT,
             field: 'product_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'product',
                 key: 'id'
@@ -20,15 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        vendor_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_id',
-            allowNull: true
-        },
         user_id: {
             type: DataTypes.BIGINT,
             field: 'user_id',
-            allowNull: true,
+            allowNull: false,
             references: {
                 model: 'users',
                 key: 'id'
@@ -36,20 +31,15 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        review_type: {
-            type: DataTypes.INTEGER,
-            field: 'review_type',
-            allowNull: true
-        },
         rating: {
             type: DataTypes.INTEGER,
             field: 'rating',
-            allowNull: true
+            allowNull: false
         },
         title: {
             type: DataTypes.STRING(128),
             field: 'title',
-            allowNull: true
+            allowNull: false
         },
         comment: {
             type: DataTypes.TEXT,

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         symbol: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.TEXT,
             field: 'symbol',
             allowNull: false
         },

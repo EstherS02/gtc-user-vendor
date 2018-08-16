@@ -9,26 +9,15 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        from_id: {
-            type: DataTypes.BIGINT,
-            field: 'from_id',
-            allowNull: false,
-            references: {
-                model: 'users',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
-        message: {
-            type: DataTypes.TEXT,
-            field: 'message',
-            allowNull: false
-        },
-        sent_at: {
-            type: DataTypes.DATE,
-            field: 'sent_at',
+        group_name: {
+            type: DataTypes.STRING(64),
+            field: 'group_name',
             allowNull: true
+        },
+        talk_thread_status: {
+            type: DataTypes.INTEGER,
+            field: 'talk_thread_status',
+            allowNull: false
         },
         status: {
             type: DataTypes.INTEGER,
@@ -70,45 +59,19 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const TalkThread = model.TalkThread;
     const Talk = model.Talk;
-    const User = model.User;
-    const TalkSetting = model.TalkSetting;
+    const TalkThread = model.TalkThread;
+    const TalkThreadUsers = model.TalkThreadUsers;
+
+    TalkThread.hasMany(TalkThreadUsers, {
+        foreignKey: 'talk_thread_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
 
     TalkThread.hasMany(Talk, {
-        foreignKey: 'last_thread_id',
+        foreignKey: 'talk_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    TalkThread.belongsTo(User, {
-        foreignKey: 'from_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    TalkThread.belongsToMany(TalkSetting, {
-        through: Talk,
-        foreignKey: 'last_thread_id',
-        otherKey: 'talk_setting_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    TalkThread.belongsToMany(User, {
-        through: Talk,
-        foreignKey: 'last_thread_id',
-        otherKey: 'from_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    TalkThread.belongsToMany(User, {
-        through: Talk,
-        foreignKey: 'last_thread_id',
-        otherKey: 'to_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
 };

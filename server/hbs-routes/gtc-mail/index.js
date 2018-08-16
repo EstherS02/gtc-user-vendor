@@ -7,10 +7,18 @@ var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
 
-/* Handlebars routes */
-var controller = require('./gtc-mail.controller');
+var inboxCtrl = require('./inbox/inbox.controller');
+var sentCtrl = require('./sent/sent.controller');
+var draftsCtrl = require('./drafts/drafts.controller');
+var deletedCtrl = require('./deleted/deleted.controller');
 
-router.get('/',auth.isAuthenticated(), controller.gtcMail);
+
+router.get('/inbox', auth.isAuthenticated(), inboxCtrl.inbox);
+router.get('/inbox/:id', auth.isAuthenticated(), inboxCtrl.message);
+router.get('/sent', auth.isAuthenticated(), sentCtrl.sent);
+router.get('/drafts', auth.isAuthenticated(), draftsCtrl.drafts);
+router.get('/deleted', auth.isAuthenticated(), deletedCtrl.deleted);
+router.get('/compose',auth.isAuthenticated(),inboxCtrl.compose);
 
 
 module.exports = router;

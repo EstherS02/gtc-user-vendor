@@ -1,0 +1,275 @@
+ <script>
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		
+		$("#gtc-cart-alert").hide();
+	})
+	function changeStatus(e) {
+		window.location.href = '/listings/' + e.name + '?status=' + e.value;
+	}
+	function search(e) {
+		window.location.href = '/listings/' + e.name + '?keyword=' + e.value;
+	}
+	function edit(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+		var selected;
+		selected = chkArray.join(',');
+
+		if (chkArray.length == 1) {
+			window.location.href = '/listings/' + e.name + '/' + selected;
+		}
+		else {
+			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(500);
+			});
+		}
+	}
+	function add(e) {
+		window.location.href = '/listings/' + e.name + '/add-product';
+	}
+	function importCSV()
+	{
+		var file = $("#csvfile")[0].files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        var output = document.getElementById("csvfile");
+        var texto = e.target.result;
+        csvJSON(texto);
+	};
+    reader.readAsText(file);
+	}
+	function csvJSON(csv) {
+	var lines = csv.split("\n");
+    var result = [];
+    var headers=lines[0].split(",");
+    for(var i=1;i<lines.length;i++){
+      var obj = {};
+	  var currentline=lines[i].split(",");
+	  for(var j=0;j<headers.length;j++)
+	  {
+	      if(currentline[j]!='')
+		  {
+           obj[headers[j]] = currentline[j];
+		  }
+	  }
+	       result.push(obj);
+      }
+   // console.log("result22"+JSON.stringify(result));
+    //return JSON.stringify(result); //JSON
+	var data = JSON.stringify(result);
+	$.ajax({
+    			url: '/api/product/import-product',
+				type: 'POST',
+				data: data,
+				cache: false,
+				dataType: 'json',
+				contentType: 'application/json',
+				success: function (data, text) {
+					$('#exampleModal').modal('hide');
+            	},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+
+	
+}
+
+</script>{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="content-body">
+							<p class="content-txt">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature products, or import and syncronize them with an outside source. To administer specific details of products, click on the product name or SKU to go to the full edit details page for that specific products.</p>
+							<div class="row">
+								<div class="col-md-7">
+										<div class="form-inline">
+										<div class="form-group mb-2">
+											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="add(this);">ADD PRODUCT</button>
+										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<div class="select-container">
+												<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+													<option disabled selected>CHANGE STATUS</option>
+													<option value="ACTIVE">Active</option>
+													<option value="INACTIVE">InActive</option>
+													<option value="SUSPENDED">Suspended</option>
+													<option value="SOLDOUT">Sold Out</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group mb-2">
+											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
+										</div>
+										</div>
+								</div>
+								<div class="col-md-5">
+									<form class="form-inline ml-auto pull-right">
+										<div class="form-group mx-sm-3 mb-2">
+											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
+											{{!-- <button type="button" id="changePwd"  class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
+										</div>
+										<div class="form-group mb-2">
+											<div class="input-group gtc-rounded">
+												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="keyword" onChange="search(this);">
+												<button type="submit" class="btn btn-sm btn-gtc">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="alert" id="gtc-cart-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="cart-message"></span>
+									</div>
+									<div class="cart-top-header">
+										<div class="alignleft cart-top-left">
+											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+										</div>
+										<div class="alignright cart-top-right">
+											<span class="m-r-sm text-muted">
+												Entries per page : 
+												<a href="listings/{{this.type}}?limit=10">10</a>
+												<a href="listings/{{this.type}}?limit=25">25</a>
+												<a href="listings/{{this.type}}?limit=100">100</a>
+												<a href="listings/{{this.type}}">All</a>
+											</span>
+										</div>
+										<div style="clear: both;"></div>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table">
+											<thead>
+												<tr>
+													<th scope="col">
+														<input type="checkbox" onclick="selectAll(this);">
+													</th>
+													<th scope="col">Product Name</th>
+													<th scope="col">Publish Date</th>
+													<th scope="col">Sales</th>
+													<th scope="col">Price</th>
+													<th scope="col">Status</th>
+													<th scope="col">SKU</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#each products}}
+												<tr>
+													<td scope="row"><input type="checkbox" name="selected" value={{this.product_slug}}></td>
+													<td scope="row"><img src="{{this.product_base_image}}" style="width: 30px;" />
+														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></td>
+														<td scope="row">{{ prettifyDate this.publish_date }}</td>
+														<td scope="row">{{this.product_selling_count}}</td>
+														<td>${{this.product_price}} CAD</td>
+														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+														<td class="text_green_color">Active</td>
+														{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+														<td class="text_red_color">InActive</td>
+														{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+														<td class="text_orange_color">Suspended</td>
+														{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+														<td class="text_red_color">Sold Out</td>
+														{{/ifCond}}
+														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+													</tr>
+													{{/each}}
+												</tbody>
+											</table>
+										</div>
+										{{#pagination collectionSize page pageSize maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+												</li>
+												{{/unless}}
+											</ul>
+										</nav>
+										{{/pagination}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Import file</h5>
+			</div>
+			<form id="importFile" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Import files</label>
+								<input type="file"  id="csvfile" accept=".csv" name="file"/>
+							</div>
+						</div>
+						</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Close</button>
+					<button type="button" id="submitBtn" onclick="importCSV()" class="btn btn-small btn-primary">
+						
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

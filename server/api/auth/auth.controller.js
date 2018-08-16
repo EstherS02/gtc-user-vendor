@@ -96,7 +96,7 @@ export function login(req, res) {
 		}
 	}, function(err, response, body) {
 		if (response.statusCode != 200) {
-			res.status(401).send("Invalid login");
+			res.status(401).send("Username and password do not match.");
 			return;
 		}
 		var email = req.body.email;
@@ -243,7 +243,7 @@ export function googleLogin(req, res, next) {
 								res.cookie("gtc_refresh_token", encryptedRefToken);
 								res.cookie("gtc_access_token", rspTokens.access_token);
 								res.status(200).json({
-									'status' : 200,
+									'status': 200,
 									'message': 'ok',
 									'messageDetails': 'successful'
 								});
@@ -265,7 +265,7 @@ export function googleLogin(req, res, next) {
 											res.cookie("gtc_refresh_token", encryptedRefToken);
 											res.cookie("gtc_access_token", rspTokens.access_token);
 											res.status(200).json({
-												'status' : 200,
+												'status': 200,
 												'message': 'ok',
 												'messageDetails': 'successful'
 											});
@@ -316,7 +316,7 @@ export function googleLogin(req, res, next) {
 												res.cookie("gtc_refresh_token", encryptedRefToken);
 												res.cookie("gtc_access_token", rspTokens.access_token);
 												res.status(200).json({
-													'status' : 200,
+													'status': 200,
 													'message': 'ok',
 													'messageDetails': 'successful'
 												});
@@ -638,7 +638,7 @@ export function linkedInLogin(req, res, next) {
 };
 
 export function twitterLogin(req, res, next) {
-	
+
 	var queryObj = {};
 
 	req.checkBody('first_name', 'Missing Query Param').notEmpty();
@@ -784,6 +784,7 @@ export function twitterLogin(req, res, next) {
 export function logout(req, res, next) {
 	var refreshToken = cryptography.decrypt(req.cookies.gtc_refresh_token);
 	res.clearCookie('gtc_refresh_token');
+	res.clearCookie('gtc_access_token');
 	model['UserToken'].destroy({
 		where: {
 			user_id: req.user.id,
@@ -791,10 +792,10 @@ export function logout(req, res, next) {
 		},
 		returning: true
 	}).then(function(row) {
-		if (row > 0) {
-			res.status(200).send("Logout successfully");
-			return;
-		}
+		if (row > 0)
+			return res.status(200).send("Logout successfully");
+		else
+			return res.status(200).send("Already Logged Out");
 	}).catch(function(error) {
 		if (error) {
 			res.status(500).send("Internal server error");

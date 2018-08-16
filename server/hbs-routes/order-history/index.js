@@ -6,11 +6,12 @@ var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 var auth = require('../../auth/auth.service');
 
+var orderHistoryCtrl = require('./order-history/order-history.controller');
+var orderViewCtrl = require('./order-view/order-view.controller');
 
-/* Handlebars routes */
-var controller = require('./order-history.controller');
-
-router.get('/',auth.isAuthenticated(), controller.orderHistory);
-
+router.get('/', auth.isAuthenticated(), orderHistoryCtrl.orderHistory);
+router.get('/:id', auth.isAuthenticated(), orderViewCtrl.orderView);
 
 module.exports = router;
+
+

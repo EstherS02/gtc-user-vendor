@@ -71,18 +71,19 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const Timezone = model.Timezone;
+    const BusinessHour = model.BusinessHour;
     const Vendor = model.Vendor;
     const Country = model.Country;
     const User = model.User;
     const Currency = model.Currency;
-    const BusinessHour = model.BusinessHour;
 
-    Timezone.hasMany(Vendor, {
+    Timezone.hasMany(BusinessHour, {
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-    Timezone.hasMany(BusinessHour, {
+
+    Timezone.hasMany(Vendor, {
         foreignKey: 'timezone_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -90,6 +91,14 @@ module.exports.initRelations = () => {
 
     Timezone.belongsTo(Country, {
         foreignKey: 'country_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Timezone.belongsToMany(Vendor, {
+        through: BusinessHour,
+        foreignKey: 'timezone_id',
+        otherKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

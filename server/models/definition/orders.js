@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         invoice_id: {
             type: DataTypes.STRING(64),
             field: 'invoice_id',
-            allowNull: false
+            allowNull: true
         },
         purchase_order_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(64),
             field: 'purchase_order_id',
             allowNull: true
         },
@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
+            allowNull: true
+        },
+        order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
             allowNull: true
         },
         expected_delivery_date: {
@@ -79,12 +84,17 @@ module.exports = (sequelize, DataTypes) => {
         total_price: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'total_price',
-            allowNull: true
+            allowNull: false
+        },
+         gtc_fees: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'gtc_fees',
+            allowNull: false
         },
         tracking_id: {
             type: DataTypes.INTEGER,
             field: 'tracking_id',
-            allowNull: false
+            allowNull: true
         },
         shipping_address_id: {
             type: DataTypes.BIGINT,
@@ -146,13 +156,14 @@ module.exports.initRelations = () => {
     const Order = model.Order;
     const OrderItem = model.OrderItem;
     const OrderPayment = model.OrderPayment;
+    const OrderPaymentEscrow = model.OrderPaymentEscrow;
     const User = model.User;
     const Shipping = model.Shipping;
     const Address = model.Address;
     const Product = model.Product;
     const Coupon = model.Coupon;
     const Tax = model.Tax;
-    const PaymentSetting = model.PaymentSetting;
+    const Payment = model.Payment;
 
     Order.hasMany(OrderItem, {
         foreignKey: 'order_id',
@@ -161,6 +172,12 @@ module.exports.initRelations = () => {
     });
 
     Order.hasMany(OrderPayment, {
+        foreignKey: 'order_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Order.hasMany(OrderPaymentEscrow, {
         foreignKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -179,12 +196,14 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsTo(Address, {
+        as: "shippingAddress",
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
+        as: "billingAddress",
         foreignKey: 'billing_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
@@ -198,14 +217,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(Coupon, {
-        through: OrderItem,
-        foreignKey: 'order_id',
-        otherKey: 'coupon_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
     Order.belongsToMany(Tax, {
         through: OrderItem,
         foreignKey: 'order_id',
@@ -214,8 +225,16 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Order.belongsToMany(PaymentSetting, {
+    Order.belongsToMany(Payment, {
         through: OrderPayment,
+        foreignKey: 'order_id',
+        otherKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Order.belongsToMany(Payment, {
+        through: OrderPaymentEscrow,
         foreignKey: 'order_id',
         otherKey: 'payment_id',
         onDelete: 'NO ACTION',

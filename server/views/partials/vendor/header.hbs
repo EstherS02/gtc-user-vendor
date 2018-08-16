@@ -1,29 +1,49 @@
-<div class="container-fluid">
-    <div class="row" style="background-color:#fff;color: #000;">
-        <div class="col-md-1">
-            <img style="width: 100%" src="img/test-user.png" alt="test" />
-        </div>
-        <div class="col-md-2">
-            <h6 style="font-size: 13px; padding-top: 25px;">Hayden Agencies Ltd</h6>
-        </div>
-        <div class="col-md-1">
-            <h6 style="font-size: 13px; padding-top: 25px;">Wholesale</h6>
-        </div>
-        <div class="col-md-1">
-            <h6 style="font-size: 13px; padding-top: 25px;">Message
-                <span style="background-color: #BE0B24; color: #fff; padding: 1px;">1</span>
-            </h6>
-        </div>
-        <div class="col-md-1 common_padding1">
-            <h6 style="font-size: 13px; padding-top: 25px;">Notifications
-                <span style="background-color: #BE0B24; color: #fff; padding: 1px;">4</span>
-            </h6>
-        </div>
-        <div class="col-md-2">
-            <h6 style="font-size: 13px; padding-top: 25px;">Promote Your Store</h6>
-        </div>
-        <div class="col-md-4">
-            <h6 style="font-size: 13px; padding-top: 25px;" class="float-right">Support</h6>
+{{#if LoggedInUser.Vendor}}
+<div class="container-fluid" style="background-color:#fff;color:#000000;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1 col-6">
+                {{#if this.LoggedInUser.Vendor.vendor_profile_pic_url}}
+                <img style="width: 100%" src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" alt="test">
+                {{else}}
+                <img style="width: 100%" src="img/avatar.png" alt="test">
+                {{/if}}
+            </div>
+            <div class="col-md-2 col-6">
+                <h6 style="font-size: 15px; padding-top: 23px;font-family: 'Oswald', sans-serif;">
+                    <a style="color:#000000;" href="#">{{LoggedInUser.Vendor.vendor_name}}</a>
+                </h6>
+            </div>
+            <div class="col-md-1 common_padding1">
+                <h6 style="font-size: 13px; padding-top: 25px;">
+                    <a href="#" style="color:#000000;">Wholesale</a>
+                </h6>
+            </div>
+            <div class="col-md-1 common_padding1">
+                <h6 style="font-size: 13px; padding-top: 25px;">
+                    <a href="#" style="color:#000000;">
+                        <a style="color:#000000;" href="/gtc-mail">Message</a>
+                        <span style="background-color: #BE0B24; color: #fff; padding: 1px;">1</span>
+                </h6>
+            </div>
+            <div class="col-md-1 common_padding1">
+                <h6 style="font-size: 13px; padding-top: 25px;">
+                    <a href="#">
+                        <a href="/notifications" style="color:#000000;">Notifications</a>
+                        <span style="background-color: #BE0B24; color: #fff; padding: 1px;">4</span>
+                </h6>
+            </div>
+            <div class="col-md-2">
+                <h6 style="font-size: 13px; padding-top: 25px;">
+                    <a href="/promote-store" style="color:#000000;">Promote Your Store</a>
+                </h6>
+            </div>
+            <div class="col-md-4">
+                <h6 style="font-size: 13px; color: black; padding-top: 25px;" class="float-right">
+                    <a href="#" style="color: #000;">Support</a>
+                </h6>
+            </div>
         </div>
     </div>
 </div>
+{{/if}}

@@ -12,37 +12,72 @@ const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function coupons(req, res) {
 	var LoggedInUser = {};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	console.log(req.user)
+
+	let user_id = LoggedInUser.id;
 
 	var field = 'id';
 	var order = "desc";
 	var offset = 0;
 	var limit = 10;
 	var queryObj = {};
+	var bottomCategory = {};
 	var couponModel = 'Coupon';
+	var categoryModel = "Category";
 
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
 	}
 	if (typeof req.query.status !== 'undefined') {
-		var status = '';
-		if (status = statusCode[req.query.status])
-			queryObj['status'] = parseInt(status);
+		var statusNew = '';
+		if (statusNew = status[req.query.status])
+			queryObj['status'] = parseInt(statusNew);
 	}
+	if (typeof req.query.name !== 'undefined') {
+		queryObj['coupon_name'] = {
+			$like: '%' + req.query.name + '%'
+		};
+	}
+	//pagination 
+	var page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	delete req.query.order;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
 
-	queryObj['vendor_id'] = 28;
+	offset = (page - 1) * limit;
+	var maxSize;
+	// End pagination
+	queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
-
+	var queryObjCategory = {
+		status: status['ACTIVE']
+	};
 	async.series({
+			cartCounts: function(callback) {
+				service.cartHeader(LoggedInUser).then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			},
 			Coupons: function(callback) {
 				service.findRows(couponModel, queryObj, offset, limit, field, order)
 					.then(function(response) {
@@ -53,19 +88,57 @@ export function coupons(req, res) {
 						return callback(null);
 					});
 			},
+			categories: function(callback) {
+				var categoryModel = "Category";
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				const categoryQueryObj = {};
+
+
+				categoryQueryObj['status'] = status["ACTIVE"];
+
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
+
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('view-coupons', {
+				maxSize = results.Coupons.count / limit;
+				if (results.Coupons.count % limit)
+					maxSize++;
+				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
-					statusCode: statusCode,
+					statusCode: status,
 					discountType: discountType,
-					LoggedInUser: LoggedInUser
+					LoggedInUser: LoggedInUser,
+					categories: results.categories,
+					bottomCategory: bottomCategory,
+					cartheader:results.cartCounts,
+					selectedPage: 'coupons',
+					// pagination
+					page: page,
+					maxSize: maxSize,
+					pageSize: limit,
+					collectionSize: results.count,
+					// End pagination
+					vendorPlan: vendorPlan
 				});
 			} else {
-				res.render('view-coupons', err);
+				res.render('vendorNav/coupons/view-coupons', err);
 			}
 		});
 }
@@ -73,26 +146,35 @@ export function coupons(req, res) {
 export function addCoupon(req, res) {
 
 	var LoggedInUser = {};
-    if (req.user)
-        LoggedInUser = req.user;
-    let user_id = LoggedInUser.id;
+	if (req.user)
+		LoggedInUser = req.user;
+	let user_id = LoggedInUser.id;
 
 	var productModel = "Product";
 	var categoryModel = "Category";
 
+
 	var offset, limit, field, order;
 	var productQueryObj = {};
 	var categoryQueryObj = {};
-
+	var bottomCategory = {};
 	field = "id";
 	order = "asc";
 
 	productQueryObj['status'] = status["ACTIVE"];
 	categoryQueryObj['status'] = status["ACTIVE"];
 
-	productQueryObj['vendor_id'] = 28;
+	productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		products: function(callback) {
 			service.findRows(productModel, productQueryObj, offset, limit, field, order)
 				.then(function(products) {
@@ -102,25 +184,45 @@ export function addCoupon(req, res) {
 					return callback(null);
 				});
 		},
+
 		categories: function(callback) {
-			service.findRows(categoryModel, categoryQueryObj, offset, limit, field, order)
-				.then(function(categories) {
-					return callback(null, categories.rows);
+			var categoryModel = "Category";
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
+
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		}
+
 	}, function(err, results) {
 		if (!err) {
-			res.render('edit-coupon', {
+			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				products: results.products,
 				categories: results.categories,
-				LoggedInUser: LoggedInUser
+				bottomCategory: bottomCategory,
+				LoggedInUser: LoggedInUser,
+				cartheader:results.cartCounts,
+				vendorPlan: vendorPlan,
+				selectedPage: 'coupons',
 			});
 		} else {
-			res.render('services', err);
+			res.render('vendorNav/coupons/add-coupon', err);
 		}
 	});
 }
@@ -128,27 +230,41 @@ export function addCoupon(req, res) {
 export function editCoupons(req, res) {
 
 	var LoggedInUser = {};
-    if (req.user)
-        LoggedInUser = req.user;
-    let user_id = LoggedInUser.id;
+	var bottomCategory = {};
+	if (req.user)
+		LoggedInUser = req.user;
+	let user_id = LoggedInUser.id;
 
 	var queryObj = {};
 	var includeArr = [];
 	var offset, limit, field, order;
 
 	var modelName = "Coupon";
+	var categoryModel = "Category";
 
 	queryObj['id'] = req.query.id;
-	// queryObj['vendor_id'] = 29;
+	queryObj['vendor_id'] = req.user.Vendor.id;
 	queryObj['status'] = status["ACTIVE"];
+	var coupon_id = 0;
 
 	field = "id";
 	order = "asc";
 
 	async.series({
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		coupon: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
 				.then(function(coupon) {
+					if (coupon) {
+						coupon_id = req.query.id;
+					}
 					return callback(null, coupon);
 				}).catch(function(error) {
 					console.log('Error:::', error);
@@ -170,14 +286,21 @@ export function editCoupons(req, res) {
 				});
 		},
 		categories: function(callback) {
-			var categoryQueryObj = {};
-			var categoryModel = "Category";
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, offset, limit, field, order)
-				.then(function(categories) {
-					return callback(null, categories.rows);
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -188,7 +311,7 @@ export function editCoupons(req, res) {
 			var couponProductsModel = "CouponProduct";
 
 			couponProductsQueryObj['status'] = status["ACTIVE"];
-			couponProductsQueryObj['coupon_id'] = req.query.id;
+			couponProductsQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponProductsModel, includeArr, couponProductsQueryObj, offset, limit, field, order)
 				.then(function(couponProducts) {
@@ -211,7 +334,7 @@ export function editCoupons(req, res) {
 			var couponExcludeProductsModel = "CouponExcludedProduct";
 
 			couponExcludeProductsQueryObj['status'] = status["ACTIVE"];
-			couponExcludeProductsQueryObj['coupon_id'] = req.query.id;
+			couponExcludeProductsQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponExcludeProductsModel, includeArr, couponExcludeProductsQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeProducts) {
@@ -235,7 +358,7 @@ export function editCoupons(req, res) {
 			var couponCategoryModel = "CouponCategory";
 
 			couponCategoriesQueryObj['status'] = status["ACTIVE"];
-			couponCategoriesQueryObj['coupon_id'] = req.query.id;
+			couponCategoriesQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponCategoryModel, includeArr, couponCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponCategories) {
@@ -259,7 +382,7 @@ export function editCoupons(req, res) {
 			var couponExcludeCategoryModel = "CouponExcludedCategory";
 
 			couponExcludeCategoriesQueryObj['status'] = status["ACTIVE"];
-			couponExcludeCategoriesQueryObj['coupon_id'] = req.query.id;
+			couponExcludeCategoriesQueryObj['coupon_id'] = coupon_id;
 
 			service.findAllRows(couponExcludeCategoryModel, includeArr, couponExcludeCategoriesQueryObj, offset, limit, field, order)
 				.then(function(couponExcludeCategories) {
@@ -281,20 +404,26 @@ export function editCoupons(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			// console.log('results', results.couponProducts);
-			res.render('edit-coupon', {
+			// console.log('results', results);
+			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,
 				products: results.products,
 				categories: results.categories,
+				bottomCategory: bottomCategory,
 				existingCouponProducts: results.couponProducts,
 				existingCouponExcludeProducts: results.couponExcludeProducts,
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
-				LoggedInUser: LoggedInUser
+				category: results.category,
+				cartheader:results.cartCounts,
+				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
+				selectedPage: 'coupons',
 			});
+
 		} else {
-			res.render('services', error);
+			res.render('vendorNav/coupons/edit-coupon', error);
 		}
 	});
 }

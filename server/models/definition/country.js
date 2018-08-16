@@ -95,7 +95,6 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Marketplace = model.Marketplace;
     const MarketplaceType = model.MarketplaceType;
-    const ProductMedia = model.ProductMedia;
     const Category = model.Category;
     const SubCategory = model.SubCategory;
 
@@ -111,11 +110,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Country.hasMany(ProductAdsSetting, {
+    Country.hasMany(ProductAdsSetting, {
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
     Country.hasMany(State, {
         foreignKey: 'country_id',
@@ -199,14 +198,6 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Country.belongsToMany(ProductMedia, {
-        through: Product,
-        foreignKey: 'product_location',
-        otherKey: 'product_media_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });*/
-
     Country.belongsToMany(Category, {
         through: Product,
         foreignKey: 'product_location',
@@ -231,13 +222,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    /*Country.belongsToMany(Product, {
+    Country.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });*/
+    });
 
     Country.belongsToMany(State, {
         through: ProductAdsSetting,

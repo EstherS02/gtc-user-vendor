@@ -1,0 +1,374 @@
+<script>
+    $(document).ready(function () {
+        $("#gtc-social-profile").hide();
+        var domElement1 = '<div class="col-md-4 text_green_color social_check">' +
+            '<i class="fas fa-check-circle"></i>' + '</div>'
+        var domElement2 = '<div class="col-md-4 text_red_color social_check">' +
+            '<i class="fas fa-exclamation-circle"></i>' + '</div>'
+
+        $('#facebook_url').change(function (e) {
+
+            var value = $('#facebook_url').val();
+            if(value!='')
+            {
+            if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value))
+                $("#facebook_append").html(domElement1);
+            else
+                $("#facebook_append").html(domElement2);
+            }    
+        });
+
+        $('#twitter_url').change(function (e) {
+            var value = $('#twitter_url').val();
+            if(value!='')
+            {
+            if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value))
+                $("#twitter_append").html(domElement1);
+            else
+                $("#twitter_append").html(domElement2);
+            }    
+        });
+
+        $('#google_plus_url').change(function (e) {
+            var value = $('#google_plus_url').val();
+            if(value!='')
+            {
+            if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value))
+                $("#google_append").html(domElement1);
+            else
+                $("#google_append").html(domElement2);
+            }    
+        });
+
+        $('#linkedin_url').change(function (e) {
+            var value = $('#linkedin_url').val();
+            if(value!='')
+            {
+            if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value))
+                $("#linkedin_append").html(domElement1);
+            else
+                $("#linkedin_append").html(domElement2);
+            }    
+        });
+
+        $('#youtube_url').change(function (e) {
+            var value = $('#youtube_url').val();
+              if(value!='')
+            {
+            if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value))
+                $("#youtube_append").html(domElement1);
+            else
+                $("#youtube_append").html(domElement2);
+            }    
+        });
+
+        $('#instagram_url').change(function (e) {
+            var value = $('#instagram_url').val();
+              if(value!='')
+            {
+            if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value))
+                $("#instagram_append").html(domElement1);
+            else
+                $("#instagram_append").html(domElement2);
+            }    
+        });
+
+        $('#flickr_url').change(function (e) {
+            var value = $('#flickr_url').val();
+            if(value!='')
+            {
+            if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value))
+                $("#flickr_append").html(domElement1);
+            else
+                $("#flickr_append").html(domElement2);
+            }
+        });
+
+        $("#socialProfileForm").submit(function (e) {
+            console.log("facebookURL:::"+$('#facebook_url').val());
+            e.preventDefault();
+            //let formInput = $("#socialProfileForm :input").filter(function (index, element) {
+             // return $(element).val() != '';$(element).val() != 'null';
+            //}).serialize();  
+            let formInput = $("#socialProfileForm :input").serialize();
+            //console.log("formInput:::"+formInput);
+
+            if ($('#socialProfileForm').valid()) {
+                $.ajax({
+                    url: '/api/vendor/' + {{ LoggedInUser.Vendor.id }},
+                    type: 'PUT',
+                    data: formInput,
+                    success: function (updateData) {
+                        // alert("Upadted");
+                        ouputPopup("Profile Setting Updated Successfully");
+                    },
+            error: function (error) {
+                // console.log("Error", error);
+                ouputErrorPopup(error);
+            }
+        });
+    }
+        });
+
+   // $("#socialProfileForm").validate({
+     //   rules: {
+     //       facebook_url: {
+     //           fbValidation: true
+    //        },
+     //       google_plus_url: {
+      //          gplusValidation: true
+      //      },
+      //      twitter_url: {
+        //        twitterValidation: true
+         //   },
+         //   linkedin_url: {
+           //     linkedinValidation: true
+           // },
+          //  youtube_url: {
+            //    utubeValidation: true
+           // },
+           // instagram_url: {
+             //   instagramValidation: true
+           // },
+           // flickr_url: {
+             //   flickrValidation: true
+            //}
+       // },
+       // messages: {
+        //    facebook_url: "Please enter valid facebook url",
+          //  google_plus_url: "Please enter valid google url",
+            //twitter_url: "Please enter valid twitter url",
+           // linkedin_url: "Please enter valid linked url",
+            //youtube_url: "Please enter valid youtube url",
+           // instagram_url: "Please enter valid instagram url",
+            //flickr_url: "Please enter valid flickr url"
+        //}
+    //});
+
+    $.validator.addMethod("fbValidation",
+        function (value, element) {
+            return /^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value);
+        });
+
+    $.validator.addMethod("gplusValidation",
+        function (value, element) {
+            return /^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value);
+        });
+
+    $.validator.addMethod("twitterValidation",
+        function (value, element) {
+            return /^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value);
+        });
+
+    $.validator.addMethod("linkedinValidation",
+        function (value, element) {
+            return /(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value);
+        });
+    $.validator.addMethod("utubeValidation",
+        function (value, element) {
+            return /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value);
+        });
+    $.validator.addMethod("instagramValidation",
+        function (value, element) {
+            return /^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value);
+        });
+    $.validator.addMethod("flickrValidation",
+        function (value, element) {
+            return /^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value);
+        });      
+    });
+
+    function ouputPopup(data) {
+        $('#gtc-social-profile').prop('disabled', false);
+        $('#gtc-social-profile').removeClass('alert-danger').addClass('alert-success');
+        $('#gtc-social-profile .cart-message').text(data);
+        $("#gtc-social-profile").fadeTo(2000, 500).slideUp(500, function () {
+            $("#gtc-social-profile").slideUp(500);
+        });
+    }
+    function ouputErrorPopup(data) {
+        $('#gtc-social-profile').prop('disabled', false);
+        $('#gtc-social-profile').removeClass('alert-success').addClass('alert-danger');
+        $('#gtc-social-profile .cart-message').text(data);
+        $("#gtc-social-profile").fadeTo(7000, 500).slideUp(500, function () {
+            $("#gtc-social-profile").slideUp(500);
+        });
+    }
+
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Social Profile Settings</h2>
+                        </div>
+                        <div class="content-body">
+                            <form id="socialProfileForm">
+                                <p class="social_para"> Here you can connect your various social profiles and have them show up on your profile page.
+                                    Please include those you'd like to feature. </p>
+                                <div class="alert" id="gtc-social-profile">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <span class="cart-message"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        Facebook
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text social_face_1" style=" border-radius: 0px;" id="basic-addon1">
+                                                    <i class="fab fa-facebook-f  "></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" id="facebook_url" name="facebook_url" value="{{vendorInfo.facebook_url}}"
+                                                aria-label="Username" aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="facebook_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        Google+
+                                    </div>
+                                    <div class="col-md-5">
+
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_goo_1" id="basic-addon1">
+                                                    <i class="fab fa-google-plus-g"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" id="google_plus_url" name="google_plus_url" value="{{vendorInfo.google_plus_url}}"
+                                                onChange="validate_g+(this);" aria-label="Username" aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="google_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        Twitter
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_twit_1" id="basic-addon1">
+                                                    <i class="fab fa-twitter"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" id="twitter_url" name="twitter_url" value="{{vendorInfo.twitter_url}}"
+                                                aria-label="Username" aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="twitter_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        LinkedIn
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_lin_1" id="basic-addon1">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" id="linkedin_url" name="linkedin_url" value="{{vendorInfo.linkedin_url}}"
+                                                aria-label="Username" aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="linkedin_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        YouTube
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_you_1" id="basic-addon1">
+                                                    <i class<i class="fab fa-youtube"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" id="youtube_url" name="youtube_url" aria-label="Username" value="{{vendorInfo.youtube_url}}"
+                                                aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="youtube_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        Instagram
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_ins_1" id="basic-addon1">
+                                                    <i class="fab fa-instagram"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" value="{{vendorInfo.instagram_url}}" id="instagram_url" name="instagram_url"
+                                                aria-label="Username" aria-describedby="basic-addon1">
+                                        </div>
+                                    </div>
+                                    <div id="instagram_append"> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 social_face">
+                                        Flickr
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group mb-5">
+                                            <div class="input-group-prepend">
+                                                <span style="border-radius: 0px;" class="input-group-text social_fli_1" id="basic-addon1">
+                                                    <i class="fab fa-flickr"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control social_input" value="{{vendorInfo.flickr_url}}" id="flickr_url" name="flickr_url"
+                                                aria-label="Username" aria-describedby="basic-addon1">
+
+                                        </div>
+                                    </div>
+                                    <div id="flickr_append"> </div>
+                                </div>
+                                <hr style="margin-top: 10px" />
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        {{!--
+                                        <input class="list_butt_1" type="submit" value="UPDATE" style="padding: 5px 20px;"
+                                        /> --}}
+                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"  style="border-radius:0px">
+                                            <span class="ladda-label">Update</span>
+                                            <span class="ladda-spinner"></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        {{!--
+                                        <input class="list_butt_2" type="reset" value="CANCEL" style="padding: 5px 20px;"
+                                        /> --}}
+                                        <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+                                            <span class="ladda-label">Cancel</span>
+                                            <span class="ladda-spinner"></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-8">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{> footer/bottom-footer}}

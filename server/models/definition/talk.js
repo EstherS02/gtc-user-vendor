@@ -9,42 +9,35 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        talk_setting_id: {
-            type: DataTypes.BIGINT,
-            field: 'talk_setting_id',
-            allowNull: false,
-            references: {
-                model: 'talk_setting',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
-        },
         from_id: {
             type: DataTypes.BIGINT,
             field: 'from_id',
             allowNull: false,
             references: {
-                model: 'users',
+                model: 'user',
                 key: 'id'
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        to_id: {
-            type: DataTypes.BIGINT,
-            field: 'to_id',
-            allowNull: false,
-            references: {
-                model: 'users',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
+        message: {
+            type: DataTypes.TEXT,
+            field: 'message',
+            allowNull: false
         },
-        last_thread_id: {
+        sent_at: {
+            type: DataTypes.DATE,
+            field: 'sent_at',
+            allowNull: true
+        },
+        talk_status: {
+            type: DataTypes.INTEGER,
+            field: 'talk_status',
+            allowNull: false
+        },
+        talk_thread_id: {
             type: DataTypes.BIGINT,
-            field: 'last_thread_id',
+            field: 'talk_thread_id',
             allowNull: false,
             references: {
                 model: 'talk_thread',
@@ -93,13 +86,12 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Talk = model.Talk;
-    const TalkSetting = model.TalkSetting;
-    const User = model.User;
+    const Talk = model.Talk; 
     const TalkThread = model.TalkThread;
+    const User = model.User;
 
-    Talk.belongsTo(TalkSetting, {
-        foreignKey: 'talk_setting_id',
+    Talk.belongsTo(TalkThread, {
+        foreignKey: 'talk_thread_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
@@ -109,17 +101,5 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
-    Talk.belongsTo(User, {
-        foreignKey: 'to_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Talk.belongsTo(TalkThread, {
-        foreignKey: 'last_thread_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
 };
+

@@ -1,105 +1,229 @@
-<div class="col-md-2 showing_categ">
-	<ul class="list-group list-group-flush">
+
+<script type="text/javascript">
+    $(document).ready(function(){
+            var pathArray = window.location.pathname.split('/');
+            
+    });
+</script>
+<div class="col-md-2 showing_categ" style="font-size:12px">
+	{{#if LoggedInUser.Vendor}}
+	<ul class="list-group list-group-flush list-unstyled components">
 		<li class="list-group-item">
-			<b><a href="/reporting">Reporting</a></b>
-			<ul class="list-group list-group-flush">
+			<a data-toggle="collapse" href="#reporting" {{#if selectedPage}} aria-expanded="true" {{/if}}>Reporting</a>
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "reporting"}}show{{/ifCond}}{{/if}}" id="reporting">
 				<li class="list-group-item">
-					<a href="/reporting/performance">Performance</a>
+					<a href="/reporting/performance" {{#ifCond selectedPage '==' 'performance'}} style="color:#234267" {{/ifCond}}>Performance</a>
 				</li>
 				<li class="list-group-item">
-					<a href="/reporting/sales-history">Sales History</a>
+					<a href="/reporting/sales-history" {{#ifCond selectedPage '==' 'sales-history'}} style="color:#234267" {{/ifCond}}>Sales History</a>
 				</li>
-				<li class="list-group-item">
-					<a href="/reporting/accounting">Accounting</a>
-					<ul style="list-style: none">
+				<li class="list-group-item" id="acc-collapse">
+					<a data-toggle="collapse" data-parent="#acc-collapse" href="#account" {{#ifCond selectedPage '==' 'tax'}} aria-expanded="true"
+					 {{/ifCond}}>Accounting</a>
+					<ul class="list-group collapse {{#ifCond selectedPage '==' 'tax'}} show {{/ifCond}}" id="account">
 						<li class="list-group-item">
-							<a href="/reporting/tax">Report tax</a>
+							<a href="/reporting/tax" {{#ifCond selectedPage '==' 'tax'}} style="color:#234267" {{/ifCond}}>Report tax</a>
 						</li>
 					</ul>
 				</li>
 			</ul>
-			<li class="list-group-item">Edit Listing
-				<ul style="list-style: none">
-					<li class="list-group-item"><a href="/listings/wholesale">Wholesale Listing</a>
-						<ul style="list-style: none">
-							<li><a href="">Edit Listing</a></li>
-						</ul>
-					</li>
-					<li class="list-group-item"><a href="/listings/shop">Shop Listings</a></li>
-					<li class="list-group-item"><a href="/listings/services">Service listings</a></li>
-					<li class="list-group-item"><a href="/listings/subscription">Subscription Listings</a></li>
-				</ul>
-			</li>
-			<li class="list-group-item">
-				<a href="/coupons">Edit/Add Coupons</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/reviews">See My Reviews</a>
-			</li>
-			<li class="list-group-item">
-				<a href="promote-store">Store Branding</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/notifications">Notification Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/social-profile">Social Profiles Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/shipping-settings">Shipping Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="#">Subscription Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/payment-settings">Payment Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/verification"> Get GTC Verified</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/gtc-talk">GTC Talk Settings</a>
-			</li>
-			<li class="list-group-item">
-				<b>GTC Mail</b>
-				<ul style="list-style: none;">
-					<li><a href="/gtc-mail">Inbox</a>
-						<span style="background-color: #BE0B24; color: #fff; padding: 2px; border-radius: 50%"></span>
-					</li>
-					<li>Sent</li>
-					<li>Drafts</li>
-					<li>Deleted</li>
-					<li>GTC Mail Settings</li>
-				</ul>
-			</li>
-		</ul>
-		<hr/>
-		<ul class="list-group list-group-flush">
-			<li class="list-group-item">
-				<a href="/order-history">Order history</a>
-			</li>
-			<li class="list-group-item">My Downloads</li>
-			<li class="list-group-item">
-				<a href="/wishlist">Wishlist</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/billing-settings">Billing Settings</a>
-			</li>
-			<li class="list-group-item">
-				<a href="/user-profile">Profile Settings</a>
-			</li>
-			<li class="list-group-item">GTO Mail</li>
-			<li class="list-group-item">Contact</li>
-			<li class="list-group-item">Feed</li>
-			<li class="list-group-item">Support
-				<ul>
-					<li class="list-group-item">FAQ</li>
-					<li class="list-group-item">Ticket History</li>
-					<li class="list-group-item">Direct Support (
-						<i class="fas fa-question"></i>)</li>
-					</ul>
+		</li>
+
+		{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
+
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/wholesale" {{#ifCond selectedPage '==' 'wholesale'}} style="color:#234267" {{/ifCond}}>Wholesale Listings</a>
 				</li>
-
+				<li class="list-group-item">
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/lifestyle" {{#ifCond selectedPage '==' 'lifestyle'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
+				</li>
 			</ul>
+		</li>
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}}
 
-		</div>
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush  {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/lifestyle" {{#ifCond selectedPage '==' 'lifestyle'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}}
+
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}}
+
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if selectedPage}}show{{/if}}" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/lifestyle" {{#ifCond selectedPage '==' 'lifestyle'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+
+		{{/ifCond}} {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
+
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#listings" {{#if selectedPage}} aria-expanded="true" {{/if}}>Edit Listings</a>
+			<ul class="list-group collapse list-group-flush {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="listings">
+				<li class="list-group-item">
+					<a href="/listings/shop" {{#ifCond selectedPage '==' 'shop'}} style="color:#234267" {{/ifCond}}>Shop Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/services" {{#ifCond selectedPage '==' 'services'}} style="color:#234267" {{/ifCond}}>Services Listings</a>
+				</li>
+				<li class="list-group-item">
+					<a href="/listings/subscription" {{#ifCond selectedPage '==' 'subscription'}} style="color:#234267" {{/ifCond}}>Subscription Listings</a>
+				</li>
+			</ul>
+		</li>
+		{{/ifCond}}
+
+		<li class="list-group-item">
+			<a href="/coupons"  {{#ifCond selectedPage '==' 'coupons'}} style="color:#234267" {{/ifCond}}>Edit/Add Coupons</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/reviews" {{#ifCond selectedPage '==' 'reviews'}} style="color:#234267" {{/ifCond}}>See My Reviews</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/promote-store" {{#ifCond selectedPage '==' 'promote-store'}} style="color:#234267" {{/ifCond}}>Store Branding</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/notifications" {{#ifCond selectedPage '==' 'notifications'}} style="color:#234267" {{/ifCond}}>Notification Settings</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/social-profile" {{#ifCond selectedPage '==' 'social-profile'}} style="color:#234267" {{/ifCond}}>Social Profiles Settings</a>
+		</li>
+		<li class="list-group-item" {{#ifCond selectedPage '==' 'shipping-settings'}} style="color:#234267" {{/ifCond}}>
+			<a href="/shipping-settings">Shipping Settings</a>
+		</li>
+		{{!-- <li class="list-group-item">
+			<a href="#">Subscription Settings</a>
+		</li> --}}
+		<li class="list-group-item" {{#ifCond selectedPage '==' 'payment-settings'}} style="color:#234267" {{/ifCond}}>
+			<a href="/payment-settings">Payment Settings</a>
+		</li>
+		{{#ifCond LoggedInUser.Vendor.VendorVerification.vendor_verified_status '!=' 2 }}
+		<li class="list-group-item"  {{#ifCond selectedPage '==' 'gtc-verified'}} style="color:#234267" {{/ifCond}}>
+			<a href="/verification">Get GTC Verified</a>
+		</li>
+		{{/ifCond}}
+		<li class="list-group-item">
+			<a href="/gtc-talk" {{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>GTC Talk Settings</a>
+		</li>
+		<li class="list-group-item">
+			<b>
+				<span href="collapse">GTC Mail</span>
+			</b>
+			<ul style="list-style: none;">
+				<li>
+					<a href="/gtc-mail">Inbox</a>
+					<span style="background-color: #BE0B24; color: #fff; padding: 2px; border-radius: 50%">11</span>
+				</li>
+				<li>
+					<a href="">Sent</a>
+				</li>
+				<li>
+					<a href="">Drafts</a>
+				</li>
+				<li>
+					<a href="">Deleted</a>
+				</li>
+				<li>
+					<a href="">GTC Mail Settings</a>
+				</li>
+			</ul>
+		</li>
+		<li class="list-group-item">
+			<a href="/terms-and-cond">Terms &amp; Conditions Settings</a>
+		</li>
+	</ul>
+	<hr/> {{/if}}
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<a href="/order-history"{{#ifCond selectedPage '==' 'order-history'}} style="color:#234267" {{/ifCond}}>Personal Order History</a>
+		</li>
+		<li class="list-group-item">
+			<a href="#"{{#ifCond selectedPage '==' 'my-downloads'}} style="color:#234267" {{/ifCond}}>My Dowloads</a>
+		</li>
+
+		<li class="list-group-item">
+			<a href="/wishlist"{{#ifCond selectedPage '==' 'wishlist'}} style="color:#234267" {{/ifCond}}>Wishlist</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/billing-settings"{{#ifCond selectedPage '==' 'billing-settings'}} style="color:#234267" {{/ifCond}}>Billing Settings</a>
+		</li>
+		<li class="list-group-item">
+			<a href="/user-profile"{{#ifCond selectedPage '==' 'user-profile'}} style="color:#234267" {{/ifCond}}>Profile Settings</a>
+		</li>
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#gtc-mail">GTC Mail</a>
+			<ul class="list-group collapse list-group-flush" id="gtc-mail">
+				<li class="list-group-item">
+					<a href="#">Performance</a>
+				</li>
+				<li class="list-group-item">
+					<a href="#">Sent</a>
+				</li>
+				<li class="list-group-item">
+					<a href="#">Drafts</a>
+				</li>
+				<li class="list-group-item">
+					<a href="#">Deleted</a>
+				</li>
+				<li class="list-group-item">
+					<a href="#"> GTC Mail Settings</a>
+				</li>
+			</ul>
+		</li>
+		{{!-- <li class="list-group-item">
+			<a href="#"{{#ifCond selectedPage '==' 'gtc-talk'}} style="color:#234267" {{/ifCond}}>Discussion Board</a>
+		</li> --}}
+		<li class="list-group-item">
+			<a href="#{{#ifCond selectedPage '==' 'contact'}} style="color:#234267" {{/ifCond}}">Contact</a>
+		</li>
+		<li class="list-group-item">
+			<a href="#"{{#ifCond selectedPage '==' 'feed'}} style="color:#234267" {{/ifCond}}>Feed</a>
+		</li>
+		<li class="list-group-item">
+			<a data-toggle="collapse" href="#support">Support</a>
+			<ul class="list-group collapse list-group-flush" id="support">
+				<li class="list-group-item">FAQ</li>
+				<li class="list-group-item">Ticket History</li>
+				<li class="list-group-item">Direct Support (
+					<i class="fas fa-question"></i>)</li>
+			</ul>
+		</li>
+		{{#ifCond LoggedInUser.Vendor '==' false}}
+		<li class="list-group-item">
+			<a href="/vendor-form" {{#ifCond selectedPage '==' 'vendor-form'}} style="color:#234267" {{/ifCond}}>Become a Vendor</a>
+		</li>
+		{{/ifCond}}
+	</ul>
+</div>

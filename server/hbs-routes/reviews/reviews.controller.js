@@ -7,37 +7,84 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-import series from 'async/series';
 var async = require('async');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory={};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
-
-
+	let user_id = LoggedInUser.id;
+	var queryPaginationObj = {};
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
+		queryPaginationObj["field"] = field;
 	} else {
 		var field = 'id';
+		queryPaginationObj["field"] = field;
 	}
+
 	var order = "desc"; //"asc"
 	var offset = 0;
-	var limit = 10;
-	var vendor_id = 29;
+	var limit = 1;
+	var vendor_id = req.user.Vendor.id;
 	var rating_limit = 120;
 	var queryObj = {};
-	queryObj={
-				vendor_id: 29,
-				review_type: 2 // 1 for product review and 2 for vendor review
-			};
+	queryObj = {
+		vendor_id: vendor_id,
+	};
 
+	//pagination 
+	var page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	var maxSize;
+	// End pagination
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
+		categories: function(callback) {
+		var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+		},
 			Reviews: function(callback) {
-				model['Review'].findAll({
+				model['VendorRating'].findAndCountAll({
 					where: queryObj,
 					offset: offset,
 					limit: limit,
@@ -48,6 +95,8 @@ export function reviews(req, res) {
 						model: model['User']
 					}]
 				}).then(function(Reviews) {
+					maxSize = Reviews.count / limit;
+					console.log('max', maxSize);
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -61,7 +110,7 @@ export function reviews(req, res) {
 				var star3 = 0;
 				var star2 = 0
 				var star1 = 0;
-				model['Review'].findAndCountAll({
+				model['VendorRating'].findAndCountAll({
 					where: queryObj,
 					limit: rating_limit,
 					order: [
@@ -70,36 +119,42 @@ export function reviews(req, res) {
 					attributes: ['rating'],
 					raw: true
 				}).then(function(Rating) {
-					var rating = Rating.rows;
-					for (let elem in rating) {
-						total = total + rating[elem].rating;
-						switch (rating[elem].rating) {
-							case 1:
-								star1 = star1 + 1;
-								break;
-							case 2:
-								star2 = star2 + 1;
-								break;
-							case 3:
-								star3 = star3 + 1;
-								break;
-							case 4:
-								star4 = star4 + 1;
-								break;
-							case 5:
-								star5 = star5 + 1;
-								break;
-						}
+					var productRating = [{
+						starCount: 7,
+						ratingCount: 0
+					}, {
+						starCount: 6,
+						ratingCount: 0
+					},{
+						starCount: 5,
+						ratingCount: 0
+					}, {
+						starCount: 4,
+						ratingCount: 0
+					}, {
+						starCount: 3,
+						ratingCount: 0
+					}, {
+						starCount: 2,
+						ratingCount: 0
+					}, {
+						starCount: 1,
+						ratingCount: 0
+					}];
+
+					var total = 0;
+					var rating = Rating.rows;;
+
+					for (let key in rating) {
+						total = total + rating[key].rating;
+						if (rating[key].rating <= 7)
+							productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
 					}
-					var avg = total / Rating.count;
-					Rating.avg = avg;
-					Rating.star5 = star5;
-					Rating.star4 = star4;
-					Rating.star3 = star3;
-					Rating.star2 = star2;
-					Rating.star1 = star1;
-					Rating.total = total;
-					// console.log(Rating);
+					var avgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
+					Rating.productRating = productRating;
+					Rating.avgRating = avgRating;
+
+					// productRating = productRating
 					return callback(null, Rating);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -109,14 +164,28 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				res.render('reviews', {
+				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
-					Reviews: results.Reviews,
-					Rating: results.Rating,
-					LoggedInUser: LoggedInUser
+					Reviews: results.Reviews.rows,
+					Ratings: results.Rating.productRating,
+					ratingCount: results.Rating.count,
+					avgRating: results.Rating.avgRating,
+					LoggedInUser: LoggedInUser,
+					categories: results.categories,
+					cartheader: results.cartCounts,
+                    bottomCategory: bottomCategory,
+					// pagination
+					page: page,
+					maxSize: maxSize,
+					pageSize: limit,
+					queryPaginationObj: queryPaginationObj,
+					collectionSize: results.Reviews.count,
+					selectedPage: 'reviews',
+					// End pagination
+					vendorPlan: vendorPlan
 				});
 			} else {
-				res.render('reviews', err);
+				res.render('vendorNav/reviews', err);
 			}
 		});
 
