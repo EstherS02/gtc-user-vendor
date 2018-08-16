@@ -15,7 +15,6 @@ import config from './config/environment';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
-var socketMsg = require('./sockets/socket-messages').socketMsg;
 
 var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
@@ -24,6 +23,11 @@ var couponExpiry = require('./agenda/couponExpiry');
 
 // Setup server
 var app = express();
+<<<<<<< HEAD
+=======
+var server = http.createServer(app);
+
+>>>>>>> 9a0d0c642b3cbf125f71a74292955de3133ea234
 
 var hbs = exphbs.create({
 	extname: '.hbs',

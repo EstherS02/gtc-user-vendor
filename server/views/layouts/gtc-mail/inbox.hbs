@@ -1,8 +1,30 @@
  {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+ <style>
+	 .clickable-row {cursor: pointer;}
+ </style>
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
-	})
+		 $(".clickable-row").click(function() {
+			 var statusObj= {
+				 	mail_status:1
+			 }
+			 $.ajax({
+				url: 'api/user-mails/'+this.id,
+				type: 'PUT',
+				data: statusObj,
+				success: function (data) {
+					console.log(data);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			})
+       window.location = $(this).data("href");
+    });
+
+	});
+	
 	function compose(e) {
 		window.location.href = '/gtc-mail/compose';
 	}
@@ -118,9 +140,9 @@
 										<tbody>
 											{{#each inboxMail}}
 											{{#ifCond this.mail_status '==' ../mailStatus.READ}}
-											<tr style="background-color:rgba(0, 0, 0, 0.06)">
+											<tr class='clickable-row' id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}' style="background-color:rgba(0, 0, 0, 0.06)">
 												{{else}}
-												<tr>
+												<tr class='clickable-row' id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>
 												{{/ifCond}}
 												<td scope="row">
 													<input type="checkbox" name="selected" value={{this.id}}>
