@@ -240,21 +240,10 @@
                             						</li>
                             					</ul>
                             				</div>
-                            				<div class="alignright text-right" >
-                            				   
-												<a href="javascript:;" id="shareIcons" >
-                            						{{!-- <img src="../../gtc-assets/img/social-icons/linked-in.png" style="width: 15%;" alt="Linkedin" title="Linkedin"   > --}}
-                            					
-												</a>
-												
-                            					<a href="javascript:;" id="shareIcons">
-                            						{{!-- <img src="../../gtc-assets/img/social-icons/pintrest.png" style="width: 15%;" alt="Pintrest" title="Pintrest"> --}}
-                            					</a>
-                            					<a href="javascript:;" id="shareIcons">
-                            						{{!-- <img src="../../gtc-assets/img/social-icons/twitter.png" style="width: 15%;" alt="Twitter" title="Twitter"> --}}
-                            					</a>
+                            				<div class="alignright text-right">
+                            					<div id="shareIcons" class="alignleft"></div>
 												<a href="javascript:;">
-													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 21%;margin-top:-66px" alt="Plus" title="Plus">
+													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
 												</a>
                             				</div>
                             				<div style="clear: both;"></div>
@@ -315,11 +304,11 @@
 															</div>
 															{{/each}}
 														</div>
-														{{#if productRecentReview.count}}
-														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
+														{{#ifCond productRecentReview.count ">" 1}}
+														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
-														{{/if}}
+														{{/ifCond}}
 													</div>
 												</div>
 											</div>

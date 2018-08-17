@@ -252,7 +252,6 @@ export function product(req, res) {
 			}
 		}
 	}, function(error, results) {
-		// console.log("----------------========================-------",results)
 		var selectedPage;
 		if (marketplaceID == marketplace['WHOLESALE']) {
 			selectedPage = "wholesale";
