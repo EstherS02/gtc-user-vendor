@@ -94,47 +94,79 @@ export function productRatingsCount(productID) {
 			],
 			group: ['Review.rating']
 		}).then((ratings) => {
-			if (ratings.length > 0) {
-				ratings = JSON.parse(JSON.stringify(ratings));
-				for (var i = 0; i < 7; i++) {
-					if (ratings[i] && ((i + 1) == ratings[i].rating)) {
-						productRating.push({
-							"rating": ratings[i].rating,
-							"userCount": ratings[i].userCount
-						});
-					} else {
-						productRating.push({
-							"rating": i + 1,
-							"userCount": 0
-						});
-					}
-				}
-				resolve(productRating);
-			} else {
-				productRating = [{
-					"rating": 1,
-					"userCount": 0
-				}, {
-					"rating": 2,
-					"userCount": 0
-				}, {
-					"rating": 3,
-					"userCount": 0
-				}, {
-					"rating": 4,
-					"userCount": 0
-				}, {
-					"rating": 5,
-					"userCount": 0
-				}, {
-					"rating": 6,
-					"userCount": 0
-				}, {
-					"rating": 7,
-					"userCount": 0
-				}];
-				resolve(productRating);
-			}
+			// if (ratings.length > 0) {
+			// 	ratings = JSON.parse(JSON.stringify(ratings));
+			// 	for (var i = 0; i < 7; i++) {
+			// 		if (ratings[i] && ((i + 1) == ratings[i].rating)) {
+			// 			productRating.push({
+			// 				"rating": ratings[i].rating,
+			// 				"userCount": ratings[i].userCount
+			// 			});
+			// 		} else {
+			// 			productRating.push({
+			// 				"rating": i + 1,
+			// 				"userCount": 0
+			// 			});
+			// 		}
+			// 	}
+			// 	resolve(productRating);
+			// } else {
+			// 	productRating = [{
+			// 		"rating": 1,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 2,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 3,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 4,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 5,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 6,
+			// 		"userCount": 0
+			// 	}, {
+			// 		"rating": 7,
+			// 		"userCount": 0
+			// 	}];
+			// 	resolve(productRating);
+			// }
+			var productRating = [{
+				rating:7,
+				userCount:0
+			},,{
+				rating:6,
+				userCount:0
+			},{
+                rating: 5,
+                userCount: 0
+            }, {
+                rating: 4,
+                userCount: 0
+            }, {
+                rating: 3,
+                userCount: 0
+            }, {
+                rating: 2,
+                userCount: 0
+            }, {
+                rating: 1,
+                userCount: 0
+            }];
+	            if (ratings.length > 0) {
+            	    for (let key in ratings) {
+                	if (ratings[key].rating <= 7)
+                    	productRating[7 - ratings[key].rating].userCount = productRating[7 - ratings[key].rating].userCount + 1;
+            		}
+            	resolve(productRating);
+            	}
+
+            var total = 0;
+            var rating = results.AllReviews.rows;
 		}).catch((error) => {
 			reject(error);
 		});
