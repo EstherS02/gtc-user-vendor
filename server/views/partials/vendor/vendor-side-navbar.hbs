@@ -10,7 +10,9 @@
 			type: 'GET',
 			url: '/api/mail/unReadMailCount',
 			success: function (data) {
-                $(".UnreadMessages").html(data.userMailCount);
+                if(data.userMailCount>0){
+                   $(".UnreadMessages").html(data.userMailCount);
+                }      
 			},
 			error: function (error) {
                 console.log(error);
