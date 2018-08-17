@@ -4373,7 +4373,8 @@ p.lt-user-name {
 }
 
 .col-md-3.latest-tickets {
-    padding: 0px;
+    /* padding: 0px; changes on report page alignment */
+    padding : 8px;
     float: left;
 }
 
