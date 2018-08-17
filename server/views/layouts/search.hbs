@@ -208,7 +208,7 @@
 				<b>FILTER BY TYPE</b>
 			</p>
 			<p id="searchListMarketplace" class="cat_bg_title">
-				<a href="../search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
+				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
 					<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
 				</a>
 			</p>
@@ -227,7 +227,7 @@
 				<b>FILTER BY LOCATION</b>
 			</p>
 			<p id="searchListLocation" class="cat_bg_title">
-				<a href="../search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
+				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
 					<span>GLOBAL ({{locations.count}})</span>
 				</a>
 			</p>

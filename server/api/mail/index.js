@@ -14,5 +14,6 @@ router.put('/deleteMany', auth.hasRole(roles['USER']), controller.softDeleteMany
 router.delete('/remove/:id', auth.hasRole(roles['USER']), controller.remove);
 router.delete('/removeMany', auth.hasRole(roles['USER']), controller.removeMany);
 router.get('/autoCompleteFirstName',auth.isAuthenticated(), controller.autoCompleteFirstName);
+router.get('/unReadMailCount',auth.isAuthenticated(), controller.unReadMailCount);
 
 module.exports = router;

@@ -315,11 +315,11 @@
 															</div>
 															{{/each}}
 														</div>
-														{{#if productRecentReview.count}}
-														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
+														{{#ifCond productRecentReview.count ">" 1}}
+														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
-														{{/if}}
+														{{/ifCond}}
 													</div>
 												</div>
 											</div>
