@@ -2,7 +2,27 @@
     api_key: 81q1ljfijajynj
     authorize: false;
 </script>
-
+<script>
+$(function() {
+  var reference = $('.js-share-cf-btn');
+  var popover = $('.js-share-cf-popover');
+  popover.hide();
+  $(document).on('click', function(e) {
+    var target = $(e.target);
+    // ne need to reshow and recreate poper when click over popup so return;
+    if(target.is(popover)) return;
+    if (target.is(reference)) {
+      e.preventDefault();
+      popover.show();
+      var popper = new Popper(target, popover, {
+        placement: 'top',
+      });
+    }else {
+      popover.hide();
+    }
+  });
+});
+</script>
 <script src="js/login.js"></script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
