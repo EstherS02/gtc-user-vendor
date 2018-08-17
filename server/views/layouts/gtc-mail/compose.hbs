@@ -98,7 +98,21 @@ var userInfo = {{{DisplayJSON LoggedInUser}}}
 					}, 1000);
 				},
 				error: function (error) {
-					console.log(error);
+					message = error.responseText;
+					$('#dialog').empty();
+					$('#dialog').append(message)
+					$("#dialog").dialog({
+  					modal: true,
+  					title: "Error:",
+  					close:function(ev, ui) 
+	                	{ 
+	                	$(".wrapper-content").attr('style','opacity:1; z-index:100;');	
+	                }
+					});
+					setTimeout(function () {
+						location.reload(true);
+					}, 2000);
+
 				}
 			})
 		})
@@ -110,11 +124,14 @@ var userInfo = {{{DisplayJSON LoggedInUser}}}
 			if ($('#subject').val().length == 0) {
 				message = '<p>Please enter subject to save in draft.</p>';
 				$('#dialog').empty();
-				$('#dialog').text('Success:');
 				$('#dialog').append(message )
 				$(".wrapper-content").attr('style','opacity:.30; z-index:100;');
 				$("#dialog").dialog({
-					title: "Success:",
+					modal: true,
+  					close:function(ev, ui) 
+	                	{ 
+	                	$(".wrapper-content").attr('style','opacity:1; z-index:100;');	
+	                }
 				});
 				return;
 			}
@@ -128,7 +145,20 @@ var userInfo = {{{DisplayJSON LoggedInUser}}}
 				type: 'POST',
 				data: DraftInput,
 				success: function (data) {
-					console.log(data);
+					message = '<p>Saved in Draft.</p>';
+					$('#dialog').empty();
+					$('#dialog').append(message)
+					$("#dialog").dialog({
+  					modal: true,
+  					title: "Success:",
+  					close:function(ev, ui) 
+	                	{ 
+	                	$(".wrapper-content").attr('style','opacity:1; z-index:100;');	
+	                }
+					});
+					setTimeout(function () {
+						location.reload(true);
+					}, 1000);
 				},
 				error: function (error) {
 					console.log(error);
