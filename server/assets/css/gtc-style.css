@@ -5373,4 +5373,65 @@ padding-top: 0px;
 }
 /*Report css ends */
 
-
+/* jssocial css starts  */
+.jssocials-shares {
+    margin: 0.2em 0;
+ }
+  .jssocials-shares {
+      /* margin: $external-margin; */
+      margin-right: 29px;
+  }
+  
+  .jssocials-shares * {
+      box-sizing: border-box;
+  }
+  
+  .jssocials-share {
+      display: inline-block;
+      vertical-align: top;
+      margin: 0.3em 0.6em 0.3em 0; 
+  }
+  
+  .jssocials-share:last-child {
+      margin-right: 0;
+  }
+  
+  .jssocials-share-label {
+      padding-left: .3em ;
+      vertical-align: middle;
+  }
+      .jssocials-share-logo {
+      width: 1em;
+      vertical-align: middle;
+      font-size: 1.5em;
+      color: white;
+    
+  }
+  
+  img.jssocials-share-logo {
+      width: auto;
+      height: 1em;
+  }
+ .jssocials-share-twitter .jssocials-share-link {
+    background: #00aced;
+    border: 1px solid #0099d4; 
+}
+.jssocials-share-twitter .jssocials-share-link:hover {
+      background: #0087ba;
+   }
+.jssocials-share-linkedin .jssocials-share-link {
+    background: #007bb6;
+    border: 1px solid #006a9d; 
+   }
+.jssocials-share-linkedin .jssocials-share-link:hover {
+      background: #005983; 
+    }
+.jssocials-share-pinterest .jssocials-share-link {
+    background: #cb2027;
+    border: 1px solid #b51d23; 
+    }
+.jssocials-share-pinterest .jssocials-share-link:hover {
+      background: #9f191f; 
+    }
+  
+/* jssocial css ends */

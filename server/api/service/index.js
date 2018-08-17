@@ -175,6 +175,23 @@ export function updateRecord(modelName, bodyParams, queryObj) {
     })
 }
 
+export function updateManyRecord(modelName, bodyParams, queryObj) {
+    return new Promise((resolve, reject) => {
+        model[modelName].update(bodyParams, {
+            where: queryObj,
+            individualHooks: true
+        }).then(function(rows) {
+            if (rows[0] > 0) {
+                resolve(rows);
+            }  else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    })
+}
+
 export function updateRow(modelName, bodyParams, id) {
     return new Promise((resolve, reject) => {
         model[modelName].update(bodyParams, {
@@ -265,6 +282,24 @@ export function destroyRecord(modelName, id) {
         model[modelName].destroy({
             where: {
                 id: id
+            }
+        }).then((row) => {
+            if (row > 0) {
+                resolve(row);
+            } else {
+                resolve(null);
+            }
+        }).catch(function(error) {
+            reject(error);
+        })
+    });
+}
+
+export function destroyManyRecord(modelName, ids) {
+    return new Promise((resolve, reject) => {
+        model[modelName].destroy({
+            where: {
+                id: ids
             }
         }).then((row) => {
             if (row > 0) {
