@@ -29,7 +29,9 @@
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
+				minCropBoxWidth: 1264,
+		        zoomable: false,
+		        scalable: false,
 				ready: function() {
 					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
 				}
@@ -39,7 +41,6 @@
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
 		$('#crop-profile-image').click(function() {
 			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
