@@ -154,11 +154,8 @@
 											</tr>
 										</thead>
 										<tbody>
-											{{#each inboxMail}} {{#ifCond this.mail_status '==' ../mailStatus.READ}}
-											<tr style="background-color:rgba(0, 0, 0, 0.06)">
-												{{else}}
-												<tr>
-													{{/ifCond}}
+											{{#each inboxMail}} 
+											<tr class="{{#ifCond this.mail_status '==' ../mailStatus.READ}} inbox-tr{{else}}inbox-tr-unread{{/ifCond}}">
 													<td scope="row">
 														<input type="checkbox" name="selected" value={{this.id}}>
 													</td>

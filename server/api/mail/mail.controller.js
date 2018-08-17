@@ -260,3 +260,23 @@ export function autoCompleteFirstName(req,res){
         return;
     })
 }
+
+export function unReadMailCount(req,res){
+	var user_id = req.user.id;
+	var userMailModel = 'UserMail';
+	var userMailCount = {};
+
+	service.countRows(userMailModel, {
+		user_id: user_id,
+		mail_status: mailStatus['UNREAD']	
+	}).then(function(userMailCount){
+        userMailCount={
+			userMailCount: userMailCount
+		}
+		res.status(200).send(userMailCount);
+        return;
+	}).catch(function (error) {
+        res.status(500).send("Internal server error");
+        return;
+    })
+}

@@ -1587,3 +1587,24 @@ ul.inner-list-view li a {
 	    background-color: #f3f3f2 !important;
 	    border:none !important;
 }
+.inbox-tr{
+	background-color:rgba(0, 0, 0, 0.06);
+}
+.table > tbody > tr.inbox-tr-unread > td {
+	font-weight: bold !important;
+}
+.mail-messages {
+	display: inline-block;
+	background: red;
+	text-align: center;
+	color: #FFF;
+	padding:2px;
+	margin-left: 4px;
+	border-radius: 20px;
+}
+.messages {
+	display: inline-block;
+	background: red;
+	text-align: center;
+	color: #FFF;
+}
