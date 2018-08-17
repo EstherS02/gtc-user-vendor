@@ -88,6 +88,11 @@
 }
 
 @media (min-width: 768px) {
+	.container-sm {
+		width: 77.911%;
+		margin-right: auto;
+		margin-left: auto;
+	}
 	.col-sm-2half, .col-sm-10half {
 		float: left;
 	}
@@ -215,11 +220,6 @@
 }
 
 @media screen and (min-width: 1281px) and (max-width: 1375px) {
-	.container-sm {
-		width: 77.911%;
-		margin-right: auto;
-		margin-left: auto;
-	}
 	.brand-logo img {
 		padding: 13px;
 		width: 170px;
