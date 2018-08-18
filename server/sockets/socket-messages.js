@@ -1,5 +1,5 @@
 export function socketMsg(io) {
-    console.log("io===================================",io)
+   
     io.on('connection', function(socket) {
 
         console.log("connected========================================socket io working");

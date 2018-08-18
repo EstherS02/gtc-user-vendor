@@ -40,32 +40,32 @@
 	}
 
 	$(document).ready(function () {
-			$("#grid").click(function () {
-				console.log("grid");
-				//set color list white
-			});
+		$("#datepicker").on("change",(()=>{
+			console.log('here')
+			console.log( document.getElementById("datepicker").value )
+			var testdate=document.getElementById("datepicker").value;
+			var resdate = new Date(testdate.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"))
+			console.log(moment(new Date(testdate)));
+		}))
 
-			$("#list").click(function () {
-				console.log("list");
-				//set color grid white
-			});
+		$("#datepicker1").on("change",(()=>{
+			console.log('here')
+			console.log( document.getElementById("datepicker1").value )
+			var testdate=document.getElementById("datepicker1").value;
+			var resdate = new Date(testdate.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"))
+			console.log(moment(new Date(testdate)));
+		}))
 
-			$('.test').click(function () {
-				console.log("clickeddddddddddd")
+		$('#datepicker').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(7,"days").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
 
-				$('.test1').text('loading . . .');
+		$('#datepicker1').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(1,"months").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
 
-				$.ajax({
-					type: "GET",
-					url: "http://localhost:9000/wholesale/search?marketplace_type=1",
-					success: function (data) {
-						console.log(data.responseText);
-						$('.test1').text(JSON.stringify(data.responseText));
-					},
-					dataType: 'jsonp',
-				});
-			});
+		$('#datepicker2').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(1,"year").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
 
+		$('#datepicker3').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(10,"year").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
+
+
+		
 		//var showChar = 175; 
 		//var ellipsestext = "...";
 		// moretext = "see more ...";
@@ -208,7 +208,7 @@
 				<b>FILTER BY TYPE</b>
 			</p>
 			<p id="searchListMarketplace" class="cat_bg_title">
-				<a href="../search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
+				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
 					<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
 				</a>
 			</p>
@@ -223,11 +223,13 @@
 					{{/each}}
 				</ul>
 			</div>
+
+			{{#ifCond marketplaceURl "!=" "lifestyle"}}
 			<p style="margin-top: 20px;">
 				<b>FILTER BY LOCATION</b>
 			</p>
 			<p id="searchListLocation" class="cat_bg_title">
-				<a href="../search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
+				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
 					<span>GLOBAL ({{locations.count}})</span>
 				</a>
 			</p>
@@ -242,6 +244,47 @@
 					{{/each}}
 				</ul>
 			</div>
+			{{/ifCond}}
+
+			{{#ifCond marketplaceURl "==" 'lifestyle'}}
+			<p style="margin-top: 20px;">
+				<b>FILTER BY DURATION</b>
+			</p>
+			<p id="searchListLocation" class="cat_bg_title">
+				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'null'}}">
+					<span>ALL TYPES ({{categoriesWithCount.count}})</span>
+				</a>
+			</p>
+			<div class="list-group panel category-fixed">
+				<ul class="list-group">
+					<li class="list-group-item">
+						<a  class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
+							<span>LESS THAN 1 WEEK</span>
+						</a>
+					</li>
+			
+					<li class="list-group-item">
+						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30day") 'null'}}">
+							<span>LESS THAN 1 MONTH</span>
+						</a>
+					</li>
+			
+					<li class="list-group-item">
+						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last1year") 'null'}}">
+							<span>MONTHLY</span>
+						</a>
+					</li>
+			
+					<li class="list-group-item">
+						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30year") 'null'}}">
+							<span>YEARLY</span>
+						</a>
+					</li>
+			
+				</ul>
+			</div>
+			{{/ifCond}}
+
 		</div>
 
 
