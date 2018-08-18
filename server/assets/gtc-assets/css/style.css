@@ -1592,7 +1592,7 @@ ul.inner-list-view li a {
 	background: red;
 	text-align: center;
 	color: #FFF;
-	padding:2px;
+	/*padding:2px;*/
 	margin-left: 4px;
 	border-radius: 20px;
 }
