@@ -8,6 +8,7 @@ $(function() {
   var popover = $('.js-share-cf-popover');
   popover.hide();
   $(document).on('click', function(e) {
+    console.log(e)
     var target = $(e.target);
     // ne need to reshow and recreate poper when click over popup so return;
     if(target.is(popover)) return;
@@ -24,6 +25,23 @@ $(function() {
 });
 </script>
 <script src="js/login.js"></script>
+<style>
+.section {
+  background: #fff;
+  padding: 20px;
+  font-size: 25px;
+  text-align: center;
+  transition: all 0.2s;
+  margin: 0 auto;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.share-popover {
+  background: red;
+  color: white;
+  padding: 10px;
+}</style>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
@@ -240,9 +258,9 @@ $(function() {
                                                     <div class="col-md-4 col-4 no-padding">
                                                         <span>Seller</span>
                                                     </div>
-                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt ">
                                                     {{#if ../LoggedInUser.email}}
-                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                        <a class="text-500 js-share-cf-btn"  data-id="{{this.vendor_id}}" title="{{this.vendor_name}}" >{{this.vendor_name}}</a>
                                                     {{else}}
                                                         <a class="text-500" href="/login">(Login for Seller Info)</a>
                                                     {{/if}}
@@ -926,5 +944,8 @@ $(function() {
         <a href="" class="button-cta">Get started!</a>
     </div>
 </section>
+<div class="share-popover js-share-cf-popover">
+  This is the popup
+</div>
 
 {{> footer/bottom-footer}}
