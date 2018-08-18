@@ -38,9 +38,9 @@ export function createMail(bodyParams, users) {
 					status: status['ACTIVE'],
 					created_on: new Date()
 				}, {
-						mail_id: mail.id,
-						user_id: mail.from_id
-					});
+					mail_id: mail.id,
+					user_id: mail.from_id
+				});
 			} else {
 				return Promise.reject(true);
 			}
@@ -191,8 +191,6 @@ export function removeManyMail(queryObj) {
 	var userMail = {};
 	var userMailModelName = 'UserMail';
 
-	console.log("queryObj", queryObj);
-
 	return new Promise((resolve, reject) => {
 		return service.destroyManyRecord(userMailModelName, queryObj.ids)
 			.then((destoryResponse) => {
@@ -214,9 +212,5 @@ export function removeManyMail(queryObj) {
 			}).catch((error) => {
 				reject(error);
 			});
-
-
-
 	});
 }
-

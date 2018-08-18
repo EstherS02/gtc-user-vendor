@@ -16,6 +16,7 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 
+var mailService = require('./api/mail/reply-mail.service');
 var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var sendEmailNew = require('./agenda/send-email-new');
@@ -66,9 +67,7 @@ mailListener.on("error", function(err) {
 });
 
 mailListener.on("mail", function(mail, seqno, attributes) {
-	// do something with mail object including attachments
-	console.log("emailParsed", mail);
-	// mail processing code goes here
+	mailService.createReplyMail(mail);
 });
 
 mailListener.on("attachment", function(attachment) {
