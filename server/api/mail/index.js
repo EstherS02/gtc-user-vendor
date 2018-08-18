@@ -10,7 +10,10 @@ var router = express.Router();
 router.post('/draf', auth.hasRole(roles['USER']), controller.createDraf);
 router.post('/', auth.hasRole(roles['USER']), controller.create);
 router.put('/delete/:id', auth.hasRole(roles['USER']), controller.softDelete);
+router.put('/deleteMany', auth.hasRole(roles['USER']), controller.softDeleteMany);
 router.delete('/remove/:id', auth.hasRole(roles['USER']), controller.remove);
-router.get('/autoCompleteFirstName', controller.autoCompleteFirstName);
+router.delete('/removeMany', auth.hasRole(roles['USER']), controller.removeMany);
+router.get('/autoCompleteFirstName',auth.isAuthenticated(), controller.autoCompleteFirstName);
+router.get('/unReadMailCount',auth.isAuthenticated(), controller.unReadMailCount);
 
 module.exports = router;

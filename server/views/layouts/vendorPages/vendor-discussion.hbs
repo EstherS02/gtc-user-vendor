@@ -1,9 +1,14 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
-
-	$(document).ready(function () {
+	var userInfo = {{{DisplayJSON LoggedInUser}}}
+	var vendorInfo = {{{DisplayJSON VendorDetail}}}
+	window.onclick = function(event) {
+		if (event.target == myModal) {
+			myModal.style.display = "none";
+			$(".vendor-product").attr('style', 'opacity:1; z-index:100;');
+		}
+	}
+	$(document).ready(function() {
 		$('.hide').hide();
 		$('.allComments').hide();
 		$("#blog_img").hide();
@@ -24,19 +29,20 @@
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
+				minCropBoxWidth: 1264,
+		        zoomable: false,
+		        scalable: false,
 				ready: function() {
-                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-                    }
-                });
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
 		}).on('hidden.bs.modal', function() {
 			cropBoxData = cropper.getCropBoxData();
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
-		$('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -45,15 +51,14 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-		$("#selectedBlogFile").change(function () {
-			imagesPreview(this);	
+		$("#selectedBlogFile").change(function() {
+			imagesPreview(this);
 		});
 
 
 
-
-		$('#postBlog').click(function () {
-			var formData={};
+		$('#postBlog').click(function() {
+			var formData = {};
 			formData.post_message = $("#blog_text").val();
 			formData.vendor_id = vendorInfo.id;
 			formData.user_id = userInfo.id;
@@ -62,53 +67,54 @@
 
 			form.append("file", cropperOutputImage, fileDetails["fileName"]);
 
-	//form.append("file", $("#selectedBlogFile")[0].files[0]);
-	var url = '/api/vendor-props/blog-post';
-	if (imgVal) {
-		$.ajax({
-			type: 'POST',
-			url: '/api/TalkSetting/upload',
-			data: form,
-			cache: false,
-			dataType: 'json',
-			processData: false,
-			contentType: false,
-			success: function (data) {
-				console.log(data);
-				formData.post_media_type = 2;
-				formData.post_media_url = data.imageURL;
-				apiCall(url,formData);
-				$("#blog_img").hide();
-			},
-			error: function (error) {
-				console.log("Error", error);
+			//form.append("file", $("#selectedBlogFile")[0].files[0]);
+			var url = '/api/vendor-props/blog-post';
+			if (imgVal) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/TalkSetting/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						console.log(data);
+						formData.post_media_type = 2;
+						formData.post_media_url = data.imageURL;
+						apiCall(url, formData);
+						$("#blog_img").hide();
+					},
+					error: function(error) {
+						console.log("Error", error);
+					}
+				});
+			} else {
+				if ($("#blog_text").val()) {
+					formData.post_media_type = 1;
+					apiCall(url, formData);
+				} else {
+					$('#blog_text').notify("Please enter the value", "error");
+					console.log("Please enter the blog Content")
+				}
 			}
 		});
-	} else {
-		if($("#blog_text").val()){
-			formData.post_media_type = 1;
-			apiCall(url,formData);
-		}else{
-			$('#blog_text').notify("Please enter the value", "error");
-			console.log("Please enter the blog Content")
-		}
-	}
-});
 
-$("#selectedBlogFile").change(function() {
-	$("#blog_img").show();
-  readURL(this);
-});
+		$("#selectedBlogFile").change(function() {
+			$("#blog_img").show();
+			readURL(this);
+		});
 	});
-	function postComment(e){
-		var formData={};
-		formData.discussion_board_post_id=e;
-		formData.status=1;
-		formData.comment = $("#comment_text"+e).val();
-		var imgVal = $("#selectedFile"+e).val();
+
+	function postComment(e) {
+		var formData = {};
+		formData.discussion_board_post_id = e;
+		formData.status = 1;
+		formData.comment = $("#comment_text" + e).val();
+		var imgVal = $("#selectedFile" + e).val();
 		var form = new FormData();
 
-		form.append("file", $("#selectedFile"+e)[0].files[0]);
+		form.append("file", $("#selectedFile" + e)[0].files[0]);
 		var url = '/api/vendor-props/blog-comment';
 		if (imgVal) {
 			$.ajax({
@@ -119,31 +125,32 @@ $("#selectedBlogFile").change(function() {
 				dataType: 'json',
 				processData: false,
 				contentType: false,
-				success: function (data) {
+				success: function(data) {
 					console.log(data);
 					formData.comment_type = 2;
 					formData.comment_media_url = data.imageURL;
-					apiCallComment(url,formData,e);
+					apiCallComment(url, formData, e);
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log("Error", error);
 				}
 			});
 		} else {
-			if($("#comment_text"+e).val()){
+			if ($("#comment_text" + e).val()) {
 				formData.comment_type = 1;
-				apiCallComment(url,formData,e);
-			}else{
+				apiCallComment(url, formData, e);
+			} else {
 				console.log("Please enter the value")
-				$('#comment_text'+ e).notify("Please enter the value", "error");
+				$('#comment_text' + e).notify("Please enter the value", "error");
 			}
 		}
 	}
+
 	function apiCall(url, data) {
 		$.ajax({
 			type: 'POST',
 			url: url,
-			data:data,
+			data: data,
 			success: function(data, text) {
 				location.reload();
 			},
@@ -153,16 +160,17 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
-	function apiCallComment(url, data,e) {
+
+	function apiCallComment(url, data, e) {
 		$.ajax({
 			type: 'POST',
 			url: url,
-			data:data,
+			data: data,
 			success: function(res) {
-				var count= res.result.count;
+				var count = res.result.count;
 				var results = res.result.rows;
 				console.log(res.result)
-				var i=0;
+				var i = 0;
 				// location.reload();
 				// alert("DiscussionBoardPostComments-"+e);
 				// var source   = document.getElementById("DiscussionBoardPostComments-"+e).innerHTML;
@@ -170,18 +178,18 @@ $("#selectedBlogFile").change(function() {
 				// var context = res.result;
 				// var html    = template(context);
 				// var domElement = `<div id="DiscussionBoardPostComments-`+e+`">`+ 
-				var newData = extract(results,e);
+				var newData = extract(results, e);
 				// alert("newPart1"+document.getElementById("newPart1"+e).innerHTML);
-				document.getElementById("newPart1"+e).innerHTML = newData.new1;
-				document.getElementById("newPart2"+e).innerHTML = newData.new2;
-				if(newData.new2){
-					$('#allComments'+e).hide();
-					$('#hideAll'+e).hide();
-					$('#showAll'+e).show();
+				document.getElementById("newPart1" + e).innerHTML = newData.new1;
+				document.getElementById("newPart2" + e).innerHTML = newData.new2;
+				if (newData.new2) {
+					$('#allComments' + e).hide();
+					$('#hideAll' + e).hide();
+					$('#showAll' + e).show();
 				}
-				$("#comment_text"+e).val("");
-				$("#selectedFile"+e).attr('src', "");
-											
+				$("#comment_text" + e).val("");
+				$("#selectedFile" + e).attr('src', "");
+
 			},
 			error: function(request, status, error) {
 				console.log('status', status);
@@ -189,116 +197,124 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
-	function extract(data,e){
+
+	function extract(data, e) {
 		// return 'data';
-		var i=0;
-		var data1={};
+		var i = 0;
+		var data1 = {};
 		var new1 = '';
 		var new2 = '';
 		data.forEach(function(element) {
-		  if(i<2){
-		  	new1 = new1 + ifPart(element);
+			if (i < 2) {
+				new1 = new1 + ifPart(element);
 			}
-		   if(i>=2){
-		   	new2 = new2 + ifPart(element);
-		   }
-		  i++;
+			if (i >= 2) {
+				new2 = new2 + ifPart(element);
+			}
+			i++;
 
 		});
-		if(new2){
-			var upper = `<div id="showAll`+e+`" onclick="show(`+e+`)" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
+		if (new2) {
+			var upper = `<div id="showAll` + e + `" onclick="show(` + e + `)" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
 				</div>
-				<div id="allComments`+e+`" class="allComments">`;
-			var lower = `<div id="hideAll`+e+`" onclick="hide(`+e+`)" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
+				<div id="allComments` + e + `" class="allComments">`;
+			var lower = `<div id="hideAll` + e + `" onclick="hide(` + e + `)" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
 														</div>
 													</div>`;
-			new2 = upper+new2+lower;
+			new2 = upper + new2 + lower;
 
 		}
 		data1.new1 = new1;
 		data1.new2 = new2;
 		return data1;
 	}
-	function ifPart(element){
+
+	function ifPart(element) {
 		return `<div><div class="row" style="margin-bottom: 5px;">
 				<div class="col-md-2 col-2">
-					<img style="width: 30px;height:30px " class = "img-border-page" src="`+ProfilePicture(element.User)+`">
+					<img style="width: 30px;height:30px " class = "img-border-page" src="` + ProfilePicture(element.User) + `">
 				</div>
 				<div class="col-md-10 col-10">
-					<p class="discussion_here"><span class="discussion_hayden">`+element.User.first_name+element.User.last_name+`</span>&nbsp;- &nbsp;`+ comment(element) + commentType(element)+
-					`</p>
+					<p class="discussion_here"><span class="discussion_hayden">` + element.User.first_name + element.User.last_name + `</span>&nbsp;- &nbsp;` + comment(element) + commentType(element) +
+			`</p>
 				</div>
 			</div></div>`;
 
 	}
-	function ProfilePicture(context){
-		if (context && context.user_pic_url)
-        	return context.user_pic_url;
 
-    	return '/img/avatar.png'
+	function ProfilePicture(context) {
+		if (context && context.user_pic_url)
+			return context.user_pic_url;
+
+		return '/img/avatar.png'
 	}
-	function FormatDate(testDate){
+
+	function FormatDate(testDate) {
 		return moment(testDate).fromNow();
-	}	
-	function comment(data){
-		var comment='';
-		if(data.comment){
-			comment= data.comment;
-		}
-		return comment; 
 	}
-	function commentType(data){
+
+	function comment(data) {
 		var comment = '';
-		if(data.comment_type == 2){
-			comment =  `<p>&nbsp;- &nbsp;<img src="`+data.comment_media_url+`" width="25%" height="25%">- <span class="discussion_day">`+FormatDate(data.created_on)+`</span></p>`;
-		} 
+		if (data.comment) {
+			comment = data.comment;
+		}
+		return comment;
+	}
+
+	function commentType(data) {
+		var comment = '';
+		if (data.comment_type == 2) {
+			comment = `<p>&nbsp;- &nbsp;<img src="` + data.comment_media_url + `" width="25%" height="25%">- <span class="discussion_day">` + FormatDate(data.created_on) + `</span></p>`;
+		}
 		return comment;
 	}
 
 
 
-
-	function show(e){
-		$('#allComments'+e).show();
-		$('#hideAll'+e).show();
-		$('#showAll'+e).hide();
+	function show(e) {
+		$('#allComments' + e).show();
+		$('#hideAll' + e).show();
+		$('#showAll' + e).hide();
 	}
-	function hide(e){
-		$('#allComments'+e).hide();
-		$('#hideAll'+e).hide();
-		$('#showAll'+e).show();
+
+	function hide(e) {
+		$('#allComments' + e).hide();
+		$('#hideAll' + e).hide();
+		$('#showAll' + e).show();
 	}
 
 	function readURL(input) {
 
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
 
-    reader.onload = function(e) {
-      $('#blah').attr('src', e.target.result);
-    }
+			reader.onload = function(e) {
+				$('#blah').attr('src', e.target.result);
+			}
 
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-function removePic(){
-	$('#selectedBlogFile').attr('src', " ");
-	$('#blah').attr('src', "");
-	$('#selectedBlogFile').val("");
-	$('#blog_img').hide();
-}
-	function userLike(e){
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
 
-		if(userInfo.email){
-			var dataInfo={};
+	function removePic() {
+		$('#selectedBlogFile').attr('src', " ");
+		$('#blah').attr('src', "");
+		$('#selectedBlogFile').val("");
+		$('#blog_img').hide();
+	}
+
+	function userLike(e) {
+
+		if (userInfo.email) {
+			var dataInfo = {};
 			dataInfo.id = e;
 			$.ajax({
 				type: "POST",
 				url: "/api/vendor-props/blog-like",
 				data: dataInfo,
 				success: function(res) {
-					document.getElementById("LikeCount"+e).innerHTML = "<p id='LikeCount'"+e+">"+res.count+"Likes</p>";
-					document.getElementById("likeType"+e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('"+e+"')' id='likeType'>"+res.type+"</a>";
+					document.getElementById("LikeCount" + e).innerHTML = "<p id='LikeCount'" + e + ">" + res.count + "Likes</p>";
+					document.getElementById("likeType" + e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('" + e + "')' id='likeType'>" + res.type + "</a>";
 					console.log(res)
 				},
 				error: function(error) {
@@ -308,44 +324,50 @@ function removePic(){
 					}
 				}
 			});
-		}else{
-			window.location.href="/login";
+		} else {
+			window.location.href = "/login";
 		}
 	}
 
-function openModal() {
-  document.getElementById('myModal').style.display = "block";
-}
+	function openModal() {
+		document.getElementById('myModal').style.display = "block";
+		$(".vendor-product").attr('style', 'opacity:.30; z-index:100;');
+	}
 
-function closeModal() {
-  document.getElementById('myModal').style.display = "none";
-}
+	function closeModal() {
+		document.getElementById('myModal').style.display = "none";
+		$(".vendor-product").attr('style', 'opacity:1; z-index:100;');
+	}
 
-var slideIndex = 1;
-showSlides(slideIndex);
+	var slideIndex = 1;
+	showSlides(slideIndex);
 
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
+	function currentSlide(n) {
+		showSlides(slideIndex = n);
+	}
 
-function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var image = $('#originalLightbox'+n).attr('src');
-  $('#lightbox').attr('src', image);
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  // captionText.innerHTML = dots[slideIndex-1].alt;
-}
+	function showSlides(n) {
+		var i;
+		var slides = document.getElementsByClassName("mySlides");
+		var dots = document.getElementsByClassName("demo");
+		var image = $('#originalLightbox' + n).attr('src');
+		$('#lightbox').attr('src', image);
+		if (n > slides.length) {
+			slideIndex = 1
+		}
+		if (n < 1) {
+			slideIndex = slides.length
+		}
+		for (i = 0; i < slides.length; i++) {
+			slides[i].style.display = "none";
+		}
+		for (i = 0; i < dots.length; i++) {
+			dots[i].className = dots[i].className.replace(" active", "");
+		}
+		slides[slideIndex - 1].style.display = "block";
+		dots[slideIndex - 1].className += " active";
+		// captionText.innerHTML = dots[slideIndex-1].alt;
+	}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -545,13 +567,13 @@ aria-hidden="true">
 									<div class="dis_side_bar">
 										<p class="discussion_most_head">MOST POPULAR POSTS</p>
 										<ul>
-											{{#if discussionBoard.rows}}
-											{{#each discussionBoard.rows}}
-											{{#ifCond @index "<" 5}}
+											{{#if mostPopular}}
+											{{#each mostPopular}}
+											{{!-- {{#ifCond @index "<" 5}} --}}
 											{{#if this.post_message}}
 											<li>{{this.post_message}}</li>
 											{{/if}}
-											{{/ifCond}}
+											{{!-- {{/ifCond}} --}}
 											{{/each}}
 											{{else}}
 											<li>No blog Found</li>
@@ -567,12 +589,12 @@ aria-hidden="true">
 		</div>
 	</div>
 </section>
-<div id="myModal" class="modal-lightbox">
+<div id="myModal" class="modal-lightbox" >
   <span class="close-box cursor" onclick="closeModal()">&times;</span>
   <div class="modal-content1">
 
     <div class="mySlides">
-      <img src="#" id="lightbox" style="width:100%">
+      <img src="#" id="lightbox" style="width:100%; border:1px solid grey">
     </div>
   </div>
 </div>

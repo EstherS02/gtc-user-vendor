@@ -1,0 +1,63 @@
+<script>
+	$(document).ready(function () {
+		$("#gtc-mail-alert").hide();
+	})
+	function compose(e) {
+		window.location.href = '/gtc-mail/compose';
+	}
+	function refresh(e){
+		location.reload(true);
+	}
+	function selectAll(ele) {
+
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+
+	function deleteMail() {
+		var chkArray = [];
+		$(":checkbox:checked").each(function(i) {
+			if ($(this).val() != "on") {
+				chkArray.push($(this).val());
+			}
+		});
+            var ids={
+				ids:JSON.stringify(chkArray)
+			};
+			
+			$.ajax({
+				url: '/api/mail/removeMany',
+				type: 'DELETE',
+				data: ids,
+				success: function (result) {
+					location.reload(true);
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			});		
+	}
+</script>
+<div class="form-inline">
+	{{!-- <div class="form-group mb-2">
+		<button class="btn btn-small btn-muted" onclick="compose(this);">COMPOSE</button>
+	</div> --}}
+	<div class="form-group mx-sm-3 mb-2">
+		<button class="btn btn-small btn-muted" onclick="refresh(this);">REFRESH</button>
+	</div>
+	<div class="form-group mb-2">
+		<button class="btn btn-small btn-muted" onclick="deleteMail(this)">DELETE</button>
+	</div>
+</div>

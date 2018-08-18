@@ -5,6 +5,21 @@
     function myAccountFunction(){
         window.location.href="/reporting/accounting";
     }
+    $( document ).ready(function() {
+         $.ajax({
+			type: 'GET',
+			url: '/api/mail/unReadMailCount',
+			success: function (data) {
+                if(data.userMailCount>0){
+                   $(".UnreadMessages").html(data.userMailCount);
+                }      
+			},
+			error: function (error) {
+                console.log(error);
+			}
+        })
+    });
+        
 </script>
 
 {{#if LoggedInUser.Vendor.id}}
@@ -85,7 +100,7 @@
         <li class="nav-bar"><a href="/user/my-profile"class="vs-link {{#ifCond selectedPage '==' 'user-profile'}} active {{/ifCond}}">Profile Settings</a></li>
         <li><a data-toggle="collapse" href="#collapse4Mail" role="button" aria-expanded="false" aria-controls="collapse4Mail">GTC Mail</a>
             <ul class="collapse m-l vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "gtc-mail"}}show{{/ifCond}}{{/if}}" id="collapse4Mail">
-                <li class="nav-bar"><a href="/gtc-mail/inbox" class="vs-link {{#ifCond selectedPage '==' 'inbox'}} active {{/ifCond}}">Inbox</a></li>
+                <li class="nav-bar"><a href="/gtc-mail/inbox" class="vs-link {{#ifCond selectedPage '==' 'inbox'}} active {{/ifCond}}">Inbox<div  class="mail-messages UnreadMessages"></div</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/sent" class="vs-link {{#ifCond selectedPage '==' 'sent'}} active {{/ifCond}}">Sent</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/drafts" class="vs-link {{#ifCond selectedPage '==' 'drafts'}} active {{/ifCond}}">Drafts</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/deleted" class="vs-link {{#ifCond selectedPage '==' 'deleted'}} active {{/ifCond}}">Deleted</a></li>

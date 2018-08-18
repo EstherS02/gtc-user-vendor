@@ -1,5 +1,24 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-
+<style>
+	.fas{
+       cursor: pointer
+	}
+</style>
+<script>
+	function deleteMail(id) {
+			$.ajax({
+				url: '/api/mail/delete/' + id,
+				type: 'PUT',
+				success: function (result) {
+					console.log(result)
+				},
+				error: function (error) {
+					console.log(error);
+				}
+			});
+		window.location.href = '/gtc-mail/inbox';
+	}
+</script>
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -11,14 +30,24 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>{{message.subject}}</h2>
+							<div class="row">
+								<div class="col-md-7">
+									<h2>{{message.subject}}</h2>
+								</div>
+								<div class="col-md-5">
+									<p class="pull-right">
+										<i class="fas fa-trash-alt" onclick="deleteMail({{messageUserId}})"></i>
+									</p>
+								</div>
+							</div>
 							<hr/>
 						</div>
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-7">
 									From: {{message.fromUser.first_name}}
-									To: me 
+									<br/> To: me
+									<i class="fas fa-caret-down"></i>
 								</div>
 								<div class="col-md-5">
 									<p class="pull-right">
@@ -29,13 +58,14 @@
 							<div class="row justify-content-md-center">
 								<div class="col-sm-8" style="padding:20px;">
 									<div class="row justify-content-md-center">
-										{{message.message}}
+										{{{message.message}}}
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-7">
-									Click here to <a href="">Reply</a>
+									Click here to
+									<a href="gtc-mail/compose?id={{message.fromUser.id}}&text={{message.fromUser.first_name}}">Reply</a>
 								</div>
 							</div>
 

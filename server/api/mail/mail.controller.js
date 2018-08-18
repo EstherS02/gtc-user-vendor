@@ -143,6 +143,34 @@ export function softDelete(req, res) {
 		});
 }
 
+export function softDeleteMany(req, res) {
+
+	var ids = JSON.parse(req.body.ids);
+
+	var queryObj = {};
+	queryObj['id'] = ids;
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['READ']
+	}, {
+		mail_status: mailStatus['UNREAD']
+	}];
+
+	mailService.deleteManyMail(queryObj)
+	.then((response) => {
+		if (response) {
+			return res.status(200).send("Mail deleted successfully.");
+		} else {
+			return res.status(404).send("not found");
+		}
+	})
+	.catch((error) => {
+		console.log("Error:::", error);
+		return res.status(500).send("Internal server error");
+	});
+}
+
 export function remove(req, res) {
 	var queryObj = {};
 
@@ -171,6 +199,38 @@ export function remove(req, res) {
 		});
 }
 
+export function removeMany(req, res) {
+	var queryObj = {};
+
+	var ids = JSON.parse(req.body.ids);
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['SENT']
+	}, {
+		mail_status: mailStatus['DRAFT']
+	}, {
+		mail_status: mailStatus['DELETED']
+	}];
+	_.forOwn(ids, function(index) {
+		queryObj['id'] = index;
+		mailService.removeMail(queryObj)
+			.then((response) => {
+				if (response) {
+					return;
+				} else {
+					return;
+				}
+			})
+			.catch((error) => {
+				console.log("Error:::", error);
+				return res.status(500).send("Internal server error");
+			});
+	});
+	return res.status(200).send("Mail deleted successfully.");
+
+}
+
 export function autoCompleteFirstName(req,res){
 	 var queryObj = {}, includeArr=[];
 
@@ -178,6 +238,10 @@ export function autoCompleteFirstName(req,res){
 		queryObj['first_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
+		queryObj['id'] = {
+			$ne:req.user.id
+		}
+
 	}
 	model['User'].findAll({
         where: queryObj,
@@ -192,6 +256,26 @@ export function autoCompleteFirstName(req,res){
             return;
         }
     }).catch(function (error) {
+        res.status(500).send("Internal server error");
+        return;
+    })
+}
+
+export function unReadMailCount(req,res){
+	var user_id = req.user.id;
+	var userMailModel = 'UserMail';
+	var userMailCount = {};
+
+	service.countRows(userMailModel, {
+		user_id: user_id,
+		mail_status: mailStatus['UNREAD']	
+	}).then(function(userMailCount){
+        userMailCount={
+			userMailCount: userMailCount
+		}
+		res.status(200).send(userMailCount);
+        return;
+	}).catch(function (error) {
         res.status(500).send("Internal server error");
         return;
     })

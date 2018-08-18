@@ -3,7 +3,7 @@
     <div class="vendor-menu-wrapper">
         <div class="gtc-container">
             <nav class="navbar navbar-expand-sm vendor-menu">
-                <a class="navbar-brand" href="/dashboard-vendor-connect">
+                <a class="navbar-brand" href="/reporting">
                 {{#if this.LoggedInUser.Vendor.vendor_profile_pic_url}}
                 <img  src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" class="d-inline-block object-fit" alt="">
                 {{else}}
@@ -21,7 +21,8 @@
                         {{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
                             <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
                         {{/ifCond}}
-                        <li class="nav-item"><a href="#" class="nav-link">Messages</a></li>
+                        <li class="nav-item"><a href="/gtc-mail/inbox" class="nav-link">Messages
+                        <div  class="messages UnreadMessages"></div></a></li>
                         <li class="nav-item"><a href="/notifications" class="nav-link">Notifications</a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promote Your Store</a></li>
                         <li class="nav-item"><a href="/dashboard-vendor-connect" class="nav-link">Build Your Store</a></li>

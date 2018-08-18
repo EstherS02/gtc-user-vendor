@@ -3,7 +3,25 @@
 	var productSpecs = {{{DisplayJSON product}}}
 	var statusCode = {{{DisplayJSON status}}}
 
+
 	$(document).ready(function() {
+     	 
+        
+		var url=  window.location.href;
+        var text = $('#productname').val();
+		var desc =  $('#productdescription').val();
+		var text = text +" "+desc;
+		           
+		//console.log("window:::"+windowslocation);	
+
+		 $("#shareIcons").jsSocials({
+			url: url,
+            text: text,
+			showLabel: false,
+            showCount: false,
+            shares: ["linkedin","pinterest","twitter"]
+        });
+	
 
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
@@ -194,7 +212,8 @@
                             					</div>
                             				</div>
                             			</div>
-                            			<h1 class="p-title m-t-sm">{{product.product_name}}</h1>
+                            			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
+										<input type="hidden" id="productname" value="{{product.product_name}}">
                             			<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
                             			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
                             			<div class="p-social-compare">
@@ -222,17 +241,9 @@
                             					</ul>
                             				</div>
                             				<div class="alignright text-right">
-                            					<a href="javascript:;">
-                            						<img src="../../gtc-assets/img/social-icons/linked-in.png" style="width: 15%;" alt="Linkedin" title="Linkedin">
-                            					</a>
-                            					<a href="javascript:;">
-                            						<img src="../../gtc-assets/img/social-icons/pintrest.png" style="width: 15%;" alt="Pintrest" title="Pintrest">
-                            					</a>
-                            					<a href="javascript:;">
-                            						<img src="../../gtc-assets/img/social-icons/twitter.png" style="width: 15%;" alt="Twitter" title="Twitter">
-                            					</a>
+                            					<div id="shareIcons" class="alignleft"></div>
 												<a href="javascript:;">
-													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 15%;" alt="Plus" title="Plus">
+													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
 												</a>
                             				</div>
                             				<div style="clear: both;"></div>
@@ -241,6 +252,7 @@
                             			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
+										<input type="hidden" id="productdescription" value="{{product.description}}">
                             			<div class="p-hr"></div>
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
 											<div>
@@ -292,11 +304,11 @@
 															</div>
 															{{/each}}
 														</div>
-														{{#if productRecentReview.count}}
-														<button type="button" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</button>
+														{{#ifCond productRecentReview.count ">" 1}}
+														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
-														{{/if}}
+														{{/ifCond}}
 													</div>
 												</div>
 											</div>

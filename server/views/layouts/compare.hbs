@@ -1,320 +1,540 @@
 <script type="text/javascript">
-    $("#gtc-cart-alert").hide();
-    function gtcAddToCart(e) {
-        $('#gtc-add-to-cart').prop('disabled', true);
-        var cartInfo = {};
-        cartInfo.product_quantity = $('#product-quantity').val();
+$("#gtc-cart-alert").hide();
+function gtcAddToCart(e) {
+	$('#gtc-add-to-cart').prop('disabled', true);
+	var cartInfo = {};
+	cartInfo.product_quantity = $('#product-quantity').val();
 
-        $.ajax({
-                type: "POST",
-                url: "/api/cart/add-cart/" + e,
-                data: cartInfo,
-                success: function(res) {
-                    $('#gtc-add-to-cart').prop('disabled', false);
-                    if (res && res.message === "SUCCESS") {
-                     outputPop(res.message_details);
-                     console.log(res)
-                     location.reload(true);
-                 }
-             },
-             error: function(error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    
-                    outputErrorPop(error);
-                    location.reload(true);
-                }
-            }
-        });
-    }
+	$.ajax({
+		type: "POST",
+		url: "/api/cart/add-cart/" + e,
+		data: cartInfo,
+		success: function(res) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			if (res && res.message === "SUCCESS") {
+				outputPop(res.message_details);
+				console.log(res)
+				location.reload(true);
+			}
+		},
+		error: function(error) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			if (error) {
+				if (error.status === 401)
+					return location.href = "/login";
 
-    function removeFromCompare(argument) {
-        var newData = {};
-        newData.product_id = argument;
-        $.ajax({
-            type: "POST",
-            url: "/api/product-view/remove-from-compare/",
-            data: newData,
-            success: function(res) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
-                    location.reload(true);
-                }
-            },
-            error: function(error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    outputErrorPop(error);
-                    location.reload(true);
-                }
-            }
-        });
-    }
+				outputErrorPop(error);
+				location.reload(true);
+			}
+		}
+	});
+}
 
-    function outputPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-        $('#gtc-cart-alert .cart-message').text(argument)
-        $("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-            location.reload();
-        });
-    }
+function removeFromCompare(argument) {
+	var newData = {};
+	newData.product_id = argument;
+	$.ajax({
+		type: "POST",
+		url: "/api/product-view/remove-from-compare/",
+		data: newData,
+		success: function(res) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			if (res && res.message === "SUCCESS") {
+				outputPop(res.message_details);
+				location.reload(true);
+			}
+		},
+		error: function(error) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			if (error) {
+				if (error.status === 401)
+					return location.href = "/login";
+				outputErrorPop(error);
+				location.reload(true);
+			}
+		}
+	});
+}
 
-    function outputErrorPop(argument) {
-        $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-        $('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
-        $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-            $("#gtc-cart-alert").slideUp(500);
-        });
-    }
-    $(function() {
-        $("#gtc-cart-alert").hide();
-    });
+function outputPop(argument) {
+	$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+	$('#gtc-cart-alert .cart-message').text(argument)
+	$("#gtc-cart-alert").fadeTo(5000, 500).slideUp(500, function() {
+		$("#gtc-cart-alert").slideUp(500);
+		location.reload();
+	});
+}
+
+function outputErrorPop(argument) {
+	$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+	$('#gtc-cart-alert .cart-message').text(argument.responseJSON.message + " : " + argument.responseJSON.message_details)
+	$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+		$("#gtc-cart-alert").slideUp(500);
+	});
+}
+$(function() {
+	$("#gtc-cart-alert").hide();
+});
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<section>
-    <div class="compare_pg">
-        <div class="gtc-container">
-            <div class="row">
-                <div class="col-md-6 col-12">
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="#">My Account</a>
-                        </li>
-                        <li href="/Compare"class="active">Compare</li>
-                    </ul>
+<div class="wrapper-content">
+    <div class="container-sm">
+        <div class="title-header-1 gtc-p-l-r">
+            <div class="alignleft">
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#" class="active">My Account</a>
+                    </li>
+                    <li>Compare</li>
+                </ul> 
+            </div>
+            <div class="alignright">
+                {{#if LoggedInUser.id}}
+                <a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+                {{else}}
+                <span class="text-sm"><a href="/login">Login</a> to see seller information</span>
+                {{/if}}
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="body-content-1">
+            <div class="row no-margins">
+                <div class="col-sm-2half no-padding header-left">
                 </div>
-                <div class="col-md-6 col-12">
-                    {{#if LoggedInUser.id}}
-
-                   
-                        {{!-- <span style="color: #5B8AC4;">
-                            <a href="javascript:;" onclick="gtcLogout()" style="color:#4178bb"><b>Switch</b></a>
-                        </span>  your account</p> --}}
-                        <p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a onclick="gtcLogout()" href="javascript::" class="span_swichaccount">SWITCH ACCOUNT</a></p>
-                        {{else}}
-                         <p class="logged_in_username">
-                        <span style="color: #5B8AC4;">
-                            <a href="/login" style="color:#4178bb"><b>Login</b></a>
-                        </span> to see seller information</p>
-                        {{/if}}
+                <div class="col-sm-10half no-padding header-right">
+                    <div class="header-lg gtc-p-l-r">
+                        <h2 class="header-lg-text">COMPARE</h2>
                     </div>
                 </div>
-                <div class="alert" id="gtc-cart-alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
-                    <span class="cart-message"></span>
+            </div>
+            {{#if compareProducts}}
+            <div class="row no-margins">
+                <div class="col-sm-2half no-padding"></div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist text-center">
+                                {{#if compareProducts.[0]}}
+                            	<img src="{{compareProducts.[0].url}}" class="img-fluid">
+                            	{{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist text-center">
+                            	{{#if compareProducts.[1]}}
+                            	<img src="{{compareProducts.[1].url}}" class="img-fluid">
+                            	{{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist text-center">
+                                {{#if compareProducts.[2]}}
+                            	<img src="{{compareProducts.[2].url}}" class="img-fluid">
+                            	{{/if}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <table class="table table-responsive-sm table_td_style">
-                    <tbody>
-                        <tr>
-                            <td class="checkout_title_color_1">&nbsp;</td>
-                            <td class="checkout_title_color" colspan="3">
-                                <h4>COMPARE
-                                    <span class="checkout_title_color_span">({{compare.count}} Item Totals)</span>
-                                </h4>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="compare-header-width">&nbsp;</th>
-                            {{#each compare.rows}}
-                            <td align="center" class="compare-width">
-                                <img src="{{this.ProductMedia.[0].url}}" style="width: 60px" alt="iphone">
-
-                            </td>
-                            {{/each}}
-                        </tr>
-                        <tr>
-                            <th class="compare-header-width">Product</th>
-                            {{#each compare.rows}}
-                            <td class="compare-width">
-                                <a href="/products/{{this.product_slug}}/{{this.id}}">
-                                    <p class="com_product_title">{{this.product_name}}</p>
-                                </a>
-                            </td>
-                            {{/each}}
-                        </tr>
-                        <tr>
-                            <th class="compare-header-width">Price</th>
-                            {{#each compare.rows}}
-                            <td class="compare-width">
-                                <p class="com_product_title">${{this.price}}</p>
-                            </td>
-                            {{/each}}
-                        </tr>
-                        <tr>
-                            <th class="compare-header-width">Availability</th>
-                            {{#each compare.rows}}
-                            <td class="compare-width">
-                                <p class="com_product_stock">{{this.quantity_available}}</p>
-                            </td>
-                            {{/each}}
-                        </tr>
-                        <tr>
-                            <th>Description</th>
-                            {{#each compare.rows}}
-                            <td class="compare-width">
-                                <p class="com_product_desc">{{this.description}}</p>
-                            </td>
-                            {{/each}}
-                        </tr>
-                            <tr>
-                                <th class="compare-header-width">Seller</th>
-                                {{#each compare.rows}}
-                                {{#if ../LoggedInUser.id}}
-                                <td class="compare-width">
-                                    <p class="com_product_title"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></p>
-                                </td>
-                                {{else}}
-                                <td>
-                                    <a href="/login"><p class="com_product_title">(Login for Seller info)</p></a>
-                                </td>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Product</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                <a href="/products/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}">{{compareProducts.[0].product_name}}</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                <a href="/products/{{compareProducts.[1].product_slug}}/{{compareProducts.[1].id}}">{{compareProducts.[1].product_name}}</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                <a href="/products/{{compareProducts.[2].product_slug}}/{{compareProducts.[2].id}}">{{compareProducts.[2].product_name}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Price</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <a href="javascript:;">${{compareProducts.[0].price}}</a>
                                 {{/if}}
-                                {{/each}}
-                            </tr>
-                            <tr>
-                                <th scope="row" class="compare-header-width">User Rating</th>
-                                {{#each compare.rows}}
-                                <td class="compare-width">
-                                    <p class="com_product_title">
-                                        {{starCount this.avg_rating}} <a href="products/{{this.product_slug}}/{{this.id}}/allReviews">({{this.review_count}} Ratings-See All)</a>
-                                    </p>
-                                </td>
-                                {{/each}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                {{#if compareProducts.[1]}}
+                                <a href="javascript:;">${{compareProducts.[1].price}}</a>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                {{#if compareProducts.[2]}}
+                                <a href="javascript:;">${{compareProducts.[2].price}}</a>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Availability</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <span class="text-xs">{{compareProducts.[0].quantity_available}} in stock</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                {{#if compareProducts.[1]}}
+                                <span class="text-xs">{{compareProducts.[1].quantity_available}} in stock</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                {{#if compareProducts.[2]}}
+                                <span class="text-xs">{{compareProducts.[2].quantity_available}} in stock</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Description</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <div class="cp-description">
+                                    {{{compareProducts.[0].description}}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[1]}}
+                                <div class="cp-description">
+                                    {{{compareProducts.[1].description}}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[2]}}
+                                <div class="cp-description">
+                                    {{{compareProducts.[2].description}}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Seller</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                            	<div>
+	                                {{#if LoggedInUser.id}}
+	                                <a href="#">{{compareProducts.[0].vendor_name}}</a>
+	                                {{else}}
+	                                (<a href="/login">Login for Seller Info</a>)
+	                                {{/if}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                        	<div class="cprlist">
+                            	{{#if compareProducts.[1]}}
+                            	<div>
+	                                {{#if LoggedInUser.id}}
+	                                <a href="#">{{compareProducts.[1].vendor_name}}</a>
+	                                {{else}}
+	                                (<a href="/login">Login for Seller Info</a>)
+	                                {{/if}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                        	<div class="cprlist">
+                            	{{#if compareProducts.[2]}}
+                            	<div>
+	                                {{#if LoggedInUser.id}}
+	                                <a href="#">{{compareProducts.[2].vendor_name}}</a>
+	                                {{else}}
+	                                (<a href="/login">Login for Seller Info</a>)
+	                                {{/if}}
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">User Rating</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <div class="p-rating d-inline">
+                                    {{starCount compareProducts.[0].product_rating}}
+                                    <span class="text-sm">(<a href="javascript:;">{{compareProducts.[0].user_count}} Ratings - See All</a>)</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[1]}}
+                                <div class="p-rating d-inline">
+                                    {{starCount compareProducts.[1].product_rating}}
+                                    <span class="text-sm">(<a href="javascript:;">{{compareProducts.[1].user_count}} Ratings - See All</a>)</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[2]}}
+                                <div class="p-rating d-inline">
+                                    {{starCount compareProducts.[2].product_rating}}
+                                    <span class="text-sm">(<a href="javascript:;">{{compareProducts.[2].user_count}} Ratings - See All</a>)</span>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                            </tr>
-                            {{#if attribute_field}}
-                            {{#each attribute_field}}
-                            <tr>
-                                <th class="compare-header-width">{{Attributes this ../attribute }}</th>
-                                {{#each ../compare.rows}}
-                                <td class="compare-width">
-                                    <p class="com_product_stock">
-                                        {{#each this.ProductAttributes}}
-                                        {{#ifCond this.attribute_id "==" ../../this}}{{this.value}} {{/ifCond}}
-                                        {{/each}}
-                                    </p>
-                                </td>
-                                {{/each}}
-                            </tr>
-                            {{/each}}
-                            {{/if}}
-                            <tr>
-                                <th class="compare-header-width">Add to Bag</th>
-                                {{#each compare.rows}}
-                                <td class="compare-width">
-                                    <div class="row">
-                                        <div class="col-md-2 col-12">
-                                            <p class="com_product_stock">Qty:</p>
-                                        </div>
-                                        <div class="col-md-3 col-12 common_padding1">
-                                            <input type="text" placeholder="1" id="product-quantity" class="geo_textbox" />
-                                        </div>
-                                        <div class="col-md-7 col-12 common_padding1">
-                                            {{#if ../LoggedInUser.email}}
-                                            <a href="javascript:;" onclick="gtcAddToCart({{this.id}})" id="gtc-add-to-cart" class="com_add_to_cart" > 
-                                                <i class="fas fa-shopping-bag"></i> ADD TO BAG
-                                            </a>
-                                            {{else}}
-                                            <a href="/login" class="com_add_to_cart">Login </a>
-                                            {{/if}}
-                                        </div>
-                                    </div>
-                                </td>
-                                {{/each}}
-                            </tr>
-                            <tr>
-                                <th scope="row" class="compare-header-width">Remove</th>
-                                {{#each compare.rows}}
-                                <td class="compare-width">
-                                    <a href="javascript:;" class="span_swichaccount" style="custor:pointer" onclick="removeFromCompare({{this.id}})" >REMOVE FROM COMPARE</a>
-                                </td>
-                                {{/each}}
-                            </tr>
-                    </tbody>
-                </table>
-                    <div class="marketplace-type-bg"></div>
-                    <div class="gtc-container">
-                      <div class="marketplace-type-headers">
-                        <div class="row">
-                            <div class="col-md-12 no-padding">
-                                <div class="wts-header-bg">
-                                    <h4 class="header-md-text">
-                                     Related Products
-                                    </h4>
-                                </div>
+                {{#each uniqueAttribute as |uniqueAttr|}}
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">{{uniqueAttr.Attribute.attr_name}}</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins" style="background: #fff;">
+                    	{{#each ../compareProducts as |compareProduct|}}
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#each ../../productAttributes as |prodAttr|}}
+                            		{{#ifCond prodAttr.product_id '==' compareProduct.id}}
+                            			{{#ifCond uniqueAttr.attribute_id '==' prodAttr.attribute_id}}
+                            				<span class="text-xs">{{prodAttr.value}}</span>
+                            			{{/ifCond}}
+                            		{{/ifCond}}
+                            	{{/each}}
                             </div>
-                            {{#each RelatedProducts.rows}}
-                            <div class="col-md-4 no-padding">
-                                <div class="product-list-body">
-                                  <div class="product-body">
-                                    <div class="table-responsive">
-                                      <table class="table shoping-cart-table">
-                                        <tbody>
-                                            <tr class="d-flex">
-                                                <td class="col-2">
-                                                    <div class="product-left-col">
-                                                    <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
-                                                    </div>
-                                                </td>
-                                                <td class="col-7">
-                                                    <div class="product-middle-col">
-                                                        <h3>
-                                                          <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
-                                                        </h3>
-                                                         <div class="row no-margins">
-                                                            <div class="col-md-4 col-4 no-padding">
-                                                                <span>Origin</span>
-                                                            </div>
-                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
-                                                            <span class="text-500">{{this.country_name}}</span>
-                                                        </div>
-                                                        <div class="col-md-4 col-4 no-padding">
-                                                            <span>Category</span>
-                                                        </div>
-                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
-                                                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-                                                        </div>
-                                                        <div class="col-md-4 col-4 no-padding">
-                                                            <span>Seller</span>
-                                                        </div>
-                                                        <div class="col-md-8 col-8 no-padding overflow-txt">
-                                                            {{#if ../LoggedInUser.email}}
-                                                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                                                            {{else}}
-                                                            <a class="text-500" href="/login">(Login for Seller Info)</a>
-                                                            {{/if}}
-                                                        </div>
-                                                    </div>
-                                                 </td>
-                                                <td class="col-3">
-                                                    <div class="product-right-col">
-                                                        <h4>MOQ : {{this.minimum_order_quantity}}</h4>
-                                                        <div class="prc-bottom">
-                                                          <p>Seller Rating</p>
-                                                          <div class="p-rating pull-right">
-                                                            {{starCount product_rating}}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                </div>
+                        </div>
+                        {{/each}}
+                        {{!-- <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                <span class="text-xs">0 in stock</span>
                             </div>
-                            {{/each}}
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                                <span class="text-xs">0 in stock</span>
+                            </div>
+                        </div> --}}
+                    </div>
+                </div>
+                {{/each}}
+                <div class="col-sm-2half align-self-center no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Add to Bag</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half align-self-center no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <div class="add-to-bag">
+                                    <label class="text-light-muted">Qty: </label>
+                                    <input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="1" min="1">
+                                    <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[0].id}})" class="btn btn-sm add-bag-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
+                                    </a>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[1]}}
+                                <div class="add-to-bag">
+                                    <label class="text-light-muted">Qty: </label>
+                                    <input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="1" min="1">
+                                    <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[1].id}})" class="btn btn-sm add-bag-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
+                                    </a>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[2]}}
+                                <div class="add-to-bag">
+                                    <label class="text-light-muted">Qty: </label>
+                                    <input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="1" min="1">
+                                    <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[2].id}})" class="btn btn-sm add-bag-btn">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
+                                    </a>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2half no-padding">
+                    <div class="cpllist">
+                        <span class="cpltext">Remove</span>
+                    </div>
+                </div>
+                <div class="col-sm-10half no-padding">
+                    <div class="row no-margins">
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[0]}}
+                                <button type="button" onclick="removeFromCompare({{compareProducts.[0].id}})" class="btn btn-sm btn-primary m-b">REMOVE FROM COMPARE</button>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[1]}}
+                                <button type="button" onclick="removeFromCompare({{compareProducts.[1].id}})" class="btn btn-sm btn-primary m-b">REMOVE FROM COMPARE</button>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="cprlist">
+                            	{{#if compareProducts.[2]}}
+                                <button type="button" onclick="removeFromCompare({{compareProducts.[0].id}})" class="btn btn-sm btn-primary m-b">REMOVE FROM COMPARE</button>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{else}}
+            <div class="row no-margins">
+            	<div class="col-md-12 no-padding">
+            		<p class="label-control gtc-p-l-r text-primary m-t">Compare products is empty.</p>
+            	</div>
+            </div>
+            {{/if}}
+        </div>
+        <div class="marketplace-type-bg m-t"></div>
+        <div class="marketplace-type-headers">
+            <div class="row no-margins">
+                <div class="col-md-12 no-padding">
+                    <div class="wts-header-bg">
+                        <h4 class="header-md-text"><strong>Related Products</strong></h4>
+                    </div>
+                </div>
+                {{#each RelatedProducts.rows}}
+                <div class="col-md-4 no-padding">
+                    <div class="product-list-body">
+                      <div class="product-body">
+                        <div class="table-responsive">
+                          <table class="table shoping-cart-table">
+                            <tbody>
+                                <tr class="d-flex">
+                                    <td class="col-2">
+                                        <div class="product-left-col">
+                                        <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                                        </div>
+                                    </td>
+                                    <td class="col-7">
+                                        <div class="product-middle-col">
+                                            <h3>
+                                              <a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
+                                            </h3>
+                                             <div class="row no-margins">
+                                                <div class="col-md-4 col-4 no-padding">
+                                                    <span>Origin</span>
+                                                </div>
+                                            <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                <span class="text-500">{{this.country_name}}</span>
+                                            </div>
+                                            <div class="col-md-4 col-4 no-padding">
+                                                <span>Category</span>
+                                            </div>
+                                            <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                            </div>
+                                            <div class="col-md-4 col-4 no-padding">
+                                                <span>Seller</span>
+                                            </div>
+                                            <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                {{#if ../LoggedInUser.email}}
+                                                <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                {{else}}
+                                                <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                     </td>
+                                    <td class="col-3">
+                                        <div class="product-right-col">
+                                            <h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                                            <div class="prc-bottom">
+                                              <p>Seller Rating</p>
+                                              <div class="p-rating pull-right">
+                                                {{starCount product_rating}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
-                </div> 
+                </div>
+                {{/each}}
             </div>
         </div>
     </div>
-</section>
+</div>
 {{> footer/bottom-footer}}
