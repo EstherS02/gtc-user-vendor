@@ -24,7 +24,8 @@ export function compare(req, res) {
 	var order = 'asc';
 	var includeArr = [];
 	var compareProductIDs;
-	var product_related = 1;
+	// var product_category_id = 1;
+	var product_category_id = [15];
 
 	if (req.session && req.session['compare']) {
 		compareProductIDs = req.session['compare'].join(", ");
@@ -34,6 +35,12 @@ export function compare(req, res) {
 		compareProducts: function(callback) {
 			productService.compareProducts(compareProductIDs)
 				.then((response) => {
+					if (response.length > 0) {
+						product_category_id = [];
+						_.forOwn(response, function(element) {
+							product_category_id.push(element.sub_category_id);
+						});
+					}
 					return callback(null, response);
 				}).catch((error) => {
 					console.log('Error :::', error);
@@ -74,7 +81,7 @@ export function compare(req, res) {
 			var field = "id";
 			var order = "ASC";
 			var queryObj = {
-				category_id: product_related
+				sub_category_id: product_category_id
 			};
 			includeArr = [];
 			service.findAllRows("MarketplaceProduct", includeArr, queryObj, offset, limit, field, order)

@@ -21,6 +21,7 @@ var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var sendEmailNew = require('./agenda/send-email-new');
 var couponExpiry = require('./agenda/couponExpiry');
+var vendorPayouts = require('./agenda/vendor-payouts');
 
 // Setup server
 var app = express();
@@ -39,7 +40,6 @@ app.use(express.static(path.join(__dirname + '/assets/')));
 app.engine('.hbs', hbs.engine);
 app.set('views', path.join(__dirname + '/views/layouts/'));
 app.set('view engine', '.hbs');
-
 
 var env = app.get('env');
 
@@ -76,9 +76,11 @@ mailListener.on("attachment", function(attachment) {
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
+agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
+	agenda.every('1 minutes', 'vendorPayouts');
 	agenda.start();
 });
 

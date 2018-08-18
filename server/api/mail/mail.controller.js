@@ -149,7 +149,6 @@ export function softDeleteMany(req, res) {
 	var ids = JSON.parse(req.body.ids);
 
 	var queryObj = {};
-	queryObj['id'] = ids;
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = req.user.id;
 	queryObj['$or'] = [{
@@ -158,18 +157,22 @@ export function softDeleteMany(req, res) {
 		mail_status: mailStatus['UNREAD']
 	}];
 
-	mailService.deleteManyMail(queryObj)
-		.then((response) => {
-			if (response) {
-				return res.status(200).send("Mail deleted successfully.");
-			} else {
-				return res.status(404).send("not found");
-			}
-		})
-		.catch((error) => {
-			console.log("Error:::", error);
-			return res.status(500).send("Internal server error");
-		});
+	_.forOwn(ids, function(index) {
+		queryObj['id'] = index;
+		mailService.deleteMail(queryObj)
+			.then((response) => {
+				if (response) {
+					return;
+				} else {
+					return;
+				}
+			})
+			.catch((error) => {
+				console.log("Error:::", error);
+				return res.status(500).send("Internal server error");
+			});
+	});
+	return res.status(200).send("Mail deleted successfully.");
 }
 
 export function remove(req, res) {

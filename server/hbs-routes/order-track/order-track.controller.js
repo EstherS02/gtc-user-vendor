@@ -6,7 +6,6 @@ const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
-const moment = require('moment');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const populate = require('../../utilities/populate');

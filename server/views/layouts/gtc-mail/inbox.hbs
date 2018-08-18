@@ -56,25 +56,11 @@
 			}
 		});
 
-		if (chkArray.length == 1) {
-		var mail_id = chkArray.join(',');
-			 $.ajax({
-				url: '/api/mail/delete/' + mail_id,
-				type: 'PUT',
-				success: function (result) {
-					location.reload(true);
-				},
-				error: function (error) {
-					console.log(error);
-				}
-			});
-		 }
-		else {
-			var ids={
+		var ids={
 				ids:JSON.stringify(chkArray)
 			};
-	
-            $.ajax({
+			
+			$.ajax({
 				url: '/api/mail/deleteMany',
 				type: 'PUT',
 				data: ids,
@@ -84,8 +70,7 @@
 				error: function (error) {
 					console.log(error);
 				}
-			});
-		}		
+			});	
 	}
 </script>
 <div class="wrapper-content bg-gray">

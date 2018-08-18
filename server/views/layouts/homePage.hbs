@@ -5,6 +5,7 @@
 
 <script src="js/login.js"></script>
 
+
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <!-- <section class="box1" style="margin-bottom:0">
@@ -220,9 +221,9 @@
                                                     <div class="col-md-4 col-4 no-padding">
                                                         <span>Seller</span>
                                                     </div>
-                                                    <div class="col-md-8 col-8 no-padding overflow-txt">
+                                                    <div class="col-md-8 col-8 no-padding overflow-txt ">
                                                     {{#if ../LoggedInUser.email}}
-                                                        <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                        <a class="text-500" href="/vendor/{{this.vendor_id}}" data-id="{{this.vendor_id}}" title="{{this.vendor_name}}" >{{this.vendor_name}}</a>
                                                     {{else}}
                                                         <a class="text-500" href="/login">(Login for Seller Info)</a>
                                                     {{/if}}
@@ -906,5 +907,6 @@
         <a href="" class="button-cta">Get started!</a>
     </div>
 </section>
+
 
 {{> footer/bottom-footer}}
