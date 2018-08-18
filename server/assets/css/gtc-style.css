@@ -5372,6 +5372,19 @@ padding-top: 0px;
 {
     margin-top: -13px;
 }
+.line-chart-content
+{
+font-size: 13px;
+}
+.line-chart-second
+{
+   font-size: 14px;
+   color:green; 
+}
+.line-chart-third
+{
+   font-size:10px;
+}
 /*Report css ends */
 
 /* jssocial css starts  */

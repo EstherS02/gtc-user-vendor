@@ -5,7 +5,7 @@
 	p.lt-user-name {
       font-size : 13px; 
      }
-</style>
+	</style>
 <script type="text/javascript">
 	
 	$(function () {
@@ -215,7 +215,7 @@
 										<div class="col-md-3 latest-tickets">
 											<img src="../../img/img_avatar.png" class="avatar-img">
 										</div>
-										<div class="col-md-9" style="float: right;margin-top: 9px;">
+										<div class="col-md-9" style="float: right;">
 											<p class="lt-user-name">`+aObj["User.first_name"]+`</p>
 											<p style="font-size: 11px;">subject:
 												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+aObj["message"]+`</span>
@@ -359,7 +359,7 @@
 											</div>
 										</div>
 										<div class="col-md-6 total-sales">
-											<div class="pts report_border"  style="height:304px;">
+											<div class="pts report_border">
 												<p class="product-total-sale">{{currency topProducts.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topProducts.diff_total '$'}}</p>
 												<br>
@@ -391,8 +391,9 @@
 														</div>
 													</div>
 													{{/each}}
-
-
+                                                      <div class="form-group" style="margin-top: 15px;">
+    &nbsp;
+</div>
 													<!-- <div class="row">
 														<div class="col-md-12" style="padding: 0px;">
 															<div class="col-md-2" style="padding: 0px; float: left;">
@@ -422,7 +423,7 @@
 										</div>
 										<div class="col-md-6 total-sales" style="float: right;padding-top:25px">
 											<div class=""></div>
-											<div class="pts report_border"  style="height:304px;">
+											<div class="pts report_border">
 												<p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
 												<p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
 												<br>
@@ -446,8 +447,11 @@
 														<span class="subscription" style="height:10%" title="Subscription"></span>
 													</li> -->
 												</ul>
-												
+											   <div class="form-group">
+    &nbsp;
+</div>	
 											</div>
+
 											<p class="lt-more">
 													<a href="#" style="color: white;">More &#9658;</a>
 												</p>
@@ -461,7 +465,7 @@
 											<div class="col-md-6" style="padding-right: 0px;">
 												<div class="outside-border">
 													<p class="latest-tickets-title">Latest Tickets</p>
-													<div class="row landing-tables" id="latestTickets" style="height:317px">
+													<div class="row landing-tables" id="latestTickets">
 														<!-- <div class="user-details">
 															<div class="col-md-3 latest-tickets">
 																<img src="../../img/img_avatar.png" class="avatar-img">
@@ -530,7 +534,10 @@
 											</div>
 										</div>
 									</div>
-									<div>
+									
+
+									{{!-- <div id="grid">
+									<div id="item1">
 										<p class="line-chart-footer">Revenue($)</p>
 										<p class="line-chart-footer">Revenue(%)</p>
 										<p class="line-chart-footer">Completed</p>
@@ -539,7 +546,11 @@
 										<p class="line-chart-footer">Refunds</p>
 										<p class="line-chart-footer">Cancelation</p>
 									</div>
-                                      <div>
+									<div id="item2"></div>
+									</div> --}}
+
+									
+                                      {{!-- <div>
 										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
 										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
                                           <p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
@@ -557,8 +568,8 @@
 										
 										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
 										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
-									</div>
-									<div>
+									</div> --}}
+									{{!-- <div>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 20px; margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 34px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 50px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
@@ -566,8 +577,64 @@
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 28px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
-									</div>
-								</div>
+									</div> --}}
+									
+			<div class="container">
+             <div class="row">
+                 <div class="col-sm-3">
+                  <div class="row">
+                  <div class="col-md-6">
+			      <div class="well line-chart-content">Revenue($)</div>
+			      <div class="well line-chart-second" >{{currency revenueCounts.revenue.diff_revenue '$'}}</div>
+			       <div class="well line-chart-third">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
+
+		 </div>
+          <div class="col-md-6">
+			 <div class="well line-chart-content">Revenue(%)</div>
+			 <div class="well" style="font-size: 14px;color:green">{{revenueCounts.revenue_count.diff_count}}</div>
+			 <div class="well line-chart-third">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</div>
+			 </div>
+        </div>
+      </div>
+	  <div class="col-sm-6">
+        <div class="row">
+          <div class="col-md-4">
+			<div class="well line-chart-content" >Completed</div>
+			<div class="well line-chart-second">{{revenueCounts.completed_count.diff_completed}}</div>
+			<div class="well line-chart-third">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</div>
+			</div>
+          <div class="col-md-4">
+			 <div class="well line-chart-content">Returns</div>
+			 <div class="well line-chart-second" >{{revenueCounts.returns_count.diff_returned}}</div>
+			 <div class="well line-chart-third">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</div>
+			 </div>
+          <div class="col-sm-4">
+			  <div class="well line-chart-content">Disputes</div>
+			  <div class="well" style="font-size: 14px;color:red">{{revenueCounts.disputes_count.diff_disputes}}</div>
+			  <div class="well line-chart-third">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</div>
+			</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="row">
+          <div class="col-md-6">
+			  <div class="well line-chart-content">Refunds</div>
+			  <div class="well" style="font-size: 14px;color:red">{{revenueCounts.refunds_count.diff_refunds}}</div>
+			  <div class="well line-chart-third" >{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</div>
+			  </div>
+          <div class="col-md-6">
+			  <div class="well line-chart-content">Cancelation</div>
+			  <div class="well line-chart-second" >{{revenueCounts.cancelled_count.diff_cancelled}}</div>
+			  <div class="well line-chart-third">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</div>
+			  </div>
+        </div>
+      </div>
+    </div> 
+</div>
+
+</div>
+
+
 								<div class="col-md-4">
 									<div class="row">
 										<div class="col-md-6" style="padding: 10px;">
