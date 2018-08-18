@@ -157,6 +157,40 @@ export function create(req, res) {
 		})
 }
 
+export function importEbay(req, res) {
+	var getInventoryItemApiURL = 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item/GP-Cam-01';
+	var params = {};
+	params.code = req.query.code;
+	params.grant_type = 'authorization_code';
+	params.redirect_uri = config.ebay.redirectUri;
+
+	var authCode = new Buffer(config.ebay.clientId + ":" + config.ebay.clientSecret).toString('base64');
+	request.post({
+		url: config.ebay.authURL,
+		form: params,
+		headers: {
+			"Authorization": "Basic " + authCode,
+			"content-type": 'application/x-www-form-urlencoded'
+		}
+	}, function(err, response, body) {
+		const parsedJSON = JSON.parse(body);
+		var accessToken = parsedJSON.access_token;
+		var headers = {
+			"Authorization": 'Bearer ' + accessToken,
+			"Accept": 'application/json',
+			"Content-Type": 'application/json'
+		};
+
+		request.get({
+			url: getInventoryItemApiURL,
+			headers: headers,
+			json: true
+		}, function(err, response, inventory) {
+			console.log('inventory', inventory);
+		});
+	});
+}
+
 export function importAliExpress(req, res) {
 
 	var products = [];
