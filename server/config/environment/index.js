@@ -70,7 +70,8 @@ var all = {
 	},
 	jobs: {
 		'email': 'email-notification',
-		"couponExpiry": "couponExpiry"
+		"couponExpiry": "couponExpiry",
+		"vendorPayouts": "vendorPayouts"
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,

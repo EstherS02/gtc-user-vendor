@@ -16,9 +16,11 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 
+//var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var sendEmailNew = require('./agenda/send-email-new');
 var couponExpiry = require('./agenda/couponExpiry');
+var vendorPayouts = require('./agenda/vendor-payouts');
 
 // Setup server
 var app = express();
@@ -50,11 +52,37 @@ if (env === 'development') {
 	};
 }
 
+/* mailListener.start();
+
+mailListener.on("server:connected", function() {
+	console.log("imapConnected");
+});
+
+mailListener.on("server:disconnected", function() {
+	console.log("imapDisconnected");
+});
+
+mailListener.on("error", function(err) {
+	console.log("ERROR", err);
+});
+
+mailListener.on("mail", function(mail, seqno, attributes) {
+	// do something with mail object including attachments
+	console.log("emailParsed", mail);
+	// mail processing code goes here
+});
+
+mailListener.on("attachment", function(attachment) {
+	console.log("attachment.path", attachment.path);
+}); */
+
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
+agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
+	agenda.every('1 minutes', 'vendorPayouts');
 	agenda.start();
 });
 
