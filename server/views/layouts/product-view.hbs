@@ -1,3 +1,6 @@
+<style>
+
+</style>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
@@ -12,14 +15,14 @@
 		var desc =  $('#productdescription').val();
 		var text = text +" "+desc;
 		           
-		//console.log("window:::"+windowslocation);	
+		//console.log("window:::"+text);	
 
 		 $("#shareIcons").jsSocials({
-			url: url,
+			url:  window.location.href,
             text: text,
 			showLabel: false,
             showCount: false,
-            shares: ["linkedin","pinterest","twitter"]
+            shares: ["linkedin","pinterest","twitter","googleplus"]
         });
 	
 
@@ -242,8 +245,8 @@
                             				</div>
                             				<div class="alignright text-right">
                             					<div id="shareIcons" class="alignleft"></div>
-												<a href="javascript:;">
-													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
+												 <a href="javascript:;" id="shareIcons">
+													{{!-- <img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus"> --}}
 												</a>
                             				</div>
                             				<div style="clear: both;"></div>
