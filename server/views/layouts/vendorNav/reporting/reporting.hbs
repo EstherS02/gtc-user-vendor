@@ -448,7 +448,12 @@
 												<p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
 												<br>
 												<div class="container horizontal flat">
+													
+														{{#ifCond  topProducts.rows.length '==' "0"}}
+													<div style="font-size:12px;text-align:center">No Product Found</div>
+													{{/ifCond}}
 													{{#each topProducts.rows as |item|}}
+												
 													<div class="row">
 														<div class="col-md-12" style="padding: 0px;">
 															<div class="col-md-2" style="padding: 0px; float: left;">
@@ -517,7 +522,10 @@
 												<p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
 												<br>
 												<p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
-
+                                                  	{{#ifCond  topMarketPlace.total  '==' "0.00"}}
+													 
+													<p class="common_top" style="font-size:12px;text-align:center">No Product Found</p>
+													{{/ifCond}}
 												<ul class="chart">
 													{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
 													<!-- <li>
@@ -533,11 +541,14 @@
 														<span class="subscription" style="height:10%" title="Subscription"></span>
 													</li> -->
 												</ul>
+												 
 												{{#ifCond  topMarketPlace.total '!=' "0.00"}}
 												<div class="form-group">
 													&nbsp;
 												</div>
 												{{/ifCond}}
+												 
+												
 
 											</div>
 

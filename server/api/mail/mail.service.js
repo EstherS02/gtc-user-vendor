@@ -66,7 +66,6 @@ export function createMail(bodyParams, users) {
 			mailArray.push(mailObject);
 			return Promise.all(usersArray);
 		}).then((result) => {
-			console.log("mailArray", mailArray);
 			agenda.now(config.jobs.email, {
 				mailArray: mailArray
 			});
@@ -138,8 +137,6 @@ export function removeMail(queryObj) {
 	var userMail = {};
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
-
-	console.log("queryObj", queryObj);
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)
