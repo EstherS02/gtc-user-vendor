@@ -34,7 +34,7 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var marketPlaceTypeSelected = {};
 
-	var offset, limit, field, order, layout;
+	var offset, limit, field, order, layout,click;
 	var productEndPoint = "MarketplaceProduct";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
@@ -90,10 +90,12 @@ export function index(req, res) {
 	queryPaginationObj['layout'] = layout;
 	delete req.query.layout;
 
+
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
+	
 	
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
