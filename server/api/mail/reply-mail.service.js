@@ -1,6 +1,5 @@
 'use strict';
 
-const agenda = require('../../agenda');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const provider = require('../../config/providers');
@@ -15,6 +14,7 @@ export function createReplyMail(receivedMail) {
 	var bodyParams = {};
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
+	var agenda = require('../../app').get('agenda');
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow('User', {

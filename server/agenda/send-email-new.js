@@ -15,10 +15,9 @@ var transporter = nodemailer.createTransport(smtpTransport({
 	}
 }));;
 
-
 module.exports = function(email, done) {
-	const arrayOfEmailObjects = email.attrs.data.mailArray;
-	arrayOfEmailObjects.forEach(function(emailObj) {
+	const arr = email.attrs.data.mailArray;
+	arr.forEach(function(emailObj) {
 		transporter.sendMail(emailObj, function(error, response) {
 			if (error) {
 				console.log("Error:::", error);
