@@ -119,16 +119,14 @@ export function deleteMail(queryObj) {
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)
-			.then((exists) => {
+			.then(function(exists){
 				if (exists) {
 					return service.updateRecord(userMailModelName, {
-						mail_status: mailStatus['DELETED']
+						mail_status: mailStatus['READ']
 					}, queryObj)
 				} else {
 					return Promise.resolve(null);
 				}
-			}).then((result) => {
-				resolve(result);
 			}).catch((error) => {
 				reject(error);
 			});
