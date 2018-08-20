@@ -126,10 +126,10 @@
 <div class="bg-gray">
 	<div class="gtc-container">
 		<div class="row">
-			<div class="v-col-2 col-12 m-t-sm">
+			<div class="{{!-- v-col-2 --}} col-md-2 col-12 m-t-sm col-sm-12">
 				{{> vendor/vendor-left VendorDetail = VendorDetail}}
 			</div>
-			<div class="v-col-10 col-12 m-t-sm"> 
+			<div class="{{!-- v-col-10 --}} col-md-10 col-12 m-t-sm col-sm-12"> 
 				<div class="header-lg bg{{product.Marketplace.id}}">
 					<h2 class="header-lg-text">{{product.Marketplace.name}}</h2>
 				</div>
@@ -138,19 +138,23 @@
 						<div class="ibox">
                             <div class="ibox-content">
                             	<div class="row">
-                            		<div class="col-md-4">
-                            			<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image">
+                            		<div class="col-md-4" >
+                            			<a class="image-popup-vertical-fit " href="{{product.ProductMedia.[0].url}}" style="border:none">
+											<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
+										</a>
+                            			{{!-- <img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image"> --}}
 										<div class="row">
+											<div class="popup-gallery ">
 											{{#each product.ProductMedia}}
 											{{#if @first}} 
 											{{else}} 
 											{{#ifCond @index '<' 4}}
-											<div class="col-md-4 col-4">
-												<img src="{{this.url}}" class="img-fluid" alt="product image">
-											</div>
+											<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
 											{{/ifCond}}
 											{{/if}}
 											{{/each}}
+										</div>
+											
 										</div>
                             		</div>
                             		<div class="col-md-8">

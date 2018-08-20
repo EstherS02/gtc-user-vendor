@@ -130,6 +130,9 @@
 					formData.comment_type = 2;
 					formData.comment_media_url = data.imageURL;
 					apiCallComment(url, formData, e);
+					$("#selectedFile" + e).attr('src', " ");
+					$("#selectedFile" + e).val("");
+
 				},
 				error: function(error) {
 					console.log("Error", error);
@@ -139,6 +142,7 @@
 			if ($("#comment_text" + e).val()) {
 				formData.comment_type = 1;
 				apiCallComment(url, formData, e);
+
 			} else {
 				console.log("Please enter the value")
 				$('#comment_text' + e).notify("Please enter the value", "error");
@@ -171,15 +175,7 @@
 				var results = res.result.rows;
 				console.log(res.result)
 				var i = 0;
-				// location.reload();
-				// alert("DiscussionBoardPostComments-"+e);
-				// var source   = document.getElementById("DiscussionBoardPostComments-"+e).innerHTML;
-				// var template = Handlebars.compile(source);
-				// var context = res.result;
-				// var html    = template(context);
-				// var domElement = `<div id="DiscussionBoardPostComments-`+e+`">`+ 
 				var newData = extract(results, e);
-				// alert("newPart1"+document.getElementById("newPart1"+e).innerHTML);
 				document.getElementById("newPart1" + e).innerHTML = newData.new1;
 				document.getElementById("newPart2" + e).innerHTML = newData.new2;
 				document.getElementById("comment_count-"+ e).innerHTML = `<p>Comments(`+count+`)</p>`;			
@@ -447,8 +443,9 @@ aria-hidden="true">
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
 											{{#ifCond this.post_media_type "==" 2}}
-										    {{!-- <img src="{{this.post_media_url}}" style="width:100% margin-top: 10px;" onclick="openModal();currentSlide({{@index}})" > --}}
-											<img src="{{this.post_media_url}}" alt="img" onclick="openModal();currentSlide({{@index}})" style="width: 100%;margin-top: 10px;"  id="originalLightbox{{@index}}">
+											<a class="image-popup-vertical-fit " href="{{this.post_media_url}}">
+												<img src="{{this.post_media_url}}" style="width: 100%;margin-top: 10px;">
+											</a>
 											{{/ifCond}}
 											<div class="row">    	
 												<div class="col-md-8 col-5  discussion_com" id="comment_count-{{this.id}}">
