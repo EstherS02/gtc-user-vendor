@@ -134,19 +134,6 @@ export function deleteMail(queryObj) {
 	});
 }
 
-// export function deleteManyMail(queryObj) {
-// 	var userMailModelName = 'UserMail';
-// 	return new Promise((resolve, reject) => {
-// 		return service.updateManyRecord(userMailModelName, {
-// 			mail_status: mailStatus['DELETED']
-// 		}, queryObj)
-// 	}).then((result) => {
-// 		resolve(result);
-// 	}).catch((error) => {
-// 		reject(error);
-// 	});
-// }
-
 export function removeMail(queryObj) {
 	var includeArr = [];
 	var userMail = {};
