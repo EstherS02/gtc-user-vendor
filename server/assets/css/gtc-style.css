@@ -5354,7 +5354,7 @@ left: 6px;
 .compare_second_date
 {
 width: 103px;
-right: 31px;
+right: 25px;
 }
 .report_border
 {
@@ -5384,6 +5384,49 @@ font-size: 13px;
 .line-chart-third
 {
    font-size:10px;
+}
+
+@media screen and (min-width: 768px) {
+    .report-Date {
+        right: 24px;
+    }
+    .to_label {
+        right: 22px;
+    }
+    .select_drop {
+        right: 24px;
+    }
+    .report-Date2 {
+        width: 104px;
+        right: 83px;
+    }
+    .check_align {
+        right: 70px;
+    }
+    .compare_first_date {
+        right: 63px;
+    }
+    .compare_second_date {
+        right: 64px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .report-Date2 {
+        width: 104px;
+        right: 16px;
+    }
+    .check_align {
+        right: 23px;
+    }
+    .compare_first_date {
+        right: 21px;
+    }
+}
+
+.check_report1 {
+    margin-top: 5px;
+    margin-left: 15px;
 }
 /*Report css ends */
 
