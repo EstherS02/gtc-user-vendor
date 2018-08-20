@@ -1,6 +1,5 @@
 'use strict';
 
-const agenda = require('../../agenda');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const service = require('../service');
@@ -14,6 +13,7 @@ export function createMail(bodyParams, users) {
 	var mailArray = [];
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
+	var agenda = require('../../app').get('agenda');
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(mailModelName, {
@@ -66,6 +66,7 @@ export function createMail(bodyParams, users) {
 			mailArray.push(mailObject);
 			return Promise.all(usersArray);
 		}).then((result) => {
+			console.log("mailArray", mailArray);
 			agenda.now(config.jobs.email, {
 				mailArray: mailArray
 			});

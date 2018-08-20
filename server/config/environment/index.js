@@ -78,7 +78,8 @@ var all = {
 	jobs: {
 		'email': 'email-notification',
 		"couponExpiry": "couponExpiry",
-		"vendorPayouts": "vendorPayouts"
+		"vendorPayouts": "vendorPayouts",
+		"aliExpressScrape": "aliexpress-scrape"
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
