@@ -583,7 +583,7 @@ export function GetProductReview(req, res) {
 
 			productRating = productRating;
 
-			res.render('product-review', {
+			res.render('product-view', {
 				title: "Global Trade Connect",
 				product: results.Product,
 				Reviews: results.Review.rows,
@@ -609,7 +609,7 @@ export function GetProductReview(req, res) {
 				Plan: Plan,
 			});
 		} else {
-			res.render('product-review', {
+			res.render('product-view', {
 				title: "Global Trade Connect"
 			});
 		}

@@ -181,7 +181,7 @@ export function importAliExpress(req, res) {
 
 	(async () => {
 		const browser = await puppeteer.launch({
-			headless: false
+			headless: true
 		});
 
 		const loginPage = await browser.newPage();

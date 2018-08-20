@@ -66,7 +66,6 @@ export function createMail(bodyParams, users) {
 			mailArray.push(mailObject);
 			return Promise.all(usersArray);
 		}).then((result) => {
-			console.log("mailArray", mailArray);
 			agenda.now(config.jobs.email, {
 				mailArray: mailArray
 			});
@@ -119,16 +118,14 @@ export function deleteMail(queryObj) {
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)
-			.then((exists) => {
+			.then(function(exists){
 				if (exists) {
 					return service.updateRecord(userMailModelName, {
-						mail_status: mailStatus['DELETED']
+						mail_status: mailStatus['READ']
 					}, queryObj)
 				} else {
 					return Promise.resolve(null);
 				}
-			}).then((result) => {
-				resolve(result);
 			}).catch((error) => {
 				reject(error);
 			});
@@ -140,8 +137,6 @@ export function removeMail(queryObj) {
 	var userMail = {};
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
-
-	console.log("queryObj", queryObj);
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)

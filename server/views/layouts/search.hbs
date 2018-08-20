@@ -40,22 +40,7 @@
 	}
 
 	$(document).ready(function () {
-		$("#datepicker").on("change",(()=>{
-			console.log('here')
-			console.log( document.getElementById("datepicker").value )
-			var testdate=document.getElementById("datepicker").value;
-			var resdate = new Date(testdate.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"))
-			console.log(moment(new Date(testdate)));
-		}))
-
-		$("#datepicker1").on("change",(()=>{
-			console.log('here')
-			console.log( document.getElementById("datepicker1").value )
-			var testdate=document.getElementById("datepicker1").value;
-			var resdate = new Date(testdate.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"))
-			console.log(moment(new Date(testdate)));
-		}))
-
+	
 		$('#datepicker').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(7,"days").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
 
 		$('#datepicker1').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(1,"months").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
@@ -63,6 +48,44 @@
 		$('#datepicker2').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(1,"year").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
 
 		$('#datepicker3').datepicker({autoHide: true,to:true,startDate: new Date(moment().subtract(10,"year").format("YYYY-MM-DD").valueOf()),endDate: new Date()});
+
+
+		$('#menu li:first-child').click(function () {
+			console.log("%%%%%%%%%%%%");
+			$('#menu ul').children().css({
+				"color": "blue"
+			});
+			$(this).css({
+				"color": "black"
+			});
+		});
+
+		$('#menu li:nth-child(2)').click(function () {
+			$('#menu ul').children().css({
+				"color": "blue"
+			});
+			$(this).css({
+				"color": "black"
+			});
+		});
+
+		$('#menu li:nth-child(3)').click(function () {
+			$('#menu ul').children().css({
+				"color": "blue"
+			});
+			$(this).css({
+				"color": "black"
+			});
+		});
+
+		$('#menu li:nth-child(4)').click(function () {
+			$('#menu ul').children().css({
+				"color": "blue"
+			});
+			$(this).css({
+				"color": "black"
+			});
+		});
 
 
 		
@@ -256,27 +279,27 @@
 				</a>
 			</p>
 			<div class="list-group panel category-fixed">
-				<ul class="list-group">
+				<ul class="list-group" id="menu">
 					<li class="list-group-item">
-						<a  class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
+						<a {{#ifCond queryURI.dateSelect "==" 'last7day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last7day'}}class="text-blue"{{/ifCond}} href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
 							<span>LESS THAN 1 WEEK</span>
 						</a>
 					</li>
 			
 					<li class="list-group-item">
-						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30day") 'null'}}">
+						<a {{#ifCond queryURI.dateSelect "==" 'last30day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30day'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30day") 'null'}}">
 							<span>LESS THAN 1 MONTH</span>
 						</a>
 					</li>
 			
 					<li class="list-group-item">
-						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last1year") 'null'}}">
+						<a {{#ifCond queryURI.dateSelect "==" 'last1year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last1year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last1year") 'null'}}">
 							<span>MONTHLY</span>
 						</a>
 					</li>
 			
 					<li class="list-group-item">
-						<a class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30year") 'null'}}">
+						<a {{#ifCond queryURI.dateSelect "==" 'last30year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30year") 'null'}}">
 							<span>YEARLY</span>
 						</a>
 					</li>
