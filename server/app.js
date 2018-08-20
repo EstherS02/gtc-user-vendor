@@ -52,28 +52,6 @@ if (env === 'development') {
 	};
 }
 
-mailListener.start();
-
-mailListener.on("server:connected", function() {
-	console.log("imapConnected");
-});
-
-mailListener.on("server:disconnected", function() {
-	console.log("imapDisconnected");
-});
-
-mailListener.on("error", function(err) {
-	console.log("ERROR", err);
-});
-
-mailListener.on("mail", function(mail, seqno, attributes) {
-	mailService.createReplyMail(mail);
-});
-
-mailListener.on("attachment", function(attachment) {
-	console.log("attachment.path", attachment.path);
-});
-
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
 agenda.define(config.jobs.vendorPayouts, vendorPayouts);
