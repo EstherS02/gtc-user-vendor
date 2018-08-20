@@ -8,6 +8,9 @@ const vendorPayoutAction = require('../../config/vendor-payout-action');
 const paymentType = require('../../config/order-payment-type');
 const moment = require('moment');
 const _ = require('lodash');
+const stripe = require('../../payment/stripe.payment');
+
+const CURRENCY = 'usd';
 
 export function vendorPayout(req, res) {
 
@@ -73,8 +76,7 @@ export function vendorPayout(req, res) {
 
      }).catch(function (error) {
             return res.status(400).send(error);
-    });
-   
+    });  
 };
 
 function checkpaymentEscrow(order,paymentEscrowQueryObj){
@@ -96,8 +98,7 @@ function checkpaymentEscrow(order,paymentEscrowQueryObj){
             PaymentSettingQueryObj['is_primary'] = 1;
             PaymentSettingQueryObj['user_id'] = payoutVendor;
 
-           
-            PaymentSettingPromises.push(fetchPaymentInfo(PaymentSettingQueryObj));
+            PaymentSettingPromises.push(fetchPaymentInfo(PaymentSettingQueryObj,payoutAmount));
             return Promise.all(PaymentSettingPromises).then(function(paymentInfoResults){
                 return Promise.resolve({
                     paymentInfoResults:paymentInfoResults
@@ -111,23 +112,45 @@ function checkpaymentEscrow(order,paymentEscrowQueryObj){
     })
 };
 
-function fetchPaymentInfo(PaymentSettingQueryObj){
+function fetchPaymentInfo(PaymentSettingQueryObj,payoutAmount){
 
+    var card_details,desc,metadata={},amt,stripe_customer_id;
     var PaymentSettingModel = 'PaymentSetting';
+    var PaymentSettingArr = [{
+        "model": model['User'],
+        attribute: ['id', 'stripe_customer_id'],
+    }]
 
-    return service.findOneRow(PaymentSettingModel,PaymentSettingQueryObj)
-     .then(function(row){
-         if(row){
-            return Promise.resolve(row)
+    return service.findOneRow(PaymentSettingModel,PaymentSettingQueryObj,PaymentSettingArr)
+     .then(function(paymentDetails){
+         if(paymentDetails){
+            console.log("stripe calling");
+
+           card_details = paymentDetails.card_details;
+           desc = "GTC ORDER";
+           // metadata.orders = JSON.stringify(orderIds);
+           amt = payoutAmount;
+           stripe_customer_id = paymentDetails.User.stripe_customer_id;
+           
+
+           //return Promise.resolve(paymentDetails)
+
+           return stripe.chargeCustomerCard(stripe_customer_id, card_details.id, amt, desc, CURRENCY)
+           .then(function(charges){
+               console.log("==================================",charges);
+           })
+           .catch(function(error){
+            console.log("========*******************************=====",error);
+           })              
          }
          else{
             return Promise.resolve({
                 paymentInfoResults: "Please add Primary Card in your account inorder to process payment"
             })
-            
          }
      })
 }
+
 
 
 

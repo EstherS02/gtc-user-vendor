@@ -1,18 +1,23 @@
 <style>
-	p{
-	  margin-bottom: 0rem;
+	p {
+		margin-bottom: 0rem;
 	}
+
 	p.lt-user-name {
-      font-size : 13px; 
-     }
-	</style>
+		font-size: 13px;
+	}
+  .check_report1 {
+		margin-top: 5px;
+		margin-left: 15px;
+	}
+</style>
 <script type="text/javascript">
-	
+
 	$(function () {
 		$("#rep_from, #rep_to,#com_from,#com_to").datepicker();
 	});
 
-	function onSearch(){
+	function onSearch() {
 		var from = $('#rep_from').val();
 		var to = $('#rep_to').val();
 		var Cfrom = $('#com_from').val();
@@ -30,11 +35,11 @@
 
 		var from = $('#rep_from').val(),
 			to = $('#rep_to').val(),
-		 	Cfrom = $('#com_from').val(),
-		 	Cto = $('#com_to').val(),
-		 	Compare = $('#compare').val();
-		
-		var dates = [from,to,Cfrom,Cto];
+			Cfrom = $('#com_from').val(),
+			Cto = $('#com_to').val(),
+			Compare = $('#compare').val();
+
+		var dates = [from, to, Cfrom, Cto];
 		dates.sort();
 
 		var start = dates[0],
@@ -51,26 +56,26 @@
 		$.ajax({
 			type: "GET",
 			url: "/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
-			success: function(data) {				
-				between.forEach(function(aDate){
-					var objA = _.find(data.past_range, function(pastDate){
+			success: function (data) {
+				between.forEach(function (aDate) {
+					var objA = _.find(data.past_range, function (pastDate) {
 						var pastDateVal = $.datepicker.formatDate('M dd', new Date(pastDate.item_created_on));
 						return aDate.toString() == pastDateVal.toString();
 					})
-					if(objA)
+					if (objA)
 						lhsData.push(parseInt(objA.amount));
 					else
 						lhsData.push(null);
 
-					var objB = _.find(data.current_range, function(currData){
+					var objB = _.find(data.current_range, function (currData) {
 						var currDateVal = $.datepicker.formatDate('M dd', new Date(currData.item_created_on));
 						return aDate.toString() == currDateVal.toString();
 					})
-					if(objB)
+					if (objB)
 						rhsData.push(parseInt(objB.amount));
 					else
 						rhsData.push(null);
-				});				
+				});
 				//line chart data
 				var data = {
 					labels: between,
@@ -83,7 +88,7 @@
 						fill: false,
 						lineTension: 0,
 						radius: 5
-					}, {				
+					}, {
 						label: $.datepicker.formatDate('M dd, yy', new Date(Cfrom)) + " - " + $.datepicker.formatDate('M dd, yy', new Date(Cto)),
 						data: rhsData,
 						backgroundColor: "green",
@@ -120,11 +125,11 @@
 					type: "line",
 					data: data,
 					options: options
-				});	
+				});
 			}
 		});
 
-		function calHoursAgo(datetime){
+		function calHoursAgo(datetime) {
 			var now = new Date();
 			var createdAt = new Date(datetime);
 			var sec_num = (now - createdAt) / 1000;
@@ -146,7 +151,7 @@
 			return days + ' days ' + hours + ' hrs ' + minutes + ' min ago';
 		}
 
-		function getStatus(statusCode){
+		function getStatus(statusCode) {
 			var status = {
 				1: "ACTIVE",
 				2: "INACTIVE",
@@ -158,44 +163,44 @@
 			return status[statusCode] ? status[statusCode] : "OPEN";
 		}
 
-		function getTopSellingCities(){
+		function getTopSellingCities() {
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/top-selling-cities",
-				success: function(data) {
-					data.forEach(function(aObj){						
+				success: function (data) {
+					data.forEach(function (aObj) {
 						var ulTopCities = $("#topCities");
 						var tag = `<div class="user-details" >
 									<div class="col-md-3 latest-tickets">
 										<img src="../../img/img_avatar.png" class="avatar-img">
 									</div>
 									<div class="col-md-9" style="float: right;">
-										<p class="lt-user-name" style="font-size: 11px;">`+aObj["Product.city"]+`</p>
+										<p class="lt-user-name" style="font-size: 11px;">`+ aObj["Product.city"] + `</p>
 										<p class="ts-rate" style="font-size: 11px;">Total sales:
-										<span>`+aObj["total_sales"]+`</span>
+										<span>`+ aObj["total_sales"] + `</span>
 										</p>
 									</div>
 								</div>`
 						ulTopCities.append(tag);
-					});					
+					});
 				}
 			});
-		}	
+		}
 
-		function getActiveBuyers(){
+		function getActiveBuyers() {
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/active-buyers",
-				success: function(data) {
-					data.forEach(function(aObj){						
+				success: function (data) {
+					data.forEach(function (aObj) {
 						var activeBuyerList = $("#activeBuyers");
-						var tag =  `<div class="user-details">
+						var tag = `<div class="user-details">
 										<div class="col-md-3 latest-tickets">
 											<img src="../../img/img_avatar.png" class="avatar-img">
 										</div>
 										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+aObj["User.first_name"]+`</p>
-											<p class="ts-rate">`+calHoursAgo(aObj["created_on"])+`</p>
+											<p class="lt-user-name">`+ aObj["User.first_name"] + `</p>
+											<p class="ts-rate">`+ calHoursAgo(aObj["created_on"]) + `</p>
 										</div>
 									</div>`
 						activeBuyerList.append(tag);
@@ -204,24 +209,24 @@
 			});
 		}
 
-		function getLatestTickets(){
+		function getLatestTickets() {
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/latest-tickets",
-				success: function(data) {
-					data.forEach(function(aObj){						
+				success: function (data) {
+					data.forEach(function (aObj) {
 						var latestTicketList = $("#latestTickets");
-						var tag =  `<div class="user-details" >
+						var tag = `<div class="user-details" >
 										<div class="col-md-3 latest-tickets">
 											<img src="../../img/img_avatar.png" class="avatar-img">
 										</div>
 										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+aObj["User.first_name"]+`</p>
+											<p class="lt-user-name">`+ aObj["User.first_name"] + `</p>
 											<p style="font-size: 11px;">subject:
-												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+aObj["message"]+`</span>
+												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ aObj["message"] + `</span>
 											</p>
 											<p style="font-size: 11px;">Status:
-												<span class="lt-status">`+getStatus(aObj["status"])+`</span>
+												<span class="lt-status">`+ getStatus(aObj["status"]) + `</span>
 											</p>
 										</div>
 									</div>`
@@ -231,24 +236,24 @@
 			});
 		}
 
-		function getLatestRefunds(){
+		function getLatestRefunds() {
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/latest-refunds",
-				success: function(data) {
-					data.forEach(function(aObj){						
+				success: function (data) {
+					data.forEach(function (aObj) {
 						var latestRefundList = $("#latestRefunds");
-						var tag =  `<div class="user-details" style="margin-top: 10px;">
+						var tag = `<div class="user-details" style="margin-top: 10px;">
 										<div class="col-md-3 latest-tickets">
 											<img src="../../img/img_avatar.png" class="avatar-img">
 										</div>
 										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+aObj["first_name"]+`</p>
+											<p class="lt-user-name">`+ aObj["first_name"] + `</p>
 											<p>subject:
-												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ `-` +`</span>
+												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ `-` + `</span>
 											</p>
 											<p>Status:
-											<span class="lt-status">`+getStatus(aObj["status"])+`</span>
+											<span class="lt-status">`+ getStatus(aObj["status"]) + `</span>
 											</p>
 										</div>
 									</div>`
@@ -258,16 +263,13 @@
 			});
 		}
 
-		getTopSellingCities();	
+		getTopSellingCities();
 		getActiveBuyers();
 		getLatestTickets();
 		getLatestRefunds();
-		
+
 	});	
-</script>
-
-
- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="container-fluid">
 		<div class="row">
@@ -284,19 +286,96 @@
 							<div class="container">
 								<div class="row">
 									<div class="col-md-8" style="padding: 0px;">
+										<div class="row" style="font-size:9px">
+											<div class="col-md-1">
+												<h6 style="font-size:9px" class="text-nowrap">Date Range</h6>
+											</div>
+											<div class="col-md-1">
+												<div class="col-sm-3">
+													<div class="input-group report-Date">
+														<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
+														 value="{{queryURI.rep_from}}" id="datepicker3" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-1"></div>
+											<div class="col-md-1 to_label" style="font-size:10px;">to</div>
+											<div class="col-md-1">
+												<div class="col-sm-3">
+													<div class="input-group report-Date2">
+														<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-1 select_drop">
+												<select class="acc-days1" style="width: 91px">
+													<option value="Last 30 Days" selected>Last 30 Days</option>
+												</select>
+											</div>
+											<div class="col-md-1"></div>
+											<div class="col-md-1">
+												<div class="col-md-3 check_align">
+													<input id="compare" type="checkbox" value="true" class="check_report1" checked="">
+													<p class="report_date-range1" style="padding-top: 1px;margin-left: 26px;">Compare to</p>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="col-sm-3">
+													<div class="input-group compare_first_date">
+														<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 value="{{queryURI.com_from}}" aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-1" style="left:0px">to</div>
+											<div class="col-md-1">
+												<div class="col-sm-3">
+													<div class="input-group compare_second_date">
+														<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 value="{{queryURI.com_to}}" aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<button class="update-btn1 report_update " onclick="onSearch()" style="background-color: green; color: #fff;font-size: 10px;padding: 5px 5px;">Update</button>
+											</div>
+										</div>
+										{{!--
+										<h6>working:::::::::::</h6> --}} {{!--
 										<div class="col-sm-6" style="padding: 0px; float: left;">
 											<div class="row">
 												<p class="report_date-range">Date Range</p>
 												<div class="col-sm-3">
-												<div class="input-group report-Date">
-												<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2" value="{{queryURI.rep_from}}"
-												 id="datepicker3" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
-											</div>
+													<div class="input-group report-Date">
+														<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
+														 value="{{queryURI.rep_from}}" id="datepicker3" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
 												</div>
 
 												<div class="col-md-1 common_padding1">
@@ -304,13 +383,13 @@
 												</div>
 												<div class="col-sm-3">
 													<div class="input-group report-Date">
-    												<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-												 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}"autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
+														<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
 
 
 													</div>
@@ -321,43 +400,43 @@
 													</select>
 												</div>
 											</div>
-										</div>
+										</div> --}} {{!--
 										<div class="col-sm-6" style="padding:0px; float: right;">
 											<div class="row">
 												<div class="col-md-3">
 													<input id="compare" type="checkbox" value="true" class="check_report" checked>
 													<p class="report_date-range1" style="padding-top: 1px;margin-left: 26px;">Compare to</p>
-    												</div>
+												</div>
 												<div class="col-sm-3">
 													<div class="input-group compare_first_date">
-    												<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_from}}"
-												 aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
+														<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 value="{{queryURI.com_from}}" aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
+													</div>
 												</div>
-											</div>
-												</div>
-                                               	<p class="toreport_date"> to</p>
+												<p class="toreport_date"> to</p>
 												<div class="col-sm-3">
-											    <div class="input-group compare_second_date">
-                                               	<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username" value="{{queryURI.com_to}}"
-												 aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
-												<div class="input-group-prepend">
-													<span class="input-group-text calender_face_1" id="basic-addon2">
-														<img class="calendar-icon" src="../../img/calendar.png">
-													</span>
-												</div>
+													<div class="input-group compare_second_date">
+														<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
+														 value="{{queryURI.com_to}}" aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
+														<div class="input-group-prepend">
+															<span class="input-group-text calender_face_1" id="basic-addon2">
+																<img class="calendar-icon" src="../../img/calendar.png">
+															</span>
+														</div>
 
 
-											</div>
+													</div>
 												</div>
 												<div class="col-md-1">
 													<button class="update-btn1 report_update " onclick="onSearch()" style="background-color: green; color: #fff;font-size: 10px;padding: 5px 5px;margin-left: -12px;">Update</button>
-   												</div>
+												</div>
 											</div>
-										</div>
+										</div> --}}
 										<div class="col-md-6 total-sales">
 											<div class="pts report_border">
 												<p class="product-total-sale">{{currency topProducts.total '$'}}</p>
@@ -369,7 +448,12 @@
 												<p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
 												<br>
 												<div class="container horizontal flat">
+													
+														{{#ifCond  topProducts.rows.length '==' "0"}}
+													<div style="font-size:12px;text-align:center">No Product Found</div>
+													{{/ifCond}}
 													{{#each topProducts.rows as |item|}}
+												
 													<div class="row">
 														<div class="col-md-12" style="padding: 0px;">
 															<div class="col-md-2" style="padding: 0px; float: left;">
@@ -391,9 +475,16 @@
 														</div>
 													</div>
 													{{/each}}
-                                                      <div class="form-group" style="margin-top: 15px;">
-    &nbsp;
-</div>
+														{{#ifCond  topProducts.total  '!=' "0.00"}}
+													<div class="form-group" style="margin-top: 15px;">
+														&nbsp;
+													</div>
+													{{/ifCond}}
+											         {{#ifCond  topProducts.total  '==' "0.00"}}
+													   <div class="form-group" style="margin-top: 109px;">
+														&nbsp;
+													</div>
+													{{/ifCond}}
 													<!-- <div class="row">
 														<div class="col-md-12" style="padding: 0px;">
 															<div class="col-md-2" style="padding: 0px; float: left;">
@@ -415,11 +506,11 @@
 														</div>
 													</div>-->
 												</div>
-												</div>
-												<p class="lt-more">
-													<a href="#" style="color: white;">More &#9658;</a>
-												</p>
-											
+											</div>
+											<p class="lt-more">
+												<a href="#" style="color: white;">More &#9658;</a>
+											</p>
+
 										</div>
 										<div class="col-md-6 total-sales" style="float: right;padding-top:25px">
 											<div class=""></div>
@@ -431,7 +522,10 @@
 												<p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
 												<br>
 												<p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
-
+                                                  	{{#ifCond  topMarketPlace.total  '==' "0.00"}}
+													 
+													<p class="common_top" style="font-size:12px;text-align:center">No Product Found</p>
+													{{/ifCond}}
 												<ul class="chart">
 													{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
 													<!-- <li>
@@ -447,14 +541,20 @@
 														<span class="subscription" style="height:10%" title="Subscription"></span>
 													</li> -->
 												</ul>
-											   <div class="form-group">
-    &nbsp;
-</div>	
+												 
+												{{#ifCond  topMarketPlace.total '!=' "0.00"}}
+												<div class="form-group">
+													&nbsp;
+												</div>
+												{{/ifCond}}
+												 
+												
+
 											</div>
 
 											<p class="lt-more">
-													<a href="#" style="color: white;">More &#9658;</a>
-												</p>
+												<a href="#" style="color: white;">More &#9658;</a>
+											</p>
 										</div>
 
 									</div>
@@ -514,7 +614,7 @@
 									</div>
 
 								</div>
-							</div>
+							
 							<div class="row">
 								<div class="col-md-8">
 									<div class="line-chart-container report_border revenue_top">
@@ -534,105 +634,108 @@
 											</div>
 										</div>
 									</div>
-									
 
-									{{!-- <div id="grid">
-									<div id="item1">
-										<p class="line-chart-footer">Revenue($)</p>
-										<p class="line-chart-footer">Revenue(%)</p>
-										<p class="line-chart-footer">Completed</p>
-										<p class="line-chart-footer">Returns</p>
-										<p class="line-chart-footer">Disputes</p>
-										<p class="line-chart-footer">Refunds</p>
-										<p class="line-chart-footer">Cancelation</p>
-									</div>
-									<div id="item2"></div>
-									</div> --}}
 
-									
-                                      {{!-- <div>
+									{{!--
+									<div id="grid">
+										<div id="item1">
+											<p class="line-chart-footer">Revenue($)</p>
+											<p class="line-chart-footer">Revenue(%)</p>
+											<p class="line-chart-footer">Completed</p>
+											<p class="line-chart-footer">Returns</p>
+											<p class="line-chart-footer">Disputes</p>
+											<p class="line-chart-footer">Refunds</p>
+											<p class="line-chart-footer">Cancelation</p>
+										</div>
+										<div id="item2"></div>
+									</div> --}} {{!--
+									<div>
 										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
-										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
-                                          <p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
-										  {{else}}
-                                         <p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
-                                         {{/ifCond}}
+										{{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+										<p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
+										{{else}}
+										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
+										{{/ifCond}}
 
 										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.completed_count.diff_completed}}</p>
 										<p class="line-chart-green3 line-chart-footer pd0">{{revenueCounts.returns_count.diff_returned}}</p>
-										 {{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
-										 <p class="line-chart-red1 line-chart-footer pd0" style="padding-left: 53px;">{{revenueCounts.disputes_count.diff_disputes}}</p>
-										 {{else}}
-										 <p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
-										  {{/ifCond}}
-										
+										{{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
+										<p class="line-chart-red1 line-chart-footer pd0" style="padding-left: 53px;">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										{{else}}
+										<p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
+										{{/ifCond}}
+
 										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
 										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
-									</div> --}}
-									{{!-- <div>
+									</div> --}} {{!--
+									<div>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 20px; margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 34px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 50px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 60px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</p>
+										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes
+											'$'}}
+										</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
 										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 28px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
 									</div> --}}
-									
-			<div class="container">
-             <div class="row">
-                 <div class="col-sm-3">
-                  <div class="row">
-                  <div class="col-md-6">
-			      <div class="well line-chart-content">Revenue($)</div>
-			      <div class="well line-chart-second" >{{currency revenueCounts.revenue.diff_revenue '$'}}</div>
-			       <div class="well line-chart-third">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
 
-		 </div>
-          <div class="col-md-6">
-			 <div class="well line-chart-content">Revenue(%)</div>
-			 <div class="well" style="font-size: 14px;color:green">{{revenueCounts.revenue_count.diff_count}}</div>
-			 <div class="well line-chart-third">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</div>
-			 </div>
-        </div>
-      </div>
-	  <div class="col-sm-6">
-        <div class="row">
-          <div class="col-md-4">
-			<div class="well line-chart-content" >Completed</div>
-			<div class="well line-chart-second">{{revenueCounts.completed_count.diff_completed}}</div>
-			<div class="well line-chart-third">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</div>
-			</div>
-          <div class="col-md-4">
-			 <div class="well line-chart-content">Returns</div>
-			 <div class="well line-chart-second" >{{revenueCounts.returns_count.diff_returned}}</div>
-			 <div class="well line-chart-third">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</div>
-			 </div>
-          <div class="col-sm-4">
-			  <div class="well line-chart-content">Disputes</div>
-			  <div class="well" style="font-size: 14px;color:red">{{revenueCounts.disputes_count.diff_disputes}}</div>
-			  <div class="well line-chart-third">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes '$'}}</div>
-			</div>
-        </div>
-      </div>
-      <div class="col-sm-3">
-        <div class="row">
-          <div class="col-md-6">
-			  <div class="well line-chart-content">Refunds</div>
-			  <div class="well" style="font-size: 14px;color:red">{{revenueCounts.refunds_count.diff_refunds}}</div>
-			  <div class="well line-chart-third" >{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</div>
-			  </div>
-          <div class="col-md-6">
-			  <div class="well line-chart-content">Cancelation</div>
-			  <div class="well line-chart-second" >{{revenueCounts.cancelled_count.diff_cancelled}}</div>
-			  <div class="well line-chart-third">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</div>
-			  </div>
-        </div>
-      </div>
-    </div> 
-</div>
+									<div class="container">
+										<div class="row">
+											<div class="col-sm-3">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="well line-chart-content">Revenue($)</div>
+														<div class="well line-chart-second">{{currency revenueCounts.revenue.diff_revenue '$'}}</div>
+														<div class="well line-chart-third">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
 
-</div>
+													</div>
+													<div class="col-md-6">
+														<div class="well line-chart-content">Revenue(%)</div>
+														<div class="well" style="font-size: 14px;color:green">{{revenueCounts.revenue_count.diff_count}}</div>
+														<div class="well line-chart-third">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<div class="row">
+													<div class="col-md-4">
+														<div class="well line-chart-content">Completed</div>
+														<div class="well line-chart-second">{{revenueCounts.completed_count.diff_completed}}</div>
+														<div class="well line-chart-third">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</div>
+													</div>
+													<div class="col-md-4">
+														<div class="well line-chart-content">Returns</div>
+														<div class="well line-chart-second">{{revenueCounts.returns_count.diff_returned}}</div>
+														<div class="well line-chart-third">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</div>
+													</div>
+													<div class="col-sm-4">
+														<div class="well line-chart-content">Disputes</div>
+														<div class="well" style="font-size: 14px;color:red">{{revenueCounts.disputes_count.diff_disputes}}</div>
+														<div class="well line-chart-third">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes
+															'$'}}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="well line-chart-content">Refunds</div>
+														<div class="well" style="font-size: 14px;color:red">{{revenueCounts.refunds_count.diff_refunds}}</div>
+														<div class="well line-chart-third">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</div>
+													</div>
+													<div class="col-md-6">
+														<div class="well line-chart-content">Cancelation</div>
+														<div class="well line-chart-second">{{revenueCounts.cancelled_count.diff_cancelled}}</div>
+														<div class="well line-chart-third">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
 
 
 								<div class="col-md-4">
@@ -676,21 +779,24 @@
 															</p>
 														</div>
 													</div>
-												</div> -->											
-											<p class="lt-see-all">
-												<a href="#" style="color: white;">See All &#9658;</a>
-											</p>
+												</div> -->
+												<p class="lt-see-all">
+													<a href="#" style="color: white;">See All &#9658;</a>
+												</p>
+											</div>
 										</div>
 									</div>
 								</div>
+</div>
+
 							</div>
-
-
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-{{> footer/bottom-footer}}
+	</div>
+	
+	
+	{{> footer/bottom-footer}}

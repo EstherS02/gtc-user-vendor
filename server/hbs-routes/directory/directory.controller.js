@@ -118,6 +118,7 @@ export function directory(req, res) {
 				});
 		},
 		servicesProviders: function(callback) {
+			console.log("servicesProviders")
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -132,6 +133,7 @@ export function directory(req, res) {
 				});
 		},
 		subscriptionProviders: function(callback) {
+			console.log("subscriptionProviders")
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
 			order = 'desc';

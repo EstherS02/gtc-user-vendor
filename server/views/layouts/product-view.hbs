@@ -1,3 +1,6 @@
+<style>
+
+</style>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
@@ -12,14 +15,16 @@
 		var desc =  $('#productdescription').val();
 		var text = text +" "+desc;
 		           
-		//console.log("window:::"+windowslocation);	
+		//console.log("window:::"+text);	
 
+		$('#myModal').modal('show');
+		
 		 $("#shareIcons").jsSocials({
-			url: url,
+			url:  window.location.href,
             text: text,
 			showLabel: false,
             showCount: false,
-            shares: ["linkedin","pinterest","twitter"]
+            shares: ["linkedin","pinterest","twitter","googleplus"]
         });
 	
 
@@ -117,6 +122,20 @@
 	};
 </script>
 
+<script src="js/login.js"></script>
+
+<style>
+	.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+</style>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
 
@@ -200,16 +219,123 @@
 			                            			</div>
                             					</div>
                             					<div class="col-md-7 no-padding">
-                            						<div class="add-to-bag text-right">
-                            							<label class="m-r-xs text-light-muted">Quantity: </label>
-                            							<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1" value="1" min="1">
+													{{#if LoggedInUser.email}}
+													<div class="add-to-bag text-right">
+														<label class="m-r-xs text-light-muted">Quantity: </label>
+														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
+														 value="1" min="1">
 														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
-															<svg width="18" height="16" viewBox="0 0 21.4 20.8"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"/><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"/></g></svg>
-															<span class="m-l-xs align-middle">ADD TO BAG</span>
+															<svg width="18" height="16" viewBox="0 0 21.4 20.8">
+																<g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
+																	<path d="M18.2 7.7h-15l-2 12.1h19z" />
+																	<path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1" />
+																</g>
+															</svg>
+															<span class="m-l-xs align-middle">
+																ADD TO BAG
+															</span>
 														</a>
-                            						</div>
-                            						<div id="productCartMessage"></div>
-                            					</div>
+													</div>
+													 {{else}}
+													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+													 data-backdrop="static" data-keyboard="false">
+														<div class="vertical-alignment-helper">
+															<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="row">
+																		<div class="col-md-12">
+																			<div class="row geo_bgimg1" align="center">
+													
+																				<div class="row">
+																					<div class="col-md-12 offset-md-0">
+																						<h1>LIKE WHAT YOU SEE?</h1>
+																						<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
+																						<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create an account with Global Trade
+																							Connect
+																						</p>
+																					</div>
+																				</div>
+																				<div class="row">
+																					<div class="col-md-12 offset-md-0">
+																						<div class="signup-box">
+																							<div class="col-md-6 offset-md-6">
+																								<small id="signUpErrorLog" class="error"></small>
+																							</div>
+																							<div class="row">
+																								<div class="col-md-6">
+																									<div class="signup-left">
+																										<ul>
+																											<li>
+																												<a id="gtc-fb-login">
+																													<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+																												</a>
+																											</li>
+																											<li>
+																												<a id="gtc-google-login">
+																													<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+																												</a>
+																											</li>
+																											<li>
+																												<a id="gtc-twitter-login">
+																													<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+																												</a>
+																											</li>
+																											<li>
+																												<a id="gtc-linkedin-login">
+																													<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+																												</a>
+																											</li>
+																										</ul>
+																									</div>
+																								</div>
+																								<h2 class="divider-line">
+																									<span>OR</span>
+																								</h2>
+																								<div class="col-md-6 signup-right">
+																									<form id="signUpForm" class="form">
+																										<div class="row">
+																											<div class="col">
+																												<div class="form-group m-b-xs">
+																													<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
+																													 placeholder="Email" required="true">
+																												</div>
+																												<div class="form-group m-b-xs">
+																													<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
+																													 placeholder="First Name" required="true">
+																												</div>
+																												<div class="form-group m-b-xs">
+																													<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
+																													 placeholder="Password" required="true">
+																												</div>
+																												<div class="form-group">
+																													<input type="checkbox" id="inputTerms" name="input_terms" required="true">
+																													<small>Accept terms and conditions</small>
+																												</div>
+																												<div class="form-group">
+																													<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
+																														<strong>CREATE ACCOUNT</strong>
+																													</button>
+																												</div>
+																												<div class="form-group">
+																													<p>Already have a Account?</p><a href="login">click to login </a>
+																												</div>
+																											</div>
+																										</div>
+																									</form>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														{{/if}}
+														<div id="productCartMessage"></div>
+													</div>
                             				</div>
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
@@ -242,8 +368,8 @@
                             				</div>
                             				<div class="alignright text-right">
                             					<div id="shareIcons" class="alignleft"></div>
-												<a href="javascript:;">
-													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
+												 <a href="javascript:;" id="shareIcons">
+													{{!-- <img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus"> --}}
 												</a>
                             				</div>
                             				<div style="clear: both;"></div>
