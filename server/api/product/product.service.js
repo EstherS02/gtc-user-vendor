@@ -176,7 +176,7 @@ export function productReviews(queryObj, offset, limit, field, order) {
 	});
 }
 
-export function importAliExpressProducts(product, req) {
+export function importAliExpressProducts(product, user) {
 	var productQueryObj = {};
 	var newProductObj = {};
 	var otherCategoryId = 39;
@@ -184,8 +184,8 @@ export function importAliExpressProducts(product, req) {
 	productQueryObj['sku'] = product.productId;
 	productQueryObj['status'] = status['ACTIVE'];
 
-	if (req.user.role === roles['VENDOR']) {
-		productQueryObj['vendor_id'] = req.user.Vendor.id
+	if (user.role === roles['VENDOR']) {
+		productQueryObj['vendor_id'] = user.Vendor.id
 	}
 
 	return new Promise((resolve, reject) => {
@@ -195,7 +195,7 @@ export function importAliExpressProducts(product, req) {
 					newProductObj['sku'] = product.productId;
 					newProductObj['product_name'] = product.productTitle;
 					newProductObj['product_slug'] = string_to_slug(product.productTitle);
-					newProductObj['vendor_id'] = req.user.Vendor.id;
+					newProductObj['vendor_id'] = user.Vendor.id;
 					newProductObj['status'] = status['ACTIVE'];
 					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
 					newProductObj['publish_date'] = new Date();
@@ -204,9 +204,9 @@ export function importAliExpressProducts(product, req) {
 					newProductObj['sub_category_id'] = otherSubCategoryId;
 					newProductObj['price'] = product.variations[0].pricing;
 					//newProductObj['description'] = product.description;
-					newProductObj['product_location'] = req.user.Vendor.Country.id;
-					newProductObj['city'] = req.user.Vendor.city;
-					newProductObj['city_id'] = req.user.Vendor.city_id;
+					newProductObj['product_location'] = user.Vendor.Country.id;
+					newProductObj['city'] = user.Vendor.city;
+					newProductObj['city_id'] = user.Vendor.city_id;
 					newProductObj['created_on'] = new Date();
 
 					return service.createRow('Product', newProductObj);
@@ -224,7 +224,7 @@ export function importAliExpressProducts(product, req) {
 						productMediaObj['url'] = product.pics[i];
 						productMediaObj['base_image'] = 1;
 						productMediaObj['created_on'] = new Date();
-						productMediaObj['created_by'] = req.user.first_name;
+						productMediaObj['created_by'] = user.first_name;
 					} else {
 						productMediaObj['product_id'] = newProduct.id;
 						productMediaObj['type'] = 1;
@@ -232,7 +232,7 @@ export function importAliExpressProducts(product, req) {
 						productMediaObj['url'] = product.pics[i];
 						productMediaObj['base_image'] = 0;
 						productMediaObj['created_on'] = new Date();
-						productMediaObj['created_by'] = req.user.first_name;
+						productMediaObj['created_by'] = user.first_name;
 					}
 					productMedias.push(service.createRow('ProductMedia', productMediaObj));
 				}

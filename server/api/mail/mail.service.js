@@ -1,6 +1,5 @@
 'use strict';
 
-const agenda = require('../../agenda');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const service = require('../service');
@@ -14,6 +13,7 @@ export function createMail(bodyParams, users) {
 	var mailArray = [];
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
+	var agenda = require('../../app').get('agenda');
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(mailModelName, {
@@ -38,9 +38,9 @@ export function createMail(bodyParams, users) {
 					status: status['ACTIVE'],
 					created_on: new Date()
 				}, {
-						mail_id: mail.id,
-						user_id: mail.from_id
-					});
+					mail_id: mail.id,
+					user_id: mail.from_id
+				});
 			} else {
 				return Promise.reject(true);
 			}
@@ -66,6 +66,7 @@ export function createMail(bodyParams, users) {
 			mailArray.push(mailObject);
 			return Promise.all(usersArray);
 		}).then((result) => {
+			console.log("mailArray", mailArray);
 			agenda.now(config.jobs.email, {
 				mailArray: mailArray
 			});
@@ -134,19 +135,6 @@ export function deleteMail(queryObj) {
 	});
 }
 
-export function deleteManyMail(queryObj) {
-	var userMailModelName = 'UserMail';
-	return new Promise((resolve, reject) => {
-		return service.updateManyRecord(userMailModelName, {
-			mail_status: mailStatus['DELETED']
-		}, queryObj)
-	}).then((result) => {
-		resolve(result);
-	}).catch((error) => {
-		reject(error);
-	});
-}
-
 export function removeMail(queryObj) {
 	var includeArr = [];
 	var userMail = {};
@@ -191,8 +179,6 @@ export function removeManyMail(queryObj) {
 	var userMail = {};
 	var userMailModelName = 'UserMail';
 
-	console.log("queryObj", queryObj);
-
 	return new Promise((resolve, reject) => {
 		return service.destroyManyRecord(userMailModelName, queryObj.ids)
 			.then((destoryResponse) => {
@@ -214,9 +200,5 @@ export function removeManyMail(queryObj) {
 			}).catch((error) => {
 				reject(error);
 			});
-
-
-
 	});
 }
-

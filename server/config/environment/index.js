@@ -56,6 +56,13 @@ var all = {
 		refreshToken: process.env.REFRESH_TOKEN_SECRET
 	},
 
+	ebay: {
+		clientId: process.env.EBAY_CLIENT_ID,
+		clientSecret: process.env.EBAY_CLIENT_SECRET,
+		redirectUri: process.env.EBAY_REDIRECT_URI,
+		authURL: 'https://api.sandbox.ebay.com/identity/v1/oauth2/token'
+	},
+
 	//Email
 	email: {
 		templates: {
@@ -70,7 +77,9 @@ var all = {
 	},
 	jobs: {
 		'email': 'email-notification',
-		"couponExpiry": "couponExpiry"
+		"couponExpiry": "couponExpiry",
+		"vendorPayouts": "vendorPayouts",
+		"aliExpressScrape": "aliexpress-scrape"
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
