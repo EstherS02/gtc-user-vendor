@@ -14,7 +14,7 @@
         var text = $('#productname').val()+" "+$('#productdescription').val();
 		
 		           
-		console.log("window:::"+text);	
+		//console.log("window:::"+text);	
 
 		
 		
@@ -25,8 +25,9 @@
             showCount: false,
             shares: ["linkedin","pinterest","twitter","googleplus"]
         });
-	
-        $('#myModal').modal('show');
+
+		$('#myModal').modal('show');	
+ 
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
 		});
