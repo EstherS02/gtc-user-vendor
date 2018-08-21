@@ -125,7 +125,21 @@
 	});
 
 </script> 
+<style>
+li {
+  list-style-type: none;
+  position: relative;
+  padding-left: 15px;
+}
 
+li:before {
+  content: "\25BA \0020";
+  font-size: 6px;
+  position: absolute;
+  top: 5px;
+  left: -10px;
+}
+</style>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <div class="gtc-container">
@@ -278,7 +292,7 @@
 					<span>ALL TYPES ({{categoriesWithCount.count}})</span>
 				</a>
 			</p>
-			<div class="list-group panel category-fixed">
+			<div class="list-group panel">
 				<ul class="list-group" id="menu">
 					<li class="list-group-item">
 						<a {{#ifCond queryURI.dateSelect "==" 'last7day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last7day'}}class="text-blue"{{/ifCond}} href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
