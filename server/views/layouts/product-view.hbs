@@ -11,16 +11,15 @@
      	 
         
 		var url=  window.location.href;
-        var text = $('#productname').val();
-		var desc =  $('#productdescription').val();
-		var text = text +" "+desc;
+        var text = $('#productname').val()+" "+$('#productdescription').val();
+		
 		           
-		//console.log("window:::"+text);	
+		console.log("window:::"+text);	
 
 		$('#myModal').modal('show');
 		
 		 $("#shareIcons").jsSocials({
-			url:  window.location.href,
+			url: url,
             text: text,
 			showLabel: false,
             showCount: false,
@@ -382,7 +381,9 @@
                             			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
-										<input type="hidden" id="productdescription" value="{{product.description}}">
+										{{!-- {{#limit product.description}} --}}
+										<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
+										{{!-- {{/limit}} --}}
                             			<div class="p-hr"></div>
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
 											<div>
