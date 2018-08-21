@@ -222,7 +222,7 @@
 			                            			</div>
                             					</div>
                             					<div class="col-md-7 no-padding">
-													{{#if LoggedInUser.email}}
+													{{!-- {{#if LoggedInUser.email}} --}}
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
@@ -239,7 +239,7 @@
 															</span>
 														</a>
 													</div>
-													 {{else}}
+													 {{!-- {{else}}
 													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
 													 data-backdrop="static" data-keyboard="false">
 														<div class="vertical-alignment-helper">
@@ -336,7 +336,7 @@
 																</div>
 															</div>
 														</div>
-														{{/if}}
+														{{/if}} --}}
 														<div id="productCartMessage"></div>
 													</div>
                             				</div>
