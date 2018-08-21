@@ -1,59 +1,61 @@
-<style>
-
-</style>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
 	var statusCode = {{{DisplayJSON status}}}
-
-
+	
 	$(document).ready(function() {
      	 
-        
 		var url=  window.location.href;
-        var text = $('#productname').val();
-		var desc =  $('#productdescription').val();
-		var text = text +" "+desc;
-		           
-		//console.log("window:::"+text);	
-
-		$('#myModal').modal('show');
+        var text = $('#productname').val()+" "+$('#productdescription').val();
 		
+		           
+		console.log("window:::"+userInfo.email);	
+
 		 $("#shareIcons").jsSocials({
-			url:  window.location.href,
+			url: url,
             text: text,
 			showLabel: false,
             showCount: false,
             shares: ["linkedin","pinterest","twitter","googleplus"]
         });
-	
-
+ 
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
+		});
+
+		$('#reviewSubmit').click(function () {
+			if (userInfo.email) {
+				$('#reviewModal').modal('show');
+			} else {
+				$('#myModal').modal('show');
+			}
 		});
 
 		$("#gtc-add-to-cart").click(function() {
 			var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
-
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
-				data: cartInfo,
-				success: function(response) {
-					location.reload();
-				},
-				error: function(error) {
-					$('#productCartMessage').empty();
-					if (error.status === 401) {
-						return location.href = "/login";
-					}
-					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function() {
+			if (userInfo.email) {
+				$.ajax({
+					type: "POST",
+					url: "/api/cart/add-cart/" + productSpecs.id,
+					data: cartInfo,
+					success: function (response) {
+						location.reload();
+					},
+					error: function (error) {
 						$('#productCartMessage').empty();
-					}, 10000);
-				}
-			});
+						if (error.status === 401) {
+							//return location.href = "/login";
+						}
+						$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+						var timer = setTimeout(function () {
+							$('#productCartMessage').empty();
+						}, 10000);
+					}
+				});
+			} else {
+				$('#myModal').modal('show');
+			}
 		});
 	});
 
@@ -62,24 +64,27 @@
 
 	function compareProduct(e) {
 		$('#productAlert').empty();
-
-		$.ajax({
-			type: 'POST',
-			url: '/api/product-view/add-to-compare',
-			data: newData,
-			success: function(response) {
-				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
-				var timer = setTimeout(function() {
-					$('#productAlert').empty();
-				}, 10000);
-			},
-			error: function(error) {
-				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-				var timer = setTimeout(function() {
-					$('#productAlert').empty();
-				}, 10000);
-			}
-		});
+		if (userInfo.email) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/product-view/add-to-compare',
+				data: newData,
+				success: function (response) {
+					$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+					var timer = setTimeout(function () {
+						$('#productAlert').empty();
+					}, 10000);
+				},
+				error: function (error) {
+					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function () {
+						$('#productAlert').empty();
+					}, 10000);
+				}
+			});
+		} else {
+			$('#myModal').modal('show');
+		}
 	};
 
 	function wishUpdate() {
@@ -106,18 +111,18 @@
 				type: 'PUT',
 				url: '/api/product-view/addOrRemove',
 				data: newData,
-				success: function(response) {
+				success: function (response) {
 					location.reload();
 				},
-				error: function(error) {
+				error: function (error) {
 					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function() {
+					var timer = setTimeout(function () {
 						$('#productAlert').empty();
 					}, 10000);
 				}
 			});
 		} else {
-			location.href = "/login"
+			$('#myModal').modal('show');
 		}
 	};
 </script>
@@ -126,15 +131,15 @@
 
 <style>
 	.modal {
-  text-align: center;
-  padding: 0!important;
-}
+		text-align: center;
+		padding: 0 !important;
+	}
 
-.modal-dialog {
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
-}
+	.modal-dialog {
+		display: inline-block;
+		text-align: left;
+		vertical-align: middle;
+	}
 </style>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -175,55 +180,55 @@
                             		</div>
                             		<div class="col-md-8">
                             			<div class="product-desc">
-                            				<div class="row no-margins">
-                            					<div class="col-md-5 no-padding">
-                            						<div class="product-attr">
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Origin</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.Country.name}}</span>
-			                            					</div>
-			                            				</div>
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Category</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.Category.name}} > {{product.SubCategory.name}}</span>
-			                            					</div>
-			                            				</div>
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>SKU</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.sku}}</span>
-			                            					</div>
-			                            				</div>
-			                            				{{#ifCond product.marketplace_id '==' 1}}
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>MOQ</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.moq}}</span>
-			                            					</div>
-			                            				</div>
-			                            				{{/ifCond}}
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Availability</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span><strong>{{product.quantity_available}}</strong> in stock</span>
-			                            					</div>
-			                            				</div>
-			                            			</div>
-                            					</div>
-                            					<div class="col-md-7 no-padding">
-													{{#if LoggedInUser.email}}
+											<div class="row no-margins">
+												<div class="col-md-5 no-padding">
+													<div class="product-attr">
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Origin</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.Country.name}}</span>
+															</div>
+														</div>
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Category</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.Category.name}} > {{product.SubCategory.name}}</span>
+															</div>
+														</div>
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>SKU</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.sku}}</span>
+															</div>
+														</div>
+														{{#ifCond product.marketplace_id '==' 1}}
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>MOQ</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.moq}}</span>
+															</div>
+														</div>
+														{{/ifCond}}
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Availability</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>
+																	<strong>{{product.quantity_available}}</strong> in stock</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-7 no-padding">
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
@@ -240,16 +245,24 @@
 															</span>
 														</a>
 													</div>
-													 {{else}}
-													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-													 data-backdrop="static" data-keyboard="false">
+													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 														<div class="vertical-alignment-helper">
 															<div class="modal-dialog">
+																
+																{{!-- <div class="modal-header">
+																	<button type="button" class="close" data-dismiss="modal">
+																		<span aria-hidden="true">&times;</span>
+																		<span class="sr-only">Close</span>
+																	</button>
+																</div> --}}
+
+
+
 																<div class="modal-content">
 																	<div class="row">
 																		<div class="col-md-12">
 																			<div class="row geo_bgimg1" align="center">
-													
+											
 																				<div class="row">
 																					<div class="col-md-12 offset-md-0">
 																						<h1>LIKE WHAT YOU SEE?</h1>
@@ -321,7 +334,8 @@
 																													</button>
 																												</div>
 																												<div class="form-group">
-																													<p>Already have a Account?</p><a href="login">click to login </a>
+																													<p>Already have a Account?</p>
+																													<a href="login">Login </a>
 																												</div>
 																											</div>
 																										</div>
@@ -337,10 +351,9 @@
 																</div>
 															</div>
 														</div>
-														{{/if}}
-														<div id="productCartMessage"></div>
 													</div>
-                            				</div>
+													<div id="productCartMessage"></div>
+												</div>
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
@@ -382,7 +395,9 @@
                             			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
-										<input type="hidden" id="productdescription" value="{{product.description}}">
+										{{!-- {{#limit product.description}} --}}
+										<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
+										{{!-- {{/limit}} --}}
                             			<div class="p-hr"></div>
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
 											<div>
@@ -406,7 +421,7 @@
 															</div>
 														</div>
 														{{/each}}
-														<button type="button" data-toggle="modal" data-target="#reviewModal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
+														<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
 													</div>
 													<div class="col-md-7 reviews-content">
 														<div class="feed-activity-list">
@@ -475,9 +490,9 @@
                             </div>
                         </div>
 					</div>
-					<div class="col-md-3 no-padding">
-						{{> vendor/vendor-category }}
-					</div>
+				</div>
+				<div class="col-md-3 no-padding">
+					{{> vendor/vendor-category }}
 				</div>
 			</div>
 		</div>
@@ -526,39 +541,40 @@
 		</div>
 		<script type="text/javascript">
 			var productSpecs = {{{DisplayJSON product}}}
+			var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
 			$('#btnFaSpinner').hide();
 			$('#review-stars').val(1);
 
-			$("#reviewForm").submit(function(e) {
-				e.preventDefault();
+			$("#reviewForm").submit(function (e) {
+					e.preventDefault();
 
-				var reviewObj = {};
-				$(':input[type="submit"]').prop('disabled', true);
+					var reviewObj = {};
+					$(':input[type="submit"]').prop('disabled', true);
 
-				if ($('#reviewForm').valid()) {
-					reviewObj['rating'] = parseInt($('#review-stars').val());
-					reviewObj['product_id'] = productSpecs.id;
-					reviewObj['user_id'] = parseInt(userInfo.id);
-					reviewObj['status'] = 1;
-					if (!reviewObj['rating']) {
-						reviewObj['rating'] = 1;
+					if ($('#reviewForm').valid()) {
+						reviewObj['rating'] = parseInt($('#review-stars').val());
+						reviewObj['product_id'] = productSpecs.id;
+						reviewObj['user_id'] = parseInt(userInfo.id);
+						reviewObj['status'] = 1;
+						if (!reviewObj['rating']) {
+							reviewObj['rating'] = 1;
+						}
+						reviewObj['title'] = $('#inputTitle').val();
+						if ($('#inputComment').val()) {
+							reviewObj['comment'] = $('#inputComment').val();
+						}
+						$('#btnFaSpinner').show()
 					}
-					reviewObj['title'] = $('#inputTitle').val();
-					if ($('#inputComment').val()) {
-						reviewObj['comment'] = $('#inputComment').val();
-					}
-					$('#btnFaSpinner').show()
-				}
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function(result) {
-						location.reload();
-					}
+					$.ajax({
+						type: "POST",
+						url: "/api/reviews",
+						data: reviewObj,
+						success: function (result) {
+							location.reload();
+						}
+					});
 				});
-			});
 
 			$("#reviewForm").validate({
 				rules: {
