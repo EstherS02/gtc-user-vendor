@@ -342,7 +342,8 @@ a:hover {
 	background: none;
 }
 ul.breadcrumb li {
-	font-size: 1em;
+	font-size: 13px;
+	font-weight: 300;
 }
 ul.breadcrumb li .active {
 	text-decoration: underline !important;
@@ -691,6 +692,7 @@ ul.footer-social-links li a img {
 	background: #0f478c;
 	text-align: center;
 	padding: 10px;
+	left: -25px !important;
 }
 .cart-list a {
 	font-size: 10px;
