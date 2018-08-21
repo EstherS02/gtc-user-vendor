@@ -259,7 +259,6 @@ ul.top-menu-list li a .badge {
 }
 a {
 	color: #769dc8;
-	text-decoration: none;
 }
 a:hover {
 	color: #769dc8;
@@ -1426,7 +1425,6 @@ ul.inner-list-view li a {
 	background: #f1f1f1;
 	color: #babbbd;
 	margin-top: 5px;
-	padding-bottom: 15px;
 }
 .body-content-1 .header-left {
 	background: #2560ab;
@@ -1457,6 +1455,73 @@ ul.inner-list-view li a {
 }
 .body-content-1 .cprlist .btn {
 	font-weight: 600;
+}
+.mini-header {
+	padding: 5px 25px 0px 25px;
+    font-size: 0.813em;
+    font-weight: 500;
+}
+.m-cart-body {
+	padding: 5px 45px;
+}
+.m-cart-title {
+	font-size: 1em;
+    margin-bottom: 5px;
+}
+.m-qty {
+	font-weight: 500;
+    color: #808080;
+    font-size: 0.75em;
+}
+.m-input-xxs {
+	text-align: center;
+    width: 50px;
+    border: 0;
+    line-height: 2;
+    background: #f1f1f1;
+}
+.price-tag {
+	color: #808080;
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.6;
+}
+.cart-summary {
+	padding: 45px;
+}
+.cart-summary h2 {
+	font-family: 'Oswald', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+.cart-summary label {
+	font-size: 0.75em;
+}
+.cart-summary .total-content {
+    display: block;
+    padding: 5px 0;
+}
+.cart-summary .promo-text-control {
+	display: block;
+    width: 100%;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+	padding: .15rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.total-text, .total-value {
+    font-size: 0.813em;
+    padding: 5px 0;
+    display: block;
+    color: #808080;
+}
+.cart-hr-line {
+    border-top: 1px solid #c3c3c3;
+    height: 1px;
 }
 .add-bag-btn {
 	display: inline-block;
