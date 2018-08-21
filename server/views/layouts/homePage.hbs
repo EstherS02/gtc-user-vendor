@@ -3,6 +3,22 @@
     authorize: false;
 </script>
 
+<script>
+    var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
+    $(document).ready(function () {
+        console.log("window:::" + userInfo.email);
+
+        $("a[title='seller']").click(function () {
+            console.log("clicked");
+            if (userInfo.email) {
+            }else{
+                $('#myModal').modal('show');
+            }
+        });
+    });
+</script>
+
 <script src="js/login.js"></script>
 
 
@@ -225,7 +241,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" href="/vendor/{{this.vendor_id}}" data-id="{{this.vendor_id}}" title="{{this.vendor_name}}" >{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -293,7 +309,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -361,7 +377,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -429,7 +445,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -502,7 +518,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -570,7 +586,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -638,7 +654,7 @@
                                                     {{#if ../LoggedInUser.email}}
                                                         <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
                                                     {{else}}
-                                                        <a class="text-500" href="/login">(Login for Seller Info)</a>
+                                                        <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
                                                 </div>
@@ -907,6 +923,103 @@
         <a href="" class="button-cta">Get started!</a>
     </div>
 </section>
+{{!-- data-backdrop="static" data-keyboard="false" --}}
+<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row geo_bgimg1" align="center">
 
+                            <div class="row">
+                                <div class="col-md-12 offset-md-0">
+                                    <h1>LIKE WHAT YOU SEE?</h1>
+                                    <p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
+                                    <p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create
+                                        an account with Global Trade Connect
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 offset-md-0">
+                                    <div class="signup-box">
+                                        <div class="col-md-6 offset-md-6">
+                                            <small id="signUpErrorLog" class="error"></small>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="signup-left">
+                                                    <ul>
+                                                        <li>
+                                                            <a id="gtc-fb-login">
+                                                                <img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a id="gtc-google-login">
+                                                                <img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a id="gtc-twitter-login">
+                                                                <img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a id="gtc-linkedin-login">
+                                                                <img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <h2 class="divider-line">
+                                                <span>OR</span>
+                                            </h2>
+                                            <div class="col-md-6 signup-right">
+                                                <form id="signUpForm" class="form">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group m-b-xs">
+                                                                <input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                    placeholder="Email" required="true">
+                                                            </div>
+                                                            <div class="form-group m-b-xs">
+                                                                <input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                    placeholder="First Name" required="true">
+                                                            </div>
+                                                            <div class="form-group m-b-xs">
+                                                                <input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                    placeholder="Password" required="true">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input type="checkbox" id="inputTerms" name="input_terms" required="true">
+                                                                <small>Accept terms and conditions</small>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
+                                                                    <strong>CREATE ACCOUNT</strong>
+                                                                </button>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <p>Already have a Account?</p>
+                                                                <a href="login">click to login </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{> footer/bottom-footer}}
