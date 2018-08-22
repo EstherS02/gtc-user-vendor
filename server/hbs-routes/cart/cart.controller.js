@@ -128,7 +128,6 @@ export function cart(req, res) {
             }
     }, function(err, results) {
         if (!err) {
-            console.log("totalItems&&&&&&&&&&&&",results)
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
