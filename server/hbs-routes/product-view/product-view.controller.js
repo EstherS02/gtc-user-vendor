@@ -12,6 +12,7 @@ const status = require('../../config/status');
 const verificationStatus = require('../../config/verification_status');
 const position = require('../../config/position');
 const service = require('../../api/service');
+const categoryService = require('../../api/category/category.service');
 const sequelize = require('sequelize');
 const marketplace = require('../../config/marketplace');
 const Plan = require('../../config/gtc-plan');
@@ -187,31 +188,21 @@ export function product(req, res) {
 				});
 		},
 		categoriesWithCount: function(callback) {
-			var result = {};
-			var categoryQueryObj = {};
-			var productCountQueryParames = {};
+			var queryObj = {};
+			var productQueryObj = {};
 
-			categoryQueryObj['status'] = status["ACTIVE"];
-			productCountQueryParames['status'] = status["ACTIVE"];
+			queryObj['status'] = status['ACTIVE'];
+			productQueryObj['status'] = status['ACTIVE'];
+
 			if (vendorID) {
-				productCountQueryParames['vendor_id'] = vendorID;
+				productQueryObj['vendor_id'] = vendorID;
 			}
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-			service.getCategory(categoryQueryObj, productCountQueryParames)
-				.then(function(response) {
+
+			categoryService.categoriesWithProductCount(queryObj, productQueryObj)
+				.then((response) => {
 					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+				}).catch((error) => {
+					console.log("categoriesWithProductCount Error:::", error);
 					return callback(null);
 				});
 		},

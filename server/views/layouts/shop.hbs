@@ -79,7 +79,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
                                 <span>Inventory</span>
                               </div>
                               <div class="col-md-7 col-7 no-padding">
-                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                {{!-- <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span> --}} -
                               </div>
                               <div class="col-md-5 col-5 no-padding">
                                 <span>Seller Rating</span>
@@ -167,7 +167,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 <div class="header-lg bg-shop">
   <div class="gtc-container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 no-padding">
         <h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL</a></h2>
       </div>
     </div>
@@ -177,14 +177,24 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 <div class="marketplace-type-bg" style="background-color:#fff"></div>
 <div class="gtc-container">
-  <div class="marketplace-type-headers" >
+  <div class="marketplace-type-headers">
     <div class="row">
-      <div class="col-md-12 no-padding">
-        <div class="">
-          <h4 class="header-md-text">
-            Showing most recent 20 product of 60,000 products listed <a href="" style="color: #000;"><i class="fas fa-star" style="color: #C80527;"></i> POST AN AD IN THIS CATEGORY <i class="fa fa-caret-right"></i></a>
-          </h4>
-        </div>
+      <div class="col-md-12">
+          <div class="top-mini-headers m-t-xs">
+            <div class="alignleft">
+              <label>Showing the most recent 20 products of 60,000 products listed.</label>
+            </div>
+            <div class="alignright">
+              <div class="xs-svg-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                  <circle fill="#E44766" cx="12" cy="12" r="12"></circle>
+                  <path fill="#FFF" d="M12 0l2.7 8.3h8.7l-7 5.1 2.7 8.3-7.1-5.1-7.1 5.1 2.7-8.3-7-5.1h8.7z"></path>
+                </svg>
+                <a href="#">POST AN AD IN THIS CATEGORY</a>
+              </div>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
       </div>
       {{#each publicMarketplace}}
       <div class="col-md-3 no-padding">
