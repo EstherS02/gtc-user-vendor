@@ -88,6 +88,12 @@
 	background: #638ac5;
 	color: #fff;
 }
+.bg-white {
+	background: #FFFFFF;
+}
+.text-wholesale {
+	color: #d78636;
+}
 .bg-wholesale, .bg1 {
 	background: #d78636;
 	color: #fff;
@@ -191,8 +197,8 @@
 	border-color: #dae0e5;
 }
 .btn-primary {
-	background-color: #f9a025;
-	border-color: #f9a025;
+	background-color: #d78504;
+	border-color: #d78504;
 	color: #FFFFFF;
 }
 .btn-primary.focus, .btn-primary:focus {
@@ -217,9 +223,15 @@
 	font-weight: 400;
 }
 .btn-sm {
-	font-size: 0.75em;
+	font-size: 0.813em;
 	border-radius: 0;
-	font-weight: 400;
+	line-height: 1;
+	font-weight: 500;
+}
+input[id=inputQty]::-webkit-outer-spin-button, 
+input[id=inputQty]::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button !important;
+    opacity: 1;
 }
 .btn:focus {
 	box-shadow: none;
@@ -231,10 +243,18 @@
 	border-top: 0;
 }
 .table thead th {
-	border-bottom: 1px solid #dee2e6;
+	border-bottom: 0;
+}
+.cart-inner-table > thead > tr > th{
+	padding: 8px 0 !important;
+}
+.cart-inner-table > tbody > tr > td {
+	padding: 8px 0 !important;	
 }
 .table > thead > tr > th {
 	line-height: 1.42857;
+	border-bottom: 1px solid #e7eaec;
+	border-top: 0;
 	padding: 8px;
 	font-size: 13px;
 	vertical-align: top;
@@ -243,6 +263,7 @@
 }
 .table > tbody > tr > td {
 	border-bottom: 1px solid #e7eaec;
+	border-top: 0;
 	line-height: 1.42857;
 	padding: 8px;
 	font-size: 13px;
@@ -285,6 +306,9 @@
 	padding-right: 25px !important;
 }
 /* MARGINS & PADDINGS */
+.p-b {
+	padding-bottom: 15px;	
+}
 .p-xxs {
 	padding: 5px;
 }
@@ -566,12 +590,30 @@
 	background: #14497f !important;
 	border-color: #14497f !important;
 }
+.btn-md {
+	font-size: 0.813em;
+    font-weight: 500;
+    padding: .375rem 1.5rem;
+    border: 0;
+    border-radius: 0;
+}
+.btn-md:focus {
+	box-shadow: none !important;
+}
 .header-lg {
 	position: relative;
 }
 .header-lg-text {
 	margin-top: 24px;
 	font-family: 'Oswald', sans-serif;
+}
+.header-lg-span {
+	margin-top: 24px;
+    line-height: 2.9;
+    margin-left: 5px;
+    float: left;
+    font-weight: 300;
+    font-size: 16px;
 }
 .header-lg-text .see-all {
 	font-size: 13px;

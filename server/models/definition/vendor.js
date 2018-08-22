@@ -149,6 +149,11 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
+        vendor_payout_stripe_id: {
+            type: DataTypes.STRING,
+            field: 'vendor_payout_stripe_id',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
