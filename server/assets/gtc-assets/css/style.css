@@ -1421,6 +1421,21 @@ ul.inner-list-view li a {
 .title-header-1 .breadcrumb {
 	line-height: 2;
 }
+.top-mini-headers label {
+	font-weight: 300;
+    font-size: 0.813em;
+    line-height: 1.6;
+    text-shadow: none;
+}
+.top-mini-headers svg {
+	line-height: 1.6;
+    vertical-align: middle;
+}
+.top-mini-headers a {
+	font-size: 0.813em;
+    line-height: 1.6;
+    font-weight: 500;
+}
 .body-content-1 {
 	background: #f1f1f1;
 	color: #babbbd;
