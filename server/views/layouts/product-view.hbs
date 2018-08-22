@@ -1,155 +1,139 @@
 <script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var productSpecs = {{{DisplayJSON product}}}
-	var statusCode = {{{DisplayJSON status}}}
+var userInfo = {{{ DisplayJSON LoggedInUser }}}
+var productSpecs = {{{DisplayJSON product}}}
+var statusCode = {{{DisplayJSON status}}}
 	
-	$(document).ready(function() {
-     	 
-        $('[data-toggle="popover"]').popover({
-        html:true,
-        content:function(){
-        return ($("#shareRemainingIcons").html());
-	    
-        },
-		
-		
-		
-    });  
-		var url=  window.location.href;
-        var text = $('#productname').val(); 
-		var desc = $('#productdescription').val();
-		var finaltext =text +" "+ desc;
-		 $("#shareRemainingIcons").jsSocials({
-			url: url,
-            text: finaltext,
-			showLabel: false,
-            showCount: false,
-            shares: ["googleplus","facebook","email","whatsapp"],
-			
-        });
-		           
-		//console.log("window:::"+text);	
-         
-		
-		//console.log("window:::"+userInfo.email);	
+$(document).ready(function() {
 
-		 $("#shareIcons").jsSocials({
-			url: url,
-            text: finaltext,
-			showLabel: false,
-            showCount: false,
-            shares: ["linkedin","pinterest","twitter"],
-        });
-		$('#review-stars').barrating({
-			theme: 'fontawesome-stars'
-		});
-
-		$('#reviewSubmit').click(function () {
-			if (userInfo.email) {
-				$('#reviewModal').modal('show');
-			} else {
-				$('#myModal').modal('show');
-			}
-		});
-
-		$("#gtc-add-to-cart").click(function() {
-			var cartInfo = {};
-			cartInfo.product_quantity = $('#quantityInput').val();
-			if (userInfo.email) {
-				$.ajax({
-					type: "POST",
-					url: "/api/cart/add-cart/" + productSpecs.id,
-					data: cartInfo,
-					success: function (response) {
-						location.reload();
-					},
-					error: function (error) {
-						$('#productCartMessage').empty();
-						if (error.status === 401) {
-							//return location.href = "/login";
-						}
-						$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
-						var timer = setTimeout(function () {
-							$('#productCartMessage').empty();
-						}, 10000);
-					}
-				});
-			} else {
-				$('#myModal').modal('show');
-			}
-		});
+	$('[data-toggle="popover"]').popover({
+		html: true,
+		content: function() {
+			return ($("#shareRemainingIcons").html());
+		}
 	});
 
-	var newData = {};
-	newData.product_id = productSpecs.id;
+	var url = window.location.href;
+	var text = $('#productname').val();
+	var desc = $('#productdescription').val();
+	var finaltext = text + " " + desc;
+	$("#shareRemainingIcons").jsSocials({
+		url: url,
+		text: finaltext,
+		showLabel: false,
+		showCount: false,
+		shares: ["googleplus", "facebook", "email", "whatsapp"]
+	});
 
-	function compareProduct(e) {
-		$('#productAlert').empty();
+	$("#shareIcons").jsSocials({
+		url: url,
+		text: finaltext,
+		showLabel: false,
+		showCount: false,
+		shares: ["linkedin", "pinterest", "twitter"],
+	});
+	$('#review-stars').barrating({
+		theme: 'fontawesome-stars'
+	});
+
+	$('#reviewSubmit').click(function() {
 		if (userInfo.email) {
-			$.ajax({
-				type: 'POST',
-				url: '/api/product-view/add-to-compare',
-				data: newData,
-				success: function (response) {
-					$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
-					}, 10000);
-				},
-				error: function (error) {
-					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
-					}, 10000);
-				}
-			});
+			$('#reviewModal').modal('show');
 		} else {
 			$('#myModal').modal('show');
 		}
-	};
+	});
 
-	function wishUpdate() {
+	$("#gtc-add-to-cart").click(function() {
+		var cartInfo = {};
+		cartInfo.product_quantity = $('#quantityInput').val();
 		if (userInfo.email) {
-			var newObj = {};
-			newObj.product_id = productSpecs.id;
-			newObj.user_id = userInfo.id;
-			// if ($('input[name=wishID]').val()) {
-			// 	newObj.status = 0;
-			// } else {
-			// 	newObj.status = statusCode.ACTIVE;
-			// }
-			// console.log(newObj);
-			var queryObj = {};
-			queryObj.product_id = productSpecs.id;
-			queryObj.user_id = userInfo.id;
-			var data = JSON.stringify({
-				queryObj: queryObj,
-				newObj: newObj
-			});
-			var newData = {};
-			newData.data = data;
 			$.ajax({
-				type: 'PUT',
-				url: '/api/product-view/addOrRemove',
-				data: newData,
-				success: function (response) {
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
 					location.reload();
 				},
-				error: function (error) {
-					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
+				error: function(error) {
+					$('#productCartMessage').empty();
+					if (error.status === 401) {
+						//return location.href = "/login";
+					}
+					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productCartMessage').empty();
 					}, 10000);
 				}
 			});
 		} else {
 			$('#myModal').modal('show');
 		}
-	};
+	});
+});
+
+var newData = {};
+newData.product_id = productSpecs.id;
+
+function compareProduct(e) {
+	$('#productAlert').empty();
+	if (userInfo.email) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product-view/add-to-compare',
+			data: newData,
+			success: function(response) {
+				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			}
+		});
+	} else {
+		$('#myModal').modal('show');
+	}
+};
+
+function wishUpdate() {
+	if (userInfo.email) {
+		var newObj = {};
+		newObj.product_id = productSpecs.id;
+		newObj.user_id = userInfo.id;
+
+		var queryObj = {};
+		queryObj.product_id = productSpecs.id;
+		queryObj.user_id = userInfo.id;
+		var data = JSON.stringify({
+			queryObj: queryObj,
+			newObj: newObj
+		});
+		var newData = {};
+		newData.data = data;
+		$.ajax({
+			type: 'PUT',
+			url: '/api/product-view/addOrRemove',
+			data: newData,
+			success: function(response) {
+				location.reload();
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			}
+		});
+	} else {
+		$('#myModal').modal('show');
+	}
+};
 </script>
-
 <script src="js/login.js"></script>
-
 <style>
 	.modal {
 		text-align: center;
@@ -247,6 +231,7 @@
 																	<strong>{{product.quantity_available}}</strong> in stock</span>
 															</div>
 														</div>
+														<button class="btn btn-sm btn-primary" id="click">Click</button>
 													</div>
 												</div>
 												<div class="col-md-7 no-padding">
