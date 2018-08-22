@@ -97,7 +97,7 @@ $(function() {
             <div class="alignleft">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#" class="active">My Account</a>
+                        <a href="javascript:;" class="active">My Account</a>
                     </li>
                     <li>Compare</li>
                 </ul> 
@@ -294,7 +294,7 @@ $(function() {
                             	{{#if compareProducts.[1]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[1].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[1].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}
@@ -307,7 +307,7 @@ $(function() {
                             	{{#if compareProducts.[2]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[2].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[2].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}

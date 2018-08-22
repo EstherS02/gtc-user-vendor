@@ -1575,11 +1575,11 @@ ul.inner-list-view li a {
 	font-weight: 400;
 	color: #000;
 }
-#blog_img {
+#blog_img, .comment-image {
 	position: relative;
 	display: inline-block;
 }
-#blog_img .close {
+#blog_img .close, .comment-image .close{
 	position: absolute;
 	top: 2px;
 	right: 2px;
@@ -1595,7 +1595,7 @@ ul.inner-list-view li a {
 	line-height: 10px;
 	border-radius: 50%;
 }
-#blog_img:hover .close {
+#blog_img:hover .close, .comment-image:hover .close{
     opacity: 1;
 }
 .col-sm-2half, .col-sm-10half {
