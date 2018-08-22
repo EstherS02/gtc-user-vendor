@@ -5,18 +5,40 @@
 	
 	$(document).ready(function() {
      	 
-		var url=  window.location.href;
-        var text = $('#productname').val()+" "+$('#productdescription').val();
+        $('[data-toggle="popover"]').popover({
+        html:true,
+        content:function(){
+        return ($("#shareRemainingIcons").html());
+	    
+        },
 		
+		
+		
+    });  
+		var url=  window.location.href;
+        var text = $('#productname').val(); 
+		var desc = $('#productdescription').val();
+		var finaltext =text +" "+ desc;
+		 $("#shareRemainingIcons").jsSocials({
+			url: url,
+            text: finaltext,
+			showLabel: false,
+            showCount: false,
+            shares: ["googleplus","facebook","email","whatsapp"],
+			
+        });
 		           
-		console.log("window:::"+userInfo.email);	
+		//console.log("window:::"+text);	
+         
+		
+		//console.log("window:::"+userInfo.email);	
 
 		 $("#shareIcons").jsSocials({
 			url: url,
-            text: text,
+            text: finaltext,
 			showLabel: false,
             showCount: false,
-            shares: ["linkedin","pinterest","twitter","googleplus"]
+            shares: ["linkedin","pinterest","twitter"],
         });
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
@@ -396,10 +418,11 @@
                             					</ul>
                             				</div>
                             				<div class="alignright text-right">
-                            					<div id="shareIcons" class="alignleft"></div>
-												 <a href="javascript:;" id="shareIcons">
-													{{!-- <img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus"> --}}
+                            					<a id="shareIcons" class="alignleft"></a>
+												 <a href="javascript:;" data-toggle="popover" data-placement="top"  id="sharesremaining" >
+													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
 												</a>
+												<div id="shareRemainingIcons" style="display:none" class="alignleft"></div>
                             				</div>
                             				<div style="clear: both;"></div>
                             			</div>
