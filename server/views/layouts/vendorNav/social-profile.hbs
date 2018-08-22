@@ -5,17 +5,21 @@
             '<i class="fas fa-check-circle"></i>' + '</div>'
         var domElement2 = '<div class="col-md-4 text_red_color social_check">' +
             '<i class="fas fa-exclamation-circle"></i>' + '</div>'
+            var domElement3 = '<div class="col-md-4 text_red_color social_check">' +
+            '<i class=""></i>' + '</div>'
 
         $('#facebook_url').change(function (e) {
             var value = $('#facebook_url').val();
             $("#facebook_append2").hide();
             if((value=='') || (value!="null"))
             {
-              if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value) || value == '')
+              if (/^(https?:\/\/)?((w{3}\.)?)facebook.com\/.*/i.test(value))
             {
                 $("#facebook_append").html(domElement1);
             }
-            else
+            else if(value == ''){
+              $("#facebook_append").html(domElement3);  
+            }else
             {
                $("#facebook_append").html(domElement2);
             }
@@ -30,6 +34,9 @@
             if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value) || value == '')
             {
                   $("#twitter_append").html(domElement1);
+            }
+            else if(value == ''){
+              $("#twitter_append").html(domElement3);  
             }      
             else
             {
@@ -46,6 +53,9 @@
             if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value)|| value == '')
             {
                 $("#google_append").html(domElement1);
+            }
+            else if(value == ''){
+              $("#google_append").html(domElement3);  
             }    
             else
             {
@@ -62,6 +72,9 @@
             if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value) ||  value == '')
             {
                 $("#linkedin_append").html(domElement1);
+            }
+            else if(value == ''){
+              $("#linkedin_append").html(domElement3);  
             }   
             else
             {
@@ -78,7 +91,10 @@
             if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value) || value == '')
             {
                $("#youtube_append").html(domElement1);
-            }   
+            } 
+            else if(value == ''){
+              $("#youtube_append").html(domElement3);  
+            }  
             else
             {
                 $("#youtube_append").html(domElement2);
@@ -94,6 +110,9 @@
             if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value)  || value == '')
             {
                 $("#instagram_append").html(domElement1);
+            }
+            else if(value == ''){
+              $("#instagram_append").html(domElement3);  
             }    
             else
             {                   
@@ -110,6 +129,9 @@
             if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value) || value == '')
             {
                 $("#flickr_append").html(domElement1);
+            }
+            else if(value == ''){
+              $("#flickr_append").html(domElement3);  
             }    
             else
             {
@@ -277,11 +299,12 @@
                                         </div>
                                     </div>
                                     <div id="facebook_append2">
-                                    {{#ifCond vendorInfo.facebook_url '!=' 'null'}}
+                                    {{#if vendorInfo.facebook_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                <div class="col-md-4 text_red_color social_check"><i class=""></i></div> 
+                                {{!-- fas fa-exclamation-circle --}}
+                                    {{/if}}
                                     </div>
                                     <div id="facebook_append"> </div>
                                 </div>

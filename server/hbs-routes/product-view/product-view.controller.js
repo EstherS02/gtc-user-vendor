@@ -265,6 +265,7 @@ export function product(req, res) {
 			selectedPage = null;
 		}
 		if (!error) {
+			console.log(JSON.parse(JSON.stringify(results.productDetail)))
 			res.render('product-view', {
 				title: "Global Trade Connect",
 				categories: results.categories,
