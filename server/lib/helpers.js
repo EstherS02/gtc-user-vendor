@@ -515,3 +515,4 @@ Handlebars.registerHelper('socialIcon', function(obj, options) {
         return options.inverse(this);
     return options.fn(this); 
 });
+
