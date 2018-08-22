@@ -23,7 +23,6 @@ export function product(req, res) {
 	var productModel = 'MarketplaceProduct';
 	var wishlistModel = 'WishList';
 	var vendorID, productID, categoryID, marketplaceID;
-
 	if (req.params.product_id) {
 		productID = req.params.product_id;
 	}

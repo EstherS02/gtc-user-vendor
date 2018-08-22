@@ -156,16 +156,24 @@
               <form role="form" id="verificationForm">
                 <h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
                 <p class="verification-incomplete">
-                  {{#if verification.vendor_verified_status}} {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
-                  <span class="id-verified">
-                    <i class="fas fa-check-circle"></i>
-                  </span><b>Your Document verification request is approved</b> {{else}}
+                  {{#if verification.vendor_verified_status}} 
+                      {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
+                        <span class="id-verified">
+                          <i class="fas fa-check-circle"></i>
+                        </span><b>Your Document verification request is approved</b> 
+                      {{else ifCond verificationStatus.WAITING "==" verification.vendor_verified_status}}
+                        <span class="exclamation">
+                          <i class="fas fa-exclamation-circle"></i>
+                        </span>Your Document verification request is awaiting
+                        {{else}}
+                        <span class="exclamation">
+                          <i class="fas fa-exclamation-circle"></i>
+                        </span>You still have incomplete items to address below 
+                      {{/ifCond}}
+                     {{else}}
                   <span class="exclamation">
                     <i class="fas fa-exclamation-circle"></i>
-                  </span>You still have incomplete items to address below {{/ifCond}} {{else}}
-                  <span class="exclamation">
-                    <i class="fas fa-exclamation-circle"></i>
-                  </span>You still have incomplete items to address below {{/if}}
+                  </span>You haven't submitted documents yet{{/if}}
                 </p>
                 <div class="alert" id="gtc-cart-alert">
                   <button type="button" class="close" data-dismiss="alert">
@@ -199,7 +207,7 @@
                     <span class="id-verified">
                       <i class="fas fa-exclamation-circle"></i>
                     </span>
-                    {{verification.personal_id_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_verification_file_status }}
+                    {{verification.personal_id_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.personal_id_verification_file_status }}
                     {{else}}
                     <span class="exclamation">
                       <i class="fas fa-exclamation-circle"></i>
@@ -382,7 +390,7 @@
                     <span class="id-verified">
                       <i class="fas fa-exclamation-circle"></i>
                     </span>
-                    {{verification. personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_address_verification_file_status}}
+                    {{verification.personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_address_verification_file_status}}
                     {{else}}
                     <span class="exclamation">
                       <i class="fas fa-exclamation-circle"></i>
