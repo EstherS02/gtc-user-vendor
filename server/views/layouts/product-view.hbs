@@ -9,6 +9,14 @@
 			theme: 'fontawesome-stars'
 		});
 
+		$(function(){
+			var userIds = {};
+			userIds.login_user_id = emitSocket.userInfo.id;
+			userIds.opp_user_id = {{{DisplayJSON this.VendorDetail.user_id}}}
+			console.log("emitSocket.userInfo.id", emitSocket.userInfo);
+			console.log("Talk Conversation***********", {{{DisplayJSON this.talkThreads}}});
+		})
+
 		$("#gtc-add-to-cart").click(function() {
 			var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
@@ -139,7 +147,7 @@
                             						<div class="product-attr">
 			                            				<div class="d-flex">
 			                            					<div class="col-4 no-padding">
-			                            						<span>Origin</span>
+			                            						<span>Origin {{this.VendorDetail.user_id}}</span>
 			                            					</div>
 			                            					<div class="col-8 no-padding">
 			                            						<span>{{product.Country.name}}</span>
@@ -431,4 +439,5 @@
 		</script>
 	</div>
 </div>
+{{>dummy-chat-ui }}
 {{> footer/bottom-footer}}

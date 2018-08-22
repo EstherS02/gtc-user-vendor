@@ -4,7 +4,15 @@
 </script>
 
 <script src="js/login.js"></script>
+<script type="text/javascript">
+  $(function(){
 
+   // var io = emitSocket.socket();
+
+    //io.emit('connection');
+    console.log("socket io working", emitSocket);
+});
+</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
 <!-- <section class="box1" style="margin-bottom:0">
@@ -906,6 +914,6 @@
         <a href="" class="button-cta">Get started!</a>
     </div>
 </section>
-{{>dummy-chat-ui}}
+
 
 {{> footer/bottom-footer}}

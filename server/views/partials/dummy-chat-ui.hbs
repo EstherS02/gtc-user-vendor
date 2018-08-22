@@ -7,7 +7,8 @@
             <div class="row">
               <div class="col-md-8 col-xs-8">
                 <h3 class="panel-title" style="font-size: 12px;">
-                  <span class="fas fa-comments glyphicon glyphicon-comment"></span> Chat Window</h3>
+                  <span class="fas fa-comments glyphicon glyphicon-comment"></span> Chat Window
+                </h3>
               </div>
               <div class="col-md-4 col-xs-4" style="text-align: right; float: right;">
                 <a href="#">
@@ -20,18 +21,33 @@
             </div>
           </div>
           <div id="messagebody" class="panel-body msg_container_base">
-            <div class="row msg_container base_sent">
-              <div class="col-md-10 col-xs-10">
-                <div class="messages msg_sent">
-                  <p>Hi</p>
-                  <time datetime="2009-11-13T20:00">Admininstrator • Yesterday 10:05:22</time>
+            {{#each talkThreads.talk}}
+
+                {{#ifCond this.from_id "==" ../LoggedInUser.id}}
+                <div class="row msg_container base_sent">
+                  <div class="col-md-10 col-xs-10">
+                    <div class="messages msg_sent">
+                      <p>{{this.message}}</p>
+                      <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class="chatimg img-responsive ">
-              </div>
-            </div>
-            <div class="row msg_container base_receive">
+                {{else ifCond this.from_id "!=" ../LoggedInUser.id}}
+                  <div class="row msg_container base_receive">
+                   
+                    <div class="col-md-10 col-xs-10">
+                      <div class="messages msg_receive">
+                        <p>{{this.message}}</p>
+                        <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
+                      </div>
+                    </div>
+                  </div>
+
+                {{/ifCond}}
+            {{/each}}
+
+
+           {{!--  <div class="row msg_container base_receive">
               <div class="col-md-2 col-xs-2 avatar">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
               </div>
@@ -42,6 +58,8 @@
                 </div>
               </div>
             </div>
+
+
             <div class="row msg_container base_receive">
               <div class="col-md-2 col-xs-2 avatar">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
@@ -53,6 +71,7 @@
                 </div>
               </div>
             </div>
+
             <div class="row msg_container base_sent">
               <div class="col-xs-10 col-md-10">
                 <div class="messages msg_sent">
@@ -64,6 +83,7 @@
                 <img src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class="chatimg img-responsive ">
               </div>
             </div>
+
             <div class="row msg_container base_receive">
               <div class="col-md-2 col-xs-2 avatar">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
@@ -75,6 +95,7 @@
                 </div>
               </div>
             </div>
+
             <div class="row msg_container base_sent">
               <div class="col-md-10 col-xs-10 ">
                 <div class="messages msg_sent">
@@ -85,13 +106,13 @@
               <div class="col-md-2 col-xs-2 avatar">
                 <img src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class="chatimg img-responsive ">
               </div>
-            </div>
+            </div> --}}
 
 
-          </div>
+         
 
         </div>
-        <div class="panel-footer">
+        <div class="panel-footer panel-body">
           <div class="input-group">
             <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." required="required"
             />
@@ -104,7 +125,7 @@
     </div>
 
 
-    <div class="btn-group dropup">
+   {{!--  <div class="btn-group dropup">
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
         <span class="glyphicon glyphicon-cog"></span>
         <span class="sr-only">Toggle Dropdown</span>
@@ -130,13 +151,56 @@
       </ul>
     </div>
   </div>
-
+ --}}
 
 
 </section>
 
 
 <script>
+  $(function(){
+    if({{{ DisplayJSON LoggedInUser.id }}} != null){
+      var socketChat = {
+        "id": {{{ DisplayJSON talkThreads.threadId }}},
+        "user": {{{ DisplayJSON LoggedInUser.id }}}
+      }
+      console.log("socketChat", socketChat);
+      var socket = io();
+      console.log("socket", socket);
+      socket.emit('chat:join', socketChat);
+    }
+    
+    socket.on('chat:receive', function(data){
+     var dt = new Date();
+     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+      console.log("data", data);
+      var base;
+      console.log("socketChat.user", socketChat.user);
+      if(data.from_id == socketChat.user) {
+            base = "base_sent"
+            console.log("base sent", base);
+      } else {
+            base = "base_receive"
+            console.log("base receive", base);
+      } 
+      var body = '<div class="row msg_container '+base+'">' +
+        '<div class="col-md-10 col-xs-10 ">' +
+        '<div class="messages msg_sent">' +
+        '<p>' + data.message + '</p>' +
+        ' <time datetime="2009-11-13T20:00">Administrator • Today ' + time + '</time>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+      $(body).appendTo("#messagebody");
+      //$('#btn-input').val('');
+      $("#messagebody").animate({
+        scrollTop: $("#messagebody")[0].scrollHeight
+      }, 'slow');
+    }) 
+    
+    
+  })
+  
   $(document).on('click', '.panel-heading span.icon_minim', function (e) {
     var $this = $(this);
     if (!$this.hasClass('panel-collapsed')) {
@@ -173,13 +237,22 @@
 
   function send() {
     var chat = $("#btn-input").val();
+
     var dt = new Date();
     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
 
     if (chat == "") {
       alert('Enter Message');
     } else {
-      var body = '<div class="row msg_container base_sent">' +
+      var socket = io();
+      var sendSocket = {
+        'from_id': {{{ DisplayJSON LoggedInUser.id }}},
+        'talk_thread_id': {{{ DisplayJSON talkThreads.threadId }}},
+        'message': chat
+      }
+      socket.emit('chat:send', sendSocket);
+       $('#btn-input').val('');
+      /*var body = '<div class="row msg_container base_sent">' +
         '<div class="col-md-10 col-xs-10 ">' +
         '<div class="messages msg_sent">' +
         '<p>' + chat + '</p>' +
@@ -195,8 +268,8 @@
     $('#btn-input').val('');
     $("#messagebody").animate({
       scrollTop: $("#messagebody")[0].scrollHeight
-    }, 'slow');
-  }
+    }, 'slow');*/
+  }}
 
 
   // send function end

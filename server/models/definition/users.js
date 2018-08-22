@@ -203,7 +203,7 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-    
+
     User.hasMany(DiscussionBoardPostComment, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -418,14 +418,14 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });*/
 
-    User.belongsToMany(User, {
-        as: 'fromUser',
-        through: Talk,
-        foreignKey: 'from_id',
-        otherKey: 'to_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // User.belongsToMany(User, {
+    //     as: 'fromUser',
+    //     through: Talk,
+    //     foreignKey: 'from_id',
+    //     // otherKey: 'to_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 
   /*  User.belongsToMany(TalkSetting, {
         through: Talk,

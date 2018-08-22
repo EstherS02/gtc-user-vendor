@@ -15,7 +15,7 @@ import config from './config/environment';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
-
+var socketMsg = require('./sockets/socket-messages').socketMsg;
 var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var sendEmailNew = require('./agenda/send-email-new');
@@ -49,7 +49,7 @@ if (env === 'development') {
 	};
 }
 
-mailListener.start();
+/*mailListener.start();
 
 mailListener.on("server:connected", function() {
 	console.log("imapConnected");
@@ -72,7 +72,7 @@ mailListener.on("mail", function(mail, seqno, attributes) {
 mailListener.on("attachment", function(attachment) {
 	console.log("attachment.path", attachment.path);
 });
-
+*/
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
 

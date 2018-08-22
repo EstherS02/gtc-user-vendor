@@ -549,6 +549,7 @@ export function forgotPassword(req, res) {
 }
 
 export function userOnline(user){
+    console.log("User Online Method coming", user);
     var queryObj = {
         availability_status: 1
     }
@@ -557,7 +558,9 @@ export function userOnline(user){
     }, [])
         .then(function (row) {
             if (row) {
-            var rowJSON = JSON.parse(row);
+                //console.log("ROW*********", row);
+                var rowJSON = row.toJSON();
+            console.log("Row JSON", rowJSON);
             service.updateRow('User', queryObj, rowJSON.id)
                 .then(function(update) {
                     console.log("User Online updated");
@@ -582,7 +585,7 @@ export function userOffline(user){
     }, [])
         .then(function (row) {
             if (row) {
-            var rowJSON = JSON.parse(row);
+            var rowJSON = row.toJSON();
             service.updateRow('User', queryObj, rowJSON.id)
                 .then(function(update) {
                     console.log("User Offline updated");

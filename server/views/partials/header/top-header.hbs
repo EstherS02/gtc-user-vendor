@@ -230,6 +230,8 @@
 	});
 
 	function gtcLogout() {
+		//console.log("emitSocket", emitSocket.userInfo);
+		emitSocket.userLeave(emitSocket.userInfo);
 		$.ajax({
 			type: "POST",
 			url: "/api/auth/logout",
