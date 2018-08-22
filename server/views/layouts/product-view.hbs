@@ -1,12 +1,8 @@
-<style>
-
-</style>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
 	var statusCode = {{{DisplayJSON status}}}
-
-
+	
 	$(document).ready(function() {
      	 
         $('[data-toggle="popover"]').popover({
@@ -15,6 +11,7 @@
         return ($("#shareRemainingIcons").html());
 	    
         },
+		
 		
 		
     });  
@@ -34,6 +31,8 @@
 		//console.log("window:::"+text);	
          
 		
+		//console.log("window:::"+userInfo.email);	
+
 		 $("#shareIcons").jsSocials({
 			url: url,
             text: finaltext,
@@ -41,35 +40,43 @@
             showCount: false,
             shares: ["linkedin","pinterest","twitter"],
         });
-
-		$('#myModal').modal('show');	
- 
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
+		});
+
+		$('#reviewSubmit').click(function () {
+			if (userInfo.email) {
+				$('#reviewModal').modal('show');
+			} else {
+				$('#myModal').modal('show');
+			}
 		});
 
 		$("#gtc-add-to-cart").click(function() {
 			var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
-
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
-				data: cartInfo,
-				success: function(response) {
-					location.reload();
-				},
-				error: function(error) {
-					$('#productCartMessage').empty();
-					if (error.status === 401) {
-						return location.href = "/login";
-					}
-					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function() {
+			if (userInfo.email) {
+				$.ajax({
+					type: "POST",
+					url: "/api/cart/add-cart/" + productSpecs.id,
+					data: cartInfo,
+					success: function (response) {
+						location.reload();
+					},
+					error: function (error) {
 						$('#productCartMessage').empty();
-					}, 10000);
-				}
-			});
+						if (error.status === 401) {
+							//return location.href = "/login";
+						}
+						$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+						var timer = setTimeout(function () {
+							$('#productCartMessage').empty();
+						}, 10000);
+					}
+				});
+			} else {
+				$('#myModal').modal('show');
+			}
 		});
 	});
 
@@ -78,24 +85,27 @@
 
 	function compareProduct(e) {
 		$('#productAlert').empty();
-
-		$.ajax({
-			type: 'POST',
-			url: '/api/product-view/add-to-compare',
-			data: newData,
-			success: function(response) {
-				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
-				var timer = setTimeout(function() {
-					$('#productAlert').empty();
-				}, 10000);
-			},
-			error: function(error) {
-				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-				var timer = setTimeout(function() {
-					$('#productAlert').empty();
-				}, 10000);
-			}
-		});
+		if (userInfo.email) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/product-view/add-to-compare',
+				data: newData,
+				success: function (response) {
+					$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+					var timer = setTimeout(function () {
+						$('#productAlert').empty();
+					}, 10000);
+				},
+				error: function (error) {
+					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function () {
+						$('#productAlert').empty();
+					}, 10000);
+				}
+			});
+		} else {
+			$('#myModal').modal('show');
+		}
 	};
 
 	function wishUpdate() {
@@ -122,18 +132,18 @@
 				type: 'PUT',
 				url: '/api/product-view/addOrRemove',
 				data: newData,
-				success: function(response) {
+				success: function (response) {
 					location.reload();
 				},
-				error: function(error) {
+				error: function (error) {
 					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function() {
+					var timer = setTimeout(function () {
 						$('#productAlert').empty();
 					}, 10000);
 				}
 			});
 		} else {
-			location.href = "/login"
+			$('#myModal').modal('show');
 		}
 	};
 </script>
@@ -142,15 +152,15 @@
 
 <style>
 	.modal {
-  text-align: center;
-  padding: 0!important;
-}
+		text-align: center;
+		padding: 0 !important;
+	}
 
-.modal-dialog {
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
-}
+	.modal-dialog {
+		display: inline-block;
+		text-align: left;
+		vertical-align: middle;
+	}
 </style>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -191,59 +201,81 @@
                             		</div>
                             		<div class="col-md-8">
                             			<div class="product-desc">
-                            				<div class="row no-margins">
-                            					<div class="col-md-5 no-padding">
-                            						<div class="product-attr">
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Origin</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.Country.name}}</span>
-			                            					</div>
-			                            				</div>
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Category</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.Category.name}} > {{product.SubCategory.name}}</span>
-			                            					</div>
-			                            				</div>
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>SKU</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.sku}}</span>
-			                            					</div>
-			                            				</div>
-			                            				{{#ifCond product.marketplace_id '==' 1}}
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>MOQ</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span>{{product.moq}}</span>
-			                            					</div>
-			                            				</div>
-			                            				{{/ifCond}}
-			                            				<div class="d-flex">
-			                            					<div class="col-4 no-padding">
-			                            						<span>Availability</span>
-			                            					</div>
-			                            					<div class="col-8 no-padding">
-			                            						<span><strong>{{product.quantity_available}}</strong> in stock</span>
-			                            					</div>
-			                            				</div>
-			                            			</div>
-                            					</div>
-                            					<div class="col-md-7 no-padding">
-													{{!-- {{#if LoggedInUser.email}} --}}
+											<div class="row no-margins">
+												<div class="col-md-5 no-padding">
+													<div class="product-attr">
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Origin</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.Country.name}}</span>
+															</div>
+														</div>
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Category</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.Category.name}} > {{product.SubCategory.name}}</span>
+															</div>
+														</div>
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>SKU</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.sku}}</span>
+															</div>
+														</div>
+														{{#ifCond product.marketplace_id '==' 1}}
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>MOQ</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>{{product.moq}}</span>
+															</div>
+														</div>
+														{{/ifCond}}
+														<div class="d-flex">
+															<div class="col-4 no-padding">
+																<span>Availability</span>
+															</div>
+															<div class="col-8 no-padding">
+																<span>
+																	<strong>{{product.quantity_available}}</strong> in stock</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-7 no-padding">
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
 														 value="1" min="1">
+														 {{#ifCond selectedPage '==' 'wholesale'}}
+														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
+														  <a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Buyer
+
+															</span>
+														</a>
+														{{else ifCond product.MarketplaceType.code '==' "WTT"}}
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Trader
+															</span>
+														</a>
+														{{else ifCond product.MarketplaceType.code '==' "REQ"}}
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Seller
+															</span>
+														</a>
+														{{/ifCond}}
+														 {{else}}
 														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<svg width="18" height="16" viewBox="0 0 21.4 20.8">
 																<g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
@@ -255,108 +287,107 @@
 																ADD TO BAG
 															</span>
 														</a>
+														{{/ifCond}}
 													</div>
-													 {{!-- {{else}}
-													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-													 data-backdrop="static" data-keyboard="false">
-														<div class="vertical-alignment-helper">
-															<div class="modal-dialog">
-																<div class="modal-content">
-																	<div class="row">
-																		<div class="col-md-12">
-																			<div class="row geo_bgimg1" align="center">
-													
-																				<div class="row">
-																					<div class="col-md-12 offset-md-0">
-																						<h1>LIKE WHAT YOU SEE?</h1>
-																						<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
-																						<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create an account with Global Trade
-																							Connect
-																						</p>
-																					</div>
-																				</div>
-																				<div class="row">
-																					<div class="col-md-12 offset-md-0">
-																						<div class="signup-box">
-																							<div class="col-md-6 offset-md-6">
-																								<small id="signUpErrorLog" class="error"></small>
-																							</div>
-																							<div class="row">
-																								<div class="col-md-6">
-																									<div class="signup-left">
-																										<ul>
-																											<li>
-																												<a id="gtc-fb-login">
-																													<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
-																												</a>
-																											</li>
-																											<li>
-																												<a id="gtc-google-login">
-																													<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
-																												</a>
-																											</li>
-																											<li>
-																												<a id="gtc-twitter-login">
-																													<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
-																												</a>
-																											</li>
-																											<li>
-																												<a id="gtc-linkedin-login">
-																													<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
-																												</a>
-																											</li>
-																										</ul>
-																									</div>
-																								</div>
-																								<h2 class="divider-line">
-																									<span>OR</span>
-																								</h2>
-																								<div class="col-md-6 signup-right">
-																									<form id="signUpForm" class="form">
-																										<div class="row">
-																											<div class="col">
-																												<div class="form-group m-b-xs">
-																													<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="Email" required="true">
-																												</div>
-																												<div class="form-group m-b-xs">
-																													<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="First Name" required="true">
-																												</div>
-																												<div class="form-group m-b-xs">
-																													<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="Password" required="true">
-																												</div>
-																												<div class="form-group">
-																													<input type="checkbox" id="inputTerms" name="input_terms" required="true">
-																													<small>Accept terms and conditions</small>
-																												</div>
-																												<div class="form-group">
-																													<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
-																														<strong>CREATE ACCOUNT</strong>
-																													</button>
-																												</div>
-																												<div class="form-group">
-																													<p>Already have a Account?</p><a href="login">click to login </a>
-																												</div>
-																											</div>
-																										</div>
-																									</form>
-																								</div>
-																							</div>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
+<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="vertical-alignment-helper">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row geo_bgimg1" align="center">
+
+							<div class="row">
+								<div class="col-md-12 offset-md-0">
+									<h1>LIKE WHAT YOU SEE?</h1>
+									<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
+									<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create an account with Global Trade
+										Connect
+									</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 offset-md-0">
+									<div class="signup-box">
+										<div class="col-md-6 offset-md-6">
+											<small id="signUpErrorLog" class="error"></small>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="signup-left">
+													<ul>
+														<li>
+															<a id="gtc-fb-login">
+																<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+															</a>
+														</li>
+														<li>
+															<a id="gtc-google-login">
+																<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+															</a>
+														</li>
+														<li>
+															<a id="gtc-twitter-login">
+																<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+															</a>
+														</li>
+														<li>
+															<a id="gtc-linkedin-login">
+																<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+															</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+											<h2 class="divider-line">
+												<span>OR</span>
+											</h2>
+											<div class="col-md-6 signup-right">
+												<form id="signUpForm" class="form">
+													<div class="row">
+														<div class="col">
+															<div class="form-group m-b-xs">
+																<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
+																placeholder="Email" required="true">
+															</div>
+															<div class="form-group m-b-xs">
+																<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
+																placeholder="First Name" required="true">
+															</div>
+															<div class="form-group m-b-xs">
+																<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
+																placeholder="Password" required="true">
+															</div>
+															<div class="form-group">
+																<input type="checkbox" id="inputTerms" name="input_terms" required="true">
+																<small>Accept terms and conditions</small>
+															</div>
+															<div class="form-group">
+																<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
+																	<strong>CREATE ACCOUNT</strong>
+																</button>
+															</div>
+															<div class="form-group">
+																<p>Already have a Account?</p>
+																<a href="login">Login </a>
 															</div>
 														</div>
-														{{/if}} --}}
-														<div id="productCartMessage"></div>
 													</div>
-                            				</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+													<div id="productCartMessage"></div>
+												</div>
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
@@ -396,6 +427,7 @@
                             				<div style="clear: both;"></div>
                             			</div>
                             			<div id="productAlert"></div>
+                            			{{#if product.description}}
                             			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
@@ -403,6 +435,7 @@
 										<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
 										{{!-- {{/limit}} --}}
                             			<div class="p-hr"></div>
+                            			{{/if}}
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
 											<div>
 												<i class="fa fa-star fa-circle-bg"></i>
@@ -425,7 +458,7 @@
 															</div>
 														</div>
 														{{/each}}
-														<button type="button" data-toggle="modal" data-target="#reviewModal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
+														<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
 													</div>
 													<div class="col-md-7 reviews-content">
 														<div class="feed-activity-list">
@@ -473,7 +506,7 @@
 												<div class="ask-vendor-form">
 													<form class="form" id="AskVendorForm">
 														<div class="row">
-															<div class="col-md-10">
+															<div class="col-md-9">
 																<div class="form-group">
 																	<input type="text" class="form-control form-control-sm" placeholder="Subject">
 																</div>
@@ -481,7 +514,7 @@
 																	<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
 																</div>
 															</div>
-															<div class="col-md-2">
+															<div class="col-md-3">
 																<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
 															</div>
 														</div>
@@ -494,9 +527,9 @@
                             </div>
                         </div>
 					</div>
-					<div class="col-md-3 no-padding">
-						{{> vendor/vendor-category }}
-					</div>
+				</div>
+				<div class="col-md-3 no-padding">
+					{{> vendor/vendor-category }}
 				</div>
 			</div>
 		</div>
@@ -545,39 +578,40 @@
 		</div>
 		<script type="text/javascript">
 			var productSpecs = {{{DisplayJSON product}}}
+			var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
 			$('#btnFaSpinner').hide();
 			$('#review-stars').val(1);
 
-			$("#reviewForm").submit(function(e) {
-				e.preventDefault();
+			$("#reviewForm").submit(function (e) {
+					e.preventDefault();
 
-				var reviewObj = {};
-				$(':input[type="submit"]').prop('disabled', true);
+					var reviewObj = {};
+					$(':input[type="submit"]').prop('disabled', true);
 
-				if ($('#reviewForm').valid()) {
-					reviewObj['rating'] = parseInt($('#review-stars').val());
-					reviewObj['product_id'] = productSpecs.id;
-					reviewObj['user_id'] = parseInt(userInfo.id);
-					reviewObj['status'] = 1;
-					if (!reviewObj['rating']) {
-						reviewObj['rating'] = 1;
+					if ($('#reviewForm').valid()) {
+						reviewObj['rating'] = parseInt($('#review-stars').val());
+						reviewObj['product_id'] = productSpecs.id;
+						reviewObj['user_id'] = parseInt(userInfo.id);
+						reviewObj['status'] = 1;
+						if (!reviewObj['rating']) {
+							reviewObj['rating'] = 1;
+						}
+						reviewObj['title'] = $('#inputTitle').val();
+						if ($('#inputComment').val()) {
+							reviewObj['comment'] = $('#inputComment').val();
+						}
+						$('#btnFaSpinner').show()
 					}
-					reviewObj['title'] = $('#inputTitle').val();
-					if ($('#inputComment').val()) {
-						reviewObj['comment'] = $('#inputComment').val();
-					}
-					$('#btnFaSpinner').show()
-				}
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function(result) {
-						location.reload();
-					}
+					$.ajax({
+						type: "POST",
+						url: "/api/reviews",
+						data: reviewObj,
+						success: function (result) {
+							location.reload();
+						}
+					});
 				});
-			});
 
 			$("#reviewForm").validate({
 				rules: {

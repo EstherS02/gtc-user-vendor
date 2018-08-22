@@ -1,42 +1,42 @@
 <script type="text/javascript">
-    var userInfo = {{{ DisplayJSON LoggedInUser }}}
+var userInfo = {{{ DisplayJSON LoggedInUser }}}
 $("#gtc-cart-alert").hide();
 
 function gtcAddToCart(e) {
     if (userInfo.email) {
         $('#gtc-add-to-cart').prop('disabled', true);
         var cartInfo = {};
-        cartInfo.product_quantity = $('#product-quantity-'+e).val();
-        if($('#product-quantity-'+e).val()){
-        $.ajax({
-            type: "POST",
-            url: "/api/cart/add-cart/" + e,
-            data: cartInfo,
-            success: function(res) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (res && res.message === "SUCCESS") {
-                    outputPop(res.message_details);
-                    console.log(res)
-                    $('#product-quantity-'+e).notify(res.message_details, "success");
-                    // location.reload(true);
+        cartInfo.product_quantity = $('#product-quantity-' + e).val();
+        if ($('#product-quantity-' + e).val()) {
+            $.ajax({
+                type: "POST",
+                url: "/api/cart/add-cart/" + cartInfo.product_quantity,
+                data: cartInfo,
+                success: function (res) {
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    if (res && res.message === "SUCCESS") {
+                        outputPop(res.message_details);
+                        console.log(res)
+                        $('#product-quantity-' + e).notify(res.message_details, "success");
+                        location.reload(true);
+                    }
+                },
+                error: function (error) {
+                    $('#gtc-add-to-cart').prop('disabled', false);
+                    if (error) {
+                        if (error.status === 401)
+                            return location.href = "/login";
+                        $('#product-quantity-' + e).notify(error.responseJSON.message_details, "error");
+                        // outputErrorPop(error);
+                        // location.reload(true);
+                    }
                 }
-            },
-            error: function(error) {
-                $('#gtc-add-to-cart').prop('disabled', false);
-                if (error) {
-                    if (error.status === 401)
-                        return location.href = "/login";
-                    $('#product-quantity-'+e).notify(error.responseJSON.message_details, "error");
-                    // outputErrorPop(error);
-                    // location.reload(true);
-                }
-            }
-        });
-    }else{
-    $('#product-quantity-'+e).notify("Please enter the value", "error");
-    }
+            });
+        } else {
+            $('#product-quantity-' + e).notify("Please enter the value", "error");
+        }
     } else {
-        location.href = "/login"
+        $('#myModal').modal('show');
     }
 }
 
@@ -86,10 +86,6 @@ $(function() {
 	$("#gtc-cart-alert").hide();
 });
 
-$(document).ready(function() {
-    $('#myModal').modal('show');
-});
-
 </script>
 
 <script src="js/login.js"></script>
@@ -101,21 +97,21 @@ $(document).ready(function() {
             <div class="alignleft">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#" class="active">My Account</a>
+                        <a href="javascript:;" class="active">My Account</a>
                     </li>
                     <li>Compare</li>
                 </ul> 
             </div>
             <div class="alignright">
                 {{#if LoggedInUser.id}}
-                <a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+                <span class="text-sm">You're logged in as </span><a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
                 {{else}}
                 <span class="text-sm"><a href="/login">Login</a> to see seller information</span>
                 {{/if}}
             </div>
             <div style="clear: both;"></div>
         </div>
-        <div class="body-content-1">
+        <div class="body-content-1 p-b">
             <div class="row no-margins">
                 <div class="col-sm-2half no-padding header-left">
                 </div>
@@ -298,7 +294,7 @@ $(document).ready(function() {
                             	{{#if compareProducts.[1]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[1].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[1].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}
@@ -311,7 +307,7 @@ $(document).ready(function() {
                             	{{#if compareProducts.[2]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[2].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[2].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}
@@ -400,59 +396,51 @@ $(document).ready(function() {
                         <span class="cpltext">Add to Bag</span>
                     </div>
                 </div>
-                {{!-- {{#if LoggedInUser.email}} --}}
                 <div class="col-sm-10half align-self-center no-padding">
                     <div class="row no-margins">
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[0]}}
-                                {{#if compareProducts.[0].quantity_available}}
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
-                                    <input id="product-quantity-{{compareProducts.[0].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="" min="1">
+                                    <input id="product-quantity-{{compareProducts.[0].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" value="1" placeholder="1" value="" min="1">
                                     <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[0].id}})" class="btn btn-sm add-bag-btn">
                                         <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
                                     </a>
                                 </div>
-                                {{/if}}
                                 {{/if}}
                             </div>
                         </div>
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[1]}}
-                                {{#if compareProducts.[1].quantity_available}}
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
-                                    <input id="product-quantity-{{compareProducts.[1].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="" min="1">
+                                    <input id="product-quantity-{{compareProducts.[1].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" value="1" placeholder="1" value="" min="1">
                                     <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[1].id}})" class="btn btn-sm add-bag-btn">
                                         <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
                                     </a>
                                 </div>
-                                {{/if}}
                                 {{/if}}
                             </div>
                         </div>
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[2]}}
-                                {{#if compareProducts.[2 ].quantity_available}}
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
-                                    <input id="product-quantity-{{compareProducts.[2].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" placeholder="1" value="" min="1">
+                                    <input id="product-quantity-{{compareProducts.[2].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" value="1" placeholder="1" value="" min="1">
                                     <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[2].id}})" class="btn btn-sm add-bag-btn">
                                         <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg><span>ADD TO BAG</span>
                                     </a>
                                 </div>
                                 {{/if}}
-                                {{/if}}
                             </div>
                         </div>
                     </div>
                 </div>
-                {{!-- {{else}}
-                <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-                    data-backdrop="static" data-keyboard="false">
+
+                <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="vertical-alignment-helper">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -550,7 +538,7 @@ $(document).ready(function() {
                         </div>
                     </div>
                 </div>
-                {{/if}} --}}
+
                 <div class="col-sm-2half no-padding">
                     <div class="cpllist">
                         <span class="cpltext">Remove</span>
