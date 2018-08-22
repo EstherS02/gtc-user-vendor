@@ -1287,6 +1287,24 @@ ul.inner-list-view li a {
 	font-size: 14px;
 	font-weight: 500;
 }
+.product-sm-title {
+	font-size: 0.875em;
+    font-weight: 300;
+}
+.review-product {
+	padding: 0 10px;
+}
+.review-product span {
+	font-size: 0.813em;
+	font-weight: 300;
+}
+.review-product .dist-rating {
+	font-size: 0.813em;
+    font-weight: 500;
+}
+.review-product .dist-rating span {
+	margin-left: 5px;
+}
 .product-attr {
 	font-size: 0.688em;
 	line-height: 1.6;
@@ -1387,11 +1405,6 @@ ul.inner-list-view li a {
 	font-weight: 400;
 	font-size: 0.75em;
 	float: right;
-}
-.review-title {
-	font-size: 1.2em;
-	color: #3e7bba;
-	text-shadow: none;
 }
 .product-alert-msg {
 	font-size: 0.75em;

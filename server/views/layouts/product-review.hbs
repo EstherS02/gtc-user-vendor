@@ -1,269 +1,87 @@
-<script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	$(function(){
-		$('#review-stars').barrating({
-			theme: 'fontawesome-stars'
-		});
-	});
-	$("#reviewForm").validate({
-
-		rules: {
-			reviewDetailComment: "required",
-			reviewTitle: "required"
-		},
-		messages: {
-			reviewDetailComment: "Please Enter your review Comment",
-			reviewTitle: "Please enter your Review title"
-		}
-
-	});
-
-
-	function reviewSubmit(id) {
-		let reviewObj = {};
-
-		if (userInfo.email) {
-			if ($("#reviewForm").valid()) {
-				reviewObj['rating'] = $('#review-stars').val();
-				reviewObj['title'] = $('#review-title').val();
-				reviewObj['comment'] = $('#review-detail-comment').val();
-				reviewObj['product_id'] = parseInt(id);
-				reviewObj['user_id'] = parseInt(userInfo.id);
-				reviewObj['status'] = 1;
-
-				console.log(reviewObj);
-
-				$.ajax({
-					type: "POST",
-					url: "/api/reviews",
-					data: reviewObj,
-					success: function (result) {
-						if (result)
-							location.reload();
-					}
-				});
-			}
-		} else {
-			location.href = "/login"
-		}
-	}
-</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<section>
-	{{> vendor/vendor-header VendorDetail = VendorDetail}}
-	
-	<div class="logged_in_cont" >
-		<div class="container">
-			<div class="row">
-				<div class="col-md-2"  >
-					{{> vendor/vendor-left VendorDetail = VendorDetail}}
+{{> vendor/vendor-header VendorDetail = VendorDetail}}
+<div class="bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-md-2 col-12 m-t-sm col-sm-12">
+				{{> vendor/vendor-left VendorDetail = VendorDetail}}
+			</div>
+			<div class="col-md-10 col-12 m-t-sm col-sm-12">
+				<div class="header-lg bg2">
+					<h2 class="header-lg-text">Product Review</h2>
 				</div>
-				<div class="col-md-10">
-					<div class="row pmp1 pmp1_alter">
-						<div class="col-md-12">
-							<h5>PRODUCT REVIEW</h5>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-9" style="background-color: #fff;padding-top: 15px;">
-							<div class="row">
-								<div class="col-md-4">
-									<div class="row">
-										<div class="col-md-5 col-5 product_iphone_img">
-											<img style="width:100%;" src="{{product.ProductMedia.[0].url}}">
+				<div class="row no-margins">
+					<div class="col-md-9 no-padding">
+						<div class="ibox">
+                            <div class="ibox-content">
+                            	<div class="row">
+                            		<div class="col-md-5">
+                            			<div class="d-flex">
+                            				<div class="col-4 no-padding">
+                            					<img src="{{product.media.url}}" class="img-fluid">
+                            				</div>
+                            				<div class="col-8 no-padding">
+                            					<div class="review-product">
+                            						<h3 class="product-sm-title">{{product.product_name}}</h3>
+                            						<span class="text-blue d-block">Product Rating</span>
+                            						{{starCount product.rating.product_rating}} <b class="m-l-xs text-primary">{{product.rating.product_rating}}</b>
+                            						<span class="d-block m-b-xs">Based on {{product.rating.product_rating_count}} Reviews</span>
+                            						{{#each productRatings}}
+                            						<div class="dist-rating d-block">
+                            							{{starCount this.rating}}
+                            							<span class="text-blue">({{this.userCount}} Ratings)</span>
+                            						</div>
+													{{/each}}
+                            					</div>
+                            				</div>
+                            			</div>
+                            		</div>
+                            		<div class="col-md-7">
+                            			<div class="top-mini-headers m-b-sm">
+											<div class="alignleft">
+												<label>Showing 1-10 of 23 Reviews</label>
+											</div>
+											<div class="alignright">
+												<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary btn-block rounded btn-sm">Submit Your Own Review</button>
+											</div>
+											<div style="clear: both;"></div>
 										</div>
-										<div class="col-md-7 col-7 product_iphone common_padding1">
-											<p class="product_iphone_header">
-												{{product.product_name}}
-											</p>
-											<p class="product_rating">Product Rating</p>
-											<p class="product_rating_star">{{starCount AvgRating}}
-												<span class="product_rating_num"> {{AvgRating}}</span>
-											</p>
-											<p class="product_rating_header" >Based on {{ratingCount}} Reviews 
-											</p>
-											<div class="row">											
-												{{#each Rating}} 
-												<div class="col-md-7 col-7">
-													<p class="product_rating_star1">{{starCount this.starCount}}</p>
-												</div>
-												<div class="col-md-5 col-5 common_padding1">
-													<p class="product_rating_1">({{this.ratingCount}} Rating)</p>
-												</div>
-												{{/each}}
-											</div>           
-										</div>             	
-									</div>
-								</div>
-								<div class="col-md-8">
-									<div class="row">
-										<div class="col-md-8 product_center">
-											<p>Showing {{SUMFloat queryPaginationObj.offset 1}}-{{ SUMFloat queryPaginationObj.offset this.pageCount}} of {{ratingCount}} Reviews
-											</p>
-										</div>
-										<div class="col-md-4 product_buttion_bg ">
-											<button class="product_buttion">Submit Your Own Review</button>
-										</div>	
-									</div>
-									<div class="col-md-12 product_hr" >
-										<hr>
-									</div>
-									<div class="row">
-										<div class="col-md-1">
-											<i class="fas fa-question-circle review_help_icon"></i>
-										</div>
-										<div class="col-md-11 product_submit">
-											<form name="reviewForm" id="reviewForm" onsubmit="return false">
-												<p class="review_help_title">Submit A Review Of This Product</p>
-												<p class="product_submit_para">If you'd like to ask the vendor a specific question about this product,
-													please fill out the following it will be sent directly to the vendor.
-												</p>
-												<div>
-													<span class="product_submit_para">Please provide rating for this product</span>
-													<select id="review-stars" style="display:none !important;">
-														<option value=""></option>
-														<option value="1">1</option>
-														<option value="2">2</option>
-														<option value="3">3</option>
-														<option value="4">4</option>
-														<option value="5">5</option>
-														<option value="6">6</option>
-														<option value="7">7</option>
-													</select>
-												</div>
-												<div class="product_table_bg">
-													<div class="row">
-														<div class="col-md-10">
-															<input class="product_table" id="review-title" name="reviewTitle" type="text" placeholder="Review Title" required>
+										<div class="cart-hr-line"></div>
+										<div class="feed-activity-list">
+											{{#each productReviews.rows}}
+											<div class="feed-element">
+												<a class="float-left" href="javascript:;">
+													<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+												</a>
+												<div class="media-body">
+													<h4 class="review-title">{{this.title}}</h4>
+													<div class="m-b-xs">
+														<div class="alignleft">
+															<div class="p-rating">
+																{{starCount this.rating}}
+															</div>
 														</div>
+														<div class="alignleft m-l-sm">
+															<small class="float-right">{{FormatDate this.created_on}}</small>
+														</div>
+														<div style="clear: both;"></div>
 													</div>
-													<div class="row">
-														<div class="col-md-10">
-															<textarea name="reviewDetailComment" class="product_table" id="review-detail-comment" rows="5" cols="22" placeholder="Tell us about your experiance with this product "
-															required></textarea>
-														</div>
-														<div class="col-md-2">
-															<button class="product_buttion_1" onclick="reviewSubmit(`{{product.id}}`)" style="background-color: #154881;">Submit</button>
-														</div>
-													</div>
-												</div>
-											</form>
-										</div>
-									</div>
-									<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-									</div>
-
-									{{#each Reviews}}
-									<div class="row">
-										<div class="col-md-2 product_img">
-											<img width="100%" style="border-radius:50%" {{#if this.User.user_pic_url}} src="{{this.User.user_pic_url}}" {{else}} src="img/avatar.png" {{/if}}/>
-										</div>
-										<div class="col-md-10 product_great_bg common_padding1"  >
-											<p class="product_great">
-												{{this.title}}
-											</p>
-											<p class="product_star">{{starCount this.rating}}
-												<span class="product_ago">
-													{{FormatDate this.created_on}}
-												</span>
-											</p>
-											<p class="product_we">{{this.comment}}</p>
-										</div>
-										<div class="col-md-12 product_hr">
-											<hr>                                                   
-										</div>
-									</div>
-									{{/each}}
-									{{!-- Pagination starts --}}
-									<div class="row">
-										<div style="margin:0 auto;width:100px;">
-											{{#pagination collectionSize page pageSize maxSize}}
-											<nav aria-label="Page navigation example">
-												<ul class="pagination justify-content-center">
-													{{#each pages}}
-													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="products/{{../../queryParams.product_slug}}/{{../../
-														queryParams.id}}/allReviews?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-													</li>
-													{{/each}} 
-												</ul>
-											</nav>
-											{{/pagination}}
-										</div>
-									</div>
-									{{!-- Pagination starts --}}
-
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12 ts1 ts1_alter">
-									<h6 class="float-left" style="color:#fff;">RELATED PRODUCTS</h6>
-								</div>
-								<section class="box6" style="margin-bottom: 20px;">
-									<div class="container clearfix">
-										<div class="row">
-											{{#each RelatedProducts}}
-											<div class="col-md-4 common_top">
-												<div class="row">
-													<div class="col-md-3">
-														{{#if this.ProductMedia.[0].url}}
-														<img src="{{this.ProductMedia.[0].url}}" style="width: 30px; height: 70px;">
-														{{else}}
-														<img src="/img/avatar.png" style="width: 30px; height: 70px;">
-														{{/if}}
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-9">
-																<p class="wts_header">
-																	<a href="product/{{this.product_slug}}/{{this.id}}/allReviews">{{this.product_name}} of Interest
-																	</a>
-																</p>
-															</div>
-															<div class="col-md-3">
-																<p>MOQ:{{this.moq}}</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-6">
-																<p>{{this.Country.name}}</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-6">
-																<p>{{this.Category.name}} {{!-- - {{this.SubCategory.name}} --}}</p>
-															</div>
-															<div class="col-md-3">
-																<p>&nbsp;</p>
-															</div>
-														</div>
-													</div>
+													<p class="review-comment">{{this.comment}}</p>
 												</div>
 											</div>
 											{{/each}}
 										</div>
-									</div>
-								</section>
-							</div>
-						</div>
-						<div class="col-md-3 showing_categ">
-							<p><b>FILTER BY CATEGORY</b></p>
-							<p class="cat_bg_title_shp">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-							{{> vendor/vendor-category }}
-						</div>
+                            		</div>
+                            	</div>
+                            </div>
+                        </div>
+					</div>
+					<div class="col-md-3 no-padding">
+						{{> vendor/vendor-category }}
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}

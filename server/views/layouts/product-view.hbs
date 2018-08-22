@@ -445,8 +445,8 @@
 																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
-																	<span class="review-title">{{this.title}}</span>
-																	<div class="m-b-xs m-t-xs">
+																	<h4 class="review-title">{{this.title}}</h4>
+																	<div class="m-b-xs">
 																		<div class="alignleft">
 																			<div class="p-rating">
 																				{{starCount this.rating}}
@@ -457,14 +457,13 @@
 																		</div>
 																		<div style="clear: both;"></div>
 																	</div>
-																	<p class="text-justify m-b-xs">{{this.comment}}</p>
-																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
+																	<p class="review-comment">{{this.comment}}</p>
 																</div>
 															</div>
 															{{/each}}
 														</div>
 														{{#ifCond productRecentReview.count ">" 1}}
-														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
+														<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
 														{{/ifCond}}
