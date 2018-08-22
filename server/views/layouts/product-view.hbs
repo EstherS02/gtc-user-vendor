@@ -1,6 +1,3 @@
-<style>
-
-</style>
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	var productSpecs = {{{DisplayJSON product}}}
@@ -8,15 +5,12 @@
 	
 	$(document).ready(function() {
      	 
-        
 		var url=  window.location.href;
         var text = $('#productname').val()+" "+$('#productdescription').val();
 		
 		           
 		console.log("window:::"+userInfo.email);	
 
-		
-		
 		 $("#shareIcons").jsSocials({
 			url: url,
             text: text,
@@ -24,9 +18,6 @@
             showCount: false,
             shares: ["linkedin","pinterest","twitter","googleplus"]
         });
-
-		// $('#myModal').modal('show');	
- 
 		$('#review-stars').barrating({
 			theme: 'fontawesome-stars'
 		});
@@ -276,10 +267,19 @@
 														</a>
 														{{/ifCond}}
 													</div>
-													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-													 data-backdrop="static" data-keyboard="false">
+													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 														<div class="vertical-alignment-helper">
 															<div class="modal-dialog">
+																
+																{{!-- <div class="modal-header">
+																	<button type="button" class="close" data-dismiss="modal">
+																		<span aria-hidden="true">&times;</span>
+																		<span class="sr-only">Close</span>
+																	</button>
+																</div> --}}
+
+
+
 																<div class="modal-content">
 																	<div class="row">
 																		<div class="col-md-12">
@@ -357,7 +357,7 @@
 																												</div>
 																												<div class="form-group">
 																													<p>Already have a Account?</p>
-																													<a href="login">click to login </a>
+																													<a href="login">Login </a>
 																												</div>
 																											</div>
 																										</div>
@@ -514,7 +514,7 @@
 					</div>
 				</div>
 				<div class="col-md-3 no-padding">
-						{{> vendor/vendor-category }}
+					{{> vendor/vendor-category }}
 				</div>
 			</div>
 		</div>
