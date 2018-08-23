@@ -259,7 +259,6 @@ ul.top-menu-list li a .badge {
 }
 a {
 	color: #769dc8;
-	text-decoration: none;
 }
 a:hover {
 	color: #769dc8;
@@ -342,7 +341,8 @@ a:hover {
 	background: none;
 }
 ul.breadcrumb li {
-	font-size: 1em;
+	font-size: 13px;
+	font-weight: 300;
 }
 ul.breadcrumb li .active {
 	text-decoration: underline !important;
@@ -514,9 +514,9 @@ ul.footer-menu-list li {
 }
 ul.footer-menu-list li a {
 	color: #bdc9e1;
-	font-size: 11px;
-	font-weight: 500;
-	text-decoration: none !important;
+    font-size: 0.688em;
+    font-weight: 400;
+    text-decoration: none !important;
 }
 ul.footer-menu-list li a:hover {
 	color: #fff;
@@ -691,6 +691,7 @@ ul.footer-social-links li a img {
 	background: #0f478c;
 	text-align: center;
 	padding: 10px;
+	left: -25px !important;
 }
 .cart-list a {
 	font-size: 10px;
@@ -1286,6 +1287,24 @@ ul.inner-list-view li a {
 	font-size: 14px;
 	font-weight: 500;
 }
+.product-sm-title {
+	font-size: 0.875em;
+    font-weight: 300;
+}
+.review-product {
+	padding: 0 10px;
+}
+.review-product span {
+	font-size: 0.813em;
+	font-weight: 300;
+}
+.review-product .dist-rating {
+	font-size: 0.813em;
+    font-weight: 500;
+}
+.review-product .dist-rating span {
+	margin-left: 5px;
+}
 .product-attr {
 	font-size: 0.688em;
 	line-height: 1.6;
@@ -1387,11 +1406,6 @@ ul.inner-list-view li a {
 	font-size: 0.75em;
 	float: right;
 }
-.review-title {
-	font-size: 1.2em;
-	color: #3e7bba;
-	text-shadow: none;
-}
 .product-alert-msg {
 	font-size: 0.75em;
 	margin-bottom: 0;
@@ -1420,11 +1434,28 @@ ul.inner-list-view li a {
 .title-header-1 .breadcrumb {
 	line-height: 2;
 }
+.top-mini-headers label {
+	font-weight: 300;
+    font-size: 0.813em;
+    line-height: 1.6;
+    text-shadow: none;
+}
+.top-mini-headers svg {
+	line-height: 1.6;
+    vertical-align: middle;
+}
+.top-mini-headers a {
+	font-size: 0.813em;
+    line-height: 1.6;
+    font-weight: 500;
+}
+#dropdownField:hover>.dropdown-menu {
+  display: block;
+}
 .body-content-1 {
 	background: #f1f1f1;
 	color: #babbbd;
 	margin-top: 5px;
-	padding-bottom: 15px;
 }
 .body-content-1 .header-left {
 	background: #2560ab;
@@ -1455,6 +1486,73 @@ ul.inner-list-view li a {
 }
 .body-content-1 .cprlist .btn {
 	font-weight: 600;
+}
+.mini-header {
+	padding: 5px 25px 0px 25px;
+    font-size: 0.813em;
+    font-weight: 500;
+}
+.m-cart-body {
+	padding: 5px 45px;
+}
+.m-cart-title {
+	font-size: 1em;
+    margin-bottom: 5px;
+}
+.m-qty {
+	font-weight: 500;
+    color: #808080;
+    font-size: 0.75em;
+}
+.m-input-xxs {
+	text-align: center;
+    width: 50px;
+    border: 0;
+    line-height: 2;
+    background: #f1f1f1;
+}
+.price-tag {
+	color: #808080;
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.6;
+}
+.cart-summary {
+	padding: 45px;
+}
+.cart-summary h2 {
+	font-family: 'Oswald', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+.cart-summary label {
+	font-size: 0.75em;
+}
+.cart-summary .total-content {
+    display: block;
+    padding: 5px 0;
+}
+.cart-summary .promo-text-control {
+	display: block;
+    width: 100%;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+	padding: .15rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.total-text, .total-value {
+    font-size: 0.813em;
+    padding: 5px 0;
+    display: block;
+    color: #808080;
+}
+.cart-hr-line {
+    border-top: 1px solid #c3c3c3;
+    height: 1px;
 }
 .add-bag-btn {
 	display: inline-block;
@@ -1493,11 +1591,11 @@ ul.inner-list-view li a {
 	font-weight: 400;
 	color: #000;
 }
-#blog_img {
+#blog_img, .comment-image {
 	position: relative;
 	display: inline-block;
 }
-#blog_img .close {
+#blog_img .close, .comment-image .close{
 	position: absolute;
 	top: 2px;
 	right: 2px;
@@ -1513,7 +1611,7 @@ ul.inner-list-view li a {
 	line-height: 10px;
 	border-radius: 50%;
 }
-#blog_img:hover .close {
+#blog_img:hover .close, .comment-image:hover .close{
     opacity: 1;
 }
 .col-sm-2half, .col-sm-10half {
@@ -1577,3 +1675,28 @@ ul.inner-list-view li a {
   opacity: 0.6;
 }
 /*end lightbox css*/
+.select2-container--default .select2-selection--multiple{
+	    background-color: #f3f3f2 !important;
+	    border:none !important;
+}
+.inbox-tr{
+	background-color:rgba(0, 0, 0, 0.06);
+}
+.table > tbody > tr.inbox-tr-unread > td {
+	font-weight: bold !important;
+}
+.mail-messages {
+	display: inline-block;
+	background: red;
+	text-align: center;
+	color: #FFF;
+	/*padding:2px;*/
+	margin-left: 4px;
+	border-radius: 20px;
+}
+.messages {
+	display: inline-block;
+	background: red;
+	text-align: center;
+	color: #FFF;
+}

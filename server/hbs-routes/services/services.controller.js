@@ -72,12 +72,16 @@ export function services(req, res) {
 				});
 		},
 		serviceProduct: function(callback) {
+			const includeArr = [];
+			const productOffset = 0;
+			const productLimit = 20;
+			const productField = "id";
+			const productOrder = "asc";
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
-			limit = 20;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
 				.then(function(serviceProduct) {
-					return callback(null, serviceProduct.rows);
+					return callback(null, serviceProduct);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -107,7 +111,7 @@ export function services(req, res) {
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,
 				servicesProviders: results.servicesProviders,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

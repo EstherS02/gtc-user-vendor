@@ -93,6 +93,11 @@
 				consumer_secret: "Please select consumer secret."
 			}
 		});
+
+		$("#importEbay").click(function() {
+			var ebayOAuthURL = `https://signin.sandbox.ebay.com/authorize?client_id=ChandruM-GlobalTr-SBX-9ed62ccbf-855742ca&redirect_uri=Chandru_M-ChandruM-Global-bojdlvvw&response_type=code&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.account%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.inventory`;
+			var ebayWindow = window.open(ebayOAuthURL, 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
+		});
 	});
 </script>
 
@@ -110,8 +115,10 @@
                     <div class="row m-t-lg">
                     	<div class="col-md-3">
                     		<div class="import">
-                    			<img src="gtc-assets/img/import-ebay.png" alt="import ebay" title="import from ebay">
-                    			<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM EBAY</p>
+                    			<a href="javascript:;" id="importEbay">
+	                    			<img src="gtc-assets/img/import-ebay.png" alt="import ebay" title="import from ebay">
+	                    			<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM EBAY</p>
+                    			</a>
                     		</div>
                     	</div>
                     	<div class="col-md-3">

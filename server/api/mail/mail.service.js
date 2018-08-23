@@ -1,6 +1,5 @@
 'use strict';
 
-const agenda = require('../../agenda');
 const roles = require('../../config/roles');
 const status = require('../../config/status');
 const service = require('../service');
@@ -14,6 +13,7 @@ export function createMail(bodyParams, users) {
 	var mailArray = [];
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
+	var agenda = require('../../app').get('agenda');
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(mailModelName, {
@@ -118,16 +118,14 @@ export function deleteMail(queryObj) {
 
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)
-			.then((exists) => {
+			.then(function(exists){
 				if (exists) {
 					return service.updateRecord(userMailModelName, {
-						mail_status: mailStatus['DELETED']
+						mail_status: mailStatus['READ']
 					}, queryObj)
 				} else {
 					return Promise.resolve(null);
 				}
-			}).then((result) => {
-				resolve(result);
 			}).catch((error) => {
 				reject(error);
 			});
@@ -140,8 +138,6 @@ export function removeMail(queryObj) {
 	var mailModelName = 'Mail';
 	var userMailModelName = 'UserMail';
 
-	console.log("queryObj", queryObj);
-
 	return new Promise((resolve, reject) => {
 		service.findOneRow(userMailModelName, queryObj, includeArr)
 			.then((exists) => {
@@ -152,6 +148,35 @@ export function removeMail(queryObj) {
 					return Promise.reject(true);
 				}
 			}).then((destoryResponse) => {
+				if (destoryResponse) {
+					return service.countRows(userMailModelName, {
+						mail_id: userMail.mail_id
+					});
+				} else {
+					return Promise.reject(true);
+				}
+			}).then((userMailCount) => {
+				if (userMailCount > 0) {
+					return Promise.resolve(true);
+				} else {
+					return service.destroyRecord(mailModelName, userMail.mail_id);
+				}
+			}).then((result) => {
+				resolve(true);
+			}).catch((error) => {
+				reject(error);
+			});
+	});
+}
+
+export function removeManyMail(queryObj) {
+	var includeArr = [];
+	var userMail = {};
+	var userMailModelName = 'UserMail';
+
+	return new Promise((resolve, reject) => {
+		return service.destroyManyRecord(userMailModelName, queryObj.ids)
+			.then((destoryResponse) => {
 				if (destoryResponse) {
 					return service.countRows(userMailModelName, {
 						mail_id: userMail.mail_id

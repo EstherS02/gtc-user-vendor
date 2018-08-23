@@ -5,6 +5,8 @@ const sequelize = require('sequelize');
 const service = require('../service');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
+const Sequelize_Instance = require('../../sqldb/index');
+const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
@@ -79,7 +81,28 @@ export function productView(productID) {
 }
 
 export function productRatingsCount(productID) {
-	var productRating = [];
+	var productRating = [{
+		"rating": 7,
+		"userCount": 0
+	}, {
+		"rating": 6,
+		"userCount": 0
+	}, {
+		"rating": 5,
+		"userCount": 0
+	}, {
+		"rating": 4,
+		"userCount": 0
+	}, {
+		"rating": 3,
+		"userCount": 0
+	}, {
+		"rating": 2,
+		"userCount": 0
+	}, {
+		"rating": 1,
+		"userCount": 0
+	}];
 
 	return new Promise((resolve, reject) => {
 		model['Review'].findAll({
@@ -92,47 +115,17 @@ export function productRatingsCount(productID) {
 			],
 			group: ['Review.rating']
 		}).then((ratings) => {
-			if (ratings.length > 0) {
-				ratings = JSON.parse(JSON.stringify(ratings));
-				for (var i = 0; i < 7; i++) {
-					if (ratings[i] && ((i + 1) == ratings[i].rating)) {
-						productRating.push({
-							"rating": ratings[i].rating,
-							"userCount": ratings[i].userCount
-						});
-					} else {
-						productRating.push({
-							"rating": i + 1,
-							"userCount": 0
-						});
+			var responseRatings = JSON.parse(JSON.stringify(ratings));
+			if (responseRatings.length > 0) {
+				for (var i = 0; i < productRating.length; i++) {
+					for (var j = 0; j < responseRatings.length; j++) {
+						if (productRating[i].rating == responseRatings[j].rating) {
+							productRating[i].userCount = responseRatings[j].userCount;
+						}
 					}
 				}
-				resolve(productRating);
-			} else {
-				productRating = [{
-					"rating": 1,
-					"userCount": 0
-				}, {
-					"rating": 2,
-					"userCount": 0
-				}, {
-					"rating": 3,
-					"userCount": 0
-				}, {
-					"rating": 4,
-					"userCount": 0
-				}, {
-					"rating": 5,
-					"userCount": 0
-				}, {
-					"rating": 6,
-					"userCount": 0
-				}, {
-					"rating": 7,
-					"userCount": 0
-				}];
-				resolve(productRating);
 			}
+			resolve(productRating);
 		}).catch((error) => {
 			reject(error);
 		});
@@ -183,7 +176,7 @@ export function productReviews(queryObj, offset, limit, field, order) {
 	});
 }
 
-export function importAliExpressProducts(product, req) {
+export function importAliExpressProducts(product, user) {
 	var productQueryObj = {};
 	var newProductObj = {};
 	var otherCategoryId = 39;
@@ -191,8 +184,8 @@ export function importAliExpressProducts(product, req) {
 	productQueryObj['sku'] = product.productId;
 	productQueryObj['status'] = status['ACTIVE'];
 
-	if (req.user.role === roles['VENDOR']) {
-		productQueryObj['vendor_id'] = req.user.Vendor.id
+	if (user.role === roles['VENDOR']) {
+		productQueryObj['vendor_id'] = user.Vendor.id
 	}
 
 	return new Promise((resolve, reject) => {
@@ -202,7 +195,7 @@ export function importAliExpressProducts(product, req) {
 					newProductObj['sku'] = product.productId;
 					newProductObj['product_name'] = product.productTitle;
 					newProductObj['product_slug'] = string_to_slug(product.productTitle);
-					newProductObj['vendor_id'] = req.user.Vendor.id;
+					newProductObj['vendor_id'] = user.Vendor.id;
 					newProductObj['status'] = status['ACTIVE'];
 					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
 					newProductObj['publish_date'] = new Date();
@@ -211,9 +204,9 @@ export function importAliExpressProducts(product, req) {
 					newProductObj['sub_category_id'] = otherSubCategoryId;
 					newProductObj['price'] = product.variations[0].pricing;
 					//newProductObj['description'] = product.description;
-					newProductObj['product_location'] = req.user.Vendor.Country.id;
-					newProductObj['city'] = req.user.Vendor.city;
-					newProductObj['city_id'] = req.user.Vendor.city_id;
+					newProductObj['product_location'] = user.Vendor.Country.id;
+					newProductObj['city'] = user.Vendor.city;
+					newProductObj['city_id'] = user.Vendor.city_id;
 					newProductObj['created_on'] = new Date();
 
 					return service.createRow('Product', newProductObj);
@@ -231,7 +224,7 @@ export function importAliExpressProducts(product, req) {
 						productMediaObj['url'] = product.pics[i];
 						productMediaObj['base_image'] = 1;
 						productMediaObj['created_on'] = new Date();
-						productMediaObj['created_by'] = req.user.first_name;
+						productMediaObj['created_by'] = user.first_name;
 					} else {
 						productMediaObj['product_id'] = newProduct.id;
 						productMediaObj['type'] = 1;
@@ -239,7 +232,7 @@ export function importAliExpressProducts(product, req) {
 						productMediaObj['url'] = product.pics[i];
 						productMediaObj['base_image'] = 0;
 						productMediaObj['created_on'] = new Date();
-						productMediaObj['created_by'] = req.user.first_name;
+						productMediaObj['created_by'] = user.first_name;
 					}
 					productMedias.push(service.createRow('ProductMedia', productMediaObj));
 				}
@@ -326,6 +319,23 @@ export function importWooCommerceProducts(product, req) {
 			}).catch(function(error) {
 				reject(error);
 			});
+	});
+}
+
+export function compareProducts(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.compareProductQuery(params), {
+				model: model['product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
 	});
 }
 

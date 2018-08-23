@@ -1,412 +1,369 @@
 <script>
 
-var cartItems = {{{DisplayJSON cartItems}}};
+	var cartItems = {{{ DisplayJSON cartItems }}};
 
-function removeGtcCart(item) {
-	var result = confirm("Are you sure you want to delete this item?");
-	if (result) {
-		//Logic to delete the item
-		$('#remove-cart-' + item).removeAttr('href');
+	function removeGtcCart(item) {
+		var result = confirm("Are you sure you want to delete this item?");
+		if (result) {
+			//Logic to delete the item
+			$('#remove-cart-' + item).removeAttr('href');
+
+			$.ajax({
+				url: '/api/cart/remove-cart/' + item,
+				type: 'DELETE',
+				success: function (result) {
+					if (result)
+						location.reload();
+				},
+				error: function (error) {
+					console.log("Error occured while deleting", error);
+				}
+			});
+		}
+	}
+
+	function UpdateAllCartItems() {
+
+		let allCartInfo = {};
+
+		allCartInfo["cartUpdateArray"] = [];
+
+
+		$(".all-quantity-cart-items").each(function () {
+			for (var i = 0; i < cartItems.length; i++) {
+
+				let uniqueId = "inputQty" + cartItems[i].id;
+				console.log("uniqueId", uniqueId)
+				let currentElementId = $(this).attr('id');
+				console.log("currentElementId", currentElementId)
+
+				if (uniqueId == currentElementId) {
+					let temp = {};
+
+					temp['product_quantity'] = $(this).val();
+					temp['product_id'] = cartItems[i].product_id;
+					temp['cart_item_id'] = cartItems[i].id
+
+					allCartInfo['cartUpdateArray'].push(temp);
+				}
+			}
+		});
 
 		$.ajax({
-			url: '/api/cart/remove-cart/' + item,
-			type: 'DELETE',
-			success: function(result) {
-				if (result)
-					location.reload();
+			url: '/api/cart/update-cart',
+			type: 'POST',
+			data: JSON.stringify(allCartInfo),
+			contentType: "application/json",
+			success: function (updateAllData) {
+				// window.location.reload();
+				$('#gtc-cart-alert').prop('disabled', false);
+				if (updateAllData.statusCode == 200) {
+					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
+					$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
+						$("#gtc-cart-alert").slideUp(500);
+						location.reload();
+					});
+				} else {
+					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
+					$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
+						$("#gtc-cart-alert").slideUp(500);
+					});
+				}
 			},
-			error: function(error) {
-				console.log("Error occured while deleting", error);
+			error: function (error) {
+				console.log("Error occured while updating", error);
+				$('#quantity-cart-' + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details, "error");
 			}
 		});
 	}
-}
 
-function UpdateAllCartItems(){
+	function UpdateGtcCart(productId, cartItemId, qtyItem, productName) {
 
-	let allCartInfo = {};
-
-	allCartInfo["cartUpdateArray"] = [];
-
-
-	$(".all-quantity-cart-items").each(function() {
-		for(var i=0; i<cartItems.length; i++){
-			
-			let uniqueId = "quantity-cart-"+ cartItems[i].id;
-			let currentElementId = $(this).attr('id');
-
-			if(uniqueId == currentElementId){
-				let temp = {};
-
-				temp['product_quantity'] = $(this).val();
-				temp['product_id'] = cartItems[i].product_id;
-				temp['cart_item_id'] = cartItems[i].id
-
-				allCartInfo['cartUpdateArray'].push(temp);
-			}
-		}
-	});
-
-	$.ajax({
-		url: '/api/cart/update-cart',
-		type: 'POST',
-		data: JSON.stringify(allCartInfo),
-        contentType: "application/json",
-		success: function(updateAllData) {
-			// window.location.reload();
-				 $('#gtc-cart-alert').prop('disabled', false);
-			if(updateAllData.statusCode == 200){
-			      $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-			      $('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
-			      $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
-			        $("#gtc-cart-alert").slideUp(500);
-			        location.reload();
-			    });
-			}else{
-			      $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-			      $('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
-			      $("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
-			      	  $("#gtc-cart-alert").slideUp(500);
-			    });
-			}
-		},
-		error: function(error){
-			console.log("Error occured while updating", error);
-			$('#quantity-cart-'+ error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details, "error");
-		}
-	});
-}
-
-function UpdateGtcCart(item, qtyItem, cartItemId){
-	let cartInfo = {};
+		$('.cartAlert').html("");
+		//console.log(item, qtyItem, cartItemId)
+		console.log(productId, cartItemId, qtyItem)
+		let cartInfo = {};
 		cartInfo["cartUpdateArray"] = [];
 
 		let cartItem = {};
-
-        cartItem['product_quantity'] = $('#quantity-cart-'+ qtyItem).val();
-		cartItem['product_id'] = item;
+		var testses = $('#inputQty' + cartItemId)[0].id;
+		console.log(testses)
+		console.log("test", $('#inputQty' + cartItemId)[0].id)
+		cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
+		cartItem['product_id'] = productId;
 		cartItem['cart_item_id'] = cartItemId;
-
+		console.log(cartItem)
 		cartInfo['cartUpdateArray'].push(cartItem);
+		console.log(cartInfo)
+		if (cartItem.product_quantity < qtyItem) {
+			console.log("dfgsg", cartItem.product_quantity)
+			$('.cartAlert').html(productName + " Minimum quantity " + qtyItem);
+			//$.notify(productName+" Minimum quantity "+qtyItem);
 
+		} else {
+			$.ajax({
+				url: '/api/cart/update-cart',
+				type: 'POST',
+				data: JSON.stringify(cartInfo),
+				contentType: "application/json",
+				success: function (updateData) {
 
-	$.ajax({
-		url: '/api/cart/update-cart',
-		type: 'POST',
-		data: JSON.stringify(cartInfo),
-        contentType: "application/json",
-		success: function(updateData) {
-			
-			$('#quantity-cart-'+ qtyItem).notify("Quantity Updated to "+ cartItem.product_quantity, "success");
+					//$('#quantity-cart-' + cartItemId).notify("Quantity Updated to " + cartItem.product_quantity, "success");
 
-			 setTimeout(function () {
-                    window.location.reload();
-                 }, 1500);
-		},
-		error: function(error){
-			console.log("Error occured while updating", error);
-			$('#quantity-cart-'+ qtyItem).notify(error.responseJSON.message_details, "error");
+					$("#inputQty" + cartItemId).notify("Quantity Updated to " + cartItem.product_quantity, "success");
+
+					setTimeout(function () {
+						window.location.reload();
+					}, 1500);
+				},
+				error: function (error) {
+					console.log("Error occured while updating", error);
+					//$('#quantity-cart-' + cartItemId).notify(error.responseJSON.message_details, "error");
+					$("#inputQty" + cartItemId).notify(error.responseJSON.message_details, "error");
+				}
+			});
 		}
-	});
-}
 
-
-function applyGTCCoupon(){
-	var cartInfo = {};
-	cartInfo.coupon_code = $("#coupon-input-code").val();
-	if(!cartInfo.coupon_code) {
-		alert('Please enter promo code to apply coupon code');
-		return false;
 	}
-	$.ajax({
-		url: '/api/cart/apply-coupon',
-		type: 'POST',
-		data: cartInfo,
-		success: function(updateData) {
-			console.log(updateData.message_details);
-			// var data = updateData.message_details;
-			    $('#gtc-coupon-alert').prop('disabled', false);
-		      	$('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
-		      	$('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
-		      	$("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function () {
-		        $("#gtc-coupon-alert").slideUp(500);
-		        // location.reload();
-    });
-		},
-		error: function(error) {
-			console.log("Error occured while updating", error);
-		}
-	});
-}
 
-function orderCheckout(){
-	location.href = "/order-checkout/customer-information"
-}
-$(document).ready(function(){
-$('#gtc-coupon-alert').hide();
-$('#gtc-cart-alert').hide();
-});
+
+	function applyGTCCoupon() {
+		var cartInfo = {};
+		cartInfo.coupon_code = $("#coupon-input-code").val();
+		if (!cartInfo.coupon_code) {
+			alert('Please enter promo code to apply coupon code');
+			return false;
+		}
+		$.ajax({
+			url: '/api/cart/apply-coupon',
+			type: 'POST',
+			data: cartInfo,
+			success: function (updateData) {
+				console.log(updateData.message_details);
+				// var data = updateData.message_details;
+				$('#gtc-coupon-alert').prop('disabled', false);
+				$('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
+				$("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function () {
+					$("#gtc-coupon-alert").slideUp(500);
+					// location.reload();
+				});
+			},
+			error: function (error) {
+				console.log("Error occured while updating", error);
+			}
+		});
+	}
+
+	function orderCheckout() {
+		location.href = "/order-checkout/customer-information"
+	}
+	$(document).ready(function () {
+		$('#gtc-coupon-alert').hide();
+		$('#gtc-cart-alert').hide();
+	});
 
 </script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
-<section>
-	<div class="" >
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6">
-					<ul class="breadcrumb">
-					  <li><a href="#" class="active">My Account</a></li>
-					  <li>Shopping Cart</li>
-					</ul>
-				</div>
-				<div class="col-md-6">
-					<p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
-				</div>
+<script src="js/login.js"></script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div class="wrapper-content">
+	<div class="container-sm">
+		<div class="title-header-1 gtc-p-l-r">
+			<div class="alignleft">
+				<ul class="breadcrumb">
+					<li>
+						<a href="#" class="active">My Account</a>
+					</li>
+					<li>Shopping Cart</li>
+				</ul>
 			</div>
-			<div class="row checkout_bg_color ">
-                <div class="col-md-9 checkout_title_color">
-                	<h4>MY SHOPPING CART <span class="checkout_title_color_span">({{cartItemsCount}} Item Totals)</span></h4>
-            	</div>
-                <div class="col-md-3 checkout_title_color_1">
-					<h4>YOUR ORDER</h4>
-            	</div>	
-            </div>
-
-			<div class="row">
-				<div class="col-md-9">
-				<p><p>
-					<div class="alert" id="gtc-cart-alert">
-	                        <button type="button" class="close" data-dismiss="alert">
-	                            <span aria-hidden="true">&times;</span>
-	                        </button>
-	                        <span class="cart-message"></span>
-	                    </div>
-					{{#each marketPlaces as |marketPlace|}}
-					<div class="row">
-						<div class="col-md-12 common_padding1">
-							{{#each ../seperatedItemsList}}
-								{{#ifCond marketPlace.code '==' @key}}
-									<p class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</p>
-								{{/ifCond}}
-							{{/each}}
-						</div>
-					</div>
-					<div class="container">
-						<table class="table table-hover">
-							{{#each ../seperatedItemsList}}
-								{{#ifCond marketPlace.code '==' @key}}
-									{{#ifCond @key.length '>' 0}}
-									<thead>
-										<tr>
-											<th class="shop_list_title">Product</th>
-											<th class="shop_list_title">Price</th>
-											<th class="shop_list_title">Qty</th>
-											<th class="shop_list_title">Total Price</th>
-										</tr>
-									</thead>
-									{{/ifCond}}
-								{{/ifCond}}
-							{{/each}}
-							<tbody>
-						{{#each ../cartItems as |cartItem|}}
-
-							{{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
-								<tr>
-									<td>
-										<div class="row">
-											<div class="col-md-3">
-												<img src="{{cartItem.Product.ProductMedia.[0].url}}" style="width: 60px; height: 70px;">
-											</div>
-											<div class="col-md-9">
-												<div class="row common_padding">
-													<div class="col-md-12">
-														<p class="shop_product_title"><a href="/products/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}">{{cartItem.Product.product_name}}</a></p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Origin</p>
-													</div>
-													<div class="col-md-9">
-														<p>{{cartItem.Product.State.name}}</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Category</p>
-													</div>
-													<div class="col-md-9">
-														<p style="width: 80%">{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}</p>
-													</div>
-												</div>
-												<div class="row common_padding">
-													<div class="col-md-3">
-														<p>Seller</p>
-													</div>
-													<div class="col-md-9">
-														<p>(<span class="shop_price_handling">{{cartItem.Product.Vendor.vendor_name}}</span>)</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">${{cartItem.Product.price}}</p>
-												<p class="shop_price_handling">Handling +$50.00</p>
-												{{#if cartItem.Product.moq}}
-												<p class="shop_price_min">Minimum Order Quantity: {{cartItem.Product.moq}}</p>
-												{{/if}}
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-6">
-												<input id="quantity-cart-{{cartItem.id}}" type="number" min="1" value={{cartItem.quantity}} class="shop_qty_num all-quantity-cart-items" style="width: 50px;">
-											</div>
-											<div class="col-md-6">
-												<a id="update-cart-{{cartItem.id}}" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.id}}`)" href="javascript:;" ><p class="shop_price_handling">Update</p></a>
-											</div>
-										</div>
-									</td>
-									<td>
-										<div class="row">
-											<div class="col-md-12">
-												<p class="shop_price_doller">${{quantityPrice cartItem.quantity cartItem.Product.price}}</p>
-												<a id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;">
-													<p class="shop_total_remove text-center">REMOVE</p>
-												</a>
-											</div>
-										</div>
-									</td>
-								</tr>
-								{{/ifCond}}
-								{{/each}}
-							</tbody>
-						</table>
-					</div>
-
-					{{/each}}
-
-					<div class="row">
-						<div class="col-md-6">
-							<input type="submit" value="CONTINUE SHOPPING" onclick="location.href = '/'" class="cont_shopping"/>
-						</div>
-						<div class="col-md-6">
-							{{!-- <input type="submit" value="UPDATE CART" onclick="UpdateAllCartItems()" class="update_cart"/> --}}
-							<button class="ladda-button btn update_cart" onclick="UpdateAllCartItems()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">UPDATE CART</span><span class="ladda-spinner"></span></button>
-						</div>
+			<div class="alignright">
+				{{#if LoggedInUser.id}}
+				<span class="text-sm">You're logged in as </span>
+				<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+				<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+				{{else}}
+				<span class="text-sm">
+					<a href="/login">Login</a> to see seller information</span>
+				{{/if}}
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="body-content-1">
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding header-left">
+					<div class="header-lg gtc-p-l-r">
+						<h2 class="header-lg-text alignleft">MY SHOPPING CART</h2>
+						<span class="header-lg-span">({{cartItemsCount}} Item Totals)</span>
 					</div>
 				</div>
-				<div class="col-md-3 your_order_bg">
-					<div class="container">
-
-						{{#each marketPlaces as |marketplace|}}
-						
-						{{#each ../totalPriceList as |totalPrice|}}
-
-						{{#ifCond marketplace.code '==' @key}}
-						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_shipping">Shipping Ground</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>{{currency totalPrice.total '$'}}</b></p>
-							</div>
-						</div>
-						{{/ifCond}}
-						{{/each}}
-						{{/each}}
-						
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-									<p class="shop_subtotal float-right"><b>{{currency totalPriceList.grandTotal '$'}}</b></p>
-							</div>
-						</div>
-
-						<hr class="common_margin" />
-						{{#ifCond couponData.length '>' 0}}						
-						{{#each couponData}}
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>DISCOUNT</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">
-									<b>{{currency this.discount_price '$'}}</b>
-								</p>
-							</div>
-						</div>
-						<hr class="common_margin"/>
-						<div class="row">
-							<div class="col-md-8">
-									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-									<p class="shop_subtotal float-right"><b>{{currency this.final_price '$'}}</b></p>
-							</div>	
-						</div>
-						<p class="promo_code_p">{{{this.message_details}}}</p>
-
-						{{/each}}
-						{{/ifCond}}
-						
-						{{#ifCond couponData.length '==' 0}}
-						<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
-						<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
-						{{!-- <button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button> --}}
-						{{!-- <p><span class="coupon-message"></span></p> --}}
-						<div class="alert" id="gtc-coupon-alert">
-	                        <button type="button" class="close" data-dismiss="alert">
-	                            <span aria-hidden="true">&times;</span>
-	                        </button>
-	                        <span class="coupon-message"></span>
-	                    </div>
-						<button class="ladda-button btn btn-sm" onclick="applyGTCCoupon()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">Apply</span><span class="ladda-spinner"></span></button>
-						{{/ifCond}}
-						{{#ifCond couponUpdateErrorMessage '!=' ""}}
-							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
-						{{/ifCond}}
-						{{!-- <input type="button" value="CHECKOUT NOW" class="shop_checkout_btn" onclick="orderCheckout()"/> --}}
-						<button class="ladda-button btn shop_checkout_btn" onclick="orderCheckout()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">CHECKOUT NOW</span><span class="ladda-spinner"></span></button>
-						<img src="../img/payment-methods.jpg" alt="payment">
+				<div class="col-sm-3half no-padding header-right">
+					<div class="header-lg gtc-p-l-r">
+						<h2 class="header-lg-text">YOUR ORDER</h2>
 					</div>
 				</div>
 			</div>
-    	</div>
+			<div class="alert" id="gtc-cart-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="cart-message"></span>
+			</div>
+			<span style="color:red;" class="cartAlert"></span>
+
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding">
+					<div class="bg-white">
+						{{#each marketPlaces as |marketPlace|}} {{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}}
+						<div class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</div>
+						{{/ifCond}} {{/each}}
+
+						<div class="m-cart-body">
+							<table class="table cart-inner-table m-b-none">
+								{{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}} {{#ifCond @key.length '>' 0}}
+								<thead>
+									<tr>
+										<th width="45%">Product</th>
+										<th width="25%">Price</th>
+										<th width="15%">QTY</th>
+										<th width="15%" class="text-right">Total Price</th>
+									</tr>
+								</thead>
+								{{/ifCond}} {{/ifCond}} {{/each}}
+								<tbody>
+									{{#each ../cartItems as |cartItem|}} {{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
+									<tr>
+										<div class="pos-demo">
+
+										</div>
+										<td class="d-flex">
+											<div class="col-4 product-left-col">
+												<img class="object-fit" src="{{cartItem.Product.ProductMedia.[0].url}}" alt="T-Shirt with Logo" title="T-Shirt with Logo">
+											</div>
+											<div class="col-8">
+												<div class="product-middle-col">
+													<h3 class="m-cart-title">
+														<a href="/products/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+													</h3>
+													<div class="row no-margins">
+														<div class="col-md-4 col-4 no-padding">
+															<span>Origin</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															<span class="text-500">{{cartItem.Product.State.name}}</span>
+														</div>
+														<div class="col-md-4 col-4 no-padding">
+															<span>Category</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															<a class="text-500" href="#" title="OTHERS > Others">{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}</a>
+														</div>
+														<div class="col-md-4 col-4 no-padding">
+															<span>Seller</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															{{#if ../../LoggedInUser.email}}
+															<a class="text-500" title="{{cartItem.Product.Vendor.vendor_name}}" href="/vendor/{{cartItem.Product.Vendor.vendor_id}}">{{cartItem.Product.Vendor.vendor_name}}</a>
+															{{else}}
+															<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+															{{/if}}
+														</div>
+													</div>
+												</div>
+											</div>
+										</td>
+										<td>
+											<span class="price-tag d-block text-blue">${{cartItem.Product.price}}</span>
+											{{#if cartItem.Product.moq}}
+											<small class="m-qty">Minimum Order Quantity: {{cartItem.Product.moq}}</small>
+											{{/if}}
+										</td>
+										<td>
+											{{!-- id="update-cart-{{cartItem.id}}" --}}
+											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.Product.moq}} class="all-quantity-cart-items"
+											 style="width: 50px;">
+
+											<a href="javascript:;" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.Product.moq}}`,`{{cartItem.Product.product_name}}`)"
+											 class="text-xs m-l-xs">
+												<small>Update</small>
+											</a>
+										</td>
+										<td class="text-right">
+											<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.quantity cartItem.Product.price}}</span>
+											<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+										</td>
+									</tr>
+									{{/ifCond}} {{/each}}
+								</tbody>
+							</table>
+						</div>
+						{{/each}}
+					</div>
+				
+					<button class="btn btn-md btn-success m-t-sm" onclick="location.href = '/'">CONTINUE SHOPPING</button>
+					<button class="btn btn-md btn-primary m-t-sm alignright" id="UpdateTalks" onclick="UpdateAllCartItems()">UPDATE CART</button>
+					
+				</div>
+
+				<div class="col-sm-3half no-padding">
+					<div class="cart-summary" style="padding-top:0px"  >
+						{{#each marketPlaces as |marketplace|}} {{#each ../totalPriceList as |totalPrice|}} {{#ifCond marketplace.code '==' @key}}
+						<h2 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
+						<div class="cart-hr-line"></div>
+						<div class="total-content">
+							<div class="alignleft">
+								<span class="total-text">Subtotal</span>
+							</div>
+							<div class="alignright">
+								<span class="total-value">{{currency totalPrice.price '$'}}</span>
+							</div>
+							<div style="clear: both;"></div>
+							<div class="alignleft">
+								<span class="total-text">Shipping Ground</span>
+							</div>
+							<div class="alignright">
+								<span class="total-value">{{currency totalPrice.shipping '$'}}</span>
+							</div>
+							<div style="clear: both;"></div>
+							<div class="cart-hr-line"></div>
+							<div class="alignleft">
+								<span class="total-text">
+									<b>WHOLESALE TOTAL</b>
+								</span>
+							</div>
+							<div class="alignright">
+								<span class="total-value">{{currency totalPrice.total '$'}}</span>
+							</div>
+							<div style="clear: both;"></div>
+						</div>
+						{{/ifCond}} {{/each}} {{/each}}
+
+						<div class="total-content">
+							<div class="alignleft">
+								<span class="total-text">
+									<b>GRAND TOTAL</b>
+								</span>
+							</div>
+							<div class="alignright">
+								<span class="total-value">{{currency totalPriceList.grandTotal '$'}}</span>
+							</div>
+						</div>
+
+						<div class="m-t-sm">
+							<label class="m-b-xs">
+								<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
+							<input type="text" class="promo-text-control">
+						</div>
+						<div class="text-center">
+							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" style="background: #e62345;">CHECKOUT NOW</button>
+							<img src="../img/payment-methods.jpg" class="img-fluid w-75">
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}

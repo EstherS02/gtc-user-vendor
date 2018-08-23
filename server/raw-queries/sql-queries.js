@@ -5,9 +5,9 @@ const config = require('../config/environment');
 
 let sqlQueries = {
 
-  geoLocateDistance: function (lat, lng) {
-      //Distance in Miles = 3959, Distance in Kilometers = 6371
-    let query = `SELECT
+	geoLocateDistance: function(lat, lng) {
+		//Distance in Miles = 3959, Distance in Kilometers = 6371
+		let query = `SELECT
     vendor.id AS vendor_id,
     vendor.vendor_name,
     vendor.vendor_cover_pic_url,
@@ -25,9 +25,9 @@ let sqlQueries = {
     COALESCE(product_ratings.product_rating, 0) AS product_rating,
     (
         6371 * ACOS(
-            COS(RADIANS(`+ lat +`)) * COS(RADIANS(latitude)) * COS(
-                RADIANS(longitude) - RADIANS(`+ lng +`)
-            ) + SIN(RADIANS(`+ lat +`)) * SIN(RADIANS(latitude))
+            COS(RADIANS(` + lat + `)) * COS(RADIANS(latitude)) * COS(
+                RADIANS(longitude) - RADIANS(` + lng + `)
+            ) + SIN(RADIANS(` + lat + `)) * SIN(RADIANS(latitude))
         )
     ) AS distance
     FROM
@@ -45,10 +45,10 @@ let sqlQueries = {
     ORDER BY
         product.product_name`;
 
-    return query;
-  },
-  categoryAndSubcategoryCount: function () {
-    let query = `SELECT
+		return query;
+	},
+	categoryAndSubcategoryCount: function() {
+		let query = `SELECT
     product_category_id,
     sub_category_id,
     category.name AS category_name,
@@ -71,11 +71,10 @@ let sqlQueries = {
     LEFT JOIN category ON category.id = product_category_id
     LEFT JOIN sub_category ON sub_category.id = sub_category_id;`;
 
-    return query;
-  },
-
-  locationCount: function(){
-      let query = `SELECT 
+		return query;
+	},
+	locationCount: function() {
+		let query = `SELECT 
         COUNT(*) AS location_count,
         product.id AS product_id,
         country.name As country_name,
@@ -88,10 +87,12 @@ let sqlQueries = {
     LEFT JOIN region ON region.id = country.region_id
     GROUP BY product_location;`;
 
-    return query;
-  }
-
-
+		return query;
+	},
+	compareProductQuery: function(params) {
+	    let query = `SELECT product.id, product.product_name, product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, product.product_status, vendor.user_id, vendor.vendor_name, product_media.url, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id WHERE product.id IN(` + params + `) GROUP BY product.id`;
+	    return query;
+	}
 };
 
 module.exports = sqlQueries;

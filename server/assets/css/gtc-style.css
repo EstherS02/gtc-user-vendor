@@ -4373,7 +4373,8 @@ p.lt-user-name {
 }
 
 .col-md-3.latest-tickets {
-    padding: 0px;
+    /* padding: 0px; changes on report page alignment */
+    padding : 8px;
     float: left;
 }
 
@@ -5353,7 +5354,7 @@ left: 6px;
 .compare_second_date
 {
 width: 103px;
-right: 31px;
+right: 25px;
 }
 .report_border
 {
@@ -5371,6 +5372,288 @@ padding-top: 0px;
 {
     margin-top: -13px;
 }
+.line-chart-content
+{
+font-size: 13px;
+}
+.line-chart-second
+{
+   font-size: 14px;
+   color:green; 
+}
+.line-chart-third
+{
+   font-size:10px;
+}
+
+@media screen and (min-width: 768px) {
+    .report-Date {
+        right: 24px;
+    }
+    .to_label {
+        right: 22px;
+    }
+    .select_drop {
+        right: 24px;
+    }
+    .report-Date2 {
+        width: 104px;
+        right: 83px;
+    }
+    .check_align {
+        right: 70px;
+    }
+    .compare_first_date {
+        right: 63px;
+    }
+    .compare_second_date {
+        right: 64px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .report-Date2 {
+        width: 104px;
+        right: 16px;
+    }
+    .check_align {
+        right: 23px;
+    }
+    .compare_first_date {
+        right: 21px;
+    }
+}
+
+.check_report1 {
+    margin-top: 5px;
+    margin-left: 15px;
+}
 /*Report css ends */
 
+/* jssocial css starts  */
+.jssocials-shares {
+    margin: 0.2em 0;
+ }
+  .jssocials-shares {
+      /* margin: $external-margin; */
+      /*margin-right: 29px;*/
+  }
+  
+  .jssocials-shares * {
+      box-sizing: border-box;
+  }
+  
+  .jssocials-share {
+      display: inline-block;
+      vertical-align: top;
+      margin: 0 0.3em; 
+  }
+  
+  .jssocials-share:last-child {
+      margin-right: 0;
+  }
+  
+  .jssocials-share-label {
+      padding-left: .3em ;
+      vertical-align: middle;
+  }
+      .jssocials-share-logo {
+      width: 1em;
+      vertical-align: middle;
+      font-size: 1.5em;
+      color: white;
+    
+  }
+  
+  img.jssocials-share-logo {
+      width: auto;
+      height: 1em;
+  }
+ .jssocials-share-twitter .jssocials-share-link {
+    background: #00aced;
+    border: 1px solid #0099d4; 
+}
+.jssocials-share-twitter .jssocials-share-link:hover {
+      background: #0087ba;
+   }
+.jssocials-share-linkedin .jssocials-share-link {
+    background: #007bb6;
+    border: 1px solid #006a9d; 
+   }
+.jssocials-share-linkedin .jssocials-share-link:hover {
+      background: #005983; 
+    }
+.jssocials-share-pinterest .jssocials-share-link {
+    background: #cb2027;
+    border: 1px solid #b51d23; 
+    }
+.jssocials-share-pinterest .jssocials-share-link:hover {
+      background: #9f191f; 
+    }
 
+.jssocials-share-googleplus .jssocials-share-link {
+    background: #dd4b39;
+    border: 1px solid #d73925;
+  }
+.jssocials-share-googleplus .jssocials-share-link:hover {
+  background: #c23321; }
+.jssocials-share-googleplus .jssocials-share-link {
+       color: #dd4b39;
+    }
+.jssocials-share-googleplus .jssocials-share-link .jssocials-share-label {
+       color: #dd4b39;
+    }
+.jssocials-share-googleplus .jssocials-share-link:hover, .jssocials-share-googleplus .jssocials-share-link:focus, .jssocials-share-googleplus .jssocials-share-link:active {
+       color: #c23321;
+    }
+.jssocials-share-googleplus .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-googleplus .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-googleplus .jssocials-share-link:active .jssocials-share-label {
+color: #c23321; }
+.jssocials-share-facebook .jssocials-share-link {
+    background: #3b5998;
+    border: 1px solid #344e86; }
+    .jssocials-share-facebook .jssocials-share-link:hover {
+      background: #2d4373; }
+.jssocials-share-facebook .jssocials-share-link {
+color: #3b5998; }
+.jssocials-share-facebook .jssocials-share-link .jssocials-share-label {
+color: #3b5998; }
+.jssocials-share-facebook .jssocials-share-link:hover, .jssocials-share-facebook .jssocials-share-link:focus, .jssocials-share-facebook .jssocials-share-link:active {
+color: #2d4373; }
+.jssocials-share-facebook .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-facebook .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-facebook .jssocials-share-link:active .jssocials-share-label {
+ color: #2d4373; }
+ .jssocials-share-email .jssocials-share-link {
+    background: #3490F3;
+    border: 1px solid #1c83f2; }
+    .jssocials-share-email .jssocials-share-link:hover {
+      background: #0e76e6; }
+  
+  .jssocials-share-stumbleupon .jssocials-share-link {
+    background: #eb4823;
+    border: 1px solid #e03a14; }
+    .jssocials-share-stumbleupon .jssocials-share-link:hover {
+      background: #c93412; }
+  
+  .jssocials-share-whatsapp .jssocials-share-link {
+    background: #29a628;
+    border: 1px solid #249123; }
+    .jssocials-share-whatsapp .jssocials-share-link:hover {
+      background: #1f7d1e; }
+  
+  .jssocials-share-telegram .jssocials-share-link {
+    background: #2ca5e0;
+    border: 1px solid #1f98d3; }
+    .jssocials-share-telegram .jssocials-share-link:hover {
+      background: #1c88bd; }
+      .jssocials-share-email .jssocials-share-link {
+        background: #3490F3;
+        border: 1px solid #1c83f2; }
+        .jssocials-share-email .jssocials-share-link:hover {
+          background: #0e76e6; }
+      
+      .jssocials-share-stumbleupon .jssocials-share-link {
+        background: #eb4823;
+        border: 1px solid #e03a14; }
+        .jssocials-share-stumbleupon .jssocials-share-link:hover {
+          background: #c93412; }
+      
+      .jssocials-share-whatsapp .jssocials-share-link {
+        background: #29a628;
+        border: 1px solid #249123; }
+        .jssocials-share-whatsapp .jssocials-share-link:hover {
+          background: #1f7d1e; }
+      
+      .jssocials-share-telegram .jssocials-share-link {
+        background: #2ca5e0;
+        border: 1px solid #1f98d3; }
+        .jssocials-share-telegram .jssocials-share-link:hover {
+          background: #1c88bd; }
+          .jssocials-share-line .jssocials-share-link {
+            color: #25af00; }
+            .jssocials-share-line .jssocials-share-link .jssocials-share-label {
+              color: #25af00; }
+            .jssocials-share-line .jssocials-share-link:hover, .jssocials-share-line .jssocials-share-link:focus, .jssocials-share-line .jssocials-share-link:active {
+              color: #1a7c00; }
+              .jssocials-share-line .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-line .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-line .jssocials-share-link:active .jssocials-share-label {
+                color: #1a7c00; }
+          
+          .jssocials-share-viber .jssocials-share-link {
+            color: #7b519d; }
+            .jssocials-share-viber .jssocials-share-link .jssocials-share-label {
+              color: #7b519d; }
+            .jssocials-share-viber .jssocials-share-link:hover, .jssocials-share-viber .jssocials-share-link:focus, .jssocials-share-viber .jssocials-share-link:active {
+              color: #61407b; }
+              .jssocials-share-viber .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-viber .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-viber .jssocials-share-link:active .jssocials-share-label {
+                color: #61407b; }
+          
+          .jssocials-share-pocket .jssocials-share-link {
+            color: #ef4056; }
+            .jssocials-share-pocket .jssocials-share-link .jssocials-share-label {
+              color: #ef4056; }
+            .jssocials-share-pocket .jssocials-share-link:hover, .jssocials-share-pocket .jssocials-share-link:focus, .jssocials-share-pocket .jssocials-share-link:active {
+              color: #e9132e; }
+              .jssocials-share-pocket .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-pocket .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-pocket .jssocials-share-link:active .jssocials-share-label {
+                color: #e9132e; }
+          
+          .jssocials-share-messenger .jssocials-share-link {
+            color: #0084ff; }
+            .jssocials-share-messenger .jssocials-share-link .jssocials-share-label {
+              color: #0084ff; }
+            .jssocials-share-messenger .jssocials-share-link:hover, .jssocials-share-messenger .jssocials-share-link:focus, .jssocials-share-messenger .jssocials-share-link:active {
+              color: #006acc; }
+              .jssocials-share-messenger .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-messenger .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-messenger .jssocials-share-link:active .jssocials-share-label {
+                color: #006acc; }
+          
+          .jssocials-share-vkontakte .jssocials-share-link {
+            color: #45668e; }
+            .jssocials-share-vkontakte .jssocials-share-link .jssocials-share-label {
+              color: #45668e; }
+            .jssocials-share-vkontakte .jssocials-share-link:hover, .jssocials-share-vkontakte .jssocials-share-link:focus, .jssocials-share-vkontakte .jssocials-share-link:active {
+              color: #344d6c; }
+              .jssocials-share-vkontakte .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-vkontakte .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-vkontakte .jssocials-share-link:active .jssocials-share-label {
+                color: #344d6c; }
+          
+          .jssocials-share-rss .jssocials-share-link {
+            color: #ff9900; }
+            .jssocials-share-rss .jssocials-share-link .jssocials-share-label {
+              color: #ff9900; }
+            .jssocials-share-rss .jssocials-share-link:hover, .jssocials-share-rss .jssocials-share-link:focus, .jssocials-share-rss .jssocials-share-link:active {
+              color: #cc7a00; }
+              .jssocials-share-rss .jssocials-share-link:hover .jssocials-share-label, .jssocials-share-rss .jssocials-share-link:focus .jssocials-share-label, .jssocials-share-rss .jssocials-share-link:active .jssocials-share-label {
+                color: #cc7a00; }
+                .jssocials-share-line .jssocials-share-link {
+                    background: #25af00;
+                    border: 1px solid #209600; }
+                    .jssocials-share-line .jssocials-share-link:hover {
+                      background: #1a7c00; }
+                  
+                  .jssocials-share-viber .jssocials-share-link {
+                    background: #7b519d;
+                    border: 1px solid #6e488c; }
+                    .jssocials-share-viber .jssocials-share-link:hover {
+                      background: #61407b; }
+                  
+                  .jssocials-share-pocket .jssocials-share-link {
+                    background: #ef4056;
+                    border: 1px solid #ed2841; }
+                    .jssocials-share-pocket .jssocials-share-link:hover {
+                      background: #e9132e; }
+                  
+                  .jssocials-share-messenger .jssocials-share-link {
+                    background: #0084ff;
+                    border: 1px solid #0077e6; }
+                    .jssocials-share-messenger .jssocials-share-link:hover {
+                      background: #006acc; }
+                  
+                  .jssocials-share-vkontakte .jssocials-share-link {
+                    background: #45668e;
+                    border: 1px solid #3d5a7d; }
+                    .jssocials-share-vkontakte .jssocials-share-link:hover {
+                      background: #344d6c; }
+                  
+                  .jssocials-share-rss .jssocials-share-link {
+                    background: #ff9900;
+                    border: 1px solid #e68a00; }
+                    .jssocials-share-rss .jssocials-share-link:hover {
+                  background: #cc7a00; }
+          
+/* jssocial css ends */

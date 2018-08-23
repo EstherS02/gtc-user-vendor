@@ -9,6 +9,7 @@ const roles = require('../../config/roles');
 
 var router = express.Router();
 
+router.get('/import-ebay', controller.importEbay);
 router.get('/:id', controller.productView);
 router.get('/:id/reviews', controller.productReviews);
 router.get('/:id/rating-counts', controller.productRatingsCount);

@@ -1,12 +1,12 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
-
-	$(document).ready(function () {
+	var userInfo = {{{DisplayJSON LoggedInUser}}}
+	var vendorInfo = {{{DisplayJSON VendorDetail}}}
+	$(document).ready(function() {
 		$('.hide').hide();
 		$('.allComments').hide();
 		$("#blog_img").hide();
+		$(".comment-image").hide();
 
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
@@ -24,19 +24,20 @@
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
+				minCropBoxWidth: 1264,
+				zoomable: false,
+				scalable: false,
 				ready: function() {
-                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-                    }
-                });
+					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+				}
+			});
 		}).on('hidden.bs.modal', function() {
 			cropBoxData = cropper.getCropBoxData();
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
-
-		$('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -45,15 +46,14 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-		$("#selectedBlogFile").change(function () {
-			imagesPreview(this);	
+		$("#selectedBlogFile").change(function() {
+			imagesPreview(this);
 		});
 
 
 
-
-		$('#postBlog').click(function () {
-			var formData={};
+		$('#postBlog').click(function() {
+			var formData = {};
 			formData.post_message = $("#blog_text").val();
 			formData.vendor_id = vendorInfo.id;
 			formData.user_id = userInfo.id;
@@ -62,53 +62,63 @@
 
 			form.append("file", cropperOutputImage, fileDetails["fileName"]);
 
-	//form.append("file", $("#selectedBlogFile")[0].files[0]);
-	var url = '/api/vendor-props/blog-post';
-	if (imgVal) {
-		$.ajax({
-			type: 'POST',
-			url: '/api/TalkSetting/upload',
-			data: form,
-			cache: false,
-			dataType: 'json',
-			processData: false,
-			contentType: false,
-			success: function (data) {
-				console.log(data);
-				formData.post_media_type = 2;
-				formData.post_media_url = data.imageURL;
-				apiCall(url,formData);
-				$("#blog_img").hide();
-			},
-			error: function (error) {
-				console.log("Error", error);
+			//form.append("file", $("#selectedBlogFile")[0].files[0]);
+			var url = '/api/vendor-props/blog-post';
+			if (imgVal) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/TalkSetting/upload',
+					data: form,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function(data) {
+						console.log(data);
+						formData.post_media_type = 2;
+						formData.post_media_url = data.imageURL;
+						apiCall(url, formData);
+						$("#blog_img").hide();
+					},
+					error: function(error) {
+						console.log("Error", error);
+					}
+				});
+			} else {
+				if ($("#blog_text").val()) {
+					formData.post_media_type = 1;
+					apiCall(url, formData);
+				} else {
+					$('#blog_text').notify("Please enter the value", "error");
+					console.log("Please enter the blog Content")
+				}
 			}
 		});
-	} else {
-		if($("#blog_text").val()){
-			formData.post_media_type = 1;
-			apiCall(url,formData);
-		}else{
-			$('#blog_text').notify("Please enter the value", "error");
-			console.log("Please enter the blog Content")
-		}
-	}
-});
 
-$("#selectedBlogFile").change(function() {
-	$("#blog_img").show();
-  readURL(this);
-});
+		$("#selectedBlogFile").change(function() {
+			$("#blog_img").show();
+			readURL(this);
+		});
+
+	$(".newComment").change(function() {
+		// $("#blog_img").show();
+		// readURL(this);
+	var id = $(this).attr("data-commentid");
+		$("#comment_img-"+id).show();
+		readCommentURL(this);
+					
 	});
-	function postComment(e){
-		var formData={};
-		formData.discussion_board_post_id=e;
-		formData.status=1;
-		formData.comment = $("#comment_text"+e).val();
-		var imgVal = $("#selectedFile"+e).val();
+	});
+
+	function postComment(e) {
+		var formData = {};
+		formData.discussion_board_post_id = e;
+		formData.status = 1;
+		formData.comment = $("#comment_text" + e).val();
+		var imgVal = $("#selectedFile" + e).val();
 		var form = new FormData();
 
-		form.append("file", $("#selectedFile"+e)[0].files[0]);
+		form.append("file", $("#selectedFile" + e)[0].files[0]);
 		var url = '/api/vendor-props/blog-comment';
 		if (imgVal) {
 			$.ajax({
@@ -119,31 +129,36 @@ $("#selectedBlogFile").change(function() {
 				dataType: 'json',
 				processData: false,
 				contentType: false,
-				success: function (data) {
+				success: function(data) {
 					console.log(data);
 					formData.comment_type = 2;
 					formData.comment_media_url = data.imageURL;
-					apiCallComment(url,formData,e);
+					apiCallComment(url, formData, e);
+					$("#selectedFile" + e).attr('src', " ");
+					$("#selectedFile" + e).val("");
+
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log("Error", error);
 				}
 			});
 		} else {
-			if($("#comment_text"+e).val()){
+			if ($("#comment_text" + e).val()) {
 				formData.comment_type = 1;
-				apiCallComment(url,formData,e);
-			}else{
+				apiCallComment(url, formData, e);
+
+			} else {
 				console.log("Please enter the value")
-				$('#comment_text'+ e).notify("Please enter the value", "error");
+				$('#comment_text' + e).notify("Please enter the value", "error");
 			}
 		}
 	}
+
 	function apiCall(url, data) {
 		$.ajax({
 			type: 'POST',
 			url: url,
-			data:data,
+			data: data,
 			success: function(data, text) {
 				location.reload();
 			},
@@ -153,35 +168,33 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
-	function apiCallComment(url, data,e) {
+
+
+	function apiCallComment(url, data, e) {
 		$.ajax({
 			type: 'POST',
 			url: url,
-			data:data,
+			data: data,
 			success: function(res) {
-				var count= res.result.count;
-				var results = res.result.rows;
-				console.log(res.result)
-				var i=0;
-				// location.reload();
-				// alert("DiscussionBoardPostComments-"+e);
-				// var source   = document.getElementById("DiscussionBoardPostComments-"+e).innerHTML;
-				// var template = Handlebars.compile(source);
-				// var context = res.result;
-				// var html    = template(context);
-				// var domElement = `<div id="DiscussionBoardPostComments-`+e+`">`+ 
-				var newData = extract(results,e);
-				// alert("newPart1"+document.getElementById("newPart1"+e).innerHTML);
-				document.getElementById("newPart1"+e).innerHTML = newData.new1;
-				document.getElementById("newPart2"+e).innerHTML = newData.new2;
-				if(newData.new2){
-					$('#allComments'+e).hide();
-					$('#hideAll'+e).hide();
-					$('#showAll'+e).show();
+				if(res.result){
+					var count = res.result.count;
+					var results = res.result.rows;
+					console.log(res.result)
+					var i = 0;
+					var newData = extract(results, e);
+					document.getElementById("newPart1" + e).innerHTML = newData.new1;
+					document.getElementById("newPart2" + e).innerHTML = newData.new2;
+					document.getElementById("comment_count-"+ e).innerHTML = `<p>Comments(`+count+`)</p>`;			
+					if (newData.new2) {
+						$('#allComments' + e).hide();
+						$('#hideAll' + e).hide();
+						$('#showAll' + e).show();
+					}
+					$("#comment_text" + e).val("");
+					$("#selectedFile" + e).attr('src', "");
+				}else{
+					$('#comment_text' + e).notify("Please enter the valid data", "error");				
 				}
-				$("#comment_text"+e).val("");
-				$("#selectedFile"+e).attr('src', "");
-											
 			},
 			error: function(request, status, error) {
 				console.log('status', status);
@@ -189,163 +202,157 @@ $("#selectedBlogFile").change(function() {
 			}
 		});
 	}
-	function extract(data,e){
+
+	function extract(data, e) {
 		// return 'data';
-		var i=0;
-		var data1={};
+		var i = 0;
+		var data1 = {};
 		var new1 = '';
 		var new2 = '';
 		data.forEach(function(element) {
-		  if(i<2){
-		  	new1 = new1 + ifPart(element);
+			if (i < 2) {
+				new1 = new1 + ifPart(element);
 			}
-		   if(i>=2){
-		   	new2 = new2 + ifPart(element);
-		   }
-		  i++;
+			if (i >= 2) {
+				new2 = new2 + ifPart(element);
+			}
+			i++;
 
 		});
-		if(new2){
-			var upper = `<div id="showAll`+e+`" onclick="show(`+e+`)" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
-				</div>
-				<div id="allComments`+e+`" class="allComments">`;
-			var lower = `<div id="hideAll`+e+`" onclick="hide(`+e+`)" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
-														</div>
-													</div>`;
-			new2 = upper+new2+lower;
+		if (new2) {
+			var upper = `<div id="showAll` + e + `" onclick="show(` + e + `)" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
+		</div>
+		<div id="allComments` + e + `" class="allComments">`;
+			var lower = `<div id="hideAll` + e + `" onclick="hide(` + e + `)" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
+		</div>
+	</div>`;
+	new2 = upper + new2 + lower;
 
-		}
-		data1.new1 = new1;
-		data1.new2 = new2;
-		return data1;
-	}
-	function ifPart(element){
-		return `<div><div class="row" style="margin-bottom: 5px;">
-				<div class="col-md-2 col-2">
-					<img style="width: 30px;height:30px " class = "img-border-page" src="`+ProfilePicture(element.User)+`">
-				</div>
-				<div class="col-md-10 col-10">
-					<p class="discussion_here"><span class="discussion_hayden">`+element.User.first_name+element.User.last_name+`</span>&nbsp;- &nbsp;`+ comment(element) + commentType(element)+
-					`</p>
-				</div>
-			</div></div>`;
-
-	}
-	function ProfilePicture(context){
-		if (context && context.user_pic_url)
-        	return context.user_pic_url;
-
-    	return '/img/avatar.png'
-	}
-	function FormatDate(testDate){
-		return moment(testDate).fromNow();
-	}	
-	function comment(data){
-		var comment='';
-		if(data.comment){
-			comment= data.comment;
-		}
-		return comment; 
-	}
-	function commentType(data){
-		var comment = '';
-		if(data.comment_type == 2){
-			comment =  `<p>&nbsp;- &nbsp;<img src="`+data.comment_media_url+`" width="25%" height="25%">- <span class="discussion_day">`+FormatDate(data.created_on)+`</span></p>`;
-		} 
-		return comment;
-	}
-
-
-
-
-	function show(e){
-		$('#allComments'+e).show();
-		$('#hideAll'+e).show();
-		$('#showAll'+e).hide();
-	}
-	function hide(e){
-		$('#allComments'+e).hide();
-		$('#hideAll'+e).hide();
-		$('#showAll'+e).show();
-	}
-
-	function readURL(input) {
-
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-      $('#blah').attr('src', e.target.result);
-    }
-
-    reader.readAsDataURL(input.files[0]);
-  }
 }
-function removePic(){
+data1.new1 = new1;
+data1.new2 = new2;
+return data1;
+}
+
+function ifPart(element) {
+	return `<div><div class="row" style="margin-bottom: 5px;">
+	<div class="col-md-2 col-2">
+		<img style="width: 30px;height:30px " class = "img-border-page" src="` + ProfilePicture(element.User) + `">
+	</div>
+	<div class="col-md-10 col-10">
+		<p class="discussion_here"><span class="discussion_hayden">` + element.User.first_name + element.User.last_name + `</span>&nbsp;- &nbsp;` + comment(element) + commentType(element) +
+			`</p>
+		</div>
+	</div></div>`;
+
+}
+
+function ProfilePicture(context) {
+	if (context && context.user_pic_url)
+		return context.user_pic_url;
+
+	return '/img/avatar.png'
+}
+
+function FormatDate(testDate) {
+	return moment(testDate).fromNow();
+}
+
+function comment(data) {
+	var comment = '';
+	if (data.comment) {
+		comment = data.comment;
+	}
+	return comment;
+}
+
+function commentType(data) {
+	var comment = '';
+	if (data.comment_type == 2) {
+		comment = `<p>&nbsp;- &nbsp;<img src="` + data.comment_media_url + `" width="25%" height="25%">- <span class="discussion_day">` + FormatDate(data.created_on) + `</span></p>`;
+	}
+	return comment;
+}
+
+
+
+function show(e) {
+	$('#allComments' + e).show();
+	$('#hideAll' + e).show();
+	$('#showAll' + e).hide();
+}
+
+function hide(e) {
+	$('#allComments' + e).hide();
+	$('#hideAll' + e).hide();
+	$('#showAll' + e).show();
+}
+
+function readURL(input) {
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			$('#blah').attr('src', e.target.result);
+		}
+		reader.readAsDataURL(input.files[0]);
+	}
+}
+
+
+function removePic() {
 	$('#selectedBlogFile').attr('src', " ");
 	$('#blah').attr('src', "");
 	$('#selectedBlogFile').val("");
 	$('#blog_img').hide();
 }
-	function userLike(e){
 
-		if(userInfo.email){
-			var dataInfo={};
-			dataInfo.id = e;
-			$.ajax({
-				type: "POST",
-				url: "/api/vendor-props/blog-like",
-				data: dataInfo,
-				success: function(res) {
-					document.getElementById("LikeCount"+e).innerHTML = "<p id='LikeCount'"+e+">"+res.count+"Likes</p>";
-					document.getElementById("likeType"+e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('"+e+"')' id='likeType'>"+res.type+"</a>";
-					console.log(res)
-				},
-				error: function(error) {
-					if (error) {
-						if (error.status === 401)
-							return location.href = "/login";
-					}
-				}
-			});
-		}else{
-			window.location.href="/login";
+function readCommentURL(input) 
+{
+		var id = $(input).attr("data-commentid");
+		var url = $(".newComment").val();
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			$('#blah'+id).attr('src', e.target.result);
 		}
+		reader.readAsDataURL(input.files[0]);
 	}
-
-function openModal() {
-  document.getElementById('myModal').style.display = "block";
+}
+function removeCommentPic(e) {
+	$('#selectedFile'+e).attr('src', " ");
+	$('#blah'+e).attr('src', "");
+	$('#selectedFile'+e).val("");
+	$('#blog_img'+e).hide();
+	$('#comment_img-'+e).hide();
 }
 
-function closeModal() {
-  document.getElementById('myModal').style.display = "none";
+function userLike(e) {
+
+	if (userInfo.email) {
+		var dataInfo = {};
+		dataInfo.id = e;
+		$.ajax({
+			type: "POST",
+			url: "/api/vendor-props/blog-like",
+			data: dataInfo,
+			success: function(res) {
+				document.getElementById("LikeCount" + e).innerHTML = "<p id='LikeCount'" + e + ">" + res.count + "Likes</p>";
+				document.getElementById("likeType" + e).innerHTML = "<a href='javascript:;' class='discussion_butt btn' onclick='userLike('" + e + "')' id='likeType'>" + res.type + "</a>";
+				console.log(res)
+			},
+			error: function(error) {
+				if (error) {
+					if (error.status === 401)
+						return location.href = "/login";
+				}
+			}
+		});
+	} else {
+		window.location.href = "/login";
+	}
 }
 
-var slideIndex = 1;
-showSlides(slideIndex);
 
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var image = $('#originalLightbox'+n).attr('src');
-  $('#lightbox').attr('src', image);
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  // captionText.innerHTML = dots[slideIndex-1].alt;
-}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -405,9 +412,8 @@ aria-hidden="true">
 													<button class="discussion_butt" id="postBlog">Post</button>
 												</div>
 												<div id="blog_img" >
-												<img id="blah" src="#" height="35px" width="35px" alt="your image" />
-												<span class="close" onclick="removePic()">&times;</span>
-
+													<img id="blah" src="#" height="35px" width="35px" alt="your image" />
+													<span class="close" onclick="removePic()">&times;</span>
 												</div>
 											</div>
 										</div>
@@ -424,11 +430,12 @@ aria-hidden="true">
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
 											{{#ifCond this.post_media_type "==" 2}}
-										    {{!-- <img src="{{this.post_media_url}}" style="width:100% margin-top: 10px;" onclick="openModal();currentSlide({{@index}})" > --}}
-											<img src="{{this.post_media_url}}" alt="img" onclick="openModal();currentSlide({{@index}})" style="width: 100%;margin-top: 10px;"  id="originalLightbox{{@index}}">
+											<a class="image-popup-vertical-fit " href="{{this.post_media_url}}">
+												<img src="{{this.post_media_url}}" style="width: 100%;margin-top: 10px;">
+											</a>
 											{{/ifCond}}
 											<div class="row">    	
-												<div class="col-md-8 col-5  discussion_com">
+												<div class="col-md-8 col-5  discussion_com" id="comment_count-{{this.id}}">
 													{{#if this.DiscussionBoardPostComments.length}}
 													<p>Comments({{this.DiscussionBoardPostComments.length}})</p>
 													{{else}}
@@ -442,44 +449,42 @@ aria-hidden="true">
 											</div>
 											<hr>
 											<div id="DiscussionBoardPostComments-{{this.id}}">
-													<div id ="newPart1{{this.id}}">
+												<div id ="newPart1{{this.id}}">
 													{{#each this.DiscussionBoardPostComments}}
 													{{#ifCond @index '<' 2}}
-														<div class="row" style="margin-bottom: 5px;" >
-															<div class="col-md-2 col-2">
-																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
-															</div>
-															<div class="col-md-10 col-10">
-																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
-															</div>
+													<div class="row" style="margin-bottom: 5px;" >
+														<div class="col-md-2 col-2">
+															<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
 														</div>
+														<div class="col-md-10 col-10">
+															<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}<p>&nbsp;-&nbsp; <img src="{{this.comment_media_url}}" width="25%" height="25%">- <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+														</div>
+													</div>
 													{{/ifCond}}
-
-												
-												{{/each}}
+													{{/each}}
 												</div>
 												<div id ="newPart2{{this.id}}">
-												{{#ifCond this.DiscussionBoardPostComments.length ">" 2}}
+													{{#ifCond this.DiscussionBoardPostComments.length ">" 2}}
 													<div id="showAll{{this.id}}" onclick="show({{this.id}})" class="show" style="font-size:11px"><a href="javascript:;"><u> show all comments</u></a>
 													</div>
 													<div id="allComments{{this.id}}" class="allComments">
 														{{#each this.DiscussionBoardPostComments}}
-															{{#ifCond @index '>' 1}}
-																<div class="row"  style="margin-bottom: 5px;" >
-																	<div class="col-md-2 col-2">
-																		<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
-																	</div>
-																	<div class="col-md-10 col-10">
-																		<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
-																	</div>
-																</div>
-															{{/ifCond}}
+														{{#ifCond @index '>' 1}}
+														<div class="row"  style="margin-bottom: 5px;" >
+															<div class="col-md-2 col-2">
+																<img style="width: 30px;height:30px " class = "img-border-page"src="{{ProfilePicture this.User}}">
+															</div>
+															<div class="col-md-10 col-10">
+																<p class="discussion_here"><span class="discussion_hayden">{{this.User.first_name}}{{this.User.last_name}}</span>{{#if this.comment}}&nbsp;-&nbsp;{{this.comment}} {{/if}} {{#ifCond this.comment_type "==" 2}}&nbsp;-&nbsp;s<p><img src="{{this.comment_media_url}}" width="25%" height="25%">&nbsp;-&nbsp; <span class="discussion_day">{{FormatDate this.created_on}}</span></p>{{/ifCond}} </p>
+															</div>
+														</div>
+														{{/ifCond}}
 														
 														{{/each}}
 														<div id="hideAll{{this.id}}" onclick="hide({{this.id}})" class="hide" style="font-size:11px"><a href="javascript:;"><u> Hide comments</u></a>
 														</div>
 													</div>
-												{{/ifCond}}
+													{{/ifCond}}
 												</div>
 
 											</div>
@@ -492,13 +497,17 @@ aria-hidden="true">
 														<div class="input-group">
 															<input type="text" id="comment_text{{this.id}}" class="form-control promo_code_text1" placeholder="Write Comment">
 															<div class="input-group-append">
-																<span class=" input-group-text" onclick="document.getElementById('selectedFile{{this.id}}').click();">
+																<span class=" input-group-text" onclick="document.getElementById('selectedFile{{this.id}}').click({{this.id}});">
 																	<i class="fas fa-camera"></i>
-																	<input type="file" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url" />
+																	<input type="file" class="newComment" data-commentId="{{this.id}}" id="selectedFile{{this.id}}" style="display: none;" name="comment_media_url" />
 																</span>
 															</div>
-															<button class="discussion_butt" onclick="postComment({{this.id}})">Post</button>
-															<p id="commentError"></p>
+															<button class="discussion_butt" onclick="postComment({{this.id}})">Comment</button>
+															
+														</div>
+														<div class="comment-image" id="comment_img-{{this.id}}" >
+															<img id="blah{{this.id}}" src="#" height="35px" width="35px" alt="your image" />
+															<span class="close" onclick="removeCommentPic({{this.id}})">&times;</span>
 														</div>
 													</div>
 												</div>
@@ -513,45 +522,45 @@ aria-hidden="true">
 									<div class="row showing_categ" style="padding: 3px; margin: 10px auto;">
 									</div>
 									{{#ifCond discussionBoard.count '>' queryPaginationObj.limit}}
-                                <div class="row">
-                                    <div class="col-md-3">
-                                    </div>
-                                    <div class="col-md-7">
-                                        {{#pagination discussionBoard.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-                                        <nav aria-label="Page navigation example">
-                                            <ul class="pagination justify-content-center">
-                                                {{#unless startFromFirstPage}}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-                                                </li>
-                                                {{/unless}} {{#each pages}}
-                                                <li class="page-item {{#if isCurrent}} active {{/if}}">
-                                                    <a class="page-link" href="../vendor/discussion-board/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-                                                </li>
-                                                {{/each}} {{#unless endAtLastPage}}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-                                                </li>
-                                                {{/unless}}
-                                            </ul>
-                                        </nav>
-                                        {{/pagination}}
-                                    </div>
-                                </div>
-                                {{/ifCond}}
+									<div class="row">
+										<div class="col-md-3">
+										</div>
+										<div class="col-md-7">
+											{{#pagination discussionBoard.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+											<nav aria-label="Page navigation example">
+												<ul class="pagination justify-content-center">
+													{{#unless startFromFirstPage}}
+													<li class="page-item">
+														<a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+													</li>
+													{{/unless}} {{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="../vendor/discussion-board/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+													</li>
+													{{/each}} {{#unless endAtLastPage}}
+													<li class="page-item">
+														<a class="page-link" href="../vendor/discussion-board/{{../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+													</li>
+													{{/unless}}
+												</ul>
+											</nav>
+											{{/pagination}}
+										</div>
+									</div>
+									{{/ifCond}}
 
 								</div>
 								<div class="col-md-3">
 									<div class="dis_side_bar">
 										<p class="discussion_most_head">MOST POPULAR POSTS</p>
 										<ul>
-											{{#if discussionBoard.rows}}
-											{{#each discussionBoard.rows}}
-											{{#ifCond @index "<" 5}}
+											{{#if mostPopular}}
+											{{#each mostPopular}}
+											{{!-- {{#ifCond @index "<" 5}} --}}
 											{{#if this.post_message}}
 											<li>{{this.post_message}}</li>
 											{{/if}}
-											{{/ifCond}}
+											{{!-- {{/ifCond}} --}}
 											{{/each}}
 											{{else}}
 											<li>No blog Found</li>
@@ -567,14 +576,5 @@ aria-hidden="true">
 		</div>
 	</div>
 </section>
-<div id="myModal" class="modal-lightbox">
-  <span class="close-box cursor" onclick="closeModal()">&times;</span>
-  <div class="modal-content1">
-
-    <div class="mySlides">
-      <img src="#" id="lightbox" style="width:100%">
-    </div>
-  </div>
-</div>
 
 {{> footer/bottom-footer}}

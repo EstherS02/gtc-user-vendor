@@ -89,6 +89,7 @@ export function directory(req, res) {
 				});
 		},
 		wholesalers: function(callback) {
+			console.log("wholesalers")
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -96,13 +97,13 @@ export function directory(req, res) {
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(wholesalers) {
 					return callback(null, wholesalers.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		retailers: function(callback) {
+			console.log("retailers")
 			queryObj['type'] = 'Public Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -117,6 +118,7 @@ export function directory(req, res) {
 				});
 		},
 		servicesProviders: function(callback) {
+			console.log("servicesProviders")
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -131,6 +133,7 @@ export function directory(req, res) {
 				});
 		},
 		subscriptionProviders: function(callback) {
+			console.log("subscriptionProviders")
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
 			order = 'desc';

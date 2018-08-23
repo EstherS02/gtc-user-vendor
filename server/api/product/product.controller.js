@@ -169,6 +169,7 @@ export function importAliExpress(req, res) {
 	var queryObjPlanLimit = {};
 	var productModelName = "Product";
 	var planLimitModelName = "PlanLimit";
+	var agenda = require('../../app').get('agenda');
 
 	req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
 
@@ -177,7 +178,6 @@ export function importAliExpress(req, res) {
 		res.status(400).send('Missing Query Params');
 		return;
 	}
-
 
 	(async () => {
 		const browser = await puppeteer.launch({
@@ -204,8 +204,6 @@ export function importAliExpress(req, res) {
 
 		const vendorProductListPage = await browser.newPage();
 
-		const productPage = await browser.newPage();
-
 		callAliExpressMethod(0);
 
 		async function callAliExpressMethod(pageCount) {
@@ -224,61 +222,51 @@ export function importAliExpress(req, res) {
 					products.push(productId);
 				});
 				if (products.length > 0) {
-					for (let i = 0; i < products.length; i++) {
-						aliExpressProducts.push(getAliExpressProducts(products[i], productPage));
+					if (req.user.role === roles['VENDOR']) {
+						var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+						var planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
+						var planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
+
+						queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
+						queryObjPlanLimit['status'] = status['ACTIVE'];
+
+						queryObjProduct['vendor_id'] = req.user.Vendor.id;
+						queryObjProduct['created_on'] = {
+							'$gte': planStartDate,
+							'$lte': planEndDate
+						}
+						return service.findOneRow(planLimitModelName, queryObjPlanLimit)
+							.then((planLimit) => {
+								if (planLimit) {
+									maximumProductLimit = planLimit.maximum_product;
+									return service.countRows(productModelName, queryObjProduct)
+								} else {
+									return res.status(404).send("plan limit not found.");
+								}
+							})
+							.then(async (existingProductCount) => {
+								var remainingProductLength = maximumProductLimit - existingProductCount;
+								if (products.length <= remainingProductLength) {
+									agenda.now(config.jobs.aliExpressScrape, {
+										products: products,
+										user: req.user
+									});
+									await browser.close();
+									return res.status(200).send("AliExpress product import process started.");
+								} else {
+									return res.status(403).send("Limit exceeded to add product.");
+								}
+							})
+							.catch((error) => {
+								console.log("Error:::", error);
+								return res.status(500).send("Internal server error");
+							});
+					} else {
+						return res.status(403).send("Forbidden");
 					}
 				} else {
 					return res.status(404).send("products not found.");
 				}
-				return Promise.all(aliExpressProducts)
-					.then((results) => {
-						parsedProducts = results;
-						if (req.user.role === roles['ADMIN']) {
-
-						} else if (req.user.role === roles['VENDOR']) {
-							var vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
-							var planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
-							var planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
-
-							queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
-							queryObjPlanLimit['status'] = status['ACTIVE'];
-
-							queryObjProduct['vendor_id'] = req.user.Vendor.id;
-							queryObjProduct['created_on'] = {
-								'$gte': planStartDate,
-								'$lte': planEndDate
-							}
-							return service.findOneRow(planLimitModelName, queryObjPlanLimit);
-						} else {
-							return res.status(403).send("Forbidden");
-						}
-					})
-					.then((planLimit) => {
-						if (planLimit) {
-							maximumProductLimit = planLimit.maximum_product;
-							return service.countRows(productModelName, queryObjProduct)
-						} else {
-							return res.status(404).send("plan limit not found.");
-						}
-					})
-					.then((existingProductCount) => {
-						var remainingProductLength = maximumProductLimit - existingProductCount;
-						if (parsedProducts.length <= remainingProductLength) {
-							for (var i = 0; i < parsedProducts.length; i++) {
-								importAliExpress.push(productService.importAliExpressProducts(parsedProducts[i], req));
-							}
-							return Promise.all(importAliExpress);
-						} else {
-							return res.status(403).send("Limit exceeded to add product.");
-						}
-					})
-					.then((response) => {
-						return res.status(200).send("Imported successfully.");
-					})
-					.catch((error) => {
-						console.log("Error:::", error);
-						return res.status(500).send("Internal server error");
-					});
 			} else {
 				await $(listItems).find('ul.items-list.util-clearfix').children().each((i, child) => {
 					var productLink = $(child).find('a.pic-rind').attr('href');
@@ -291,16 +279,51 @@ export function importAliExpress(req, res) {
 	})();
 }
 
-function getAliExpressProducts(productId, productPage) {
-	return new Promise(function(resolve, reject) {
-		scrape.AliExpressProductScrape(productId, productPage)
-			.then((response) => {
-				var parsedJSON = JSON.parse(response);
-				resolve(parsedJSON);
+export function importEbay(req, res) {
+	var params = {};
+	params.code = req.query.code;
+	params.grant_type = 'authorization_code';
+	params.redirect_uri = config.ebay.redirectUri;
+
+	var authCode = new Buffer(config.ebay.clientId + ":" + config.ebay.clientSecret).toString('base64');
+	request.post({
+		url: config.ebay.authURL,
+		form: params,
+		headers: {
+			"Authorization": "Basic " + authCode,
+			"content-type": 'application/x-www-form-urlencoded'
+		}
+	}, function(err, response, body) {
+		const parsedJSON = JSON.parse(body);
+		var accessToken = parsedJSON.access_token;
+
+		getEbayProducts(accessToken)
+			.then((allProducts) => {
+
 			})
-			.catch((error) => {
-				reject(error);
+			.catch(function(error) {
+				console.log("Error::::", error);
+				return res.status(400).send(error);
 			});
+	});
+}
+
+function getEbayProducts(accessToken) {
+	var getInventoryItemApiURL = 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item/GP-Cam-01';
+	var getInventoryItemsApiURL = 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item?limit=2&offset=0';
+
+	var headers = {
+		"Authorization": 'Bearer ' + accessToken,
+		"Accept": 'application/json',
+		"Content-Type": 'application/json'
+	};
+
+	request.get({
+		url: getInventoryItemApiURL,
+		headers: headers,
+		json: true
+	}, function(err, response, inventory) {
+		console.log('inventory', inventory);
 	});
 }
 

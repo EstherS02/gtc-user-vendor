@@ -25,7 +25,7 @@ export function create(req, res) {
 
 	delete req.body.to;
 	req.body.to = to;
-	
+
 	if (currentUser.provider != provider['OWN']) {
 		return res.status(400).send("This provider not allow");
 	}
@@ -56,7 +56,8 @@ export function create(req, res) {
 			return res.status(400).send("Email restricted to only one vendor");
 		}
 		queryObj['role'] = roles['VENDOR'];
-	} /* else {
+	}
+	/* else {
 		queryObj['role'] = roles['USER'];
 	} */
 
@@ -144,9 +145,46 @@ export function softDelete(req, res) {
 }
 
 export function softDeleteMany(req, res) {
-	
+	var existsEmail = [];
+	var deleteEmail = [];
+	var mailModelName = 'Mail';
+	var userMailModelName = 'UserMail';
+	var ids = JSON.parse(req.body.ids);
 
+	var queryObj = {};
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['READ']
+	}, {
+		mail_status: mailStatus['UNREAD']
+	}];
 
+	for (let i = 0; i < ids.length; i++) {
+		queryObj['id'] = ids[i];
+		existsEmail.push(service.findOneRow(userMailModelName, queryObj, []))
+	}
+
+	Promise.all(existsEmail).then((response) => {
+		if (response.length > 0) {
+			for (let i = 0; i < response.length; i++) {
+				queryObj['id'] = response[i].id;
+				deleteEmail.push(service.updateRecord(userMailModelName, {
+					mail_status: mailStatus['DELETED']
+				}, queryObj));
+			}
+			return Promise.all(deleteEmail);
+		} else {
+			// no email
+			return res.status(404).send("Invalid Email ");
+		}
+	}).then((result) => {
+		console.log("result", result);
+		return res.status(200).send("Mail deleted successfully.");
+	}).catch((error) => {
+		console.log("Error:::", error);
+		return res.status(500).send("Internal server error");
+	})	
 }
 
 export function remove(req, res) {
@@ -177,28 +215,85 @@ export function remove(req, res) {
 		});
 }
 
-export function autoCompleteFirstName(req,res){
-	 var queryObj = {}, includeArr=[];
+export function removeMany(req, res) {
+	var queryObj = {};
+
+	var ids = JSON.parse(req.body.ids);
+	queryObj['status'] = status['ACTIVE'];
+	queryObj['user_id'] = req.user.id;
+	queryObj['$or'] = [{
+		mail_status: mailStatus['SENT']
+	}, {
+		mail_status: mailStatus['DRAFT']
+	}, {
+		mail_status: mailStatus['DELETED']
+	}];
+	_.forOwn(ids, function (index) {
+		queryObj['id'] = index;
+		mailService.removeMail(queryObj)
+			.then((response) => {
+				if (response) {
+					return;
+				} else {
+					return;
+				}
+			})
+			.catch((error) => {
+				console.log("Error:::", error);
+				return res.status(500).send("Internal server error");
+			});
+	});
+	return res.status(200).send("Mail deleted successfully.");
+
+}
+
+export function autoCompleteFirstName(req, res) {
+	var queryObj = {},
+		includeArr = [];
 
 	if (req.query.keyword) {
 		queryObj['first_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
+		queryObj['id'] = {
+			$ne: req.user.id
+		}
+
 	}
 	model['User'].findAll({
-        where: queryObj,
-        attributes: ['id', 'first_name'],
-        raw: true
-    }).then(function (rows) {
-        if (rows.length > 0) {
+		where: queryObj,
+		attributes: ['id', 'first_name'],
+		raw: true
+	}).then(function (rows) {
+		if (rows.length > 0) {
 			res.status(200).send(rows);
-            return;
-        } else {
+			return;
+		} else {
 			res.status(200).send(rows);
-            return;
-        }
-    }).catch(function (error) {
-        res.status(500).send("Internal server error");
-        return;
-    })
+			return;
+		}
+	}).catch(function (error) {
+		res.status(500).send("Internal server error");
+		return;
+	})
+}
+
+export function unReadMailCount(req, res) {
+	var user_id = req.user.id;
+	var userMailModel = 'UserMail';
+	var userMailCount = {};
+
+	service.countRows(userMailModel, {
+		user_id: user_id,
+		mail_status: mailStatus['UNREAD']
+	}).then(function (userMailCount) {
+		userMailCount = {
+			userMailCount: userMailCount
+		}
+		res.status(200).send(userMailCount);
+		return;
+	}).catch(function (error) {
+		res.status(500).send("Internal server error");
+		return;
+	})
 }

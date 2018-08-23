@@ -2,6 +2,7 @@
 
 const async = require('async');
 const sequelize = require('sequelize');
+const moment = require('moment');
 
 const service = require('../../api/service');
 const model = require('../../sqldb/model-connect');
@@ -15,7 +16,6 @@ export function index(req, res) {
 	console.log("fullURL", fullUrl);
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 	console.log("marketPlaceUrl", marketplaceURl);
-
 
 	var selectedLocation = 0;
 	var selectedCategory = 0;
@@ -34,11 +34,43 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var marketPlaceTypeSelected = {};
 
-	var offset, limit, field, order,layout;
+	var offset, limit, field, order, layout,click;
 	var productEndPoint = "MarketplaceProduct";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
+	}
+
+	var dateSelect = req.query.dateSelect;
+	var start_date;
+	var end_date;
+	if (dateSelect) {
+		queryURI['dateSelect'] = dateSelect;
+		end_date = moment().add(0, 'd').toDate();
+		if (dateSelect == "today") {
+		   var convertMoment = moment();
+           start_date =  new Date(convertMoment);
+         
+		} else if (dateSelect == "last7day") {
+			start_date = moment().add(-7, 'd').toDate();
+			end_date = start_date;
+		} else if (dateSelect == "last30day") {
+			start_date = moment().add(-30, 'd').toDate();
+		} else if (dateSelect == "last1year") {
+			start_date = moment().add(-1, 'y').toDate();
+		} else if (dateSelect == "last30year") {
+			start_date = moment().add(-30, 'y').toDate();
+		}
+	}
+
+	if (dateSelect) {
+		queryPaginationObj.dateSelect = req.query.dateSelect;
+		queryParameters['created_on'] = {
+			$between: [start_date, end_date]
+		};
+		queryURI['start_date'] = start_date;
+		queryURI['end_date'] = end_date;
+		delete req.query.dateSelect;
 	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -53,16 +85,18 @@ export function index(req, res) {
 	order = req.query.order ? req.query.order : "asc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
-	layout=req.query.layout ? req.query.layout : 'grid';
+	layout = req.query.layout ? req.query.layout : 'grid';
 	queryURI['layout'] = layout;
 	queryPaginationObj['layout'] = layout;
 	delete req.query.layout;
+
 
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
-
+	
+	
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 
@@ -258,6 +292,7 @@ export function index(req, res) {
 				});
 		},
 		locations: function (callback) {
+			console.log("location Query");
 			var result = {};
 			var locationQueryObj = {};
 			var productCountQueryParames = {};
@@ -294,7 +329,7 @@ export function index(req, res) {
 				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 				group: ['Country.id']
 			}).then(function (results) {
-				console.log(results.locations)
+				console.log(results.length);
 				if (results.length > 0) {
 					model['Product'].count({
 						where: productCountQueryParames
@@ -378,4 +413,18 @@ export function index(req, res) {
 			res.render('search', error);
 		}
 	});
+}
+
+
+function changeDateFormat(inputDate){  // expects Y-m-d
+    var splitDate = inputDate.split('/');
+    if(splitDate.count == 0){
+        return null;
+    }
+
+    var month = splitDate[0];
+    var day = splitDate[1];
+	var year = splitDate[2];
+
+    return year + '-' + month + '-' + day;
 }

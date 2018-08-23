@@ -25,127 +25,7 @@ $(document).on('change', "#sortListing", function() {
 });
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
-{{!-- <section>
-   {{> vendor/vendor-header VendorDetail = VendorDetail}}
-   <div class="logged_in_cont">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2 col-12">
-                {{> vendor/vendor-left VendorDetail = VendorDetail}}
-            </div>
-            <div class="col-md-10 col-12">
-                <div class="row pmp2 lifestyle-market-bg">
-                    <div class="col-md-5 col-12">
-                        <h5>LIFESTYLE MARKETPLACE</h5>
-                    </div>
-                    <div class="col-md-2 col-12 common_padding1">
-                        <p> <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
-                            <b>{{publicLifestyle.count}}</b></p>
-                        </div>
-                        <div class="col-md-2 col-12 common_padding1">
-                            <select class="geo_textbox" id="sortListing">
-                                <option>Select option</option>
-                                <option value="Newest">Sort by Newest</option>
-                                <option value="Oldest">Sort by order</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-9 col-12" style="background-color: #fff;">
-                            <section class="box6" style="margin-bottom: 20px;">
-                                <div class="container clearfix">
-                                    <div class="row">
-                                        {{#each publicLifestyle.rows}}
-                                        <div class="col-md-4 col-12 common_top">
-                                            <div class="row">
-                                                <div class="col-md-3 col-2">
-                                                    <img src="{{this.product_base_image}}" style="width: 30px; height: 70px;">
-                                                </div>
-                                                <div class="col-md-9 col-10">
-                                                    <div class="row common_padding">
-                                                        <div class="col-md-8 col-8">
-                                                            <p class="wts_header">
-                                                               <a href="wholesale/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-                                                           </p>
-                                                       </div>
-                                                       <div class="col-md-4 col-4">
-                                                        <p class="">${{this.product_price}}CAD</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Origin</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>{{this.country_name}}</p>
-                                                    </div>
-                                                    <div class="col-md-4 col-4">
-                                                        <p>&nbsp;</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Category</p>
-                                                    </div>
-                                                    <div class="col-md-9 col-5">
-                                                        <p>{{this.category_name}} - {{this.sub_category_name}}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row common_padding">
-                                                    <div class="col-md-3 col-3">
-                                                        <p>Seller Rating</p>
-                                                    </div>
-                                                    <div class="col-md-5 col-5">
-                                                        <p>{{ starCount product_rating}}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                </div>
-                            </div>
-                        </section>
-                        {{#ifCond publicLifestyle.count '>' queryPaginationObj.limit}}
-                        <div class="row">
-                            <div class="col-md-3">
-                            </div>
-                            <div class="col-md-7">
-                                {{#pagination publicLifestyle.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-center">
-                                        {{#unless startFromFirstPage}}
-                                        <li class="page-item">
-                                            <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-                                        </li>
-                                        {{/unless}} {{#each pages}}
-                                        <li class="page-item {{#if isCurrent}} active {{/if}}">
-                                            <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-                                        </li>
-                                        {{/each}} {{#unless endAtLastPage}}
-                                        <li class="page-item">
-                                        </li>
-                                        <a class="page-link" href="../vendor/lifestyle/{{../../VendorDetail.id}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-                                        {{/unless}}
-                                    </ul>
-                                </nav>
-                                {{/pagination}}
-                            </div>
-                        </div>
-                        {{/ifCond}}
-                    </div>
-                    <div class="col-md-3 col-12 showing_categ">
-                        <p><b>FILTER BY CATEGORY</b></p>
-                        <p class="cat_bg_title_serv lifestyle-market-bg">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-                        {{> vendor/vendor-category }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> --}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
-
 <section class="vendor-product bg-gray">
     <div class="gtc-container">
         <div class="row">
@@ -159,8 +39,8 @@ $(document).on('change', "#sortListing", function() {
                         <b>{{publicLifestyle.count}}</b>{{/if}}
                     </p></h2>
                 </div>
-                <div class="row">
-                    <div class="col-md-9">
+                <div class="row no-margins">
+                    <div class="col-md-9 no-padding">
                         <div class="ibox">
                             <div class="ibox-content">
                                 <div class="row">
@@ -268,16 +148,8 @@ $(document).on('change', "#sortListing", function() {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="ibox">
-                            <div class="ibox-content p-n-l p-n-r bg-transparent">
-                                <div class="showing_categ">
-                                    <p><b>FILTER BY CATEGORY</b></p>
-                                    <p class="cat_bg_title_lg">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
-                                    {{> vendor/vendor-category }}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-3 no-padding">
+                        {{> vendor/vendor-category }}
                     </div>
                 </div>
             </div>

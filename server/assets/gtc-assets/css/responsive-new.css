@@ -88,11 +88,22 @@
 }
 
 @media (min-width: 768px) {
-	.col-sm-2half, .col-sm-10half {
+	.container-sm {
+		width: 77.911%;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	.col-sm-2half, .col-sm-10half, .col-sm-3half, .col-sm-9half {
 		float: left;
 	}
 	.col-sm-2half {
 		width: 12.85%;
+	}
+	.col-sm-3half {
+		width: 26.628%;
+	}
+	.col-sm-9half {
+		width: 73.372%
 	}
 	.col-sm-10half {
 		width: 87.15%;
@@ -215,11 +226,6 @@
 }
 
 @media screen and (min-width: 1281px) and (max-width: 1375px) {
-	.container-sm {
-		width: 77.911%;
-		margin-right: auto;
-		margin-left: auto;
-	}
 	.brand-logo img {
 		padding: 13px;
 		width: 170px;

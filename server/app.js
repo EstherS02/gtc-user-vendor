@@ -18,8 +18,45 @@ import https from 'https';
 var socketMsg = require('./sockets/socket-messages').socketMsg;
 var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
-var sendEmailNew = require('./agenda/send-email-new');
 var couponExpiry = require('./agenda/couponExpiry');
+var sendEmailNew = require('./agenda/send-email-new');
+var vendorPayouts = require('./agenda/vendor-payouts');
+var mailListener = require('./components/mail-listener');
+var mailService = require('./api/mail/reply-mail.service');
+var aliExpressScrape = require('./agenda/aliexpress-scrape');
+
+agenda.define(config.jobs.email, sendEmailNew);
+agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
+agenda.define(config.jobs.couponExpiry, couponExpiry);
+agenda.define(config.jobs.vendorPayouts, vendorPayouts);
+
+agenda.on('ready', function() {
+	agenda.every('0 0 * * *', 'couponExpiry');
+	agenda.every('1 minutes', 'vendorPayouts');
+	agenda.start();
+});
+
+mailListener.start();
+
+mailListener.on("server:connected", function() {
+	console.log("imapConnected");
+});
+
+mailListener.on("server:disconnected", function() {
+	console.log("imapDisconnected");
+});
+
+mailListener.on("error", function(err) {
+	console.log("ERROR", err);
+});
+
+mailListener.on("mail", function(mail, seqno, attributes) {
+	mailService.createReplyMail(mail);
+});
+
+mailListener.on("attachment", function(attachment) {
+	console.log("attachment.path", attachment.path);
+});
 
 // Setup server
 var app = express();
@@ -36,7 +73,7 @@ app.use(express.static(path.join(__dirname + '/assets/')));
 app.engine('.hbs', hbs.engine);
 app.set('views', path.join(__dirname + '/views/layouts/'));
 app.set('view engine', '.hbs');
-
+app.set('agenda', agenda);
 
 var env = app.get('env');
 
@@ -48,38 +85,6 @@ if (env === 'development') {
 		cert: ssl_certificate
 	};
 }
-
-/*mailListener.start();
-
-mailListener.on("server:connected", function() {
-	console.log("imapConnected");
-});
-
-mailListener.on("server:disconnected", function() {
-	console.log("imapDisconnected");
-});
-
-mailListener.on("error", function(err) {
-	console.log("ERROR", err);
-});
-
-mailListener.on("mail", function(mail, seqno, attributes) {
-	// do something with mail object including attachments
-	console.log("emailParsed", mail);
-	// mail processing code goes here
-});
-
-mailListener.on("attachment", function(attachment) {
-	console.log("attachment.path", attachment.path);
-});
-*/
-agenda.define(config.jobs.email, sendEmailNew);
-agenda.define(config.jobs.couponExpiry, couponExpiry);
-
-agenda.on('ready', function() {
-	agenda.every('0 0 * * *', 'couponExpiry');
-	agenda.start();
-});
 
 var httpServer = http.createServer(app);
 

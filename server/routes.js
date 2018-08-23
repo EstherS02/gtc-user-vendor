@@ -38,6 +38,7 @@ export default function(app) {
   app.use('/api/shipping-setting', require('./api/shipping-setting'));
   app.use('/api/reports', require('./api/reports'));
   app.use('/api/export-csv', require('./api/export-csv'));
+  app.use('/api/vendor-payout', require('./api/vendor-payout'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
   app.post('/auth/fb', controller.facebookLogin);
