@@ -8,8 +8,6 @@ export function vendorLanding(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
-		console.log(config.amazonImportConfig)
-
 	async.series({}, function(err, results) {
 		if (!err) {
 			res.render('vendorNav/vendor-landing', {
