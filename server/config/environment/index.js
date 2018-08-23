@@ -71,7 +71,9 @@ var all = {
 			itemCancel: 'ITEM-CANCEL-BY-VENDOR-MAIL',
 			userOrderDetail: 'USER-ORDER-DETAIL-MAIL',
 			vendorNewOrder: 'VENDOR-NEW-ORDER',
-			passwordReset: 'PASSWORD-RESET'
+			passwordReset: 'PASSWORD-RESET',
+			stripeConnectEmail: 'STRIPE-CONNECT-MAIL',
+			payoutMail: 'PAYOUT-MAIL'
 
 		}
 	},

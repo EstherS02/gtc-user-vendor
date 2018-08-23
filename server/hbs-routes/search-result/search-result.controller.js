@@ -267,7 +267,26 @@ export function index(req, res) {
 			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			if(marketplaceURl == 'wholesale')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
+			else if(marketplaceURl == 'shop')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			}
+			else if(marketplaceURl == 'services')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
+			}
+			else if(marketplaceURl == 'lifestyle')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+			}
+			else
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
 			if (req.query.location) {
 				productCountQueryParames['product_location'] = req.query.location;
 			}

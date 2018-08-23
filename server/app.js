@@ -33,7 +33,7 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
-	agenda.every('1 minutes', 'vendorPayouts');
+	//agenda.every('1 minutes', 'vendorPayouts');
 	agenda.start();
 });
 
