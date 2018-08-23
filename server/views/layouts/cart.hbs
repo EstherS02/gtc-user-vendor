@@ -300,17 +300,10 @@
 						</div>
 						{{/each}}
 					</div>
-					{{#each marketPlaces as |marketPlace|}} {{#each ../seperatedItemsList}}
-					{{#ifCond this.length ">=" 0}}
+				
 					<button class="btn btn-md btn-success m-t-sm" onclick="location.href = '/'">CONTINUE SHOPPING</button>
 					<button class="btn btn-md btn-primary m-t-sm alignright" id="UpdateTalks" onclick="UpdateAllCartItems()">UPDATE CART</button>
-					{{/ifCond}}
-					{{#ifCond this.length "==" 0}}
-					<p class="text-black">No Product Added Cart</p>
-					{{/ifCond}}
-					{{/each}}{{/each}}
 					
-
 				</div>
 
 				<div class="col-sm-3half no-padding">
