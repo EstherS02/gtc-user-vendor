@@ -241,7 +241,10 @@
 				type: "GET",
 				url: "/api/reports/latest-refunds",
 				success: function (data) {
+					if(data.length>0)
+					{
 					data.forEach(function (aObj) {
+
 						var latestRefundList = $("#latestRefunds");
 						var tag = `<div class="user-details" style="margin-top: 10px;">
 										<div class="col-md-3 latest-tickets">
@@ -259,6 +262,18 @@
 									</div>`
 						latestRefundList.append(tag);
 					});
+					}
+					else
+					{
+							var latestRefundList = $("#latestRefunds");
+							var tag = `<div class="user-details" style="margin-top: 10px;">
+										<div class="col-md-3 latest-tickets text-nowrap" style="font-size:12px">
+											No records found
+										</div>
+									
+									</div>`
+							latestRefundList.append(tag);		
+					}
 				}
 			});
 		}
