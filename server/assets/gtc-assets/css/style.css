@@ -122,7 +122,7 @@ select {
 	background-position: center center;
 }
 .search-form-home .search-input-group {
-	border: 2px solid #f3943d;
+	border: 2px solid #f49d3f;
 	border-radius: 20px;
 }
 .search-input-group>.form-control:first-child {
@@ -307,8 +307,16 @@ a:hover {
 	color: #e23644;
 	font-size: 2em;
 }
+.home-banner-right h4 {
+	font-size: 1rem;
+	color: #4377ae;
+}
 .home-banner-right p {
 	font-size: 0.813em;
+}
+.geo-locate-form .form-control-customized {
+	background: #fff;
+    border: 1px solid #d3d8da;
 }
 .signup-box {
 	position: relative;
@@ -1273,7 +1281,7 @@ ul.inner-list-view li a {
 	padding: 0.275rem;
 	text-align: center;
 	border-radius: 18px;
-	border: 2px solid #f3943d;
+	border: 2px solid #f49d3f;
 }
 .add-to-bag a {
 	background: #3f78a5 !important;

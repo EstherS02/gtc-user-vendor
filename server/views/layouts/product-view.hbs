@@ -55,14 +55,7 @@ $(document).ready(function() {
 					location.reload();
 				},
 				error: function(error) {
-					$('#productCartMessage').empty();
-					if (error.status === 401) {
-						//return location.href = "/login";
-					}
-					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function() {
-						$('#productCartMessage').empty();
-					}, 10000);
+					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
 				}
 			});
 		} else {
@@ -136,16 +129,15 @@ function wishUpdate() {
 
 <script src="js/login.js"></script>
 <style>
-	.modal {
-		text-align: center;
-		padding: 0 !important;
-	}
-
-	.modal-dialog {
-		display: inline-block;
-		text-align: left;
-		vertical-align: middle;
-	}
+/*.modal {
+	text-align: center;
+	padding: 0 !important;
+}
+.modal-dialog {
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
+}*/
 </style>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -375,7 +367,6 @@ function wishUpdate() {
 																</div>
 															</div>
 													</div>
-													<div id="productCartMessage"></div>
 												</div>
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>

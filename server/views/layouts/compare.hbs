@@ -3,41 +3,39 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 $("#gtc-cart-alert").hide();
 
 function gtcAddToCart(e) {
-    if (userInfo.email) {
-        $('#gtc-add-to-cart').prop('disabled', true);
-        var cartInfo = {};
-        cartInfo.product_quantity = $('#product-quantity-' + e).val();
-        if ($('#product-quantity-' + e).val()) {
-            $.ajax({
-                type: "POST",
-                url: "/api/cart/add-cart/" + cartInfo.product_quantity,
-                data: cartInfo,
-                success: function (res) {
-                    $('#gtc-add-to-cart').prop('disabled', false);
-                    if (res && res.message === "SUCCESS") {
-                        outputPop(res.message_details);
-                        console.log(res)
-                        $('#product-quantity-' + e).notify(res.message_details, "success");
-                        location.reload(true);
-                    }
-                },
-                error: function (error) {
-                    $('#gtc-add-to-cart').prop('disabled', false);
-                    if (error) {
-                        if (error.status === 401)
-                            return location.href = "/login";
-                        $('#product-quantity-' + e).notify(error.responseJSON.message_details, "error");
-                        // outputErrorPop(error);
-                        // location.reload(true);
-                    }
-                }
-            });
-        } else {
-            $('#product-quantity-' + e).notify("Please enter the value", "error");
-        }
-    } else {
-        $('#myModal').modal('show');
-    }
+	if (userInfo.email) {
+		var cartInfo = {};
+		$('#gtc-add-to-cart').prop('disabled', true);
+		cartInfo.product_quantity = $('#product-quantity-' + e).val();
+		if ($('#product-quantity-' + e).val()) {
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + e,
+				data: cartInfo,
+				success: function(res) {
+					$('#gtc-add-to-cart').prop('disabled', false);
+					if (res && res.message === "SUCCESS") {
+						outputPop(res.message_details);
+						console.log(res)
+						$('#product-quantity-' + e).notify(res.message_details, "success");
+						location.reload(true);
+					}
+				},
+				error: function(error) {
+					$('#gtc-add-to-cart').prop('disabled', false);
+					if (error) {
+						if (error.status === 401)
+							return location.href = "/login";
+						$('#product-quantity-' + e).notify(error.responseJSON.message_details, "error");
+					}
+				}
+			});
+		} else {
+			$('#product-quantity-' + e).notify("Please enter the value", "error");
+		}
+	} else {
+		$('#myModal').modal('show');
+	}
 }
 
 function removeFromCompare(argument) {
@@ -85,11 +83,8 @@ function outputErrorPop(argument) {
 $(function() {
 	$("#gtc-cart-alert").hide();
 });
-
 </script>
-
 <script src="js/login.js"></script>
-
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="wrapper-content">
     <div class="container-sm">

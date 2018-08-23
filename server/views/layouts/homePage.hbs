@@ -114,8 +114,35 @@
     <div class="gtc-container banner-padding">
         <div class="row">
             <div class="col-md-7">
-                <div class="col-md-4 offset-md-7">
-                    
+                <div class="row">
+                    <div class="col-md-4 offset-md-7">
+                        <div class="home-banner-right">
+                            <h4>What is Geo-Locate</h4>
+                            <p>Find products close to home, or nearby you target market with Lorem ipsum dolor sholt.</p>
+                            <h1 class="text-marketplace-1">GIVE IT A TRY!:</h1>
+                            <form id="geoLocateForm" class="geo-locate-form">
+                                <div class="form-group m-b-xs">
+                                    <input type="email" id="origin" name="origin" class="form-control-customized form-control-sm rounded" placeholder="Location (eg Calgary, AB)" required="true">
+                                </div>
+                                <div class="form-group m-b-xs">
+                                    <div class="select-container">
+                                        <select class="form-control-customized form-control-sm rounded">
+                                            <option disabled selected>Category</option>
+                                            {{#each categories}}
+                                            <option value="{{this.id}}">{{ this.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>    
+                                <div class="form-group m-b-xs">
+                                    <input type="email" id="keyword" name="keyword" class="form-control-customized form-control-sm rounded" placeholder="Keyword (eg Spoiler)" required="true">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-small btn-block btn-primary"><strong>SEARCH</strong></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-5">
@@ -166,7 +193,12 @@
                                                         <input type="password" id="inputPassword" name="password"  class="form-control-customized form-control-sm rounded form-control-border" placeholder="Password"  required="true">
                                                     </div>
                                                     <div class="form-group">
-                                                        <input type="checkbox" id="inputTerms" name="input_terms" required="true"> <small>Accept terms and conditions</small>
+                                                        {{!-- <input type="checkbox" id="inputTerms" name="input_terms" required="true"> --}}
+                                                        <div class="customCheckbox">
+                                                            <input type="checkbox" id="inputTerms" class="customCheckboxInput" />
+                                                            <label class="checkbox-b" for="inputTerms"></label>
+                                                        </div>
+                                                        <small class="m-l-sm">Accept terms and conditions</small>
                                                     </div>
                                                     <div class="form-group">
                                                         <button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger"><strong>CREATE ACCOUNT</strong></button>
