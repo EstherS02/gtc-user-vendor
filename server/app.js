@@ -27,11 +27,11 @@ var aliExpressScrape = require('./agenda/aliexpress-scrape');
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
-agenda.define(config.jobs.vendorPayouts, vendorPayouts);
+//agenda.define(config.jobs.vendorPayouts, vendorPayouts);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
-	agenda.every('1 minutes', 'vendorPayouts');
+	//agenda.every('1 minutes', 'vendorPayouts');
 	agenda.start();
 });
 

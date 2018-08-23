@@ -1,5 +1,14 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
+<script>
+$( document ).ready(function() {
+
+$( "#connect" ).click(function() {
+        window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://701e2d73.ngrok.io/api/auth'
+});
+});
+</script>
+
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -50,7 +59,7 @@
 							<p class="cya1">Sell more by accepting more payment options. Connect your PayPal ans Stripe account or sign up for your free account
 								today.</p>
 							<div class="row">
-								<div class="col-md-5 paypal">
+								{{!-- <div class="col-md-5 paypal">
 									<img class="paypal-img" src="../../img/paypal.jpg" width="100%">
 									<p class="cya">Connect an existing PayPal account: </p>
 									<div class="row">
@@ -68,7 +77,7 @@
 										</div>
 									</div>
 									<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction. </p>
-								</div>
+								</div> --}}
 								<div class="col-md-5">
 									<img src="../../img/stripe.jpg" width="100%">
 									<p class="cya">Connect an existing Stripe account: </p>
@@ -77,13 +86,13 @@
 											<input class="paypal-email" type="text" name="id" placeholder="Enter Your Stripe Id" />
 										</div>
 										<div class="col-md-4">
-											<button class="connect-btn">CONNECT </button>
+											<button class="connect-btn" id="connect">CONNECT </button>
 										</div>
 									</div>
 									<p class="cya">Don't have a stripe account?</p>
 									<div class="row">
 										<div class="col-md-12">
-											<button class="connect-btn"> CREATE A NEW STRIPE ACCOUNT </button>
+											<button onclick="window.location=https://stripe.com/" class="connect-btn"> CREATE A NEW STRIPE ACCOUNT </button>
 										</div>
 									</div>
 									<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +0.30 per transaction. </p>
