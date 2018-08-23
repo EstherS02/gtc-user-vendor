@@ -17,6 +17,16 @@
 		});
 		$(function(){
 			$("#gtc-form-alert").hide();
+			 $("#searchOrderhistory").submit(function(e) {
+            e.preventDefault();
+            let formInput = $("#searchOrderhistory :input").filter(function(index, element) {
+                return $(element).val() != '';
+            }).serialize();
+           if(formInput!='')
+            {
+              window.location.href = 'order-history?' + formInput;
+             }
+          });
 		});
 
 	</script>
@@ -145,7 +155,7 @@
 									</form>
 								</div>
 								<div class="col-md-5">
-									<form class="form-inline ml-auto pull-right">
+									<form class="form-inline ml-auto pull-right" id="searchOrderhistory">
 										<div class="form-group mx-sm-3 mb-2">
 											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
 										</div>

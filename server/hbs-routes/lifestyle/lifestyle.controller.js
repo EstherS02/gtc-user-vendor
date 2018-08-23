@@ -74,13 +74,16 @@ export function lifestyle(req, res) {
 				});
 		},
 		lifestyle: function(callback) {
-			limit = 20;
+			const includeArr = [];
+			const productOffset = 0;
+			const productLimit = 20;
+			const productField = "id";
+			const productOrder = "asc";
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
 				.then(function(lifestyle) {
-					return callback(null, lifestyle.rows);
-
+					return callback(null, lifestyle);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -111,7 +114,7 @@ export function lifestyle(req, res) {
 				featuredProducts: results.featuredProducts,
 				lifestyle: results.lifestyle,
 				subscriptionProviders: results.subscriptionProviders,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {
