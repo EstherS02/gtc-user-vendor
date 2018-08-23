@@ -1700,3 +1700,13 @@ ul.inner-list-view li a {
 	text-align: center;
 	color: #FFF;
 }
+
+.custom-select-container:after {
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 10px solid black;
+    top: 25px;
+    right: 0;
+    margin: 10px;
+    opacity: 0.5;
+}

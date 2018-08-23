@@ -127,7 +127,10 @@ export function cart(req, res) {
         }
     }, function (err, results) {
         if (!err) {
+<<<<<<< HEAD
             console.log("totalItems&&&&&&&&&&&&",results)
+=======
+>>>>>>> master
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
