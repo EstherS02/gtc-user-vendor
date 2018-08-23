@@ -72,6 +72,7 @@ export default function(app) {
   app.use('/user', require('./hbs-routes/user-profile'));
   app.use('/promote-store', require('./hbs-routes/promote-store'));
   app.use('/order-history', require('./hbs-routes/order-history'));
+  app.use('/messages', require('./hbs-routes/messages'));
   app.use('/dashboard-vendor-connect', require('./hbs-routes/vendor-landing'));
   app.use('/order-track', require('./hbs-routes/order-track'));
   app.use('/compare', require('./hbs-routes/compare'));

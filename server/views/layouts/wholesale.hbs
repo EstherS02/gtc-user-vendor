@@ -530,12 +530,11 @@
 
 {{!-- data-backdrop="static" data-keyboard="false" --}}
 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="vertical-alignment-helper">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" align="center">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row geo_bgimg1" align="center">
+                        <div class="row geo_bgimg1">
 
                             <div class="row">
                                 <div class="col-md-12 offset-md-0">
@@ -576,6 +575,14 @@
                                                                 <img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
                                                             </a>
                                                         </li>
+                                                        <li>
+                                                        <div class="form-group" style="padding:4px">
+                                                            <p class="modal_sign">Already have a Account?</p>
+                                                            <button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
+                                                                <strong>Login</strong>
+                                                            </button>
+                                                        </div>
+                                                    </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -607,10 +614,6 @@
                                                                     <strong>CREATE ACCOUNT</strong>
                                                                 </button>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <p>Already have a Account?</p>
-                                                                <a href="login">click to login </a>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -624,7 +627,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    {{!-- </div> --}}
 </div>
 
 {{> footer/bottom-footer}}

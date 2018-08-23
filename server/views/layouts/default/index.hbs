@@ -29,11 +29,13 @@
     <link rel="stylesheet" href="plugins/jquery-bar-rating/themes/fontawesome-stars.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="plugins/cropperjs/cropper.min.css">
-    <link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css"> 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+    <link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css">
     <link href="plugins/summernote/summernote-bs4.css" rel="stylesheet">
     <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
     <link rel="stylesheet" href="plugins/magnific-popup/custom.css">
-    
+
 
     <script src="https://apis.google.com/js/api:client.js"></script>
     <script type="text/javascript" src="gtc-assets/js/jquery-3.3.1.min.js"></script>
@@ -59,7 +61,7 @@
     {{!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
 
     <script src="plugins/datepicker/js/datepicker.min.js"></script>
     <script src="plugins/select2/js/select2.min.js"></script>
@@ -67,6 +69,45 @@
     <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="plugins/magnific-popup/custom-magnific-popup.js"></script>
     <script src="plugins/lodash/lodash.min.js"></script>
+    <script src="plugins/socketio/socket.io.js"></script>
+    <script src="../../../config/environment"></script>
+
+    <script type="text/javascript">
+        var emitSocket = {};
+        var socket;
+        $(function(){
+         // var config = require("../../../config/environment");
+            /*var socketEmit = function(){
+                var socket = io();
+                return socket;
+            }*/
+            socket = io();/*'http://localhost:8000'+ "/rooms", {
+                 transports: ['websocket']
+            }*/
+            emitSocket.userInfo = {{{DisplayJSON LoggedInUser}}};
+            //emitSocket.socket = io();
+            emitSocket.userJoin = function(user){
+
+                socket.emit('user:join', user);
+            }
+            emitSocket.userLeave = function(user){
+
+                socket.emit('user:leave', user);
+            }
+            emitSocket.chatJoin = function(thread){
+
+                socket.emit('chat:join', thread);
+            }
+            emitSocket.chatSend = function(talk){
+                socket.emit('chat:send', talk);
+            }
+            emitSocket.chatLeave = function(talk){
+                socket.emit('chat:leave', talk);
+            }
+
+        })
+
+        </script>
     <script src="plugins/cropperjs/cropper.min.js"></script>
     <script src="plugins/notifyjs/notify.min.js"></script>
     <script src="plugins/ladda/spin.min.js"></script>

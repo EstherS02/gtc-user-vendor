@@ -12,5 +12,4 @@ var controller = require('./products.controller');
 
 router.get('/', globalUser.isGlobalObj(), controller.products);
 
-
 module.exports = router;

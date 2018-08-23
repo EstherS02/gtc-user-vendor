@@ -78,13 +78,16 @@ export function shop(req, res) {
 				});
 		},
 		publicMarketplace: function(callback) {
-			limit = 20;
+			const includeArr = [];
+			const productOffset = 0;
+			const productLimit = 20;
+			const productField = "id";
+			const productOrder = "asc";
 			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
 				.then(function(publicMarketplace) {
-					return callback(null, publicMarketplace.rows);
-
+					return callback(null, publicMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -115,7 +118,7 @@ export function shop(req, res) {
 				featuredProducts: results.featuredProducts,
 				publicMarketplace: results.publicMarketplace,
 				retailers: results.retailers,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

@@ -9,6 +9,7 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function messages(req, res) {
+<<<<<<< HEAD
 	var categoryModel = "Category";
 	var LoggedInUser = {};
 	var bottomCategory = [];

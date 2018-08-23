@@ -58,8 +58,8 @@
 			}
 		});
 
-		
-		//var showChar = 175; 
+
+		//var showChar = 175;
 		//var ellipsestext = "...";
 		// moretext = "see more ...";
 		//var lesstext = "see less ...";
@@ -94,7 +94,7 @@
 
 	});
 
-</script> 
+</script>
 {{!-- <style>
 	li {
 		list-style-type: none;
@@ -269,25 +269,25 @@
 							<span>LESS THAN 1 WEEK</span>
 						</a>
 					</li>
-			
+
 					<li class="list-group-item">
 						<a {{#ifCond queryURI.dateSelect "==" 'last30day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30day'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30day") 'null'}}">
 							<span>LESS THAN 1 MONTH</span>
 						</a>
 					</li>
-			
+
 					<li class="list-group-item">
 						<a {{#ifCond queryURI.dateSelect "==" 'last1year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last1year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last1year") 'null'}}">
 							<span>MONTHLY</span>
 						</a>
 					</li>
-			
+
 					<li class="list-group-item">
 						<a {{#ifCond queryURI.dateSelect "==" 'last30year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30year") 'null'}}">
 							<span>YEARLY</span>
 						</a>
 					</li>
-			
+
 				</ul>
 			</div>
 			{{/ifCond}}
@@ -318,9 +318,9 @@
 					<div class="col-md-12">
 						<p class="text-primary text-center no-margins">No featured products available.</p>
 					</div>
-					{{/ifCond}} 
+					{{/ifCond}}
 
-					{{#ifCond layout_type "==" 'grid'}} 
+					{{#ifCond layout_type "==" 'grid'}}
 					{{#each topFeaturedProducts.rows}}
 					<div class="col-md-4">
 						<div class="product-body">
@@ -386,9 +386,9 @@
 						</div>
 					</div>
 					{{/each}}
-					{{/ifCond}} 
+					{{/ifCond}}
 
-					{{#ifCond layout_type "==" "list"}} 
+					{{#ifCond layout_type "==" "list"}}
 					{{#each topFeaturedProducts.rows}}
 					<div id="GR_list" class="table-responsive">
 						<table class="table shoping-cart-table">
@@ -420,7 +420,7 @@
 												{{/if}}
 											</div>
 
-											
+
 											{{!--
 											<div class="col-md-4 col-4 no-padding">
 												<span>Origin</span>
@@ -470,7 +470,7 @@
 							</tbody>
 						</table>
 					</div>
-					{{/each}} 
+					{{/each}}
 					{{/ifCond}}
 				</div>
 			</div>
@@ -480,7 +480,7 @@
 
 			<div class="search-list-body">
 				<div class="row">
-					{{#ifCond layout_type "==" "list"}} 
+					{{#ifCond layout_type "==" "list"}}
 					{{#each productResults.rows}}
 					<div id="GR_list" class="table-responsive">
 						<table class="table shoping-cart-table">
@@ -562,9 +562,9 @@
 							</tbody>
 						</table>
 					</div>
-					{{/each}} 
-					{{/ifCond}} 
-					{{#ifCond layout_type "==" "grid"}} 
+					{{/each}}
+					{{/ifCond}}
+					{{#ifCond layout_type "==" "grid"}}
 					{{#each productResults.rows}}
 					<div class="col-md-4">
 						<div class="product-body">
@@ -649,11 +649,11 @@
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 								{{!-- <a class="page-link" >Previous</a> --}}
 							</li>
-							{{/unless}} 
+							{{/unless}}
 
 							{{#each pages}}
-							<li class="page-item 
-							{{#if isCurrent}} active 
+							<li class="page-item
+							{{#if isCurrent}} active
 							{{/if}}">
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 							</li>
@@ -664,7 +664,7 @@
 								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 								{{!-- <a class="page-link" >Next</a> --}}
 							</li>
-							{{/unless}} 
+							{{/unless}}
 
 						</ul>
 					</nav>
@@ -680,12 +680,12 @@
 
 {{!-- data-backdrop="static" data-keyboard="false" --}}
 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="vertical-alignment-helper">
+    {{!-- <div class="vertical-alignment-helper"> --}}
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" align="center">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row geo_bgimg1" align="center">
+                        <div class="row geo_bgimg1">
 
                             <div class="row">
                                 <div class="col-md-12 offset-md-0">
@@ -726,6 +726,14 @@
                                                                 <img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
                                                             </a>
                                                         </li>
+														<li>
+                                                        <div class="form-group" style="padding:4px">
+                                                            <p class="modal_sign">Already have a Account?</p>
+                                                            <button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
+                                                                <strong>Login</strong>
+                                                            </button>
+                                                        </div>
+                                                    </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -757,10 +765,6 @@
                                                                     <strong>CREATE ACCOUNT</strong>
                                                                 </button>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <p>Already have a Account?</p>
-                                                                <a href="login">click to login </a>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -774,7 +778,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    {{!-- </div> --}}
 </div>
 
 {{> footer/bottom-footer}}
