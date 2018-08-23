@@ -77,13 +77,11 @@
 			},
 			error: function (error) {
 				console.log("Error occured while updating", error);
-				//$('.test').html(error.responseJSON.message_details);
-
 				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-danger');
 				$('#gtc-cart-alert .cart-message').text(error.responseJSON.message_details);
 				$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function () {
 					$("#gtc-cart-alert").slideUp(500);
-					location.reload();
+					//location.reload();
 				});
 
 				$('#quantity-cart-' + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details, "error");
@@ -92,21 +90,24 @@
 	}
 
 	function UpdateGtcCart(productId, cartItemId, qtyItem, productName) {
-
-		$('.cartAlert').html("");
-		//console.log(item, qtyItem, cartItemId)
-		console.log(productId, cartItemId, qtyItem)
+		console.log(qtyItem)
 		let cartInfo = {};
 		cartInfo["cartUpdateArray"] = [];
 
 		let cartItem = {};
-		var testses = $('#inputQty' + cartItemId)[0].id;
-		console.log(testses)
-		console.log("test", $('#inputQty' + cartItemId)[0].id)
-		cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
+		if (qtyItem == '') {
+			cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
+		} else {
+			cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
+		}
+
 		cartItem['product_id'] = productId;
 		cartItem['cart_item_id'] = cartItemId;
+
 		cartInfo['cartUpdateArray'].push(cartItem);
+		console.log(cartInfo)
+		
+
 		if (parseInt(cartItem.product_quantity) < parseInt(qtyItem)) {
 			console.log("dfgsg", cartItem.product_quantity)
 			//$('.cartAlert').html(productName + " Minimum quantity " + qtyItem);
@@ -127,13 +128,19 @@
 				contentType: "application/json",
 				success: function (updateData) {
 
+					$('#gtc-cart-alert1').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-cart-alert1 .cart-message').text(updateData.message_details);
+					$("#gtc-cart-alert1").fadeTo(2000, 500).slideUp(500, function () {
+						$("#gtc-cart-alert1").slideUp(500);
+						location.reload();
+					});
 					//$('#quantity-cart-' + cartItemId).notify("Quantity Updated to " + cartItem.product_quantity, "success");
+					
+					//$("#inputQty" + cartItemId).notify("Quantity Updated to " + cartItem.product_quantity, "success");
 
-					$("#inputQty" + cartItemId).notify("Quantity Updated to " + cartItem.product_quantity, "success");
-
-					setTimeout(function () {
-						window.location.reload();
-					}, 1500);
+					//setTimeout(function () {
+					//	window.location.reload();
+					//}, 1500);
 				},
 				error: function (error) {
 					console.log("Error occured while updating", error);
@@ -339,11 +346,12 @@
 											<small class="m-qty">Minimum Order Quantity: {{cartItem.Product.moq}}</small>
 											{{/if}}
 										</td>
+
 										<td>
 											{{#if cartItem.Product.moq}}
 											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.Product.moq}} class="all-quantity-cart-items" name="inputQtyValue"  style="width: 50px;">
 											{{else}}
-											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value=1 class="all-quantity-cart-items" name="inputQtyValue" style="width: 50px;">
+											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}} class="all-quantity-cart-items" name="inputQtyValue" style="width: 50px;">
 											{{/if}}
 
 											<a href="javascript:;" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.Product.moq}}`,`{{cartItem.Product.product_name}}`)"
@@ -351,12 +359,13 @@
 												<small>Update</small>
 											</a>
 										</td>
+
 										<td class="text-right">
 											{{#if cartItem.Product.moq}}
 											<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.Product.moq cartItem.Product.price}}</span>
 											<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 											{{else}}
-												<span class="price-tag m-b-xs d-block">${{quantityPrice 1 cartItem.Product.price}}</span>
+												<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.quantity cartItem.Product.price}}</span>
 											<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 											{{/if}}
 										</td>

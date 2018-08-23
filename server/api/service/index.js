@@ -513,7 +513,7 @@ export function cartHeader(user) {
                             totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
                         }
                         else{
-                            var calulatedSum = 1 * itemsValue[i].Product.price;
+                            var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
                             totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
                             totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
