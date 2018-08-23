@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-            tableName: 'talk',
+            tableName: 'talk_thread_users',
             timestamps: false
         });
 };

@@ -487,7 +487,7 @@
 															{{/each}}
 														</div>
 														{{#ifCond productRecentReview.count ">" 1}}
-														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
+														<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
 														{{/ifCond}}

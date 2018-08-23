@@ -1,0 +1,124 @@
+<script type="text/javascript">
+
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>MY MESSAGES </h2>
+						</div>
+						<div class="content-body">
+							
+							<!--message-->
+							<div class="row" ng-show="messages">
+								<div class="col-md-12">
+									<div class="panel panel-default t-b-nopadding">
+										<hr class="cartHead dash m-b-none">
+										{{!-- {{#ifCond messenger.length ">" 0}} --}}
+											<div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
+											<div class="row">
+												<div class="col-md-4 bg-white">
+													<!-- =============================================================== -->
+													<!-- member list -->
+													<ul class="message-list">
+														<li class="bounceInDown" ng-repeat="messenger in allMessengers">
+															<a ng-click="getConversations(messenger.foodie)" class="clearfix msg-a" ng-class="{'active': isActive[messenger.foodie._id]}">
+																<span class="avatar">
+																<img src="/img/avatar.png" alt="" class="img-circle m-r-sm">
+																</span>
+																<div class="friend-name" style="display: flex">
+																	<strong>{{messenger.foodie.first_name}}2B Whole European Gluten Free Bakery</strong><span class="m-l-sm" ng-if="messenger.foodie.role == 'CHEF'">{{!-- <img src="assets/images/chef-hat.png" style="width: 17px; height: 17px"> --}}</span>
+																</div>
+																<div class="last-message text-muted">{{messenger.message}}</div>
+																<small class="time text-muted">{{messenger.date}}11:00am</small>
+																<small class="chat-alert online">
+																	<i ng-show="messenger.foodie.online == true" class="on b-white top"></i>
+																	<i ng-show="messenger.foodie.online == false" class="off b-white top"></i>
+																</small>
+															</a>
+														</li>
+													</ul>
+												</div>
+												<!--=========================================================-->
+												<!-- selected chat -->
+												<div class="col-md-8 bg-white">
+													<div scroll-glue-bottom="glued" class="chat-message" style="height: 400px; overflow-y: auto;">
+														<ul class="chat">
+															<li class="left clearfix">
+																<span class="chat-img pull-left">
+																	<img src="/img/avatar.png" alt="User Avatar">
+																</span>
+																<div class="chat-body clearfix">
+																	<div class="header">
+																		<strong class="primary-font">{{conversation.user.first_name}}{{conversation.user.last_name}}Sumithra</strong>
+																		<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}} 11:00 am</small>
+																	</div>
+																	<p>
+																		{{conversation.message}} Hi,May i know your native
+																	</p>
+																</div>
+															</li>
+															<li class="right clearfix" >
+																<span class="chat-img pull-right">
+																	<img src="../img/avatar.png" alt="User Avatar">
+																</span>
+																<div class="chat-body clearfix">
+																	<div class="header m-b-xs">
+																		<strong class="primary-font pull-right">{{user.first_name}}{{user.last_name}} Sujitha</strong>
+																		<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}}11:31am </small>
+																	</div>
+																	<p class="pull-right m-t-xs">
+																		{{conversation.message}} Chennai
+																	</p>
+																</div>
+															</li>
+														</ul>
+													</div>
+													<div class="chat-box bg-white">
+														<form class="input-group" ng-submit="sendMessage(foodie, message)">
+															<textarea class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here" style="height: 70px"></textarea>
+															<span class="input-group-btn">
+																<button class="btn btn-success no-rounded" type="button" ng-click="sendMessage(foodie, message); message=''" ng-disable="msgDisable" style="margin-left: 10px !important;
+																margin-right: 10px !important;">Send</button>
+															</span>
+														</form>
+														<!-- /input-group -->
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										{{!-- {{else}} --}}
+										<div class="wrapper-sm" ng-show="totalMessengers==0">
+											<div class="row m-t-md">
+												<div class="col-md-12 text-center inline">
+													<img src="assets/images/no-message.png" class="img-responsive">
+													<span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
+														There is no conversations to show. <br>Click on the message icon near a chef to message the chef.
+													</span>
+												</div>
+											</div>
+										</div>
+										
+										{{!-- {{/ifCond}} --}}
+									</div>
+								</div>
+							</div>
+							<!--end message-->
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	{{> footer/bottom-footer}}
