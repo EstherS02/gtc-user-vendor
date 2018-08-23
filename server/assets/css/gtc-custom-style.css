@@ -286,20 +286,6 @@ img {
   padding: 10px;
 }
 
-/*.pull-right {
-  float: right !important;
-}
-
-.pull-left {
-  float: left !important;
-}*/
-
-.feed-element {
-  width: 100%;
-  border-bottom: 1px solid #e7eaec;
-  padding: 5px 0px;
-}
-
 .feed-product {
   width: 60px;
   float: left;

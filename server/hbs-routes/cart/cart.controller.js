@@ -136,7 +136,7 @@ export function cart(req, res) {
             totalPrice['grandTotal'] = 0;
 
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-
+        
 
             _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
@@ -158,8 +158,6 @@ export function cart(req, res) {
 
                 totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
             });
-
-            console.log(totalPrice)
 
             var coupon_data = [];
             if (typeof(req.cookies.check_promo_code) != 'undefined') {

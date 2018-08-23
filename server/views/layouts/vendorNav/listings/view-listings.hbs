@@ -20,6 +20,16 @@
 	$(document).ready(function () {
 		
 		$("#gtc-cart-alert").hide();
+		 $("#serviceListing").submit(function(e) {
+            e.preventDefault();
+            let formInput = $("#serviceListing :input").filter(function(index, element) {
+                return $(element).val() != '';
+            }).serialize();
+           if(formInput!='')
+            {
+              window.location.href = 'listings/services?' + formInput;
+             }
+          });
 	})
 	function changeStatus(e) {
 		window.location.href = '/listings/' + e.name + '?status=' + e.value;
@@ -134,7 +144,7 @@
 										</div>
 								</div>
 								<div class="col-md-5">
-									<form class="form-inline ml-auto pull-right">
+									<form class="form-inline ml-auto pull-right" id="serviceListing">
 										<div class="form-group mx-sm-3 mb-2">
 											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
 											{{!-- <button type="button" id="changePwd"  class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
