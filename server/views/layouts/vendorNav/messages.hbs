@@ -1,1 +1,209 @@
-<p> Hello Messages </p>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+  <div class="gtc-container">
+    <div class="row">
+      <div class="col-sm-2">
+        {{> vendor/vendor-side-navbar}}
+      </div>
+      <div class="col-sm-10">
+        <div class="ibox">
+          <div class="ibox-content">
+            <div class="ibox-title">
+              <h2>Messages</h2>
+            </div>
+            <div class="content-body">
+              <div class="row" ng-show="messages">
+                <div class="col-md-12">
+                  <div class="panel panel-default t-b-nopadding">
+                    <span class="block h4 text-flmild font-thin m-t-md m-b-sm">MY MESSAGES
+                    </span>
+                    <hr class="cartHead dash m-b-none">
+                    <div class="wrapper-sm" ng-show="totalMessengers==0">
+                      <div class="row m-t-md">
+                        <div class="col-md-12 text-center inline">
+                          <img src="assets/images/no-message.png" class="img-responsive">
+                          <span class="h4 text-muted block m-t-md m-b-md" style="line-height: inherit;">
+                            There are no conversations to show.
+                            <br>Click on the message icon near a chef to message the chef.
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
+                      <div class="row">
+                        <div class="col-md-4 bg-white">
+                          <!-- =============================================================== -->
+                          <!-- member list -->
+                          <ul class="friend-list">
+                            <li class="bounceInDown" ng-repeat="messenger in allMessengers">
+                              <a  class="clearfix msg-a">
+                                <span class="avatar">
+                                  
+                                </span>
+                                <div class="friend-name" style="display: flex">
+                                  
+                                  <span class="m-l-sm" ng-if="messenger.foodie.role == 'CHEF'">
+                                    <img src="assets/images/chef-hat.png" style="width: 17px; height: 17px">
+                                  </span>
+                                </div>
+                                <div class="last-message text-muted">hello</div>
+                                <small class="chat-alert online">
+                                  <i ng-show="messenger.foodie.online == true" class="on b-white top"></i>
+                                  <i ng-show="messenger.foodie.online == false" class="off b-white top"></i>
+                                </small>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <!--=========================================================-->
+                        <!-- selected chat -->
+                        <div class="col-md-8 bg-white">
+                          <div scroll-glue-bottom="glued" class="chat-message" style="height: 400px; overflow-y: auto;">
+                            <ul class="chat">
+                              <li class="left clearfix">
+                                <span class="chat-img pull-left">
+                                </span>
+                                <div class="chat-body clearfix">
+                                  <div class="header">
+                                    
+                                    
+                                  </div>
+                                  <p>
+                                    para
+                                  </p>
+                                </div>
+                              </li>
+                              <li class="right clearfix" ng-if="conversation.user._id == user._id">
+                                <span class="chat-img pull-right">
+                                  <img  alt="User Avatar">
+                                </span>
+                                <div class="chat-body clearfix">
+                                  <div class="header m-b-xs">
+                                    
+                                  </div>
+                                  <p class="pull-right m-t-xs">
+                                   conversation.message
+                                  </p>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="chat-box bg-white">
+                            <form class="input-group" ng-submit="sendMessage(foodie, message)">
+                              <textarea class="form-control border no-shadow no-rounded"  placeholder="Type your message here" style="height: 70px"></textarea>
+                              <span class="input-group-btn">
+                                <button class="btn btn-success no-rounded" type="button" 
+                                  style="margin-left: 10px !important;
+																					margin-right: 10px !important;">Send</button>
+                              </span>
+                            </form>
+                            <!-- /input-group -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bootstrap snippet visible-xs" ng-show="totalMessengers>0">
+                      <div class="row">
+                        <div class="col-xs-12 bg-white" ng-show="showConv">
+                          <!-- =============================================================== -->
+                          <!-- member list -->
+                          <ul class="friend-list">
+                            <li class="bounceInDown">
+                              <a ng-click="getConversations(messengers.foodie,'val')" class="clearfix msg-a" ng-class="{'active': isActive[messengers.foodie._id]}">
+                                <span class="avatar">
+                                  <img src="hello.png" alt="" class="img-circle m-r-sm">
+                                </span>
+                                <div class="friend-name" style="display: flex">
+                                  <strong>messengers.foodie.first_name</strong>
+                                  <span class="m-l-sm" >
+                                    <img src="png" style="width: 17px; height: 17px">
+                                  </span>
+                                </div>
+                                <div class="last-message text-muted">messengers.message</div>
+                               
+                                <small class="chat-alert online">
+                                  <i class="on b-white top"></i>
+                                  <i class="off b-white top"></i>
+                                </small>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <!--=========================================================-->
+                        <!-- selected chat -->
+                        <div class="col-xs-12 bg-white" ng-show="hideConv">
+                          <div class="row">
+                            <div class="col">
+                              <ul class="breadcrumb bg-white b-a">
+                                <li>
+                                  <a >
+                                    <i class="fa fa-arrow-left"></i> Messengers List</a>
+                                </li>
+                                <li class="active">messengerName</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div scroll-glue-bottom="glued" class="chat-message" style="height: 400px; overflow-y: auto;">
+                            <ul class="chat">
+                              <li class="left clearfix" ng-if="conversation.user._id != user._id">
+                                <span class="chat-img pull-left">
+                                  <img alt="User Avatar">
+                                </span>
+                                <div class="chat-body clearfix">
+                                  <div class="header">
+                                    
+                                  </div>
+                                  <p>
+                                    conversation.message
+                                  </p>
+                                </div>
+                              </li>
+                              <li class="right clearfix" ng-if="conversation.user._id == user._id">
+                                <span class="chat-img pull-right">
+                                  <img  alt="User Avatar">
+                                </span>
+                                <div class="chat-body clearfix">
+                                  <div class="header m-b-xs">
+                                   
+                                  </div>
+                                  <p class="pull-right m-t-xs">
+                                    conversation.message
+                                  </p>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="chat-box bg-white">
+                            <form class="input-group" ng-submit="sendMessage(foodie, message)">
+                              <textarea class="form-control border no-shadow no-rounded"  placeholder="Type your message here" style="height: 70px"></textarea>
+                              <span class="input-group-btn">
+                                <button class="btn btn-success no-rounded" type="button" 
+                                  style="margin-left: 10px !important;
+																					margin-right: 10px !important;">Send</button>
+                              </span>
+                            </form>
+                            <!-- /input-group -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{{> footer/bottom-footer}}
