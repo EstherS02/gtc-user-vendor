@@ -94,6 +94,18 @@
 .text-wholesale {
 	color: #d78636;
 }
+.text-marketplace-1 {
+	color: #d78636;
+}
+.text-marketplace-2 {
+	color: #0f478c;
+}
+.text-marketplace-3 {
+	color: #55b82e;
+}
+.text-marketplace-4 {
+	color: #cb2f2a;
+}
 .bg-wholesale, .bg1 {
 	background: #d78636;
 	color: #fff;
@@ -228,8 +240,8 @@
 	line-height: 1;
 	font-weight: 500;
 }
-input[id=inputQty]::-webkit-outer-spin-button, 
-input[id=inputQty]::-webkit-inner-spin-button {
+input[name=inputQtyValue]::-webkit-outer-spin-button, 
+input[name=inputQtyValue]::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
     opacity: 1;
 }

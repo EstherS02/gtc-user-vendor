@@ -44,7 +44,6 @@ export function cart(req, res) {
                 '$eq': status["ACTIVE"]
             }
 
-
             return model["Cart"].findAndCountAll({
                 where: queryObj,
                 include: [{
@@ -128,7 +127,7 @@ export function cart(req, res) {
             }
     }, function(err, results) {
         if (!err) {
-            console.log("totalItems&&&&&&&&&&&&",results)
+            // console.log("totalItems&&&&&&&&&&&&",results)
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
@@ -148,12 +147,21 @@ export function cart(req, res) {
                 for (var i = 0; i < itemsValue.length; i++) {
 
                     if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
+                        if(itemsValue[i].Product.moq){
+                            var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
 
-                        var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
+                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                        }
+                        else{
+                            var calulatedSum = 1 * itemsValue[i].Product.price;
 
-                        totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-                        totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-                        totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                        }
+                       
                     }
                 }
 

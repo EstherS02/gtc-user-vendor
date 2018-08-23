@@ -446,7 +446,9 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
     })
 }
 
+
 export function cartHeader(user) {
+    console.log(user)
     var queryObj = {};
     let includeArr = [];
 
@@ -455,11 +457,12 @@ export function cartHeader(user) {
     queryObj['status'] = {
         '$eq': status["ACTIVE"]
     }
+
     return model["Cart"].findAndCountAll({
         where: queryObj,
         include: [{
             model: model["Product"],
-            attributes: ['id', 'price', 'shipping_cost'],
+            attributes: ['id', 'price', 'shipping_cost','moq'],
             include: [{
                 model: model["Marketplace"]
             }, {
@@ -468,6 +471,7 @@ export function cartHeader(user) {
         }]
     }).then(function(data) {
         var result = JSON.parse(JSON.stringify(data));
+        console.log("result",result)
         if (result) {
             var cartheader = {};
             cartheader['totalPrice'] = 0;
@@ -482,6 +486,7 @@ export function cartHeader(user) {
             marketplaceCount['LM'] = 0;
             totalPrice['grandTotal'] = 0;
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
+
             _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
                 totalPrice[itemsKey]['price'] = 0;
@@ -492,11 +497,28 @@ export function cartHeader(user) {
 
                     marketplaceCount[itemsKey] = marketplaceCount[itemsKey] + 1;
                     if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-                        var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
-                        totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-                        totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-                        totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                        // console.log("quantity",itemsValue[i].Product.moq)
+                        // var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
+
+                        // totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                        // totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                        // totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+
+                        if(itemsValue[i].Product.moq){
+                            var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
+
+                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                        }
+                        else{
+                            var calulatedSum = 1 * itemsValue[i].Product.price;
+
+                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+                        }
                     }
                 }
 

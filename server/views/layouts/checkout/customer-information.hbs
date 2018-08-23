@@ -133,10 +133,10 @@ function CartPage(){
 			<div class="row">
 				<div class="col-md-6 col-12">
 					<ul class="breadcrumb">
-					  <li><a href="#" class="active1">1. Customer Information</a></li>
-					  <li><a href="#">2. Shipping Method</a></li>
-					  <li><a href="#">3. Payment Method</a></li>
-					  <li><a href="#">4. Confirmation</a></li>
+					  <li><a href="order-checkout/customer-information" class="active1">1. Customer Information</a></li>
+					  <li><a href="order-checkout/shipping-method">2. Shipping Method</a></li>
+					  <li><a href="order-checkout/payment-method">3. Payment Method</a></li>
+					  <li><a href="order-checkout/confirmation">4. Confirmation</a></li>
 					</ul>
 				</div>
 				<div class="col-md-6 col-12">
@@ -145,7 +145,7 @@ function CartPage(){
 			</div>
 			<div class="row checkout_bg_color ">
                 <div class="col-md-9 col-12 common_padding1 ">
-                	<h4 class="checkout_title_color">CHECKOUT <span class="checkout_title_color_span">(8 Item Totals)</span></h4>
+                	<h4 class="checkout_title_color">CHECKOUT <span class="checkout_title_color_span">({{cartItemsCount}} Item Totals)</span></h4>
 						<div class="row">
 							<div class="col-md-10 col-10">
 								<div class="container">
