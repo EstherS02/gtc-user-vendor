@@ -495,6 +495,9 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 .m-r-xl {
 	margin-right: 40px;
 }
+.m-r-xll {
+	margin-right: 45px;
+}
 .m-r-n-xxs {
 	margin-right: -1px;
 }
