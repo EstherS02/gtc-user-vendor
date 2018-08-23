@@ -97,7 +97,7 @@ $(function() {
             <div class="alignleft">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#" class="active">My Account</a>
+                        <a href="javascript:;" class="active">My Account</a>
                     </li>
                     <li>Compare</li>
                 </ul> 
@@ -294,7 +294,7 @@ $(function() {
                             	{{#if compareProducts.[1]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[1].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[1].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}
@@ -307,7 +307,7 @@ $(function() {
                             	{{#if compareProducts.[2]}}
                             	<div>
 	                                {{#if LoggedInUser.id}}
-	                                <a href="#">{{compareProducts.[2].vendor_name}}</a>
+	                                <a href="/vendor/{{compareProducts.[0].vendor_id}}">{{compareProducts.[2].vendor_name}}</a>
 	                                {{else}}
 	                                (<a href="/login">Login for Seller Info</a>)
 	                                {{/if}}
@@ -441,7 +441,7 @@ $(function() {
                 </div>
 
                 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="vertical-alignment-helper">
+                    {{!-- <div class="vertical-alignment-helper"> --}}
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="row">
@@ -537,7 +537,7 @@ $(function() {
                             </div>
                         </div>
                     </div>
-                </div>
+                {{!-- </div> --}}
 
                 <div class="col-sm-2half no-padding">
                     <div class="cpllist">
@@ -573,7 +573,7 @@ $(function() {
             {{else}}
             <div class="row no-margins">
             	<div class="col-md-12 no-padding">
-            		<p class="label-control gtc-p-l-r text-primary m-t">Compare products is empty.</p>
+            		<p class="label-control gtc-p-l-r text-primary m-t">Add products to compare.</p>
             	</div>
             </div>
             {{/if}}

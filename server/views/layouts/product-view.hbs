@@ -1,134 +1,139 @@
 <script type="text/javascript">
-	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-	var productSpecs = {{{DisplayJSON product}}}
-	var statusCode = {{{DisplayJSON status}}}
+var userInfo = {{{ DisplayJSON LoggedInUser }}}
+var productSpecs = {{{DisplayJSON product}}}
+var statusCode = {{{DisplayJSON status}}}
 	
-	$(document).ready(function() {
-     	 
-		var url=  window.location.href;
-        var text = $('#productname').val()+" "+$('#productdescription').val();
-		
-		           
-		console.log("window:::"+userInfo.email);	
+$(document).ready(function() {
 
-		 $("#shareIcons").jsSocials({
-			url: url,
-            text: text,
-			showLabel: false,
-            showCount: false,
-            shares: ["linkedin","pinterest","twitter","googleplus"]
-        });
- 
-		$('#review-stars').barrating({
-			theme: 'fontawesome-stars'
-		});
-
-		$('#reviewSubmit').click(function () {
-			if (userInfo.email) {
-				$('#reviewModal').modal('show');
-			} else {
-				$('#myModal').modal('show');
-			}
-		});
-
-		$("#gtc-add-to-cart").click(function() {
-			var cartInfo = {};
-			cartInfo.product_quantity = $('#quantityInput').val();
-			if (userInfo.email) {
-				$.ajax({
-					type: "POST",
-					url: "/api/cart/add-cart/" + productSpecs.id,
-					data: cartInfo,
-					success: function (response) {
-						location.reload();
-					},
-					error: function (error) {
-						$('#productCartMessage').empty();
-						if (error.status === 401) {
-							//return location.href = "/login";
-						}
-						$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
-						var timer = setTimeout(function () {
-							$('#productCartMessage').empty();
-						}, 10000);
-					}
-				});
-			} else {
-				$('#myModal').modal('show');
-			}
-		});
+	$('[data-toggle="popover"]').popover({
+		html: true,
+		content: function() {
+			return ($("#shareRemainingIcons").html());
+		}
 	});
 
-	var newData = {};
-	newData.product_id = productSpecs.id;
+	var url = window.location.href;
+	var text = $('#productname').val();
+	var desc = $('#productdescription').val();
+	var finaltext = text + " " + desc;
+	$("#shareRemainingIcons").jsSocials({
+		url: url,
+		text: finaltext,
+		showLabel: false,
+		showCount: false,
+		shares: ["googleplus", "facebook", "email", "whatsapp"]
+	});
 
-	function compareProduct(e) {
-		$('#productAlert').empty();
+	$("#shareIcons").jsSocials({
+		url: url,
+		text: finaltext,
+		showLabel: false,
+		showCount: false,
+		shares: ["linkedin", "pinterest", "twitter"],
+	});
+	$('#review-stars').barrating({
+		theme: 'fontawesome-stars'
+	});
+
+	$('#reviewSubmit').click(function() {
 		if (userInfo.email) {
-			$.ajax({
-				type: 'POST',
-				url: '/api/product-view/add-to-compare',
-				data: newData,
-				success: function (response) {
-					$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
-					}, 10000);
-				},
-				error: function (error) {
-					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
-					}, 10000);
-				}
-			});
+			$('#reviewModal').modal('show');
 		} else {
 			$('#myModal').modal('show');
 		}
-	};
+	});
 
-	function wishUpdate() {
+	$("#gtc-add-to-cart").click(function() {
+		var cartInfo = {};
+		cartInfo.product_quantity = $('#quantityInput').val();
 		if (userInfo.email) {
-			var newObj = {};
-			newObj.product_id = productSpecs.id;
-			newObj.user_id = userInfo.id;
-			// if ($('input[name=wishID]').val()) {
-			// 	newObj.status = 0;
-			// } else {
-			// 	newObj.status = statusCode.ACTIVE;
-			// }
-			// console.log(newObj);
-			var queryObj = {};
-			queryObj.product_id = productSpecs.id;
-			queryObj.user_id = userInfo.id;
-			var data = JSON.stringify({
-				queryObj: queryObj,
-				newObj: newObj
-			});
-			var newData = {};
-			newData.data = data;
 			$.ajax({
-				type: 'PUT',
-				url: '/api/product-view/addOrRemove',
-				data: newData,
-				success: function (response) {
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
 					location.reload();
 				},
-				error: function (error) {
-					$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
-					var timer = setTimeout(function () {
-						$('#productAlert').empty();
+				error: function(error) {
+					$('#productCartMessage').empty();
+					if (error.status === 401) {
+						//return location.href = "/login";
+					}
+					$('#productCartMessage').append('<p class="product-alert-msg text-danger text-right">' + JSON.parse(error.responseText).message_details + '</p>');
+					var timer = setTimeout(function() {
+						$('#productCartMessage').empty();
 					}, 10000);
 				}
 			});
 		} else {
 			$('#myModal').modal('show');
 		}
-	};
+	});
+});
+
+var newData = {};
+newData.product_id = productSpecs.id;
+
+function compareProduct(e) {
+	$('#productAlert').empty();
+	if (userInfo.email) {
+		$.ajax({
+			type: 'POST',
+			url: '/api/product-view/add-to-compare',
+			data: newData,
+			success: function(response) {
+				$('#productAlert').append('<p class="product-alert-msg text-primary text-left m-t-xs">' + response.message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			}
+		});
+	} else {
+		$('#myModal').modal('show');
+	}
+};
+
+function wishUpdate() {
+	if (userInfo.email) {
+		var newObj = {};
+		newObj.product_id = productSpecs.id;
+		newObj.user_id = userInfo.id;
+
+		var queryObj = {};
+		queryObj.product_id = productSpecs.id;
+		queryObj.user_id = userInfo.id;
+		var data = JSON.stringify({
+			queryObj: queryObj,
+			newObj: newObj
+		});
+		var newData = {};
+		newData.data = data;
+		$.ajax({
+			type: 'PUT',
+			url: '/api/product-view/addOrRemove',
+			data: newData,
+			success: function(response) {
+				location.reload();
+			},
+			error: function(error) {
+				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');
+				var timer = setTimeout(function() {
+					$('#productAlert').empty();
+				}, 10000);
+			}
+		});
+	} else {
+		$('#myModal').modal('show');
+	}
+};
 </script>
-
 <script src="js/login.js"></script>
-
 <style>
 	.modal {
 		text-align: center;
@@ -233,6 +238,28 @@
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
 														 value="1" min="1">
+														 {{#ifCond selectedPage '==' 'wholesale'}}
+														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
+														  <a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Buyer
+
+															</span>
+														</a>
+														{{else ifCond product.MarketplaceType.code '==' "WTT"}}
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Trader
+															</span>
+														</a>
+														{{else ifCond product.MarketplaceType.code '==' "REQ"}}
+														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<span class="m-l-xs align-middle">
+																Contact Seller
+															</span>
+														</a>
+														{{/ifCond}}
+														 {{else}}
 														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<svg width="18" height="16" viewBox="0 0 21.4 20.8">
 																<g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
@@ -244,25 +271,15 @@
 																ADD TO BAG
 															</span>
 														</a>
+														{{/ifCond}}
 													</div>
 													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-														<div class="vertical-alignment-helper">
 															<div class="modal-dialog">
-																
-																{{!-- <div class="modal-header">
-																	<button type="button" class="close" data-dismiss="modal">
-																		<span aria-hidden="true">&times;</span>
-																		<span class="sr-only">Close</span>
-																	</button>
-																</div> --}}
-
-
-
-																<div class="modal-content">
+																<div class="modal-content" align="center">
 																	<div class="row">
 																		<div class="col-md-12">
-																			<div class="row geo_bgimg1" align="center">
-											
+																			<div class="row geo_bgimg1">
+
 																				<div class="row">
 																					<div class="col-md-12 offset-md-0">
 																						<h1>LIKE WHAT YOU SEE?</h1>
@@ -302,6 +319,14 @@
 																													<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
 																												</a>
 																											</li>
+																											<li>
+																												<div class="form-group" style="padding:4px">
+																													<p class="modal_sign">Already have a Account?</p>
+																													<button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
+																														<strong>Login</strong>
+																													</button>
+																												</div>
+																											</li>
 																										</ul>
 																									</div>
 																								</div>
@@ -314,15 +339,15 @@
 																											<div class="col">
 																												<div class="form-group m-b-xs">
 																													<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="Email" required="true">
+																													placeholder="Email" required="true">
 																												</div>
 																												<div class="form-group m-b-xs">
 																													<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="First Name" required="true">
+																													placeholder="First Name" required="true">
 																												</div>
 																												<div class="form-group m-b-xs">
 																													<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
-																													 placeholder="Password" required="true">
+																													placeholder="Password" required="true">
 																												</div>
 																												<div class="form-group">
 																													<input type="checkbox" id="inputTerms" name="input_terms" required="true">
@@ -333,10 +358,7 @@
 																														<strong>CREATE ACCOUNT</strong>
 																													</button>
 																												</div>
-																												<div class="form-group">
-																													<p>Already have a Account?</p>
-																													<a href="login">Login </a>
-																												</div>
+
 																											</div>
 																										</div>
 																									</form>
@@ -350,7 +372,6 @@
 																	</div>
 																</div>
 															</div>
-														</div>
 													</div>
 													<div id="productCartMessage"></div>
 												</div>
@@ -384,14 +405,16 @@
                             					</ul>
                             				</div>
                             				<div class="alignright text-right">
-                            					<div id="shareIcons" class="alignleft"></div>
-												 <a href="javascript:;" id="shareIcons">
-													{{!-- <img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus"> --}}
+                            					<a id="shareIcons" class="alignleft"></a>
+												 <a href="javascript:;" data-toggle="popover" data-placement="top"  id="sharesremaining" >
+													<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
 												</a>
+												<div id="shareRemainingIcons" style="display:none" class="alignleft"></div>
                             				</div>
                             				<div style="clear: both;"></div>
                             			</div>
                             			<div id="productAlert"></div>
+                            			{{#if product.description}}
                             			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
@@ -399,6 +422,7 @@
 										<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
 										{{!-- {{/limit}} --}}
                             			<div class="p-hr"></div>
+                            			{{/if}}
                             			<div class="product-rating d-flex m-t-sm m-b-sm">
 											<div>
 												<i class="fa fa-star fa-circle-bg"></i>
@@ -431,8 +455,8 @@
 																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
-																	<span class="review-title">{{this.title}}</span>
-																	<div class="m-b-xs m-t-xs">
+																	<h4 class="review-title">{{this.title}}</h4>
+																	<div class="m-b-xs">
 																		<div class="alignleft">
 																			<div class="p-rating">
 																				{{starCount this.rating}}
@@ -443,14 +467,13 @@
 																		</div>
 																		<div style="clear: both;"></div>
 																	</div>
-																	<p class="text-justify m-b-xs">{{this.comment}}</p>
-																	<span class="d-block" style="color: #3e7bba;"><strong>{{this.User.first_name}}</strong></span>
+																	<p class="review-comment">{{this.comment}}</p>
 																</div>
 															</div>
 															{{/each}}
 														</div>
 														{{#ifCond productRecentReview.count ">" 1}}
-														<a href="/{{selectedPage}}/{{product.product_name}}/{{product.id}}/allReviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
+														<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
 														{{/ifCond}}
@@ -469,7 +492,7 @@
 												<div class="ask-vendor-form">
 													<form class="form" id="AskVendorForm">
 														<div class="row">
-															<div class="col-md-10">
+															<div class="col-md-9">
 																<div class="form-group">
 																	<input type="text" class="form-control form-control-sm" placeholder="Subject">
 																</div>
@@ -477,7 +500,7 @@
 																	<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
 																</div>
 															</div>
-															<div class="col-md-2">
+															<div class="col-md-3">
 																<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
 															</div>
 														</div>

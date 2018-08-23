@@ -40,227 +40,234 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 <div class="other-marketplace-bg"></div>
 <div class="gtc-container">
-  <div class="other-marketplace-headers">
-    <div class="row">
-      <div class="col-md-6 no-padding">
-        <div class="header-lg bg-topseller">
-          <h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/retailers/search">SEE ALL</a></h2>
-        </div>
-        <div class="product-list-body">
-          <div class="row">
-            {{#each retailers}}
-            <div class="col-md-6">
-              <div class="product-body">
-                <div class="table-responsive">
-                  <table class="table shoping-cart-table">
-                    <tbody>
-                      <tr class="d-flex">
-                        <td class="col-2">
-                          <h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
-                        </td>
-                        <td class="col-3">
-                          <div class="product-left-col">
-                            <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
-                          </div>
-                        </td>
-                        <td class="col-7">
-                          <div class="product-middle-col">
-                            <h3>
-                              <a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-                            </h3>
-                            <div class="row no-margins">
-                              <div class="col-md-5 col-5 no-padding">
-                                <span>Origin</span>
-                              </div>
-                              <div class="col-md-7 col-7 no-padding overflow-txt">
-                                <span class="text-500">{{this.origin}}</span>
-                              </div>
-                              <div class="col-md-5 col-5 no-padding">
-                                <span>Inventory</span>
-                              </div>
-                              <div class="col-md-7 col-7 no-padding">
-                                <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
-                              </div>
-                              <div class="col-md-5 col-5 no-padding">
-                                <span>Seller Rating</span>
-                              </div>
-                              <div class="col-md-7 col-7 no-padding">
-                                <div class="v-rating">
-                                  {{starCount rating}}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            {{/each}}
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6 no-padding">
-        <div class="header-lg bg-featured-product">
-          <h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/shop/search?is_featured_product=1">SEE ALL</a></h2>
-        </div>
-        <div class="product-list-body">
-          <div class="row">
-            {{#each featuredProducts}}
-            <div class="col-md-6">
-              <div class="product-body">
-                <div class="table-responsive">
-                  <table class="table shoping-cart-table">
-                    <tbody>
-                      <tr class="d-flex">
-                        <td class="col-3">
-                          <div class="product-left-col">
-                            <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
-                          </div>
-                        </td>
-                        <td class="col-9">
-                          <div class="product-middle-col">
-                            <h3><a href="/shop/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
-                            <div class="row no-margins">
-                              <div class="col-md-12 col-12 no-padding">
-                                <h2 class="text-red price">${{this.product_price}}</h2>
-                              </div>
-                              <div class="col-md-4 col-4 no-padding">
-                                <span>Origin</span>
-                              </div>
-                              <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <span class="text-500">{{this.country_name}}</span>
-                              </div>
-                              <div class="col-md-4 col-4 no-padding">
-                                <span>Category</span>
-                              </div>
-                              <div class="col-md-8 col-8 no-padding overflow-txt">
-                                <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-                              </div>
-                              <div class="col-md-4 col-4 no-padding">
-                                <span>Seller Rating</span>
-                              </div>
-                              <div class="col-md-8 col-8 no-padding">
-                                <div class="v-rating">
-                                  {{ starCount product_rating}}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            {{/each}}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="other-marketplace-headers">
+		<div class="row">
+			<div class="col-md-6 no-padding">
+				<div class="header-lg bg-topseller">
+					<h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/retailers/search">SEE ALL</a></h2>
+				</div>
+				<div class="product-list-body">
+					<div class="row">
+						{{#each retailers}}
+						<div class="col-md-6">
+							<div class="product-body">
+								<div class="table-responsive">
+									<table class="table shoping-cart-table">
+										<tbody>
+											<tr class="d-flex">
+												<td class="col-2">
+													<h2 class="v-num">#<span>{{SUMFloat @index 1}}</span></h2>
+												</td>
+												<td class="col-3">
+													<div class="product-left-col">
+														<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+													</div>
+												</td>
+												<td class="col-7">
+													<div class="product-middle-col">
+														<h3>
+															<a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+														</h3>
+														<div class="row no-margins">
+															<div class="col-md-5 col-5 no-padding">
+																<span>Origin</span>
+															</div>
+															<div class="col-md-7 col-7 no-padding overflow-txt">
+																<span class="text-500">{{this.origin}}</span>
+															</div>
+															<div class="col-md-5 col-5 no-padding">
+																<span>Inventory</span>
+															</div>
+															<div class="col-md-7 col-7 no-padding">
+																{{!-- <b class="text-blue">{{this.product_count}} Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span> --}} -
+																</div>
+																<div class="col-md-5 col-5 no-padding">
+																	<span>Seller Rating</span>
+																</div>
+																<div class="col-md-7 col-7 no-padding">
+																	<div class="v-rating">
+																		{{starCount rating}}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 no-padding">
+					<div class="header-lg bg-featured-product">
+						<h2 class="header-lg-text">FEATURED PRODUCTS <a class="see-all" href="/shop/search?is_featured_product=1">SEE ALL</a></h2>
+					</div>
+					<div class="product-list-body">
+						<div class="row">
+							{{#each featuredProducts}}
+							<div class="col-md-6">
+								<div class="product-body">
+									<div class="table-responsive">
+										<table class="table shoping-cart-table">
+											<tbody>
+												<tr class="d-flex">
+													<td class="col-3">
+														<div class="product-left-col">
+															<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+														</div>
+													</td>
+													<td class="col-9">
+														<div class="product-middle-col">
+															<h3><a href="/shop/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
+															<div class="row no-margins">
+																<div class="col-md-12 col-12 no-padding">
+																	<h2 class="text-red price">${{this.product_price}}</h2>
+																</div>
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Origin</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding overflow-txt">
+																	<span class="text-500">{{this.country_name}}</span>
+																</div>
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Category</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding overflow-txt">
+																	<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+																</div>
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Seller Rating</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding">
+																	<div class="v-rating">
+																		{{ starCount product_rating}}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							{{/each}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="header-lg bg-shop">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-md-12 no-padding">
+					<h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL</a></h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="marketplace-type-bg" style="background-color:#fff"></div>
+	<div class="gtc-container">
+		<div class="marketplace-type-headers">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="top-mini-headers m-t-xs">
+						<div class="alignleft">
+							<label>Showing the most recent {{#ifCond publicMarketplace.count '>' 20}} 20 {{else}} {{publicMarketplace.count}} {{/ifCond}} products of {{publicMarketplace.count}} products listed.</label>
+						</div>
+						<div class="alignright">
+							<div class="xs-svg-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+									<circle fill="#E44766" cx="12" cy="12" r="12"></circle>
+									<path fill="#FFF" d="M12 0l2.7 8.3h8.7l-7 5.1 2.7 8.3-7.1-5.1-7.1 5.1 2.7-8.3-7-5.1h8.7z"></path>
+								</svg>
+								<a href="#">POST AN AD IN THIS CATEGORY</a>
+							</div>
+						</div>
+						<div style="clear: both;"></div>
+					</div>
+				</div>
+				{{#each publicMarketplace.rows}}
+				<div class="col-md-3 no-padding">
+					<div class="product-list-body">
+						<div class="product-body">
+							<div class="table-responsive">
+								<table class="table shoping-cart-table">
+									<tbody>
+										<tr class="d-flex">
+											<td class="col-2">
+												<div class="product-left-col">
+													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+												</div>
+											</td>
+											<td class="col-7">
+												<div class="product-middle-col">
+													<h3>
+														<a href="shop/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
+													</h3>
+													<div class="row no-margins">
+														<div class="col-md-4 col-4 no-padding">
+															<span>Origin</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															<span class="text-500">{{this.country_name}}</span>
+														</div>
+														<div class="col-md-4 col-4 no-padding">
+															<span>Category</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+														</div>
+														<div class="col-md-4 col-4 no-padding">
+															<span>Seller</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															{{#if ../LoggedInUser.email}}
+															<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+															{{else}}
+															<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+															{{/if}}
+														</div>
+													</div>
+												</div>
+											</td>
+											<td class="col-3">
+												<div class="product-right-col">
+													<h4>${{product_price}}</h4>
+													<div class="prc-bottom">
+														<p>Seller Rating</p>
+														<div class="p-rating pull-right">
+															{{starCount product_rating}}
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+	</div>
 </div>
 
-<div class="header-lg bg-shop">
-  <div class="gtc-container">
-    <div class="row">
-      <div class="col-md-12">
-        <h2 class="header-lg-text">PUBLIC MARKETPLACE <a class="see-all" href="/shop/search">SEE ALL</a></h2>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="marketplace-type-bg" style="background-color:#fff"></div>
-<div class="gtc-container">
-  <div class="marketplace-type-headers" >
-    <div class="row">
-      <div class="col-md-12 no-padding">
-        <div class="">
-          <h4 class="header-md-text">
-            Showing most recent 20 product of 60,000 products listed <a href="" style="color: #000;"><i class="fas fa-star" style="color: #C80527;"></i> POST AN AD IN THIS CATEGORY <i class="fa fa-caret-right"></i></a>
-          </h4>
-        </div>
-      </div>
-      {{#each publicMarketplace}}
-      <div class="col-md-3 no-padding">
-        <div class="product-list-body">
-          <div class="product-body">
-            <div class="table-responsive">
-              <table class="table shoping-cart-table">
-                <tbody>
-                  <tr class="d-flex">
-                    <td class="col-2">
-                      <div class="product-left-col">
-                        <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
-                      </div>
-                    </td>
-                    <td class="col-7">
-                      <div class="product-middle-col">
-                        <h3>
-                          <a href="shop/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
-                        </h3>
-                        <div class="row no-margins">
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Origin</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            <span class="text-500">{{this.country_name}}</span>
-                          </div>
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Category</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
-                          </div>
-                          <div class="col-md-4 col-4 no-padding">
-                            <span>Seller</span>
-                          </div>
-                          <div class="col-md-8 col-8 no-padding overflow-txt">
-                            {{#if ../LoggedInUser.email}}
-                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
-                            {{else}}
-                                <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
-                            {{/if}}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="col-3">
-                      <div class="product-right-col">
-                        <h4>${{product_price}}</h4>
-                        <div class="prc-bottom">
-                          <p>Seller Rating</p>
-                          <div class="p-rating pull-right">
-                            {{starCount product_rating}}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/each}}
-    </div>
-  </div>
-</div>
-
-{{!-- data-backdrop="static" data-keyboard="false" --}}
 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="vertical-alignment-helper">
+    {{!-- <div class="vertical-alignment-helper"> --}}
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" align="center">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row geo_bgimg1" align="center">
+                        <div class="row geo_bgimg1">
 
                             <div class="row">
                                 <div class="col-md-12 offset-md-0">
@@ -301,6 +308,14 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
                                                                 <img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
                                                             </a>
                                                         </li>
+                                                        <li>
+                                                          <div class="form-group" style="padding:4px">
+                                                            <p class="modal_sign">Already have a Account?</p>
+                                                            <button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
+                                                              <strong>Login</strong>
+                                                            </button>
+                                                          </div>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -332,10 +347,6 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
                                                                     <strong>CREATE ACCOUNT</strong>
                                                                 </button>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <p>Already have a Account?</p>
-                                                                <a href="login">click to login </a>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -349,7 +360,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
                 </div>
             </div>
         </div>
-    </div>
+    {{!-- </div> --}}
 </div>
 
 {{> footer/bottom-footer}}
