@@ -5,6 +5,7 @@
 	$(document).ready(function() {
 		$('#btnFaSpinner').hide();
 		$('#btnAliExpressFaSpinner').hide();
+		$('#AmazonBtnFaSpinner').hide();
 
 		$('input[type="text"]').keyup(function() {
 			if ($(this).val() != '') {
@@ -98,6 +99,52 @@
 			var ebayOAuthURL = `https://signin.sandbox.ebay.com/authorize?client_id=ChandruM-GlobalTr-SBX-9ed62ccbf-855742ca&redirect_uri=Chandru_M-ChandruM-Global-bojdlvvw&response_type=code&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.account%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.inventory`;
 			var ebayWindow = window.open(ebayOAuthURL, 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
 		});
+
+		$("#importAmazonModalForm").validate({
+			rules: {
+				amazon_seller_id: "required",
+				amazon_auth_token: "required",
+				amazon_marketplace: "required"
+			},
+			messages: {
+				amazon_seller_id: "Please enter your seller or merchant id",
+				amazon_auth_token: "Please enter the auth Token",
+				amazon_marketplace: "Please select the marketplace region"
+			}
+		});
+
+		$('#importAmazonModalForm').submit(function(e){
+			e.preventDefault();
+
+			if ($('#importAmazonModalForm').valid()) {
+				$(':input[type="submit"]').prop('disabled', true);
+				$("#amazonPopupError p").remove();
+
+				let credentials = {};
+				credentials['marketplace_id'] = 2;
+				credentials['amazon_seller_id'] = $('#amazon_seller_id').val();
+				credentials['amazon_auth_token'] = $('#amazon_auth_token').val();
+				credentials['amazon_marketplace'] = $('#amazon_marketplace').val();
+
+				$('#AmazonBtnFaSpinner').show();
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-amazon',
+					data: credentials,
+					success: function(data, response) {
+						$('#AmazonBtnFaSpinner').hide();
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">'+ data +'</p>');
+						$('#importAmazonModal').modal('toggle');
+					},
+					error: function(response, status, error) {
+						$('#AmazonBtnFaSpinner').hide();
+						$('#amazonPopupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+					}
+				});
+			}
+		})
+
+
 	});
 </script>
 
@@ -139,8 +186,10 @@
                     	</div>
                     	<div class="col-md-3">
                     		<div class="import">
-                    			<img src="gtc-assets/img/import-amazon.png" alt="import amazon" title="import from amazon">
-                    			<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM AMAZON</p>
+								<a href="#" data-toggle="modal" data-target="#importAmazonModal" data-whatever="@mdo">
+                    				<img src="gtc-assets/img/import-amazon.png" alt="import amazon" title="import from amazon">
+                    				<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM AMAZON</p>
+                    			</a>
                     		</div>
                     	</div>
                     </div>
@@ -217,6 +266,68 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
 					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="importAmazonModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Import Products from Amazon</h5>
+			</div>
+			<form id="importAmazonModalForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Developer ID</label>
+	                            <input type="text" id="amazon_dev_id" name="amazon_dev_id" value="{{AmazonDeveloperID}}" class="form-control-customized form-control-sm" disabled required style="cursor:not-allowed;"/>
+	                        </div>
+							<p class="label-control d-block">Note: Copy paste our Developer ID into Amazon seller central console, authorize us and provide the Merchant Id and Auth token below to import produts into GTC. For more information visit - <a href="https://docs.developer.amazonservices.com/en_IT/faq.html#faq__developForSeller">Amazon seller central - Authorize a Developer</a></p>
+	                    </div>
+						<div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Merchant ID or Seller ID</label>
+	                            <input type="text" id="amazon_seller_id" name="amazon_seller_id" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+						<div class="col-lg-12">
+	                        <div class="form-group">
+	                            <label class="label-control d-block">AuthToken</label>
+	                            <input type="text" id="amazon_auth_token" name="amazon_auth_token" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                    </div>
+						<div class="col-lg-12">
+							<div class="select-container custom-select-container"> 
+								<label class="label-control d-block">Choose MarketPlace Region</label>
+								<select class="form-control-customized form-control-sm" id="amazon_marketplace"name="amazon_marketplace" required>
+									<option value="">Select Seller Country</option>
+									<option value="CA">Canada</option>
+									<option value="US">United States</option>
+									<option value="MX">Mexico</option>
+									<option value="ES">Spain</option>
+									<option value="GB">UK</option>
+									<option value="FR">France</option>
+									<option value="DE">Germany</option>
+									<option value="IT">Italy</option>
+									<option value="BR">Brazil</option>
+									<option value="IN">India</option>
+									<option value="CN">China</option>
+									<option value="JP">Japan</option>
+									<option value="AU">Australia</option>
+								</select>
+							</div>
+						</div>
+	                    <div class="col-lg-12" id="amazonPopupError"></div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="AmazonBtnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
 				</div>
 			</form>
 		</div>

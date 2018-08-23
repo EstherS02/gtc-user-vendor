@@ -23,11 +23,13 @@ var vendorPayouts = require('./agenda/vendor-payouts');
 var mailListener = require('./components/mail-listener');
 var mailService = require('./api/mail/reply-mail.service');
 var aliExpressScrape = require('./agenda/aliexpress-scrape');
+var amazonImportJob = require('./agenda/amazon-import');
 
 agenda.define(config.jobs.email, sendEmailNew);
 agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
 agenda.define(config.jobs.vendorPayouts, vendorPayouts);
+agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');

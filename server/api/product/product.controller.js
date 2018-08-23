@@ -161,10 +161,7 @@ export function create(req, res) {
 export function importAliExpress(req, res) {
 
 	var products = [];
-	var parsedProducts = [];
 	var perPageLimit = 36;
-	var aliExpressProducts = [];
-	var importAliExpress = [];
 	var maximumProductLimit = 0;
 	var queryObjProduct = {};
 	var queryObjPlanLimit = {};
@@ -328,179 +325,22 @@ function getEbayProducts(accessToken) {
 	});
 }
 
-function amazonRequestReport(req, res){
-	mws.init({
-		accessKeyId: 'AKIAIJ4RKBOMDV44S3CQ',
-		secretAccessKey: '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',
-		merchantId: 'A1GN0F7IGWQPP5',
-		region: 'IN',
-		authToken: 'amzn.mws.a4b28c29-dfca-2e2f-88ea-43c8e7a2689b'
-	});
-	return new Promise((resolve, reject) => {
-		(async function() {
-			try {
-				const results = await mws.requestAndDownloadReport('_GET_MERCHANT_LISTINGS_DATA_', 'data_text.txt');
-				console.log("RESULTS_ARRIVED", JSON.stringify(results));
-				if(results.length > 0)
-					return resolve(JSON.parse(JSON.stringify(results)));
-				else
-					return reject(resMessage("AMAZON_IMPORT_ERROR_OCCURRED", "No products found in amazon to import"));	
-			} catch (err) {
-				console.log('* error', err);
-				return reject(resMessage("AMAZON_IMPORT_ERROR_OCCURRED", err));
-			}
-		})();
-	});
-}
-
-function respAuthMsg(authStatus, allProducts, remainingProductLength){
-	return {
-		authorizedToImport: authStatus,
-		totalAmazonProducts: allProducts,
-		vendorRemainingProductLimit: remainingProductLength
-	  };
-}
-
-function checkAuthorizedToImport(req, allProducts){
-	return new Promise((resolve, reject) => {
-		let queryObjProduct = {};
-		let queryObjPlanLimit = {};
-		let vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
-		let planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
-		let planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
-
-		queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
-		queryObjPlanLimit['status'] = status['ACTIVE'];
-
-		queryObjProduct['vendor_id'] = req.user.Vendor.id;
-		queryObjProduct['created_on'] = {
-			'$gte': planStartDate,
-			'$lte': planEndDate
-		}
-		service.findOneRow("PlanLimit", queryObjPlanLimit)
-		  .then(function (planLimit) {
-		    if (planLimit) {
-		      const maximumProductLimit = planLimit.maximum_product;
-		      service.countRows("Product", queryObjProduct)
-		        .then(function (existingProductCount) {
-		          let remainingProductLength = maximumProductLimit - existingProductCount;
-					  if (allProducts.length <= remainingProductLength)
-						return resolve(respAuthMsg(true, allProducts.length, remainingProductLength));  
-		        	else
-						return reject(resMessage("VENDOR_LIMIT_EXCEEDED", "Vendor Plan Limit exceeded to add these products"));
-		        }).catch(function (error) {
-		          	console.log("Error::::", error);
-		          	return reject(resMessage("INTERNAL_SERVER_ERROR", "Internal server error occurred while Product lookup"));
-		        });
-		    }
-		  });
-	});
-}
-
-function createProductAndMedia(newProductObj, productMediaObj){
-	return new Promise((resolve, reject) => {
-		let createdProductObj;
-		service.createRow('Product', newProductObj)
-			.then((ProductObj) => {
-				productMediaObj['product_id'] = ProductObj.id;
-				createdProductObj = ProductObj;
-				return service.createRow('ProductMedia', productMediaObj)
-			}).then((MediaObj) => {
-				resolve({
-					createdProductObj: createdProductObj,
-					createdMediaObj: MediaObj
-				});
-			}).catch((createError) => {
-				reject(createError);
-			});
-	});
-}
-
-
-function createAmazonProducts(req, allProducts) {
-  return new Promise((resolve, reject) => {
-
-    function createRecursiveLoop(data, inputlength) {
-      if (inputlength >= 0) {
-        let currentdata = data[inputlength];
-
-        let productQueryObj = {};
-        let otherCategoryId = 39;
-        let otherSubCategoryId = 730;
-        productQueryObj['product_slug'] = string_to_slug(currentdata['item-name']);
-        productQueryObj['status'] = status['ACTIVE'];
-        productQueryObj['vendor_id'] = req.user.Vendor.id;
-
-        service.findOneRow('Product', productQueryObj, [])
-          .then((existingProduct) => {
-			  console.log("existingProduct",existingProduct)
-            if (!existingProduct) {
-              let newProductObj = {};
-				newProductObj['sku'] = currentdata['seller-sku'];
-				newProductObj['product_name'] = currentdata['item-name'];
-				newProductObj['description'] = currentdata['item-description'];
-				newProductObj['product_slug'] = string_to_slug(currentdata['item-name']);
-				newProductObj['vendor_id'] = req.user.Vendor.id;
-				newProductObj['status'] = status['ACTIVE'];
-				newProductObj['marketplace_id'] = marketplace['PUBLIC'];
-				newProductObj['publish_date'] = new Date();
-				newProductObj['product_category_id'] = otherCategoryId;
-				newProductObj['quantity_available'] = currentdata.quantity;
-				newProductObj['sub_category_id'] = otherSubCategoryId;
-				newProductObj['price'] = currentdata.price.replace('$', '');
-				newProductObj['product_location'] = req.user.Vendor.Country.id;
-				newProductObj['city'] = req.user.Vendor.city;
-				newProductObj['created_on'] = new Date();
-				newProductObj['created_by'] = req.user.first_name;
-			  
-			  let productMediaObj = {};
-			  	productMediaObj['type'] = 1;
-				productMediaObj['status'] = status['ACTIVE'];
-				productMediaObj['url'] = currentdata['image-url'];
-				productMediaObj['base_image'] = 1;
-				productMediaObj['created_on'] = new Date();
-				productMediaObj['created_by'] = req.user.first_name;
-
-			  createProductAndMedia(newProductObj, productMediaObj)
-			  	.then((createdProductObj) => {
-					inputlength = inputlength - 1;
-             		createRecursiveLoop(data, inputlength);
-              	}).catch((errProductObj) => {
-					inputlength = inputlength - 1;
-             		createRecursiveLoop(data, inputlength);
-				});
-            } else {
-              inputlength = inputlength - 1;
-              createRecursiveLoop(data, inputlength);
-            }
-          })
-      } else {
-        resolve({
-			productCreated: true
-		});
-      }
-
-    }
-    let inputlength = allProducts.length - 1
-    createRecursiveLoop(allProducts, inputlength);
-  });
-}
-
 export function importAmazon(req, res){
-	let allAmazonProducts;
+	let agenda = require('../../app').get('agenda');
+	
+	if(req.body && !req.body.amazon_auth_token)
+		return res.status(400).send("Missing Amazon Auth token");
+	if(req.body && !req.body.amazon_seller_id)
+		return res.status(400).send("Missing Merchant Id");
+	if(req.body && !req.body.amazon_marketplace)
+		return res.status(400).send("Missing MarketPlace Region");
 
-	amazonRequestReport(req, res)
-		.then(amazonProducts => {
-			allAmazonProducts = amazonProducts;
-			return checkAuthorizedToImport(req, allAmazonProducts);
-		}).then(authorizedToImport => {
-			console.log("authorizedToImport", authorizedToImport);
-			return createAmazonProducts(req, allAmazonProducts);
-		}).then((sucessResp) => {
-			console.log("sucessResp", sucessResp)
-		}).catch(importError => {
-			console.log("AmazonImportError", importError)
-		})
+		agenda.now(config.jobs.amazonImportJob, {
+			user: req.user,
+			body: req.body
+		});
+
+		return res.status(200).send('Amazon Product Import started, you will receive notification when it is done');
 }
 
 export function importWoocommerce(req, res) {
