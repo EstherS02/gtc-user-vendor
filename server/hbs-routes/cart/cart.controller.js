@@ -137,8 +137,7 @@ export function cart(req, res) {
             totalPrice['grandTotal'] = 0;
 
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-            console.log("seperatedItems",seperatedItems)
-
+        
 
             _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
