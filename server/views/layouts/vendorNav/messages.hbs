@@ -26,7 +26,7 @@
 		var domElement = '';
 		var time = '';
 		result.forEach(function(element) {
-			console.log(element);
+			// console.log(element);
 			if (element.from_id == userInfo.id) {
 				time = 'pull-right';
 				domElement = domElement + `<li class="left clearfix">
@@ -53,21 +53,27 @@
 
 			}
 		});
-		$("#message").show();
-		document.getElementById("message").innerHTML = domElement;
-															
-	}
-	function FormatDate(testDate) {
-		return moment(testDate).format("LT")
-	}
-	function userProfile(context){
-		if (context && context.user_pic_url)
+	$("#message").show();
+	
+	document.getElementById("message").innerHTML = domElement;
+	var element = document.querySelector('#scrollMessage');
+	 element.scrollTop = element.scrollHeight - element.clientHeight;
+
+}
+
+function FormatDate(testDate) {
+	return moment(testDate).format("LT")
+}
+
+function userProfile(context) {
+	if (context && context.user_pic_url)
 		return context.user_pic_url;
 
 	return '/img/avatar.png'
-	}
-	$(function() {
-    $('#message').hide();
+}
+$(function() {
+	$('#message').hide();
+
 });
 
 
@@ -123,7 +129,7 @@
 												<!--=========================================================-->
 												<!-- selected chat -->
 												<div class="col-md-8 bg-white">
-													<div scroll-glue-bottom="glued" class="chats-messager" style="height: 400px; overflow-y: auto;">
+													<div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
 														<ul class="chats" id = "message">
 														{{!-- {{#each talkThreads.talk}}
 															{{#ifCond this.from_id "==" ../LoggedInUser.id}} --}}

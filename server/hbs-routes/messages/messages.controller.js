@@ -55,7 +55,7 @@ export function messages(req, res) {
 						}],
 						order: [
 							[field, order],
-							[model['TalkThread'],model['Talk'], field, order]
+							[model['TalkThread'],model['Talk'], "sent_at", "desc"]
 						]
 					}).then(function(results1) {
 						return callback(null,results1);
@@ -87,7 +87,7 @@ export function messages(req, res) {
 		function(err, results) {
 
 			if (!err) {
-				console.log(JSON.parse(JSON.stringify(results.messages)));
+				console.log(JSON.stringify(results.messages));
 				res.render('vendorNav/messages', {
 					title: "Global Trade Connect",
 					messenger: results.messages,

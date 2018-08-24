@@ -23,7 +23,7 @@
 			var newCouponExcludeCategories = [];
 
 			e.preventDefault();
-
+			if ($('#couponForm').valid()) {
 			var newCoupon = {};
 			newCoupon.coupon_name = $('#inputCouponName').val();
 			newCoupon.code = Math.floor(100000 + Math.random() * 900000);
@@ -62,6 +62,7 @@
 				ouputErrorPopup(error);
 			}
 		});
+	}
 	});
 
 function ouputPopup(data) {
@@ -92,13 +93,26 @@ function ouputPopup(data) {
 		const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 		const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 	});
+	$("#couponForm").validate({
+        rules: {
+            coupon_name: "required",
+            discount_type: "required",
+            discount_value: "required",
+            publish_date: "required",
+        },
+        messages: {
+            coupon_name: "Please enter the coupon name",
+            discount_type: "Please select discount type",
+            discount_value: "Please select discount value",
+            publish_date: "Please select publish date",
+        }
+    });
 
 	$("#couponUpdateBtn").click(function (e) {
 		e.preventDefault();
-
 		var id = $('input[name=coupon_id]').val();
 		var newCoupon = {};
-
+		if ($('#couponForm').valid()) {
 		newCoupon.coupon_name = $('#inputCouponName').val();
 		newCoupon.id = id;
 		newCoupon.discount_type = $('#inputDiscountType').val();
@@ -150,6 +164,7 @@ function ouputPopup(data) {
 				console.log('error', error);
 			}
 		});
+	}
 	});
 
 	$("body").on("change", "#inputCategories", function () {
@@ -216,26 +231,26 @@ function ouputPopup(data) {
 								</div>
 								<div class="row">
 									<div class="col-md-12 required">
-										<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" class="vend_edit_lists_textstyle required"
-										/>
+										<input type="text" name="coupon_name" id="inputCouponName" value="{{coupon.coupon_name}}" placeholder="Coupon Name" required="" class="vend_edit_lists_textstyle" required/><span class="text-danger">*</span>
 									</div>
 									<div class="col-md-12">
-										<select class="vend_edit_lists_dropdownstyle" id="inputDiscountType" name="discount_type" value="">
+										<select class="vend_edit_lists_dropdownstyle" id="inputDiscountType"
+										name="discount_type" value="">
 											{{#select coupon.discount_type}}
-											<option>Discount Type</option>
+											<option value='' selected disabled="true">Discount Type</option>
 											<option value="1">Percentage</option>
 											<option value="2">Fixed Price</option>
 											<!-- 								<option value="3">Fixed Price Discount</option>
 									<option value="4">Fixed Cart Discount</option>
 								-->{{/select}}
-										</select>
+										</select><span class="text-danger">*</span>
 									</div>
 									<div class="col-md-12">
-										<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}">
+										<input type="text" placeholder="0" class="vend_edit_lists_textstyle1" id="inputDiscountValue" name="discount_value" value="{{coupon.discount_value}}"><span class="text-danger">*</span>
 									</div>
 									<div class="col-md-12">
-										<input type="text" name="expiry_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"
-										/>
+										<input type="text" name="publish_date" placeholder="Expiry Date" class="vend_edit_lists_textstyle1" id="inputExpiryDate" value="{{coupon.expiry_date}}"
+										/><span class="text-danger">*</span>
 										<span class="vend_edit_list_spanstyle"> Expiry Date</span>
 									</div>
 									<div class="col-md-12">
@@ -260,7 +275,7 @@ function ouputPopup(data) {
 										<span class="vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is
 											not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</span>
 									</div>
-									<div class="col-md-12">
+									<div class="col-md-12" style="margin: 3px 0px;font-size:10px">
 										<select class="vend_edit_lists_textstyle1 multiSelect" name="categories" id="inputCategories" multiple="multiple" placeholder="Product Categories">
 											{{#if existingCouponCategories}} {{{optionsSelectedCategory categories existingCouponCategories}}} {{else}} {{#each categories}}
 											<option value={{this.id}}>{{this.name}}</option>
@@ -268,7 +283,7 @@ function ouputPopup(data) {
 										</select>
 										<span class="vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</span>
 									</div>
-									<div class="col-md-12">
+									<div class="col-md-12" style="margin: 3px 0px;font-size:10px">
 										<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_categories" id="inputExcludeCategories" multiple="multiple"
 										 placeholder="Product Exclude Categories">
 											{{#if existingCouponExcludeCategories}} {{{optionsSelectedCategory categories existingCouponExcludeCategories}}} {{else}}
@@ -278,7 +293,7 @@ function ouputPopup(data) {
 										</select>
 										<span class="vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</span>
 									</div>
-									<div class="col-md-12">
+									<div class="col-md-12" style="margin: 3px 0px;font-size:10px">
 										<select class="vend_edit_lists_textstyle1 multiSelect" name="products" id="inputProducts" multiple="multiple">
 											{{#if existingCouponProducts}} {{{optionsSelected products existingCouponProducts}}} {{else}} {{#each products}}
 											<option value={{this.id}}>{{this.product_name}}</option>
@@ -286,7 +301,7 @@ function ouputPopup(data) {
 										</select>
 										<span class="vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</span>
 									</div>
-									<div class="col-md-12">
+									<div class="col-md-12" style="margin: 3px 0px;font-size:10px">
 										<select class="vend_edit_lists_textstyle1 multiSelect" name="exclude_products" id="inputExcludeProduct" multiple="multiple"
 										 placeholder="Exclude products..">
 											{{#if existingCouponExcludeProducts}} {{{optionsSelected products existingCouponExcludeProducts}}} {{else}} {{#each products}}

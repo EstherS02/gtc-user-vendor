@@ -566,7 +566,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-						<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+						<button type="submit" id="reviewBtn" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
 					</div>
 				</form>
 			</div>
@@ -575,6 +575,7 @@
 				var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 				$('#btnFaSpinner').hide();
+				$('#reviewBtn').prop('disabled', true);
 				$('#review-stars').val(1);
 
 				$("#reviewForm").submit(function (e) {
@@ -595,7 +596,7 @@
 						if ($('#inputComment').val()) {
 							reviewObj['comment'] = $('#inputComment').val();
 						}
-						$('#btnFaSpinner').show()
+						// $('#btnFaSpinner').show()
 					}
 					$.ajax({
 						type: "POST",
@@ -617,6 +618,17 @@
 						title: "Title is required."
 					}
 				});
+
+				$('#review-stars, #inputTitle').keyup(function() {
+            if ($('#inputTitle').val() != '' && $('#1review-stars').val() != '') {
+console.log("hai")
+
+                $('#reviewBtn').prop('disabled', false);
+            } else {
+                $('#reviewBtn').prop('disabled', true);
+            }
+        });
+        
 			</script>
 		</div>
 	</div>
