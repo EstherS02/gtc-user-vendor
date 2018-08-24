@@ -34,11 +34,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'payout_created_date',
             allowNull: true
         },
-        payout_estimate_arrival_date: {
-            type: DataTypes.DATE,
-            field: 'payout_estimate_arrival_date',
-            allowNull: true
-        },
         payout_amount: {
             type: DataTypes.DECIMAL(10, 4),
             field: 'payout_amount',
