@@ -165,40 +165,37 @@
         "user": {{{ DisplayJSON LoggedInUser.id }}}
       }
       console.log("socketChat", socketChat);
-      var socket = io();
+      //var socket = io();
       console.log("socket", socket);
       socket.emit('chat:join', socketChat);
     }
     
     socket.on('chat:receive', function(data){
-     var dt = new Date();
-     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-      console.log("data", data);
-      var base;
-      console.log("socketChat.user", socketChat.user);
-      if(data.from_id == socketChat.user) {
-            base = "base_sent"
-            console.log("base sent", base);
-      } else {
-            base = "base_receive"
-            console.log("base receive", base);
-      } 
-      var body = '<div class="row msg_container '+base+'">' +
-        '<div class="col-md-10 col-xs-10 ">' +
-        '<div class="messages msg_sent">' +
-        '<p>' + data.message + '</p>' +
-        ' <time datetime="2009-11-13T20:00">Administrator • Today ' + time + '</time>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
-      $(body).appendTo("#messagebody");
-      //$('#btn-input').val('');
-      $("#messagebody").animate({
-        scrollTop: $("#messagebody")[0].scrollHeight
-      }, 'slow');
-    }) 
-    
-    
+       var dt = new Date();
+       var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        console.log("emitted data", data);
+        var base;
+        console.log("socketChat.user", socketChat.user);
+        if(data.from_id == socketChat.user) {
+              base = "base_sent"
+              console.log("base_sent", base);
+        } else {
+              base = "base_receive"
+              console.log("basereceive", base);
+        } 
+        var body = '<div class="row msg_container '+base+'">' +
+          '<div class="col-md-10 col-xs-10 ">' +
+          '<div class="messages msg_sent">' +
+          '<p>' + data.message + '</p>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+        $(body).appendTo("#messagebody");
+        //$('#btn-input').val('');
+        $("#messagebody").animate({
+          scrollTop: $("#messagebody")[0].scrollHeight
+        }, 'slow');
+      }) 
   })
   
   $(document).on('click', '.panel-heading span.icon_minim', function (e) {
@@ -244,7 +241,7 @@
     if (chat == "") {
       alert('Enter Message');
     } else {
-      var socket = io();
+      //var socket = io();
       var sendSocket = {
         'from_id': {{{ DisplayJSON LoggedInUser.id }}},
         'talk_thread_id': {{{ DisplayJSON talkThreads.threadId }}},
@@ -333,6 +330,7 @@
   }
 
   .messages {
+    color: black;
     background: white;
     padding: 10px;
     border-radius: 2px;
@@ -378,6 +376,7 @@
   }
 
   .base_sent {
+    text-align: right;
     justify-content: flex-end;
     align-items: flex-end;
   }

@@ -1,6 +1,41 @@
 <script type="text/javascript">
-	var userInfo = {{{DisplayJSON LoggedInUser}}}	
+	var userInfo = {{{DisplayJSON LoggedInUser}}}
+	var threadId;
+
+	console.log("emitSocket",emitSocket);
+	/*var socket = io();
+	socket.on('chat:receive', function(data){
+			console.log("data", data);
+			if(data.from_id == userInfo.id) {
+           		base = "pull-right"
+           	 	console.log("base sent", base);
+    		 } else {
+	            base = "pull-left"
+	            console.log("base receive", base);
+      		 }
+      		var body = `<li class="left clearfix">
+							<div class="chat-body clearfix">
+								<div class="header">
+									<small class="text-muted `+base+`"></small>
+								</div>
+								<p>`+ data.message +`</p>
+							</div>
+						</li>`;
+      		$(body).appendTo("#message");
+			$("#message").animate({
+				scrollTop: $("#messagebody")[0].scrollHeight
+			}, 'slow');
+		});	*/
 	function getConversations(e) {
+		threadId = e;
+		var socketChat = {
+        	"id": e,
+       		"user": userInfo.id
+      	}
+      	console.log("socketChat", socketChat);
+      	//var socket = io();
+      	//emitSocket.chatJoin(socketChat);
+      	socket.emit('chat:join', socketChat);
 		var formData = {};
 		formData.thread_id = e;
 		$.ajax({
@@ -12,7 +47,7 @@
 					// console.log(res);
 					chatPage(res.talkThread);
 				}else{
-					$('#comment_text' + e).notify("Please enter the valid data", "error");				
+					$('#comment_text' + e).notify("Please enter the valid data", "error");
 				}
 			},
 			error: function(request, status, error) {
@@ -22,40 +57,50 @@
 		});
 	}
 
+
+
 	function chatPage(result) {
 		var domElement = '';
 		var time = '';
 		result.forEach(function(element) {
-			console.log(element);
+			//console.log(element);
 			if (element.from_id == userInfo.id) {
 				time = 'pull-right';
 				domElement = domElement + `<li class="left clearfix">
-																	<span class="chat-img pull-left">
-																		<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
-																	</span>
-																	<div class="chat-body clearfix">
-																		<div class="header">
-																			<strong class="primary-font pull-left">` + element.User.first_name + element.User.last_name + `</strong>
-																			<small class="text-muted `+time+`"><i class="fa fa-clock-o">`+ FormatDate(element.sent_at) + `</i> </small>
-																		</div>
-																		<p>`+ element.message +`</p>
-																	</div>
-																</li>`;
+											<span class="chat-img pull-left">
+												<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
+											</span>
+											<div class="chat-body clearfix">
+												<div class="header">
+													<strong class="primary-font pull-left">` + element.User.first_name + element.User.last_name + `</strong>
+													<small class="text-muted `+time+`"><i class="fa fa-clock-o">`+ FormatDate(element.sent_at) + `</i> </small>
+												</div>
+												<p>`+ element.message +`</p>
+											</div>
+										</li>`;
 
 			} else {
 				time = 'pull-left';
-				domElement = domElement + `<li class="right clearfix" >																	<span class="chat-img pull-right">																		<img src="` + element.User.user_pic_url + `" alt="User Avatar"></span>																	<div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + element.User.first_name + element.User.last_name + `</strong><small class=" text-muted `+ time+`"><i class="fa fa-clock-o"></i>` + FormatDate(element.sent_at) + `</small>
-																		</div>
-																		<p class="pull-right m-t-xs">`+ element.message + `
-																		</p>
-																	</div>
-																</li>`;
+				domElement = domElement + `<li class="right clearfix" >																	
+												<span class="chat-img pull-right">
+													<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
+												</span>																		<img src="` + element.User.user_pic_url + `" alt="User Avatar"></span>																	<div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + element.User.first_name + element.User.last_name + `</strong><small class=" text-muted `+ time+`"><i class="fa fa-clock-o"></i>` + FormatDate(element.sent_at) + `</small>
+												<div class="chat-body clearfix">
+												<div class="header">
+													<strong class="primary-font pull-left">` + element.User.first_name + element.User.last_name + `</strong>
+													<small class="text-muted `+time+`"><i class="fa fa-clock-o">`+ FormatDate(element.sent_at) + `</i> </small>
+													</div>
+												<p>`+ element.message +`</p>
+												</div>
+											</li>`;
 
 			}
 		});
 		$("#message").show();
 		document.getElementById("message").innerHTML = domElement;
-															
+		var element = document.querySelector('#scrollMessage');
+		element.scrollTop = element.scrollHeight - element.clientHeight;
+		$('#replayBox').show();
 	}
 	function FormatDate(testDate) {
 		return moment(testDate).format("LT")
@@ -66,9 +111,64 @@
 
 	return '/img/avatar.png'
 	}
-	$(function() {
-    $('#message').hide();
-});
+	function send() {
+		var chat = $("#btn-input").val();
+		//var socket = io();
+		if(chat == "") {
+			alert("Enter message");
+		} else {
+			var sendSocket = {
+				'from_id': userInfo.id,
+				'talk_thread_id': threadId,
+				'message': chat
+			}
+			console.log("chat:send", sendSocket);
+			//emitSocket.chatSend(sendSocket);
+			socket.emit('chat:send', sendSocket);
+			$('#btn-input').val('');
+		}
+	}
+
+	$(document).ready(function(){
+		//var socket = io();
+		//console.log("socket", socket);
+		socket.on('chat:receive', function(data) {
+			console.log("emitted socket", data);
+			if(data.from_id == userInfo.id) {
+           		base = "pull-right"
+           	 	console.log("base sent", base);
+    		 } else {
+	            base = "pull-left"
+	            console.log("base receive", base);
+      		 }
+      		var body = `<li class="left clearfix">
+							<div class="chat-body clearfix">
+								<div class="header">
+									<small class="text-muted `+base+`"></small>
+								</div>
+								<p>`+ data.message +`</p>
+							</div>
+						</li>`;
+      		$(body).appendTo("#message");
+      		//document.getElementById("message").innerHTML = body;
+			$("#message").animate({
+				scrollTop: $("#message")[0].scrollHeight
+			}, 'slow');
+		});
+
+		$("#btn-chat").click(function () {
+	    	send();
+	  	});
+
+		$('#btn-input').keypress(function(e) {
+			if (e.which == 13) {
+				send()
+			}
+		});
+
+    	$('#message').hide();
+    	$('#replayBox').hide();
+	});
 
 
 </script>
@@ -84,10 +184,10 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>MY MESSAGES {{messenger.length}}</h2>
+							<h2>MY MESSAGES {{!-- {{messenger.length}} --}}</h2>
 						</div>
 						<div class="content-body">
-							
+
 							<!--message-->
 							<div class="row" ng-show="messages">
 								<div class="col-md-12">
@@ -123,7 +223,7 @@
 												<!--=========================================================-->
 												<!-- selected chat -->
 												<div class="col-md-8 bg-white">
-													<div scroll-glue-bottom="glued" class="chats-messager" style="height: 400px; overflow-y: auto;">
+													<div scroll-glue-bottom="glued" id="scrollMessage" class="chats-messager" style="height: 400px; overflow-y: auto;">
 														<ul class="chats" id = "message">
 														{{!-- {{#each talkThreads.talk}}
 															{{#ifCond this.from_id "==" ../LoggedInUser.id}} --}}
@@ -158,16 +258,16 @@
 																</li>
 {{!-- 															{{/ifCond}}
 														{{/each}} --}}
-															
+
 															{{!-- loggrg in user id --}}
-															
+
 														</ul>
 													</div>
-													<div class="chat-box bg-white">
+													<div class="chat-box bg-white" id="replayBox">
 														<form class="input-group" ng-submit="sendMessage(foodie, message)">
-															<textarea class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here" style="height: 70px"></textarea>
+															<textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here" style="height: 70px"></textarea>
 															<span class="input-group-btn">
-																<button class="btn btn-success no-rounded" type="button" ng-click="sendMessage(foodie, message); message=''" ng-disable="msgDisable" style="margin-left: 10px !important;
+																<button id="btn-chat" class="btn btn-success no-rounded" type="button"  style="margin-left: 10px !important;
 																margin-right: 10px !important;">Send</button>
 															</span>
 														</form>
@@ -176,7 +276,7 @@
 												</div>
 											</div>
 										</div>
-										
+
 										{{else}}
 										<div class="wrapper-sm" ng-show="totalMessengers==0">
 											<div class="row m-t-md">
@@ -188,13 +288,13 @@
 												</div>
 											</div>
 										</div>
-										
+
 										{{/ifCond}}
 									</div>
 								</div>
 							</div>
 							<!--end message-->
-							
+
 						</div>
 					</div>
 				</div>

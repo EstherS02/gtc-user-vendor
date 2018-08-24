@@ -55,7 +55,7 @@ export function messages(req, res) {
 						}],
 						order: [
 							[field, order],
-							[model['TalkThread'],model['Talk'], field, order]
+							[model['TalkThread'],model['Talk'], "sent_at", "desc"]
 						]
 					}).then(function(results1) {
 						return callback(null,results1);

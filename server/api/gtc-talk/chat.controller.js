@@ -27,7 +27,7 @@ export function chatConversation(req, res) {
 	var order = "desc";
 
 	service.findRows(modelName, queryObj, offset, limit, field, order, includeArr).then(function(response){
-		console.log("talk", response);
+		//console.log("talk", response);
 			if (response) {
 				return res.status(200).json({
 							talkThread: response.rows,

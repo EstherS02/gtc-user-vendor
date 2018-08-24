@@ -55,6 +55,10 @@
 </head>
 
 <body>
+    <script src="plugins/socketio/socket.io.js"></script>
+    <script type="text/javascript" src="js/sockets.js"></script>
+
+    
     {{> environment}} {{> global-scripts}} {{{body}}}
 
 
@@ -69,45 +73,8 @@
     <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="plugins/magnific-popup/custom-magnific-popup.js"></script>
     <script src="plugins/lodash/lodash.min.js"></script>
-    <script src="plugins/socketio/socket.io.js"></script>
-    <script src="../../../config/environment"></script>
 
-    <script type="text/javascript">
-        var emitSocket = {};
-        var socket;
-        $(function(){
-         // var config = require("../../../config/environment");
-            /*var socketEmit = function(){
-                var socket = io();
-                return socket;
-            }*/
-            socket = io();/*'http://localhost:8000'+ "/rooms", {
-                 transports: ['websocket']
-            }*/
-            emitSocket.userInfo = {{{DisplayJSON LoggedInUser}}};
-            //emitSocket.socket = io();
-            emitSocket.userJoin = function(user){
-
-                socket.emit('user:join', user);
-            }
-            emitSocket.userLeave = function(user){
-
-                socket.emit('user:leave', user);
-            }
-            emitSocket.chatJoin = function(thread){
-
-                socket.emit('chat:join', thread);
-            }
-            emitSocket.chatSend = function(talk){
-                socket.emit('chat:send', talk);
-            }
-            emitSocket.chatLeave = function(talk){
-                socket.emit('chat:leave', talk);
-            }
-
-        })
-
-        </script>
+   
     <script src="plugins/cropperjs/cropper.min.js"></script>
     <script src="plugins/notifyjs/notify.min.js"></script>
     <script src="plugins/ladda/spin.min.js"></script>

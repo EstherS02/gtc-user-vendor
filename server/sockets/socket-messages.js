@@ -78,7 +78,6 @@ export function socketMsg(io) {
 			//task database
 			return talkCreate(talk).then(function(result) {
 				console.log("RESULT **************", result.talk_thread_id);
-				//console.log("Emitted",io.to(result.talk_thread_id).emit('chat:receive', result));
 				io.to(result.talk_thread_id).emit('chat:receive', result)
 				/*var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					console.log("*******threadArrObj",threadArrObj);
@@ -93,9 +92,9 @@ export function socketMsg(io) {
 					} else {
 						console.log("user not in this page");
 					}
-					io.to(result.thread).emit('chat:receive', result);
+					io.to(result.talk_thread_id).emit('chat:receive', result);
 				} else {
-					io.to(result.thread).emit('chat:receive', result);
+					io.to(result.talk_thread_id).emit('chat:receive', result);
 				}*/
 			})
 		});

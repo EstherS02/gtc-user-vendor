@@ -620,5 +620,7 @@
 			</script>
 		</div>
 	</div>
-	{{>dummy-chat-ui }}
+	{{#ifCond LoggedInUser.role "==" 3}}
+		{{>dummy-chat-ui }}
+	{{/ifCond}}
 	{{> footer/bottom-footer}}
