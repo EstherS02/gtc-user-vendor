@@ -136,13 +136,11 @@ export function cart(req, res) {
 
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
 
-
             _.forOwn(seperatedItems, function (itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
                 totalPrice[itemsKey]['price'] = 0;
                 totalPrice[itemsKey]['shipping'] = 0;
                 totalPrice[itemsKey]['total'] = 0;
-
                 for (var i = 0; i < itemsValue.length; i++) {
 
                     if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
@@ -163,7 +161,6 @@ export function cart(req, res) {
 
                     }
                 }
-
                 totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
             });
 
@@ -181,6 +178,7 @@ export function cart(req, res) {
                     coupon_data.push(req.cookies.check_promo_code[obj_key]);
                 }
             }
+            var isCartEmpty = _.isEmpty(seperatedItems);
             var result_obj = {
                 title: "Global Trade Connect",
                 cartItems: results.cartItems.rows,
@@ -192,11 +190,11 @@ export function cart(req, res) {
                 categories: results.categories,
                 bottomCategory: bottomCategory,
                 cartheader: results.cartCounts,
+                isCartEmpty: isCartEmpty,
                 couponData: [],
                 couponUpdateError: "",
                 couponUpdateErrorMessage: ""
             }
-            console.log(coupon_data)
             if (coupon_data.length > 0) {
                 var original_price = coupon_data[0].original_price;
                 if (parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
