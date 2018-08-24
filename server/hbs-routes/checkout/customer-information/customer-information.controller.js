@@ -15,7 +15,6 @@ const querystring = require('querystring');
 
 function processCheckout(req, res, callback) {
 	let LoggedInUser = {};
-
 	var bottomCategory = {};
 
 	if (req.user)
@@ -33,7 +32,6 @@ function processCheckout(req, res, callback) {
 			});
 		},
 		address: function(cb) {
-
 			let searchObj = {};
 			let includeArr = [];
 
@@ -63,7 +61,6 @@ function processCheckout(req, res, callback) {
 					return cb(error);
 				});
 		},
-
 		country: function(cb) {
 			let searchObj = {};
 			let includeArr = [];
