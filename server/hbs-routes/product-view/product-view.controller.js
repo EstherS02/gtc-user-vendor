@@ -294,6 +294,32 @@ export function GetProductReview(req, res) {
 		productID = req.params.product_id;
 	}
 
+	var page;
+	var queryURI = {};
+	var queryPaginationObj = {};
+	var offset, limit, field, order;
+
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	queryPaginationObj['field'] = field;
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
+	delete req.query.page;
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+
 	async.series({
 		cartCounts: function(callback) {
 			if (req['currentUser']) {
@@ -333,7 +359,7 @@ export function GetProductReview(req, res) {
 				where: {
 					id: productID
 				},
-				attributes: ['id', 'product_name', 'product_slug', 'vendor_id'],
+				attributes: ['id', 'product_name', 'product_slug', 'vendor_id', 'marketplace_id'],
 				include: [{
 					model: model['ProductMedia'],
 					where: {
@@ -389,7 +415,7 @@ export function GetProductReview(req, res) {
 			queryObj['status'] = status['ACTIVE'];
 			queryObj['product_id'] = productID;
 
-			productService.productReviews(queryObj, null, 20, 'created_on', 'DESC')
+			productService.productReviews(queryObj, offset, limit, 'created_on', 'DESC')
 				.then((productLatestReview) => {
 					return callback(null, productLatestReview);
 				}).catch((error) => {
@@ -462,6 +488,7 @@ export function GetProductReview(req, res) {
 		}
 	}, function(error, results) {
 		var selectedPage;
+		queryPaginationObj['maxSize'] = 2;
 		if (marketplaceID == marketplace['WHOLESALE']) {
 			selectedPage = "wholesale";
 		} else if (marketplaceID == marketplace['PUBLIC']) {
@@ -476,7 +503,6 @@ export function GetProductReview(req, res) {
 		if (!error && results) {
 			res.render('product-review', {
 				title: "Global Trade Connect",
-				LoggedInUser: LoggedInUser,
 				cartheader: results.cartCounts,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
@@ -487,6 +513,9 @@ export function GetProductReview(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,
 				selectedPage: selectedPage,
+				queryURI: queryURI,
+				queryPaginationObj: queryPaginationObj,
+				urlPathname: req.path,
 				status: status,
 				Plan: Plan
 			});
