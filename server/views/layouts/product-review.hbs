@@ -53,7 +53,7 @@ $(document).ready(function() {
                             		<div class="col-md-7">
                             			<div class="top-mini-headers m-b-sm">
 											<div class="alignleft">
-												<label>Showing 1-10 of 23 Reviews</label>
+												<label>Showing {{SUMFloat queryPaginationObj.offset 1}} to {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} of {{product.rating.product_rating_count}} Reviews</label>
 											</div>
 											<div class="alignright">
 												<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary btn-block rounded btn-sm">Submit Your Own Review</button>
@@ -87,6 +87,33 @@ $(document).ready(function() {
 										</div>
                             		</div>
                             	</div>
+								<div class="row m-t-sm">
+									<div class="col-md-12">
+										{{#pagination productReviews.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="../{{../selectedPage}}{{../urlPathname}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+												</li>
+												{{/unless}} 
+												{{#each pages}}
+												<li class="page-item 
+												{{#if isCurrent}} active 
+												{{/if}}">
+													<a class="page-link" href="../{{../../selectedPage}}{{../../urlPathname}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+												</li>
+												{{/each}}
+												{{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="../{{../selectedPage}}{{../urlPathname}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+												</li>
+												{{/unless}} 
+											</ul>
+										</nav>
+										{{/pagination}}
+									</div>
+								</div>
                             </div>
                         </div>
 					</div>
