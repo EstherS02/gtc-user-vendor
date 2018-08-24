@@ -25,15 +25,15 @@ export function cart(req, res) {
 
 
     async.series({
-        cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
+        cartCounts: function (callback) {
+            service.cartHeader(LoggedInUser).then(function (response) {
                 return callback(null, response);
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.log('Error :::', error);
                 return callback(null);
             });
         },
-        cartItems: function(cb) {
+        cartItems: function (cb) {
 
             var queryObj = {};
             let includeArr = [];
@@ -77,15 +77,15 @@ export function cart(req, res) {
                         }
                     }]
                 }]
-            }).then(function(data) {
+            }).then(function (data) {
                 var result = JSON.parse(JSON.stringify(data));
                 return cb(null, result)
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.log('Error:::', error);
                 return cb(error);
             });
         },
-        marketPlace: function(cb) {
+        marketPlace: function (cb) {
 
             var searchObj = {};
             let includeArr = [];
@@ -95,39 +95,38 @@ export function cart(req, res) {
             }
 
             return service.findRows('Marketplace', searchObj, null, null, 'created_on', "asc", includeArr)
-                .then(function(marketPlaceData) {
+                .then(function (marketPlaceData) {
                     marketPlaceData = JSON.parse(JSON.stringify(marketPlaceData));
                     return cb(null, marketPlaceData)
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.log('Error :::', error);
                     return cb(error);
                 });
         },
-        categories: function(cb) {
-                var includeArr = [];
-                const categoryOffset = 0;
-                const categoryLimit = null;
-                const categoryField = "id";
-                const categoryOrder = "asc";
-                var categoryModel = "Category";
-                const categoryQueryObj = {};
+        categories: function (cb) {
+            var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
 
-                categoryQueryObj['status'] = status["ACTIVE"];
+            categoryQueryObj['status'] = status["ACTIVE"];
 
-                service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                    .then(function(category) {
-                        var categories = category.rows;
-                        bottomCategory['left'] = categories.slice(0, 8);
-                        bottomCategory['right'] = categories.slice(8, 16);
-                        return cb(null, category.rows);
-                    }).catch(function(error) {
-                        console.log('Error :::', error);
-                        return cb(null);
-                    });
-            }
-    }, function(err, results) {
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function (category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return cb(null, category.rows);
+                }).catch(function (error) {
+                    console.log('Error :::', error);
+                    return cb(null);
+                });
+        }
+    }, function (err, results) {
         if (!err) {
-            // console.log("totalItems&&&&&&&&&&&&",results)
             var totalItems = results.cartItems.rows;
             var allMarketPlaces = results.marketPlace.rows;
             var totalPrice = {};
@@ -136,9 +135,9 @@ export function cart(req, res) {
             totalPrice['grandTotal'] = 0;
 
             var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-        
 
-            _.forOwn(seperatedItems, function(itemsValue, itemsKey) {
+
+            _.forOwn(seperatedItems, function (itemsValue, itemsKey) {
                 totalPrice[itemsKey] = {};
                 totalPrice[itemsKey]['price'] = 0;
                 totalPrice[itemsKey]['shipping'] = 0;
@@ -147,21 +146,21 @@ export function cart(req, res) {
                 for (var i = 0; i < itemsValue.length; i++) {
 
                     if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-                        if(itemsValue[i].Product.moq){
+                        if (itemsValue[i].Product.moq) {
                             var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
 
                             totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
                             totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
                             totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
                         }
-                        else{
-                            var calulatedSum = 1 * itemsValue[i].Product.price;
+                        else {
+                            var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
                             totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
                             totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
                             totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
                         }
-                       
+
                     }
                 }
 
@@ -169,7 +168,7 @@ export function cart(req, res) {
             });
 
             var coupon_data = [];
-            if (typeof(req.cookies.check_promo_code) != 'undefined') {
+            if (typeof (req.cookies.check_promo_code) != 'undefined') {
                 let default_promo_obj = req.cookies.check_promo_code;
                 var obj_key = -1;
                 for (let key in default_promo_obj) {
@@ -192,7 +191,7 @@ export function cart(req, res) {
                 LoggedInUser: LoggedInUser,
                 categories: results.categories,
                 bottomCategory: bottomCategory,
-                cartheader:results.cartCounts,
+                cartheader: results.cartCounts,
                 couponData: [],
                 couponUpdateError: "",
                 couponUpdateErrorMessage: ""
@@ -202,9 +201,9 @@ export function cart(req, res) {
                 var original_price = coupon_data[0].original_price;
                 if (parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
                     req.body.coupon_code = coupon_data[0].coupon_code;
-                    cartObj.callApplyCoupon(req, res, function(return_val) {
-                        if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPLIED') {
-                            
+                    cartObj.callApplyCoupon(req, res, function (return_val) {
+                        if (typeof (return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPLIED') {
+
                             result_obj['couponData'] = [return_val.coupon_data];
                             return res.status(200).render('cart', result_obj);
                         } else {

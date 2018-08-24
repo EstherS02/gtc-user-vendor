@@ -81,7 +81,8 @@ var all = {
 		'email': 'email-notification',
 		"couponExpiry": "couponExpiry",
 		"vendorPayouts": "vendorPayouts",
-		"aliExpressScrape": "aliexpress-scrape"
+		"aliExpressScrape": "aliexpress-scrape",
+		"amazonImportJob": "amazonImportJob"
 	},
 	sesTransporter: {
 		accessKeyId: process.env.SES_ACCESS_KEY_ID,
@@ -135,6 +136,11 @@ var all = {
 		keySecret: process.env.STRIPE_SECRET_KEY
 	},
 
+	amazonImportConfig: {
+		accessKeyId: process.env.AMAZON_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AMAZON_SECRET_KEY,
+		developerId: process.env.AMAZON_DEVELOPER_ID
+	},
 	// MongoDB connection options
 	mongo: {
 		options: {

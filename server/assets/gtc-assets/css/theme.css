@@ -95,7 +95,7 @@
 	color: #d78636;
 }
 .text-marketplace-1 {
-	color: #d78636;
+	color: #d78636 !important;
 }
 .text-marketplace-2 {
 	color: #0f478c;
@@ -286,7 +286,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	border-radius: 1.25rem !important;
 }
 .form-control-border {
-	border: 2px solid #f3943d !important;
+	border: 2px solid #f49d3f !important;
 }
 .fa-circle-bg {
 	color: #DDDDDF;
@@ -494,6 +494,9 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 }
 .m-r-xl {
 	margin-right: 40px;
+}
+.m-r-xll {
+	margin-right: 45px;
 }
 .m-r-n-xxs {
 	margin-right: -1px;
@@ -922,7 +925,7 @@ div.product-right-col h2 {
 	border-radius: 1rem !important;
 }
 .input-border {
-	border: 2px solid #f3943d !important;
+	border: 2px solid #f49d3f !important;
 }
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -931,6 +934,41 @@ input[type=number]::-webkit-outer-spin-button {
 	appearance: none;
 	margin: 0; 
 }
-
+.customCheckbox {
+	width: 25px;
+	position: relative;
+	display: inline;
+}
+.customCheckboxInput {
+	opacity: 0;
+}
+.customCheckbox label {
+	position: absolute;
+	cursor: pointer;
+	line-height: 18px;
+	width: 20px;
+	height: 20px;
+	top: 0;
+	left: 0;
+	border: 2px solid #b1b1b1;
+}
+.checkbox-b {
+	border: 2px solid #f49d3f !important;
+}
+.customCheckbox input[type=checkbox] +label::after {
+	content: "\2713";
+	color: #000;
+	text-align: center;
+	opacity: 0;
+	position: absolute;
+	left: 2px;
+	font-weight: bold;
+}
+.customCheckbox input[type=checkbox]:checked +label {
+	cursor: pointer;
+}
+.customCheckbox input[type=checkbox]:checked +label::after {
+	opacity: 1;
+}
 .pagination>li>a,
 .pagination>li>span { border-radius: 50% !important;margin: 0 5px;}
