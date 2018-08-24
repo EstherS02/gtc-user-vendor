@@ -81,6 +81,11 @@
 .text-sm {
 	font-size: 0.688em;
 }
+.input-rounded-border {
+	border: 1px solid rgba(0,0,0,.15) !important;
+	border-radius: 1rem !important;
+	background: #FFFFFF !important;
+}
 .gray-bg, .bg-muted {
 	background-color: #f3f3f4;
 }
@@ -950,7 +955,7 @@ input[type=number]::-webkit-outer-spin-button {
 	height: 20px;
 	top: 0;
 	left: 0;
-	border: 2px solid #b1b1b1;
+	border: 1px solid rgba(0,0,0,.15) !important;
 }
 .checkbox-b {
 	border: 2px solid #f49d3f !important;
