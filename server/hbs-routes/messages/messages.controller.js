@@ -9,7 +9,6 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function messages(req, res) {
-<<<<<<< HEAD
 	var categoryModel = "Category";
 	var LoggedInUser = {};
 	var bottomCategory = [];
@@ -18,85 +17,88 @@ export function messages(req, res) {
 
 	let user_id = LoggedInUser.id;
 	var threads = [];
+	var field ="created_on";
+	var order = "desc";
 	async.series({
-				cartCounts: function(callback) {
-					service.cartHeader(LoggedInUser).then(function(response) {
-						return callback(null, response);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
-				},
-				messages: function(callback) {
-					model['TalkThreadUsers'].findAll({
-						where: {
-							user_id: 62
-						},
-					}).then(function(instances) {
-
-						for (var i = 0, iLen = instances.length; i < iLen; i++) {
-							threads.push(instances[i].thread_id);
-						}
-						console.log("------==============----------", threads)
-					}).then(function(results) {
-						model['TalkThreadUsers'].findAll({
-							where: {
-								thread_id: threads,
-								user_id:{
-									$ne:62
-								}
-							},
-							include:[{
-								model:model['User']
-							},{
-								model:model['TalkThread'],
-								include:[{
-								model:model['Talk']
-								}]
-							}]
-						}).then(function(results1) {
-							console.log("------==============---------- results1",JSON.parse(JSON.stringify(results1)),typeof(results1))
-							return callback(null);
-						})
-					});
-
-		},
-		categories: function(callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			const categoryQueryObj = {};
-
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function(category) {
-					var categories = category.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
+			cartCounts: function(callback) {
+				service.cartHeader(LoggedInUser).then(function(response) {
+					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+			},
+			messages: function(callback) {
+				model['TalkThreadUsers'].findAll({
+					where: {
+						user_id: 62
+					},
+				}).then(function(instances) {
+					for (var i = 0, iLen = instances.length; i < iLen; i++) {
+						threads.push(instances[i].thread_id);
+					}
+				}).then(function(results) {
+					model['TalkThreadUsers'].findAll({
+						where: {
+							thread_id: threads,
+							user_id: {
+								$ne: 62
+							}
+						},
+						include: [{
+							model: model['User']
+						}, {
+							model: model['TalkThread'],
+							include: [{
+								model: model['Talk']
+							}]
+						}],
+						order: [
+							[field, order],
+							[model['TalkThread'],model['Talk'], field, order]
+						]
+					}).then(function(results1) {
+						return callback(null,results1);
+					})
+				});
+			},
+			categories: function(callback) {
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				const categoryQueryObj = {};
+
+				categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 		},
-},
-function(err, results) {
+		function(err, results) {
 
-	if (!err) {
-
-		res.render('vendorNav/messages', {
-			title: "Global Trade Connect",
-			categories: results.categories,
-			bottomCategory: bottomCategory,
-			cartheader: results.cartCounts,
-			LoggedInUser: LoggedInUser,
-			vendorPlan: vendorPlan,
+			if (!err) {
+				console.log(JSON.parse(JSON.stringify(results.messages)));
+				res.render('vendorNav/messages', {
+					title: "Global Trade Connect",
+					messenger: results.messages,
+					categories: results.categories,
+					bottomCategory: bottomCategory,
+					cartheader: results.cartCounts,
+					LoggedInUser: LoggedInUser,
+					vendorPlan: vendorPlan,
+				});
+			} else {
+				res.render('vendorNav/messages', err);
+			}
 		});
-	} else {
-		res.render('vendorNav/messages', err);
-	}
-});
 }

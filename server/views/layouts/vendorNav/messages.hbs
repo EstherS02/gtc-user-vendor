@@ -1,4 +1,75 @@
 <script type="text/javascript">
+	var userInfo = {{{DisplayJSON LoggedInUser}}}	
+	function getConversations(e) {
+		var formData = {};
+		formData.thread_id = e;
+		$.ajax({
+			type: 'POST',
+			url: '/api/gtc-talk/chat-conversation',
+			data: formData,
+			success: function(res) {
+				if(res.talkThread){
+					// console.log(res);
+					chatPage(res.talkThread);
+				}else{
+					$('#comment_text' + e).notify("Please enter the valid data", "error");				
+				}
+			},
+			error: function(request, status, error) {
+				console.log('status', status);
+				console.log('error', error);
+			}
+		});
+	}
+
+	function chatPage(result) {
+		var domElement = '';
+		var time = '';
+		result.forEach(function(element) {
+			console.log(element);
+			if (element.from_id == userInfo.id) {
+				time = 'pull-right';
+				domElement = domElement + `<li class="left clearfix">
+																	<span class="chat-img pull-left">
+																		<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
+																	</span>
+																	<div class="chat-body clearfix">
+																		<div class="header">
+																			<strong class="primary-font pull-left">` + element.User.first_name + element.User.last_name + `</strong>
+																			<small class="text-muted `+time+`"><i class="fa fa-clock-o">`+ FormatDate(element.sent_at) + `</i> </small>
+																		</div>
+																		<p>`+ element.message +`</p>
+																	</div>
+																</li>`;
+
+			} else {
+				time = 'pull-left';
+				domElement = domElement + `<li class="right clearfix" >																	<span class="chat-img pull-right">																		<img src="` + element.User.user_pic_url + `" alt="User Avatar"></span>																	<div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + element.User.first_name + element.User.last_name + `</strong><small class=" text-muted `+ time+`"><i class="fa fa-clock-o"></i>` + FormatDate(element.sent_at) + `</small>
+																		</div>
+																		<p class="pull-right m-t-xs">`+ element.message + `
+																		</p>
+																	</div>
+																</li>`;
+
+			}
+		});
+		$("#message").show();
+		document.getElementById("message").innerHTML = domElement;
+															
+	}
+	function FormatDate(testDate) {
+		return moment(testDate).format("LT")
+	}
+	function userProfile(context){
+		if (context && context.user_pic_url)
+		return context.user_pic_url;
+
+	return '/img/avatar.png'
+	}
+	$(function() {
+    $('#message').hide();
+});
+
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -13,7 +84,7 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>MY MESSAGES </h2>
+							<h2>MY MESSAGES {{messenger.length}}</h2>
 						</div>
 						<div class="content-body">
 							
@@ -22,64 +93,74 @@
 								<div class="col-md-12">
 									<div class="panel panel-default t-b-nopadding">
 										<hr class="cartHead dash m-b-none">
-										{{!-- {{#ifCond messenger.length ">" 0}} --}}
+										{{#ifCond messenger.length ">" 0}}
 											<div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
 											<div class="row">
 												<div class="col-md-4 bg-white">
 													<!-- =============================================================== -->
 													<!-- member list -->
-													<ul class="message-list">
-														<li class="bounceInDown" ng-repeat="messenger in allMessengers">
-															<a ng-click="getConversations(messenger.foodie)" class="clearfix msg-a" ng-class="{'active': isActive[messenger.foodie._id]}">
+													<ul class="messager-list">
+													{{#each messenger}}
+														<li class="bounceInDown">
+															<a href="javascript:;" onclick="getConversations({{this.thread_id}})"  class="clearfix msg-a" >
 																<span class="avatar">
 																<img src="/img/avatar.png" alt="" class="img-circle m-r-sm">
 																</span>
-																<div class="friend-name" style="display: flex">
-																	<strong>{{messenger.foodie.first_name}}2B Whole European Gluten Free Bakery</strong><span class="m-l-sm" ng-if="messenger.foodie.role == 'CHEF'">{{!-- <img src="assets/images/chef-hat.png" style="width: 17px; height: 17px"> --}}</span>
+																<div class="messager-name" style="display: flex">
+																	<strong>{{this.User.first_name}} {{this.User.id}}</strong><span class="m-l-sm"></span>
 																</div>
-																<div class="last-message text-muted">{{messenger.message}}</div>
+																<div class="last-messager text-muted">{{#if this.TalkThread.Talks}}{{this.TalkThread.Talks.[0].message}}{{/if}}</div>
 																<small class="time text-muted">{{messenger.date}}11:00am</small>
 																<small class="chat-alert online">
-																	<i ng-show="messenger.foodie.online == true" class="on b-white top"></i>
-																	<i ng-show="messenger.foodie.online == false" class="off b-white top"></i>
+																	<i class="on b-white top"></i>
+																	<i class="off b-white top"></i>
 																</small>
 															</a>
 														</li>
+														{{/each}}
 													</ul>
 												</div>
 												<!--=========================================================-->
 												<!-- selected chat -->
 												<div class="col-md-8 bg-white">
-													<div scroll-glue-bottom="glued" class="chat-message" style="height: 400px; overflow-y: auto;">
-														<ul class="chat">
-															<li class="left clearfix">
-																<span class="chat-img pull-left">
-																	<img src="/img/avatar.png" alt="User Avatar">
-																</span>
-																<div class="chat-body clearfix">
-																	<div class="header">
-																		<strong class="primary-font">{{conversation.user.first_name}}{{conversation.user.last_name}}Sumithra</strong>
-																		<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}} 11:00 am</small>
+													<div scroll-glue-bottom="glued" class="chats-messager" style="height: 400px; overflow-y: auto;">
+														<ul class="chats" id = "message">
+														{{!-- {{#each talkThreads.talk}}
+															{{#ifCond this.from_id "==" ../LoggedInUser.id}} --}}
+																<li class="left clearfix">
+																	<span class="chat-img pull-left">
+																		<img src="/img/avatar.png" alt="User Avatar">
+																	</span>
+																	<div class="chat-body clearfix">
+																		<div class="header">
+																			<strong class="primary-font"> {{conversation.user.first_name}}{{conversation.user.last_name}}Sumithra</strong>
+																			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}} 11:00 am</small>
+																		</div>
+																		<p>
+																			{{conversation.message}} Hi,May i know your native
+																		</p>
 																	</div>
-																	<p>
-																		{{conversation.message}} Hi,May i know your native
-																	</p>
-																</div>
-															</li>
-															<li class="right clearfix" >
-																<span class="chat-img pull-right">
-																	<img src="../img/avatar.png" alt="User Avatar">
-																</span>
-																<div class="chat-body clearfix">
-																	<div class="header m-b-xs">
-																		<strong class="primary-font pull-right">{{user.first_name}}{{user.last_name}} Sujitha</strong>
-																		<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}}11:31am </small>
+																</li>
+															{{!-- {{else ifCond this.from_id "!=" ../LoggedInUser.id}} --}}
+																<li class="right clearfix" >
+																	<span class="chat-img pull-right">
+																		<img src="../img/avatar.png" alt="User Avatar">
+																	</span>
+																	<div class="chat-body clearfix">
+																		<div class="header m-b-xs" style="padding-bottom: 20px;">
+																			<strong class="primary-font pull-right">{{user.first_name}}{{user.last_name}} Sujitha</strong>
+																			<small class="pull-left text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}}11:31am </small>
+																		</div>
+																		<p class="pull-right m-t-xs">
+																			{{conversation.message}} Chennai
+																		</p>
 																	</div>
-																	<p class="pull-right m-t-xs">
-																		{{conversation.message}} Chennai
-																	</p>
-																</div>
-															</li>
+																</li>
+{{!-- 															{{/ifCond}}
+														{{/each}} --}}
+															
+															{{!-- loggrg in user id --}}
+															
 														</ul>
 													</div>
 													<div class="chat-box bg-white">
@@ -96,7 +177,7 @@
 											</div>
 										</div>
 										
-										{{!-- {{else}} --}}
+										{{else}}
 										<div class="wrapper-sm" ng-show="totalMessengers==0">
 											<div class="row m-t-md">
 												<div class="col-md-12 text-center inline">
@@ -108,7 +189,7 @@
 											</div>
 										</div>
 										
-										{{!-- {{/ifCond}} --}}
+										{{/ifCond}}
 									</div>
 								</div>
 							</div>

@@ -2,15 +2,15 @@
     height: 500px;
     overflow-y: scroll;
 }
-.message-list {
+.messager-list {
     list-style: none;
     margin-left: -40px;
     margin-top: 20px;
 }
-.message-list li {
+.messager-list li {
     /* border-bottom: 1px solid #eee; */
 }
-.message-list li a {
+.messager-list li a {
     position: relative;
     display: block;
     padding: 10px;
@@ -27,7 +27,7 @@
     border-radius: 500px;
     white-space: nowrap;
 }
-.message-list li a img {
+.messager-list li a img {
     float: left;
     width: 45px;
     height: 45px;
@@ -43,16 +43,16 @@
 .img-circle {
     border-radius: 50%;
 }
-.message-list li a .friend-name, .message-list li a .friend-name:hover {
+.messager-list li a .messager-name, .messager-list li a .messager-name:hover {
     color: #777;
 }
-.message-list li a .last-message {
+.messager-list li a .last-messager {
     width: 65%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.message-list li a .time {
+.messager-list li a .time {
     position: absolute;
     top: 10px;
     right: 8px;
@@ -60,7 +60,7 @@
 .text-muted {
     color: #98a6ad;
 }
-.message-list li a .chat-alert {
+.messager-list li a .chat-alert {
     position: absolute;
     right: 15px;
     top: 30px;
@@ -92,30 +92,30 @@
 .bg-white {
     background-color: #fff;
 }
-.chat-message {
+.chats-messager {
     background: #f9f9f9;
     padding: 5px 40px 5px 0;
 }
-.chat {
+.chats {
     list-style: none;
     margin: 0;
 }
-.chat li {
+.chats li {
     margin: 15px 0;
 }
 
-.chat li img {
+.chats li img {
     width: 45px;
     height: 45px;
     border-radius: 50em;
     -moz-border-radius: 50em;
     -webkit-border-radius: 50em;
 }
-.chat li.right .chat-body {
+.chats li.right .chat-body {
     margin-right: 70px;
     background-color: #fff;
 }
-.chat li .chat-body {
+.chats li .chat-body {
     position: relative;
     font-size: 11px;
     padding: 10px;
@@ -128,8 +128,8 @@
     padding-bottom: 20px;
 }
 
-.chat li .chat-body .header {
-    padding-bottom: 5px;
+.chats li .chat-body .header {
+    padding-bottom: 20px;
     border-bottom: 1px solid #f1f5fc;
 }.primary-font {
     color: #3c8dbc;
@@ -147,11 +147,13 @@
     bottom: 0;
 }
 
-.input-group-btn {
-    position: relative;
-    font-size: 0;
-    white-space: nowrap;
-}.chat li.left .chat-body {
+.chats li.left .chat-body {
     margin-left: 70px;
     background-color: #fff;
+}
+.pull-right {
+    float: right!important;
+}
+.pull-left {
+    float: left!important;
 }
