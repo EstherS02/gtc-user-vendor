@@ -59,8 +59,7 @@ select {
 	background-image: none;
 	border: none;
 	border-radius: 0;
-	font-size: 13px;
-	color: inherit;
+	font-size: 0.813em;
 	display: block;
 	padding: .375rem .75rem;
 	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
