@@ -6,226 +6,129 @@
           <div class="panel-heading top-bar">
             <div class="row">
               <div class="col-md-8 col-xs-8">
-                <h3 class="panel-title" style="font-size: 12px;">
-                  <span class="fas fa-comments glyphicon glyphicon-comment"></span> Chat Window
-                </h3>
+                {{!-- <h3 class="panel-title" style="font-size: 12px;"> --}}
+                  <img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width="30px" height="30px" style="border-radius: 50%"> Chat Window
+                {{!-- </h3> --}}
               </div>
               <div class="col-md-4 col-xs-4" style="text-align: right; float: right;">
-                <a href="javascript:;">
+                <a href="javascript:;" class="text-white">
                   <span id="minim_chat_window" class="fas fa-window-minimize glyphicon glyphicon-minus icon_minim"></span>
                 </a>
-                <a href="javascript:;">
+                <a href="javascript:;" class="text-white">
                   <span class="fas fa-times glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span>
                 </a>
               </div>
             </div>
           </div>
-          <div id="messagebody" class="panel-body msg_container_base">
+          <div id="messagebody" class="panel-body msg_container_base panel-background">
             {{#each talkThreads.talk}}
 
-                {{#ifCond this.from_id "==" ../LoggedInUser.id}}
-                <div class="row msg_container base_sent">
-                  <div class="col-md-10 col-xs-10">
-                    <div class="messages msg_sent">
-                      <p>{{this.message}}</p>
-                      <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
-                    </div>
-                  </div>
+            {{#ifCond this.from_id "==" ../LoggedInUser.id}}
+            <div class="row msg_container base_sent">
+              <div class="col-md-10 col-xs-10">
+                <div class="messages msg_sent">
+                  <p>{{this.message}}</p>
+                  <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
                 </div>
-                {{else ifCond this.from_id "!=" ../LoggedInUser.id}}
-                  <div class="row msg_container base_receive">
-                   
-                    <div class="col-md-10 col-xs-10">
-                      <div class="messages msg_receive">
-                        <p>{{this.message}}</p>
-                        <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
-                      </div>
-                    </div>
-                  </div>
-
-                {{/ifCond}}
-            {{/each}}
-
-
-           {{!--  <div class="row msg_container base_receive">
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
               </div>
+            </div>
+            {{else ifCond this.from_id "!=" ../LoggedInUser.id}}
+            <div class="row msg_container base_receive">
+
               <div class="col-md-10 col-xs-10">
                 <div class="messages msg_receive">
-                  <p>Hi sir,</p>
-                  <time datetime="2009-11-13T20:00">Rajesh M • Yesterday 10:05:28</time>
+                  <p>{{this.message}}</p>
+                  <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
                 </div>
               </div>
             </div>
 
-
-            <div class="row msg_container base_receive">
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
-              </div>
-              <div class="col-xs-10 col-md-10">
-                <div class="messages msg_receive">
-                  <p>How are you?</p>
-                  <time datetime="2009-11-13T20:00">Rajesh M • Yesterday 10:05:33</time>
-                </div>
-              </div>
+            {{/ifCond}}
+            {{/each}}
+          </div>
+          <div class="panel-footer panel-body">
+            <div class="input-group text-background">
+              <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." required="required"
+              />
+              <span class="input-group-btn background-btn">
+                <button class="btn btn-danger btn-sm btn-color" id="btn-chat">Send</button>
+              </span>
             </div>
-
-            <div class="row msg_container base_sent">
-              <div class="col-xs-10 col-md-10">
-                <div class="messages msg_sent">
-                  <p>I am Fine. Hw about u?</p>
-                  <time datetime="2009-11-13T20:00">Administrator • Yesterday 10:05:38</time>
-                </div>
-              </div>
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class="chatimg img-responsive ">
-              </div>
-            </div>
-
-            <div class="row msg_container base_receive">
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rajesh_Gopinathan.jpg/220px-Rajesh_Gopinathan.jpg" class="chatimg img-responsive ">
-              </div>
-              <div class="col-xs-10 col-md-10">
-                <div class="messages msg_receive">
-                  <p>I am also doing fine. See you later sir.</p>
-                  <time datetime="2009-11-13T20:00">Rajesh M • Yesterday 10:05:41</time>
-                </div>
-              </div>
-            </div>
-
-            <div class="row msg_container base_sent">
-              <div class="col-md-10 col-xs-10 ">
-                <div class="messages msg_sent">
-                  <p>Good, Have a nice day.</p>
-                  <time datetime="2009-11-13T20:00">Administrator • Yesterday 10:05:45</time>
-                </div>
-              </div>
-              <div class="col-md-2 col-xs-2 avatar">
-                <img src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class="chatimg img-responsive ">
-              </div>
-            </div> --}}
-
-
-         
-
-        </div>
-        <div class="panel-footer panel-body">
-          <div class="input-group">
-            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." required="required"
-            />
-            <span class="input-group-btn">
-              <button class="btn btn-primary btn-sm" id="btn-chat">Send</button>
-            </span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
 
-   {{!--  <div class="btn-group dropup">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        <span class="glyphicon glyphicon-cog"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-      </button>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="#" id="new_chat">
-            <span class="glyphicon glyphicon-plus"></span> Novo</a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="glyphicon glyphicon-list"></span> Ver outras</a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="glyphicon glyphicon-remove"></span> Fechar Tudo</a>
-        </li>
-        <li class="divider"></li>
-        <li>
-          <a href="#">
-            <span class="glyphicon glyphicon-eye-close"></span> Invisivel</a>
-        </li>
-      </ul>
-    </div>
-  </div>
- --}}
-
-
-</section>
-
-
-<script>
-  $(function(){
-    if({{{ DisplayJSON LoggedInUser.id }}} != null){
-      var socketChat = {
-        "id": {{{ DisplayJSON talkThreads.threadId }}},
-        "user": {{{ DisplayJSON LoggedInUser.id }}}
-      }
-      console.log("socketChat", socketChat);
+    <script>
+      $(function(){
+        if({{{ DisplayJSON LoggedInUser.id }}} != null){
+          var socketChat = {
+            "id": {{{ DisplayJSON talkThreads.threadId }}},
+            "user": {{{ DisplayJSON LoggedInUser.id }}}
+          }
+          console.log("socketChat", socketChat);
       //var socket = io();
       console.log("socket", socket);
       socket.emit('chat:join', socketChat);
     }
     
     socket.on('chat:receive', function(data){
-       var dt = new Date();
-       var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-        console.log("emitted data", data);
-        var base;
-        console.log("socketChat.user", socketChat.user);
-        if(data.from_id == socketChat.user) {
-              base = "base_sent"
-              console.log("base_sent", base);
-        } else {
-              base = "base_receive"
-              console.log("basereceive", base);
-        } 
-        var body = '<div class="row msg_container '+base+'">' +
-          '<div class="col-md-10 col-xs-10 ">' +
-          '<div class="messages msg_sent">' +
-          '<p>' + data.message + '</p>' +
-          '</div>' +
-          '</div>' +
-          '</div>';
-        $(body).appendTo("#messagebody");
+     var dt = new Date();
+     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+     console.log("emitted data", data);
+     var base;
+     console.log("socketChat.user", socketChat.user);
+     if(data.from_id == socketChat.user) {
+      base = "base_sent"
+      console.log("base_sent", base);
+    } else {
+      base = "base_receive"
+      console.log("basereceive", base);
+    } 
+    var body = '<div class="row msg_container '+base+'">' +
+    '<div class="col-md-10 col-xs-10 ">' +
+    '<div class="messages msg_sent">' +
+    '<p>' + data.message + '</p>' +
+    '</div>' +
+    '</div>' +
+    '</div>';
+    $(body).appendTo("#messagebody");
         //$('#btn-input').val('');
         $("#messagebody").animate({
           scrollTop: $("#messagebody")[0].scrollHeight
         }, 'slow');
       }) 
   })
-  
-  $(document).on('click', '.panel-heading span.icon_minim', function (e) {
-    var $this = $(this);
-    if (!$this.hasClass('panel-collapsed')) {
-      $this.parents('.panel').find('.panel-body').slideUp();
-      $this.addClass('panel-collapsed');
-      $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
-    } else {
-      $this.parents('.panel').find('.panel-body').slideDown();
-      $this.removeClass('panel-collapsed');
-      $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
-    }
-  });
-  $(document).on('focus', '.panel-footer input.chat_input', function (e) {
-    var $this = $(this);
-    if ($('#minim_chat_window').hasClass('panel-collapsed')) {
-      $this.parents('.panel').find('.panel-body').slideDown();
-      $('#minim_chat_window').removeClass('panel-collapsed');
-      $('#minim_chat_window').removeClass('glyphicon-plus').addClass('glyphicon-minus');
-    }
-  });
-  $(document).on('click', '#new_chat', function (e) {
-    var size = $(".chat-window:last-child").css("margin-left");
-    size_total = parseInt(size) + 400;
-    alert(size_total);
-    var clone = $("#chat_window_1").clone().appendTo(".container");
-    clone.css("margin-left", size_total);
-  });
-  $(document).on('click', '.icon_close', function (e) {
+
+      $(document).on('click', '.panel-heading span.icon_minim', function (e) {
+        var $this = $(this);
+        if (!$this.hasClass('panel-collapsed')) {
+          $this.parents('.panel').find('.panel-body').slideUp();
+          $this.addClass('panel-collapsed');
+          $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+        } else {
+          $this.parents('.panel').find('.panel-body').slideDown();
+          $this.removeClass('panel-collapsed');
+          $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        }
+      });
+      $(document).on('focus', '.panel-footer input.chat_input', function (e) {
+        var $this = $(this);
+        if ($('#minim_chat_window').hasClass('panel-collapsed')) {
+          $this.parents('.panel').find('.panel-body').slideDown();
+          $('#minim_chat_window').removeClass('panel-collapsed');
+          $('#minim_chat_window').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        }
+      });
+      $(document).on('click', '#new_chat', function (e) {
+        var size = $(".chat-window:last-child").css("margin-left");
+        size_total = parseInt(size) + 400;
+        alert(size_total);
+        var clone = $("#chat_window_1").clone().appendTo(".container");
+        clone.css("margin-left", size_total);
+      });
+      $(document).on('click', '.icon_close', function (e) {
     //$(this).parent().parent().parent().parent().remove();
     $("#chatbox").hide();
   });
@@ -248,32 +151,9 @@
         'message': chat
       }
       socket.emit('chat:send', sendSocket);
-       $('#btn-input').val('');
-      /*var body = '<div class="row msg_container base_sent">' +
-        '<div class="col-md-10 col-xs-10 ">' +
-        '<div class="messages msg_sent">' +
-        '<p>' + chat + '</p>' +
-        ' <time datetime="2009-11-13T20:00">Administrator • Today ' + time + '</time>' +
-        '</div>' +
-        '</div>' +
-        '<div class="col-md-2 col-xs-2 avatar">' +
-        '<img class="chatimg" src="https://cheme.mit.edu/wp-content/uploads/2017/01/stephanopoulosgeorge-431x400.jpg" class=" img-responsive ">' +
-        '</div>' +
-        '</div>';
-    }
-    $(body).appendTo("#messagebody");
-    $('#btn-input').val('');
-    $("#messagebody").animate({
-      scrollTop: $("#messagebody")[0].scrollHeight
-    }, 'slow');*/
+      $('#btn-input').val('');
   }}
-
-
   // send function end
-
-
-
-
   $("#btn-chat").click(function () {
     send()
   });
@@ -287,11 +167,22 @@
 </script>
 
 <style>
+.btn-color{
+      vertical-align: sub;
+    color: #fff;
+    background-color: #c60323;
+    border: none;
+}
+.background-btn{
+  background-color: #c60323;
+    /*border-color: #dc3545;*/
+}
   .chat-window {
     bottom: 0;
     right: 0;
     position: fixed;
     float: right;
+        z-index: 1;
 
   }
 
@@ -304,21 +195,29 @@
   }
 
   .msg_container_base {
-    background: #e5e5e5;
+    background: #fff;/*#e5e5e5;*/
     margin: 0;
     padding: 0 10px 10px;
     max-height: 300px;
     overflow-x: hidden;
   }
-
+  .panel-background{
+    -webkit-box-shadow: 0 0 10px grey;
+    box-shadow: 0 0 10px grey;
+  }
   .top-bar {
-    background: #666;
+    border-radius: 30px 30px 0px 0px;
+    background: #c60323;
+    z-index:1 !important;
     color: white;
-    padding: 10px;
+    padding: 8px;
     position: relative;
     overflow: hidden;
   }
-
+  .text-background{
+    /*border-radius: 20px;*/
+    border: solid 2px #c60323;
+  }
   .msg_receive {
     padding-left: 0;
     margin-left: 0;
@@ -421,7 +320,7 @@
     bottom: 0;
   }
 
-  .panel-footer {
+  ./*panel-footer {
     padding: 10px 15px;
     background-color: #ccace0;
     border-top: 1px solid #ddd;
@@ -429,6 +328,6 @@
     border-bottom-left-radius: 3px;
 
 
-  }
+  }*/
 
 </style>

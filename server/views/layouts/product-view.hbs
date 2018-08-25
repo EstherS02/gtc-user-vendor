@@ -158,7 +158,6 @@
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
-
 <div class="bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -174,23 +173,22 @@
 						<div class="ibox">
 							<div class="ibox-content">
 								<div class="row">
-									<div class="col-md-4" >
+									<div class="col-md-4">
 										<a class="image-popup-vertical-fit " href="{{product.ProductMedia.[0].url}}" style="border:none">
-											<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
+											<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid">
 										</a>
-										{{!-- <img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image"> --}}
+										{{!--
+										<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image"> --}}
 										<div class="row">
 											<div class="popup-gallery ">
-												{{#each product.ProductMedia}}
-												{{#if @first}}
-												{{else}}
-												{{#ifCond @index '<' 4}}
+												{{#each product.ProductMedia}} {{#if @first}} {{else}} {{#ifCond @index '
+												< ' 4}}
 												<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
 												{{/ifCond}}
 												{{/if}}
 												{{/each}}
 											</div>
-
+											
 										</div>
 									</div>
 									<div class="col-md-8">
@@ -250,25 +248,26 @@
 															value="1" min="1">
 															{{#ifCond selectedPage '==' 'wholesale'}}
 															{{#ifCond product.MarketplaceType.code '==' "WTB"}}
-															<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<a href="gtc-mail/compose?id={{LoggedInUser.id}}&text={{LoggedInUser.first_name}}" id="gtc-add-to-cart" class="btn btn-primary">
 																<span class="m-l-xs align-middle">
 																	Contact Buyer
+
 																</span>
 															</a>
 															{{else ifCond product.MarketplaceType.code '==' "WTT"}}
-															<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<a href="gtc-mail/compose?id={{LoggedInUser.id}}&text={{LoggedInUser.first_name}}" id="gtc-add-to-cart" class="btn btn-primary">
 																<span class="m-l-xs align-middle">
 																	Contact Trader
 																</span>
 															</a>
 															{{else ifCond product.MarketplaceType.code '==' "RFQ"}}
-															<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<a href="gtc-mail/compose?id={{LoggedInUser.id}}&text={{LoggedInUser.first_name}}" id="gtc-add-to-cart" class="btn btn-primary">
 																<span class="m-l-xs align-middle">
-																	Contact Seller
+																	Request Quote
 																</span>
 															</a>
 															{{else ifCond product.MarketplaceType.code '==' "WTS"}}
-															<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
+															<a href="gtc-mail/compose?id={{LoggedInUser.id}}&text={{LoggedInUser.first_name}}" id="gtc-add-to-cart" class="btn btn-primary">
 																<svg width="18" height="16" viewBox="0 0 21.4 20.8">
 																	<g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
 																		<path d="M18.2 7.7h-15l-2 12.1h19z" />
@@ -276,7 +275,7 @@
 																	</g>
 																</svg>
 																<span class="m-l-xs align-middle">
-																	ADD TO BAG
+																	Contact Seller
 																</span>
 															</a>
 															{{/ifCond}}
@@ -304,83 +303,85 @@
 																					<div class="col-md-12 offset-md-0">
 																						<h1>LIKE WHAT YOU SEE?</h1>
 																						<p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
-																						<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create an
-																							account with Global Trade Connect
-																						</p>
+																						<p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you
+																							to create an account with Global Trade Connect </p>
+																						</div>
 																					</div>
-																				</div>
-																				<div class="gtc-container banner-padding">
-																					<div class="home-banner-right">
-																						<div class="row">
-																							<div class="col-md-12 offset-md-0">
-																								<div class="signup-box">
-																									<div class="col-md-6 offset-md-6">
-																										<small id="signUpErrorLog" class="error"></small>
-																									</div>
-																									<div class="row">
-																										<div class="col-md-6">
-																											<div class="signup-left">
-																												<ul>
-																													<li>
-																														<a id="gtc-fb-login">
-																															<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
-																														</a>
-																													</li>
-																													<li>
-																														<a id="gtc-google-login">
-																															<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
-																														</a>
-																													</li>
-																													<li>
-																														<a id="gtc-twitter-login">
-																															<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
-																														</a>
-																													</li>
-																													<li>
-																														<a id="gtc-linkedin-login">
-																															<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
-																														</a>
-																													</li>
-																													<li>
-																														<div class="form-group" style="padding:4px">
-																															<p class="modal_sign">Already have a Account?</p>
-																															<button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
-																																<strong>Login</strong>
-																															</button>
-																														</div>
-																													</li>
-																												</ul>
-																											</div>
+																					<div class="gtc-container banner-padding">
+																						<div class="home-banner-right">
+																							<div class="row">
+																								<div class="col-md-12 offset-md-0">
+																									<div class="signup-box">
+																										<div class="col-md-6 offset-md-6">
+																											<small id="signUpErrorLog" class="error"></small>
 																										</div>
-																										<h2 class="divider-line" style="z-index:1"><span class="text-black">OR</span></h2>
-																										<div class="col-md-6 signup-right">
-																											<form id="signUpForm" class="form">
-																												<div class="row">
-																													<div class="col">
-																														<div class="form-group m-b-xs">
-																															<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
-																															placeholder="Email" required="true">
-																														</div>
-																														<div class="form-group m-b-xs">
-																															<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
-																															placeholder="First Name" required="true">
-																														</div>
-																														<div class="form-group m-b-xs">
-																															<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
-																															placeholder="Password" required="true">
-																														</div>
-																														<div class="form-group">
-																															<input type="checkbox" id="inputTerms" name="input_terms" required="true">
-																															<small>Accept terms and conditions</small>
-																														</div>
-																														<div class="form-group">
-																															<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
-																																<strong>CREATE ACCOUNT</strong>
-																															</button>
+																										<div class="row">
+																											<div class="col-md-6">
+																												<div class="signup-left">
+																													<ul>
+																														<li>
+																															<a id="gtc-fb-login">
+																																<img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+																															</a>
+																														</li>
+																														<li>
+																															<a id="gtc-google-login">
+																																<img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+																															</a>
+																														</li>
+																														<li>
+																															<a id="gtc-twitter-login">
+																																<img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+																															</a>
+																														</li>
+																														<li>
+																															<a id="gtc-linkedin-login">
+																																<img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+																															</a>
+																														</li>
+																														<li>
+																															<div class="form-group" style="padding:4px">
+																																<p class="modal_sign">Already have a Account?</p>
+																																<button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
+																																	<strong>Login</strong>
+																																</button>
+																															</div>
+																														</li>
+																													</ul>
+																												</div>
+																											</div>
+																											<h2 class="divider-line" style="z-index:1">
+																												<span class="text-black">OR</span>
+																											</h2>
+																											<div class="col-md-6 signup-right">
+																												<form id="signUpForm" class="form">
+																													<div class="row">
+																														<div class="col">
+																															<div class="form-group m-b-xs">
+																																<input type="email" id="inputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
+																																placeholder="Email" required="true">
+																															</div>
+																															<div class="form-group m-b-xs">
+																																<input type="text" id="inputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
+																																placeholder="First Name" required="true">
+																															</div>
+																															<div class="form-group m-b-xs">
+																																<input type="password" id="inputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
+																																placeholder="Password" required="true">
+																															</div>
+																															<div class="form-group">
+																																<input type="checkbox" id="inputTerms" name="input_terms" required="true">
+																																<small>Accept terms and conditions</small>
+																															</div>
+																															<div class="form-group">
+																																<button type="submit" id="btnSignup" class="btn btn-small btn-block btn-danger">
+																																	<strong>CREATE ACCOUNT</strong>
+																																</button>
+																															</div>
 																														</div>
 																													</div>
-																												</div>
-																											</form>
+																												</form>
+																											</div>
 																										</div>
 																									</div>
 																								</div>
@@ -394,222 +395,238 @@
 																</div>
 
 															</div>
-
 														</div>
 													</div>
 													<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 													<input type="hidden" id="productname" value="{{product.product_name}}">
-													<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
-													<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
-													<div class="p-social-compare">
-														<div class="alignleft icon">
-															<ul>
-																<li>
-																	<a href="javascript:;" onclick="compareProduct()">
-																		<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path></svg>
-																		<span>Add to Compare</span>
-																	</a>
-																</li>
-																<li>
-																	{{#if isWishlist}}
-																	<a href="javascript:;" onclick="wishUpdate()" title="This product in your wishlist">
-																		<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
-																		<span>Added Wishlist</span>
-																	</a>
-																	{{else}}
-																	<a href="javascript:;" onclick="wishUpdate()">
-																		<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6"><path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path></svg>
-																		<span>Add to Wishlist</span>
-																	</a>
-																	{{/if}}
-																</li>
-															</ul>
+													<h1 class="p-rate">
+														<span class="p-symbol">$</span>{{product.price}}</h1>
+														<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
+														<div class="p-social-compare">
+															<div class="alignleft icon">
+																<ul>
+																	<li>
+																		<a href="javascript:;" onclick="compareProduct()">
+																			<svg xmlns="http://www.w3.org/2000/svg" width="22" height="19.3" viewBox="0 0 22 19.3">
+																				<path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M8.7 5.8L21 1.4v8.8zM13.3 13.5L1 17.9V9.2z"></path>
+																			</svg>
+																			<span>Add to Compare</span>
+																		</a>
+																	</li>
+																	<li>
+																		{{#if isWishlist}}
+																		<a href="javascript:;" onclick="wishUpdate()" title="This product in your wishlist">
+																			<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6">
+																				<path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path>
+																			</svg>
+																			<span>Added Wishlist</span>
+																		</a>
+																		{{else}}
+																		<a href="javascript:;" onclick="wishUpdate()">
+																			<svg xmlns="http://www.w3.org/2000/svg" width="19.8" height="18.6" viewBox="0 0 19.8 18.6">
+																				<path fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" d="M9.9 3c.6-.8 1.4-1.3 2.3-1.7 2.8-1 6 .8 6.5 3.8.3 1.8-.2 3.3-1.4 4.6-2.4 2.4-4.8 4.9-7.1 7.3l-.2.2c-.1-.1-.1-.1-.2-.1-2.4-2.5-4.9-5-7.3-7.5C1.1 8.1.7 6.4 1.3 4.5c.6-1.9 2-3.1 3.9-3.4 1.8-.3 3.4.3 4.6 1.8 0 0 .1 0 .1.1z"></path>
+																			</svg>
+																			<span>Add to Wishlist</span>
+																		</a>
+																		{{/if}}
+																	</li>
+																</ul>
+															</div>
+															<div class="alignright text-right">
+																<a id="shareIcons" class="alignleft"></a>
+																<a href="javascript:;" data-toggle="popover" data-placement="top" id="sharesremaining">
+																	<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
+																</a>
+																<div id="shareRemainingIcons" style="display:none" class="alignleft"></div>
+															</div>
+															<div style="clear: both;"></div>
 														</div>
-														<div class="alignright text-right">
-															<a id="shareIcons" class="alignleft"></a>
-															<a href="javascript:;" data-toggle="popover" data-placement="top"  id="sharesremaining" >
-																<img src="../../gtc-assets/img/social-icons/plus.png" style="width: 20%;" alt="Plus" title="Plus">
-															</a>
-															<div id="shareRemainingIcons" style="display:none" class="alignleft"></div>
+														<div id="productAlert"></div>
+														{{#if product.description}}
+														<div class="p-description">
+															{{{product.description}}}
 														</div>
-														<div style="clear: both;"></div>
-													</div>
-													<div id="productAlert"></div>
-													{{#if product.description}}
-													<div class="p-description">
-														{{{product.description}}}
-													</div>
-													{{!-- {{#limit product.description}} --}}
-													<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}">
-													{{!-- {{/limit}} --}}
-													<div class="p-hr"></div>
-													{{/if}}
-													<div class="product-rating d-flex m-t-sm m-b-sm">
-														<div>
-															<i class="fa fa-star fa-circle-bg"></i>
-														</div>
-														<div class="m-l-sm block-1">
-															<h3 class="d-inline-block">Product Rating</h3>
-															<h3 class="d-inline-block text-primary"><b>{{product.rating}}</b></h3>
-															<h3 class="d-inline-block"><span class="text-black">Based on</span> <strong>{{productRecentReview.count}} Reviews</strong></h3>
-															<div class="row">
-																<div class="col-md-5 rating-content">
-																	{{#each productRatings}}
-																	<div class="d-flex">
-																		<div class="col-7 no-padding">
-																			<div class="7star p-rating">
-																				{{starCount this.rating}}
-																			</div>
-																		</div>
-																		<div class="col-5 no-padding">
-																			<span class="tot-rating-count">(<a href="javascript:;">{{this.userCount}} Ratings</a>)</span>
-																		</div>
-																	</div>
-																	{{/each}}
-																	<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
-																</div>
-																<div class="col-md-7 reviews-content">
-																	<div class="feed-activity-list">
-																		{{#each productRecentReview.rows}}
-																		<div class="feed-element b-b-none">
-																			<a class="float-left" href="javascript:;">
-																				<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
-																			</a>
-																			<div class="media-body">
-																				<h4 class="review-title">{{this.title}}</h4>
-																				<div class="m-b-xs">
-																					<div class="alignleft">
-																						<div class="p-rating">
-																							{{starCount this.rating}}
-																						</div>
-																					</div>
-																					<div class="alignleft m-l-sm">
-																						<small class="float-right">{{FormatDate this.created_on}}</small>
-																					</div>
-																					<div style="clear: both;"></div>
+														{{!-- {{#limit product.description}} --}}
+														<input type="hidden" maxlength="110" id="productdescription" value="{{product.description}}"> {{!-- {{/limit}} --}}
+														<div class="p-hr"></div>
+														{{/if}}
+														<div class="product-rating d-flex m-t-sm m-b-sm">
+															<div>
+																<i class="fa fa-star fa-circle-bg"></i>
+															</div>
+															<div class="m-l-sm block-1">
+																<h3 class="d-inline-block">Product Rating</h3>
+																<h3 class="d-inline-block text-primary">
+																	<b>{{product.rating}}</b>
+																</h3>
+																<h3 class="d-inline-block">
+																	<span class="text-black">Based on</span>
+																	<strong>{{productRecentReview.count}} Reviews</strong>
+																</h3>
+																<div class="row">
+																	<div class="col-md-5 rating-content">
+																		{{#each productRatings}}
+																		<div class="d-flex">
+																			<div class="col-7 no-padding">
+																				<div class="7star p-rating">
+																					{{starCount this.rating}}
 																				</div>
-																				<p class="review-comment">{{this.comment}}</p>
 																			</div>
+																			<div class="col-5 no-padding">
+																				<span class="tot-rating-count">(
+																					<a href="javascript:;">{{this.userCount}} Ratings</a>)</span>
+																				</div>
+																			</div>
+																			{{/each}}
+																			<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary m-t-xs btn-block rounded btn-sm">Submit Your Own Review</button>
 																		</div>
-																		{{/each}}
+																		<div class="col-md-7 reviews-content">
+																			<div class="feed-activity-list">
+																				{{#each productRecentReview.rows}}
+																				<div class="feed-element b-b-none">
+																					<a class="float-left" href="javascript:;">
+																						<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+																					</a>
+																					<div class="media-body">
+																						<h4 class="review-title">{{this.title}}</h4>
+																						<div class="m-b-xs">
+																							<div class="alignleft">
+																								<div class="p-rating">
+																									{{starCount this.rating}}
+																								</div>
+																							</div>
+																							<div class="alignleft m-l-sm">
+																								<small class="float-right">{{FormatDate this.created_on}}</small>
+																							</div>
+																							<div style="clear: both;"></div>
+																						</div>
+																						<p class="review-comment">{{this.comment}}</p>
+																					</div>
+																				</div>
+																				{{/each}}
+																			</div>
+																			{{#ifCond productRecentReview.count ">" 1}}
+																			<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
+																			{{else}}
+																			<span class="text-sm">There is no review about this product.</span>
+																			{{/ifCond}}
+																		</div>
 																	</div>
-																	{{#ifCond productRecentReview.count ">" 1}}
-																	<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
-																	{{else}}
-																	<span class="text-sm">There is no review about this product.</span>
-																	{{/ifCond}}
 																</div>
 															</div>
-														</div>
-													</div>
-													<div class="p-hr"></div>
-													<div class="ask-vendor d-flex m-t-sm">
-														<div>
-															<i class="fa fa-question-circle fa-circle-bg"></i>
-														</div>
-														<div class="m-l-sm block-2">
-															<h3 class="m-b-xs">Ask the Vendor</h3>
-															<p class="text-light-muted">If you`d like to ask the vendor a specific question about this product, please fill out following. It will be sent directly to the vendor.</p>
-															<div class="ask-vendor-form">
-																<form class="form" id="AskVendorForm">
-																	<div class="row">
-																		<div class="col-md-9">
-																			<div class="form-group">
-																				<input type="text" class="form-control form-control-sm" placeholder="Subject">
-																			</div>
-																			<div class="form-group">
-																				<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
-																			</div>
-																		</div>
-																		<div class="col-md-3">
-																			<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
+															<div class="p-hr"></div>
+															<div class="ask-vendor d-flex m-t-sm">
+																<div>
+																	<i class="fa fa-question-circle fa-circle-bg"></i>
+																</div>
+																<div class="m-l-sm block-2">
+																	<h3 class="m-b-xs">Ask the Vendor</h3>
+																	<p class="text-light-muted">If you`d like to ask the vendor a specific question about this product, please fill out following. It will be sent directly
+																		to the vendor.</p>
+																		<div class="ask-vendor-form">
+																			<form class="form" id="AskVendorForm">
+																				<div class="row">
+																					<div class="col-md-9">
+																						<div class="form-group">
+																							<input type="text" class="form-control form-control-sm" placeholder="Subject">
+																						</div>
+																						<div class="form-group">
+																							<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
+																						</div>
+																					</div>
+																					<div class="col-md-3">
+																						<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
+																					</div>
+																				</div>
+																			</form>
 																		</div>
 																	</div>
-																</form>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					<div class="col-md-3 no-padding">
-						{{> vendor/vendor-category }}
-					</div>
-				</div>
-			</div>
-		</div>
-			</div>
-			<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
-						</div>
-						<form id="reviewForm" class="form">
-							<div class="modal-body">
-								<div class="row">
-									<div class="col-lg-12">
-										<div class="form-group">
-											<div class="inputRating text-center">
-												<select id="review-stars" name="rating" style="display:none !important;" required/>
-												<option value=""></option>
-												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3">3</option>
-												<option value="4">4</option>
-												<option value="5">5</option>
-												<option value="6">6</option>
-												<option value="7">7</option>
-											</select>
+										<div class="col-md-3 no-padding">
+											{{> vendor/vendor-category }}
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="label-control d-block">Title </label>
-										<input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
-									</div>
-									<div class="form-group">
-										<label class="label-control d-block">Comment </label>
-										<textarea class="form-control-customized" id="inputComment" name="comment" name="description" rows="3"></textarea>
-									</div>
 								</div>
 							</div>
 						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-							<button type="submit" id="reviewBtn" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
-						</div>
-					</form>
-				</div>
-				<script type="text/javascript">
-					var productSpecs = {{{DisplayJSON product}}}
-					var userInfo = {{{ DisplayJSON LoggedInUser }}}
+						<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
+									</div>
+									<form id="reviewForm" class="form">
+										<div class="modal-body">
+											<div class="row">
+												<div class="col-lg-12">
+													<div class="form-group">
+														<div class="inputRating text-center">
+															<select id="review-stars" name="rating" style="display:none !important;" required/>
+															<option value=""></option>
+															<option value="1">1</option>
+															<option value="2">2</option>
+															<option value="3">3</option>
+															<option value="4">4</option>
+															<option value="5">5</option>
+															<option value="6">6</option>
+															<option value="7">7</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="label-control d-block">Title </label>
+													<input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
+												</div>
+												<div class="form-group">
+													<label class="label-control d-block">Comment </label>
+													<textarea class="form-control-customized" id="inputComment" name="comment" name="description" rows="3"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+											<b>Close</button>
+												<button type="submit" class="btn btn-small btn-primary">
+													<strong>Submit</strong>
+													<i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i>
+												</button>
+											</div>
+										</form>
+									</div>
 
-					$('#btnFaSpinner').hide();
-					$('#reviewBtn').prop('disabled', true);
-					$('#review-stars').val(1);
+									<script type="text/javascript">
+										var productSpecs = {{{DisplayJSON product}}}
+										var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
-					$("#reviewForm").submit(function (e) {
-						e.preventDefault();
+										$('#btnFaSpinner').hide();
+										$('#reviewBtn').prop('disabled', true);
+										$('#review-stars').val(1);
 
-						var reviewObj = {};
-						$(':input[type="submit"]').prop('disabled', true);
+										$("#reviewForm").submit(function (e) {
+											e.preventDefault();
 
-						if ($('#reviewForm').valid()) {
-							reviewObj['rating'] = parseInt($('#review-stars').val());
-							reviewObj['product_id'] = productSpecs.id;
-							reviewObj['user_id'] = parseInt(userInfo.id);
-							reviewObj['status'] = 1;
-							if (!reviewObj['rating']) {
-								reviewObj['rating'] = 1;
-							}
-							reviewObj['title'] = $('#inputTitle').val();
-							if ($('#inputComment').val()) {
-								reviewObj['comment'] = $('#inputComment').val();
-							}
+											var reviewObj = {};
+											$(':input[type="submit"]').prop('disabled', true);
+
+											if ($('#reviewForm').valid()) {
+												reviewObj['rating'] = parseInt($('#review-stars').val());
+												reviewObj['product_id'] = productSpecs.id;
+												reviewObj['user_id'] = parseInt(userInfo.id);
+												reviewObj['status'] = 1;
+												if (!reviewObj['rating']) {
+													reviewObj['rating'] = 1;
+												}
+												reviewObj['title'] = $('#inputTitle').val();
+												if ($('#inputComment').val()) {
+													reviewObj['comment'] = $('#inputComment').val();
+												}
 						// $('#btnFaSpinner').show()
 					}
 					$.ajax({
@@ -622,30 +639,30 @@
 					});
 				});
 
-					$("#reviewForm").validate({
-						rules: {
-							rating: "required",
-							title: "required"
-						},
-						messages: {
-							rating: "Rating is required.",
-							title: "Title is required."
-						}
-					});
+										$("#reviewForm").validate({
+											rules: {
+												rating: "required",
+												title: "required"
+											},
+											messages: {
+												rating: "Rating is required.",
+												title: "Title is required."
+											}
+										});
 
-					$('#review-stars, #inputTitle').keyup(function() {
-						if ($('#inputTitle').val() != '' && $('#1review-stars').val() != '') {
-							console.log("hai")
+										$('#review-stars, #inputTitle').keyup(function() {
+											if ($('#inputTitle').val() != '' && $('#1review-stars').val() != '') {
+												console.log("hai")
 
-							$('#reviewBtn').prop('disabled', false);
-						} else {
-							$('#reviewBtn').prop('disabled', true);
-						}
-					});
-					
-				</script>
-			</div>
-		</div>
-		{{!-- {{#ifCond}} --}}
-		{{>dummy-chat-ui }}
-		{{> footer/bottom-footer}}
+												$('#reviewBtn').prop('disabled', false);
+											} else {
+												$('#reviewBtn').prop('disabled', true);
+											}
+										});
+										
+									</script>
+								</div>
+							</div>
+							{{!-- {{#ifCond}} --}}
+							{{>dummy-chat-ui }}
+							{{> footer/bottom-footer}}
