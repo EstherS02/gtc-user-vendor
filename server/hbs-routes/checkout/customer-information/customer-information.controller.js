@@ -264,6 +264,10 @@ function processCheckout(req, res, callback) {
 				billing_address = splitAddress[ADDRESS_TYPE['BILLINGADDRESS']];
 			if (splitAddress && splitAddress[ADDRESS_TYPE['SHIPPINGADDRESS']])
 				shipping_address = splitAddress[ADDRESS_TYPE['SHIPPINGADDRESS']];
+			if (splitAddress && splitAddress[ADDRESS_TYPE['BOTH_ADDRESS']])
+				shipping_address = splitAddress[ADDRESS_TYPE['BOTH_ADDRESS']];
+			if (splitAddress && splitAddress[ADDRESS_TYPE['BOTH_ADDRESS']])
+				billing_address = splitAddress[ADDRESS_TYPE['BOTH_ADDRESS']];
 
 			var selected_billing_address;
 			var selected_shipping_address;
