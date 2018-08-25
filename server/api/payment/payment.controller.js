@@ -106,6 +106,7 @@ export function makePayment(req, res) {
             for (let j = 0; j < allCartItems.length; j++) {
                 clearCart.push(allCartItems[j].id)
             }
+            sendOrderMail(orderIdStore, req.user);
             service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
                 if (!(_.isNull(clearedCartRow))) {
                     return res.status(200).send({
@@ -113,7 +114,6 @@ export function makePayment(req, res) {
                     });
                 } else return res.status(500).send(err);
             });
-            sendOrderMail(orderIdStore, req.user);
         }).catch(err => {
             console.log("err3", err);
             if (createdOrders && createdOrders.length > 0) {

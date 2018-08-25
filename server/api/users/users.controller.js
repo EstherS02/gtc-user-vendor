@@ -365,9 +365,15 @@ export function resetPassword(req, res) {
 
 export function userProfile(req, res) {
 
+
     var userUpdate = JSON.parse(req.body.userUpdate);
     var billingUpdate = JSON.parse(req.body.billingUpdate);
     var shippingUpdate = JSON.parse(req.body.shippingUpdate);
+
+    console.log("******************************************",userUpdate);
+    console.log("===================================", billingUpdate);
+    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", shippingUpdate);
+
     var user_id = req.user.id;
     billingUpdate['user_id'] = req.user.id;
     billingUpdate['status'] = 1;
@@ -380,9 +386,11 @@ export function userProfile(req, res) {
         .then(function (row) {
 
             if (billingUpdate) {
+                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 addressUpdate(user_id, billing_address_type, billingUpdate);
             }
             if (shippingUpdate) {
+                console.log("+++++++++++++++++++++++++++++++++++++++++++");
                 addressUpdate(user_id, shipping_address_type, shippingUpdate);
             }
             return res.status(200).send(row);
@@ -545,6 +553,59 @@ export function forgotPassword(req, res) {
         .catch(function (error) {
             res.status(500).send("Internal server error. Please try later.")
             return;
+        })
+}
+
+export function userOnline(user){
+    console.log("User Online Method coming", user);
+    var queryObj = {
+        availability_status: 1
+    }
+    service.findRow('User', {
+        id: user.id
+    }, [])
+        .then(function (row) {
+            if (row) {
+                //console.log("ROW*********", row);
+                var rowJSON = row.toJSON();
+            console.log("Row JSON", rowJSON);
+            service.updateRow('User', queryObj, rowJSON.id)
+                .then(function(update) {
+                    console.log("User Online updated");
+                }).catch(function(err) {
+                    console.log("User Online updation failed");
+                })
+            }
+            else {
+                console.log("user not found");
+            }
+        }).catch(function (err) {
+            console.log("Server error");
+        })
+}
+
+export function userOffline(user){
+    var queryObj = {
+        availability_status: 0
+    }
+    service.findRow('User', {
+        id: user.id
+    }, [])
+        .then(function (row) {
+            if (row) {
+            var rowJSON = row.toJSON();
+            service.updateRow('User', queryObj, rowJSON.id)
+                .then(function(update) {
+                    console.log("User Offline updated");
+                }).catch(function(err) {
+                    console.log("User Offline updation failed");
+                })
+            }
+            else {
+                console.log("user not found");
+            }
+        }).catch(function (err) {
+            console.log("Server error");
         })
 }
 
