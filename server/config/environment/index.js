@@ -23,7 +23,7 @@ var all = {
 	root: path.normalize(`${__dirname}/../../..`),
 
 	// Browser-sync port
-	browserSyncPort: process.env.BROWSER_SYNC_PORT || 2000,
+	browserSyncPort: process.env.BROWSER_SYNC_PORT || 3600,
 
 	// Server port
 	port: process.env.PORT || 9000,
