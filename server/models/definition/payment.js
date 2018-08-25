@@ -29,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'refund_amount',
             allowNull: true
         },
-        payout_date: {
+        payout_created_date: {
             type: DataTypes.DATE,
-            field: 'payout_date',
+            field: 'payout_created_date',
             allowNull: true
         },
         payout_amount: {

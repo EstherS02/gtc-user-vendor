@@ -63,7 +63,7 @@
 												<td scope="row">{{this.Mail.toUser.first_name}}</td>
 												<td scope="row">{{this.Mail.subject}}</td>
 												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-												<td></td>
+												<td>{{this.Mail.message.length}}</td>
 											</tr>
 											{{/each}}
 										</tbody>

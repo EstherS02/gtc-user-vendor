@@ -64,6 +64,14 @@ let Stripe = {
             amount: parseInt(refundAmount * 100)
         }
         return stripe.refunds.create(refundObj);
+    },
+    vendorPayout: function(payoutAmount,currenct,vendorPayoutStripeId){
+        return stripe.payouts.create({
+            amount: parseInt(payoutAmount * 100),
+            currency: currenct,
+          }, {
+            stripe_account: vendorPayoutStripeId,
+          })         
     }
 };
 

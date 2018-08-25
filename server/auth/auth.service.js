@@ -322,7 +322,7 @@ function hasPermission() {
 					const planStartDate = moment(vendorCurrentPlan.start_date).format('YYYY-MM-DD');
 					const planEndDate = moment(vendorCurrentPlan.end_date).format('YYYY-MM-DD');
 					if (currentDate >= planStartDate && currentDate <= planEndDate) {
-						req.checkBody('marketplace_id', 'Missing Query Param').notEmpty();
+						req.checkBody('marketplace_id', 'Marketplace Query Param Missing').notEmpty();
 						var errors = req.validationErrors();
 						if (errors) {
 							res.status(400).send('Missing Query Params');

@@ -8,7 +8,7 @@ const carrierCode = require('../../config/carriers');
 const orderStaus = require('../../config/order_status');
 const sendEmail = require('../../agenda/send-email');
 var async = require('async');
-const populate = require('../../utilities/populate')
+const populate = require('../../utilities/populate');
 
 export function updateStatus(req, res) {
 	var paramsID = req.params.id;
