@@ -12,7 +12,6 @@ const ADDRESS_TYPE = require('../../../config/address');
 
 const querystring = require('querystring');
 
-
 function processCheckout(req, res, callback) {
 	let LoggedInUser = {};
 	var bottomCategory = {};
@@ -54,7 +53,6 @@ function processCheckout(req, res, callback) {
 			return service.findRows('Address', searchObj, null, null, 'address_type', "asc", includeArr)
 				.then(function(addressData) {
 					addressData = JSON.parse(JSON.stringify(addressData));
-					console.log("addressData", addressData);
 					return cb(null, addressData.rows)
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -349,7 +347,11 @@ export function customerInformation(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			return showPage(res, 200, 'checkout/customer-information', obj);
+			if (obj.cartItemsCount > 0) {
+				return showPage(res, 200, 'checkout/customer-information', obj);
+			} else {
+				return res.redirect('/cart');
+			}
 		}
 	});
 }
@@ -359,7 +361,15 @@ export function shippingMethod(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			return showPage(res, 200, 'checkout/shipping-method', obj);
+			if (obj.cartItemsCount > 0) {
+				if ((req.query.selected_billing_address_id && (Object.keys(obj.selected_billing_address).length > 0)) && (req.query.selected_shipping_address_id && (Object.keys(obj.selected_shipping_address).length > 0))) {
+					return showPage(res, 200, 'checkout/shipping-method', obj);
+				} else {
+					return res.redirect('/order-checkout/customer-information');
+				}
+			} else {
+				return res.redirect('/cart');
+			}
 		}
 	});
 }
@@ -369,7 +379,15 @@ export function paymentMethod(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			return showPage(res, 200, 'checkout/payment-method', obj);
+			if (obj.cartItemsCount > 0) {
+				if ((req.query.selected_billing_address_id && (Object.keys(obj.selected_billing_address).length > 0)) && (req.query.selected_shipping_address_id && (Object.keys(obj.selected_shipping_address).length > 0))) {
+					return showPage(res, 200, 'checkout/payment-method', obj);
+				} else {
+					return res.redirect('/order-checkout/customer-information');
+				}
+			} else {
+				return res.redirect('/cart');
+			}
 		}
 	});
 }

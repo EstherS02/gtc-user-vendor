@@ -1,17 +1,29 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#shippingMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/shipping-method" + window.location.search;
+	});
+	$("#paymentMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/payment-method" + window.location.search;
+	});
+});
+</script>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">
 			<div class="alignleft">
 				<ul class="breadcrumb">
 					<li>
-						<a href="#" class="active">1. Customer Information</a>
+						<a href="./order-checkout/customer-information" class="active">1. Customer Information</a>
 					</li>
 					<li>
-						<a href="#">2. Shipping Method</a>
+						<a href="javascript:;" id="shippingMethodLink">2. Shipping Method</a>
 					</li>
 					<li>
-						<a href="#">3. Payment Method</a>
+						<a href="javascript:;" id="paymentMethodLink">3. Payment Method</a>
 					</li>
 					<li>
 						<a href="#">4. Confirmation</a>

@@ -1047,57 +1047,6 @@ background-position:center;
   color: #fff;
 }
 
-.pyt_group {
-  background: white;
-  box-shadow: 0 7px 14px 0 rgba(49,49,93,0.10),
-              0 3px 6px 0 rgba(0,0,0,0.08);
-  border-radius: 4px;
-  margin-bottom: 20px;
-  border: 1px solid #d0cfcf;
-}
-
-.pyt_label {
-  position: relative;
-  color: #222d65;
-  font-weight: 300;
-  height: 38px;
-  margin-left: 20px;
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 0px;
-}
-
-.pyt_group .pyt_label:not(:last-child) {
-  border-bottom: 1px solid #F0F5FA;
-}
-
-.pyt_label > .pyt_span {
-  width: 80px;
-  text-align: right;
-  margin-right: 30px;
-}
-
-.pyt_field {
-  background: transparent;
-  font-weight: 300;
-  border: 0;
-  height: 38px;
-  color: #31325F;
-  outline: none;
-  flex: 1;
-  padding-right: 10px;
-  padding-left: 10px;
-  cursor: text;
-}
-
-.pyt_field::-webkit-input-placeholder { color: #CFD7E0; }
-.pyt_field::-moz-placeholder { color: #CFD7E0; }
-
-#cardholder-name::placeholder { 
-  color: #b1afaf;
-  opacity: 1; 
-}
-
 .btn-submit{
   background-color: #4178BB;
     color: #FFF;

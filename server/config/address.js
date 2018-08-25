@@ -1,4 +1,5 @@
 module.exports = {
-	"BILLINGADDRESS":1,
+	"BILLINGADDRESS": 1,
 	"SHIPPINGADDRESS": 2,
+	"BOTH_ADDRESS": 3
 };
