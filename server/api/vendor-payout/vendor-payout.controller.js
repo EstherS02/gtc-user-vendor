@@ -225,9 +225,7 @@ function payoutMail(vendor,payoutOrder,payoutAmount) {
         .then(function (response) {
             if (response) {
                 var username = vendor.vendor_name;
-                //var email = vendor.User.email;
-
-                var email = 'estherpushpa04@gmail.com';
+                var email = vendor.User.email;
 
                 var subject = response.subject;
                 var body;
