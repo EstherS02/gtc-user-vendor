@@ -1717,7 +1717,6 @@ ul.inner-list-view li a {
 	background: red;
 	text-align: center;
 	color: #FFF;
-	/*padding:2px;*/
 	margin-left: 4px;
 	border-radius: 20px;
 }
@@ -1727,7 +1726,18 @@ ul.inner-list-view li a {
 	text-align: center;
 	color: #FFF;
 }
-
+.address-content h3 {
+	font-size: 1.25em;
+    color: #494949;
+    text-decoration: none;
+    margin-bottom: 0;
+}
+.address-content p {
+	font-size: 0.813em;
+    margin-bottom: 0;
+    line-height: 1.8;
+    color: #464646;
+}
 .custom-select-container:after {
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
