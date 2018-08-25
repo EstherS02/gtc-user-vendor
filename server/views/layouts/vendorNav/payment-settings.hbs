@@ -1,12 +1,11 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <script>
-$( document ).ready(function() {
-
-$( "#connect" ).click(function() {
-        window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://701e2d73.ngrok.io/api/auth'
-});
-});
+	$(document).ready(function () {
+		$("#connect").click(function () {
+			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=http://5702ac37.ngrok.io/api/auth'
+		});
+	});
 </script>
 
 <div class="wrapper-content bg-gray">
@@ -57,9 +56,11 @@ $( "#connect" ).click(function() {
 							<hr/>
 							<h5 class="gtc-title">Connect Your Accounts </h5>
 							<p class="cya1">Sell more by accepting more payment options. Connect your PayPal ans Stripe account or sign up for your free account
-								today.</p>
+								today.
+							</p>
 							<div class="row">
-								{{!-- <div class="col-md-5 paypal">
+								{{!--
+								<div class="col-md-5 paypal">
 									<img class="paypal-img" src="../../img/paypal.jpg" width="100%">
 									<p class="cya">Connect an existing PayPal account: </p>
 									<div class="row">
@@ -100,10 +101,18 @@ $( "#connect" ).click(function() {
 							</div>
 							<hr/>
 							<p>
-								{{!-- <button class="update-btn" style="padding: 5px 20px;">UPDATE </button> --}}
-								<button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" ><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
-								{{!-- <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button> --}}
-								<button  type="reset" class="ladda-button btn cancel-btn" data-style="expand-left" ><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
+								{{!--
+								<button class="update-btn" style="padding: 5px 20px;">UPDATE </button> --}}
+								<button type="submit" class="ladda-button btn update-btn" data-style="expand-left">
+									<span class="ladda-label">Update</span>
+									<span class="ladda-spinner"></span>
+								</button>
+								{{!--
+								<button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button> --}}
+								<button type="reset" class="ladda-button btn cancel-btn" data-style="expand-left">
+									<span class="ladda-label">Cancel</span>
+									<span class="ladda-spinner"></span>
+								</button>
 							</p>
 						</div>
 					</div>
