@@ -66,9 +66,7 @@ let Stripe = {
         return stripe.refunds.create(refundObj);
     },
     vendorPayout: function(amount,currency,destination,transfer_group){
-
-        console.log("******************************************",amount,currency,destination,transfer_group);
-
+      
         let transferObj = {
             amount: amount,
             currency: currency,
