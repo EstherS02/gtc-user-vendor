@@ -2,12 +2,13 @@
     api_key: 81q1ljfijajynj
     authorize: false
 </script>
-<script src="js/login.js"><{{!}}</script>
+<script src="js/`.js"><{{!}}</script>
 
 <script type="text/javascript">
     // const auth = Auth();
 
     $(document).ready(function() {
+   // var socket = io();
         $('#btnLogin').prop('disabled', true);
 
         $('#loginInputEmail, #loginInputPassword').keyup(function() {
@@ -25,6 +26,8 @@
                 email: $('#loginInputEmail').val(),
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
+                emitSocket.userJoin(user);
+               // console.log("socket io working", emitSocket);
                 window.location = "/";
             }).catch(function(error) {
                 $('#loginErrorMessage').text(error.responseText);
