@@ -97,7 +97,6 @@ select {
 	border-radius: 0;
 	border: 0;
 	padding: .25rem .75rem;
-	color: inherit;
 	display: block;
 	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 	width: 100%;

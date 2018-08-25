@@ -58,7 +58,7 @@ $(document).ready(function() {
 									<div class="col-6">
 										<div class="form-group">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm input-b-xs">
+												<select name="payment_method_select_id" class="form-control-customized form-control-sm input-b-xs">
 													<option value='' disabled='disabled' selected>Select Payment Method...</option>
 													{{#each cards}}
 													<option value='{{this.id}}'>{{this.card_type}} **** **** **** {{json this.card_details 'last4'}}</option>
