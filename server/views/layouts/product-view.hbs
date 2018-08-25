@@ -618,7 +618,7 @@ function wishUpdate() {
 		</script>
 	</div>
 </div>
-{{#ifCond LoggedInUser.Vendor.id "!=" this.VendorDetail.id}}
+{{#ifCond LoggedInUser.role "==" 3}}
 {{>dummy-chat-ui}}
 {{/ifCond}}
 {{> footer/bottom-footer}}
