@@ -30,17 +30,24 @@
 			newCoupon.discount_type = $('#inputDiscountType').val();
 			newCoupon.discount_value = $('#inputDiscountValue').val();
 			newCoupon.expiry_date = $('#inputExpiryDate').val();
-			newCoupon.minimum_spend = $('#inputMinimumSpend').val();
-			newCoupon.maximum_spend = $('#inputMaximumSpend').val();
+			if($('#inputMinimumSpend').val())
+			 newCoupon.minimum_spend = $('#inputMinimumSpend').val();
+			if($('#inputMaximumSpend').val())
+			 newCoupon.maximum_spend = $('#inputMaximumSpend').val();
+			// if($('#inputMaximumSpend').val())
+			//  newCoupon.maximum_spend = $('#inputMaximumSpend').val();
 			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
 			
 			newCoupon.vendor_id = {{ LoggedInUser.Vendor.id }};
 			newCoupon.publish_date = new Date().toISOString().split("T")[0];
-			newCoupon.usage_limit = $('#inputUsageLimit').val();
-			newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
-			newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
+			if($('#inputUsageLimit').val())
+			 newCoupon.usage_limit = $('#inputUsageLimit').val();
+			if($('#inputUsageLimitPerUser').val())
+			 newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
+			if($('#inputLimitUsageToXItems').val())
+			 newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
 
 			newCoupon.couponProducts = JSON.stringify($('#inputProducts').val());
 			newCoupon.couponExcludeProducts = JSON.stringify($('#inputExcludeProduct').val());
