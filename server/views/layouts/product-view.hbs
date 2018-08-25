@@ -229,7 +229,7 @@
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 value="1" min="1">
+														 value="{{product.moq}}" max="{{product.moq}}" min="1">
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
 														  <a href="gtc-mail/compose?id={{LoggedInUser.id}}&text={{LoggedInUser.first_name}}" id="gtc-add-to-cart" class="btn btn-primary">
@@ -259,7 +259,7 @@
 																</g>
 															</svg>
 															<span class="m-l-xs align-middle">
-																Contact Seller
+																ADD TO BAG
 															</span>
 														</a>
 														{{/ifCond}}
