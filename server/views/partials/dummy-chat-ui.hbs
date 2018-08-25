@@ -4,7 +4,7 @@
       <div class="col-xs-12 col-md-12">
         <div class="panel panel-default">
           <div class="panel-heading top-bar">
-            <div class="row">
+            <div class="row" style="padding: 0px 10px;">
               <div class="col-md-8 col-xs-8">
                 {{!-- <h3 class="panel-title" style="font-size: 12px;"> --}}
                   <img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width="30px" height="30px" style="border-radius: 50%"> Chat Window
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div id="messagebody" class="panel-body msg_container_base panel-background">
+          <div id="messagebody" class="panel-body msg_container_base panel-background" style="min-height: 300px">
             {{#each talkThreads.talk}}
 
             {{#ifCond this.from_id "==" ../LoggedInUser.id}}
@@ -150,6 +150,7 @@
         'talk_thread_id': {{{ DisplayJSON talkThreads.threadId }}},
         'message': chat
       }
+      console.log("sendSocket",sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
   }}

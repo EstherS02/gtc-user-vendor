@@ -6,13 +6,14 @@ const config = require('../../config/environment');
 const statusCode = require('../../config/status');
 const service = require('../service');
 const orderStatus = require('../../config/order_status');
-const vendorPayoutAction = require('../../config/vendor-payout-action');
 const paymentType = require('../../config/order-payment-type');
 const moment = require('moment');
 const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 const sendEmail = require('../../agenda/send-email');
 const populate = require('../../utilities/populate');
+const paymentMethod = require('../../config/payment-method');
+const escrowAction = require('../../config/escrow-action');
 
 const CURRENCY = 'usd';
 
@@ -85,7 +86,7 @@ function checkpaymentEscrow(order) {
 
 
     paymentEscrowQueryObj['status'] = statusCode["ACTIVE"];
-    paymentEscrowQueryObj['action'] = vendorPayoutAction["VENDOR_PAID"];
+    paymentEscrowQueryObj['action'] = escrowAction["TRANSFERED"];
     paymentEscrowQueryObj['order_id'] = order.order_id;
 
     return service.findRow(orderPaymentEscrowModel, paymentEscrowQueryObj, [])
@@ -98,12 +99,13 @@ function checkpaymentEscrow(order) {
                 payoutOrder = order.order_id;
 
                 payoutVendorPromises.push(fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder));
-
-                return Promise.all(payoutVendorPromises).then(function (payoutVendorInfoResults) {
+                return Promise.all(payoutVendorPromises);
+                
+                /*then(function (payoutVendorInfoResults) {
                     return Promise.resolve(payoutVendorInfoResults);
                 }).catch(function (error) {
                     return Promise.reject(error);
-                })
+                })*/
             }
         }).catch(function (error) {
             return Promise.reject(error);
@@ -115,10 +117,12 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
     var includeArr = populate.populateData("User");
     var vendorModel = 'Vendor';
     var stripePromises = [];
+    var vendorInfo ={};
 
     return service.findIdRow(vendorModel, payoutVendor, includeArr)
         .then(function (vendor) {
             if (vendor) {
+                vendorInfo=vendor;
                 if (vendor.vendor_payout_stripe_id) {
 
                    stripePromises.push(stripe.vendorPayout(payoutAmount, CURRENCY, vendor.vendor_payout_stripe_id, payoutOrder));
@@ -126,47 +130,59 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 } else {
                   //stripeConnectMail(vendor);
-                    return;
+                    return; 
                 }
             } else {
                 return;
             }
         })
-        .then(function (payout) {
-            if(payout){
+        .then(function (payoutDetails) {
+            if(payoutDetails){ 
+                var paymentPromises = [];
 
-                console.log("payout=============", payout[0].created,payout[0].amount);
-                 /* var paymentModel = {
-                      payout_created_date: new Date(payout[0].created),
-                      paid_amount: payout.amount / 100.0,
+                var paymentObj = {
+                      payout_created_date: new Date(payoutDetails[0].created),
+                      payout_amount: payoutAmount,
                       payment_method: paymentMethod['STRIPE'],
-                      status: status['ACTIVE'],
-                      payment_response: JSON.stringify(payout)
+                      status: statusCode['ACTIVE'],
+                      payment_response: JSON.stringify(payoutDetails)
                   };
-                  return service.createRow('Payment', paymentModel);*/
+
+                  paymentPromises.push(createPaymentRow(paymentObj));
+                  return Promise.all(paymentPromises);
             }
         })
-         /* .then(function (paymentRow) {
-              var orderPaymentEscrowObj = {
-                  payment_id: paymentRow.id,
-                  order_id: payoutOrder ,
-                  status: statusCode["ACTIVE"],
-                  action: payout.status
-              }
-              return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
-                  .then(function (orderPaymentEscrowObj) {
+        .then(function (paymentRow) {
 
-                    payoutMail(vendor);                    
-                    return Promise.resolve(orderPaymentEscrowObj);
-  
-                  }).catch(function (error) {
-                      return Promise.reject(error);
-                  })
-          })*/
+            if(paymentRow){
+               
+                var orderPaymentEscrowObj = {
+                    payment_id: paymentRow[0].id,
+                    order_id: payoutOrder,
+                    status: statusCode["ACTIVE"],
+                    action: escrowAction["TRANSFERED"]
+                }
+
+                return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
+                    .then(function (orderPaymentEscrowObj) {
+                     
+                     payoutMail(vendorInfo, payoutOrder, payoutAmount);
+                     return Promise.resolve(orderPaymentEscrowObj);
+                    
+
+                    }).catch(function (error) {
+                        return Promise.reject(error);
+                    })
+            }        
+          })
 
         .catch(function (error) {
             return Promise.reject(error);
         })
+}
+
+function createPaymentRow(paymentObj) {
+    return service.createRow('Payment', paymentObj);
 }
 
 function stripeConnectMail(vendor) {
@@ -199,7 +215,7 @@ function stripeConnectMail(vendor) {
         });
 }
 
-function payoutMail(vendor) {
+function payoutMail(vendor,payoutOrder,payoutAmount) {
 
     var emailTemplateQueryObj = {};
     var emailTemplateModel = "EmailTemplate";
@@ -212,7 +228,12 @@ function payoutMail(vendor) {
                 var email = vendor.User.email;
 
                 var subject = response.subject;
-                var body  = response.body;
+                var body;
+                body = response.body.replace('%USERNAME%', username);
+                body = body.replace('%ORDERID%',payoutOrder);
+                body = body.replace('%AMOUNT%',payoutAmount);   
+                body = body.replace('%CURRENCY%',CURRENCY);
+                body = body.replace('%CREATED_DATE%',date); 
 
                 sendEmail({
                     to: email,
