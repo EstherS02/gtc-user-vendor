@@ -76,7 +76,7 @@ newData.product_id = productSpecs.id;
 
 function compareProduct(e) {
 	$('#productAlert').empty();
-	if (userInfo.email) {
+	//if (userInfo.email) {
 		$.ajax({
 			type: 'POST',
 			url: '/api/product-view/add-to-compare',
@@ -94,9 +94,9 @@ function compareProduct(e) {
 				}, 10000);
 			}
 		});
-	} else {
-		$('#myModal').modal('show');
-	}
+	//} else {
+	//	$('#myModal').modal('show');
+	//}
 };
 
 function wishUpdate() {
