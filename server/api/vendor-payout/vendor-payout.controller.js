@@ -120,29 +120,33 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
         .then(function (vendor) {
             if (vendor) {
                 if (vendor.vendor_payout_stripe_id) {
-                    return Promise.resolve(vendor);
-                    // return stripe.vendorPayout(amount, CURRENCY, row.vendor_payout_stripe_id);
+
+                   stripePromises.push(stripe.vendorPayout(payoutAmount, CURRENCY, vendor.vendor_payout_stripe_id, payoutOrder));
+                   return Promise.all(stripePromises);
+
                 } else {
-                    stripeConnectMail(vendor);
+                  //stripeConnectMail(vendor);
                     return;
                 }
             } else {
                 return;
             }
         })
-        /*  .then(function (payout) {
-              console.log("payout", payout);
-              var paymentModel = {
-                  payout_created_date: new Date(payout.created),
-                  payout_estimate_arrival_date: new Date(payout.arrival_date),
-                  paid_amount: payout.amount / 100.0,
-                  payment_method: paymentMethod['STRIPE'],
-                  status: status['ACTIVE'],
-                  payment_response: JSON.stringify(payout)
-              };
-              return service.createRow('Payment', paymentModel);
+        .then(function (payout) {
+            if(payout){
 
-          }).then(function (paymentRow) {
+                console.log("payout=============", payout[0].created,payout[0].amount);
+                 /* var paymentModel = {
+                      payout_created_date: new Date(payout[0].created),
+                      paid_amount: payout.amount / 100.0,
+                      payment_method: paymentMethod['STRIPE'],
+                      status: status['ACTIVE'],
+                      payment_response: JSON.stringify(payout)
+                  };
+                  return service.createRow('Payment', paymentModel);*/
+            }
+        })
+         /* .then(function (paymentRow) {
               var orderPaymentEscrowObj = {
                   payment_id: paymentRow.id,
                   order_id: payoutOrder ,

@@ -34,7 +34,7 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var marketPlaceTypeSelected = {};
 
-	var offset, limit, field, order, layout,click;
+	var offset, limit, field, order, layout;
 	var productEndPoint = "MarketplaceProduct";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
@@ -231,8 +231,8 @@ export function index(req, res) {
 				});
 		},
 		products: function (callback) {
-			queryParameters['is_featured_product'] = 0;
-
+			//queryParameters['is_featured_product'] = 0;
+            queryParameters['status'] = 1;
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
 				.then(function (results) {
 					console.log("results:::"+results.rows);

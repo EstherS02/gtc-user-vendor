@@ -827,6 +827,7 @@ export function sripeAuth(req, res) {
 		if (error) {
 			console.log("Error::", error);
 		} else {
+			console.log("0000000000000000",body);
 		/*	bodyParams = {
 				vendor_payout_stripe_id: body.stripe_user_id
 			}
@@ -844,7 +845,6 @@ export function sripeAuth(req, res) {
 				})*/
 		}
 	});
-
 }
 
 function plainTextResponse(response) {

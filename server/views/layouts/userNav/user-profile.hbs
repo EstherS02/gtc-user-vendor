@@ -115,7 +115,7 @@
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
 			vendorUpdate.contact_email = $('#contact_email').val();
-			//billingUpdate.address_type = 1;
+			billingUpdate.address_type = 1;
 			billingUpdate.company_name = $('#b_company_name').val();
 			billingUpdate.address_line1 = $('#b_address1').val();
 			billingUpdate.address_line2 = $('#b_address2').val();
@@ -123,7 +123,7 @@
 			billingUpdate.province_id = $('#b_state').val();
 			billingUpdate.city = $('#b_city').val();
 			billingUpdate.postal_code = $('#b_postal_code').val();
-			//shippingUpdate.address_type = 2;
+			shippingUpdate.address_type = 2;
 			shippingUpdate.company_name = $('#s_company_name').val();
 			shippingUpdate.address_line1 = $('#s_address1').val();
 			shippingUpdate.address_line2 = $('#s_address2').val();
@@ -388,7 +388,8 @@
 											<div class="col-lg-8">
 												<div class="form-group">
 													<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
-													 class="form-control-customized form-control-sm" />
+													 class="form-control-customized form-control-sm" >
+													 {{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -400,6 +401,7 @@
 												<div class="form-group">
 													<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
 													 class="form-control-customized form-control-sm" />
+													 {{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -430,6 +432,7 @@
 														<option value="{{this.id}}">{{ this.name}}</option>
 														{{/each}}
 													</select>
+													{{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -447,6 +450,7 @@
 														<option disabled selected>Province/State</option>
 														{{/if}}
 													</select>
+													{{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -457,7 +461,8 @@
 											<div class="col-lg-8">
 												<div class="form-group">
 													<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
-													/>
+													/> 
+													{{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -469,6 +474,7 @@
 												<div class="form-group">
 													<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
 													 class="form-control-customized form-control-sm" />
+													 {{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
 										</div>
@@ -654,3 +660,4 @@
 		</div>
 	</div>
 </div>
+
