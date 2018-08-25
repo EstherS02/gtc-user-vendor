@@ -535,12 +535,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-3 no-padding">
-								{{> vendor/vendor-category }}
-							</div>
 						</div>
+					<div class="col-md-3 no-padding">
+						{{> vendor/vendor-category }}
 					</div>
 				</div>
+			</div>
+		</div>
 			</div>
 			<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
 				<div class="modal-dialog" role="document">
@@ -645,5 +646,6 @@
 				</script>
 			</div>
 		</div>
+		{{!-- {{#ifCond}} --}}
 		{{>dummy-chat-ui }}
 		{{> footer/bottom-footer}}

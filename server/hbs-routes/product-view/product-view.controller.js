@@ -243,7 +243,7 @@ export function product(req, res) {
 		},
 		talkThreads: function(callback) {
 			var includeArr = [];
-			if (LoggedInUser.id != null) {
+			if (LoggedInUser.id != null && LoggedInUser.role == 3) {
 				service.findOneRow('Vendor', vendorID, includeArr)
 					.then(function(response) {
 
@@ -348,7 +348,7 @@ export function product(req, res) {
 						return callback(null);
 					})
 			} else {
-				console.log("****DOESN't LOGIN IN******");
+				console.log("****Disable Chat******");
 				return callback(null);
 			}
 		}
