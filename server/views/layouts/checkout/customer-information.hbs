@@ -5,7 +5,11 @@ $(document).ready(function() {
 	var billingAddress = {{{DisplayJSON billing_address}}};
 	var customerInformationObj = {};
 
-	$('#edit-billing-address').hide();
+	if ($('#inputBillingAddressId').val()) {
+		$('#edit-billing-address').hide();
+	} else {
+		$('#show-billing-address').remove();
+	}
 
 	for (let i = 0; i < shippingAddress.length; i++) {
 		let option = '<option value="' + shippingAddress[i].id + '">' +
@@ -133,7 +137,17 @@ $(document).ready(function() {
 					window.location.href = "/order-checkout/shipping-method?selected_shipping_address_id=" + data.shipping_address_id + "&selected_billing_address_id=" + data.billing_address_id;
 				},
 				error: function(error) {
+					var errorJSON = JSON.parse(error.responseText);
 					console.log("Error occured adding Shipping Details", error);
+					$("#blukErrorBlock").empty();
+					var ul = $('<ul></ul>');
+					if (errorJSON.length > 0) {
+						for (var i = 0; i < errorJSON.length; i++) {
+							ul.append('<li><span>' + errorJSON[i].msg + '</span></li>')
+						}
+					}
+					$("#blukErrorBlock").focus();
+					$('#blukErrorBlock').append(ul);
 				}
 			});
 		}
@@ -207,6 +221,7 @@ $(document).ready(function() {
 				</div>
 				<div style="clear: both;"></div>
 			</div>
+			<div class="bulk-error-block" tabindex="1" id="blukErrorBlock"></div>
 			<div class="body-content-1">
 				<form id="customer-information" method="post">
 					<div class="row no-margins">
@@ -293,11 +308,6 @@ $(document).ready(function() {
 														<input type="text" name="billing_addressline2" value="{{billing_address.[0].address_line2}}" class="form-control form-control-sm input-rounded-border" placeholder="App, Suite">
 													</div>
 												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="billing_city" value={{billing_address.[0].city}} class="form-control form-control-sm input-rounded-border" placeholder="City" required="required">
-													</div>
-												</div>
 												<div class="col-4 p-n-r">
 													<div class="form-group">
 														<div class="select-container">
@@ -320,6 +330,11 @@ $(document).ready(function() {
 																{{/each}}
 															</select>
 														</div>
+													</div>
+												</div>
+												<div class="col-4">
+													<div class="form-group">
+														<input type="text" name="billing_city" value="{{billing_address.[0].city}}" class="form-control form-control-sm input-rounded-border" placeholder="City" required="required">
 													</div>
 												</div>
 												<div class="col-4">
@@ -397,11 +412,6 @@ $(document).ready(function() {
 														<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line2}}" placeholder="App, Suite">
 													</div>
 												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="shipping_city" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].city}}" placeholder="City" required="required">
-													</div>
-												</div>
 												<div class="col-4 p-n-r">
 													<div class="form-group">
 														<div class="select-container">
@@ -428,6 +438,11 @@ $(document).ready(function() {
 												</div>
 												<div class="col-4">
 													<div class="form-group">
+														<input type="text" name="shipping_city" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].city}}" placeholder="City" required="required">
+													</div>
+												</div>
+												<div class="col-4">
+													<div class="form-group">
 														<input name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].postal_code}}" placeholder="Postal">
 													</div>
 												</div>
@@ -447,58 +462,32 @@ $(document).ready(function() {
 								<h2 class="header-lg-text alignleft text-white">Your Order</h2>
 							</div>
 							<div class="cart-summary">
+								{{#ifCond isCartEmpty '!=' true}}
 								{{#each marketPlaces as |marketplace|}}
 								{{#each ../totalPriceList as |totalPrice|}}
 								{{#ifCond marketplace.code '==' @key}}
 								<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
 								<div class="cart-hr-line"></div>
-								<div class="total-content m-b-sm">
-									<div class="alignleft">
-										<span class="total-text">Subtotal</span>
-									</div>
-									<div class="alignright">
-										<span class="total-value">{{currency totalPrice.price '$'}}</span>
-									</div>
-									<div style="clear: both;"></div>
-									<div class="alignleft">
-										<span class="total-text">Shipping Ground</span>
-									</div>
-									<div class="alignright">
-										<span class="total-value">{{currency totalPrice.shipping '$'}}</span>
-									</div>
-									<div style="clear: both;"></div>
-									<div class="cart-hr-line"></div>
-									<div class="alignleft">
-										<span class="total-text">
-											<b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b>
-										</span>
-									</div>
-									<div class="alignright">
-										<span class="total-value">{{currency totalPrice.total '$'}}</span>
-									</div>
-									<div style="clear: both;"></div>
+								<div class="summary-m-total">
+									<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
+									<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
 								</div>
+								<div class="cart-hr-line"></div>
+								<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
 								{{/ifCond}}
 								{{/each}}
 								{{/each}}
-								<div class="total-content m-b-sm">
-									<div class="alignleft">
-										<span class="total-text">
-											<b>GRAND TOTAL</b>
-										</span>
-									</div>
-									<div class="alignright">
-										<span class="total-value">{{currency totalPriceList.grandTotal '$'}}</span>
-									</div>
-									<div style="clear: both;"></div>
+								<div class="grand-total">
+									<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
 								</div>
+								{{/ifCond}}
 							</div>
 							</div>
 						</div>
 						<div class="row no-margins">
 							<div class="col-sm-9half no-padding">
 								<div class="m-cart-body-bottom bg-white">
-									<button class="btn btn-md btn-success">RETURN TO CART</button>
+									<button type="button" class="btn btn-md btn-success">RETURN TO CART</button>
 									<button type="submit" id="continue" class="btn btn-md btn-primary alignright">CONTINUE TO SHIPPING METHOD</button>
 								</div>
 							</div>

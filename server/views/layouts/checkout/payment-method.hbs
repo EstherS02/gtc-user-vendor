@@ -106,51 +106,25 @@ $(document).ready(function() {
 						<h2 class="header-lg-text">YOUR ORDER</h2>
 					</div>
 					<div class="cart-summary">
+						{{#ifCond isCartEmpty '!=' true}}
 						{{#each marketPlaces as |marketplace|}}
 						{{#each ../totalPriceList as |totalPrice|}}
 						{{#ifCond marketplace.code '==' @key}}
 						<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
 						<div class="cart-hr-line"></div>
-						<div class="total-content m-b-sm">
-							<div class="alignleft">
-								<span class="total-text">Subtotal</span>
-							</div>
-							<div class="alignright">
-								<span class="total-value">{{currency totalPrice.price '$'}}</span>
-							</div>
-							<div style="clear: both;"></div>
-							<div class="alignleft">
-								<span class="total-text">Shipping Ground</span>
-							</div>
-							<div class="alignright">
-								<span class="total-value">{{currency totalPrice.shipping '$'}}</span>
-							</div>
-							<div style="clear: both;"></div>
-							<div class="cart-hr-line"></div>
-							<div class="alignleft">
-								<span class="total-text">
-									<b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b>
-								</span>
-							</div>
-							<div class="alignright">
-								<span class="total-value">{{currency totalPrice.total '$'}}</span>
-							</div>
-							<div style="clear: both;"></div>
+						<div class="summary-m-total">
+							<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
+							<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
 						</div>
+						<div class="cart-hr-line"></div>
+						<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
 						{{/ifCond}}
 						{{/each}}
 						{{/each}}
-						<div class="total-content m-b-sm">
-							<div class="alignleft">
-								<span class="total-text">
-									<b>GRAND TOTAL</b>
-								</span>
-							</div>
-							<div class="alignright">
-								<span class="total-value">{{currency totalPriceList.grandTotal '$'}}</span>
-							</div>
-							<div style="clear: both;"></div>
+						<div class="grand-total">
+							<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
 						</div>
+						{{/ifCond}}
 					</div>
 				</div>
 			</div>

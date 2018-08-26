@@ -975,7 +975,11 @@ label {
 	margin-top: 25px;
 }
 .error{
-	font-size: 13px;
+	font-size: 0.813em;
+}
+label.error {
+	font-size: 0.813em;
+	color: #ed5565;
 }
 .cart-top-header {
 	padding: 10px 0;
@@ -1547,6 +1551,28 @@ ul.inner-list-view li a {
     font-weight: 600;
     line-height: 1.6;
 }
+p.summary-info {
+	text-align: left;
+    margin: 0;
+    font-size: 0.813em;
+    line-height: 2;
+    font-weight: 300;
+    color: #676767;
+}
+.summary-m-total {
+	margin: .5rem 0;
+}
+p.summary-info span {
+	float: right;
+}
+.grand-total {
+	padding: 10px 0;
+    border-top: 1px solid #c3c3c3;
+    border-bottom: 1px solid #c3c3c3;
+}
+.grand-total p {
+	font-size: 0.938em;
+}
 .cart-summary {
 	padding: 45px;
 }
@@ -1557,10 +1583,6 @@ ul.inner-list-view li a {
 }
 .cart-summary label {
 	font-size: 0.75em;
-}
-.cart-summary .total-content {
-    display: block;
-    padding: 5px 0;
 }
 .cart-summary .promo-text-control {
 	display: block;
@@ -1573,12 +1595,6 @@ ul.inner-list-view li a {
     font-size: .875rem;
     line-height: 1.5;
     border-radius: .2rem;
-}
-.total-text, .total-value {
-    font-size: 0.813em;
-    padding: 5px 0;
-    display: block;
-    color: #808080;
 }
 .cart-hr-line {
     border-top: 1px solid #c3c3c3;
@@ -1791,4 +1807,20 @@ ul.inner-list-view li a {
 #cardholder-name::placeholder { 
   color: #b1afaf;
   opacity: 1; 
+}
+.bulk-error-block {
+	background: #ed5565;
+	outline: 0px solid transparent !important;
+    margin: 5px 25px;
+    border-radius: 5px;
+}
+.bulk-error-block ul {
+	margin: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.bulk-error-block ul li {
+	color: #FFFFFF;
+	line-height: 1.6;
+	font-size: 0.813em;
 }

@@ -485,7 +485,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	margin-top: 1px;
 }
 .m-t-xs {
-	margin-top: 5px;
+	margin-top: 5px !important;
 }
 .m-t-sm {
 	margin-top: 10px;
@@ -584,7 +584,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	margin-bottom: 10px;
 }
 .m-b {
-	margin-bottom: 15px;
+	margin-bottom: 15px !important;
 }
 .m-b-md {
 	margin-bottom: 20px;
