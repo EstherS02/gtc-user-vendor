@@ -15,6 +15,7 @@ const scrape = require('../../components/scrape');
 const productService = require('./product.service');
 const marketplace = require('../../config/marketplace.js');
 const marketplaceType = require('../../config/marketplace_type.js');
+const planPermissions = require('../../config/plan-marketplace-permission.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 const mws = require('mws-advanced');
@@ -277,61 +278,147 @@ export function importAliExpress(req, res) {
 	})();
 }
 
-export function importEbay(req, res) {
-	var params = {};
-	params.code = req.query.code;
-	params.grant_type = 'authorization_code';
-	params.redirect_uri = config.ebay.redirectUri;
-
-	var authCode = new Buffer(config.ebay.clientId + ":" + config.ebay.clientSecret).toString('base64');
-	request.post({
-		url: config.ebay.authURL,
-		form: params,
-		headers: {
-			"Authorization": "Basic " + authCode,
-			"content-type": 'application/x-www-form-urlencoded'
-		}
-	}, function(err, response, body) {
-		const parsedJSON = JSON.parse(body);
-		var accessToken = parsedJSON.access_token;
-
-		var headers = {
-			"Authorization": 'Bearer ' + accessToken,
-			"Accept": 'application/json',
-			"Content-Type": 'application/json'
-		};
-
-		request.get({
-			url: 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item',
-			headers: headers,
-			json: true
-		}, function(err, response, inventory) {
-			if (inventory.total > 0) {
-
+function getEbayToken(params) {
+	return new Promise(function(resolve, reject) {
+		var authCode = new Buffer(config.ebay.clientId + ":" + config.ebay.clientSecret).toString('base64');
+		request.post({
+			url: config.ebay.authURL,
+			form: params,
+			headers: {
+				"Authorization": "Basic " + authCode,
+				"content-type": 'application/x-www-form-urlencoded'
+			}
+		}, function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				resolve(body);
 			} else {
-				return res.status(404).send("products not found.");
+				reject(error);
 			}
 		});
 	});
 }
 
-function getEbayProducts(accessToken) {
-	var getInventoryItemApiURL = 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item/GP-Cam-01';
-	var getInventoryItemsApiURL = 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item?limit=2&offset=0';
-
-	var headers = {
-		"Authorization": 'Bearer ' + accessToken,
-		"Accept": 'application/json',
-		"Content-Type": 'application/json'
-	};
-
-	request.get({
-		url: getInventoryItemApiURL,
-		headers: headers,
-		json: true
-	}, function(err, response, inventory) {
-		console.log('inventory', inventory);
+function getEbayInventoryItems(headers) {
+	return new Promise(function(resolve, reject) {
+		request.get({
+			url: config.ebay.inventoryItems + '/?limit=2&offset=0',
+			headers: headers,
+			json: true
+		}, function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				resolve(body);
+			} else {
+				reject(error);
+			}
+		});
 	});
+}
+
+export async function importEbay(req, res) {
+	var params = {};
+	var queryObjProduct = {};
+	var queryObjPlanLimit = {}
+	var maximumProductLimit = 0;
+	const productModelName = "Product";
+	const planLimitModelName = "PlanLimit";
+	const agenda = require('../../app').get('agenda');
+	const vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+
+	params.code = req.query.code;
+	params.grant_type = 'authorization_code';
+	params.redirect_uri = config.ebay.redirectUri;
+
+	try {
+		if (vendorCurrentPlan) {
+			const currentDate = moment().format('YYYY-MM-DD');
+			const planStartDate = moment(vendorCurrentPlan.start_date).format('YYYY-MM-DD');
+			const planEndDate = moment(vendorCurrentPlan.end_date).format('YYYY-MM-DD');
+			if (currentDate >= planStartDate && currentDate <= planEndDate) {
+				var actionsValues = planPermissions[vendorCurrentPlan.plan_id][marketplace['PUBLIC']];
+				if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
+					if (getIndexOfAction(actionsValues, '*') > -1) {
+						const loginResponse = await getEbayToken(params);
+						const headers = {
+							"Authorization": 'Bearer ' + JSON.parse(loginResponse).access_token,
+							"Accept": 'application/json',
+							"Content-Type": 'application/json'
+						};
+						const inventoryResponse = await getEbayInventoryItems(headers);
+						if (inventoryResponse.total > 0) {
+							if (req.user.role === roles['VENDOR']) {
+								const vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
+								const planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
+								const planEndDate = moment(vendorCurrentPlan.end_date, 'YYYY-MM-DD').endOf('day').utc().format("YYYY-MM-DD HH:mm");
+
+								queryObjPlanLimit['plan_id'] = vendorCurrentPlan.plan_id;
+								queryObjPlanLimit['status'] = status['ACTIVE'];
+
+								queryObjProduct['vendor_id'] = req.user.Vendor.id;
+								queryObjProduct['created_on'] = {
+									'$gte': planStartDate,
+									'$lte': planEndDate
+								}
+
+								const planLimit = await service.findOneRow(planLimitModelName, queryObjPlanLimit);
+
+								if (planLimit) {
+									maximumProductLimit = planLimit.maximum_product;
+									const existingProductCount = await service.countRows(productModelName, queryObjProduct);
+									const remainingProductLength = maximumProductLimit - existingProductCount;
+
+									if (inventoryResponse.total <= remainingProductLength) {
+										agenda.now(config.jobs.ebayInventory, {
+											headers: headers,
+											user: req.user,
+											size: 50
+										});
+										return res.status(200).send("Ebay product import process started.");
+									} else {
+										return res.status(403).send("Limit exceeded to add product.");
+									}
+								} else {
+									return res.status(404).send("plan limit not found.");
+								}
+							} else {
+								return res.status(403).send("Forbidden");
+							}
+						} else {
+							return res.render('ebay-callback-close', {
+								layout: false,
+								ebayResponseData: encodeURIComponent("404 products not found")
+							});
+						}
+					} else {
+						return res.send(403, "Forbidden");
+					}
+				} else {
+					return res.status(403).send("Forbidden");
+				}
+			} else {
+				return res.status(403).send("Sorry your plan expired.");
+			}
+		} else {
+			return res.status(403).send("Forbidden");
+		}
+	} catch (error) {
+		console.log("error", error);
+		return res.status(500).send(error);
+	}
+}
+
+function getIndexOfAction(array, value) {
+	if (value) {
+		if (array.length > 0) {
+			for (var i = 0; i < array.length; i++) {
+				if (array[i]) {
+					if (array[i] == value) {
+						return i;
+					}
+				}
+			}
+		}
+		return -1;
+	}
 }
 
 export function importAmazon(req, res) {

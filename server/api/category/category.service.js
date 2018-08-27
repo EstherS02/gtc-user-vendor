@@ -7,10 +7,8 @@ const config = require('../../config/environment');
 
 export async function categoriesWithProductCount(queryObj, productQueryObj) {
 	var results = {};
-
 	results['count'] = 0;
 	results['rows'] = [];
-
 	try {
 		var categoriesResponse = await model['Category'].findAll({
 			where: queryObj,
