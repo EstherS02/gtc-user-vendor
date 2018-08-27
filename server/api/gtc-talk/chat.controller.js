@@ -5,6 +5,7 @@ const config = require('../../config/environment');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const _ = require('lodash');
 
 const service = require('../service');
 const model = require('../../sqldb/model-connect');
@@ -23,15 +24,25 @@ export function chatConversation(req, res) {
 	var queryObj = {talk_thread_id:thread_id};
 	var offset = 0;
 	var limit = null;
-	var field = "created_on";
-	var order = "desc";
+	var field = "sent_at";
+	var order = "asc";
+	var thread_user = null;
 
 	service.findRows(modelName, queryObj, offset, limit, field, order, includeArr).then(function(response){
-		//console.log("talk", response);
+			// thread_user = response[0].User.id;
+			
 			if (response) {
+				_.forOwn(response.rows, function (element) {
+ 				if(element.User.id != req.user.id){
+ 					thread_user = element.User.id;
+ 					return false;
+ 					}
+ 
+				});
 				return res.status(200).json({
 							talkThread: response.rows,
 							threadId: req.body.thread_id,
+							thread_user:thread_user,
 							talk: null
 						});
 				
@@ -39,6 +50,7 @@ export function chatConversation(req, res) {
 				return res.status(200).json({
 							talkThread: null,
 							threadId: req.body.thread_id,
+							thread_user:thread_user,
 							talk: null
 						});
 			}
