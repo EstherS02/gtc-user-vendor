@@ -3,7 +3,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 $("#gtc-cart-alert").hide();
 
 function gtcAddToCart(e) {
-	if (userInfo.email) {
+   if (userInfo.email) {
+        if($("#typecode"+e).val()=='1' || $("#typecode"+e).val() == '')
+        {
 		var cartInfo = {};
 		$('#gtc-add-to-cart').prop('disabled', true);
 		cartInfo.product_quantity = $('#product-quantity-' + e).val();
@@ -33,6 +35,11 @@ function gtcAddToCart(e) {
 		} else {
 			$('#product-quantity-' + e).notify("Please enter the value", "error");
 		}
+    }
+    else
+    {
+        window.location.href = 'gtc-mail/compose?id='+userInfo.id+'&text='+userInfo.first_name;
+    }
 	} else {
 		$('#myModal').modal('show');
 	}
@@ -394,8 +401,9 @@ $(function() {
                 <div class="col-sm-10half align-self-center no-padding">
                     <div class="row no-margins">
                         <div class="col-md-4 no-padding">
-                            <div class="cprlist">
+                                  <div class="cprlist">
                             	{{#if compareProducts.[0]}}
+                                 <input type="hidden" id="typecode{{compareProducts.[0].id}}" name="typecode" value="{{compareProducts.[0].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[0].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max={{compareProducts.[0].moq}}>
@@ -420,6 +428,7 @@ $(function() {
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[1]}}
+                                   <input type="hidden" id="typecode{{compareProducts.[1].id}}" name="typecode" value="{{compareProducts.[1].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[1].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max={{compareProducts.[1].moq}}>
@@ -445,6 +454,7 @@ $(function() {
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[2]}}
+                                <input type="hidden" id="typecode{{compareProducts.[2].id}}" name="typecode" value="{{compareProducts.[2].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[2].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max="{{compareProducts.[2].moq}}">
