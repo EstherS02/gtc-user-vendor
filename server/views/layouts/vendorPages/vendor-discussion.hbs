@@ -77,8 +77,9 @@
 						console.log(data);
 						formData.post_media_type = 2;
 						formData.post_media_url = data.imageURL;
+						removePic();
 						apiCall(url, formData);
-						$("#blog_img").hide();
+						// $("#blog_img").hide();
 					},
 					error: function(error) {
 						console.log("Error", error);
@@ -133,9 +134,9 @@
 					console.log(data);
 					formData.comment_type = 2;
 					formData.comment_media_url = data.imageURL;
+					removeCommentPic(e);
 					apiCallComment(url, formData, e);
-					$("#selectedFile" + e).attr('src', " ");
-					$("#selectedFile" + e).val("");
+					
 
 				},
 				error: function(error) {
