@@ -98,12 +98,6 @@ function checkpaymentEscrow(order) {
 
                 payoutVendorPromises.push(fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder));
                 return Promise.all(payoutVendorPromises);
-                
-                /*then(function (payoutVendorInfoResults) {
-                    return Promise.resolve(payoutVendorInfoResults);
-                }).catch(function (error) {
-                    return Promise.reject(error);
-                })*/
             }
         }).catch(function (error) {
             return Promise.reject(error);
@@ -127,7 +121,7 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                    return Promise.all(stripePromises);
 
                 } else {
-                  //stripeConnectMail(vendor);
+                    stripeConnectMail(vendor);
                     return; 
                 }
             } else {

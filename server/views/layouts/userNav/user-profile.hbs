@@ -5,16 +5,38 @@
 
 	#profileImage,
 	#userUpdateBtn,
-	#userCancelBtn, #changePwd {
+	#userCancelBtn,
+	#changePwd {
 		cursor: pointer;
 	}
-
 </style>
 <script>
 	$(document).ready(function () {
 
 		$("#gtc-profile-alert").hide();
 		$("#gtc-pwdreset-alert").hide();
+		$('.billing_required_field').hide();
+		$('.shipping_required_field').hide();
+
+		$('#b_company_name, #b_address1, #b_address2,#b_state,#b_country,#b_city,#b_postal_code').keyup(function () {
+			$('#userUpdateBtn').prop('disabled', true);
+			$('.billing_required_field').show();
+			if ($('#b_address1').val() != '' && $('#b_country').val() != '' && $('#b_state').val() != '' && $('#b_city').val() != '') {
+				$('#userUpdateBtn').prop('disabled', false);
+			} else {
+				$('#userUpdateBtn').prop('disabled', true);
+			}
+		});
+
+		$('#s_company_name, #s_address1, #s_address2, #s_state, #s_country,#s_city,#s_postal_code').keyup(function () {
+			$('#userUpdateBtn').prop('disabled', true);
+			$('.shipping_required_field').show();
+			if ($('#s_address1').val() != '' && $('#s_country').val() != '' && $('#s_state').val() != '' && $('#s_city').val() != '') {
+				$('#userUpdateBtn').prop('disabled', false);
+			} else {
+				$('#userUpdateBtn').prop('disabled', true);
+			}
+		});
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
@@ -93,44 +115,71 @@
 					console.log("Error", error);
 				}
 			});
-		})
+		});
 
-		$("#sameAsAddr").change(function () {
-			$("#s_company_name").val($("#b_company_name").val());
-			$("#s_address1").val($("#b_address1").val());
-			$("#s_address2").val($("#b_address2").val());
-			//$("#s_country").val($("#b_country").val());
-			//$("#s_state").val($("#b_state").val());
-			$("#s_city").val($("#b_city").val());
-			$("#s_postal_code").val($("#b_postal_code").val());
+		$("#sameAddr").change(function () {
+			let ischecked = $(this).is(':checked');
+			if (!ischecked) {
+				$('#shipping_address_div').show();
+				$("#s_company_name").val('');
+				$("#s_address1").val('');
+				$("#s_address2").val('');
+				$("#s_country").val('');
+				$("#s_state").val('');
+				$("#s_city").val('');
+				$("#s_postal_code").val('');
+			} else {
+				$("#shipping_address_div").hide();
+				$("#s_company_name").val($("#b_company_name").val());
+				$("#s_address1").val($("#b_address1").val());
+				$("#s_address2").val($("#b_address2").val());
+				$("#s_country").val($("#b_country").val());
+				$("#s_state").val($("#b_state").val());
+				$("#s_city").val($("#b_city").val());
+				$("#s_postal_code").val($("#b_postal_code").val());
+			}
 		});
 
 		$("#userForm").submit(function (e) {
 
 			e.preventDefault();
-			var userUpdate = {};
-			var vendorUpdate = {};
-			var billingUpdate = {};
-			var shippingUpdate = {};
+			var userUpdate = {}, data = {};
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
-			vendorUpdate.contact_email = $('#contact_email').val();
-			billingUpdate.address_type = 1;
-			billingUpdate.company_name = $('#b_company_name').val();
-			billingUpdate.address_line1 = $('#b_address1').val();
-			billingUpdate.address_line2 = $('#b_address2').val();
-			billingUpdate.country_id = $('#b_country').val();
-			billingUpdate.province_id = $('#b_state').val();
-			billingUpdate.city = $('#b_city').val();
-			billingUpdate.postal_code = $('#b_postal_code').val();
-			shippingUpdate.address_type = 2;
-			shippingUpdate.company_name = $('#s_company_name').val();
-			shippingUpdate.address_line1 = $('#s_address1').val();
-			shippingUpdate.address_line2 = $('#s_address2').val();
-			shippingUpdate.country_id = $('#s_country').val();
-			shippingUpdate.province_id = $('#s_state').val();
-			shippingUpdate.city = $('#s_city').val();
-			shippingUpdate.postal_code = $('#s_postal_code').val();
+
+			if ($('#contact_email').val()) {
+				var vendorUpdate = {}
+				vendorUpdate.contact_email = $('#contact_email').val();
+				data.vendorUpdate = JSON.stringify(vendorUpdate);
+			}
+
+			if ($('#b_address1').val()) {
+				var billingUpdate = {};
+				billingUpdate.address_type = 1;
+				billingUpdate.company_name = $('#b_company_name').val();
+				billingUpdate.address_line1 = $('#b_address1').val();
+				billingUpdate.address_line2 = $('#b_address2').val();
+				billingUpdate.country_id = $('#b_country').val();
+				billingUpdate.province_id = $('#b_state').val();
+				billingUpdate.city = $('#b_city').val();
+				billingUpdate.postal_code = $('#b_postal_code').val();
+
+				data.billingUpdate = JSON.stringify(billingUpdate);
+			}
+
+			if ($('#s_address1').val()) {
+				var shippingUpdate = {};
+				shippingUpdate.address_type = 2;
+				shippingUpdate.company_name = $('#s_company_name').val();
+				shippingUpdate.address_line1 = $('#s_address1').val();
+				shippingUpdate.address_line2 = $('#s_address2').val();
+				shippingUpdate.country_id = $('#s_country').val();
+				shippingUpdate.province_id = $('#s_state').val();
+				shippingUpdate.city = $('#s_city').val();
+				shippingUpdate.postal_code = $('#s_postal_code').val();
+
+				data.shippingUpdate = JSON.stringify(shippingUpdate);
+			}
 
 			var image = $("#imageUpload")[0].files[0];
 			var user_pic_url;
@@ -158,21 +207,21 @@
 			}
 
 			if ($('#userForm').valid()) {
+				data.userUpdate = JSON.stringify(userUpdate);
+
 				$.ajax({
 					url: '/api/users/user-profile',
 					type: 'PUT',
-					data: {
-						userUpdate: JSON.stringify(userUpdate),
-						vendorUpdate: JSON.stringify(vendorUpdate),
-						billingUpdate: JSON.stringify(billingUpdate),
-						shippingUpdate: JSON.stringify(shippingUpdate)
-					},
+					data: data,
 					success: function (updateData) {
 						$('#gtc-profile-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-profile-alert .profile-message').text("Profile Updated Successfully")
 						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
 							$("#gtc-profile-alert").slideUp(500);
 						});
+						/*setTimeout(function () {
+							location.reload(true);
+						}, 1000);*/
 					},
 					error: function (error) {
 						console.log("Error", error);
@@ -317,8 +366,6 @@
 										</div>
 										<br/>
 										<br/>
-										<br/>
-										<br/>
 										<div class="row">
 											<div class="col-lg-4">
 												<p>Account Settings
@@ -344,7 +391,6 @@
 											</div>
 										</div>
 										{{#if LoggedInUser.Vendor}}
-
 										<div class="row">
 											<div class="col-lg-4">
 												<p></p>
@@ -374,7 +420,8 @@
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<button type="button" id="changePwd" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Change Password</button>
+													<button type="button" id="changePwd" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal"
+													 data-whatever="@mdo">Change Password</button>
 												</div>
 											</div>
 										</div>
@@ -385,11 +432,10 @@
 											<div class="col-lg-4">
 												<p>Billing Address</p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
 													<input type="text" id='b_company_name' name="b_company_name" placeholder="Company" value="{{billingAddress.company_name}}"
-													 class="form-control-customized form-control-sm" >
-													 {{!-- <span class="text-danger require_enable">*</span> --}}
+													 class="form-control-customized form-control-sm">
 												</div>
 											</div>
 										</div>
@@ -397,19 +443,19 @@
 											<div class="col-lg-4">
 												<p></p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
 													<input type="text" id='b_address1' name="b_address1" value="{{billingAddress.address_line1}}" placeholder="Address Line 1"
 													 class="form-control-customized form-control-sm" />
-													 {{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
+											<span class="text-danger billing_required_field">*</span>
 										</div>
 										<div class="row">
 											<div class="col-lg-4">
 												<p></p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
 													<input type="text" id='b_address2' name="b_address2" value="{{billingAddress.address_line2}}" placeholder="Address Line 2"
 													 class="form-control-customized form-control-sm" />
@@ -420,10 +466,9 @@
 											<div class="col-lg-4">
 												<p></p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="b_country" name="b_country"
-													 >
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="b_country" name="b_country">
 														{{#if billingAddress.country_id}}
 														<option value="{{billingAddress.country_id}}">{{billingAddress.Country.name}}</option>
 														{{else}}
@@ -432,141 +477,49 @@
 														<option value="{{this.id}}">{{ this.name}}</option>
 														{{/each}}
 													</select>
-													{{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
+											<span class="text-danger billing_required_field">*</span>
 										</div>
 										<div class="row">
 											<div class="col-lg-4">
 												<p></p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="b_state" id="b_state"
-													 >
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="b_state" id="b_state">
 														{{#if billingAddress.province_id}}
 														<option value="{{billingAddress.province_id}}">{{billingAddress.State.name}}</option>
 														{{else}}
 														<option disabled selected>Province/State</option>
 														{{/if}}
 													</select>
-													{{!-- <span class="text-danger require_enable">*</span> --}}
 												</div>
 											</div>
+											<span class="text-danger billing_required_field">*</span>
 										</div>
 										<div class="row">
 											<div class="col-lg-4">
 												<p></p>
 											</div>
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
 													<input type="text" id='b_city' name="b_city" value="{{billingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
-													/> 
-													{{!-- <span class="text-danger require_enable">*</span> --}}
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
-													 class="form-control-customized form-control-sm" />
-													 {{!-- <span class="text-danger require_enable">*</span> --}}
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="checkbox" id="sameAsAddr"
-													  /><small>  My Shipping Address is the same as my billing address</small>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p>Shipping Address</p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
-													 class="form-control-customized form-control-sm" />
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
-													 class="form-control-customized form-control-sm" />
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
-													 class="form-control-customized form-control-sm" />
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="s_country" name="s_country">
-														{{#if shippingAddress.country_id}}
-														<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
-														{{else}}
-														<option disabled selected>Country</option>
-														{{/if}} {{#each country}}
-														<option value="{{this.id}}">{{ this.name}}</option>
-														{{/each}}
-													</select>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="s_state" id="s_state"
-													 >
-														{{#if shippingAddress.province_id}}
-														<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
-														{{else}}
-														<option disabled selected>Province/State</option>
-														{{/if}}
-													</select>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
 													/>
 												</div>
 											</div>
+											<span class="text-danger billing_required_field">*</span>
+										</div>
+										<div class="row">
+											<div class="col-lg-4">
+												<p></p>
+											</div>
+											<div class="col-lg-7">
+												<div class="form-group">
+													<input type="text" id='b_postal_code' name="b_postal_code" value="{{billingAddress.postal_code}}" placeholder="Postal Code"
+													 class="form-control-customized form-control-sm" />
+												</div>
+											</div>
 										</div>
 										<div class="row">
 											<div class="col-lg-4">
@@ -574,11 +527,107 @@
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
-													 class="form-control-customized form-control-sm" />
+													<input type="checkbox" id="sameAddr" />
+													<small> My Shipping Address is the same as my billing address</small>
 												</div>
 											</div>
 										</div>
+										<div id="shipping_address_div">
+											<div class="row">
+												<div class="col-lg-4">
+													<p>Shipping Address</p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<input type="text" id='s_company_name' name="s_company_name" value="{{shippingAddress.company_name}}" placeholder="Company"
+														 class="form-control-customized form-control-sm" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<input type="text" id='s_address1' name="s_address1" value="{{shippingAddress.address_line1}}" placeholder="Address Line 1"
+														 class="form-control-customized form-control-sm" />
+													</div>
+												</div>
+												<span class="text-danger shipping_required_field">*</span>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<input type="text" id='s_address2' name="s_address2" value="{{shippingAddress.address_line2}}" placeholder="Address Line 2"
+														 class="form-control-customized form-control-sm" />
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="s_country" name="s_country">
+															{{#if shippingAddress.country_id}}
+															<option value="{{shippingAddress.country_id}}">{{shippingAddress.Country.name}}</option>
+															{{else}}
+															<option disabled selected>Country</option>
+															{{/if}} {{#each country}}
+															<option value="{{this.id}}">{{ this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+												<span class="text-danger shipping_required_field">*</span>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="s_state" id="s_state">
+															{{#if shippingAddress.province_id}}
+															<option value="{{shippingAddress.province_id}}">{{shippingAddress.State.name}}</option>
+															{{else}}
+															<option disabled selected>Province/State</option>
+															{{/if}}
+														</select>
+													</div>
+												</div>
+												<span class="text-danger shipping_required_field">*</span>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<input type="text" id='s_city' name="s_city" value="{{shippingAddress.city}}" placeholder="City" class="form-control-customized form-control-sm"
+														/>
+													</div>
+												</div>
+												<span class="text-danger shipping_required_field">*</span>
+											</div>
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-7">
+													<div class="form-group">
+														<input type="text" id='s_postal_code' name="s_postal_code" value="{{shippingAddress.postal_code}}" placeholder="Postal Code"
+														 class="form-control-customized form-control-sm" />
+													</div>
+												</div>
+											</div>
+										</div>
+
 									</div>
 								</div>
 
@@ -661,3 +710,9 @@
 	</div>
 </div>
 
+<script>
+
+	 /* $('#userUpdateBtn').prop('disabled', true); */
+
+
+</script>
