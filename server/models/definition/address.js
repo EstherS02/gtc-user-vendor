@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'address_type',
             allowNull: false
         },
+        same_shipping_address: {
+            type: DataTypes.INTEGER,
+            field: 'same_shipping_address',
+            allowNull: false
+        },
         company_name: {
             type: DataTypes.STRING(128),
             field: 'company_name',

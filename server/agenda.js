@@ -9,9 +9,7 @@ module.exports = new Agenda({
 		address: config.mongo.uri,
 		collection: "agenda",
 		options: {
-			server: {
-				auto_reconnect: true
-			}
+            autoReconnect: true
 		}
 	}
 });
