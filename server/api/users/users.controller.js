@@ -365,9 +365,15 @@ export function resetPassword(req, res) {
 
 export function userProfile(req, res) {
 
+
     var userUpdate = JSON.parse(req.body.userUpdate);
     var billingUpdate = JSON.parse(req.body.billingUpdate);
     var shippingUpdate = JSON.parse(req.body.shippingUpdate);
+
+    console.log("******************************************",userUpdate);
+    console.log("===================================", billingUpdate);
+    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", shippingUpdate);
+
     var user_id = req.user.id;
     billingUpdate['user_id'] = req.user.id;
     billingUpdate['status'] = 1;
@@ -380,9 +386,11 @@ export function userProfile(req, res) {
         .then(function (row) {
 
             if (billingUpdate) {
+                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 addressUpdate(user_id, billing_address_type, billingUpdate);
             }
             if (shippingUpdate) {
+                console.log("+++++++++++++++++++++++++++++++++++++++++++");
                 addressUpdate(user_id, shipping_address_type, shippingUpdate);
             }
             return res.status(200).send(row);

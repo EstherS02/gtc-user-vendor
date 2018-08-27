@@ -87,7 +87,7 @@ export function messages(req, res) {
 		function(err, results) {
 
 			if (!err) {
-				console.log(JSON.parse(JSON.stringify(results.messages)));
+				console.log(JSON.stringify(results.messages));
 				res.render('vendorNav/messages', {
 					title: "Global Trade Connect",
 					messenger: results.messages,

@@ -5,6 +5,6 @@ var router = express.Router();
 
 var controller = require('./vendor-payout.controller');
 
-router.post('/', controller.vendorPayout);
+router.get('/', controller.vendorPayout);
 
 module.exports = router;

@@ -1,193 +1,181 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<script>
-$(document).ready(function(){
+<script type="text/javascript">
+$(document).ready(function() {
 	$("#continue").click(function(e) {
 		e.preventDefault();
 		window.location.href = "/order-checkout/payment-method" + window.location.search;
 	});
+	$("#shippingMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/shipping-method" + window.location.search;
+	});
+	$("#paymentMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/payment-method" + window.location.search;
+	});
 });
-function CartPage(){
-	 window.location.href = "/cart";
+
+function CartPage() {
+	window.location.href = "/cart";
 }
 </script>
-<section>
-	<div class="" >
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6 col-12">
-					<ul class="breadcrumb">
-					  <li><a href="/order-checkout/customer-information?{{query_params}}">1. Customer Information</a></li>
-					  <li><a href="#" class="active1">2. Shipping Method</a></li>
-					  <li><a href="#">3. Payment Method</a></li>
-					  <li><a href="#">4. Confirmation</a></li>
-					</ul>
+<div class="wrapper-content">
+	<div class="container-sm">
+		<div class="title-header-1 gtc-p-l-r">
+			<div class="alignleft">
+				<ul class="breadcrumb">
+					<li>
+						<a href="./order-checkout/customer-information">1. Customer Information</a>
+					</li>
+					<li>
+						<a href="javascript:;" id="shippingMethodLink" class="active">2. Shipping Method</a>
+					</li>
+					<li>
+						<a href="javascript:;" id="paymentMethodLink">3. Payment Method</a>
+					</li>
+					<li>
+						<a href="#">4. Confirmation</a>
+					</li>
+				</ul>
+			</div>
+			<div class="alignright">
+				{{#if LoggedInUser.id}}
+				<span class="text-sm">You're logged in as </span>
+				<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+				<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+				{{else}}
+				<span class="text-sm">
+					<a href="/login">Login</a> to see seller information</span>
+				{{/if}}
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="body-content-1">
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding bg-white">
+					<div class="header-left header-lg gtc-p-l-r">
+						<h2 class="header-lg-text alignleft text-white">CUSTOMER INFORMATION</h2>
+					</div>
+					<div class="m-cart-body-1">
+						<div class="row">
+							<div class="col-md-3 col-12">
+								<label class="label-control text-sm text-black"><strong>Billing Address</strong></label>
+							</div>
+							<div class="col-md-8 col-12">
+								<div class="row">
+									<div class="col-12">
+										<div class="form-group m-b-none">
+											<div class="address-content">
+												{{#if selected_billing_address}}
+												<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
+												<p>{{selected_billing_address.company_name}}</p>
+												<p>{{selected_billing_address.address_line1}}</p>
+												<p>{{selected_billing_address.address_line2}}</p>
+												<p>{{selected_billing_address.city}}</p>
+												<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
+												<p>{{selected_billing_address.postal_code}}</p>
+												<p>{{selected_billing_address.phone}}</p>
+												{{else}}
+												-
+												{{/if}}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cart-hr-line"></div>
+					<div class="m-cart-body-1">
+						<div class="row">
+							<div class="col-md-3 col-12">
+								<label class="label-control text-sm text-black"><strong>Shipping Address</strong></label>
+							</div>
+							<div class="col-md-8 col-12">
+								<div class="row">
+									<div class="col-12">
+										<div class="form-group m-b-none">
+											<div class="address-content">
+												{{#if selected_billing_address}}
+												<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
+												<p>{{selected_billing_address.company_name}}</p>
+												<p>{{selected_billing_address.address_line1}}</p>
+												<p>{{selected_billing_address.address_line2}}</p>
+												<p>{{selected_billing_address.city}}</p>
+												<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
+												<p>{{selected_billing_address.postal_code}}</p>
+												<p>{{selected_billing_address.phone}}</p>
+												{{else}}
+												-
+												{{/if}}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="cart-hr-line"></div>
+					<div class="m-cart-body-1">
+						<div class="row">
+							<div class="col-md-3 col-12">
+								<label class="label-control text-sm text-black"><strong>Shipping Method</strong></label>
+							</div>
+							<div class="col-md-8 col-12">
+								<div class="row">
+									<div class="col-12">
+										<div class="form-group">
+											<div class="address-content">
+												<h3>STANDARD SHIPPING</h3>
+											</h3>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
+				</div>
+				<div class="col-sm-3half no-padding">
+					<div class="header-right header-lg gtc-p-l-r">
+						<h2 class="header-lg-text">YOUR ORDER</h2>
+					</div>
+					<div class="cart-summary">
+						{{#ifCond isCartEmpty '!=' true}}
+						{{#each marketPlaces as |marketplace|}}
+						{{#each ../totalPriceList as |totalPrice|}}
+						{{#ifCond marketplace.code '==' @key}}
+						<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
+						<div class="cart-hr-line"></div>
+						<div class="summary-m-total">
+							<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
+							<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
+						</div>
+						<div class="cart-hr-line"></div>
+						<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
+						{{/ifCond}}
+						{{/each}}
+						{{/each}}
+						<div class="grand-total">
+							<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
+						</div>
+						{{/ifCond}}
+					</div>
 				</div>
 			</div>
-			<div class="row checkout_bg_color ">
-                <div class="col-md-9 col-12 common_padding1 ">
-                	<h4 class="checkout_title_color ">SHIPPING METHOD</h4>
-                    <div class="row">
-				<div class="col-md-9 col-12">
-					<div class="container">
-						<div class="row">
-							<div class="col-md-3 col-3">
-								<p><b>Bill to</b></p>
-							</div>
-							<div class="col-md-9 col-9">
-								<input type="hidden" name="selected_billing_address_id" value="{{selected_billing_address.id}}"/>
-								<p style="margin-bottom:0px"><b class="text-capitalize">{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</b> 
-								</p>
-								<p class="shop_shipping">{{selected_billing_address.address_line1}}</p>
-								<p class="shop_shipping">{{selected_billing_address.address_line2}}</p>
-								<p class="shop_shipping">{{selected_billing_address.city}}</p>
-								<p class="shop_shipping">{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
-								<p class="shop_shipping">{{selected_billing_address.postal_code}}</p>
-							</div>
-						</div>
-						<hr/>
-						<div class="row">
-							<div class="col-md-3 col-3">
-								<p><b>Shipping Address</b></p>
-							</div>
-							<div class="col-md-9 col-9">
-								<input type="hidden" name="selected_shipping_address_id" value="{{selected_shipping_address.id}}"/>
-								<p style="margin-bottom:0px"><b class="text-capitalize">{{selected_shipping_address.first_name}} {{selected_shipping_address.last_name}}</b> 
-								</p>
-								<p class="shop_shipping">{{selected_shipping_address.address_line1}}</p>
-								<p class="shop_shipping">{{selected_shipping_address.address_line2}}</p>
-								<p class="shop_shipping">{{selected_shipping_address.city}}</p>
-								<p class="shop_shipping">{{selected_shipping_address.State.name}}, {{selected_shipping_address.Country.name}}</p>
-								<p class="shop_shipping">{{selected_shipping_address.postal_code}}</p>
-							</div>
-						</div>
-						<hr/>
-						<div class="row">
-							<div class="col-md-3 col-3">
-								<p><b>Shipping Method</b></p>
-							</div>
-							<div class="col-md-9 col-9">
-								<p>STANDARD SHIPPING</p>
-							</div>
-						</div>
-						<hr/>
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding bg-white">
+					<div class="m-cart-body-bottom bg-white">
+						<button type="button" onclick="CartPage()" class="ladda-button btn btn-md btn-success" data-style="expand-left">
+							<span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span>
+						</button>
+						<button type="button" id="continue" class="ladda-button btn btn-md btn-primary alignright" data-style="expand-left">
+							<span class="ladda-label">CONTINUE TO PAYMENT METHOD</span><span class="ladda-spinner"></span>
+						</button>
 					</div>
-					<div class="row">
-						<div class="col-md-6 col-6">
-							{{!-- <input  onclick = "CartPage()" value="RETURN TO CART" class="cont_shopping"/> --}}
-							<button class="ladda-button btn cont_shopping" onclick = "CartPage()" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span></button>
-						</div>
-						<div class="col-md-6 col-6">
-							<a href="#">
-								{{!-- <input type="submit" id="continue" value="CONTINUE TO PAYMENT METHOD" 
-								class="update_cart"/> --}}
-								<button type="submit" class="ladda-button btn update_cart" id="continue" data-style="expand-left" id="UpdateTalks"><span class="ladda-label">CONTINUE TO PAYMENT METHOD</span><span class="ladda-spinner"></span></button>
-							</a>
-						</div>
-                      </div>
-                    </div>
-                </div>
-             </div>
-			 <div class="col-md-3 col-12 your_order_bg common_padding1 ">
-				<h4 class="checkout_title_color_1">YOUR ORDER</h4>
-                <div class="col-md-12 col-12 ">
-				<div class="container">
-					{{#each marketPlaces as |marketplace|}}
-					
-					{{#each ../totalPriceList as |totalPrice|}}
-
-					{{#ifCond marketplace.code '==' @key}}
-					<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
-					<hr class="common_margin" />
-					<div class="row">
-						<div class="col-md-8">
-							<p class="shop_subtotal">Subtotal</p>
-						</div>
-						<div class="col-md-4">
-							<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							<p class="shop_shipping">Shipping Ground</p>
-						</div>
-						<div class="col-md-4">
-							<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							<p class="shop_subtotal">Subtotal</p>
-						</div>
-						<div class="col-md-4">
-							<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
-						</div>
-					</div>
-					<hr class="common_margin" />
-					<div class="row">
-						<div class="col-md-8">
-							<p class="shop_subtotal"><b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b></p>
-						</div>
-						<div class="col-md-4">
-							<p class="shop_subtotal float-right"><b>{{currency totalPrice.total '$'}}</b></p>
-						</div>
-					</div>
-					{{/ifCond}}
-					{{/each}}
-					{{/each}}
-					
-					<hr class="common_margin" />
-					<div class="row">
-						<div class="col-md-8">
-								<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-						</div>
-						<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>{{currency totalPriceList.grandTotal '$'}}</b></p>
-						</div>
-					</div>
-
-					<hr class="common_margin" />
-					{{#ifCond couponData.length '>' 0}}						
-					{{#each couponData}}
-					<div class="row">
-						<div class="col-md-8">
-							<p class="shop_subtotal"><b>DISCOUNT</b></p>
-						</div>
-						<div class="col-md-4">
-							<p class="shop_subtotal float-right">
-								<b>{{currency this.discount_price '$'}}</b>
-							</p>
-						</div>
-					</div>
-					<hr class="common_margin"/>
-					<div class="row">
-						<div class="col-md-8">
-								<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-						</div>
-						<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>{{currency this.final_price '$'}}</b></p>
-						</div>	
-					</div>
-					<p class="promo_code_p">{{{this.message_details}}}</p>
-
-					{{/each}}
-					{{/ifCond}}
-					
-					{{#ifCond couponData.length '==' 0}}
-					<p class="promo_code_p"><b>Have A Promo Code?</b> Enter it here:</p>
-					<input type="text" id="coupon-input-code" placeholder="Enter Promo Code" class="promo_code_text" /> 
-					<button class="btn btn-sm" onclick="applyGTCCoupon()">Apply</button>
-					{{/ifCond}}
-					{{#ifCond couponUpdateErrorMessage '!=' ""}}
-						<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
-					{{/ifCond}}
-					<img src="../img/payment-methods.jpg" alt="payment">
 				</div>
-                </div>
 			</div>
-    	</div>
+		</div>
 	</div>
-</section>
+</div>
 {{> footer/bottom-footer}}

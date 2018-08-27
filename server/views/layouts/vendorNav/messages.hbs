@@ -63,12 +63,13 @@
 		var domElement = '';
 		var time = '';
 		result.forEach(function(element) {
+
 			//console.log(element);
 			if (element.from_id == userInfo.id) {
 				time = 'pull-right';
 				domElement = domElement + `<li class="left clearfix">
 											<span class="chat-img pull-left">
-												<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
+												<img src="` + userProfile(element.User) + `" alt="User Avatar">
 											</span>
 											<div class="chat-body clearfix">
 												<div class="header">
@@ -83,12 +84,8 @@
 				time = 'pull-left';
 				domElement = domElement + `<li class="right clearfix" >																	
 												<span class="chat-img pull-right">
-													<img src="` + userProfile(element.User.user_pic_url) + `" alt="User Avatar">
-												</span>																		<img src="` + element.User.user_pic_url + `" alt="User Avatar"></span>																	<div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + element.User.first_name + element.User.last_name + `</strong><small class=" text-muted `+ time+`"><i class="fa fa-clock-o"></i>` + FormatDate(element.sent_at) + `</small>
-												<div class="chat-body clearfix">
-												<div class="header">
-													<strong class="primary-font pull-left">` + element.User.first_name + element.User.last_name + `</strong>
-													<small class="text-muted `+time+`"><i class="fa fa-clock-o">`+ FormatDate(element.sent_at) + `</i> </small>
+													<img src="` + userProfile(element.User)+ `" alt="User Avatar">
+												</span><div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + element.User.first_name + element.User.last_name + `</strong><small class=" text-muted `+ time+`"><i class="fa fa-clock-o"></i>` + FormatDate(element.sent_at) + `</small>
 													</div>
 												<p>`+ element.message +`</p>
 												</div>
@@ -223,7 +220,8 @@
 												<!--=========================================================-->
 												<!-- selected chat -->
 												<div class="col-md-8 bg-white">
-													<div scroll-glue-bottom="glued" id="scrollMessage" class="chats-messager" style="height: 400px; overflow-y: auto;">
+													<div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
+
 														<ul class="chats" id = "message">
 														{{!-- {{#each talkThreads.talk}}
 															{{#ifCond this.from_id "==" ../LoggedInUser.id}} --}}

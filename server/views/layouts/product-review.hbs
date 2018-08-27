@@ -1,5 +1,19 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#review-stars').barrating({
+		theme: 'fontawesome-stars'
+	});
+	$('#reviewSubmit').click(function() {
+		if (userInfo.email) {
+			$('#reviewModal').modal('show');
+		} else {
+			$('#myModal').modal('show');
+		}
+	});
+});
+</script>
 <div class="bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -39,7 +53,7 @@
                             		<div class="col-md-7">
                             			<div class="top-mini-headers m-b-sm">
 											<div class="alignleft">
-												<label>Showing 1-10 of 23 Reviews</label>
+												<label>Showing {{SUMFloat queryPaginationObj.offset 1}} to {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} of {{product.rating.product_rating_count}} Reviews</label>
 											</div>
 											<div class="alignright">
 												<button type="button" id="reviewSubmit" data-toggle="modal" data-whatever="@mdo" class="btn btn-primary btn-block rounded btn-sm">Submit Your Own Review</button>
@@ -73,6 +87,33 @@
 										</div>
                             		</div>
                             	</div>
+								<div class="row m-t-sm">
+									<div class="col-md-12">
+										{{#pagination productReviews.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="../{{../selectedPage}}{{../urlPathname}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+												</li>
+												{{/unless}} 
+												{{#each pages}}
+												<li class="page-item 
+												{{#if isCurrent}} active 
+												{{/if}}">
+													<a class="page-link" href="../{{../../selectedPage}}{{../../urlPathname}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+												</li>
+												{{/each}}
+												{{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="../{{../selectedPage}}{{../urlPathname}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+												</li>
+												{{/unless}} 
+											</ul>
+										</nav>
+										{{/pagination}}
+									</div>
+								</div>
                             </div>
                         </div>
 					</div>
@@ -82,6 +123,97 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Sumbit Your Own Review</h5>
+			</div>
+			<form id="reviewForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+	                    <div class="col-lg-12">
+	                    	<div class="form-group">
+	                            <div class="inputRating text-center">
+	                            	<select id="review-stars" name="rating" style="display:none !important;" required/>
+										<option value=""></option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+									</select>
+	                            </div>
+	                        </div>
+	                    	<div class="form-group">
+	                            <label class="label-control d-block">Title </label>
+	                            <input type="text" id="inputTitle" name="title" class="form-control-customized form-control-sm" required/>
+	                        </div>
+	                        <div class="form-group">
+	                            <label class="label-control d-block">Comment </label>
+	                            <textarea class="form-control-customized" id="inputComment" name="comment" name="description" rows="3"></textarea>
+	                        </div>
+	                    </div>
+	                </div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
+					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			var productSpecs = {{{DisplayJSON product}}}
+			var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
+			$('#btnFaSpinner').hide();
+			$('#review-stars').val(1);
+
+			$("#reviewForm").submit(function (e) {
+					e.preventDefault();
+
+					var reviewObj = {};
+					$(':input[type="submit"]').prop('disabled', true);
+
+					if ($('#reviewForm').valid()) {
+						reviewObj['rating'] = parseInt($('#review-stars').val());
+						reviewObj['product_id'] = productSpecs.id;
+						reviewObj['user_id'] = parseInt(userInfo.id);
+						reviewObj['status'] = 1;
+						if (!reviewObj['rating']) {
+							reviewObj['rating'] = 1;
+						}
+						reviewObj['title'] = $('#inputTitle').val();
+						if ($('#inputComment').val()) {
+							reviewObj['comment'] = $('#inputComment').val();
+						}
+						$('#btnFaSpinner').show()
+					}
+					$.ajax({
+						type: "POST",
+						url: "/api/reviews",
+						data: reviewObj,
+						success: function (result) {
+							location.reload();
+						}
+					});
+				});
+
+			$("#reviewForm").validate({
+				rules: {
+					rating: "required",
+					title: "required"
+				},
+				messages: {
+					rating: "Rating is required.",
+					title: "Title is required."
+				}
+			});
+		</script>
 	</div>
 </div>
 {{> footer/bottom-footer}}

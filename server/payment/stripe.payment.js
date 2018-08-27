@@ -64,6 +64,16 @@ let Stripe = {
             amount: parseInt(refundAmount * 100)
         }
         return stripe.refunds.create(refundObj);
+    },
+    vendorPayout: function(amount,currency,destination,transfer_group){
+      
+        let transferObj = {
+            amount: amount,
+            currency: currency,
+            destination: destination,
+            transfer_group: transfer_group 
+        }
+        return stripe.transfers.create(transferObj);
     }
 };
 

@@ -17,6 +17,7 @@ const marketplace = require('../../config/marketplace.js');
 const marketplaceType = require('../../config/marketplace_type.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
+const mws = require('mws-advanced');
 
 export function productView(req, res) {
 	var productID = req.params.id;
@@ -160,10 +161,7 @@ export function create(req, res) {
 export function importAliExpress(req, res) {
 
 	var products = [];
-	var parsedProducts = [];
 	var perPageLimit = 36;
-	var aliExpressProducts = [];
-	var importAliExpress = [];
 	var maximumProductLimit = 0;
 	var queryObjProduct = {};
 	var queryObjPlanLimit = {};
@@ -297,14 +295,23 @@ export function importEbay(req, res) {
 		const parsedJSON = JSON.parse(body);
 		var accessToken = parsedJSON.access_token;
 
-		getEbayProducts(accessToken)
-			.then((allProducts) => {
+		var headers = {
+			"Authorization": 'Bearer ' + accessToken,
+			"Accept": 'application/json',
+			"Content-Type": 'application/json'
+		};
 
-			})
-			.catch(function(error) {
-				console.log("Error::::", error);
-				return res.status(400).send(error);
-			});
+		request.get({
+			url: 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item',
+			headers: headers,
+			json: true
+		}, function(err, response, inventory) {
+			if (inventory.total > 0) {
+
+			} else {
+				return res.status(404).send("products not found.");
+			}
+		});
 	});
 }
 
@@ -325,6 +332,24 @@ function getEbayProducts(accessToken) {
 	}, function(err, response, inventory) {
 		console.log('inventory', inventory);
 	});
+}
+
+export function importAmazon(req, res) {
+	let agenda = require('../../app').get('agenda');
+
+	if (req.body && !req.body.amazon_auth_token)
+		return res.status(400).send("Missing Amazon Auth token");
+	if (req.body && !req.body.amazon_seller_id)
+		return res.status(400).send("Missing Merchant Id");
+	if (req.body && !req.body.amazon_marketplace)
+		return res.status(400).send("Missing MarketPlace Region");
+
+	agenda.now(config.jobs.amazonImportJob, {
+		user: req.user,
+		body: req.body
+	});
+
+	return res.status(200).send('Amazon Product Import started, you will receive notification when it is done');
 }
 
 export function importWoocommerce(req, res) {
@@ -647,4 +672,12 @@ function string_to_slug(str) {
 		.replace(/-+/g, '-'); // collapse dashes
 
 	return str;
+}
+
+
+function resMessage(message, messageDetails) {
+	return {
+		message: message,
+		messageDetails: messageDetails
+	};
 }

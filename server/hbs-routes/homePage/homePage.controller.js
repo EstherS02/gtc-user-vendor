@@ -32,6 +32,14 @@ export function homePage(req, res) {
 	}
 
 	async.series({
+		cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -250,7 +258,8 @@ export function homePage(req, res) {
 				featuredProducts: results.featuredProducts,
 				topSellers: results.topSellers,
 				cartheader:results.cartItems,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				cartheader:results.cartCounts,
 			});
 		} else {
 			res.render('homePage', err);

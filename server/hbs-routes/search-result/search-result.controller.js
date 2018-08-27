@@ -34,7 +34,7 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var marketPlaceTypeSelected = {};
 
-	var offset, limit, field, order, layout,click;
+	var offset, limit, field, order, layout;
 	var productEndPoint = "MarketplaceProduct";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
@@ -231,8 +231,11 @@ export function index(req, res) {
 				});
 		},
 		products: function (callback) {
+			//queryParameters['is_featured_product'] = 0;
+            queryParameters['status'] = 1;
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
 				.then(function (results) {
+					console.log("results:::"+results.rows);
 					return callback(null, results);
 				})
 				.catch(function (error) {
@@ -267,7 +270,26 @@ export function index(req, res) {
 			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
 
 			productCountQueryParames['status'] = status["ACTIVE"];
-			productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			if(marketplaceURl == 'wholesale')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
+			else if(marketplaceURl == 'shop')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			}
+			else if(marketplaceURl == 'services')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
+			}
+			else if(marketplaceURl == 'lifestyle')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+			}
+			else
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
 			if (req.query.location) {
 				productCountQueryParames['product_location'] = req.query.location;
 			}
@@ -375,7 +397,9 @@ export function index(req, res) {
 			}
 			service.getCategory(categoryQueryObj, productCountQueryParames)
 				.then(function (response) {
+					console.log("rettiidasss::");
 					return callback(null, response);
+
 
 				}).catch(function (error) {
 					console.log('Error :::', error);
@@ -384,6 +408,7 @@ export function index(req, res) {
 		}
 	}, function (error, results) {
 		queryPaginationObj['maxSize'] = 5;
+		console.log("resssss",results.categoriesWithCount.rows.SubCategories);
 		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
