@@ -238,7 +238,7 @@ function wishUpdate() {
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 value="1" min="1" max="{{product.moq}}">
+														 value="{{product.moq}}" min="1" max="{{product.moq}}">
 														  <input type="hidden" value="{{product.MarketplaceType.code}}" id="typecode" name="typecode"/>
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
