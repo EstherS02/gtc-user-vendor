@@ -520,5 +520,36 @@ Handlebars.registerHelper('ifIsZero', function(value, options) {
       return options.fn(this);
     }
     return options.inverse(this);
-  });
+});
+
+Handlebars.registerHelper('MarketPlaceURL', function(marketPlace_id, options) {
+    if(!marketPlace_id)
+        return 'products';
+    let marketPlace;
+    switch (marketPlace_id) {
+        case 1:
+            marketPlace = "wholesale";
+            break;
+        case 2:
+            marketPlace = "shop";
+            break;
+        case 3:
+            marketPlace = "services";
+            break;
+        case 4:
+            marketPlace = "lifestyle";
+            break;
+        default:
+            marketPlace = "products";
+            break;
+    }
+
+    console.log(marketPlace)
+
+    return marketPlace;
+    
+
+
+
+});
   

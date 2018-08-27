@@ -16,10 +16,12 @@ let sqlQueries = {
     vendor.longitude,
     product.product_name,
     product.id AS product_id,
+    product.product_slug AS product_slug,
     product_media.url AS product_media_base_image,
     country.name AS country_name,
     category.name AS category_name,
     sub_category.name AS sub_category_name,
+    marketplace.id AS marketplace_id,
     marketplace.name AS marketplace_name,
     marketplace_type.name AS marketplace_type_name,
     COALESCE(product_ratings.product_rating, 0) AS product_rating,
@@ -41,7 +43,7 @@ let sqlQueries = {
     LEFT JOIN marketplace_type ON product.marketplace_type_id = marketplace_type.id
     LEFT JOIN product_ratings ON product.id = product_ratings.product_id
     HAVING
-        distance < 60
+        distance < 300
     ORDER BY
         product.product_name`;
 
