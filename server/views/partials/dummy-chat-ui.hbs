@@ -7,7 +7,7 @@
             <div class="row" style="padding: 0px 10px;">
               <div class="col-md-8 col-xs-8">
                 {{!-- <h3 class="panel-title" style="font-size: 12px;"> --}}
-                  <img {{#if this.VendorDetail.vendor_profile_pic_url}}src="{{this.VendorDetail.vendor_profile_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width="30px" height="30px" style="border-radius: 50%"> Chat Window
+                  <img {{#if LoggedInUser.user_pic_url}}src="{{LoggedInUser.user_pic_url}}" {{else}} src="/img/avatar.png" {{/if}} width="30px" height="30px" style="border-radius: 50%"> Chat Window
                 {{!-- </h3> --}}
               </div>
               <div class="col-md-4 col-xs-4" style="text-align: right; float: right;">
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div id="messagebody" class="panel-body msg_container_base panel-background" style="min-height: 300px">
+          <div id="messagebody" class="panel-body msg_container_base panel-background" style="min-width:100px" >
             {{#each talkThreads.talk}}
 
             {{#ifCond this.from_id "==" ../LoggedInUser.id}}
@@ -28,7 +28,7 @@
               <div class="col-md-10 col-xs-10">
                 <div class="messages msg_sent">
                   <p>{{this.message}}</p>
-                  <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
+                  <time datetime="2009-11-13T20:00">{{formatTime this.created_on "LT"}}</time>
                 </div>
               </div>
             </div>
@@ -38,7 +38,7 @@
               <div class="col-md-10 col-xs-10">
                 <div class="messages msg_receive">
                   <p>{{this.message}}</p>
-                  <time datetime="2009-11-13T20:00">{{this.created_on}}</time>
+                  <time datetime="2009-11-13T20:00">{{formatTime this.created_on "LT"}}</time>
                 </div>
               </div>
             </div>
@@ -71,6 +71,11 @@
       //var socket = io();
       console.log("socket", socket);
       socket.emit('chat:join', socketChat);
+      // $("#messagebody").animate({
+          // scrollTop: $("#messagebody")[0].scrollHeight
+          // }, 1000);
+        var element = document.querySelector('#messagebody');
+    element.scrollTop = element.scrollHeight - element.clientHeight;
     }
     
     socket.on('chat:receive', function(data){
@@ -94,7 +99,7 @@
     '</div>' +
     '</div>';
     $(body).appendTo("#messagebody");
-        //$('#btn-input').val('');
+        // $('#btn-input').val('');
         $("#messagebody").animate({
           scrollTop: $("#messagebody")[0].scrollHeight
         }, 'slow');
@@ -104,11 +109,11 @@
       $(document).on('click', '.panel-heading span.icon_minim', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
-          $this.parents('.panel').find('.panel-body').slideUp();
+          $this.parents('.panel').find('.panel-body').slideUp(1000);
           $this.addClass('panel-collapsed');
           $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
         } else {
-          $this.parents('.panel').find('.panel-body').slideDown();
+          $this.parents('.panel').find('.panel-body').slideDown(1000);
           $this.removeClass('panel-collapsed');
           $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
         }
@@ -148,6 +153,7 @@
       var sendSocket = {
         'from_id': {{{ DisplayJSON LoggedInUser.id }}},
         'talk_thread_id': {{{ DisplayJSON talkThreads.threadId }}},
+        'to_id':{{{ DisplayJSON VendorDetail.user_id }}},
         'message': chat
       }
       console.log("sendSocket",sendSocket);

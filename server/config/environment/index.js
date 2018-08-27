@@ -60,6 +60,7 @@ var all = {
 		clientId: process.env.EBAY_CLIENT_ID,
 		clientSecret: process.env.EBAY_CLIENT_SECRET,
 		redirectUri: process.env.EBAY_REDIRECT_URI,
+		inventoryItems: 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item',
 		authURL: 'https://api.sandbox.ebay.com/identity/v1/oauth2/token'
 	},
 
@@ -82,6 +83,7 @@ var all = {
 		"couponExpiry": "couponExpiry",
 		"vendorPayouts": "vendorPayouts",
 		"aliExpressScrape": "aliexpress-scrape",
+		"ebayInventory": "ebay-inventory",
 		"amazonImportJob": "amazonImportJob"
 	},
 	sesTransporter: {
