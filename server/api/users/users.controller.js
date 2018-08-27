@@ -365,8 +365,6 @@ export function resetPassword(req, res) {
 
 export function userProfile(req, res) {
 
-    console.log("-----------------------", req.body.shippingUpdate);
-
     var userUpdate = JSON.parse(req.body.userUpdate);
     var user_id = req.user.id;
     var billing_address_type = 1;
@@ -376,26 +374,32 @@ export function userProfile(req, res) {
         .then(function (row) {
 
             if (req.body.billingUpdate) {
-                addressUpdatePromises = [];
+               var addressUpdatePromises = [];
 
                 var billingUpdate = JSON.parse(req.body.billingUpdate);
                 billingUpdate['user_id'] = req.user.id;
                 billingUpdate['status'] = 1;
 
-                addressUpdatePromises(addressUpdate(user_id, billing_address_type, billingUpdate));
+               addressUpdatePromises.push(addressUpdate(user_id, billing_address_type, billingUpdate));
                 return Promise.all(addressUpdatePromises);
-            }
+            }   
+        }).then(function(response){
             if (req.body.shippingUpdate) {
+
+                var addressUpdatePromises = [];
+
                 var shippingUpdate = JSON.parse(req.body.shippingUpdate);
                 shippingUpdate['user_id'] = req.user.id;
                 shippingUpdate['status'] = 1;
 
-                addressUpdatePromises(addressUpdate(user_id, shipping_address_type, shippingUpdate));
+                addressUpdatePromises.push(addressUpdate(user_id, shipping_address_type, shippingUpdate));
                 return Promise.all(addressUpdatePromises);
             }
-            return res.status(200).send(row);
+        }).then(function(response){
+            return res.status(200).send("Updated Successfully");
         })
         .catch(function (err) {
+            console.log("Error::",err);
             res.status(500).send(err);
             return;
         })
@@ -408,18 +412,20 @@ function addressUpdate(user_id, address_type, obj) {
     }, [])
         .then(function (row) {
             if (row) {
-                updateAddress(obj, row.id).then(function (response) {
-                    return Promise.resolve(create);
-                }).catch(function (err) {
-                    return Promise.reject(err);
-                })
+                var updateAddressPromises = [];
+
+                updateAddressPromises.push(updateAddress(obj, row.id));
+                return Promise.all(updateAddressPromises);
             }
             else {
-                createAddress(obj);
-                return;
+                var createAddressPromises = [];
+
+                createAddressPromises.push(createAddress(obj));
+                return Promise.all(createAddressPromises);
             }
         }).catch(function (err) {
-            return;
+            console.log("Error::",err);
+            return Promise.reject(err);
         })
 }
 
@@ -428,6 +434,7 @@ function createAddress(obj) {
         .then(function (create) {
             return Promise.resolve(create);
         }).catch(function (err) {
+            console.log("Error::",err);
             return Promise.reject(err);
         })
 }
@@ -437,6 +444,7 @@ function updateAddress(obj, id) {
         .then(function (update) {
             return Promise.resolve(update);
         }).catch(function (err) {
+            console.log("Error::",err)
             return Promise.reject(err);
         })
 }

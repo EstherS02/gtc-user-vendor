@@ -121,22 +121,8 @@
 			let ischecked = $(this).is(':checked');
 			if (!ischecked) {
 				$('#shipping_address_div').show();
-				$("#s_company_name").val('');
-				$("#s_address1").val('');
-				$("#s_address2").val('');
-				$("#s_country").val('');
-				$("#s_state").val('');
-				$("#s_city").val('');
-				$("#s_postal_code").val('');
 			} else {
 				$("#shipping_address_div").hide();
-				$("#s_company_name").val($("#b_company_name").val());
-				$("#s_address1").val($("#b_address1").val());
-				$("#s_address2").val($("#b_address2").val());
-				$("#s_country").val($("#b_country").val());
-				$("#s_state").val($("#b_state").val());
-				$("#s_city").val($("#b_city").val());
-				$("#s_postal_code").val($("#b_postal_code").val());
 			}
 		});
 
@@ -167,8 +153,17 @@
 				data.billingUpdate = JSON.stringify(billingUpdate);
 			}
 
-			if ($('#s_address1').val()) {
-				var shippingUpdate = {};
+			if ($('#sameAddr').is(":checked")) {
+
+				delete billingUpdate.address_type;
+				var shippingUpdate = billingUpdate;
+				billingUpdate.address_type = 2;
+				data.shippingUpdate = JSON.stringify(shippingUpdate);
+
+			}else{
+
+				if($('#s_address1').val()){
+                 var shippingUpdate = {};
 				shippingUpdate.address_type = 2;
 				shippingUpdate.company_name = $('#s_company_name').val();
 				shippingUpdate.address_line1 = $('#s_address1').val();
@@ -179,6 +174,7 @@
 				shippingUpdate.postal_code = $('#s_postal_code').val();
 
 				data.shippingUpdate = JSON.stringify(shippingUpdate);
+				}		
 			}
 
 			var image = $("#imageUpload")[0].files[0];
@@ -219,9 +215,9 @@
 						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
 							$("#gtc-profile-alert").slideUp(500);
 						});
-						/*setTimeout(function () {
+						setTimeout(function () {
 							location.reload(true);
-						}, 1000);*/
+						}, 1000);
 					},
 					error: function (error) {
 						console.log("Error", error);
