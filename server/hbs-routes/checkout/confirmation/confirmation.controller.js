@@ -9,19 +9,17 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
 
-
-
 export function confirmation(req, res) {
-    var LoggedInUser = {};
+	var LoggedInUser = {};
 
-    if (req.user)
-        LoggedInUser = req.user;
+	if (req.user)
+		LoggedInUser = req.user;
 
-    let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
 
-    return res.status(200).render('checkout/confirmation', {
-        title: "Global Trade Connect",
-        LoggedInUser: LoggedInUser
-    });
+	return res.status(200).render('checkout/confirmation', {
+		title: "Global Trade Connect",
+		LoggedInUser: LoggedInUser
+	});
 
 }

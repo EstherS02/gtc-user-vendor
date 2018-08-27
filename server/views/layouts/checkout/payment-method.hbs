@@ -1,341 +1,232 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
-
-<section>
-	<div class="">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6 col-12">
-					<ul class="breadcrumb">
-						<li><a href="/order-checkout/customer-information">1. Customer Information</a></li>
-					  	<li><a href="/order-checkout/shipping-method?{{query_params}}">2. Shipping Method</a></li>
-					  	<li><a href="#" class="active1">3. Payment Method</a></li>
-					  	<li><a href="#">4. Confirmation</a></li>
-					</ul>
-				</div>
-				<div class="col-md-6 col-12">
-					<p class="logged_in_username">You're logged in as <span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span> <a href="#" class="span_swichaccount">SWITCH ACCOUNT</a></p>
-				</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#shippingMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/shipping-method" + window.location.search;
+	});
+	$("#paymentMethodLink").click(function(e) {
+		e.preventDefault();
+		window.location.href = "/order-checkout/payment-method" + window.location.search;
+	});
+});
+</script>
+<div class="wrapper-content">
+	<div class="container-sm">
+		<div class="title-header-1 gtc-p-l-r">
+			<div class="alignleft">
+				<ul class="breadcrumb">
+					<li>
+						<a href="./order-checkout/customer-information">1. Customer Information</a>
+					</li>
+					<li>
+						<a href="javascript:;" id="shippingMethodLink">2. Shipping Method</a>
+					</li>
+					<li>
+						<a href="javascript:;" class="active" id="paymentMethodLink">3. Payment Method</a>
+					</li>
+					<li>
+						<a href="#">4. Confirmation</a>
+					</li>
+				</ul>
 			</div>
-			<div class="row checkout_bg_color ">
-				<div class="col-md-9 col-12 common_padding1 ">
-					<h4 class="checkout_title_color">PAYMENT METHOD</h4>
-					<div class="row">
-						<div class="col-md-10 col-12">
-							<div class="container">
+			<div class="alignright">
+				{{#if LoggedInUser.id}}
+				<span class="text-sm">You're logged in as </span>
+				<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+				<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+				{{else}}
+				<span class="text-sm">
+					<a href="/login">Login</a> to see seller information</span>
+				{{/if}}
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="body-content-1">
+			<div class="row no-margins">
+				<div class="col-sm-9half no-padding bg-white">
+					<div class="header-left header-lg gtc-p-l-r">
+						<h2 class="header-lg-text alignleft text-white">PAYMENT METHOD</h2>
+					</div>
+					<div class="m-cart-body-1">
+						<div class="row">
+							<div class="col-md-3 col-12">
+								<label class="label-control text-sm text-black"><strong>Payment Method</strong></label>
+							</div>
+							<div class="col-md-8 col-12">
 								<div class="row">
-									<div class="col-md-3 col-12 checkout_cont">
-										<p>
-											<b>Payment Method</b>
-										</p>
-									</div>
-									<div class="col-md-9 col-12 checkout_cont">
-
-										<p></p>
-										<div class="row">
-											<div class="col-md-6 col-12 common_padding1">
-												<input type="hidden" name="selected_billing_address_id" value="{{selected_billing_address.id}}"/>
-												<input type="hidden" name="selected_shipping_address_id" value="{{selected_shipping_address.id}}"/>
-												<select name="payment_method_select_id" style="padding:5px;">
-													<option value='' disabled='disabled' selected>Select Payment Method</option>
+									<div class="col-6">
+										<div class="form-group">
+											<div class="select-container">
+												<select name="payment_method_select_id" class="form-control-customized form-control-sm input-b-xs">
+													<option value='' disabled='disabled' selected>Select Payment Method...</option>
 													{{#each cards}}
 													<option value='{{this.id}}'>{{this.card_type}} **** **** **** {{json this.card_details 'last4'}}</option>
 													{{/each}}
 												</select>
 											</div>
-											<div class="col-md-6 col-12 common_padding1">
-												<img src="../img/card.png" alt="pay" style="width: 200px; float:right;" />
-											</div>
 										</div>
-										<div class="row">
-											<p>(or Add Card)</p>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<img src="../img/card.png">
 										</div>
-										<div class="row">
-											<div class="col-md-12 col-12 common_padding1 gtc-stripe-all-elements" style="margin-top: 15px;">
-												<form id="stripe-card-transaction-form" name="stripe-card-transaction-form" onsubmit="return false">
-													<div class="pyt_group">
-														<label class="pyt_label">
-															<input id="cardholder-name" name="cardholder-name" class="pyt_field" placeholder="Card Holder Name" />
-														</label>
-													</div>
-													<div class="pyt_group">
-														<label class="pyt_label">
-															<div id="gtc-stripe-card-element" class="pyt_field"></div>
-														</label>
-													</div>
-													<div id="stripe-error-validation" class="alert" style="display:none;"></div>
-
-													{{!-- <input type="submit" id="complete-order-submit" value="COMPLETE 
-													ORDER" class="shop_checkout_btn" style="float:right;" /> --}}
-													<button type="submit" class="ladda-button btn shop_checkout_btn" style="float:right;" id="complete-order-submit" data-style="expand-left"><span class="ladda-label">COMPLETE ORDER</span><span class="ladda-spinner"></span></button>
-
-													<img src="../img/card1.png" alt="payment method Image">
-
-												</form>
+									</div>
+									<h2 class="horizontal-divider-line"><span>OR</span></h2>
+									<div class="col-12">
+										<input type="hidden" name="selected_billing_address_id" value="{{selected_billing_address.id}}">
+										<input type="hidden" name="selected_shipping_address_id" value="{{selected_shipping_address.id}}">
+									</div>
+									<div class="col-md-12">
+										<form id="stripe-card-transaction-form" name="stripe-card-transaction-form" onsubmit="return false">
+											<div class="pyt_group">
+												<label class="pyt_label">
+													<input id="cardholder-name" name="cardholder-name" class="pyt_field" placeholder="Card Holder Name" />
+												</label>
 											</div>
-										</div>
-
-
-
-								{{!-- 	<div class="row">
-											<div class="col-md-12 col-12 common_padding1">
-												<input type="text" placeholder="Card Number" class="geo_textbox" style="width: 99%" />
+											<div class="pyt_group">
+												<label class="pyt_label">
+													<div id="gtc-stripe-card-element" class="pyt_field"></div>
+												</label>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-5 col-12 common_padding1">
-												<input type="text" placeholder="Name On Card" class="geo_textbox" />
-											</div>
-											<div class="col-md-4 col-12 common_padding1">
-												<input type="text" placeholder="MM/YY" class="geo_textbox" />
-											</div>
-											<div class="col-md-3 col-12 common_padding1">
-												<div class="input-group">
-													<input type="text" class="form-control geo_textbox" placeholder="CVV">
-													<span class="promo_code_text_span">
-														<i class="fas fa-question-circle"></i>
-													</span>
-												</div>
-
-											</div>
-										</div>  
-										<div class="row">
-											<div class="col-md-7 col-12">
-												<p>
-													<label class="login-checkbox1">
-														<input type="checkbox">
-														<i></i> Remember this card for future orders</label>
-												</p>
-
-											</div>
-											<div class="col-md-5 col-12">
-												<a href="checkout_thankyou.html">
-													<input type="submit" value="COMPLETE ORDER" class="shop_checkout_btn" />
-												</a>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-7 col-12">
-
-											</div>
-											<div class="col-md-5 col-12">
-												<img src="../img/card1.png" alt="payment">
-											</div>
-										</div>
-									--}}
-
+											<div id="stripe-error-validation" class="alert" style="display:none;"></div>
+											<img src="../img/card1.png">
+											<button type="submit" class="ladda-button btn btn-md btn-order" id="complete-order-submit" data-style="expand-left">
+												<span class="ladda-label">COMPLETE ORDER</span><span class="ladda-spinner"></span>
+											</button>
+										</form>
 									</div>
 								</div>
-
 							</div>
-
 						</div>
-						<hr/>
-
 					</div>
-
 				</div>
-				<div class="col-md-3 col-12 your_order_bg common_padding1 ">
-					<h4 class="checkout_title_color_1">YOUR ORDER</h4>
-	                <div class="col-md-12 col-12 ">
-					<div class="container">
-						{{#each marketPlaces as |marketplace|}}
-						
-						{{#each ../totalPriceList as |totalPrice|}}
-
-						{{#ifCond marketplace.code '==' @key}}
-						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_shipping">Shipping Ground</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right"><b>{{currency totalPrice.total '$'}}</b></p>
-							</div>
-						</div>
-						{{/ifCond}}
-						{{/each}}
-						{{/each}}
-						
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-									<p class="shop_subtotal float-right"><b>{{currency totalPriceList.grandTotal '$'}}</b></p>
-							</div>
-						</div>
-
-						<hr class="common_margin" />
-						{{#ifCond couponData.length '>' 0}}						
-						{{#each couponData}}
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal"><b>DISCOUNT</b></p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">
-									<b>{{currency this.discount_price '$'}}</b>
-								</p>
-							</div>
-						</div>
-						<hr class="common_margin"/>
-						<div class="row">
-							<div class="col-md-8">
-									<p class="shop_subtotal"><b>GRAND TOTAL</b></p>
-							</div>
-							<div class="col-md-4">
-									<p class="shop_subtotal float-right"><b>{{currency this.final_price '$'}}</b></p>
-							</div>	
-						</div>
-						<p class="promo_code_p">{{{this.message_details}}}</p>
-
-						{{/each}}
-						{{/ifCond}}
-						
-						{{#ifCond couponUpdateErrorMessage '!=' ""}}
-							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
-						{{/ifCond}}
-						<p></p>
-						<img src="../img/payment-methods.jpg" alt="payment">
+				<div class="col-sm-3half no-padding">
+					<div class="header-right header-lg gtc-p-l-r">
+						<h2 class="header-lg-text">YOUR ORDER</h2>
 					</div>
-	                </div>
+					<div class="cart-summary">
+						{{#ifCond isCartEmpty '!=' true}}
+						{{#each marketPlaces as |marketplace|}}
+						{{#each ../totalPriceList as |totalPrice|}}
+						{{#ifCond marketplace.code '==' @key}}
+						<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
+						<div class="cart-hr-line"></div>
+						<div class="summary-m-total">
+							<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
+							<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
+						</div>
+						<div class="cart-hr-line"></div>
+						<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
+						{{/ifCond}}
+						{{/each}}
+						{{/each}}
+						<div class="grand-total">
+							<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
+						</div>
+						{{/ifCond}}
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
-{{> footer/bottom-footer}}
-
+</div>
 <script src="https://js.stripe.com/v3/"></script>
-
-
-
 <script>
+var stripe = Stripe('{{stripePublishableKey}}');
+var elements = stripe.elements({
+	fonts: [{
+		cssSrc: 'https://fonts.googleapis.com/css?family=Roboto:400,700',
+	}],
+	locale: 'auto'
+});
 
-	var stripe = Stripe('{{stripePublishableKey}}');
+var card = elements.create('card', {
+	hidePostalCode: true,
+	style: {
+		base: {
+			iconColor: '#666EE8',
+			color: '#31325F',
+			fontWeight: 700,
+			fontFamily: 'Roboto, sans-serif',
+			fontSize: '16px',
+			lineHeight: '38px',
+			fontSmoothing: 'antialiased',
 
-	var elements = stripe.elements({
-		fonts: [{
-			cssSrc: 'https://fonts.googleapis.com/css?family=Roboto:400,700',
-		}],
-		locale: 'auto'
-	});
+			'::placeholder': {
+				color: '#b1afaf'
+			}
+		},
+	}
+});
 
-	var card = elements.create('card', {
-		hidePostalCode: true,
-		style: {
-			base: {
-				iconColor: '#666EE8',
-				color: '#31325F',
-				fontWeight: 700,
-				fontFamily: 'Roboto, sans-serif',
-				fontSize: '16px',
-				lineHeight: '38px',
-				fontSmoothing: 'antialiased',
-				
-				'::placeholder': {
-					color: '#b1afaf'
-				}
-			},
-		}
-	});
-
-	card.mount('#gtc-stripe-card-element');
-
+card.mount('#gtc-stripe-card-element');
 
 var errorElement = $('#stripe-error-validation');
 
-$('#stripe-card-transaction-form').submit(function(e){
+$('#stripe-card-transaction-form').submit(function(e) {
 	e.preventDefault();
 	$('#complete-order-submit').prop('disabled', true);
-	$('#complete-order-submit').css({'cursor' : "not-allowed"});
+	$('#complete-order-submit').css({
+		'cursor': "not-allowed"
+	});
 
-	if (!_.isUndefined($('select[name="payment_method_select_id"]').val())
-		&& !_.isNull($('select[name="payment_method_select_id"]').val())) {
+	if (!_.isUndefined($('select[name="payment_method_select_id"]').val()) &&
+		!_.isNull($('select[name="payment_method_select_id"]').val())) {
 
 		makePayment($('select[name="payment_method_select_id"]').val());
 		return;
 	}
-		
-		
-		
 
-		let extraDetails = {
-			name: $('#stripe-card-transaction-form input[name=cardholder-name]').val(),
-		};
+	let extraDetails = {
+		name: $('#stripe-card-transaction-form input[name=cardholder-name]').val(),
+	};
+	if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
+		errorElement.text("Card Holder Name is required");
+		errorElement.css("display", "block");
+		errorElement.removeClass('alert-success').addClass('alert-danger');
+		$('#complete-order-submit').prop('disabled', false);
+		$('#complete-order-submit').css({
+			'cursor': "pointer"
+		});
+		return;
+	}
 
-		if (!$('#stripe-card-transaction-form input[name=cardholder-name]').val()) {
-			errorElement.text("Card Holder Name is required");
-			errorElement.css("display","block");
+	stripe.createToken(card, extraDetails).then(function(result) {
+		errorElement.css("display", "none");
+		if (result.error && result.error.message) {
+			errorElement.text(result.error.message);
+			errorElement.css("display", "block");
 			errorElement.removeClass('alert-success').addClass('alert-danger');
-
 			$('#complete-order-submit').prop('disabled', false);
-			$('#complete-order-submit').css({'cursor' : "pointer"});
-
+			$('#complete-order-submit').css({
+				'cursor': "pointer"
+			});
 			return;
 		}
-	
-		stripe.createToken(card, extraDetails).then(function(result) {
-			//console.log(result);
-			
-			errorElement.css("display","none");
-			if (result.error && result.error.message) {
-				//$("#add-card-form-error").text(result.error.message);
-				
-				errorElement.text(result.error.message);
-				errorElement.css("display","block");
-				errorElement.removeClass('alert-success').addClass('alert-danger');
 
+		$.ajax({
+			url: '/api/payment/card',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				token: result.token,
+				isPrimary: false
+			}),
+			success: function(data) {
+				var paymentSettingId = data.id;
+				$('select[name="payment_method_select_id"]').val(paymentSettingId);
+				makePayment(paymentSettingId);
+			},
+			error: function(error) {
 				$('#complete-order-submit').prop('disabled', false);
-				$('#complete-order-submit').css({'cursor' : "pointer"});
-
-				return;
+				$('#complete-order-submit').css({
+					'cursor': "pointer"
+				});
 			}
-			
-			$.ajax({
-				url: '/api/payment/card',
-				type: 'POST',
-				contentType: 'application/json',
-				dataType: "json",
-				data: JSON.stringify({token: result.token, isPrimary: false}),
-				success: function (data) {
-					var paymentSettingId = data.id;
-					$('select[name="payment_method_select_id"]').val(paymentSettingId);
-					makePayment(paymentSettingId);
-				},
-				error: function (error) {
-					$('#complete-order-submit').prop('disabled', false);
-					$('#complete-order-submit').css({'cursor' : "pointer"});
-				}
-			});
 		});
+	});
 });
 
 function makePayment(paymentSettingId) {
@@ -345,26 +236,26 @@ function makePayment(paymentSettingId) {
 		contentType: 'application/json',
 		dataType: "json",
 		data: JSON.stringify({
-			paymentSettingId: paymentSettingId, 
+			paymentSettingId: paymentSettingId,
 			selected_billing_address_id: $('input[name="selected_billing_address_id"]').val(),
 			selected_shipping_address_id: $('input[name="selected_shipping_address_id"]').val()
 		}),
-		success: function (data) {
+		success: function(data) {
 			errorElement.text("Payment Success");
-			errorElement.css("display","block");
+			errorElement.css("display", "block");
 			errorElement.removeClass('alert-danger').addClass('alert-success');
 
 			setTimeout(function() {
 				window.location = '/order-checkout/confirmation';
 			}, 1000);
 		},
-		error: function (error) {
+		error: function(error) {
 			$('#complete-order-submit').prop('disabled', false);
-			$('#complete-order-submit').css({'cursor' : "pointer"});
+			$('#complete-order-submit').css({
+				'cursor': "pointer"
+			});
 		}
 	});
 }
-
-
-
 </script>
+{{> footer/bottom-footer}}

@@ -13,7 +13,6 @@ body {
 html,
 body {
 	height: 100%;
-	overflow-x: hidden;
 }
 .search-select {
 	width: 25%;
@@ -59,8 +58,7 @@ select {
 	background-image: none;
 	border: none;
 	border-radius: 0;
-	font-size: 13px;
-	color: inherit;
+	font-size: 0.813em;
 	display: block;
 	padding: .375rem .75rem;
 	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
@@ -98,7 +96,7 @@ select {
 	background-image: none;
 	border-radius: 0;
 	border: 0;
-	color: inherit;
+	padding: .25rem .75rem;
 	display: block;
 	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 	width: 100%;
@@ -977,7 +975,11 @@ label {
 	margin-top: 25px;
 }
 .error{
-	font-size: 13px;
+	font-size: 0.813em;
+}
+label.error {
+	font-size: 0.813em;
+	color: #ed5565;
 }
 .cart-top-header {
 	padding: 10px 0;
@@ -1419,6 +1421,11 @@ ul.inner-list-view li a {
 	margin-bottom: 0;
 	font-weight: 500;
 }
+.empty-msg {
+	font-size: 1em;
+    font-weight: 400;
+    margin: 10px 0;
+}
 .br-theme-fontawesome-stars .br-widget a {
 	font-size: 32px !important;
 }
@@ -1500,6 +1507,25 @@ ul.inner-list-view li a {
     font-size: 0.813em;
     font-weight: 500;
 }
+.horizontal-divider-line {
+	width: 100%;
+	text-align: center;
+	border-bottom: 2px solid #f3943d;
+	line-height: 0.1em;
+	font-size: 0.813em;
+	margin: 10px 0 20px;
+}
+.horizontal-divider-line span {
+	background: #fff;
+    padding: 0 10px;
+    color: #769dc8;
+}
+.m-cart-body-1 {
+	padding: 15px 25px;
+}
+.m-cart-body-bottom {
+	padding: 0 25px;	
+}
 .m-cart-body {
 	padding: 5px 45px;
 }
@@ -1525,6 +1551,28 @@ ul.inner-list-view li a {
     font-weight: 600;
     line-height: 1.6;
 }
+p.summary-info {
+	text-align: left;
+    margin: 0;
+    font-size: 0.813em;
+    line-height: 2;
+    font-weight: 300;
+    color: #676767;
+}
+.summary-m-total {
+	margin: .5rem 0;
+}
+p.summary-info span {
+	float: right;
+}
+.grand-total {
+	padding: 10px 0;
+    border-top: 1px solid #c3c3c3;
+    border-bottom: 1px solid #c3c3c3;
+}
+.grand-total p {
+	font-size: 0.938em;
+}
 .cart-summary {
 	padding: 45px;
 }
@@ -1535,10 +1583,6 @@ ul.inner-list-view li a {
 }
 .cart-summary label {
 	font-size: 0.75em;
-}
-.cart-summary .total-content {
-    display: block;
-    padding: 5px 0;
 }
 .cart-summary .promo-text-control {
 	display: block;
@@ -1551,12 +1595,6 @@ ul.inner-list-view li a {
     font-size: .875rem;
     line-height: 1.5;
     border-radius: .2rem;
-}
-.total-text, .total-value {
-    font-size: 0.813em;
-    padding: 5px 0;
-    display: block;
-    color: #808080;
 }
 .cart-hr-line {
     border-top: 1px solid #c3c3c3;
@@ -1698,7 +1736,6 @@ ul.inner-list-view li a {
 	background: red;
 	text-align: center;
 	color: #FFF;
-	/*padding:2px;*/
 	margin-left: 4px;
 	border-radius: 20px;
 }
@@ -1708,7 +1745,18 @@ ul.inner-list-view li a {
 	text-align: center;
 	color: #FFF;
 }
-
+.address-content h3 {
+	font-size: 1.25em;
+    color: #494949;
+    text-decoration: none;
+    margin-bottom: 0;
+}
+.address-content p {
+	font-size: 0.813em;
+    margin-bottom: 0;
+    line-height: 1.8;
+    color: #464646;
+}
 .custom-select-container:after {
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
@@ -1717,4 +1765,62 @@ ul.inner-list-view li a {
     right: 0;
     margin: 10px;
     opacity: 0.5;
+}
+.pyt_group {
+	background: white;
+	box-shadow: 0 7px 14px 0 rgba(49,49,93,0.10),0 3px 6px 0 rgba(0,0,0,0.08);
+	border-radius: 4px;
+	margin-bottom: 20px;
+	border: 1px solid #d0cfcf;
+}
+.pyt_label {
+	position: relative;
+	color: #222d65;
+	font-weight: 300;
+	height: 38px;
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 0px;
+}
+.pyt_group .pyt_label:not(:last-child) {
+	border-bottom: 1px solid #F0F5FA;
+}
+.pyt_label > .pyt_span {
+	width: 80px;
+	text-align: right;
+	margin-right: 30px;
+}
+.pyt_field {
+	background: transparent;
+	font-weight: 300;
+	border: 0;
+	height: 38px;
+	color: #31325F;
+	outline: none;
+	flex: 1;
+	padding-right: 10px;
+	padding-left: 10px;
+	cursor: text;
+}
+.pyt_field::-webkit-input-placeholder { color: #CFD7E0; }
+.pyt_field::-moz-placeholder { color: #CFD7E0; }
+#cardholder-name::placeholder { 
+  color: #b1afaf;
+  opacity: 1; 
+}
+.bulk-error-block {
+	background: #ed5565;
+	outline: 0px solid transparent !important;
+    margin: 5px 25px;
+    border-radius: 5px;
+}
+.bulk-error-block ul {
+	margin: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.bulk-error-block ul li {
+	color: #FFFFFF;
+	line-height: 1.6;
+	font-size: 0.813em;
 }
