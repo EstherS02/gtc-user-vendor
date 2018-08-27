@@ -86,7 +86,7 @@
 				type: 'GET',
 				success: function (result) {
 					$("#b_state").empty();
-					$("#b_state").append("<option disabled selected>Province/State</option>")	
+					$("#b_state").append("<option disabled selected>Province/State</option>")
 					for (var i = 0; i < result.rows.length; i++) {
 						var options;
 						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
@@ -106,7 +106,7 @@
 				type: 'GET',
 				success: function (result) {
 					$("#s_state").empty();
-					$("#s_state").append("<option disabled selected>Province/State</option>")	
+					$("#s_state").append("<option disabled selected>Province/State</option>")
 					for (var i = 0; i < result.rows.length; i++) {
 						var options;
 						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
@@ -120,7 +120,7 @@
 		});
 
 		if ($('#sameAddr').is(":checked")) {
-		    $("#shipping_address_div").hide();
+			$("#shipping_address_div").hide();
 		}
 
 		$("#sameAddr").change(function () {
@@ -167,21 +167,21 @@
 				shippingUpdate.same_shipping_address = 1;
 				data.shippingUpdate = JSON.stringify(shippingUpdate);
 
-			}else{
+			} else {
 
-				if($('#s_address1').val()){
-                 var shippingUpdate = {};
-				shippingUpdate.address_type = 2;
-				shippingUpdate.company_name = $('#s_company_name').val();
-				shippingUpdate.address_line1 = $('#s_address1').val();
-				shippingUpdate.address_line2 = $('#s_address2').val();
-				shippingUpdate.country_id = $('#s_country').val();
-				shippingUpdate.province_id = $('#s_state').val();
-				shippingUpdate.city = $('#s_city').val();
-				shippingUpdate.postal_code = $('#s_postal_code').val();
+				if ($('#s_address1').val()) {
+					var shippingUpdate = {};
+					shippingUpdate.address_type = 2;
+					shippingUpdate.company_name = $('#s_company_name').val();
+					shippingUpdate.address_line1 = $('#s_address1').val();
+					shippingUpdate.address_line2 = $('#s_address2').val();
+					shippingUpdate.country_id = $('#s_country').val();
+					shippingUpdate.province_id = $('#s_state').val();
+					shippingUpdate.city = $('#s_city').val();
+					shippingUpdate.postal_code = $('#s_postal_code').val();
 
-				data.shippingUpdate = JSON.stringify(shippingUpdate);
-				}		
+					data.shippingUpdate = JSON.stringify(shippingUpdate);
+				}
 			}
 
 			var image = $("#imageUpload")[0].files[0];
@@ -236,11 +236,28 @@
 
 		$("#userForm").validate({
 			rules: {
-				first_name: "required"
+				first_name: "required",
+				b_postal_code: {
+					number: true,
+					maxlength: 6
+				},
+				s_postal_code: {
+					number: true,
+					maxlength: 6
+				}
 			},
 			messages: {
-				first_name: "Please enter first name"
-			}
+				first_name: "Please enter first name",
+				b_postal_code: {
+					number: "Please enter a valid postal code",
+					maxlength: "Please enter a valid postal code"
+				},
+				s_postal_code: {
+					number: "Please enter a valid postal code",
+					maxlength: "Please enter a valid postal code"
+				}
+			},
+
 		});
 		$('#resetPassword').click(function () {
 			var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
@@ -530,7 +547,8 @@
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<input type="checkbox" id="sameAddr" {{shippingAddress.same_shipping_address}} {{#ifCond shippingAddress.same_shipping_address '==' 1}} checked {{/ifCond}} />
+													<input type="checkbox" id="sameAddr" {{shippingAddress.same_shipping_address}} {{#ifCond shippingAddress.same_shipping_address
+													 '==' 1}} checked {{/ifCond}} />
 													<small> My Shipping Address is the same as my billing address</small>
 												</div>
 											</div>
