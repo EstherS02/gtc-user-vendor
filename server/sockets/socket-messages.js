@@ -116,7 +116,7 @@ export function socketMsg(io) {
 			console.log("userArray", userArray);
 			connections.splice(connections.indexOf(socket), 1);
 			console.log("%s length", connections.length);
-			console.log("%s Disconnected", socket.userId);
+			//console.log("%s Disconnected", socket.userId);
 		})
 	})
 }
