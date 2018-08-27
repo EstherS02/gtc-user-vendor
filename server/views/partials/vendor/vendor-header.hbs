@@ -28,17 +28,22 @@
 	var vendorInfo = {{{ DisplayJSON VendorDetail }}}
 	// var marketplacetype = {{{ DisplayJSON selectedPage}}}
 	var marketPlaceType = {{{DisplayJSON queryURI}}}
-
+	var selectedPage = {{{ DisplayJSON selectedPage }}}
+	if(selectedPage == 'wholesale' ||selectedPage == 'shop' ||selectedPage == 'services' ||selectedPage == 'lifestyle'){
+		selectedPageURL = selectedPage;
+	}else{
+		selectedPageURL="products";
+	}
 	$(document).ready(function () {
 		$("#vendorSearchForm").submit(function (e) {
 			e.preventDefault();
 			let formInput = $("#vendorSearchForm :input").filter(function (index, element) {
 				return $(element).val() != '';
 			}).serialize();
-			if(marketPlaceType == ''){
-			window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput;
+			if(marketPlaceType != ''){
+			window.location.href = selectedPageURL+'/search?vendor_id='+vendorInfo.id+'&'+ formInput;
 			}else{
-				window.location.href = 'products/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
+				window.location.href = selectedPageURL+'/search?vendor_id='+vendorInfo.id+'&'+ formInput+'&marketplace_id='+marketPlaceType.marketplace_id;
 			}
 		});
 

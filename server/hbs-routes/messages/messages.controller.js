@@ -31,7 +31,7 @@ export function messages(req, res) {
 			messages: function(callback) {
 				model['TalkThreadUsers'].findAll({
 					where: {
-						user_id: 62
+						user_id: LoggedInUser.id
 					},
 				}).then(function(instances) {
 					for (var i = 0, iLen = instances.length; i < iLen; i++) {
@@ -42,7 +42,7 @@ export function messages(req, res) {
 						where: {
 							thread_id: threads,
 							user_id: {
-								$ne: 62
+								$ne: LoggedInUser.id
 							}
 						},
 						include: [{

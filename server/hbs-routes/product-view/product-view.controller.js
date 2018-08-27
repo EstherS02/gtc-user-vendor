@@ -180,6 +180,7 @@ export function product(req, res) {
 			}];
 			service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 				.then(function(response) {
+					console.log("------------------------",JSON.stringify(response))
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
