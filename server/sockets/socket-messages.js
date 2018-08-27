@@ -28,7 +28,7 @@ export function socketMsg(io) {
 				console.log("user already connected");
 			}
 			console.log("***********************user Array*************", userArray);
-			userOnline(user);
+		//	userOnline(user);
 			//SET USER AS ONLINE
 		});
 
@@ -43,7 +43,7 @@ export function socketMsg(io) {
 				var userIndex = userArray.indexOf(user.id);
 				userArray.splice(userIndex, 1);
 			}
-			userOffline(user);
+		//	userOffline(user);
 			//SET USER AS OFFLINE
 		});
 
