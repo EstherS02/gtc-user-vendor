@@ -1,5 +1,3 @@
-import { promise } from 'selenium-webdriver';
-
 const sequelize = require('sequelize');
 const model = require('../../sqldb/model-connect');
 const config = require('../../config/environment');
