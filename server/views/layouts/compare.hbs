@@ -3,7 +3,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 $("#gtc-cart-alert").hide();
 
 function gtcAddToCart(e) {
-	if (userInfo.email) {
+   if (userInfo.email) {
+        if($("#typecode"+e).val()=='1' || $("#typecode"+e).val() == '')
+        {
 		var cartInfo = {};
 		$('#gtc-add-to-cart').prop('disabled', true);
 		cartInfo.product_quantity = $('#product-quantity-' + e).val();
@@ -33,6 +35,11 @@ function gtcAddToCart(e) {
 		} else {
 			$('#product-quantity-' + e).notify("Please enter the value", "error");
 		}
+    }
+    else
+    {
+        window.location.href = 'gtc-mail/compose?id='+userInfo.id+'&text='+userInfo.first_name;
+    }
 	} else {
 		$('#myModal').modal('show');
 	}
@@ -394,8 +401,9 @@ $(function() {
                 <div class="col-sm-10half align-self-center no-padding">
                     <div class="row no-margins">
                         <div class="col-md-4 no-padding">
-                            <div class="cprlist">
+                                  <div class="cprlist">
                             	{{#if compareProducts.[0]}}
+                                 <input type="hidden" id="typecode{{compareProducts.[0].id}}" name="typecode" value="{{compareProducts.[0].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[0].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max={{compareProducts.[0].moq}}>
@@ -420,20 +428,21 @@ $(function() {
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[1]}}
+                                   <input type="hidden" id="typecode{{compareProducts.[1].id}}" name="typecode" value="{{compareProducts.[1].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[1].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max={{compareProducts.[1].moq}}>
                                     <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[1].id}})" class="btn btn-sm add-bag-btn">
                                         <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-                                         {{#ifCond compareProducts.[0].marketplace_type_id '==' '1'}}
+                                         {{#ifCond compareProducts.[1].marketplace_type_id '==' '1'}}
                                          <span>ADD TO BAG</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '2'}}
+                                        {{else ifCond compareProducts.[1].marketplace_type_id '==' '2'}}
                                          <span>Contact Buyer</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '3'}}
+                                        {{else ifCond compareProducts.[1].marketplace_type_id '==' '3'}}
                                          <span>Contact Trader</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '4'}}
+                                        {{else ifCond compareProducts.[1].marketplace_type_id '==' '4'}}
                                          <span>Request Quote</span>
-                                         {{else ifCond compareProducts.[0].marketplace_type_id '==' ''}}
+                                         {{else ifCond compareProducts.[1].marketplace_type_id '==' ''}}
                                          <span>Add To Bag</span>
                                         {{/ifCond}}
                                     </a>
@@ -445,20 +454,21 @@ $(function() {
                         <div class="col-md-4 no-padding">
                             <div class="cprlist">
                             	{{#if compareProducts.[2]}}
+                                <input type="hidden" id="typecode{{compareProducts.[2].id}}" name="typecode" value="{{compareProducts.[2].marketplace_type_id}}"/>
                                 <div class="add-to-bag">
                                     <label class="text-light-muted">Qty: </label>
                                     <input id="product-quantity-{{compareProducts.[2].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"  placeholder="1" value="{{compareProducts.[0].moq}}" min="1" max="{{compareProducts.[2].moq}}">
                                     <a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[2].id}})" class="btn btn-sm add-bag-btn">
                                         <svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"><path d="M18.2 7.7h-15l-2 12.1h19z"></path><path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1"></path></g></svg>
-                                         {{#ifCond compareProducts.[0].marketplace_type_id '==' '1'}}
+                                         {{#ifCond compareProducts.[2].marketplace_type_id '==' '1'}}
                                          <span>ADD TO BAG</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '2'}}
+                                        {{else ifCond compareProducts.[2].marketplace_type_id '==' '2'}}
                                          <span>Contact Buyer</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '3'}}
+                                        {{else ifCond compareProducts.[2].marketplace_type_id '==' '3'}}
                                          <span>Contact Trader</span>
-                                        {{else ifCond compareProducts.[0].marketplace_type_id '==' '4'}}
+                                        {{else ifCond compareProducts.[2].marketplace_type_id '==' '4'}}
                                          <span>Request Quote</span>
-                                         {{else ifCond compareProducts.[0].marketplace_type_id '==' ''}}
+                                        {{else ifCond compareProducts.[2].marketplace_type_id '==' ''}}
                                          <span>Add To Bag</span>
                                         {{/ifCond}}
                                     </a>
