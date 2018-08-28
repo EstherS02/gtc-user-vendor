@@ -95,10 +95,22 @@
 			}
 		});
 
+		var checkConnect, ebayWindow;
+
+		checkConnect = setInterval(function() {
+			if (!ebayWindow || !ebayWindow.closed) return;
+			clearInterval(checkConnect);
+		}, 100);
+		
 		$("#importEbay").click(function() {
-			var ebayOAuthURL = `https://signin.sandbox.ebay.com/authorize?client_id=ChandruM-GlobalTr-SBX-9ed62ccbf-855742ca&redirect_uri=Chandru_M-ChandruM-Global-bojdlvvw&response_type=code&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.account%20https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope%2Fsell.inventory`;
-			var ebayWindow = window.open(ebayOAuthURL, 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
+			var ebayOAuthURL = `https://auth.sandbox.ebay.com/oauth2/authorize?client_id=ChandruM-GlobalTr-SBX-9ed62ccbf-855742ca&response_type=code&redirect_uri=Chandru_M-ChandruM-Global-jhhjmpvk&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/buy.order.readonly https://api.ebay.com/oauth/api_scope/buy.guest.order https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly https://api.ebay.com/oauth/api_scope/buy.shopping.cart`;
+			ebayWindow = window.open(ebayOAuthURL, 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
 		});
+
+
+		window.onEbayCallbackClose = function(data) {
+			console.log('data', data);
+		};
 
 		$("#importAmazonModalForm").validate({
 			rules: {

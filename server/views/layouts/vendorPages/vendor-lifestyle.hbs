@@ -135,6 +135,7 @@ $(document).on('change', "#sortListing", function() {
                                 </div>
                                 {{/ifCond}}
                                 <div class="col-md-6">
+                                {{#if publicLifestyle.count}}
                                 <label class="label-control">Showing
                                         <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
                                         <b>{{publicLifestyle.count}}</b> Products matching
@@ -144,6 +145,9 @@ $(document).on('change', "#sortListing", function() {
                                         in the <span class="showing_global_col">{{selectedMarketPlace.name}}</span>
                                         {{/if}}
                                     </label>
+                                    {{else}}
+                                    No Product Available
+                                    {{/if}}
                                 </div>
                             </div>
                         </div>

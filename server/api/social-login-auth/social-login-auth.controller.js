@@ -17,7 +17,7 @@ var oauth = new OAuth(
 	twitterKey,
 	twitterSecret,
 	'1.0A',
-	'http://localhost:9000/api/auth/twitter/callback',
+	'https://gtc.ibcpods.com/api/auth/twitter/callback',
 	'HMAC-SHA1'
 );
 
