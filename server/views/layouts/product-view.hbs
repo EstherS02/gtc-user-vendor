@@ -2,7 +2,7 @@
 var userInfo = {{{ DisplayJSON LoggedInUser }}}
 var productSpecs = {{{DisplayJSON product}}}
 var statusCode = {{{DisplayJSON status}}}
-	
+var vendorInfo = {{{DisplayJSON  VendorDetails}}}	
 $(document).ready(function() {
 
 	$('[data-toggle="popover"]').popover({
@@ -63,7 +63,7 @@ $(document).ready(function() {
 				}
 				else
 				{
-					 window.location.href = 'gtc-mail/compose?id='+userInfo.id+'&text='+userInfo.first_name;
+					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.User._name;
 				}
 			} else {
 				$('#myModal').modal('show');
@@ -388,9 +388,8 @@ function wishUpdate() {
 															</div>
 														</div>
 													</div>
-
-</div>
 												</div>
+											</div>
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
@@ -528,6 +527,72 @@ function wishUpdate() {
                             	</div>
                             </div>
                         </div>
+                        {{#if RelatedProducts.rows}}
+                        <div class="marketplace-type-bg m-t"></div>
+                        <div class="marketplace-type-headers  bg-white">
+                        	<div class="ibox">
+                        		<div class="row no-margins">
+                        			<div class="col-md-12 no-padding">
+                        				<div class="wts-header-bg">
+                        					<h4 class="header-md-text"><strong>Related Products From This Vendor</strong></h4>
+                        				</div>
+                        			</div>
+                        			{{#each RelatedProducts.rows}}
+                        			<div class="col-md-4 no-padding">
+                        				<div class="product-list-body">
+                        					<div class="product-body">
+                        						<div class="table-responsive">
+                        							<table class="table shoping-cart-table">
+                        								<tbody>
+                        									<tr class="d-flex">
+                        										<td class="col-2 img-padding">
+                        											<div class="product-left-col">
+                        												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        											</div>
+                        										</td>
+                        										<td class="col-10">
+                        											<div class="product-middle-col">
+                        												<div class="row">
+                        													<div class="col-8">
+                        														<h3>
+                        															<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
+                        														</h3>
+                        													</div>
+                        													<div class="col-4">
+                        														<div class="product-related-col">
+                        															{{#if this.minimum_order_quantity}}
+                        															<h4>MOQ : {{this.minimum_order_quantity}}</h4>
+                        															{{/if}}
+                        														</div>
+                        													</div>
+                        												</div>
+                        												<div class="row no-margins">
+                        													<div class="col-md-4 col-4 no-padding">
+                        														<span>Origin</span>
+                        													</div>
+                        													<div class="col-md-8 col-8 no-padding overflow-txt">
+                        														<span class="text-500">{{this.country_name}}</span>
+                        													</div>
+                        													<div class="col-md-4 col-4 no-padding">
+                        														<span>Category</span>
+                        													</div>
+                        													<div class="col-md-8 col-8 no-padding overflow-txt">
+                        														<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                        													</div>
+                        												</div>
+                        											</td>
+                        										</tr>
+                        									</tbody>
+                        								</table>
+                        							</div>
+                        						</div>
+                        					</div>
+                        				</div>
+                        				{{/each}}
+                        			</div>
+                        		</div>
+                        	</div>
+				        {{/if}}
 					</div>
 				</div>
 				<div class="col-md-3 no-padding">

@@ -1824,3 +1824,15 @@ p.summary-info span {
 	line-height: 1.6;
 	font-size: 0.813em;
 }
+.product-related-col{
+	font-size: 0.875em;
+    font-weight: 300;
+    color: #5f6066;
+    position: relative;
+}
+.product-related-col h4{
+	font-size: 0.813em;
+}
+.table.shoping-cart-table > tbody > tr > td.img-padding  {
+     padding: 0px !important; 
+}
