@@ -1,9 +1,10 @@
 <script type="text/javascript">
 	var userInfo = {{{DisplayJSON LoggedInUser}}}
+	var messenger = {{{DisplayJSON messenger}}}
 	var threadId;
 	var to_id=null;
 
-	console.log("emitSocket",emitSocket);
+	//console.log("emitSocket",emitSocket);
 	function getConversations(e) {
 		threadId = e;
 		var socketChat = {
@@ -118,6 +119,16 @@
 	$(document).ready(function() {
 		//var socket = io();
 		//console.log("socket", socket);
+		socket.on('userOnline', function(users){
+			console.log("users********", users);
+			messenger.forEach(function(element){
+				if(users.indexOf(element.User.id) != -1){
+					document.getElementById("online"+element.User.id).innerHTML = `<i class="on b-white top" style="border: grey"></i>`;
+				}else{
+					document.getElementById("online"+element.User.id).innerHTML = `<i class="off b-white top" style="border: #27c24c"></i>`;
+				}
+			})
+		})
 		var commonInfo,base,base1,time;
 		socket.on('chat:receive', function(data) {
 			console.log("emitted socket", data);
@@ -137,7 +148,7 @@
 			var body =`<li class="`+base1+` clearfix" >																	
 												<span class="chat-img `+base+`">
 													<img src="` + userProfile(commonInfo.User) + `" alt="User Avatar">
-												</span><div class="chat-body clearfix">										<div class="header m-b-xs">																			<strong class="primary-font pull-right">` + commonInfo.User.first_name +  commonInfo.User.last_name + `</strong><small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) + `</small>
+												</span><div class="chat-body clearfix">										<div class="header m-b-xs">																			<strong class="primary-font `+base+`">`+ commonInfo.User.first_name + " "+lastname(commonInfo.User.last_name)+ `</strong><small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) + `</small>
 													</div>
 												<p>` + data.message + `</p>
 												</div>
@@ -213,10 +224,8 @@
 																	<strong>{{this.User.first_name}} {{#if this.User.last_name}}{{this.User.last_name}} {{/if}}</strong><span class="m-l-sm"></span>
 																</div>
 																<div class="last-messager text-muted">{{#if this.TalkThread.Talks}}{{this.TalkThread.Talks.[0].message}}{{/if}}</div>
-																<small class="time text-muted">{{messenger.date}}11:00am</small>
-																<small class="chat-alert online">
-																	<i class="on b-white top"></i>
-																	<i class="off b-white top"></i>
+																<small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
+																<small class="chat-alert online" id="online{{this.User.id}}">
 																</small>
 															</a>
 														</li>
@@ -229,41 +238,7 @@
 													<div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
 
 														<ul class="chats" id = "message">
-														{{!-- {{#each talkThreads.talk}}
-															{{#ifCond this.from_id "==" ../LoggedInUser.id}} --}}
-																<li class="left clearfix">
-																	<span class="chat-img pull-left">
-																		<img src="/img/avatar.png" alt="User Avatar">
-																	</span>
-																	<div class="chat-body clearfix">
-																		<div class="header">
-																			<strong class="primary-font"> {{conversation.user.first_name}}{{conversation.user.last_name}}Sumithra</strong>
-																			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}} 11:00 am</small>
-																		</div>
-																		<p>
-																			{{conversation.message}} Hi,May i know your native
-																		</p>
-																	</div>
-																</li>
-															{{!-- {{else ifCond this.from_id "!=" ../LoggedInUser.id}} --}}
-																<li class="right clearfix" >
-																	<span class="chat-img pull-right">
-																		<img src="../img/avatar.png" alt="User Avatar">
-																	</span>
-																	<div class="chat-body clearfix">
-																		<div class="header m-b-xs" style="padding-bottom: 20px;">
-																			<strong class="primary-font pull-right">{{user.first_name}}{{user.last_name}} Sujitha</strong>
-																			<small class="pull-left text-muted"><i class="fa fa-clock-o"></i> {{conversation.date}}11:31am </small>
-																		</div>
-																		<p class="pull-right m-t-xs">
-																			{{conversation.message}} Chennai
-																		</p>
-																	</div>
-																</li>
-{{!-- 															{{/ifCond}}
-														{{/each}} --}}
-
-															{{!-- loggrg in user id --}}
+														
 
 														</ul>
 													</div>
