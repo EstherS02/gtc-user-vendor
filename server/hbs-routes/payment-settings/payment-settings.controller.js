@@ -11,8 +11,16 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function paymentSettings(req, res) {
-	var LoggedInUser = {};
-    var bottomCategory ={};
+
+    var LoggedInUser = {}, bottomCategory ={}, queryObj={};
+    var offset, limit, field, order;
+    
+    offset = 0;
+	field = "id";
+    order = "asc";
+    limit = 6;
+
+    var currencyModel = 'Currency';
 	
 	if (req.user)
 		LoggedInUser = req.user;
@@ -28,7 +36,7 @@ export function paymentSettings(req, res) {
                 return callback(null);
             });
         },
-			categories: function(callback) {
+		categories: function(callback) {
             var includeArr = [];
             const categoryOffset = 0;
             const categoryLimit = null;
@@ -49,8 +57,18 @@ export function paymentSettings(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+        },
+        currency: function(callback) {
+			service.findRows(currencyModel, queryObj, offset, limit, field, order)
+				.then(function(currency) {
+                    console.log("-----------------------------",currency);
+					return callback(null, currency.rows);
 
-        }
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
 
 		},
 		function(err, results) {
@@ -63,7 +81,8 @@ export function paymentSettings(req, res) {
                 	bottomCategory: bottomCategory,
 					selectedPage: 'payment-settings',
 					cartheader: results.cartCounts,
-					vendorPlan: vendorPlan
+                    vendorPlan: vendorPlan,
+                    currency: results.currency
 				});
 			} else {
 				res.render('vendorNav/payment-settings', err);
