@@ -161,7 +161,7 @@
 
 			if ($('#sameAddr').is(":checked")) {
 
-				delete billingUpdate.address_type;
+				//delete billingUpdate.address_type;
 				var shippingUpdate = billingUpdate;
 				shippingUpdate.address_type = 2;
 				shippingUpdate.same_shipping_address = 1;
@@ -210,6 +210,8 @@
 			}
 
 			if ($('#userForm').valid()) {
+
+				console.log("----------------------------------------",userUpdate);
 				data.userUpdate = JSON.stringify(userUpdate);
 
 				$.ajax({
@@ -222,9 +224,9 @@
 						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
 							$("#gtc-profile-alert").slideUp(500);
 						});
-						setTimeout(function () {
+						/*setTimeout(function () {
 							location.reload(true);
-						}, 1000);
+						}, 1000);*/
 					},
 					error: function (error) {
 						console.log("Error", error);
