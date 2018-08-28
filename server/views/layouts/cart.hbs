@@ -296,27 +296,22 @@ $(document).ready(function() {
 											{{/if}}
 										</td>
 										<td>
-											{{#if cartItem.Product.moq}}
 											{{#if cartItem.quantity}}
-											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+												<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
 											{{else}}
-											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+												<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.Product.moq}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
 											{{/if}}
-											{{else}}
-											<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-											{{/if}}
-
 											<a href="javascript:;" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.Product.moq}}`,`{{cartItem.Product.product_name}}`)"
 											class="text-xs m-l-xs">
 											<small>Update</small>
-										</a>
+											</a>
 									</td>
 									<td class="text-right">
-										{{#if cartItem.Product.moq}}
-										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.Product.moq cartItem.Product.price}}</span>
+										{{#if cartItem.quantity}}
+										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.quantity cartItem.Product.price}}</span>
 										<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 										{{else}}
-										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.quantity cartItem.Product.price}}</span>
+										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.Product.moq cartItem.Product.price}}</span>
 										<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 										{{/if}}
 									</td>
