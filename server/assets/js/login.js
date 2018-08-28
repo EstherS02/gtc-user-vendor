@@ -14,6 +14,17 @@
             });
         };
 
+        var startGoogleLoginProcess1 = function() {
+            gapi.load('auth2', function() {
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+                    cookiepolicy: 'single_host_origin'
+                });
+                googleAttachSignin(document.getElementById('gtc-google-login1'));
+
+            });
+        };
         function googleAttachSignin(element) {
             auth2.attachClickHandler(element, {},
                 function(googleUser) {
@@ -53,6 +64,7 @@
         };
 
         startGoogleLoginProcess();
+        startGoogleLoginProcess1();
 
         function decodeJwt(token) {
             var base64Url = token.split('.')[1];
@@ -100,7 +112,11 @@
         };
 
 
-        $('#gtc-linkedin-login').click(function(e) {
+        $('ul.homeSocial li[title="facebook"]').click(function (e) {
+            fb_login();
+        });
+
+        $('ul.homeSocial li[title="linkedin"]').click(function (e) {
             if (!IN.User.isAuthorized()) {
                 IN.User.authorize(function() {
                     getProfileData();
@@ -191,14 +207,11 @@
             });
         };
 
-        $("#gtc-fb-login").click(function() {
-            fb_login();
-        });
 
         var twitterWin;
         var checkConnect;
 
-        $("#gtc-twitter-login").click(function() {
+        $('ul.homeSocial li[title="twitter"]').click(function (e) {
             var oAuthURL = "/api/auth/twitter";
             twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
         });

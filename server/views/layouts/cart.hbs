@@ -106,15 +106,16 @@ function UpdateGtcCart(productId, cartItemId, qtyItem, productName) {
 			data: JSON.stringify(cartInfo),
 			contentType: "application/json",
 			success: function(updateData) {
-				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-danger');
+				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
 				$('#gtc-cart-alert .cart-message').text(updateData.message_details);
 				$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
 					$("#gtc-cart-alert").slideUp(500);
+					location.reload();
 				});
 			},
 			error: function(error) {
 				console.log("Error occured while updating", error);
-				$('#gtc-cart-alert1').removeClass('alert-danger').addClass('alert-danger');
+				$('#gtc-cart-alert1').removeClass('alert-success').addClass('alert-danger');
 				$('#gtc-cart-alert1 .cart-message').text(error.responseJSON.message_details);
 				$("#gtc-cart-alert1").fadeTo(2000, 500).slideUp(500, function() {
 					$("#gtc-cart-alert1").slideUp(500);
