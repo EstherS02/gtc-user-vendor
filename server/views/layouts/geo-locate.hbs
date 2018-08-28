@@ -31,6 +31,11 @@
 					</div>
 				</div>
                 <div style="height: 477px;overflow-y: scroll;overflow-x: hidden;">
+                {{#ifCond geoLocateObj.length '==' 0}}
+                    <div class="alert alert-warning" role="alert" style="margin-right: 15px;font-size: 15px;">
+                        No Products near your surroundings. Try Advance Search!
+                    </div>
+                {{/ifCond}}
                 {{#each geoLocateObj}}
 					<div class="row">
                       <div class="col-md-3 col-2" style="text-align: center;">
@@ -39,7 +44,7 @@
                       <div class="col-md-9 col-10">
                           <div class="row common_padding">
                               <div class="col-md-8 col-8">
-                                  <p class="wts_header"><a href="javascript:;" style="font-size: 12px;">{{this.product_name}}</a></p>
+                                  <p class="wts_header"><a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}" style="font-size: 12px;">{{this.product_name}}</a></p>
                               </div>
                               <div class="col-md-4 col-4" style="display:none;">
                                   <p>MOQ: 40</p>
@@ -91,7 +96,7 @@
                 </div>
 				  <div class="row">
                     <div class="col-md-12" style="background-color: #F0F0F0;">
-                       <p class="geo_show">Showing <span class="geo_pro"> 1660 products </span></p>
+                       <p class="geo_show">Showing <span class="geo_pro"> {{geoLocateObj.length}} products </span></p>
                        <p class="geo_adv"> <a href="/geo-locate/search">Advanced Search / Filter</a> </p> 
                     </div>
                     </div>
@@ -109,6 +114,54 @@
 
 <script>
 
+    function markeplaceUrl(marketPlace_id) {
+        if (!marketPlace_id)
+            return 'products';
+        let marketPlace;
+        switch (marketPlace_id) {
+            case 1:
+                marketPlace = "wholesale";
+                break;
+            case 2:
+                marketPlace = "shop";
+                break;
+            case 3:
+                marketPlace = "services";
+                break;
+            case 4:
+                marketPlace = "lifestyle";
+                break;
+            default:
+                marketPlace = "products";
+                break;
+        }
+        return marketPlace;
+    }
+
+    function marketPlaceMapMarker(marketPlace_id){
+        if (!marketPlace_id)
+            return 'products';
+        let mapMarkerUrl;
+        switch (marketPlace_id) {
+            case 1:
+                mapMarkerUrl = "/img/map-markers/pin-yellow.png";
+                break;
+            case 2:
+                mapMarkerUrl = "/img/map-markers/pin-blue.png";
+                break;
+            case 3:
+                mapMarkerUrl = "/img/map-markers/pin-green.png";
+                break;
+            case 4:
+                mapMarkerUrl = "/img/map-markers/pin-red.png";
+                break;
+            default:
+                mapMarkerUrl = "/img/map-markers/pin-blue.png";
+                break;
+        }
+        return mapMarkerUrl;
+    }
+
     function getCookie(c_name) {
         return localStorage.getItem(c_name);
     }
@@ -120,8 +173,7 @@
 
     var userLocation = {}, infowindow, map, marker, formattedLocation, bounds;
     var vendorGroupedObj = {{{DisplayJSON geoLocateByVendor}}}
-    var mapObjVendor = Object.keys(vendorGroupedObj)
-
+    var mapObjVendor = Object.keys(vendorGroupedObj);
 
      function initMap(geoUserLat, geoUserLng){
             formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
@@ -136,7 +188,7 @@
            for(let i=0; i< mapObjVendor.length; i++){
                 let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
                 var content = `<p><img src="`+ mapObjProduct[0].vendor_profile_pic_url +`" style="width: 50px; height: 50px;">
-                <span style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</span>
+                <a href="/vendor/`+ mapObjProduct[0].vendor_id +`" style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</a>
                 <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
                 let more_content = "", title = mapObjProduct[0].vendor_name;;
@@ -144,14 +196,15 @@
                     if(j === 4){
                         break;
                     }
-                    more_content = more_content + `<a href="javascript:;"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
+                    more_content = more_content + `<a href="/`+ markeplaceUrl(mapObjProduct[j].marketplace_id)+`/`+ mapObjProduct[j].product_slug +`/`+ mapObjProduct[j].product_id+`"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
                 }
-                content = content + `<p>`+ more_content + `<a href="javascript:;">See All</a></p>`;
+                content = content + `<p>`+ more_content + `<a href="/vendor/`+ mapObjProduct[0].vendor_id +`">See All</a></p>`;
                 createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
             }
 
 
-            map.fitBounds(bounds);
+            if(mapObjVendor.length > 0)
+                map.fitBounds(bounds);
 
         }
 
@@ -260,8 +313,7 @@
             }
 
         } else {
-            callback(userLocation);
-            console.log("Cannot determine user location");
+            console.log("Browser Cannot determine user location");
         }
     
     </script>

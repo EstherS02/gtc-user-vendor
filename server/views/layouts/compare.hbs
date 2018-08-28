@@ -1,5 +1,6 @@
 <script type="text/javascript">
 var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
 $("#gtc-cart-alert").hide();
 
 function gtcAddToCart(e) {
@@ -38,7 +39,7 @@ function gtcAddToCart(e) {
     }
     else
     {
-        window.location.href = 'gtc-mail/compose?id='+userInfo.id+'&text='+userInfo.first_name;
+        window.location.href = 'gtc-mail/compose?id='+$('#vendor_userid').val()+'&text='+$('#vendor_username').val();
     }
 	} else {
 		$('#myModal').modal('show');
@@ -123,6 +124,9 @@ $(function() {
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="vendor_userid" id="vendor_userid" value="{{compareProducts.[0].user_id}}"/>
+                  <input type="hidden" name="vendor_username" id="vendor_username" value="{{compareProducts.[0].first_name}}"/>
+
             {{#if compareProducts}}
             <div class="row no-margins">
                 <div class="col-sm-2half no-padding"></div>

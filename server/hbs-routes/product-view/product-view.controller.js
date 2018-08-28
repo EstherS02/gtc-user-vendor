@@ -135,10 +135,13 @@ export function product(req, res) {
 			var includeArr = [];
 			var field = "created_on";
 			var queryObj = {
-				category_id: categoryID,
+				// category_id: categoryID,
 				vendor_id: vendorID,
 				id: {
 					$ne: productID
+				},
+				marketplace_id: {
+					$ne: marketplace['WHOLESALE']
 				}
 			};
 
@@ -152,6 +155,11 @@ export function product(req, res) {
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
+				model:model['User'],
+				attributes: {
+						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+					}
+			},{
 				model: model['Country']
 			}, {
 				model: model['VendorPlan'],
@@ -180,7 +188,6 @@ export function product(req, res) {
 			}];
 			service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 				.then(function(response) {
-					console.log("------------------------",JSON.stringify(response))
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -374,6 +381,7 @@ export function product(req, res) {
 				bottomCategory: bottomCategory,
 				cartheader: results.cartCounts,
 				product: results.productDetail,
+				RelatedProducts: results.RelatedProducts,
 				isWishlist: results.productWishlist,
 				productRatings: results.productRating,
 				productRecentReview: results.productRecentReview,
