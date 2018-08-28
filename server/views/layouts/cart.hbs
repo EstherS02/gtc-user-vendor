@@ -357,8 +357,17 @@ $(document).ready(function() {
 							<div class="m-t-sm">
 								<label class="m-b-xs">
 									<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
-								<input type="text" class="promo-text-control">
+								{{!-- <input type="text" class="promo-text-control"> --}}
+								<div class="input-group mb-3">
+									  <input type="text" class="form-control text-control" id="coupon-input-code" placeholder="Search">
+									  <div class="input-group-append">
+									    <button class="btn" type="submit" onclick="applyGTCCoupon()"><i class="fas fa-caret-right"></i></button> 
+									  </div>
+									</div>
 							</div>
+							{{#ifCond couponUpdateErrorMessage '!=' ""}}
+							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
+						{{/ifCond}}
 							<div class="text-center">
 								<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
