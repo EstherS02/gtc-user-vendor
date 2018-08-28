@@ -196,6 +196,12 @@ $(document).ready(function() {
 							<h3 class="empty-msg text-primary">Your Shopping Cart is empty.</h3>
 						</div>
 						{{else}}
+						<div class="alert" id="gtc-cart-alert1">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="cart-message"></span>
+						</div>
 						{{#each marketPlaces as |marketPlace|}}
 						{{#each ../seperatedItemsList}}
 						{{#ifCond marketPlace.code '==' @key}}
