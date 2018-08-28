@@ -2,8 +2,14 @@
 
 const config = require('../config/environment');
 const stripe = require("stripe")(config.stripeConfig.keySecret);
+const paypal = require('paypal-rest-sdk');
+
+paypal.configure(config.payPalConfig);
+  
 
 const STMT_DESCRIPTOR = "GLOBALTRADECONNECT";
+
+var sender_batch_id = Math.random().toString(36).substring(9);
 
 let Stripe = {
     createCustomer: function(userObj, source) {
@@ -65,7 +71,7 @@ let Stripe = {
         }
         return stripe.refunds.create(refundObj);
     },
-    vendorPayout: function(amount,currency,destination,transfer_group){
+    vendorStripePayout: function(amount,currency,destination,transfer_group){
       
         let transferObj = {
             amount: amount,
@@ -74,6 +80,37 @@ let Stripe = {
             transfer_group: transfer_group 
         }
         return stripe.transfers.create(transferObj);
+    },
+    vendorPaypalPayout: function(recipient_type, amount, currency, destination, order_id){
+
+        var create_payout_json = {
+            "sender_batch_header": {
+                "sender_batch_id": sender_batch_id,
+                "email_subject": "You have a payment"
+            },
+            "items": [
+                {
+                    "recipient_type": recipient_type,
+                    "amount": {
+                        "value": amount,
+                        "currency": currency
+                    },
+                    "receiver": destination,
+                    "note": "Thank you.",
+                    "sender_item_id": order_id
+                }
+            ]
+        };
+
+        paypal.payout.create(create_payout_json, function (error, payout) {
+            if (error) {
+                console.log(error.response);
+                throw error;
+            } else {
+                console.log("Create Single Payout Response");
+                console.log(payout);
+            }
+        });
     }
 };
 

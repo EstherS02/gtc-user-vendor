@@ -24,7 +24,7 @@ module.exports = function (job, done) {
     var orderPaymentModel = 'OrderPayment';
     var includeArray = [], orderPaymentQueryObj = {}, payoutDate;
 
-    payoutDate = moment(new Date()).add(-30, 'days');
+    payoutDate = moment(new Date()).add(-5, 'days');
 
     orderPaymentQueryObj['status'] = statusCode["ACTIVE"];
     orderPaymentQueryObj['order_payment_type'] = paymentType["ORDER_PAYMENT"];
@@ -76,7 +76,7 @@ module.exports = function (job, done) {
         done();
 
     }).catch(function (error) {
-        console.log("Error::",error);
+        console.log("Error::", error);
         done();
     });
 };
@@ -105,7 +105,7 @@ function checkpaymentEscrow(order) {
                 return Promise.all(payoutVendorPromises);
             }
         }).catch(function (error) {
-            console.log("Error",error);
+            console.log("Error::", error);
             return Promise.reject(error);
         })
 };
@@ -115,45 +115,69 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
     var includeArr = populate.populateData("User");
     var vendorModel = 'Vendor';
     var stripePromises = [];
-    var vendorInfo ={};
+    var paypalPromises = [];
+    var vendorInfo = {};
+    var PaymentMethod;
 
     return service.findIdRow(vendorModel, payoutVendor, includeArr)
         .then(function (vendor) {
             if (vendor) {
-                vendorInfo=vendor;
+                vendorInfo = vendor;
                 if (vendor.vendor_payout_stripe_id) {
 
-                   stripePromises.push(stripe.vendorPayout(payoutAmount, CURRENCY, vendor.vendor_payout_stripe_id, payoutOrder));
-                   return Promise.all(stripePromises);
+                    PaymentMethod = paymentMethod['STRIPE'];
 
-                } else {
+                    stripePromises.push(stripe.vendorStripePayout(payoutAmount, CURRENCY, vendor.vendor_payout_stripe_id, payoutOrder));
+                    return Promise.all(stripePromises);
+
+                }
+                else if (vendor.vendor_payout_paypal_email) {
+
+                    PaymentMethod = paymentMethod['PAYPAL'];
+
+                    paypalPromises.push(stripe.vendorPaypalPayout('EMAIL', payoutAmount, CURRENCY, vendor.vendor_payout_paypal_email, payoutOrder));
+                    return Promise.all(paypalPromises);
+                }
+                else {
                     stripeConnectMail(vendor);
-                    return; 
+                    return;
                 }
             } else {
                 return;
             }
         })
         .then(function (payoutDetails) {
-            if(payoutDetails){ 
-                var paymentPromises = [];
+            var paymentPromises = [];
+            var paymentObj ={};
 
-                var paymentObj = {
-                      payout_created_date: new Date(payoutDetails[0].created),
-                      payout_amount: payoutAmount,
-                      payment_method: paymentMethod['STRIPE'],
-                      status: statusCode['ACTIVE'],
-                      payment_response: JSON.stringify(payoutDetails)
-                  };
+             if(payoutDetails){ 
 
-                  paymentPromises.push(createPaymentRow(paymentObj));
-                  return Promise.all(paymentPromises);
-            }
+                if(paymentMethod['STRIPE']){
+                    var paymentObj = {
+                        payout_created_date: new Date(payoutDetails[0].created),
+                        payout_amount: payoutAmount,
+                        payment_method: paymentMethod['STRIPE'],
+                        status: statusCode['ACTIVE'],
+                        payment_response: JSON.stringify(payoutDetails)
+                    };
+                }
+                else  if(paymentMethod['PAYPAL']){
+                    paymentObj = {
+                       payout_created_date: new Date(),
+                       payout_amount: payoutAmount,
+                       payment_method: paymentMethod['PAYPAL'],
+                       status: statusCode['ACTIVE'],
+                       payment_response: JSON.stringify(payoutDetails)
+                      }
+                } 
+                paymentPromises.push(createPaymentRow(paymentObj));
+                return Promise.all(paymentPromises);
+             }
         })
         .then(function (paymentRow) {
 
-            if(paymentRow){
-               
+            if (paymentRow) {
+
                 var orderPaymentEscrowObj = {
                     payment_id: paymentRow[0].id,
                     order_id: payoutOrder,
@@ -163,20 +187,19 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
                     .then(function (orderPaymentEscrowObj) {
-                     
-                     payoutMail(vendorInfo, payoutOrder, payoutAmount);
-                     return Promise.resolve(orderPaymentEscrowObj);
-                    
+
+                        payoutMail(vendorInfo, payoutOrder, payoutAmount);
+                        return Promise.resolve(orderPaymentEscrowObj);
+
 
                     }).catch(function (error) {
-                        console.log("Error",error);
+                        console.log("Error::", error);
                         return Promise.reject(error);
                     })
-            }        
-          })
-
+            }
+        })
         .catch(function (error) {
-            console.log("Error",error);
+            console.log("Error::", error);
             return Promise.reject(error);
         })
 }
@@ -198,7 +221,7 @@ function stripeConnectMail(vendor) {
                 var email = vendor.User.email;
 
                 var subject = response.subject;
-                var body  = response.body;
+                var body = response.body;
 
                 sendEmail({
                     to: email,
@@ -211,12 +234,12 @@ function stripeConnectMail(vendor) {
             }
 
         }).catch(function (error) {
-            console.log("Error",error);
+            console.log("Error::", error);
             return;
         });
 }
 
-function payoutMail(vendor,payoutOrder,payoutAmount) {
+function payoutMail(vendor, payoutOrder, payoutAmount) {
 
     var emailTemplateQueryObj = {};
     var emailTemplateModel = "EmailTemplate";
@@ -232,10 +255,10 @@ function payoutMail(vendor,payoutOrder,payoutAmount) {
                 var subject = response.subject;
                 var body;
                 body = response.body.replace('%USERNAME%', username);
-                body = body.replace('%ORDERID%',payoutOrder);
-                body = body.replace('%AMOUNT%',payoutAmount);   
-                body = body.replace('%CURRENCY%',CURRENCY);
-                body = body.replace('%CREATED_DATE%',date); 
+                body = body.replace('%ORDERID%', payoutOrder);
+                body = body.replace('%AMOUNT%', payoutAmount);
+                body = body.replace('%CURRENCY%', CURRENCY);
+                body = body.replace('%CREATED_DATE%', date);
 
                 sendEmail({
                     to: email,
@@ -246,8 +269,15 @@ function payoutMail(vendor,payoutOrder,payoutAmount) {
             } else {
                 return;
             }
+
         }).catch(function (error) {
-            console.log("Error",error);
+            console.log("Error::", error);
             return;
         });
 }
+
+
+
+
+
+
