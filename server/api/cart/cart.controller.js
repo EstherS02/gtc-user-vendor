@@ -439,6 +439,7 @@ var checkApplyCoupon = function(req, res, callback) {
 					return cb(null, appliedCouponObj);
 				} else {
 					return cb({
+						status: "error",
 						message: "COUPON_INVALID",
 						message_details: "Sorry !, Invalid Coupon"
 					});
@@ -465,6 +466,7 @@ var checkApplyCoupon = function(req, res, callback) {
 				});
 			} else {
 				return cb({
+					status: "error",
 					message: "COUPON_EXPIRED",
 					message_details: "Sorry !, Coupon is Expired"
 				});
@@ -481,6 +483,7 @@ var checkApplyCoupon = function(req, res, callback) {
 					});
 				} else {
 					return cb({
+						status: "error",
 						message: "COUPON_NOT_AVAILABLE",
 						message_details: "Sorry !, Coupon Not Available"
 					});
@@ -516,6 +519,7 @@ var checkApplyCoupon = function(req, res, callback) {
 
 					if (moment(currentUTCDate).isSame(lastestOrderDate)) {
 						return cb({
+							status: "error",
 							message: "COUPON_APPLIED_MULTIPLE_TIMES",
 							message_details: "Sorry !, User Already Used this Coupon Today"
 						});
@@ -531,12 +535,14 @@ var checkApplyCoupon = function(req, res, callback) {
 								});
 							} else {
 								return cb({
+									status: "error",
 									message: "COUPON_USER_LIMIT_EXCEEDED",
 									message_details: "Sorry !, Coupon Limit Exceeded by User"
 								});
 							}
 						} else {
 							return cb({
+								status: "error",
 								message: "COUPON_LIMIT_EXCEEDED",
 								message_details: "Sorry !, Coupon Limit Exceeded or Unavailable"
 							});
@@ -560,6 +566,7 @@ var checkApplyCoupon = function(req, res, callback) {
 			}).catch(function(error) {
 				console.log(error);
 				return cb({
+					status: "error",
 					message: "INTERNAL_SERVER_ERROR",
 					message_details: "Unexpected Internal Server Error Occurred ! Try Again."
 				});

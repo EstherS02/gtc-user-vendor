@@ -136,15 +136,23 @@ function applyGTCCoupon() {
 		type: 'POST',
 		data: cartInfo,
 		success: function(updateData) {
-			$('#gtc-coupon-alert').prop('disabled', false);
-			$('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
-			$('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
-			$("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function() {
-				$("#gtc-coupon-alert").slideUp(500);
-			});
+			// $('#gtc-coupon-alert').prop('disabled', false);
+			// $('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
+			// $('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
+			// $("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function() {
+			// });
+			// 	$("#gtc-coupon-alert").slideUp(500);
+			if(updateData.status == 'error'){
+				$('#gtc-coupon-alert').notify(updateData.message_details, "error");
+			}else{
+				$('#gtc-coupon-alert').notify("Success", "success");
+				$("#coupon-input-code").val('');
+			}
+
 		},
 		error: function(error) {
 			console.log("Error occured while updating", error);
+			$('#gtc-coupon-alert').notify(error.responseJSON.message_details, "error");
 		}
 	});
 }
@@ -153,7 +161,7 @@ function orderCheckout() {
 	location.href = "/order-checkout/customer-information";
 }
 $(document).ready(function() {
-	$('#gtc-coupon-alert').hide();
+	// $('#gtc-coupon-alert').hide();
 	$('#gtc-cart-alert').hide();
 	$('#gtc-cart-alert1').hide();
 });
@@ -358,17 +366,13 @@ $(document).ready(function() {
 								<label class="m-b-xs">
 									<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
 								{{!-- <input type="text" class="promo-text-control"> --}}
-								<div class="input-group mb-3">
+								<div class="input-group mb-3" id="gtc-coupon-alert">
 									  <input type="text" class="form-control text-control" id="coupon-input-code" placeholder="Search">
 									  <div class="input-group-append">
 									    <button class="btn" type="submit" onclick="applyGTCCoupon()"><i class="fas fa-caret-right"></i></button> 
 									  </div>
 									</div>
 							</div>
-							{{#ifCond couponUpdateErrorMessage '!=' ""}}
-							<p class="promo_code_p">{{{this.couponUpdateErrorMessage}}}</p>
-						{{/ifCond}}
-							<div class="text-center">
 								<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
 	                            <span class="ladda-spinner"></span>
