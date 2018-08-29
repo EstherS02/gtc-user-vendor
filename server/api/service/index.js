@@ -448,7 +448,6 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
 
 
 export function cartHeader(user) {
-    console.log(user)
     var queryObj = {};
     let includeArr = [];
 
@@ -505,20 +504,19 @@ export function cartHeader(user) {
                         // totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
                         // totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
 
-                        if(itemsValue[i].Product.moq){
-                            var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
+                        if (itemsValue[i].quantity) {
+							var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
-                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-                        }
-                        else{
-                            var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
+							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+						} else {
+							var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
 
-                            totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-                            totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-                            totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-                        }
+							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+						}
                     }
                 }
 

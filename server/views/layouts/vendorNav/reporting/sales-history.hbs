@@ -37,27 +37,34 @@
 </script>
 <script type="text/javascript">
   function selectDatefun() {
-    var val = $("#selectDate option:selected").val();
-    if (val) {
-      console.log();
-      $('#from').val("");
-      $('#to').val("");
+      var val = $("#selectDate option:selected").val();
+      if (val) {
+        console.log();
+        $('#from').val("");
+        $('#to').val("");
+      }
     }
-  }
-  $(function(){
-    $("#gtc-form-alert").hide();
-    $("#searchSaleshistory").submit(function(e) {
-            e.preventDefault();
-            let formInput = $("#searchSaleshistory :input").filter(function(index, element) {
-                return $(element).val() != '';
-            }).serialize();
-           if(formInput!='')
-            {
-              window.location.href = ' reporting/sales-history?' + formInput;
-             }
-          });
-     
-  });
+  $(function () {
+      $("#gtc-form-alert").hide();
+      $("#searchSaleshistory").submit(function (e) {
+        e.preventDefault();
+        let formInput = $("#searchSaleshistory :input").filter(function (index, element) {
+          return $(element).val() != '';
+        }).serialize();
+        if (formInput != '') {
+          window.location.href = ' reporting/sales-history?' + formInput;
+        }
+      });
+       $("#searchSaleshistory1").submit(function (e) {
+        e.preventDefault();
+        let formInput = $("#searchSaleshistory1 :input").filter(function (index, element) {
+          return $(element).val() != '';
+        }).serialize();
+        if (formInput != '') {
+          window.location.href = ' reporting/sales-history?' + formInput;
+        }
+      });
+    });
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -81,7 +88,7 @@
             <div class="content-body">
              <div class="row">
               <div class="col-md-7">
-                <form class="form-inline" id="searchOrder">
+                <form class="form-inline"  id="searchSaleshistory">
                   <div class="form-group mb-2">
                     <div class="select-container">
                       <select class="form-control-customized form-control-sm" name="dateSelect">
@@ -118,7 +125,7 @@
                 </form>
               </div>
               <div class="col-md-5">
-                <form id="searchSaleshistory" class="form-inline ml-auto pull-right"  >
+                <form id="searchSaleshistory1" class="form-inline ml-auto pull-right"  >
                   <div class="form-group mx-sm-3 mb-2">
                     <button class="btn btn-small btn-muted export-btn">EXPORT</button>
                   </div>

@@ -139,20 +139,19 @@ export function cart(req, res) {
 				for (var i = 0; i < itemsValue.length; i++) {
 
 					if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-						if (itemsValue[i].Product.moq) {
-							var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
-
-							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-						} else {
+						if (itemsValue[i].quantity) {
 							var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
 							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
 							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
 							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-						}
+						} else {
+							var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
 
+							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
+							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
+							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
+						}
 					}
 				}
 				totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];

@@ -653,10 +653,10 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 .btn:not(:disabled):not(.disabled) {
 	cursor: pointer;
 }
-.btn-success {
+/* .btn-success {
 	background: #14497f !important;
 	border-color: #14497f !important;
-}
+} */
 .btn-md {
 	font-size: 0.813em;
 	font-weight: 500;
@@ -682,7 +682,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	font-weight: 300;
 	font-size: 16px;
 }
-.header-lg-text .see-all {
+/* .header-lg-text .see-all {
 	font-size: 13px;
 	color: #fff;
 	float: right;
@@ -690,7 +690,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	text-decoration: none;
 	font-family: 'Roboto', sans-serif;
 	text-shadow: none;
-}
+} */
 .header-md-text {
 	font-weight: lighter;
 	font-size: 0.938em; 
