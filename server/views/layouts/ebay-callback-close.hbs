@@ -1,0 +1,9 @@
+<script>
+var ebayResponse = "{{{ebayResponseData}}}";
+try {
+	window.opener.onEbayCallbackClose(ebayResponse);
+} catch (error) {
+	alert(error);
+}
+window.close();
+</script>

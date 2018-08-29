@@ -154,6 +154,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'vendor_payout_stripe_id',
             allowNull: true
         },
+        vendor_payout_paypal_email:{
+            type: DataTypes.STRING(128),
+            field: 'vendor_payout_paypal_email',
+            allowNull: true
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',

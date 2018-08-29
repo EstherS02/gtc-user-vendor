@@ -58,6 +58,7 @@
     "passport-http": "^0.3.0",
     "passport-oauth2-client-password": "^0.1.2",
     "path": "^0.12.7",
+    "paypal-rest-sdk": "^1.8.1",
     "puppeteer": "^1.6.2",
     "select2": "~4.0",
     "sequelize": "^4.37.10",

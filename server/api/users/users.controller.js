@@ -151,7 +151,7 @@ export function create(req, res) {
         console.log('Error :::', error);
         res.status(500).send("Internal server error");
         return
-    }); /**/
+    });
 }
 
 export function userAuthenticate(req, res) {
@@ -304,10 +304,10 @@ export function changePassword(req, res) {
 }
 
 export function resetPassword(req, res) {
-    var queryObj,forgot_password_token,current_time,expire_time1,expire_time2;
+    var queryObj, forgot_password_token, current_time, expire_time1, expire_time2;
 
     if (req.body) {
-        req.checkBody('email','Missing Query Param').notEmpty();
+        req.checkBody('email', 'Missing Query Param').notEmpty();
         req.checkBody('new_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
@@ -335,21 +335,21 @@ export function resetPassword(req, res) {
             forgot_password_token: null,
             forgot_password_token_generated: null
         };
-        
 
-    if(result.forgot_password_token != forgot_password_token){
-        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
-        return;
-    }
 
-    current_time = new Date();
-    expire_time1 = result.forgot_password_token_generated;
-    expire_time2 = moment(expire_time1).add(24, 'hours');
+        if (result.forgot_password_token != forgot_password_token) {
+            res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+            return;
+        }
 
-    if(current_time >= expire_time2){
-        res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
-        return;
-    }
+        current_time = new Date();
+        expire_time1 = result.forgot_password_token_generated;
+        expire_time2 = moment(expire_time1).add(24, 'hours');
+
+        if (current_time >= expire_time2) {
+            res.status(400).send("The forgot password link sent to your mail has been expired. Please generate new forget password password link by clicking the above forgot password button.");
+            return;
+        }
         service.updateRow(UserModel, bodyParams, userId).then(function (response) {
             if (response) {
                 res.status(200).send("Your password has been updated successfully. Please login with the new password.")
@@ -365,37 +365,41 @@ export function resetPassword(req, res) {
 
 export function userProfile(req, res) {
 
-
     var userUpdate = JSON.parse(req.body.userUpdate);
-    var billingUpdate = JSON.parse(req.body.billingUpdate);
-    var shippingUpdate = JSON.parse(req.body.shippingUpdate);
-
-    console.log("******************************************",userUpdate);
-    console.log("===================================", billingUpdate);
-    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", shippingUpdate);
-
     var user_id = req.user.id;
-    billingUpdate['user_id'] = req.user.id;
-    billingUpdate['status'] = 1;
-    shippingUpdate['user_id'] = req.user.id;
-    shippingUpdate['status'] = 1;
     var billing_address_type = 1;
     var shipping_address_type = 2;
 
     service.updateRow('User', userUpdate, user_id)
         .then(function (row) {
 
-            if (billingUpdate) {
-                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                addressUpdate(user_id, billing_address_type, billingUpdate);
+            if (req.body.billingUpdate) {
+               var addressUpdatePromises = [];
+
+                var billingUpdate = JSON.parse(req.body.billingUpdate);
+                billingUpdate['user_id'] = req.user.id;
+                billingUpdate['status'] = 1;
+
+               addressUpdatePromises.push(addressUpdate(user_id, billing_address_type, billingUpdate));
+                return Promise.all(addressUpdatePromises);
+            }   
+        }).then(function(response){
+            if (req.body.shippingUpdate) {
+
+                var addressUpdatePromises = [];
+
+                var shippingUpdate = JSON.parse(req.body.shippingUpdate);
+                shippingUpdate['user_id'] = req.user.id;
+                shippingUpdate['status'] = 1;
+
+                addressUpdatePromises.push(addressUpdate(user_id, shipping_address_type, shippingUpdate));
+                return Promise.all(addressUpdatePromises);
             }
-            if (shippingUpdate) {
-                console.log("+++++++++++++++++++++++++++++++++++++++++++");
-                addressUpdate(user_id, shipping_address_type, shippingUpdate);
-            }
-            return res.status(200).send(row);
+        }).then(function(response){
+            return res.status(200).send("Updated Successfully");
         })
         .catch(function (err) {
+            console.log("Error::",err);
             res.status(500).send(err);
             return;
         })
@@ -408,33 +412,40 @@ function addressUpdate(user_id, address_type, obj) {
     }, [])
         .then(function (row) {
             if (row) {
-                updateAddress(obj, row.id);
-                return;
+                var updateAddressPromises = [];
+
+                updateAddressPromises.push(updateAddress(obj, row.id));
+                return Promise.all(updateAddressPromises);
             }
             else {
-                createAddress(obj);
-                return;
+                var createAddressPromises = [];
+
+                createAddressPromises.push(createAddress(obj));
+                return Promise.all(createAddressPromises);
             }
         }).catch(function (err) {
-            return;
+            console.log("Error::",err);
+            return Promise.reject(err);
         })
 }
 
 function createAddress(obj) {
     service.createRow('Address', obj)
         .then(function (create) {
-            return;
+            return Promise.resolve(create);
         }).catch(function (err) {
-            return;
+            console.log("Error::",err);
+            return Promise.reject(err);
         })
 }
 
 function updateAddress(obj, id) {
     service.updateRow('Address', obj, id)
         .then(function (update) {
-            return;
+            return Promise.resolve(update);
         }).catch(function (err) {
-            return;
+            console.log("Error::",err)
+            return Promise.reject(err);
         })
 }
 
@@ -502,18 +513,18 @@ export function forgotPassword(req, res) {
                 service.updateRow(userModel, bodyParams, user_id)
                     .then(function (result) {
 
-                        if(result){
+                        if (result) {
 
                             var forgot_password_token = bodyParams['forgot_password_token'];
                             delete user.salt;
                             delete user.hashed_pwd;
                             delete user.email_verified_token;
                             delete user.email_verified_token_generated;
-    
+
                             var queryObjEmailTemplate = {};
                             var emailTemplateModel = "EmailTemplate";
                             queryObjEmailTemplate['name'] = config.email.templates.passwordReset;
-    
+
                             service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
                                 .then(function (response) {
                                     if (response) {
@@ -523,8 +534,8 @@ export function forgotPassword(req, res) {
                                         var subject = response.subject;
                                         var body;
                                         body = response.body.replace('%USERNAME%', username);
-                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email+"&forgot_password_token="+forgot_password_token);
-    
+                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
+
                                         sendEmail({
                                             to: email,
                                             subject: subject,
@@ -539,7 +550,7 @@ export function forgotPassword(req, res) {
                                     res.status(500).send("Internal server error. Please try later.");
                                     return;
                                 });
-                        }else{
+                        } else {
                             res.status(404).send("Unable to reset password. Please try later");
                             return;
                         }
