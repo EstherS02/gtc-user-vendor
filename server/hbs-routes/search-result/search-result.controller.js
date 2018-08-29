@@ -5,6 +5,7 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 
 const service = require('../../api/service');
+const searchResultService = require('../../api/service/search-result.service');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
@@ -261,15 +262,28 @@ export function index(req, res) {
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypes: function (callback) {
+		countryWithCount: function (callback) {
 			var result = {};
-			var marketplaceTypeQueryObj = {};
+			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
-			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
-
+			categoryQueryObj['status'] = status["ACTIVE"];
 			productCountQueryParames['status'] = status["ACTIVE"];
+
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
+			}
 			if(marketplaceURl == 'wholesale')
 			{
 				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
@@ -286,92 +300,16 @@ export function index(req, res) {
 			{
 				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
 			}
-			else
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.category) {
-				productCountQueryParames['product_category_id'] = req.query.category;
-			}
-			if (req.query.sub_category) {
-				productCountQueryParames['sub_category_id'] = req.query.sub_category;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-			service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
+			searchResultService.countryWithProductCount(productCountQueryParames)
 				.then(function (response) {
+					console.log("rettiidasss::");
 					return callback(null, response);
+
 
 				}).catch(function (error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
-		locations: function (callback) {
-			console.log("location Query");
-			var result = {};
-			var locationQueryObj = {};
-			var productCountQueryParames = {};
-
-			locationQueryObj['status'] = status["ACTIVE"];
-
-			productCountQueryParames['status'] = status["ACTIVE"];
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.category) {
-				productCountQueryParames['product_category_id'] = req.query.category;
-			}
-			if (req.query.sub_category) {
-				productCountQueryParames['sub_category_id'] = req.query.sub_category;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-
-			model['Country'].findAll({
-				where: locationQueryObj,
-				include: [{
-					model: model['Product'],
-					where: productCountQueryParames,
-					attributes: [],
-					required: false
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['Country.id']
-			}).then(function (results) {
-				console.log(results.length);
-				if (results.length > 0) {
-					model['Product'].count({
-						where: productCountQueryParames
-					}).then(function (count) {
-						result.count = count;
-						result.rows = JSON.parse(JSON.stringify(results));
-						return callback(null, result);
-					}).catch(function (error) {
-						console.log('Error:::', error);
-						return callback(error, null);
-					});
-				} else {
-					result.count = 0;
-					result.rows = [];
-					return callback(null, result);
-				}
-			}).catch(function (error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
 		},
 		categoriesWithCount: function (callback) {
 			var result = {};
@@ -379,8 +317,8 @@ export function index(req, res) {
 			var productCountQueryParames = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
-
 			productCountQueryParames['status'] = status["ACTIVE"];
+
 			if (req.query.marketplace) {
 				productCountQueryParames['marketplace_id'] = req.query.marketplace;
 			}
@@ -395,7 +333,72 @@ export function index(req, res) {
 					like: '%' + req.query.keyword + '%'
 				};
 			}
-			service.getCategory(categoryQueryObj, productCountQueryParames)
+			if(marketplaceURl == 'wholesale')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
+			else if(marketplaceURl == 'shop')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			}
+			else if(marketplaceURl == 'services')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
+			}
+			else if(marketplaceURl == 'lifestyle')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+			}
+			searchResultService.categoryWithProductCount(productCountQueryParames)
+				.then(function (response) {
+					console.log("rettiidasss::");
+					return callback(null, response);
+
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		countMarketPlaceTypes: function (callback) {
+			var result = {};
+			var categoryQueryObj = {};
+			var productCountQueryParames = {};
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+			productCountQueryParames['status'] = status["ACTIVE"];
+
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = parseInt(req.query.marketplace_type);
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
+			}
+			if(marketplaceURl == 'wholesale')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
+			else if(marketplaceURl == 'shop')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			}
+			else if(marketplaceURl == 'services')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
+			}
+			else if(marketplaceURl == 'lifestyle')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+			}
+			searchResultService.marketplacetypeWithProductCount(productCountQueryParames)
 				.then(function (response) {
 					console.log("rettiidasss::");
 					return callback(null, response);
@@ -427,8 +430,8 @@ export function index(req, res) {
 				marketPlaceTypeSelected: results.marketPlaceTypeSelected,
 				productResults: results.products,
 				topFeaturedProducts: results.topProducts,
-				marketPlaceTypes: results.marketPlaceTypes,
-				locations: results.locations,
+				marketPlaceTypes: results.countMarketPlaceTypes,
+				locations: results.countryWithCount,
 				categoriesWithCount: results.categoriesWithCount,
 				marketplaceURl: marketplaceURl,
 				cartheader: results.cartCounts,
@@ -439,8 +442,6 @@ export function index(req, res) {
 		}
 	});
 }
-
-
 function changeDateFormat(inputDate){  // expects Y-m-d
     var splitDate = inputDate.split('/');
     if(splitDate.count == 0){

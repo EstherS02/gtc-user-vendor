@@ -291,6 +291,7 @@
 			<div class="list-group panel">
 				<ul class="list-group" id="menu">
 					<li class="list-group-item">
+						<p>test{{moment format="HH:mm:ss"}}</p>
 						<a {{#ifCond queryURI.dateSelect "==" 'last7day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last7day'}}class="text-blue"{{/ifCond}} href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
 							<span>LESS THAN 1 WEEK</span>
 						</a>

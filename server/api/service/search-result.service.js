@@ -1,0 +1,104 @@
+'use strict';
+
+const async = require('async');
+const sequelize = require('sequelize');
+const status = require('../../config/status');
+const model = require('../../sqldb/model-connect');
+const config = require('../../config/environment');
+
+export async function categoryWithProductCount(productQueryObj) {
+	var results = {};
+
+	results['count'] = 0;
+	results['rows'] = [];
+
+	try {
+		var categoriesResponse = await model['Category'].findAll({
+			where: {
+				status: status['ACTIVE']
+			},
+			attributes: ['id', 'name', 'code', 'description'],
+			include: [{
+				model: model['SubCategory'],
+				attributes: ['id', 'category_id', 'name', 'code']
+			}]
+		});
+		var categories = await JSON.parse(JSON.stringify(categoriesResponse));
+		await Promise.all(categories.map(async (category, i) => {
+			productQueryObj['product_category_id'] = category.id;
+			var productCount = await model['Product'].count({
+				where: productQueryObj
+			});
+			results['count'] += productCount;
+			categories[i].product_count = productCount;
+		}));
+		results['rows'] = categories;
+		return results;
+	} catch (error) {
+		return error;
+	}
+}
+
+export async function countryWithProductCount(productQueryObj) {
+	var results = {};
+
+	results['count'] = 0;
+	results['rows'] = [];
+
+	try {
+		var locationResponse = await model['Country'].findAll({
+			where: {
+				status: status['ACTIVE']
+			},
+			attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+			include: [{
+				model: model['Product'],
+				where: productQueryObj,
+				attributes: [],
+				required: false
+			}],
+			group: ['Country.id']
+		});
+		var countries = await JSON.parse(JSON.stringify(locationResponse));
+		var productCount = await model['Product'].count({
+			where: productQueryObj
+		});
+		results['count'] = productCount;
+		results['rows'] = countries;
+		return results;
+	} catch (error) {
+		return error;
+	}
+}
+
+export async function marketplacetypeWithProductCount(productQueryObj) {
+	var results = {};
+
+	results['count'] = 0;
+	results['rows'] = [];
+
+	try {
+		var marketplaceTypeResponse = await model['MarketplaceType'].findAll({
+			where: {
+				status: status['ACTIVE']
+			},
+			attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
+			include: [{
+				model: model['Product'],
+				where: productQueryObj,
+				attributes: [],
+				required: false
+			}],
+			group: ['MarketplaceType.id']
+		});
+		var marketplaceTypes = await JSON.parse(JSON.stringify(marketplaceTypeResponse));
+		var productCount = await model['Product'].count({
+			where: productQueryObj
+		});
+		results['count'] = productCount;
+		results['rows'] = marketplaceTypes;
+		return results;
+	} catch (error) {
+		return error;
+	}
+}
