@@ -22,7 +22,11 @@
             <div class="col-md-3" style="height: 650px;overflow-y: scroll;overflow-x: hidden;">
                 <div class="row">			
                     <div class="col-md-10 geo_sort_bg">
-                        <p>Showing <b> 1660 products</b></p>
+                        {{#if advancedSearchProducts.length}}
+                        <p>Showing <b> {{advSearchVendorObj.length}} products</b></p>
+                        {{else}}
+                        <p>Showing <b> {{geoLocateObj.length}} products</b></p>
+                        {{/if}}
                     </div>
                     <div class="col-md-2 geo_arrow_bg">
                         <a href="/geo-locate" style="color:#fff;"><i class="fas fa-caret-right"></i></a>
@@ -113,7 +117,6 @@
     var vendorGroupedObj = {{{DisplayJSON geoLocateByVendor}}}
     var mapObjVendor = Object.keys(vendorGroupedObj)
 
-
     var advSearchVendorObj = {{{DisplayJSON advancedSearchByVendor}}}
     var advMapObj = Object.keys(advSearchVendorObj);
 
@@ -123,7 +126,7 @@
             formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
 
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 10,
+                zoom: 8,
                 center: formattedLocation
             });
 
@@ -148,26 +151,8 @@
 
             }
 
-/*
-            for(let i=0; i< mapObjVendor.length; i++){
-                let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
-                var content = `<p><img src="`+ mapObjProduct[0].vendor_profile_pic_url +`" style="width: 50px; height: 50px;">
-                <span style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</span>
-                <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
-                </p>`;
-                let more_content = "";
-                for(let j=0; j< mapObjProduct.length; j++){
-                    if(j === 4){
-                        break;
-                    }
-                    more_content = more_content + `<a href="javascript:;"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
-                }
-                content = content + `<p>`+ more_content + `<a href="javascript:;">See All</a></p>`;
-                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content);
-            }
-*/
-
-        map.fitBounds(bounds);
+            if(advMapObj.length > 0)
+                map.fitBounds(bounds);
 
         }
 

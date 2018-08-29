@@ -16,10 +16,12 @@ let sqlQueries = {
     vendor.longitude,
     product.product_name,
     product.id AS product_id,
+    product.product_slug AS product_slug,
     product_media.url AS product_media_base_image,
     country.name AS country_name,
     category.name AS category_name,
     sub_category.name AS sub_category_name,
+    marketplace.id AS marketplace_id,
     marketplace.name AS marketplace_name,
     marketplace_type.name AS marketplace_type_name,
     COALESCE(product_ratings.product_rating, 0) AS product_rating,
@@ -41,7 +43,7 @@ let sqlQueries = {
     LEFT JOIN marketplace_type ON product.marketplace_type_id = marketplace_type.id
     LEFT JOIN product_ratings ON product.id = product_ratings.product_id
     HAVING
-        distance < 60
+        distance < 300
     ORDER BY
         product.product_name`;
 
@@ -90,7 +92,7 @@ let sqlQueries = {
 		return query;
 	},
 	compareProductQuery: function(params) {
-	    let query = `SELECT product.id, product.product_name, product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, product.product_status, vendor.user_id, vendor.vendor_name, product_media.url, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id WHERE product.id IN(` + params + `) GROUP BY product.id`;
+	    let query = `SELECT product.id, product.product_name,product.marketplace_type_id,product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, product.product_status, vendor.user_id, vendor.vendor_name, product_media.url,users.first_name, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id LEFT JOIN users on users.id=vendor.user_id  WHERE product.id IN(` + params + `) GROUP BY product.id`;
 	    return query;
 	}
 };

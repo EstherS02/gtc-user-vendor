@@ -27,24 +27,27 @@ export function socketMsg(io) {
 			} else {
 				console.log("user already connected");
 			}
+			socket.broadcast.emit('userOnline', userArray);
 			console.log("***********************user Array*************", userArray);
-			userOnline(user);
-			//SET USER AS ONLINE
+		//	userOnline(user);
+
 		});
 
 		// {id: user_id}
 		socket.on('user:leave', function(user) {
+			console.log("logout array before", userArray);
 			console.log("USER LOGOUT", user);
 			socket.leave(user.id);
-			if(userArray.indexOf(user.id) == -1){
+			if(userArray.indexOf(user) == -1){
 				console.log("user already removed");
 			} else {
 				console.log('logout..');
 				var userIndex = userArray.indexOf(user.id);
 				userArray.splice(userIndex, 1);
 			}
-			userOffline(user);
-			//SET USER AS OFFLINE
+		//	userOffline(user);
+			console.log("logout userArray", userArray);
+			socket.broadcast.emit('userOnline', userArray);
 		});
 
 		//{id: 1, user: user_id}
@@ -72,30 +75,32 @@ export function socketMsg(io) {
 			}
 			console.log("After talkThreadArray", talkThreadArray);
 		});
-		// {id: threadid, message:"Hello", from: user_id, to: user_id}
+		// {id: threadid, message:"Hello", from: user_id, to_id: user_id}
 		socket.on('chat:send', function(talk) {
-			console.log("TALK **********", talk);
+			//console.log("TALK **********", talk);
 			//task database
 			return talkCreate(talk).then(function(result) {
-				console.log("RESULT **************", result.talk_thread_id);
-				io.to(result.talk_thread_id).emit('chat:receive', result)
-				/*var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
-					console.log("*******threadArrObj",threadArrObj);
-					return threadArrObj = talk.id
+				//console.log("RESULT **************", result.talk_thread_id);
+				//io.to(result.talk_thread_id).emit('chat:receive', result)
+				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
+					return threadArrObj = talk.talk_thread_id
 				});
-				if (talkThreadCheck.users.indexOf(talk.to) == -1) {
+				if (talkThreadCheck.users.indexOf(talk.to_id) == -1) {
+					console.log("userArray", userArray);
 					var userId = _.find(userArray, function(userArrObj) {
-						return userArrObj = talk.id
+						return userArrObj = talk.talk_thread_id
 					});
 					if (userId) {
-						io.to(talk.to).emit('chat:receive', result);
+						console.log("user is online, sending to his room...")
+						io.to(talk.to_id).emit('chat:receive', result);
 					} else {
-						console.log("user not in this page");
+						console.log("user offline");
 					}
 					io.to(result.talk_thread_id).emit('chat:receive', result);
 				} else {
+					console.log("Users are in that room");
 					io.to(result.talk_thread_id).emit('chat:receive', result);
-				}*/
+				}
 			})
 		});
 		//{id: thread_id, user: user_id}
@@ -116,7 +121,7 @@ export function socketMsg(io) {
 			console.log("userArray", userArray);
 			connections.splice(connections.indexOf(socket), 1);
 			console.log("%s length", connections.length);
-			console.log("%s Disconnected", socket.userId);
+			//console.log("%s Disconnected", socket.userId);
 		})
 	})
 }
