@@ -682,7 +682,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	font-weight: 300;
 	font-size: 16px;
 }
-/* .header-lg-text .see-all {
+.header-lg-text .see-all {
 	font-size: 13px;
 	color: #fff;
 	float: right;
@@ -690,7 +690,7 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 	text-decoration: none;
 	font-family: 'Roboto', sans-serif;
 	text-shadow: none;
-} */
+}
 .header-md-text {
 	font-weight: lighter;
 	font-size: 0.938em; 
