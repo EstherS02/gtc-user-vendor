@@ -138,6 +138,12 @@ var all = {
 		keySecret: process.env.STRIPE_SECRET_KEY
 	},
 
+	payPalConfig: {
+	    'mode': 'sandbox', //sandbox or live
+		'client_id': process.env.PAYPAL_CLIENT_ID,
+		'client_secret': process.env.PAYPAL_SECRET_KEY
+	},
+
 	amazonImportConfig: {
 		accessKeyId: process.env.AMAZON_ACCESS_KEY_ID,
 		secretAccessKey: process.env.AMAZON_SECRET_KEY,

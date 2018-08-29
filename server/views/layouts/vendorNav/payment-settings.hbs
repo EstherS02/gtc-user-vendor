@@ -19,101 +19,128 @@
 					<div class="ibox-content">
 						<div class="ibox-title">
 							<h2>Payment Settings</h2>
+							<br/>
 						</div>
 						<div class="content-body">
-							<div class="row currency">
-								<div class="col-md-5">
-									<select class="payment-selection">
-										<option value="Currency" selected>Currency($)</option>
-									</select>
-								</div>
-								<div class="col-md-5 payment-settings">
-									<p>This controls what currency your products will ne displayed in </p>
-								</div>
-							</div>
-							{{!--
-							<div class="row currency">
-								<div class="col-md-5">
-									<select class="payment-selection">
-										<option value="Currency" selected>Selling Location(s)</option>
-									</select>
-								</div>
-								<div class="col-md-5 payment-settings">
-									<p> This let's you limit which countries you are willing sell to</p>
-								</div>
-							</div>
-							<div class="row currency">
-								<div class="col-md-5">
-									<select class="payment-selection">
-										<option value="Currency" selected>Shipping Location(s)</option>
-									</select>
-								</div>
-								<div class="col-md-5 payment-settings">
-									<p> This let's you limit which countries you are willing to ship to</p>
-								</div>
-							</div> --}}
-
-							<hr/>
-							<h5 class="gtc-title">Connect Your Accounts </h5>
-							<p class="cya1">Sell more by accepting more payment options. Connect your PayPal ans Stripe account or sign up for your free account
-								today.
-							</p>
-							<div class="row">
-								{{!--
-								<div class="col-md-5 paypal">
-									<img class="paypal-img" src="../../img/paypal.jpg" width="100%">
-									<p class="cya">Connect an existing PayPal account: </p>
-									<div class="row">
-										<div class="col-md-8">
-											<input class="paypal-email" type="text" name="email" placeholder="Enter Your Paypal Email" />
-										</div>
-										<div class="col-md-4">
-											<button class="connect-btn">CONNECT </button>
+							<form id="paymentSettingForm" class="form">
+								<div class="row">
+									<div class="col-lg-4">
+										<div class="form-group">
+											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
+											 id="currency_id">
+												<option disabled selected>Currency</option>
+												{{#each currency}}
+												<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+												{{/each}}
+											</select>
 										</div>
 									</div>
-									<p class="cya">Don't have a PayPal account? </p>
-									<div class="row">
-										<div class="col-md-12">
-											<button class="connect-btn"> CREATE A NEW PAYPAL ACCOUNT </button>
+									<div class="col-lg-8">
+										<div class="form-group">
+											<p>
+												<small>This controls what currency your products will be displayed in.</small>
+											</p>
 										</div>
 									</div>
-									<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction. </p>
-								</div> --}}
-								<div class="col-md-5">
-									<img src="../../img/stripe.jpg" width="100%">
-									<p class="cya">Connect an existing Stripe account: </p>
-									<div class="row">
-										<div class="col-md-8">
-											<input class="paypal-email" type="text" name="id" placeholder="Enter Your Stripe Id" />
-										</div>
-										<div class="col-md-4">
-											<button class="connect-btn" id="connect">CONNECT </button>
-										</div>
-									</div>
-									<p class="cya">Don't have a stripe account?</p>
-									<div class="row">
-										<div class="col-md-12">
-											<button onclick="window.location=https://stripe.com/" class="connect-btn"> CREATE A NEW STRIPE ACCOUNT </button>
-										</div>
-									</div>
-									<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +0.30 per transaction. </p>
 								</div>
-							</div>
-							<hr/>
-							<p>
-								{{!--
-								<button class="update-btn" style="padding: 5px 20px;">UPDATE </button> --}}
-								<button type="submit" class="ladda-button btn update-btn" data-style="expand-left">
-									<span class="ladda-label">Update</span>
-									<span class="ladda-spinner"></span>
-								</button>
-								{{!--
-								<button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button> --}}
-								<button type="reset" class="ladda-button btn cancel-btn" data-style="expand-left">
-									<span class="ladda-label">Cancel</span>
-									<span class="ladda-spinner"></span>
-								</button>
-							</p>
+								<hr/>
+								<br/>
+								<div class="row">
+									<div class="col-lg-12 ibox-title">
+										<h2>Connect Your Accounts</h2>
+									</div>
+								</div>
+								<br/>
+								<div class="row">
+									<div class="col-lg-12">
+										<p>
+											<small>Sell more by accepting more payment options. Connect your PayPal ans Stripe account or sign up for your free account
+												today.</small>
+										</p>
+									</div>
+								</div>
+								<br/>
+								<div class="row">
+									<div class="col-5">
+										<img class="paypal-img" src="../../img/paypal.jpg" width="100%">
+										<br/>
+										<div class="row">
+											<div class="col-12 text-center" style="padding-top:2px;">
+												<p>
+													<small>Connect an existing PayPal account: </small>
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-8">
+												<input type="text" placeholder="Enter Your Paypal Email" class="form-control-customized form-control-sm" />
+											</div>
+											<div class="col-4">
+												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CONNECT</button>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 text-center" style="padding-top:4px;">
+												<p>
+													<small>Don't have a PayPal account? </small>
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12">
+												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CREATE A NEW PAYPAL ACCOUNT</button>
+											</div>
+										</div>
+										<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction.</p>
+									</div>
+									<div class="col-5">
+										<img class="paypal-img" src="../../img/stripe.jpg" width="100%">
+										<br/>
+										<div class="row">
+											<div class="col-12 text-center" style="padding-top:2px;">
+												<p>
+													<small>Connect an existing PayPal account: </small>
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-8">
+												<input type="text" placeholder="Enter Your Paypal Email" class="form-control-customized form-control-sm" />
+											</div>
+											<div class="col-4">
+												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CONNECT</button>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 text-center" style="padding-top:4px;">
+												<p>
+													<small>Don't have a PayPal account? </small>
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12">
+												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CREATE A NEW PAYPAL ACCOUNT</button>
+											</div>
+										</div>
+										<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction.</p>
+									</div>
+								</div>
+								<br/>
+								<hr/>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn btn-small btn-muted" type="submit" data-style="expand-left">
+											<span class="ladda-label">UPDATE</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>

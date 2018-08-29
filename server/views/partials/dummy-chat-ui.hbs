@@ -14,9 +14,9 @@
                 <a href="javascript:;" class="text-white">
                   <span id="minim_chat_window" class="fas fa-window-minimize glyphicon glyphicon-minus icon_minim"></span>
                 </a>
-                <a href="javascript:;" class="text-white">
+                {{!-- <a href="javascript:;" class="text-white">
                   <span class="fas fa-times glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span>
-                </a>
+                </a> --}}
               </div>
             </div>
           </div>
@@ -67,53 +67,57 @@
             "id": {{{ DisplayJSON talkThreads.threadId }}},
             "user": {{{ DisplayJSON LoggedInUser.id }}}
           }
-          console.log("socketChat", socketChat);
-      //var socket = io();
-      console.log("socket", socket);
-      socket.emit('chat:join', socketChat);
-      // $("#messagebody").animate({
+          //console.log("socketChat", socketChat);
+          //var socket = io();
+          console.log("socket", socket);
+          socket.emit('chat:join', socketChat);
+          // $("#messagebody").animate({
           // scrollTop: $("#messagebody")[0].scrollHeight
           // }, 1000);
-        var element = document.querySelector('#messagebody');
-    element.scrollTop = element.scrollHeight - element.clientHeight;
-    }
+          var element = document.querySelector('#messagebody');
+          element.scrollTop = element.scrollHeight - element.clientHeight;
+        }
     
-    socket.on('chat:receive', function(data){
-     var dt = new Date();
-     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-     console.log("emitted data", data);
-     var base;
-     console.log("socketChat.user", socketChat.user);
-     if(data.from_id == socketChat.user) {
-      base = "base_sent"
-      console.log("base_sent", base);
-    } else {
-      base = "base_receive"
-      console.log("basereceive", base);
-    } 
-    var body = '<div class="row msg_container '+base+'">' +
-    '<div class="col-md-10 col-xs-10 ">' +
-    '<div class="messages msg_sent">' +
-    '<p>' + data.message + '</p>' +
-    '</div>' +
-    '</div>' +
-    '</div>';
-    $(body).appendTo("#messagebody");
-        // $('#btn-input').val('');
-        $("#messagebody").animate({
-          scrollTop: $("#messagebody")[0].scrollHeight
-        }, 'slow');
-      }) 
+        socket.on('userOnline', function(users){
+          console.log("userArray********", users);
+        })
+
+        socket.on('chat:receive', function(data){
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //console.log("emitted data", data);
+        var base;
+        // console.log("socketChat.user", socketChat.user);
+        if (data.from_id == socketChat.user) {
+          base = "base_sent"
+          console.log("base_sent", base);
+        } else {
+          base = "base_receive"
+          // console.log("basereceive", base);
+        }
+        var body = '<div class="row msg_container '+base+'">' +
+        '<div class="col-md-10 col-xs-10 ">' +
+        '<div class="messages msg_sent">' +
+        '<p>' + data.message + '</p>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+        $(body).appendTo("#messagebody");
+          // $('#btn-input').val('');
+          $("#messagebody").animate({
+            scrollTop: $("#messagebody")[0].scrollHeight
+          }, 'slow');
+        })
   })
 
       $(document).on('click', '.panel-heading span.icon_minim', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
-          $this.parents('.panel').find('.panel-body').slideUp(1000);
+          $this.parents('.panel').find('.panel-body').slideUp(500);
           $this.addClass('panel-collapsed');
           $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
         } else {
-          $this.parents('.panel').find('.panel-body').slideDown(1000);
+          $this.parents('.panel').find('.panel-body').slideDown(500);
           $this.removeClass('panel-collapsed');
           $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
         }
@@ -198,7 +202,7 @@
   }
 
   .icon_minim {
-    padding: 2px 10px;
+    padding: 9px 10px;
   }
 
   .msg_container_base {

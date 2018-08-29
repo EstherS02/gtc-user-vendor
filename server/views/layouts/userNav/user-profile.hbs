@@ -161,7 +161,7 @@
 
 			if ($('#sameAddr').is(":checked")) {
 
-				delete billingUpdate.address_type;
+				//delete billingUpdate.address_type;
 				var shippingUpdate = billingUpdate;
 				shippingUpdate.address_type = 2;
 				shippingUpdate.same_shipping_address = 1;
@@ -655,7 +655,7 @@
 								<hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn update-btn" id="userUpdateBtn" type="submit" data-style="expand-left">
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
 											<span class="ladda-label">Update</span>
 											<span class="ladda-spinner"></span>
 										</button>

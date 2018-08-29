@@ -27,7 +27,8 @@
                 email: $('#loginInputEmail').val(),
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
-                emitSocket.userJoin(user);
+                socket.emit('user:join', user);
+                //emitSocket.userJoin(user);
                // console.log("socket io working", emitSocket);
                 window.location = "/";
             }).catch(function(error) {
