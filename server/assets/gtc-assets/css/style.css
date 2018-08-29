@@ -1824,3 +1824,28 @@ p.summary-info span {
 	line-height: 1.6;
 	font-size: 0.813em;
 }
+.header-lg-text .see-all {
+	font-size: 13px;
+	color: #fff;
+	float: right;
+	line-height: 3;
+	text-decoration: none;
+	font-family: 'Roboto', sans-serif;
+	text-shadow: none;
+}
+.header-lg-text .see-all:hover {
+	color: #a4bfda;
+}
+.btn-success {
+	background: #14497f !important;
+	border-color: #14497f !important;
+}
+.btn-success:hover {
+	background-color: #71a1db;
+}
+.btn-muted:hover{
+	background-color: #919daa;
+}
+.update-btn:hover{
+	background-color: #2560ab;
+}

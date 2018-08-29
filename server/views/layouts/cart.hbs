@@ -57,7 +57,7 @@ function UpdateAllCartItems() {
 				$('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
 				$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
 					$("#gtc-cart-alert").slideUp(500);
-					//location.reload();
+					location.reload();
 				});
 			} else {
 				$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
@@ -237,7 +237,7 @@ $(document).ready(function() {
 													{{/ifCond}}
 													{{#ifCond marketPlace.id '==' 3}}
 													<h3 class="m-cart-title">
-														<a href="../service/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+														<a href="../services/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
 													</h3>
 													{{/ifCond}}
 													{{#ifCond marketPlace.id '==' 4}}
@@ -267,7 +267,7 @@ $(document).ready(function() {
 														{{/ifCond}}
 														{{#ifCond marketPlace.id '==' 3}}
 														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<a class="text-500" href="../service/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}" title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
+															<a class="text-500" href="../services/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}" title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
 														</div>
 														{{/ifCond}}
 														{{#ifCond marketPlace.id '==' 4}}

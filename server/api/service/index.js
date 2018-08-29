@@ -448,7 +448,6 @@ export function getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryPa
 
 
 export function cartHeader(user) {
-    console.log(user)
     var queryObj = {};
     let includeArr = [];
 
