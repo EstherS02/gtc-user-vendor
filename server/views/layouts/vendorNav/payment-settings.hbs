@@ -1,13 +1,39 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-
 <script>
 	$(document).ready(function () {
-		$("#connect").click(function () {
-			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=http://5702ac37.ngrok.io/api/auth'
+
+		$("#gtc-payment-setting-alert").hide();
+
+		$("#stripeConnect").click(function () {
+			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://5c8607a2.ngrok.io/payment-settings'
 		});
+
+		$('#paymentSettingForm').submit(function (e) {
+			e.preventDefault();
+			let paymentSettingInput = $("#paymentSettingForm :input").filter(function (index, element) {	
+				return $(element).val() != '';
+			}).serialize();
+           $.ajax({
+                type: 'PUT',
+				url: '/api/vendor/'+{{vendorPaymentInfo.id}},
+                data: paymentSettingInput,
+				success: function (data) {
+                   $('#gtc-payment-setting-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-payment-setting-alert .payment-setting-message').text("Updated Successfully")
+						$("#gtc-payment-setting-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-payment-setting-alert").slideUp(500);
+						});
+						setTimeout(function () {
+							location.reload(true);
+						}, 1000);
+				},
+				error: function (error) {
+                    console.log('error', error);
+                }
+		   });
+		})
 	});
 </script>
-
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -21,16 +47,24 @@
 							<h2>Payment Settings</h2>
 							<br/>
 						</div>
+						<div class="alert" id="gtc-payment-setting-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="payment-setting-message"></span>
+						</div>
 						<div class="content-body">
 							<form id="paymentSettingForm" class="form">
 								<div class="row">
 									<div class="col-lg-4">
 										<div class="form-group">
-											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
-											 id="currency_id">
+											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="currency_id">
+												{{#if vendorPaymentInfo.currency_id}}
+												<option disabled selected value="{{vendorPaymentInfo.currency_id}}">{{vendorPaymentInfo.Currency.name}}</option>
+												{{else}}
 												<option disabled selected>Currency</option>
-												{{#each currency}}
-												<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+												{{/if}} {{#each currency}}
+												<option value="{{this.id}}">{{this.name}}</option>
 												{{/each}}
 											</select>
 										</div>
@@ -55,7 +89,8 @@
 									<div class="col-lg-12">
 										<p>
 											<small>Sell more by accepting more payment options. Connect your PayPal ans Stripe account or sign up for your free account
-												today.</small>
+												today.
+											</small>
 										</p>
 									</div>
 								</div>
@@ -63,7 +98,24 @@
 								<div class="row">
 									<div class="col-5">
 										<img class="paypal-img" src="../../img/paypal.jpg" width="100%">
+										<br/> {{#if vendorPaymentInfo.vendor_payout_paypal_email}}
 										<br/>
+										<div class="row">
+											<div class="col-12">
+												<input type="button" value="YOUR PAYPAL ACCOUNT CONNECTED" class="form-control-customized form-control-sm" />
+											</div>
+										</div>
+										<br/>
+										<div class="row">
+											<div class="col-6">
+												<input type="button" value="CONNECTED PAYPAL EMAIL :" class="btn btn-small" style="cursor:default" />
+											</div>
+											<div class="col-6">
+												<input type="text" placeholder="Paypal email" name="vendor_payout_paypal_email" value="{{vendorPaymentInfo.vendor_payout_paypal_email}}"
+												 class="form-control-customized form-control-sm" />
+											</div>
+										</div>
+										{{else}}
 										<div class="row">
 											<div class="col-12 text-center" style="padding-top:2px;">
 												<p>
@@ -72,11 +124,9 @@
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-8">
-												<input type="text" placeholder="Enter Your Paypal Email" class="form-control-customized form-control-sm" />
-											</div>
-											<div class="col-4">
-												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CONNECT</button>
+											<div class="col-12">
+												<input type="text" placeholder="Enter Your Paypal Email" name="vendor_payout_paypal_email" class="form-control-customized form-control-sm"
+												/>
 											</div>
 										</div>
 										<div class="row">
@@ -88,41 +138,59 @@
 										</div>
 										<div class="row">
 											<div class="col-12">
-												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CREATE A NEW PAYPAL ACCOUNT</button>
+												<button type="button" onclick="window.open('https://www.paypal.com/in/webapps/mpp/account-selection')" class="ladda-button btn btn-small btn-muted"
+												 style="width:100%">CREATE A NEW PAYPAL ACCOUNT</button>
 											</div>
 										</div>
+										{{/if}}
 										<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction.</p>
 									</div>
 									<div class="col-5">
 										<img class="paypal-img" src="../../img/stripe.jpg" width="100%">
+										<br/> {{#if vendorPaymentInfo.vendor_payout_stripe_id}}
 										<br/>
+										<div class="row">
+											<div class="col-12">
+												<input type="button" value="YOUR STRIPE ACCOUNT CONNECTED" class="form-control-customized form-control-sm" />
+											</div>
+										</div>
+										<br/>
+										<div class="row">
+											<div class="col-5">
+												<input type="button" value="CONNECTED STRIPE ID :" class="btn btn-small" style="cursor:default" />
+											</div>
+											<div class="col-7">
+												<input type="text" placeholder="StripeId" value="{{vendorPaymentInfo.vendor_payout_stripe_id}}" class="form-control-customized form-control-sm"
+												 readonly />
+											</div>
+										</div>
+										{{else}}
 										<div class="row">
 											<div class="col-12 text-center" style="padding-top:2px;">
 												<p>
-													<small>Connect an existing PayPal account: </small>
-												</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-8">
-												<input type="text" placeholder="Enter Your Paypal Email" class="form-control-customized form-control-sm" />
-											</div>
-											<div class="col-4">
-												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CONNECT</button>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-12 text-center" style="padding-top:4px;">
-												<p>
-													<small>Don't have a PayPal account? </small>
+													<small>Connect an existing Stripe account: </small>
 												</p>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-12">
-												<button class="ladda-button btn btn-small btn-muted" style="width:100%">CREATE A NEW PAYPAL ACCOUNT</button>
+												<button class="btn btn-small" id="stripeConnect" style="width:100%">CONNECT</button>
 											</div>
 										</div>
+										<div class="row">
+											<div class="col-12 text-center" style="padding-top:4px;">
+												<p>
+													<small>Don't have a Stripe account? </small>
+												</p>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12">
+												<button type="button" onclick="window.open('https://dashboard.stripe.com/register')" class="ladda-button btn btn-small btn-muted"
+												 style="width:100%">CREATE A NEW STRIPE ACCOUNT</button>
+											</div>
+										</div>
+										{{/if}}
 										<p class="cya">Cost for a PayPal account is 0% monthly, with 2.9% +.030 per transaction.</p>
 									</div>
 								</div>
