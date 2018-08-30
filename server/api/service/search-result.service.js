@@ -102,3 +102,39 @@ export async function marketplacetypeWithProductCount(productQueryObj) {
 		return error;
 	}
 }
+
+export async function durationWithProductCount(productQueryObj) {
+	var results = {};
+
+	results['count'] = 0;
+	results['rows'] = [];
+
+	try {
+		var categoriesResponse = await model['Category'].findAll({
+			where: {
+				status: status['ACTIVE']
+			},
+			attributes: ['id', 'name', 'code', 'description'],
+			include: [{
+				model: model['SubCategory'],
+				attributes: ['id', 'category_id', 'name', 'code']
+			}]
+		});
+		var categories = await JSON.parse(JSON.stringify(categoriesResponse));
+		await Promise.all(categories.map(async (category, i) => {
+			productQueryObj['product_category_id'] = category.id;
+			var productCount = await model['Product'].count({
+				where: productQueryObj
+			});
+			results['count'] += productCount;
+			categories[i].product_count = productCount;
+		}));
+		results['rows'] = categories;
+		console.log("****************************888",results)
+		return results;
+	} catch (error) {
+		console.log("****************************888",error)
+		return error;
+	}
+}
+

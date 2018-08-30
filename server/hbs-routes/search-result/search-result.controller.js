@@ -11,6 +11,7 @@ const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
+const durationConfig=require('../../config/duration');
 
 export function index(req, res) {
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -42,37 +43,45 @@ export function index(req, res) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
 
-	var dateSelect = req.query.dateSelect;
+	var from = req.query.fromdate;
+	var to =req.query.todate;
 	var start_date;
 	var end_date;
-	if (dateSelect) {
-		queryURI['dateSelect'] = dateSelect;
-		end_date = moment().add(0, 'd').toDate();
-		if (dateSelect == "today") {
-		   var convertMoment = moment();
-           start_date =  new Date(convertMoment);
-         
-		} else if (dateSelect == "last7day") {
-			start_date = moment().add(-7, 'd').toDate();
-			end_date = start_date;
-		} else if (dateSelect == "last30day") {
-			start_date = moment().add(-30, 'd').toDate();
-		} else if (dateSelect == "last1year") {
-			start_date = moment().add(-1, 'y').toDate();
-		} else if (dateSelect == "last30year") {
-			start_date = moment().add(-30, 'y').toDate();
-		}
+	if(req.query.fromdate)
+	{
+		start_date = moment(req.query.fromdate).startOf('day').format('YYYY-MM-DDTHH:mm:ss')
+		console.log("Start date &&&&&&&&&&&&&&&&&&&",start_date)
+	}
+	if(req.query.todate)
+	{
+		end_date = moment(req.query.todate).endOf('day').format('YYYY-MM-DDTHH:mm:ss');
+		console.log("Start date &&&&&&&&&&&&&&&&&&&",end_date)
 	}
 
-	if (dateSelect) {
-		queryPaginationObj.dateSelect = req.query.dateSelect;
+	if (from && to) {
+		queryPaginationObj.fromdate = req.query.fromdate;
+		queryPaginationObj.todate = req.query.todate;
 		queryParameters['created_on'] = {
 			$between: [start_date, end_date]
 		};
-		queryURI['start_date'] = start_date;
-		queryURI['end_date'] = end_date;
-		delete req.query.dateSelect;
+		queryURI['fromdate'] = start_date;
+		queryURI['todate'] = end_date;
+		delete req.query.fromdate;
+		delete req.query.todate;
 	}
+
+	var durations={};
+	var startDateForDuration=moment().add(0, 'd').toDate();
+	var weekenddate=moment().add(-7, 'd').toDate();
+	var monthEndDate= moment().add(-30, 'd').toDate();
+	var monthly=moment().add(-1, 'y').toDate();
+	var yearly=moment().add(-30, 'y').toDate();
+	durations['startDate']=moment(startDateForDuration).format('YYYY-MM-DD');
+	durations['weekenddate']=moment(weekenddate).format('YYYY-MM-DD');
+	durations['monthEndDate']=moment(monthEndDate).format('YYYY-MM-DD');
+	durations['monthly']=moment(monthly).format('YYYY-MM-DD');
+	durations['yearly']=moment(yearly).format('YYYY-MM-DD');
+	console.log(durations);
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -173,6 +182,13 @@ export function index(req, res) {
 		queryURI['field'] = req.query.field;
 		queryParameters['field'] = req.query.field;
 	}
+
+	// if (marketplaceURl = 'lifestyle') {
+	// 	queryParameters['created_on'] = {
+	// 		'$gte': start_date,
+	// 		'$lte': end_date
+	// 	}
+	// }
 	queryParameters['status'] = status["ACTIVE"];
 	//selectedMarketPlace = req.query.marketplace;
 	async.series({
@@ -236,7 +252,6 @@ export function index(req, res) {
             queryParameters['status'] = 1;
 			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
 				.then(function (results) {
-					console.log("results:::"+results.rows);
 					return callback(null, results);
 				})
 				.catch(function (error) {
@@ -269,6 +284,13 @@ export function index(req, res) {
 
 			categoryQueryObj['status'] = status["ACTIVE"];
 			productCountQueryParames['status'] = status["ACTIVE"];
+
+			// if (marketplaceURl = 'lifestyle') {
+			// 	productCountQueryParames['created_on'] = {
+			// 		'$gte': start_date,
+			// 		'$lte': end_date
+			// 	}
+			// }
 
 			if (req.query.marketplace) {
 				productCountQueryParames['marketplace_id'] = req.query.marketplace;
@@ -319,6 +341,13 @@ export function index(req, res) {
 			categoryQueryObj['status'] = status["ACTIVE"];
 			productCountQueryParames['status'] = status["ACTIVE"];
 
+			// if (marketplaceURl = 'lifestyle') {
+			// 	productCountQueryParames['created_on'] = {
+			// 		'$gte': start_date,
+			// 		'$lte': end_date
+			// 	}
+			// }
+
 			if (req.query.marketplace) {
 				productCountQueryParames['marketplace_id'] = req.query.marketplace;
 			}
@@ -365,6 +394,13 @@ export function index(req, res) {
 			var categoryQueryObj = {};
 			var productCountQueryParames = {};
 
+			// if (marketplaceURl = 'lifestyle') {
+			// 	productCountQueryParames['created_on'] = {
+			// 		'$gte': start_date,
+			// 		'$lte': end_date
+			// 	}
+			// }
+
 			categoryQueryObj['status'] = status["ACTIVE"];
 			productCountQueryParames['status'] = status["ACTIVE"];
 
@@ -408,10 +444,66 @@ export function index(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		countWithDuration: function (callback) {
+			var result = {};
+			var categoryQueryObj = {};
+			var productCountQueryParames = {};
+
+			// if (marketplaceURl = 'lifestyle') {
+			// 	productCountQueryParames['created_on'] = {
+			// 		'$gte': start_date,
+			// 		'$lte': end_date
+			// 	}
+			// }
+
+			categoryQueryObj['status'] = status["ACTIVE"];
+			productCountQueryParames['status'] = status["ACTIVE"];
+
+			if (req.query.marketplace) {
+				productCountQueryParames['marketplace_id'] = req.query.marketplace;
+			}
+			if (req.query.marketplace_type) {
+				productCountQueryParames['marketplace_type_id'] = parseInt(req.query.marketplace_type);
+			}
+			if (req.query.location) {
+				productCountQueryParames['product_location'] = req.query.location;
+			}
+			if (req.query.keyword) {
+				productCountQueryParames['product_name'] = {
+					like: '%' + req.query.keyword + '%'
+				};
+			}
+			if(marketplaceURl == 'wholesale')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
+			}
+			else if(marketplaceURl == 'shop')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
+			}
+			else if(marketplaceURl == 'services')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
+			}
+			else if(marketplaceURl == 'lifestyle')
+			{
+				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
+			}
+			searchResultService.durationWithProductCount(productCountQueryParames)
+				.then(function (response) {
+					console.log("rettiidasss::");
+					return callback(null, response);
+
+
+				}).catch(function (error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function (error, results) {
 		queryPaginationObj['maxSize'] = 5;
-		console.log("resssss",results.categoriesWithCount.rows.SubCategories);
+		console.log("******************************************",results.countWithDuration);
 		if (!error) {
 			res.render('search', {
 				title: "Global Trade Connect",
@@ -433,9 +525,12 @@ export function index(req, res) {
 				marketPlaceTypes: results.countMarketPlaceTypes,
 				locations: results.countryWithCount,
 				categoriesWithCount: results.categoriesWithCount,
+				countWithDuration:results.countWithDuration,
 				marketplaceURl: marketplaceURl,
 				cartheader: results.cartCounts,
-				layout_type: layout
+				durationConfig:durationConfig,
+				layout_type: layout,
+				durations: durations
 			});
 		} else {
 			res.render('search', error);
