@@ -9,7 +9,7 @@ export function socketMsg(io) {
 		var talkThreadArray = [];
 		var connections = [];
 		console.log("userArray", userArray);
-	io.sockets.on('connection', function(socket) {
+	io.on('connection', function(socket) {
 		console.log("userArray", userArray);
 		connections.push(socket);
 		console.log("connections", connections.length);
@@ -27,11 +27,14 @@ export function socketMsg(io) {
 			} else {
 				console.log("user already connected");
 			}
-			socket.broadcast.emit('userOnline', userArray);
-			console.log("***********************user Array*************", userArray);
+			socket.broadcast.emit('user:online', userArray);
 		//	userOnline(user);
 
 		});
+
+		socket.on('user:get_online_users', function(test){
+			io.emit('user:online', userArray);
+		})
 
 		// {id: user_id}
 		socket.on('user:leave', function(user) {
@@ -44,6 +47,7 @@ export function socketMsg(io) {
 				console.log('logout..');
 				var userIndex = userArray.indexOf(user.id);
 				userArray.splice(userIndex, 1);
+				io.emit('user:online', userArray);
 			}
 		//	userOffline(user);
 			console.log("logout userArray", userArray);

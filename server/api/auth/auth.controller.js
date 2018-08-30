@@ -95,6 +95,7 @@ export function login(req, res) {
 			"Authorization": "Basic " + authCode
 		}
 	}, function (err, response, body) {
+		console.log("response.statusCode", response.statusCode, body);
 		if (response.statusCode != 200) {
 			res.status(401).send("Username and password do not match.");
 			return;

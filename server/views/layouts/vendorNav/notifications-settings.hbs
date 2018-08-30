@@ -1,0 +1,158 @@
+<script>
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				console.log(i)
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+	var oldArray = [];
+	$(document).ready(function() {
+		$("#gtc-notify-alert").hide();
+		$("#updateBtn").prop("disabled", true);
+		var checkboxes = document.getElementsByTagName("input");
+		$(":checkbox:checked").each(function(i) {
+			oldArray.push($(this).val());
+		});
+	});
+
+	function updateNotification(e) {
+		$('#updateBtn').prop('disabled', true);
+		var chkArray = [];
+		$(":checkbox:checked").each(function(i) {
+			if ($(this).val() != "on") {
+				chkArray.push($(this).val());
+			}
+		});
+		var a = oldArray.diff(chkArray);
+		var formData = {};
+		formData.data = JSON.stringify(a);
+		//api Call 
+		if (a.length > 0) {
+			$.ajax({
+				type: 'POST',
+				url: "/api/notification/addSettings",
+				data: formData,
+				success: function(data, text) {
+
+					$('#gtc-notify-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-notify-alert .notify-message').text("Notification Settings Changed Successfully")
+					$("#gtc-notify-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-notify-alert").slideUp(500);
+						location.reload();
+					});
+
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+					$('#gtc-notify-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-notify-alert .notify-message').text(error.responseText);
+					$("#gtc-notify-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-notify-alert").slideUp(500);
+					});
+
+				}
+			});
+		} else {
+			$('#gtc-notify-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-notify-alert .notify-message').text("Please do some change on list");
+			$("#gtc-notify-alert").fadeTo(7000, 500).slideUp(500, function() {
+				$("#gtc-notify-alert").slideUp(500);
+			});
+
+		}
+	}
+
+	Array.prototype.diff = function(a) {
+		return this.filter(x => !a.includes(x))
+			.concat(a.filter(x => !this.includes(x)))
+	};
+
+	$(document).ready(function() {
+
+		$('#CheckBoxList').on('change', 'input[type=checkbox]', function() {
+			$('#updateBtn').prop('disabled', false);
+		});
+	});
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Notification Settings</h2>
+						</div>
+						<div class="alert" id="gtc-notify-alert">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="notify-message"></span>
+						</div>
+						<div class="content-body">
+							<div class="row">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" onclick="selectAll(this);">
+											</th>
+											<th>Event</th>
+											<th>Code</th>
+											<th>Description</th>
+										</tr>
+									</thead>
+									<tbody id="CheckBoxList">
+										{{#each notification}}
+										<tr>
+											{{#if this.VendorNotificationSettings}}
+											<td>
+												<input type="checkbox" value="{{this.id}}">
+											</td>
+											{{else}}
+											<td>
+												<input type="checkbox" value="{{this.id}}" checked>
+											</td>
+											{{/if}}
+											<td>
+												{{#if this.VendorNotificationSettings}}
+												<span class="exclamation" style="padding:0px">
+													<i class="fas fa-exclamation-circle "></i>
+												</span>
+												{{else}}
+												<i class="fas fa-check-circle text_green_color"></i>
+												{{/if}} {{this.name}}
+											</td>
+											<td>{{this.code}}</td>
+											<td>{{this.description}}</td>
+										</tr>
+										{{/each}}
+									</tbody>
+								</table>
+								<button class="ladda-button btn update-btn" id="updateBtn" onclick="updateNotification(this)" data-style="expand-left" ><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
+								{{!-- <button class="btn btn-sm "  style="margin-left:10px"> update</button> --}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}} 
