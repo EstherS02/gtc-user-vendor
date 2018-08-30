@@ -629,3 +629,38 @@ function sendVendorEmail(order,user){
         })
 
 }
+// plan payment method starts//
+export function makeplanPayment(req, res) {
+    var desc = "GTC ORDER";
+    stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
+        then(function (response) {
+            if (response.paid = "true") {
+                var paymentModel = {
+                    paid_date: new Date(response.created),
+                    paid_amount: response.amount / 100.0,
+                    payment_method: paymentMethod['STRIPE'],
+                    status: status['ACTIVE'],
+                    payment_response: JSON.stringify(response)
+                };
+                service.createRow('Payment', paymentModel);
+                var vendorplanModel = {
+                  plan_id : req.body.plan_id
+                  
+                };
+                var queryObj={
+                    vendor_id:req.body.vendor_id
+                };
+                service.updateRecord('VendorPlan', vendorplanModel,queryObj);
+                 return res.status(200).json({
+                    data: response
+                });
+            }
+            else {
+                return res.status(500).json({
+                    data: err
+                });
+            }
+
+        });
+}
+//plan payment method ends//

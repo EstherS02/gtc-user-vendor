@@ -317,6 +317,8 @@ export function createBulk(req, res) {
 }
 
 export function create(req, res) {
+
+	
 	var bodyParams = req.body;
 
 	bodyParams["created_on"] = new Date();

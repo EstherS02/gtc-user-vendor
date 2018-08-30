@@ -356,3 +356,20 @@ function string_to_slug(str) {
 
 	return str;
 }
+
+export function planDetails(params) {
+	return new Promise((resolve, reject) => {
+		if (params) {
+			Sequelize_Instance.query(RawQueries.planDetailsQuery(params), {
+				model: model['vendor_plan'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
+}
