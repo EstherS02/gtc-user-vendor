@@ -1824,7 +1824,7 @@ p.summary-info span {
 	line-height: 1.6;
 	font-size: 0.813em;
 }
-/*.header-lg-text .see-all {
+.header-lg-text .see-all {
 	font-size: 13px;
 	color: #fff;
 	float: right;
@@ -1832,7 +1832,7 @@ p.summary-info span {
 	text-decoration: none;
 	font-family: 'Roboto', sans-serif;
 	text-shadow: none;
-}*/
+}
 .header-lg-text .see-all:hover {
 	color: #a4bfda;
 }
