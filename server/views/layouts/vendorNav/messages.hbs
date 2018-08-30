@@ -1,18 +1,7 @@
 <script type="text/javascript">
-  var userInfo = {
-    {
-      {
-        DisplayJSON LoggedInUser
-      }
-    }
-  }
-  var messenger = {
-    {
-      {
-        DisplayJSON messenger
-      }
-    }
-  }
+  var userInfo = {{{ DisplayJSON LoggedInUser}}}
+  var messenger = {{{ DisplayJSON messenger }}}
+  console.log("messenger", messenger);
   var threadId;
   var to_id = null;
 
@@ -57,38 +46,37 @@
       if (element.from_id == userInfo.id) {
         time = 'pull-left';
         vendorInformation = element;
-        domElement = domElement +
-          `<li class="right clearfix">
-			<span class="chat-img pull-right">
-				<img src="` +userProfile(element.User) +`" alt="User Avatar">
-			</span>
-			<div class="chat-body clearfix">
-				<div class="header">
-					<strong class="primary-font pull-right">` + element.User.first_name + ' ' + lastname(element.User.last_name) +`</strong>
-					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
-				</div>
-				<p>` + element.message +`</p>
-			</div>
-		  </li>`;
+        domElement = domElement + `<li class="right clearfix">
+            <span class="chat-img pull-right">
+				      <img src="` +userProfile(element.User) +`" alt="User Avatar">
+			     </span>
+      			<div class="chat-body clearfix">
+      				<div class="header">
+      					<strong class="primary-font pull-right">` + element.User.first_name + ' ' + lastname(element.User.last_name) +`</strong>
+      					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
+      				</div>
+      				<p>` + element.message +`</p>
+      			</div>
+      		  </li>`;
       } else {
         userInformation = element;
         time = 'pull-right';
-        domElement = domElement +
-          `<li class="left clearfix" >
-			<span class="chat-img pull-left">
-				<img src="` +userProfile(element.User) +`" alt="User Avatar">
-			</span>
-			<div class="chat-body clearfix">																		
-				<div class="header m-b-xs">		
-					<strong class="primary-font pull-left">` +element.User.first_name + " " + lastname(element.User.last_name) + `</strong><small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
-				</div>
-				<p>` + element.message +`</p>
-			</div>
+        domElement = domElement + `<li class="left clearfix" >
+      			<span class="chat-img pull-left">
+      				<img src="` +userProfile(element.User) +`" alt="User Avatar">
+      			</span>
+      			<div class="chat-body clearfix">																		
+      				<div class="header m-b-xs">		
+      					<strong class="primary-font pull-left">` +element.User.first_name + " " + lastname(element.User.last_name) + `</strong><small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
+      				</div>
+      				<p>` + element.message +`</p>
+      			</div>
 		 </li>`;
       }
     });
-    $("#message").show();
-    document.getElementById("message").innerHTML = domElement;
+    $('.chats').attr('id', threadId);        
+    $("#"+threadId).show();
+    document.getElementById(threadId).innerHTML = domElement;
     var element = document.querySelector('#scrollMessage');
     element.scrollTop = element.scrollHeight - element.clientHeight;
     $('#replayBox').show();
@@ -135,6 +123,7 @@
     socket.on('user:online', function (users) {
       console.log("user:online", users);
       messenger.forEach(function (element) {
+        console.log("element", element);
         if (users.indexOf(element.User.id) != -1) {
           document.getElementById("online" + element.User.id).innerHTML =
             `<i class="on b-white top" style="border: green"></i>`;
@@ -147,52 +136,75 @@
 
     var commonInfo, base, base1, time;
     
-    socket.on('chat:receive', function (data) {
-      console.log("emitted socket", data);
-      if (data.from_id == userInfo.id) {
-        base = "pull-right"
-        base1 = "right";
-        time = 'pull-left';
-        commonInfo = vendorInformation;
-        console.log("base sent", base);
-      } else {
-        base = "pull-left"
-        base1 = "left"
-        time = 'pull-right';
-        commonInfo = userInformation;
-        console.log("base receive", base);
-      }
-     
-      var body = `<li class="` + base1 + ` clearfix" >
-					<span class="chat-img ` +base + `">
-						<img src="` + userProfile(commonInfo.User) +`" alt="User Avatar">
-					</span>
-					<div class="chat-body clearfix">
-						<div class="header m-b-xs">
-							<strong class="primary-font ` +base + `">` + commonInfo.User.first_name + " " + lastname(commonInfo.User.last_name) +
-		        `			</strong>
-					        <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
-					       `</small>
-						</div>
-						<p>` + data.message +`</p>
-					</div>
-				</li>`;
-      `<li class="left clearfix">
-			<div class="chat-body clearfix">
-				<div class="header">
-					<small class="text-muted ` +base + `"></small>
-				</div>
-				<p>` + data.message + `</p>
-			</div>
-		</li>`;
-      $(body).appendTo("#message");
-      //document.getElementById("message").innerHTML = body;
-      var element = document.querySelector('#scrollMessage');
-      element.scrollTop = element.scrollHeight - element.clientHeight;
-      $("#message").animate({
-        scrollTop: $("#message")[0].scrollHeight - $("#message")[0].clientHeight
-      }, 'slow');
-    });
+  socket.on('chat:receive', function(data) {
+    console.log("emitting........", data);
+   /* messenger.forEach(function(element) {
+      if (data.from_id == element.User.id) {*/
+
+        messenger.forEach(function (element) {
+          console.log("element iterating", element);
+          //data.from_id
+          if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
+            if(data.from_id == userInfo.id) {
+              document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
+            } else {
+              document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> `+ data.message +`<strong>` ;
+            }
+            //console.log("emitted socket", data);
+          }
+        })
+
+        if (data.from_id == userInfo.id) {
+          base = "pull-right"
+          base1 = "right";
+          time = 'pull-left';
+          commonInfo = vendorInformation;
+          console.log("base sent", base);
+        } else {
+          base = "pull-left"
+          base1 = "left"
+          time = 'pull-right';
+          commonInfo = userInformation;
+          console.log("base receive", base);
+        }
+
+        var body = `<li class="` + base1 + ` clearfix" >
+                      <span class="chat-img ` + base + `">
+                        <img src="` + userProfile(commonInfo.User) + `" alt="User Avatar">
+                      </span>
+                      <div class="chat-body clearfix">
+                        <div class="header m-b-xs">
+                          <strong class="primary-font ` + base + `">` + commonInfo.User.first_name + " " + lastname(commonInfo.User.last_name) +
+                      `     </strong>
+                              <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
+                      `</small>
+                        </div>
+                        <p>` + data.message + `</p>
+                      </div>
+                    </li>`;
+                    `<li class="left clearfix">
+                  <div class="chat-body clearfix">
+                    <div class="header">
+                      <small class="text-muted ` + base + `"></small>
+                    </div>
+                    <p>` + data.message + `</p>
+                  </div>
+                </li>`;
+
+                
+                //$('.chats').attr('id', data.talk_thread_id);
+        $(body).appendTo("#"+data.talk_thread_id);
+        //document.getElementById("message").innerHTML = body;
+        var element = document.querySelector('#scrollMessage');
+        element.scrollTop = element.scrollHeight - element.clientHeight;
+        $("#"+data.talk_thread_id).animate({
+          scrollTop: $("#"+data.talk_thread_id)[0].scrollHeight - $("#"+data.talk_thread_id)[0].clientHeight
+        }, 'slow');
+        
+     /* }
+    })*/
+
+  });
 
     $("#btn-chat").click(function () {
       send();
@@ -247,7 +259,7 @@
                                   <span
                                     class="m-l-sm"></span>
                                 </div>
-                                <div class="last-messager text-muted" id="lastMessage">{{#if this.TalkThread.Talks}}{{this.TalkThread.Talks.[0].message}}{{/if}}</div>
+                                <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">{{#if this.TalkThread.Talks}}<small>{{this.TalkThread.Talks.[0].message}}</small>{{/if}}</div>
                                 <small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
                                 <small class="chat-alert online" id="online{{this.User.id}}">
                                 </small>
