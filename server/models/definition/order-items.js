@@ -82,6 +82,26 @@ module.exports = (sequelize, DataTypes) => {
             field: 'cancelled_on',
             allowNull: true
         },
+        reason_for_return: {
+            type: DataTypes.STRING(64),
+            field: 'reason_for_return',
+            allowNull: true
+        },
+        return_requested_on: {
+            type: DataTypes.DATE,
+            field: 'return_requested_on',
+            allowNull: true
+        },
+        return_approved_on: {
+            type: DataTypes.DATE,
+            field: 'return_approved_on',
+            allowNull: true
+        },
+        return_received_on: {
+            type: DataTypes.DATE,
+            field: 'return_received_on',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',

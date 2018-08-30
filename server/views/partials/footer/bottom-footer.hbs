@@ -46,7 +46,7 @@
                                 <ul class="footer-menu-list">
                                     <li><a href="#">Customer Service</a></li>
                                     <li><a href="#">Refund Policy</a></li>
-                                    <li><a href="#">FAQs</a></li>
+                                    <li><a href="/login#FAQ" >FAQs</a></li>
                                     <li><a href="#">Terms & Conditions</a></li>
                                     <li><a href="#">Privacy Policy</a></li>
                                     <li><a href="#">Blog</a></li>
@@ -58,7 +58,7 @@
                                 <h4>ACCOUNT CENTER</h4>
                                 <ul class="footer-menu-list">
                                     {{#if LoggedInUser.id}}
-                                    <li><a href="/user-profile">My Account</a></li>
+                                    <li><a href="/user/my-profile">My Account</a></li>
                                     {{else}}
                                     <li><a href="/login">Sign Up / Sign In</a></li>
                                     {{/if}}
@@ -73,7 +73,7 @@
                                 <h4>QUICK JUMP</h4>
                                 <ul class="footer-menu-list">
                                     <li><a href="/products/search?field=product_rating&order=desc">Top Rated Products</a></li>
-                                    <li><a href="#">Sale Products</a></li>
+                                    <li><a href="/products/search?field=product_selling_count&order=desc">Sale Products</a></li>
                                     <li><a href="/products/search?field=created_on&order=desc">Recent Products</a></li>
                                     <li><a href="/products/search?is_featured_product=1">Featured Products</a></li>
                                     <li><a href="/products/search?field=product_selling_count&order=desc">Best Selling Products</a></li>
