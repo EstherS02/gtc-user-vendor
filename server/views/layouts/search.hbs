@@ -180,147 +180,93 @@
 			</div>
 		</div>
 	</div>
-	<div class="row m-b-sm">
-		<div class="col-md-3 showing_categ search-list-left">
-			<p>
-				<b>FILTER BY CATEGORY</b>
-			</p>
-			<p id="searchListCategory" class="cat_bg_title">
-				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'category&sub_category'}}">
-					<span>ALL CATEGORIES ({{categoriesWithCount.count}})</span>
-				</a>
-			</p>
-			<div class="list-group panel category-fixed">
-				<ul class="list-group">
-					{{#each categoriesWithCount.rows}}
-					<li class="list-group-item">
-						<a data-toggle="collapse" href="#collapseCategory{{this.id}}" role="button" aria-expanded="true" class="collapsed coll" aria-controls="collapseCategory">
 
-							<span>{{this.name}} ({{this.product_count}})</span>
-						</a>
-						{{!-- <a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a> --}}
-						<ul class="list-group collapse {{#ifCond ../queryURI.category '==' this.id }} show {{/ifCond}}" id="collapseCategory{{this.id}}">
-							{{#each this.SubCategories}}
-							<li class="list-group-item">
-								<a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 category=../this.id sub_category=this.id) 'null'}}">
-									<span>{{this.name}}</span>
-								</a>
-								<ul></ul>
-							</li>
-							{{/each}}
-						</ul>
-					</li>
-					{{/each}}
-					
-				</ul>
-			</div>
+	<div class="row m-b-sm">
+		<div class="col-md-3 search-list-left ">
+
+			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY CATEGORY</h5>
+			<p class="right-header-xs bg-{{marketplaceURl}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+			<ul class="right-list-view category-fixed">
+				{{#each categoriesWithCount.rows}}
+				<li>
+					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a>
+					<ul class="inner-list-view collapse" id="list{{this.name}}">
+						{{#each this.SubCategories}}
+						<li>
+							<a {{#ifCond ../../selectedSubCategory "==" this.id}} class="text-black" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 category=../this.id sub_category=this.id) 'null'}}">
+								<span>{{this.name}}</span>
+							</a>
+						</li>
+						{{/each}}
+					</ul>
+				</li>
+				{{/each}}
+			</ul>
+			
 			{{#ifCond marketplaceURl "==" "wholesale"}}
-			<p style="margin-top: 20px;">
-				<b>FILTER BY TYPE</b>
-			</p>
-			<p id="searchListMarketplace" class="cat_bg_title">
-				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
-					<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
-				</a>
-			</p>
-			<div class="list-group panel">
-				<ul class="list-group">
-					{{#each marketPlaceTypes.rows}}
-					<li class="list-group-item">
-						<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
-							<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
-						</a>
-					</li>
-					{{/each}}
-				</ul>
-			</div>
+			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY TYPE</h5>
+			<p class="right-header-xs bg-{{marketplaceURl}}">ALL TYPES ({{categoriesWithCount.count}})</p>
+			<ul class="right-list-view">
+				{{#each marketPlaceTypes.rows}}
+				<li>
+					<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
+						<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
+					</a>
+				</li>
+				{{/each}}
+			</ul>
+
 			{{else ifCond marketplaceURl "==" "products"}}
-			<p style="margin-top: 20px;">
-				<b>FILTER BY TYPE</b>
-			</p>
-			<p id="searchListMarketplace" class="cat_bg_title">
-				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 marketplace=marketPlace.WHOLESALE) 'marketplace_type'}}">
-					<span>ALL TYPES ({{marketPlaceTypes.count}})</span>
-				</a>
-			</p>
-			<div class="list-group panel">
-				<ul class="list-group">
-					{{#each marketPlaceTypes.rows}}
-					<li class="list-group-item">
-						<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
-							<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
-						</a>
-					</li>
-					{{/each}}
-				</ul>
-			</div>
+			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY TYPE</h5>
+			<p class="right-header-xs bg-{{marketplaceURl}}">ALL TYPES ({{categoriesWithCount.count}})</p>
+			<ul class="right-list-view">
+				{{#each marketPlaceTypes.rows}}
+				<li>
+					<a {{#ifCond ../selectedMarketPlaceType "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=../marketPlace.WHOLESALE marketplace_type=this.id) 'null'}}">
+						<span>{{this.code}} - {{this.name}} ({{this.product_count}})</span>
+					</a>
+				</li>
+				{{/each}}
+			</ul>
 			
 			{{/ifCond}}
 
-			{{#ifCond marketplaceURl "!=" "lifestyle"}}
-			<p style="margin-top: 20px;">
-				<b>FILTER BY LOCATION</b>
-			</p>
-			<p id="searchListLocation" class="cat_bg_title">
-				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
-					<span>GLOBAL ({{locations.count}})</span>
-				</a>
-			</p>
-			<div class="list-group panel category-fixed">
-				<ul class="list-group">
-					{{#each locations.rows}}
-					<li class="list-group-item">
-						<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
-							<span>{{this.name}} ({{this.product_count}})</span>
-						</a>
-					</li>
-					{{/each}}
-				</ul>
-			</div>
+			 {{#ifCond marketplaceURl "!=" "lifestyle"}}
+			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
+			<p class="right-header-xs bg-{{marketplaceURl}}">GLOBAL ({{locations.count}})</p>
+			<ul class="right-list-view category-fixed">
+				{{#each locations.rows}}
+				<li>
+					<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
+						<span>{{this.name}} ({{this.product_count}})</span>
+					</a>
+				</li>
+				{{/each}}
+			</ul>
 			{{/ifCond}}
 
 			{{#ifCond marketplaceURl "==" 'lifestyle'}}
-			<p style="margin-top: 20px;">
-				<b>FILTER BY DURATION</b>
-			</p>
-			<p id="searchListLocation" class="cat_bg_title">
-				<a href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1) 'null'}}">
-					<span>ALL TYPES ({{categoriesWithCount.count}})</span>
-				</a>
-			</p>
-			<div class="list-group panel">
-				<ul class="list-group" id="menu">
-					<li class="list-group-item">
-						<p>test{{moment format="HH:mm:ss"}}</p>
-						<a {{#ifCond queryURI.dateSelect "==" 'last7day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last7day'}}class="text-blue"{{/ifCond}} href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last7day")'null'}}">
-							<span>LESS THAN 1 WEEK</span>
-						</a>
-					</li>
-
-					<li class="list-group-item">
-						<a {{#ifCond queryURI.dateSelect "==" 'last30day'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30day'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30day") 'null'}}">
-							<span>LESS THAN 1 MONTH</span>
-						</a>
-					</li>
-
-					<li class="list-group-item">
-						<a {{#ifCond queryURI.dateSelect "==" 'last1year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last1year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last1year") 'null'}}">
-							<span>MONTHLY</span>
-						</a>
-					</li>
-
-					<li class="list-group-item">
-						<a {{#ifCond queryURI.dateSelect "==" 'last30year'}}class="text-black"{{/ifCond}} {{#ifCond queryURI.dateSelect "!=" 'last30year'}}class="text-blue"{{/ifCond}} class="text-blue" href="../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject page=1 dateSelect="last30year") 'null'}}">
-							<span>YEARLY</span>
-						</a>
-					</li>
-
-				</ul>
-			</div>
+			<h5 class="right-header-sm">FILTER BY DURATION</h5>
+			<p class="right-header-xs bg-{{marketplaceURl}}">ALL CATEGORIES ({{countWithDuration.count}})</p>
+			<ul class="right-list-view">
+				{{#each durationConfig}}
+				<li>
+					
+					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.duration}}">{{this.duration}} </a>
+					<ul class="inner-list-view collapse" id="list{{this.duration}}">
+						{{#each this.innerDuration}}
+						<li>
+							<a href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 fromdate=../../durations.startDate todate=../../durations.weekenddate)'null'}}">
+							<span>{{this.label}}</span>
+							</a>
+						</li>
+						{{/each}}
+					</ul>
+				</li>
+				{{/each}}
+			</ul>
 			{{/ifCond}}
-
 		</div>
-
 
 		<div class="col-md-9">
 			<div class="search-sm-header">
