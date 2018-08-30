@@ -545,6 +545,9 @@ a:hover
 	font-size: 14px;
 	font-weight: bold;
 }
+.acc_button:hover{
+    background-color: #f06984;
+}
 .box2_align h2
 {
 	font-family: 'Oswald', sans-serif;
@@ -1057,6 +1060,9 @@ width: 100%;
     padding: 8px 50px;
 	margin-bottom: 20px;
 	cursor: pointer;
+}
+.shop_checkout_btn:hover{
+    background-color: rgb(238, 96, 122);
 }
 .banner_bg
 {
