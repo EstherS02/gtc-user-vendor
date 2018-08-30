@@ -7,6 +7,15 @@
    {
      if(document.getElementById("selectplan").value!='')
      {
+         if(document.getElementById("selectplan").value=='1')
+         {
+           $('#usercarddetails').hide();
+
+         }
+         else
+         {
+             $('#usercarddetails').show();
+         }
         $('#upgrade').show();
      }
      else
@@ -17,12 +26,20 @@
 
    
 });
+function vendorRedirection()
+{
+   window.location = '/vendor-form';
+}
 function paymentSuccess()
 {
     window.location = '/upgradeplan';
 }
 function makePayment() {
         var plan_id=document.getElementById("selectplan").value;
+        if(plan_id=='')
+        {
+            var plan_id=$('#vendor_plan_id').val();
+        }
         $.ajax({
 		url: '/api/payment/planpay',
 		type: 'POST',
@@ -111,6 +128,7 @@ function makePayment() {
 											</div>
                                         </div>
                                     </div>
+                                    <input type="hidden" id="vendor_plan_id" value="{{PlanDetails.[0].plan_id }}"
                                     <div class="col-md-1">
                                       <div class="text-nowrap" onclick="showDetails()"><a href="javascript:;">show details</a> </div>
                                       </div>
@@ -130,7 +148,7 @@ function makePayment() {
                                              
                                             </div>
                                              <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" onchange="changeStatus(this);">
+												<select class="form-control-customized form-control-sm" name="services" id="vendorcarddetails">
 													{{#ifCond carddetails '!=' '' }}
 							   	
 												     {{#each carddetails}}
@@ -177,7 +195,7 @@ function makePayment() {
                                       </div>
                                   
                                 </div>
-                                   <div class="row">
+                                   <div class="row" id="usercarddetails">
                                     <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
                                         Select card details
                                     </div>
@@ -187,7 +205,7 @@ function makePayment() {
                                              
                                             </div>
                                              <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" id="selectplan">
+												<select class="form-control-customized form-control-sm" name="services">
 														{{#ifCond carddetails '!=' '' }}
 							   	
 												     {{#each carddetails}}
@@ -216,7 +234,7 @@ function makePayment() {
                                         <input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
 									
                                  <hr style="margin-top: 10px" />
-                                <div class="row" id="upgrade" style="display:none">
+                                <div class="row">
                                      {{#if LoggedInUser.Vendor.id}}
                                     <div class="col-md-2" >
                                      
@@ -233,10 +251,28 @@ function makePayment() {
                                             <span class="ladda-spinner"></span>
                                         </button>
                                     </div>
+                                    {{else}}
+                                     <div class="col-md-2" id="upgrade"  >
+                                     
+                                        <button type="button" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" onclick="vendorRedirection()">
+                                            <span class="ladda-label">Ok</span>
+                                            <span class="ladda-spinner"></span>
+                                        </button>
+                                    </div>
+                                   
+                                    <div class="col-md-2">
+                                       
+                                        <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+                                            <span class="ladda-label">Cancel</span>
+                                            <span class="ladda-spinner"></span>
+                                        </button>
+                                    </div>  
+
                                      {{/if}}
                                     <div class="col-md-8">
                                     </div>
                                 </div>
+                                
                             </form>
                         </div>
                     </div>
