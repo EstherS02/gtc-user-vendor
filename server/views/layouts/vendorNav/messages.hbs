@@ -1,283 +1,321 @@
 <script type="text/javascript">
-	var userInfo = {{{DisplayJSON LoggedInUser}}}
-	var messenger = {{{DisplayJSON messenger}}}
-	var threadId;
-	var to_id=null;
+  var userInfo = {{{ DisplayJSON LoggedInUser}}}
+  var messenger = {{{ DisplayJSON messenger }}}
+  console.log("messenger", messenger);
+  var threadId;
+  var to_id = null;
 
-	//console.log("emitSocket",emitSocket);
-	function getConversations(e) {
-		threadId = e;
-		var socketChat = {
-			"id": e,
-			"user": userInfo.id
-		}
-		console.log("socketChat", socketChat);
-		socket.emit('chat:join', socketChat);
-		var formData = {};
-		formData.thread_id = e;
-		$.ajax({
-			type: 'POST',
-			url: '/api/gtc-talk/chat-conversation',
-			data: formData,
-			success: function(res) {
-				to_id =res.thread_user; 
-				if (res.talkThread) {
-					// console.log(res);
-					chatPage(res.talkThread);
-				} else {
-					$('#comment_text' + e).notify("Please enter the valid data", "error");
-				}
-			},
-			error: function(request, status, error) {
-				console.log('status', status);
-				console.log('error', error);
-			}
-		});
-	}
+  function getConversations(e) {
+    threadId = e;
+    var socketChat = {
+      "id": e,
+      "user": userInfo.id
+    }
+    console.log("socketChat", socketChat);
+    socket.emit('chat:join', socketChat);
+    var formData = {};
+    formData.thread_id = e;
+    $.ajax({
+      type: 'POST',
+      url: '/api/gtc-talk/chat-conversation',
+      data: formData,
+      success: function (res) {
+        to_id = res.thread_user;
+        if (res.talkThread) {
+          // console.log(res);
+          chatPage(res.talkThread);
+        } else {
+          $('#comment_text' + e).notify("Please enter the valid data", "error");
+        }
+      },
+      error: function (request, status, error) {
+        console.log('status', status);
+        console.log('error', error);
+      }
+    });
+  }
 
-	var userInformation;
-	var vendorInformation;
+  var userInformation;
+  var vendorInformation;
 
-	function chatPage(result) {
-		var domElement = '';
-		var time = '';
-		result.forEach(function(element) {
+  function chatPage(result) {
+    var domElement = '';
+    var time = '';
+    result.forEach(function (element) {
 
-			//console.log(element);
-			if (element.from_id == userInfo.id) {
-				time = 'pull-left';
-				vendorInformation= element; 
-				domElement = domElement + `<li class="right clearfix">
-											<span class="chat-img pull-right">
-												<img src="` + userProfile(element.User) + `" alt="User Avatar">
-											</span>
-											<div class="chat-body clearfix">
-												<div class="header">
-													<strong class="primary-font pull-right">` + element.User.first_name +' '+ lastname(element.User.last_name) + `</strong>
-													<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
-												</div>
-												<p>` + element.message + `</p>
-											</div>
-										</li>`;
+      if (element.from_id == userInfo.id) {
+        time = 'pull-left';
+        vendorInformation = element;
+        domElement = domElement + `<li class="right clearfix">
+            <span class="chat-img pull-right">
+				      <img src="` +userProfile(element.User) +`" alt="User Avatar">
+			     </span>
+      			<div class="chat-body clearfix">
+      				<div class="header">
+      					<strong class="primary-font pull-right">` + element.User.first_name + ' ' + lastname(element.User.last_name) +`</strong>
+      					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
+      				</div>
+      				<p>` + element.message +`</p>
+      			</div>
+      		  </li>`;
+      } else {
+        userInformation = element;
+        time = 'pull-right';
+        domElement = domElement + `<li class="left clearfix" >
+      			<span class="chat-img pull-left">
+      				<img src="` +userProfile(element.User) +`" alt="User Avatar">
+      			</span>
+      			<div class="chat-body clearfix">																		
+      				<div class="header m-b-xs">		
+      					<strong class="primary-font pull-left">` +element.User.first_name + " " + lastname(element.User.last_name) + `</strong><small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
+      				</div>
+      				<p>` + element.message +`</p>
+      			</div>
+		 </li>`;
+      }
+    });
+    $('.chats').attr('id', threadId);        
+    $("#"+threadId).show();
+    document.getElementById(threadId).innerHTML = domElement;
+    var element = document.querySelector('#scrollMessage');
+    element.scrollTop = element.scrollHeight - element.clientHeight;
+    $('#replayBox').show();
+  }
 
-			} else {
-				userInformation = element;
-				time = 'pull-right';
-				domElement = domElement + `<li class="left clearfix" >																	
-												<span class="chat-img pull-left">
-													<img src="` + userProfile(element.User) + `" alt="User Avatar">
-												</span><div class="chat-body clearfix">																		<div class="header m-b-xs">																			<strong class="primary-font pull-left">` + element.User.first_name + " "+lastname(element.User.last_name)+ `</strong><small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) + `</small>
-													</div>
-												<p>` + element.message + `</p>
-												</div>
-											</li>`;
+  function lastname(name) {
+    if (name != '' && name != null && name != 'null')
+      return name;
 
-			}
-		});
-		$("#message").show();
-		document.getElementById("message").innerHTML = domElement;
-		var element = document.querySelector('#scrollMessage');
-		element.scrollTop = element.scrollHeight - element.clientHeight;
-		$('#replayBox').show();
-	}
-	function lastname(name){
-		if(name != '' && name != null && name != 'null' )
-			return name;
+    return '';
+  }
 
-		return '';
-	}
-	function FormatDate(testDate) {
-		return moment(testDate).format("LT")
-	}
+  function FormatDate(testDate) {
+    return moment(testDate).format("LT")
+  }
 
-	function userProfile(context) {
-		if (context && context.user_pic_url)
-			return context.user_pic_url;
+  function userProfile(context) {
+    if (context && context.user_pic_url)
+      return context.user_pic_url;
 
-		return '/img/avatar.png'
-	}
+    return '/img/avatar.png'
+  }
 
-	function send() {
-		var chat = $("#btn-input").val();
-		//var socket = io();
-		if (chat == "") {
-			alert("Enter message");
-		} else {
-			var sendSocket = {
-				'from_id': userInfo.id,
-				'talk_thread_id': threadId,
-				'to_id': to_id,
-				'message': chat,
-			}
-			console.log("chat:send", sendSocket);
-			//emitSocket.chatSend(sendSocket);
-			socket.emit('chat:send', sendSocket);
-			$('#btn-input').val('');
-		}
-	}
+  function send() {
+    var chat = $("#btn-input").val();
+    //var socket = io();
+    if (chat == "") {
+      alert("Enter message");
+    } else {
+      var sendSocket = {
+        'from_id': userInfo.id,
+        'talk_thread_id': threadId,
+        'to_id': to_id,
+        'message': chat,
+      }
+      console.log("chat:send", sendSocket);
+      //emitSocket.chatSend(sendSocket);
+      socket.emit('chat:send', sendSocket);
+      $('#btn-input').val('');
+    }
+  }
 
-	$(document).ready(function() {
-		//var socket = io();
-		//console.log("socket", socket);
-		socket.on('userOnline', function(users){
-			console.log("users********", users);
-			messenger.forEach(function(element){
-				if(users.indexOf(element.User.id) != -1){
-					document.getElementById("online"+element.User.id).innerHTML = `<i class="on b-white top" style="border: grey"></i>`;
-				}else{
-					document.getElementById("online"+element.User.id).innerHTML = `<i class="off b-white top" style="border: #27c24c"></i>`;
-				}
-			})
-		})
-		var commonInfo,base,base1,time;
-		socket.on('chat:receive', function(data) {
-			console.log("emitted socket", data);
-			if (data.from_id == userInfo.id) {
-				base = "pull-right"
-				base1 = "right";
-				time = 'pull-left';
-				commonInfo = vendorInformation;
-				console.log("base sent", base);
-			} else {
-				base = "pull-left"
-				base1 = "left"
-				time = 'pull-right';
-				commonInfo = userInformation;
-				console.log("base receive", base);
-			}
-			var body =`<li class="`+base1+` clearfix" >																	
-												<span class="chat-img `+base+`">
-													<img src="` + userProfile(commonInfo.User) + `" alt="User Avatar">
-												</span><div class="chat-body clearfix">										<div class="header m-b-xs">																			<strong class="primary-font `+base+`">`+ commonInfo.User.first_name + " "+lastname(commonInfo.User.last_name)+ `</strong><small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) + `</small>
-													</div>
-												<p>` + data.message + `</p>
-												</div>
-											</li>`;
-				`<li class="left clearfix">
-							<div class="chat-body clearfix">
-								<div class="header">
-									<small class="text-muted ` + base + `"></small>
-								</div>
-								<p>` + data.message + `</p>
-							</div>
-						</li>`;
-			$(body).appendTo("#message");
-			//document.getElementById("message").innerHTML = body;
-			var element = document.querySelector('#scrollMessage');
-			element.scrollTop = element.scrollHeight - element.clientHeight;
-			$("#message").animate({
-				scrollTop: $("#message")[0].scrollHeight - $("#message")[0].clientHeight
-			}, 'slow');
-		});
+  $(document).ready(function () {
+    socket.on('user:online', function (users) {
+      console.log("user:online", users);
+      messenger.forEach(function (element) {
+        console.log("element", element);
+        if (users.indexOf(element.User.id) != -1) {
+          document.getElementById("online" + element.User.id).innerHTML =
+            `<i class="on b-white top" style="border: green"></i>`;
+        } else {
+          document.getElementById("online" + element.User.id).innerHTML =
+            `<i class="off b-white top" style="border: white"></i>`;
+        }
+      })
+    })
 
-		$("#btn-chat").click(function() {
-			send();
-		});
+    var commonInfo, base, base1, time;
+    
+  socket.on('chat:receive', function(data) {
+    console.log("emitting........", data);
+   /* messenger.forEach(function(element) {
+      if (data.from_id == element.User.id) {*/
 
-		$('#btn-input').keypress(function(e) {
-			if (e.which == 13) {
-				send()
-			}
-		});
-		$('#message').hide();
-		$('#replayBox').hide();
-	});
+        messenger.forEach(function (element) {
+          console.log("element iterating", element);
+          //data.from_id
+          if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
+            if(data.from_id == userInfo.id) {
+              document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
+            } else {
+              document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> `+ data.message +`<strong>` ;
+            }
+            //console.log("emitted socket", data);
+          }
+        })
 
+        if (data.from_id == userInfo.id) {
+          base = "pull-right"
+          base1 = "right";
+          time = 'pull-left';
+          commonInfo = vendorInformation;
+          console.log("base sent", base);
+        } else {
+          base = "pull-left"
+          base1 = "left"
+          time = 'pull-right';
+          commonInfo = userInformation;
+          console.log("base receive", base);
+        }
+
+        var body = `<li class="` + base1 + ` clearfix" >
+                      <span class="chat-img ` + base + `">
+                        <img src="` + userProfile(commonInfo.User) + `" alt="User Avatar">
+                      </span>
+                      <div class="chat-body clearfix">
+                        <div class="header m-b-xs">
+                          <strong class="primary-font ` + base + `">` + commonInfo.User.first_name + " " + lastname(commonInfo.User.last_name) +
+                      `     </strong>
+                              <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
+                      `</small>
+                        </div>
+                        <p>` + data.message + `</p>
+                      </div>
+                    </li>`;
+                    `<li class="left clearfix">
+                  <div class="chat-body clearfix">
+                    <div class="header">
+                      <small class="text-muted ` + base + `"></small>
+                    </div>
+                    <p>` + data.message + `</p>
+                  </div>
+                </li>`;
+
+                
+                //$('.chats').attr('id', data.talk_thread_id);
+        $(body).appendTo("#"+data.talk_thread_id);
+        //document.getElementById("message").innerHTML = body;
+        var element = document.querySelector('#scrollMessage');
+        element.scrollTop = element.scrollHeight - element.clientHeight;
+        $("#"+data.talk_thread_id).animate({
+          scrollTop: $("#"+data.talk_thread_id)[0].scrollHeight - $("#"+data.talk_thread_id)[0].clientHeight
+        }, 'slow');
+        
+     /* }
+    })*/
+
+  });
+
+    $("#btn-chat").click(function () {
+      send();
+    });
+
+    $('#btn-input').keypress(function (e) {
+      if (e.which == 13) {
+        send()
+      }
+    });
+    $('#message').hide();
+    $('#replayBox').hide();
+    socket.emit('user:get_online_users');
+  });
 
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
-	<div class="gtc-container">
-		<div class="row">
-			<div class="col-sm-2">
-				{{> vendor/vendor-side-navbar}}
-			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2>MY MESSAGES {{!-- {{messenger.length}} --}}</h2>
-						</div>
-						<div class="content-body">
+  <div class="gtc-container">
+    <div class="row">
+      <div class="col-sm-2">
+        {{> vendor/vendor-side-navbar}}
+      </div>
+      <div class="col-sm-10">
+        <div class="ibox">
+          <div class="ibox-content">
+            <div class="ibox-title">
+              <h2>MY MESSAGES {{!-- {{messenger.length}} --}}</h2>
+            </div>
+            <div class="content-body">
 
-							<!--message-->
-							<div class="row" ng-show="messages">
-								<div class="col-md-12">
-									<div class="panel panel-default t-b-nopadding">
-										<hr class="cartHead dash m-b-none">
-										{{#ifCond messenger.length ">" 0}}
-											<div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
-											<div class="row">
-												<div class="col-md-4 bg-white">
-													<!-- =============================================================== -->
-													<!-- member list -->
-													<ul class="messager-list">
-													{{#each messenger}}
-														<li class="bounceInDown">
-															<a href="javascript:;" onclick="getConversations({{this.thread_id}})"  class="clearfix msg-a" >
-																<span class="avatar">
-																<img src="/img/avatar.png" alt="" class="img-circle m-r-sm">
-																</span>
-																<div class="messager-name" style="display: flex">
-																	<strong>{{this.User.first_name}} {{#if this.User.last_name}}{{this.User.last_name}} {{/if}}</strong><span class="m-l-sm"></span>
-																</div>
-																<div class="last-messager text-muted">{{#if this.TalkThread.Talks}}{{this.TalkThread.Talks.[0].message}}{{/if}}</div>
-																<small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
-																<small class="chat-alert online" id="online{{this.User.id}}">
-																</small>
-															</a>
-														</li>
-														{{/each}}
-													</ul>
-												</div>
-												<!--=========================================================-->
-												<!-- selected chat -->
-												<div class="col-md-8 bg-white">
-													<div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
+              <!--message-->
+              <div class="row" ng-show="messages">
+                <div class="col-md-12">
+                  <div class="panel panel-default t-b-nopadding">
+                    <hr class="cartHead dash m-b-none"> {{#ifCond messenger.length ">" 0}}
+                    <div class="bootstrap snippet hidden-xs" ng-show="totalMessengers>0">
+                      <div class="row">
+                        <div class="col-md-4 bg-white">
+                          <!-- =============================================================== -->
+                          <!-- member list -->
+                          <ul class="messager-list">
+                            {{#each messenger}}
+                            <li class="bounceInDown">
+                              <a href="javascript:;" onclick="getConversations({{this.thread_id}})" class="clearfix msg-a">
+                                <span class="avatar">
+                                  <img src="/img/avatar.png" alt="" class="img-circle m-r-sm">
+                                </span>
+                                <div class="messager-name" style="display: flex">
+                                  <strong>{{this.User.first_name}} {{#if this.User.last_name}}{{this.User.last_name}} {{/if}}</strong>
+                                  <span
+                                    class="m-l-sm"></span>
+                                </div>
+                                <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">{{#if this.TalkThread.Talks}}<small>{{this.TalkThread.Talks.[0].message}}</small>{{/if}}</div>
+                                <small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
+                                <small class="chat-alert online" id="online{{this.User.id}}">
+                                </small>
+                              </a>
+                            </li>
+                            {{/each}}
+                          </ul>
+                        </div>
+                        <!--=========================================================-->
+                        <!-- selected chat -->
+                        <div class="col-md-8 bg-white">
+                          <div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
 
-														<ul class="chats" id = "message">
-														
+                            <ul class="chats" id="message">
 
-														</ul>
-													</div>
-													<div class="chat-box bg-white" id="replayBox">
-														<form class="input-group" ng-submit="sendMessage(foodie, message)">
-															<textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here" style="height: 70px"></textarea>
-															<span class="input-group-btn">
-																<button id="btn-chat" class="btn btn-success no-rounded" type="button"  style="margin-left: 10px !important;
+
+                            </ul>
+                          </div>
+                          <div class="chat-box bg-white" id="replayBox">
+                            <form class="input-group" ng-submit="sendMessage(foodie, message)">
+                              <textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here"
+                                style="height: 70px"></textarea>
+                              <span class="input-group-btn">
+                                <button id="btn-chat" class="btn btn-success no-rounded" type="button" style="margin-left: 10px !important;
 																margin-right: 10px !important;">Send</button>
-															</span>
-														</form>
-														<!-- /input-group -->
-													</div>
-												</div>
-											</div>
-										</div>
+                              </span>
+                            </form>
+                            <!-- /input-group -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-										{{else}}
-										<div class="wrapper-sm" ng-show="totalMessengers==0">
-											<div class="row m-t-md">
-												<div class="col-md-12 text-center inline">
-													<img src="assets/images/no-message.png" class="img-responsive">
-													<span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
-														There is no conversations to show. <br>Click on the message icon near a chef to message the chef.
-													</span>
-												</div>
-											</div>
-										</div>
+                    {{else}}
+                    <div class="wrapper-sm" ng-show="totalMessengers==0">
+                      <div class="row m-t-md">
+                        <div class="col-md-12 text-center inline">
+                          <img src="assets/images/no-message.png" class="img-responsive">
+                          <span class="h6 text-muted block m-t-md m-b-md" style="line-height: inherit;">
+                            There is no conversations.
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
-										{{/ifCond}}
-									</div>
-								</div>
-							</div>
-							<!--end message-->
+                    {{/ifCond}}
+                  </div>
+                </div>
+              </div>
+              <!--end message-->
 
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-	{{> footer/bottom-footer}}
+{{> footer/bottom-footer}}

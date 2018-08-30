@@ -40,7 +40,7 @@
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 			newCoupon.status = 1;
 			
-			newCoupon.vendor_id = {{ LoggedInUser.Vendor.id }};
+			newCoupon.vendor_id = {{LoggedInUser.Vendor.id }};
 			newCoupon.publish_date = new Date().toISOString().split("T")[0];
 			if($('#inputUsageLimit').val() != '')
 			 newCoupon.usage_limit = $('#inputUsageLimit').val();

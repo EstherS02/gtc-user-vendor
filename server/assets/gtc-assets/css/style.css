@@ -1824,6 +1824,15 @@ p.summary-info span {
 	line-height: 1.6;
 	font-size: 0.813em;
 }
+.header-lg-text .see-all {
+	font-size: 13px;
+	color: #fff;
+	float: right;
+	line-height: 3;
+	text-decoration: none;
+	font-family: 'Roboto', sans-serif;
+	text-shadow: none;
+}
 .header-lg-text .see-all:hover {
 	color: #a4bfda;
 }
@@ -1840,3 +1849,28 @@ p.summary-info span {
 .update-btn:hover{
 	background-color: #2560ab;
 }
+/*related product in product view page*/
+.product-related-col{
+	font-size: 0.875em;
+    font-weight: 300;
+    color: #5f6066;
+    position: relative;
+}
+.product-related-col h4{
+	font-size: 0.813em;
+}
+.table.shoping-cart-table > tbody > tr > td.img-padding  {
+     padding: 0px !important; 
+}
+.input-group .text-control{
+    display: block;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+    padding: .15rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+/*related product in product view page end*/

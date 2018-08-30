@@ -31,7 +31,7 @@
             $("#twitter_append2").hide();
             if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value) || value == '')
+            if (/^(https?:\/\/)?((w{3}\.)?)twitter\.com\/(#!\/)?[a-z0-9_]+$/i.test(value))
             {
                   $("#twitter_append").html(domElement1);
             }
@@ -50,7 +50,7 @@
             $("#google_append2").hide();
            if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value)|| value == '')
+            if (/^(https?:\/\/)?((w{3}\.)?)plus\.google\.com\/.*/i.test(value))
             {
                 $("#google_append").html(domElement1);
             }
@@ -69,7 +69,7 @@
              $("#linkedin_append2").hide();
             if((value!='') ||(value!="null"))
             {
-            if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value) ||  value == '')
+            if (/(ftp|http|https):\/\/?(?:www\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(value))
             {
                 $("#linkedin_append").html(domElement1);
             }
@@ -88,7 +88,7 @@
              $("#youtube_append2").hide();
             if((value!='') ||(value!="null"))
             {
-            if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value) || value == '')
+            if (/^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(value))
             {
                $("#youtube_append").html(domElement1);
             } 
@@ -107,7 +107,7 @@
              $("#instagram_append2").hide();
             if((value=='') ||(value!="null"))
             {
-            if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value)  || value == '')
+            if (/^\s*(http\:\/\/)?instagram\.com\/[a-z\A-Z\d\-]{1,255}\s*$/.test(value))
             {
                 $("#instagram_append").html(domElement1);
             }
@@ -126,7 +126,7 @@
              $("#flickr_append2").hide();
              if((value!='') ||(value!="null"))
             {
-            if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value) || value == '')
+            if (/^(https?:\/\/)?((w{3}\.)?)flickr.com\/.*/i.test(value))
             {
                 $("#flickr_append").html(domElement1);
             }
@@ -325,11 +325,11 @@
                                         </div>
                                     </div>
                                     <div id="google_append2">
-                                         {{#ifCond vendorInfo.google_plus_url '!=' 'null'}}
+                                         {{#if vendorInfo.google_plus_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    <div class="col-md-4 text_red_color social_check"><i class=""></i></div>
+                                    {{/if}}
                                     </div>
                                     <div id="google_append"> </div>
                                 </div>
@@ -349,11 +349,11 @@
                                         </div>
                                     </div>
                                      <div id="twitter_append2">
-                                         {{#ifCond vendorInfo.twitter_url '!=' 'null'}}
+                                         {{#if vendorInfo.twitter_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    <div class="col-md-4 text_red_color social_check"><i class=""></i></div>
+                                    {{/if}}
                                     </div>
                                     <div id="twitter_append"> </div>
                                 </div>
@@ -373,11 +373,11 @@
                                         </div>
                                     </div>
                                     <div id="linkedin_append2">
-                                         {{#ifCond vendorInfo.linkedin_url '!=' 'null'}}
+                                         {{#if vendorInfo.linkedin_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    <div class="col-md-4 text_red_color social_check"><i class=""></i></div>
+                                    {{/if}}
                                     </div>
                                     <div id="linkedin_append"> </div>
                                 </div>
@@ -397,11 +397,11 @@
                                         </div>
                                     </div>
                                     <div id="youtube_append2">
-                                         {{#ifCond vendorInfo.youtube_url '!=' 'null'}}
+                                         {{#if vendorInfo.youtube_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    <div class="col-md-4 text_red_color social_check"><i class=""></i></div>
+                                    {{/if}}
                                     </div>
                                     <div id="youtube_append"> </div>
                                 </div>
@@ -421,11 +421,11 @@
                                         </div>
                                     </div>
                                     <div id="instagram_append2">
-                                     {{#ifCond vendorInfo.instagram_url '!=' 'null'}}
+                                     {{#if vendorInfo.instagram_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
-                                    <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    <div class="col-md-4 text_red_color social_check"><i class=""></i></div>
+                                    {{/if}}
                                     </div>
                                     <div id="instagram_append"> </div>
                                 </div>
@@ -446,11 +446,11 @@
                                         </div>
                                     </div>
                                       <div id="flickr_append2">
-                                     {{#ifCond vendorInfo.flickr_url '!=' 'null'}}
+                                     {{#if vendorInfo.flickr_url.length}}
                                     <div class="col-md-4 text_green_color social_check"><i class="fas fa-check-circle"></i></div>
                                     {{else}}
                                     <div class="col-md-4 text_red_color social_check"><i class="fas fa-exclamation-circle"></i></div>
-                                    {{/ifCond}}
+                                    {{/if}}
                                     </div>
                                     <div id="flickr_append"> </div>
                                 </div>

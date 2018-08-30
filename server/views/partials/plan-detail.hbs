@@ -1,0 +1,142 @@
+<script type="text/javascript">
+    var plandetails = {{{DisplayJSON PlanDetails}}}
+    var userInfo = {{{ DisplayJSON LoggedInUser }}}
+ function showDetails()
+    {
+        
+        if(userInfo.Vendor)
+        {
+          $('#planHide').hide();
+          $('#userPlanShow').hide();
+          $('#vendorPlanShow').show();
+          
+        }else{
+           console.log("enter the loops11");
+         $('#planHide').hide();
+         $('#userPlanShow').show();
+         $('#vendorPlanShow').hide();
+          
+        }
+        
+    }
+  </script>
+<section id="userPlanShow">
+    <div class="text-center which_pkg" style="margin-bottom: 0px;">
+        <div class="container">
+            <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
+            <p class="which_pkg_p">We have a several options to get you started, or dive in with the our most robust offering. </p>
+            <div class="row">
+                <div class="starter_seller">
+                    <p class="starter_seller_p1">STARTER SELLER </p>
+                    <h1 class="starter_seller_h1">FREE</h1>
+                    <p>Build a GTC profile without the advanced reports, copuons, chat system and SEO support.</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maximum <b>20 Product</b> Inventory</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maxmium <b>1 Subscription</b></p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> Secure <b> Escrow</b> Online Transactions</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
+                    {{!-- <input type="submit" value="SIGNUP NOW" class="price_signup"> --}}
+                    <a class="price_signup btn" href="/vendor-form">SIGNUP NOW</a>
+                </div>
+                <div class="service_provider">
+                    <p class="service_provider_p1">SERVICE PROVIDER </p>
+                    <h1 class="service_provider_h1">$30<span style="font-size: 20px;">/MO</span></h1>
+                    <p>Market your services to a massive audience for only 10% of subscription sales. </p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
+                    <input type="submit" value="SIGNUP NOW" class="price_signup">
+                </div>
+                <div class="lifestyle_provider">
+                    <p class="lifestyle_provider_p1">LIFESTYLE PROVIDER</p>
+                    <h1 class="lifestyle_provider_h1">10<sup>%</sup></h1>
+                    <p>Expose your subscriptions to a massive audience for only 10% of subscription sales.</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
+                    <input type="submit" value="SIGNUP NOW" class="price_signup">
+                </div>
+                <div class="public_seller_pg">
+                    <p class="public_seller_pg_p1">PUBLIC SELLER PRICING GUIDE </p>
+                    <h1 class="public_seller_pg_h1">$99<span style="font-size: 20px;">/MO</span></h1>
+                    <p>Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including: </p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> up To <b>2000 product</b> inventory</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> secure <b>Escrow</b> Online Transactions</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment Processing</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Prefered Advertising</b> Access</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Geo-Tartgeting</b> to Zero-in Audience</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
+                    <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="vendorPlanShow">
+    <div class="text-center which_pkg" style="margin-bottom: 0px;">
+        <div class="container">
+            <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
+            <p class="which_pkg_p">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you </p>
+            <div class="row" >
+                 <div class="col-md-3"></div>
+                   <div class="lifestyle_provider" style="background-color: #7BA4D8;padding: 39px 58px 36px 20px;width:28%">
+                    <p class="lifestyle_provider_p1">BULK BUYER</p>
+                    <h1 class="lifestyle_provider_h1">$99<span style="font-size: 20px;">/MO</span></h1>
+                    <p>Full buyer access to the wholesale network connect, build relationships and buy wholesale with bulk distributors worldwide.</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Maximum<b>1     Subscriptions</b></p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
+                    <input type="submit" value="SIGNUP NOW" class="price_signup" style="background-color:#4178B8">
+                </div>
+                <div class="public_seller_pg" style="background-color:#D88505;padding:45px 40px 36px 40px;width:35%">
+                    <p class="public_seller_pg_p1">WHOLESALE PRICING GUIDE</p>
+                    <h1 class="public_seller_pg_h1">$249<span style="font-size: 20px;">/MO</span></h1>
+                    <p>Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including: </p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> up To <b>500 product</b> inventory</p>
+                    {{!-- <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p> --}}
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> secure <b>Escrow</b> Online Transactions</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment Processing</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Prefered Advertising</b> Access</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Geo-Tartgeting</b> to Zero-in Audience</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Service Network</b></p>
+                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Subscription Network</b></p>
+                    <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px;background-color:#925902;margin: 30px 52px;
+    padding: 12px 61px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
