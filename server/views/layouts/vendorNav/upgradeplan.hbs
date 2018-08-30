@@ -36,10 +36,6 @@ function paymentSuccess()
 }
 function makePayment() {
         var plan_id=document.getElementById("selectplan").value;
-        if(plan_id=='')
-        {
-            var plan_id=$('#vendor_plan_id').val();
-        }
         $.ajax({
 		url: '/api/payment/planpay',
 		type: 'POST',
@@ -128,7 +124,7 @@ function makePayment() {
 											</div>
                                         </div>
                                     </div>
-                                    <input type="hidden" id="vendor_plan_id" value="{{PlanDetails.[0].plan_id }}"
+                                  
                                     <div class="col-md-1">
                                       <div class="text-nowrap" onclick="showDetails()"><a href="javascript:;">show details</a> </div>
                                       </div>
@@ -148,7 +144,7 @@ function makePayment() {
                                              
                                             </div>
                                              <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" id="vendorcarddetails">
+												<select class="form-control-customized form-control-sm" name="services" id="vendorcarddetails" style="width: 180px">
 													{{#ifCond carddetails '!=' '' }}
 							   	
 												     {{#each carddetails}}
@@ -234,7 +230,7 @@ function makePayment() {
                                         <input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
 									
                                  <hr style="margin-top: 10px" />
-                                <div class="row">
+                                <div class="row" id="upgrade" style="display:none">
                                      {{#if LoggedInUser.Vendor.id}}
                                     <div class="col-md-2" >
                                      
@@ -252,7 +248,7 @@ function makePayment() {
                                         </button>
                                     </div>
                                     {{else}}
-                                     <div class="col-md-2" id="upgrade"  >
+                                     <div class="col-md-2"  >
                                      
                                         <button type="button" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" onclick="vendorRedirection()">
                                             <span class="ladda-label">Ok</span>
