@@ -15,19 +15,28 @@
 
     	});
 		});
-		$(function(){
-			$("#gtc-form-alert").hide();
-			 $("#searchOrderhistory").submit(function(e) {
-            e.preventDefault();
-            let formInput = $("#searchOrderhistory :input").filter(function(index, element) {
-                return $(element).val() != '';
-            }).serialize();
-           if(formInput!='')
-            {
-              window.location.href = 'order-history?' + formInput;
-             }
-          });
-		});
+		$(function () {
+				$("#gtc-form-alert").hide();
+				$("#searchOrderhistory").submit(function (e) {
+					e.preventDefault();
+					let formInput = $("#searchOrderhistory :input").filter(function (index, element) {
+						return $(element).val() != '';
+					}).serialize();
+					if (formInput != '') {
+						window.location.href = 'order-history?' + formInput;
+					}
+				});
+
+				$("#searchOrderhistory1").submit(function (e) {
+					e.preventDefault();
+					let formInput = $("#searchOrderhistory1 :input").filter(function (index, element) {
+						return $(element).val() != '';
+					}).serialize();
+					if (formInput != '') {
+						window.location.href = 'order-history?' + formInput;
+					}
+				});
+			});
 
 	</script>
 	<script type="text/javascript">
@@ -75,7 +84,7 @@
 					}
 				});
 			} else {
-				alert("Select checkboxe and status before you update");
+				alert("Select checkbox and status before you update");
 			}
 		}
 
@@ -118,7 +127,7 @@
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-7">
-									<form class="form-inline" id="searchOrder">
+									<form class="form-inline" id="searchOrderhistory1">
 										<div class="form-group mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="dateSelect"	>

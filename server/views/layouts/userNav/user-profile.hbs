@@ -161,7 +161,7 @@
 
 			if ($('#sameAddr').is(":checked")) {
 
-				delete billingUpdate.address_type;
+				//delete billingUpdate.address_type;
 				var shippingUpdate = billingUpdate;
 				shippingUpdate.address_type = 2;
 				shippingUpdate.same_shipping_address = 1;
@@ -297,6 +297,7 @@
 		});
 
 		$("#changePwd").submit(function (e) {
+
 			e.preventDefault();
 
 			let input = $("#changePwd :input").filter(function (index, element) {
@@ -315,6 +316,9 @@
 							$("#gtc-pwdreset-alert").slideUp(500);
 						});
 						$("#changePwd")[0].reset();
+						setTimeout(function () {
+							location.reload(true);
+						}, 1000);
 					},
 					error: function (error) {
 						$('#gtc-pwdreset-alert').removeClass('alert-success').addClass('alert-danger');
@@ -440,7 +444,7 @@
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<button type="button" id="changePwd" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal"
+													<button type="button" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal"
 													 data-whatever="@mdo">Change Password</button>
 												</div>
 											</div>
@@ -655,7 +659,7 @@
 								<hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn update-btn" id="userUpdateBtn" type="submit" data-style="expand-left">
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
 											<span class="ladda-label">Update</span>
 											<span class="ladda-spinner"></span>
 										</button>
@@ -701,19 +705,19 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control d-block">Old Password:</label>
-								<input type="text" id="old_password" name="old_password" class="form-control-customized form-control-sm" required/>
+								<input type="password" id="old_password" name="old_password" class="form-control-customized form-control-sm" required/>
 							</div>
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control d-block">New Password:</label>
-								<input type="text" id="new_password" name="new_password" class="form-control-customized form-control-sm" required/>
+								<input type="password" id="new_password" name="new_password" class="form-control-customized form-control-sm" required/>
 							</div>
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control d-block">Confirm Password:</label>
-								<input type="text" id="new_confirm_password" name="new_confirm_password" class="form-control-customized form-control-sm"
+								<input type="password" id="new_confirm_password" name="new_confirm_password" class="form-control-customized form-control-sm"
 								 required/>
 							</div>
 						</div>

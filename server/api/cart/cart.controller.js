@@ -231,24 +231,11 @@ export function updateCart(req, res) {
 
 									var checkCartUpdateQuantity = productResult.quantity_available - cartResult.quantity;
 
-									if (order_qty > checkCartUpdateQuantity) {
+									console.log("quantity_available", productResult.quantity_available)
+									console.log("order_qty", order_qty)
+									console.log("cartResult", cartResult.quantity)
 
-										var responseMessage;
-
-										if (parseInt(checkCartUpdateQuantity) == 0)
-											responseMessage = "Already you have " + cartResult.quantity + " Quantities of this Product in your cart, This seller has no remaining product";
-										else
-											responseMessage = "Already you have " + cartResult.quantity + " Quantities of this Product in your cart, This seller only have " + checkCartUpdateQuantity + " Remaining";
-
-										return cb({
-											statusCode: 400,
-											message: "EXCEEDING_AVAILABLITY",
-											message_details: responseMessage,
-											available_state: checkCartUpdateQuantity,
-											cart_item_id: cart_item_id
-										});
-
-									} else {
+								
 										var cartUpdateObj = {};
 										cartUpdateObj['quantity'] = order_qty;
 										cartUpdateObj['last_updated_by'] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
@@ -286,7 +273,6 @@ export function updateCart(req, res) {
 												cart_item_id: cart_item_id
 											})
 										})
-									}
 
 								} else {
 

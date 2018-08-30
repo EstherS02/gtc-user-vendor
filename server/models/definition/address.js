@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         same_shipping_address: {
             type: DataTypes.INTEGER,
             field: 'same_shipping_address',
-            allowNull: false
+            allowNull: true
         },
         company_name: {
             type: DataTypes.STRING(128),
