@@ -75,6 +75,19 @@ $(document).ready(function() {
 			}
 		});
 
+
+     //ASK FOR VENDOR
+    $('#SubmitAskBtn').prop('disabled', true);
+
+    $('#AskSubject, #AskText').keyup(function() {
+
+        if ($('#AskSubject').val() != '' && $('#AskText').val() != '') {
+            $('#SubmitAskBtn').prop('disabled', false);
+        } else {
+            $('#SubmitAskBtn').prop('disabled', true);
+        }
+    });
+
      $("#AskVendorForm").on("submit", function(){
         if(userInfo.email){
    		var sentInput = {};
@@ -88,7 +101,13 @@ $(document).ready(function() {
 			type: 'POST',
 			data: sentInput,
 			success: function(data) {
-				console.log(data)
+				// console.log(data)
+				$('#AskSubject').val("");
+				$('#AskText').val("");
+				$('#AskVendorForm').append('<p id="errorMsg" class="product-alert-msg text-primary text-left m-t-xs">' + data + '</p>');
+				var timer = setTimeout(function() {
+					$('#errorMsg').empty();
+				}, 10000);
 			},
 			error: function(error) {
 				console.log(error)
@@ -268,7 +287,7 @@ function wishUpdate() {
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 value="{{product.moq}}" min="1" max="{{product.moq}}">
+														 value="{{product.moq}}" min="{{product.moq}}">
 														  <input type="hidden" value="{{product.MarketplaceType.code}}" id="typecode" name="typecode"/>
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
@@ -546,7 +565,7 @@ function wishUpdate() {
 																</div>
 															</div>
 															<div class="col-md-3">
-																<button type="submit" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
+																<button type="submit" id="SubmitAskBtn" class="btn rounded btn-sm btn-bottom btn-success">Submit</button>
 															</div>
 														</div>
 													</form>

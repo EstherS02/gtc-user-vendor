@@ -1824,6 +1824,7 @@ p.summary-info span {
 	line-height: 1.6;
 	font-size: 0.813em;
 }
+
 .header-lg-text .see-all {
 	font-size: 13px;
 	color: #fff;
@@ -1833,6 +1834,7 @@ p.summary-info span {
 	font-family: 'Roboto', sans-serif;
 	text-shadow: none;
 }
+
 .header-lg-text .see-all:hover {
 	color: #a4bfda;
 }
@@ -1874,3 +1876,15 @@ p.summary-info span {
     border-radius: .2rem;
 }
 /*related product in product view page end*/
+.terms_para {
+    font-size: 10px;
+    margin-bottom: 5px;
+    text-align: justify;
+    line-height: 1.5;
+}
+.overflow-scroll{
+	overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-wrap: normal;
+    max-height: 225px;
+}
