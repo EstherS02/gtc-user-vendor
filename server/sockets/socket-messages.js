@@ -86,6 +86,9 @@ export function socketMsg(io) {
 			return talkCreate(talk).then(function(result) {
 				//console.log("RESULT **************", result.talk_thread_id);
 				//io.to(result.talk_thread_id).emit('chat:receive', result)
+				console.log("BEFORE RESULTTTT", result);
+				result.to_id = talk.to_id;
+				console.log("AFTER result", result);
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					return threadArrObj = talk.talk_thread_id
 				});
