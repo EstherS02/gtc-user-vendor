@@ -85,11 +85,6 @@ export function vendorQuestion(req, res) {
                             body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
                             body = body.replace('%USER_NAME%',LoggedInUser.first_name);
                             body = body.replace('%MESSAGE%', req.body.message);
-                        // var template = Handlebars.compile(body);
-                        // var data = {
-                        //     order: order
-                        // };
-                        // var result = template(data);
                         sendEmail({
                             to: email,
                             subject: subject,
