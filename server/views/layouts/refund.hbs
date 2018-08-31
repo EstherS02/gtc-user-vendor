@@ -186,7 +186,7 @@
 									</div>
 									{{else}}
                                        <button class="ladda-button btn btn-small btn-muted" style="width:100%"> 
-										   {{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_IN_REVIEW}} RETURN REQUESTED
+										   {{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REQUESTED}} RETURN ALREADY REQUESTED
 										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_APPROVED}} RETURN APPROVED 
 										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REJECTED}} RETURN REJECTED 
 										   {{/ifCond}}
