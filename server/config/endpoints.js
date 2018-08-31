@@ -62,6 +62,7 @@ module.exports = {
 	"user-tokens": "UserToken",
 	"vendor": "Vendor",
 	"vendor-followers": "VendorFollower",
+	"vendor-notification": "VendorNotification",
 	"vendor-notification-settings": "VendorNotificationSetting",
 	"vendor-plans": "VendorPlan",
 	"vendor-sales": "VendorSales",

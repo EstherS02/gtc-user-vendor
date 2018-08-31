@@ -19,10 +19,29 @@ export function vendorSupport(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
+	var queryObj = {};
+	var modelName = 'TermsAndCond';
 	let user_id = LoggedInUser.id;
-	var vendor_id = req.params.id;
+	var vendor_id = 28;//req.params.id;
+
+	queryObj['vendor_id'] = vendor_id
+	queryObj['status'] = status['ACTIVE'];
+
 
 	async.series({
+		Support: function(callback){
+			service.findRow(modelName, queryObj, []).then(function(response){
+				console.log(response)
+				if(response){
+					return callback(null,response);
+				}else{
+					return callback(null);
+				}
+			}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
 				return callback(null, response);
@@ -96,6 +115,7 @@ export function vendorSupport(req, res) {
 			res.render('vendorPages/vendor-support', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
+				Support: results.Support, 	
 				bottomCategory: bottomCategory,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,

@@ -16,16 +16,16 @@ export function notificationSetting(req, res) {
 		var vendor_id = req.user.Vendor.id;
 		queryObj.vendor_id = vendor_id;
 		data.forEach(function(element) {
-			queryObj.notification_id = element;
+			queryObj.vendor_notification_id = element;
 			model[modelName].findOne({
 				where: queryObj
 			}).then(function(result) {
-				var notification_id = element;
+				var vendor_notification_id = element;
 				if (result) {
 					model[modelName].destroy({
 						where: {
 							vendor_id: vendor_id,
-							notification_id: result.notification_id
+							vendor_notification_id: result.vendor_notification_id
 						}
 					}).then(function(response) {
 						return;
@@ -34,7 +34,7 @@ export function notificationSetting(req, res) {
 				} else {
 					var bodyParam = {};
 					bodyParam.vendor_id = vendor_id;
-					bodyParam.notification_id = element;
+					bodyParam.vendor_notification_id = element;
 					bodyParam.enabled = 0;
 					bodyParam.status = 1;
 					bodyParam.created_at = new Date();

@@ -5,7 +5,7 @@
 		$("#gtc-payment-setting-alert").hide();
 
 		$("#stripeConnect").click(function () {
-			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://5c8607a2.ngrok.io/payment-settings'
+			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://cf79ee82.ngrok.io/payment-settings'
 		});
 
 		$('#paymentSettingForm').submit(function (e) {
@@ -13,6 +13,8 @@
 			let paymentSettingInput = $("#paymentSettingForm :input").filter(function (index, element) {	
 				return $(element).val() != '';
 			}).serialize();
+
+			if ($('#paymentSettingForm').valid()) {
            $.ajax({
                 type: 'PUT',
 				url: '/api/vendor/'+{{vendorPaymentInfo.id}},
@@ -31,7 +33,21 @@
                     console.log('error', error);
                 }
 		   });
-		})
+			}
+		});
+
+		  $("#paymentSettingForm").validate({
+			  rules: {
+                 vendor_payout_paypal_email: {
+					 email: true
+				 },
+		      },
+			  messages: {
+                  vendor_payout_paypal_email: {
+					 email: "Please enter valid email"
+				 },
+			  }
+		  });
 	});
 </script>
 <div class="wrapper-content bg-gray">
@@ -174,7 +190,7 @@
 										</div>
 										<div class="row">
 											<div class="col-12">
-												<button class="btn btn-small" id="stripeConnect" style="width:100%">CONNECT</button>
+												<input class="btn btn-small" id="stripeConnect" style="width:100%;background-color: #dddddd;color:#000" value="CONNECT" readonly>
 											</div>
 										</div>
 										<div class="row">

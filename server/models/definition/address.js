@@ -77,6 +77,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'postal_code',
             allowNull: true
         },
+        phone: {
+            type: DataTypes.STRING(16),
+            field: 'phone',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
