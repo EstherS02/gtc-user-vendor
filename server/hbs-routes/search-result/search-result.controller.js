@@ -137,6 +137,19 @@ export function index(req, res) {
 		}];
 	}
 
+	if (req.query.start_date && req.query.end_date) {
+		queryURI['start_date'] = req.query.start_date;
+		queryURI['end_date'] = req.query.end_date;
+		productQueryParams['created_on'] = {
+			'$gte': req.query.start_date,
+			'$lte': req.query.end_date
+		};
+		productCountQueryParams['created_on'] = {
+			'$gte': req.query.start_date,
+			'$lte': req.query.end_date
+		};
+	}
+
 	if (req.query.vendor_id) {
 		queryURI['vendor_id'] = req.query.vendor_id;
 		productQueryParams['vendor_id'] = req.query.vendor_id;
