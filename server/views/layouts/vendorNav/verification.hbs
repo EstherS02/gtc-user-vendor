@@ -1,4 +1,6 @@
 <script type="text/javascript">
+
+   
   $(document).ready(function () {
     $("#img1").hide();
     $("#img2").hide();
@@ -7,6 +9,12 @@
 
     $("#gtc-cart-alert").hide();
 
+   $('#resetForm').click(function () {
+      if (confirm("Want to clear?")) {
+        /*Clear all input type="text" box*/
+        $('#verificationForm input[type="file"]').val('');
+      }
+    });
     // on change  for image name display on field
     $('.custom-file-input').on('change', function () {
       let fileName = $(this).val().split('\\').pop();
@@ -186,14 +194,11 @@
                 </p>
                 <hr style="margin-top: 25px;">
                 <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 2px; padding-left: 20px; float: left;">
-                    Personal ID Verification
-                  </h5>
+                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
                   <p class="verification-incomplete">
                     {{#if verification.personal_id_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status
                     }}
                     <span class="exclamation">
-
                       <i class="fas fa-exclamation-circle"></i>
                     </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond verificationStatus.APPROVED '=='
                     verification.personal_id_verification_file_status }}
@@ -212,7 +217,6 @@
                     </span>You haven't submitted this yet. {{/if}}
                   </p>
                 </div>
-                <br>
                 <p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">
                   Choose 1 of the 3 following type of ID to upload to verify your personal identity
                 </p>
@@ -225,18 +229,17 @@
                   />
                   <label for="passport" class="upload-id-card">National Id card</label>
                   <br>
-                  <div class="input-group">
-                  <input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
+                   <input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
                   />
                   <label for="passport" class="upload-id-card">Driving license</label>
+                  <div class="input-group">
                       <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof">
+                          <input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpg, .png, .pdf">
                           {{#if verification.personal_id_verification_file_link }}
                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
-                         {{else}}
-                           <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
-                   {{/if}}
-                        
+                          {{else}}
+                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
+                          {{/if}}                  
                       </div>
                       <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
                   </div>
@@ -250,7 +253,7 @@
                 </div>
                 <hr style="margin-top: 25px;">
                 <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with personal address</h5>
+                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
                   <p class="verification-incomplete">
                     {{#if verification.personal_address_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
                     <span class="exclamation">
@@ -270,14 +273,13 @@
                     </span>You haven't submitted this yet. {{/if}}
                   </p>
                 </div>
-                <br>
                 <p style="font-size: 13px; padding-bottom: 20px;">
                   Please atleast one utility bill which has the name of the Personal Address you've registered on it
                 </p>
                 <div class="col-md-8">
                     <div class="input-group">
                         <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof">
+                          <input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf" >
                            {{#if verification.personal_address_verification_file_link }}
                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
                             {{else}}
@@ -321,14 +323,13 @@
                     </span>You haven't submitted this yet. {{/if}}
                   </p>
                 </div>
-                <br>
                 <p style="font-size: 13px; padding-bottom: 20px;">
                   Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
                 </p>
                 <div class="col-md-8">
                    <div class="input-group">
                         <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof">
+                          <input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
                          
                             {{#if verification.business_verification_file_link }}
                           <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
@@ -371,12 +372,11 @@
                     </span>You haven't submitted this yet. {{/if}}
                   </p>
                 </div>
-                <br>
                 <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
                 <div class="col-md-8">
                   <div class="input-group">
                         <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof">
+                          <input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
                            {{#if verification.business_address_verification_file_link }}
                             <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
                             {{else}}
@@ -401,7 +401,6 @@
                       <i class="fas fa-exclamation-circle"></i>
                     </span>You haven't submitted this yet.
                   </p>
-                  <br>
                   <p style="font-size: 13px; padding-bottom: 20px;">Connect with one of the following accounts to prove you have ownership of at least social media profile</p>
                   <div class="col-md-10">
                     <button class="connect-with-social-medias" type="button">
@@ -421,9 +420,9 @@
                 </div>
                 <div class="col-md-4" style="padding-bottom: 30px;">
                   {{!-- <button class="update-btn" id="uploadDocs" type="submit">Update</button> --}}
-                  <button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadDocs" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+                  <button disabled type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadDocs" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
 
-                  <button  type="reset" class="ladda-button btn cancel-btn" data-style="expand-left"  style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
+                  <button  type="reset" id="resetForm" class="ladda-button btn cancel-btn" data-style="expand-left"  style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
                   {{!-- <button class="cancel-btn" type="reset">Cancel</button> --}}
                 </div>
               </form>
