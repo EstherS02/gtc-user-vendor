@@ -10,7 +10,8 @@ var permission = require('../../config/permission');
 /* Handlebars routes */
 var controller = require('./notifications.controller');
 
-router.get('/', auth.isAuthenticated(), controller.notifications);
+router.get('/', auth.isAuthenticated(), controller.notifications)
+router.get('/settings', auth.isAuthenticated(), controller.notificationSettings);
 // var router = express.Router();
 
 module.exports = router;

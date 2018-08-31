@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 var async = require('async');
+const sendEmail = require('../../agenda/send-email');
 var pageScope;
 
 
@@ -57,7 +58,48 @@ export function addOrRemoveWishlist(req, res) {
 				});
 		});
 }
-export function vendorFollow(req, res) {
+export function vendorQuestion(req, res) {
+	var LoggedInUser = {};
+
+	if (req.user)
+		LoggedInUser = req.user;
+	console.log(req.body);
+	req.checkBody('subject', 'Missing Subject Value').notEmpty();
+	req.checkBody('message', 'Missing Message Value').notEmpty();
+	var errors = req.validationErrors();
+	var result = {};
+	if (errors) {
+		res.status(400).send("Please enter the value");
+		return;
+	}
+	// res.status(200).send(req.body);
+	 var queryObjEmailTemplate = {};
+    var emailTemplateModel = 'EmailTemplate';
+    queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
+    service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+        .then(function(response) {
+                        var email = req.body.to;
+                        // console.log("----------=-=-=-=-=-==",order.OrderItems[0].Product.Vendor.User.email);
+                        var subject = response.subject.replace('%SUBJECT%', 'User Asking This');
+                        var body;
+                            body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
+                            body = body.replace('%USER_NAME%',LoggedInUser.first_name);
+                            body = body.replace('%MESSAGE%', req.body.message);
+                        // var template = Handlebars.compile(body);
+                        // var data = {
+                        //     order: order
+                        // };
+                        // var result = template(data);
+                        sendEmail({
+                            to: email,
+                            subject: subject,
+                            html: body
+                        });
+                        return res.status(200).send("Your Question sent to this vendor");
+        }).catch(function(error) {
+            console.log('Error :::', error);
+            return;
+        })
 
 
 }

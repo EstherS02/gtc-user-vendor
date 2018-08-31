@@ -89,10 +89,10 @@ export function index(req, res) {
 	limit = req.query.limit ? parseInt(req.query.limit) : 30;
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
+	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
 	layout = req.query.layout ? req.query.layout : 'grid';
@@ -264,7 +264,7 @@ export function index(req, res) {
 			var topLimit = 3;
 			var topOrderField;
 			topOrderField = req.query.field ? req.query.field : "created_on";
-			var topOrderType = "DESC";
+			var topOrderType = order;
 
 			queryParameters['is_featured_product'] = 1;
 

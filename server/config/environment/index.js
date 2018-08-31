@@ -74,8 +74,9 @@ var all = {
 			vendorNewOrder: 'VENDOR-NEW-ORDER',
 			passwordReset: 'PASSWORD-RESET',
 			stripeConnectEmail: 'STRIPE-CONNECT-MAIL',
-			payoutMail: 'PAYOUT-MAIL'
-
+			payoutMail: 'PAYOUT-MAIL',
+			askToVendor: 'ASK-TO-VENDOR',
+            returnRequest: 'USER-RETURN-REQUEST'
 		}
 	},
 	jobs: {

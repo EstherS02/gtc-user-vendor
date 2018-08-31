@@ -7,7 +7,7 @@
 var userInfo = {{{ DisplayJSON LoggedInUser }}}
 var productSpecs = {{{DisplayJSON product}}}
 var statusCode = {{{DisplayJSON status}}}
-var vendorInfo = {{{DisplayJSON  VendorDetails}}}	
+var vendorInfo = {{{DisplayJSON  VendorDetail}}}	
 $(document).ready(function() {
 
 	$('[data-toggle="popover"]').popover({
@@ -68,12 +68,37 @@ $(document).ready(function() {
 				}
 				else
 				{
-					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.User._name;
+					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.User.first_name;
 				}
 			} else {
 				$('#myModal').modal('show');
 			}
 		});
+
+     $("#AskVendorForm").on("submit", function(){
+        if(userInfo.email){
+   		var sentInput = {};
+   		sentInput.to = vendorInfo.User.email;
+		sentInput.subject = $('#AskSubject').val();
+		sentInput.message = $('#AskText').val();
+		sentInput.vendor_name = vendorInfo.vendor_name;
+
+		$.ajax({
+			url: 'api/product-view/vendor-question',
+			type: 'POST',
+			data: sentInput,
+			success: function(data) {
+				console.log(data)
+			},
+			error: function(error) {
+				console.log(error)
+			}
+		})
+   	return false;
+	}else{
+		location.href="/login";
+	}
+ })
 });
 
 var newData = {};
@@ -274,7 +299,7 @@ function wishUpdate() {
 																</g>
 															</svg>
 															<span class="m-l-xs align-middle">
-																ADD TO BAG 
+																Add To Bag
 															</span>
 														</a>
 														{{/ifCond}}
@@ -288,7 +313,7 @@ function wishUpdate() {
 																</g>
 															</svg>
 															<span class="m-l-xs align-middle">
-																ADD TO BAG
+																Add To Bag
 															</span>
 														</a>
 														{{/ifCond}}
@@ -514,10 +539,10 @@ function wishUpdate() {
 														<div class="row">
 															<div class="col-md-9">
 																<div class="form-group">
-																	<input type="text" class="form-control form-control-sm" placeholder="Subject">
+																	<input type="text" id="AskSubject" class="form-control form-control-sm" placeholder="Subject">
 																</div>
 																<div class="form-group">
-																	<textarea class="form-control form-control-sm" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
+																	<textarea class="form-control form-control-sm" id="AskText" rows="3" placeholder="Tell us about you support issue with this product..."></textarea>
 																</div>
 															</div>
 															<div class="col-md-3">
@@ -582,7 +607,7 @@ function wishUpdate() {
                         														<span>Category</span>
                         													</div>
                         													<div class="col-md-8 col-8 no-padding overflow-txt">
-                        														<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                        														<a class="text-500" href="{{MarketPlaceURL this.marketplace_id}}/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
                         													</div>
                         												</div>
                         											</td>

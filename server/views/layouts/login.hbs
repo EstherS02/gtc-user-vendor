@@ -8,6 +8,19 @@
     // const auth = Auth();
 
     $(document).ready(function() {
+         var url = window.location.href;
+        var base_url = window.location.origin+window.location.pathname;
+        var var_id= url.replace(base_url,"")
+        if(var_id) {
+            $('html, body').animate({
+                scrollTop:  $(var_id).offset().top
+            },0);
+        }
+        // plan page partial starts//
+          $('#userPlanShow').show();
+         $('#vendorPlanShow').hide();
+         //plan page partial ends//
+          var userInfo = {{{ DisplayJSON LoggedInUser }}}
    // var socket = io();
         $('#btnLogin').prop('disabled', true);
 
@@ -34,7 +47,8 @@
                 $('#loginErrorMessage').text(error.responseText);
             });
         });
-    });
+       
+        });
 </script>
 
 {{> header/login-header}}
@@ -54,41 +68,32 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <a id="gtc-fb-login">
-                                <img src="../img/login-facebook.png" alt="facebook" style="margin-bottom: 5px; width: 100%;" />
-                            </a>
-                            <a id="gtc-google-login">
-                                <img src="../img/login-google.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" />
-                            </a>
-                            <a id="gtc-twitter-login">
-                                <img src="../img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" />
-                            </a>
-                            <a id="gtc-linkedin-login">
-                                <img src="../img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" />
-                            </a>
+                            <a id="gtc-fb-login"><img src="../img/login-facebook.png" alt="facebook" style="margin-bottom: 5px; width: 100%;" /></a>
+                            <a id="gtc-google-login"><img src="../img/login-google.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
+                            <a id="gtc-twitter-login"><img src="../img/login-twitter.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a>
+                            <a id="gtc-linkedin-login"><img src="../img/login-linkedin.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" /></a> 
                         </div>
-                    
-                        <div class="col-md-1">
-                            <h2 class="divider-line" style="z-index:1">
-                                <span class="text-black">OR</span>
-                            </h2>
-                    
-                        </div>
-                       
+
+                        <div class="col-md-0">
+                            <div class="col-md-0 verticalLine1"></div> 
+                            <hr><p class="sepText">or</p>
+                            <div class="col-md-0 verticalLine"> </div>     
+                        </div>    
+
                         <div class="col-md-6">
-                            <form id="signUpForm" method="post">
-                                <div id="signUpErrorLog"></div>
-                    
-                                <input type="email" id="inputEmail" name="email" class="acc_textbox " placeholder="Email" required="true">
-                                <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
-                                <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
-                                <br/>
-                                <input type="checkbox" id="inputTerms" name="input_terms" required="true"> Accept terms and conditions
-                                <button type="submit" id="btnSignup" class="acc_button btn">CREATE ACCOUNT</button>
-                                <br>
-                            </form>
-                        </div>
+                        <form id="signUpForm" method="post">
+                            <div  id="signUpErrorLog"></div>
+
+                            <input type="email" id="inputEmail" name="email" class="acc_textbox " placeholder="Email" required="true">
+                            <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
+                            <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
+                            <br/>
+                            <input type="checkbox" id="inputTerms" name="input_terms" required="true">
+                            Accept terms and conditions
+                            <button type="submit" id="btnSignup" class="acc_button btn" >CREATE ACCOUNT</button><br>
+                        </form>
                     </div>
+                </div>
             </div>
             
         </div>
@@ -154,78 +159,7 @@
     </div>
 </section>               
 
-<section>
-    <div class="text-center which_pkg" style="margin-bottom: 0px;">
-        <div class="container">
-            <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
-            <p class="which_pkg_p">We have a several options to get you started, or dive in with the our most robust offering. </p>
-            <div class="row">
-                <div class="starter_seller">
-                    <p class="starter_seller_p1">STARTER SELLER </p>
-                    <h1 class="starter_seller_h1">FREE</h1>
-                    <p>Build a GTC profile without the advanced reports, copuons, chat system and SEO support.</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maximum <b>20 Product</b> Inventory</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Maxmium <b>1 Subscription</b></p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> Secure <b> Escrow</b> Online Transactions</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="starter_seller_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    {{!-- <input type="submit" value="SIGNUP NOW" class="price_signup"> --}}
-                    <a class="price_signup btn" href="/vendor-form">SIGNUP NOW</a>
-                </div>
-                <div class="service_provider">
-                    <p class="service_provider_p1">SERVICE PROVIDER </p>
-                    <h1 class="service_provider_h1">$30<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Market your services to a massive audience for only 10% of subscription sales. </p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="service_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup">
-                </div>
-                <div class="lifestyle_provider">
-                    <p class="lifestyle_provider_p1">LIFESTYLE PROVIDER</p>
-                    <h1 class="lifestyle_provider_h1">10<sup>%</sup></h1>
-                    <p>Expose your subscriptions to a massive audience for only 10% of subscription sales.</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>No Assitinal Fee to</b> Buyers</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> Secure <b>Escrow</b> Online Transactions</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="lifestyle_provider_list"><i class="fas fa-check"></i> <b>Limited</b> Support</p>
-                    <input type="submit" value="SIGNUP NOW" class="price_signup">
-                </div>
-                <div class="public_seller_pg">
-                    <p class="public_seller_pg_p1">PUBLIC SELLER PRICING GUIDE </p>
-                    <h1 class="public_seller_pg_h1">$99<span style="font-size: 20px;">/MO</span></h1>
-                    <p>Our Wholesaler monthly fee carries with it our highest tier access to Global Trade Connect, and all its features including: </p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> up To <b>2000 product</b> inventory</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Services</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Subscriptions</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Unlimited</b> Transactions Per Month</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> secure <b>Escrow</b> Online Transactions</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Paypal</b> and/or <b>Stripe</b> Payment Processing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Custom Branded</b> Store Front</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Prefered Advertising</b> Access</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Volume</b> Based Pricing</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Geo-Tartgeting</b> to Zero-in Audience</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> Real Time Transaction <b>Analytics</b></p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>24 Hour</b> Dedicated Support</p>
-                    <p class="public_seller_pg_list"><i class="fas fa-check"></i> <b>Access To The Buyer Network</b></p>
-                    <input type="submit" value="BUILD YOUR STORE NOW" class="price_signup"style="margin-left:30px">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{{> plan-detail}}
 
 <section>
     <div class="jumbotron text-center which_pkg_test" style="margin-bottom: 0px;">
@@ -266,7 +200,7 @@
     </div>
 </section>
 
-<section class="custom-accordion">
+<section class="custom-accordion" id="FAQ">
     <div class="container">
         <div class="row">
             <h3 style="text-align: center;">FREQUENTLY ASKED QUESTIONS</h3>
