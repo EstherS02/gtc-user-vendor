@@ -218,21 +218,17 @@
 
 		$('#topSearchForm').submit(function(e) {
 			e.preventDefault();
-
 			let formInput = $("#topSearchForm :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
 			if (!formInput || formInput.keyword) {
 				return;
 			}
-			window.location.href = 'products/search?' + formInput;
+			window.location.href = pathname + '/search?' + formInput;
 		});
 	});
 
 	function gtcLogout() {
-		//console.log("emitSocket", emitSocket.userInfo);
-		
-		//emitSocket.userLeave({{LoggedInUser.id}});
 		$.ajax({
 			type: "POST",
 			url: "/api/auth/logout",
@@ -246,10 +242,4 @@
 			}
 		});
 	}
-
-	$('#dropdownMenuButton2').click(function() {
-
-	});
-
- 
 </script>

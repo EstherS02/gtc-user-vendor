@@ -25,7 +25,11 @@ export async function categoryWithProductCount(productQueryObj) {
 		});
 		var categories = await JSON.parse(JSON.stringify(categoriesResponse));
 		await Promise.all(categories.map(async (category, i) => {
-			productQueryObj['product_category_id'] = category.id;
+			if (productQueryObj['product_category_id'] && (productQueryObj['product_category_id'] !== category.id)) {
+				productQueryObj['product_category_id'] = await null;
+			} else {
+				productQueryObj['product_category_id'] = await category.id;
+			}
 			var productCount = await model['Product'].count({
 				where: productQueryObj
 			});
@@ -130,11 +134,10 @@ export async function durationWithProductCount(productQueryObj) {
 			categories[i].product_count = productCount;
 		}));
 		results['rows'] = categories;
-		console.log("****************************888",results)
+		console.log("****************************888", results)
 		return results;
 	} catch (error) {
-		console.log("****************************888",error)
+		console.log("****************************888", error)
 		return error;
 	}
 }
-
