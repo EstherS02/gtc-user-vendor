@@ -19,7 +19,6 @@ export function socketMsg(io) {
 
 		// id:  user_id}
 		socket.on('user:join', function(user) {
-
 			socket.join(user.id);
 			socket.userId = user.id;
 			console.log("****socket.userId", socket.userId);
@@ -85,18 +84,21 @@ export function socketMsg(io) {
 		socket.on('chat:send', function(talk) {
 
 			return talkCreate(talk).then(function(result) {
+				console.log("RESULT", result);
 				result.to_id = talk.to_id;
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
-					return threadArrObj = talk.talk_thread_id
+					return threadArrObj.thread == result.talk_thread_id
 				});
+				console.log("talkThreadCheck", talkThreadCheck);
 				if (talkThreadCheck.users.indexOf(talk.to_id) == -1) {
 					console.log("userArray", userArray);
 					var userId = _.find(userArray, function(userArrObj) {
-						return userArrObj = talk.talk_thread_id
+						console.log("userArrObj result.talk_thread_id", userArrObj, talk.to_id);
+						return userArrObj == talk.to_id
 					});
 					if (userId) {
 						console.log("user is online, sending to his room...")
-						io.to(talk.to_id).emit('chat:receive', result);
+						io.to(talk.to_id).to(result.talk_thread_id).emit('chat:receive', result);
 					} else {
 						console.log("user offline");
 					}

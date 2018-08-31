@@ -48,7 +48,7 @@
         vendorInformation = element;
         domElement = domElement + `<li class="right clearfix">
             <span class="chat-img pull-right">
-				      <img src="` +userProfile(element.User) +`" alt="User Avatar">
+				      <img src="` +userProfile(userInfo.user_pic_url) +`" alt="User Avatar">
 			     </span>
       			<div class="chat-body clearfix">
       				<div class="header">
@@ -170,7 +170,7 @@
 
         var body = `<li class="` + base1 + ` clearfix" >
                       <span class="chat-img ` + base + `">
-                        <img src="` + userProfile(commonInfo.User) + `" alt="User Avatar">
+                        <img src="` + userProfile(commonInfo.User.user_pic_url) + `" alt="User Avatar">
                       </span>
                       <div class="chat-body clearfix">
                         <div class="header m-b-xs">

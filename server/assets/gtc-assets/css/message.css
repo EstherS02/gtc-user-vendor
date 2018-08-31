@@ -113,6 +113,7 @@
 }
 .chats li.right .chat-body {
     margin-right: 70px;
+    box-shadow: 1px -1px 20px 5px rgb(193, 182, 185);
     background-color: #fff;
 }
 .chats li .chat-body {
@@ -149,6 +150,7 @@
 
 .chats li.left .chat-body {
     margin-left: 70px;
+    box-shadow: 1px -1px 20px 5px rgb(193, 182, 185);
     background-color: #fff;
 }
 .pull-right {

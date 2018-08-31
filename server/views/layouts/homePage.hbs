@@ -4,6 +4,12 @@
 </script>
 
 <script type="text/javascript">
+    socket.on('chat:receive', function(data){
+        console.log("data", data);
+    })
+</script>
+
+<script type="text/javascript">
 var userInfo = {{{DisplayJSON LoggedInUser}}}
 $(document).ready(function() {
     console.log("window:::" + userInfo.email);
