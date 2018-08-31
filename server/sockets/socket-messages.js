@@ -22,6 +22,7 @@ export function socketMsg(io) {
 		//	console.log("USER.ID", user.id);
 			socket.join(user.id);
 			socket.userId = user.id;
+			console.log("****socket.userId", socket.userId);
 			if (userArray.indexOf(user.id) == -1) {
 				userArray.push(user.id);
 			} else {
@@ -125,9 +126,18 @@ export function socketMsg(io) {
 		});
 
 		socket.on('disconnect', function() {
-			console.log("userArray", userArray);
+			console.log("disconnect", socket.userId);
+			console.log("userArray in disconnect***********8", userArray);
+			console.log("clients when disconnect**", io.sockets.clients().server.sockets.adapter.rooms);
 			connections.splice(connections.indexOf(socket), 1);
 			console.log("%s length", connections.length);
+			if(socket.userId != null) {
+				if(userArray.indexOf(socket.userId) > -1) {
+					console.log("%s disconnected", socket.userId)
+					socket.join(socket.userId);		
+					console.log("%s connected", socket.userId)
+				}
+			}
 			//console.log("%s Disconnected", socket.userId);
 		})
 	})
