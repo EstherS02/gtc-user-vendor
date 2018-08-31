@@ -79,6 +79,7 @@ function init(sequelize) {
     model.UserToken = sequelize.import('./definition/user-token.js');
     model.Vendor = sequelize.import('./definition/vendor.js');
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
+    model.VendorNotification = sequelize.import('./definition/vendor-notification.js');
     model.VendorNotificationSetting = sequelize.import('./definition/vendor-notification-setting.js');
     model.VendorPlan = sequelize.import('./definition/vendor-plan.js');
     model.VendorRating = sequelize.import('./definition/vendor-rating.js');
@@ -158,6 +159,7 @@ function init(sequelize) {
     require('./definition/vendor.js').initRelations();
     require('./definition/vendor-follower.js').initRelations();
     require('./definition/vendor-notification-setting.js').initRelations();
+    require('./definition/vendor-notification.js').initRelations();
     require('./definition/vendor-plan.js').initRelations();
     require('./definition/vendor-rating.js').initRelations();
     require('./definition/vendor-shipping-location.js').initRelations();
