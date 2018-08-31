@@ -66,9 +66,9 @@ module.exports.initRelations = () => {
     const Notification = model.Notification;
     const VendorNotificationSetting = model.VendorNotificationSetting;
 
-    Notification.hasMany(VendorNotificationSetting, {
-        foreignKey: 'notification_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
+    // Notification.hasMany(VendorNotificationSetting, {
+    //     foreignKey: 'notification_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 };
