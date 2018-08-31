@@ -28,7 +28,7 @@
               <div class="col-md-10 col-xs-10">
                 <div class="messages msg_sent">
                   <p>{{this.message}}</p>
-                  <time datetime="2009-11-13T20:00">{{formatTime this.created_on "LT"}}</time>
+                  <time datetime="">{{formatTime this.created_on "LT"}}</time>
                 </div>
               </div>
             </div>
@@ -38,7 +38,7 @@
               <div class="col-md-10 col-xs-10">
                 <div class="messages msg_receive">
                   <p>{{this.message}}</p>
-                  <time datetime="2009-11-13T20:00">{{formatTime this.created_on "LT"}}</time>
+                  <time datetime="">{{formatTime this.created_on "LT"}}</time>
                 </div>
               </div>
             </div>
@@ -83,22 +83,23 @@
         })
 
         socket.on('chat:receive', function(data){
-        var dt = new Date();
-        var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-        //console.log("emitted data", data);
-        var base;
+        
+      
         // console.log("socketChat.user", socketChat.user);
         if (data.from_id == socketChat.user) {
-          base = "base_sent"
+          base = "base_sent";
+          msg = "msg_sent";
           console.log("base_sent", base);
         } else {
-          base = "base_receive"
+          base = "base_receive";
+          msg= "msg_receive"
           // console.log("basereceive", base);
         }
         var body = '<div class="row msg_container '+base+'">' +
         '<div class="col-md-10 col-xs-10 ">' +
-        '<div class="messages msg_sent">' +
+        '<div class="messages '+ msg +'">' +
         '<p>' + data.message + '</p>' +
+        '<time datetime="">'+ FormatDate(data.created_on) + '</time>' +
         '</div>' +
         '</div>' +
         '</div>';
@@ -107,6 +108,10 @@
           $("#messagebody").animate({
             scrollTop: $("#messagebody")[0].scrollHeight
           }, 'slow');
+
+        function FormatDate(testDate) {
+         return moment(testDate).format("LT")
+        }
         })
   })
 
@@ -243,8 +248,8 @@
     color: black;
     background: white;
     padding: 10px;
-    border-radius: 2px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 14px;
+    box-shadow: 1px -1px 20px 5px rgb(216, 184, 190);
     max-width: 100%;
   }
 

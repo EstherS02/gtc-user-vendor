@@ -3,7 +3,8 @@ var socket;
 $(function(){
 
     socket = io({
-  transports: ['websocket']
+  transports: ['websocket'],
+  forceNew: true
 });
     //emitSocket.socket = io();
     emitSocket.userJoin = function(user){

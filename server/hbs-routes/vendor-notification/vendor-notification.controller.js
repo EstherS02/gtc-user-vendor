@@ -48,9 +48,9 @@ export function notificationSettings(req, res) {
             });
         },
 			notifications: function(callback) {
-
 				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
 					.then(function(results) {
+						console.log("---------================--",results)
 						return callback(null, results);
 
 					}).catch(function(error) {
@@ -86,7 +86,7 @@ export function notificationSettings(req, res) {
 				res.render('vendorNav/notifications-settings', {
 					title: "Global Trade Connect",
 					title: "Global Trade Connect",
-					count: results.notifications.count,
+					// count: results.notifications.count,
 					notification: results.notifications.rows,
 					categories: results.categories,
                     bottomCategory: bottomCategory,
