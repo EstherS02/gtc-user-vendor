@@ -80,7 +80,7 @@ export function vendorQuestion(req, res) {
         .then(function(response) {
                         var email = req.body.to;
                         // console.log("----------=-=-=-=-=-==",order.OrderItems[0].Product.Vendor.User.email);
-                        var subject = response.subject.replace('%SUBJECT%', 'User Asking This');
+                        var subject = response.subject.replace('%SUBJECT%', req.body.subject);
                         var body;
                             body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
                             body = body.replace('%USER_NAME%',LoggedInUser.first_name);
