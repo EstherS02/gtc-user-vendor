@@ -1,386 +1,315 @@
-<script type="text/javascript">
-$(function(){
-	$("#gtc-form-alert").hide();
-});</script>
+<script>
+	$(document).ready(function () {
+		$("#gtc-refund-alert").hide();
 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+		$('.data-value').click(function () {
+			var item_id = $(this).data('id');
+			$(".modal-body #item_id").val(item_id);
+			$('#importModal').modal('show');
+		})
+
+		$("#returnReason").validate({
+			rules: {
+				reason_for_return: {
+					required: true,
+					maxlength: 64
+				},
+			},
+			messages: {
+				reason_for_return: {
+					required: "Please enter the reason for return",
+					maxlength: "Maximum 64 characters"
+				}
+			}
+		});
+
+		$("#returnReason").submit(function (e) {
+			e.preventDefault();
+
+			var returnInput = {};
+
+			returnInput.reason_for_return = $('#reason_for_return').val();
+			var item_id = $('#item_id').val();
+
+			$.ajax({
+				url: '/api/order-history/return-request/' + item_id,
+				type: 'PUT',
+				data: returnInput,
+				success: function (result) {
+					$('#gtc-refund-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-refund-alert .refund-message').text("Refund request sent")
+					$("#gtc-refund-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-refund-alert").slideUp(500);
+					});
+					setTimeout(function () {
+						location.reload(true);
+					}, 1000);
+				},
+				error: function (error) {
+					console.log("error", error);
+				}
+			})
+		})
+
+		$('input.required').click(function () {
+			var checked = $('input.required:checked').length;
+			if (checked != 0) {
+				$('#returnSubmitBtn').removeAttr('disabled');
+			}
+			else {
+				$('#returnSubmitBtn').attr('disabled', 'disabled');
+			}
+		});
+
+	})
+</script>{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
 <div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Return Product / Request Refund</h2>
-                            <p class="re_return-fo">If you wish to initiate a return, please review the vendor's return policy below. Returns requests are reviewed and administrated by the vendow in accordance with their policy.</p>
-							<p class="re_return_req">Return Status</p>
-							<p class="re_return_gre"> This product has been approved for return.<span class="re_return_or">In Review. </span><span class="re_return_re">Rejected.</span></p>
-                        </div>
-                        <div class="alert" id="gtc-form-alert">
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <span class="form-message"></span>
-                        </div>
-                        <div class="content-body">
-                            <div class="row">
-								<div class="col-md-10 col-12">
-							
-									<p class="re_return_tha">833 That Street,Calgary, Alberta, canada, b2s4t5</p>
-								</div>
-								<div class="col-md-10 col-12" >
-									<div class="progress">
-										<div class="progress-bar" style="width:70%"></div>
-									</div>
-									   
-									<div class="row">
-										<div class="col-md-2 col-3" style="padding:0px;">
-											<p class="re_return_rr">Request Recieved</p>
-											<p class="re_return_de">11&ensp; Dec</p>
-										</div>
-										<div class="col-md-2 col-3" style="padding:0px;">
-											<p class="re_return_rr">Request Approved </p>
-											<p class="re_return_de">11&ensp;Dec</p>
-										</div>
-										<div class="col-md-2 col-2" style="padding:0px;">
-											<p class="re_return_rr">Shipped</p>
-											<p class="re_return_de">11&ensp; Dec</p>
-										</div>
-										<div class="col-md-3 col-1" style="padding:0px;"></div>
-										<div class="col-md-3 col-3" >
-											<p class="re_return_rr1">Delivered on 13 Dec</p>
-											<p class="re_return_de1">Delivered on13 Dec</p>
-										</div>
-									</div> 
-								</div> 
-								<!--<div class="row">-->
-									<div class="col-md-5 col-12">
-										<div class="row">
-											<div class="col-md-12 col-12">
-												<div class="row">
-													
-													<div class=" col-md-3 col-5  " style="padding: 20px 0px 0px 30px;">
-														<img class="re_return_iphone" src="{{item.Product.ProductMedia.[0].url}}"/>
-													</div>
-													<div class=" col-md-7 col-7 re_return_order" >
-														<p class="order-details">Order Details </p>
-													</div>
-													<div class=" col-md-5 col-5 re_return_ord_tab_di " >
-														<p class=" re_return_ord_tab ">Order£</p>
-													</div>
-													<div class=" col-md-7 col-7 re_return_ord_tab_di " >
-														<p class="re_return_ord_tab1 ">9823458792</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Buyer Name</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_order1">Urban Abodes LTd</p>
-													</div>
-													<div class=" col-md-5 col-5" >
-														<p class=" re_return_ord_tab ">Seller Name</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_order1">Hayden Auto</p>
-													</div>
-													<div class=" col-md-5 col-5">
-														<p class=" re_return_ord_tab ">Product</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_order1">Product Name</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Quantity</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">12</p>
-													</div>
-													<div class=" col-md-5 col-5" >
-														<p class=" re_return_ord_tab ">Shipping Service</p>
-													</div>
-													<div class=" col-md-7 col-7" >
-														<p class="re_return_ord_tab1 ">Puralator</p>
-													</div>
-													<div class=" col-md-5 col-5">
-														<p class="re_return_ord_tab ">Transaction Amount</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">$14,9000,00CAD</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Fees</p>
-													</div>
-													<div class=" col-md-7 col-7" >
-														<p class="re_return_ord_tab1 ">$185,00CAD</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Conversion</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_ord_tab1 ">CAD $0.79 to USD $1.05</p>
-													</div>
-													<div class=" col-md-5 col-5 ">
-														<p class="re_return_ord_tab ">Converted value</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">$12,900.00USD</p>
-													</div>
-												</div>          
-										
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-12" style="padding: 15px 80px 0px 25px;">
-												<button class="re_return_but">REQUEST A RETURN </button>
-											</div> 
-										</div>
-									</div>
-									<div class="col-md-1"></div>
-									<div class="col-md-4 col-12">
-										<div class="row">
-											<div class="col-md-12 col-12 ">
-												<p class="re_return_ship" > SHIPMENT DETAILS</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-12 ">
-												<p class="re_return_last">Last update:Wednesday, 13Dec</p>
-											</div>
-						
-										</div>
-						
-										<div class="row">
-											<div class="col-md-3 col-3">
-												<p class="re_return_r1">11:30am</p> 
-											</div>
-											<div class="col-md-9 col-9">
-												<p class="re_return_r1">Your package was delivered.</p>
-												<div class="row">
-													<div class="col-md-3 col-3">
-														<p class="re_return_rr2">Carrier</p>
-														<p class="re_return_rr2">Tracking#</p>
-													</div>
-													<div class="col-md-9 col-9">
-														<p class="re_return_rr2">Cintel Courier Canada Inc.</p>
-														<p class="re_return_rr2">#1700014</p>
-														<p class="re_return_r2"><a href="#"><b>View Order Details</b></a></p>
-													</div>
-												</div>
-											</div>
-															
-										</div>			
-									</div>
-																									
-									<div class="col-md-12 col-12">
-										<div class="row">
-											<div class="col-md-8 col-12 ">
-												<p class="re_return_ven">***Vendor Name**'s Return Policy</p>
-												<p class="re_return_are">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br><br> Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-											</div>
-											<div class="col-md-4 col-4">
-											</div>
-										</div>
-									</div>
-								<!--</div>-->	
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Return Product / Request Refund</h2>
+							<p>
+								<small>If you wish to initiate a return, please review the vendor's return policy below. Returns requests are reviewed and
+									administrated by the vendor in accordance with their policy.</small>
+							</p>
+						</div>
+						{{#ifCond this.order_item_status '>' orderItemStatus.REFUND_FAILED}}
+						<p class="re_terms_pa">Return Status</p>
+						<p>{{#ifCond this.order_item_status '==' orderItemStatus.RETURN_IN_REVIEW}} In Review {{else ifCond this.order_item_status
+							'==' orderItemStatus.RETURN_APPROVED}} This product has been approved for return. {{else ifCond this.order_item_status
+							'==' orderItemStatus.RETURN_REJECTED}} Rejected {{/ifCond}}
+						</p>
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+								<span class="sr-only">70% Complete</span>
 							</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{{!--   <section class="re_return_sect">
+						</div>
+						{{/ifCond}}
 
-        <div class="" style="    padding: 0px 25px;">
-            <div class="col-md-12 col-12 return_product_report_bg">
-                <div class="row">
-                    
-					{{> vendor/navbar}}
-
-					<div class="col-md-10 re_pr_re_bd_bg ">
-						<div class="col-md-10 col-12 " style="padding: 0px;" >
-
-							<p class="re_return_req">Return Product / Request Refund </p>
-							<p class="re_return-fo">If you wish to initiate a return, please review the vendor's return policy below. Returns requests are reviewed and administrated by the vendow in accordance with their policy.</p>
-							<p class="re_return_req">Return Status</p>
-							<p class="re_return_gre"> This product has been approved for return.<span class="re_return_or">In Review. </span><span class="re_return_re">Rejected.</span></p>
-			
-							<div class="row">
-								<div class="col-md-10 col-12">
-							
-									<p class="re_return_tha">833 That Street,Calgary, Alberta, canada, b2s4t5</p>
+						<div class="content-body">
+							<div class="col-md-5">
+								<h6 class="yourorder_wholesalesum_head" style="color:black">Order Details</h6>
+								<hr class="common_margin" />
+								<br/>
+								<div class="row">
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Order #:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">{{order.id}}</p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Seller Name:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">
+											<a href="vendor/{{order.OrderItems.[0].Product.Vendor.id}}">{{order.OrderItems.[0].Product.Vendor.vendor_name}}</a>
+										</p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Shipping Service:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">{{order.Shipping.id}}</p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Transaction Amount:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal"></p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Fees:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal"></p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Conversion:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal"></p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Converted Value:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal"></p>
+									</div>
 								</div>
-								<div class="col-md-10 col-12" >
-									<div class="progress">
-										<div class="progress-bar" style="width:70%"></div>
-									</div>
-									   
-									<div class="row">
-										<div class="col-md-2 col-3" style="padding:0px;">
-											<p class="re_return_rr">Request Recieved</p>
-											<p class="re_return_de">11&ensp; Dec</p>
-										</div>
-										<div class="col-md-2 col-3" style="padding:0px;">
-											<p class="re_return_rr">Request Approved </p>
-											<p class="re_return_de">11&ensp;Dec</p>
-										</div>
-										<div class="col-md-2 col-2" style="padding:0px;">
-											<p class="re_return_rr">Shipped</p>
-											<p class="re_return_de">11&ensp; Dec</p>
-										</div>
-										<div class="col-md-3 col-1" style="padding:0px;"></div>
-										<div class="col-md-3 col-3" >
-											<p class="re_return_rr1">Delivered on 13 Dec</p>
-											<p class="re_return_de1">Delivered on13 Dec</p>
-										</div>
-									</div> 
-								</div> 
-								<!--<div class="row">-->
-									<div class="col-md-5 col-12">
-										<div class="row">
-											<div class="col-md-12 col-12">
-												<div class="row">
-													
-													<div class=" col-md-3 col-5  " style="padding: 20px 0px 0px 30px;">
-														<img class="re_return_iphone" src="{{item.Product.ProductMedia.[0].url}}"/>
-													</div>
-													<div class=" col-md-7 col-7 re_return_order" >
-														<p class="order-details">Order Details </p>
-													</div>
-													<div class=" col-md-5 col-5 re_return_ord_tab_di " >
-														<p class=" re_return_ord_tab ">Order£</p>
-													</div>
-													<div class=" col-md-7 col-7 re_return_ord_tab_di " >
-														<p class="re_return_ord_tab1 ">9823458792</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Buyer Name</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_order1">Urban Abodes LTd</p>
-													</div>
-													<div class=" col-md-5 col-5" >
-														<p class=" re_return_ord_tab ">Seller Name</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_order1">Hayden Auto</p>
-													</div>
-													<div class=" col-md-5 col-5">
-														<p class=" re_return_ord_tab ">Product</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_order1">Product Name</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Quantity</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">12</p>
-													</div>
-													<div class=" col-md-5 col-5" >
-														<p class=" re_return_ord_tab ">Shipping Service</p>
-													</div>
-													<div class=" col-md-7 col-7" >
-														<p class="re_return_ord_tab1 ">Puralator</p>
-													</div>
-													<div class=" col-md-5 col-5">
-														<p class="re_return_ord_tab ">Transaction Amount</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">$14,9000,00CAD</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Fees</p>
-													</div>
-													<div class=" col-md-7 col-7" >
-														<p class="re_return_ord_tab1 ">$185,00CAD</p>
-													</div>
-													<div class=" col-md-5 col-5 " >
-														<p class=" re_return_ord_tab ">Conversion</p>
-													</div>
-													<div class=" col-md-7 col-7 ">
-														<p class="re_return_ord_tab1 ">CAD $0.79 to USD $1.05</p>
-													</div>
-													<div class=" col-md-5 col-5 ">
-														<p class="re_return_ord_tab ">Converted value</p>
-													</div>
-													<div class=" col-md-7 col-7 " >
-														<p class="re_return_ord_tab1 ">$12,900.00USD</p>
-													</div>
-												</div>          
-										
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-12" style="padding: 15px 80px 0px 25px;">
-												<button class="re_return_but">REQUEST A RETURN </button>
-											</div> 
-										</div>
-									</div>
-									<div class="col-md-1"></div>
-									<div class="col-md-4 col-12">
-										<div class="row">
-											<div class="col-md-12 col-12 ">
-												<p class="re_return_ship" > SHIPMENT DETAILS</p>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-md-12 col-12 ">
-												<p class="re_return_last">Last update:Wednesday, 13Dec</p>
-											</div>
-						
-										</div>
-						
-										<div class="row">
-											<div class="col-md-3 col-3">
-												<p class="re_return_r1">11:30am</p> 
-											</div>
-											<div class="col-md-9 col-9">
-												<p class="re_return_r1">Your package was delivered.</p>
-												<div class="row">
-													<div class="col-md-3 col-3">
-														<p class="re_return_rr2">Carrier</p>
-														<p class="re_return_rr2">Tracking#</p>
-													</div>
-													<div class="col-md-9 col-9">
-														<p class="re_return_rr2">Cintel Courier Canada Inc.</p>
-														<p class="re_return_rr2">#1700014</p>
-														<p class="re_return_r2"><a href="#"><b>View Order Details</b></a></p>
-													</div>
-												</div>
-											</div>
-															
-										</div>			
-									</div>
-																									
-									<div class="col-md-12 col-12">
-										<div class="row">
-											<div class="col-md-8 col-12 ">
-												<p class="re_return_ven">***Vendor Name**'s Return Policy</p>
-												<p class="re_return_are">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br><br> Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+								<br/>  {{!--
+								<div class="row">
 
-											</div>
-											<div class="col-md-4 col-4">
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>#
+												<span>{{SUMFloat @index 1}} </span>Product:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">{{this.Product.product_name}}</p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Quantity:</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">{{this.quantity}}</p>
+									</div>
+									<div class="col-md-5">
+										<p class="shop_subtotal">
+											<b>Price(per quantity):</b>
+										</p>
+									</div>
+									<div class="col-md-7">
+										<p class="shop_subtotal">{{this.Product.price}}</p>
+									</div>
+								</div>
+								<br/>
+								<div class="row">
+									{{#ifCond this.order_item_status '
+									< ' ../orderItemStatus.REFUND_FAILED}}
+									<div class="col-md-12">
+										 <a data-id="{{this.id}}" href="javascript:;" class="data-value">
+										<button data-id="{{this.id}}" class="ladda-button btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
+										 data-whatever="@mdo" style="width:100%">REQUEST A RETURN</button>
+										 </a>
+									</div>
+									{{else}}
+                                       <button class="ladda-button btn btn-small btn-muted" style="width:100%"> 
+										   {{#ifCond this.order_item_status '==' ../orderItemStatus.RETURN_IN_REVIEW}} RETURN REQUESTED
+										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_APPROVED}} RETURN APPROVED 
+										   {{else ifCond this.order_item_status '==' ../orderItemStatus.RETURN_REJECTED}} RETURN REJECTED 
+										   {{/ifCond}}
+										</button>
+                                    {{/ifCond}}--}}
+									
+								</div>
+								  
+								  <div class="row">
+									<div class="col-md-8">
+										<div class="table-responsive">
+										   <table class="table">
+											   <thead>
+												   <tr>
+													<th scope="col">
+														<input type="checkbox" onclick="selectAll(this);">
+													</th>
+													<th scope="col">Product Name</th>
+													<th scope="col">Quantity</th>
+													<th scope="col">Price</th>
+													<th scope="col">Status</th>
+												   </tr>
+												</thead>
+													<tbody>
+														{{#each order.OrderItems}}
+														<tr>
+															<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
+															<td>{{this.Product.product_name}}</td>
+															<td>{{this.quantity}}</td>
+															<td>{{this.Product.price}}</td>
+															<td></td>
+														</tr>
+														{{/each}}													
+													</tbody>
+										</table>
+										</div>
+										<div class="col-md-6">
+										 <a data-id="{{this.id}}" href="javascript:;" class="data-value">
+										<button data-id="{{this.id}}" class="ladda-button btn btn-small btn-muted" data-toggle="modal" data-target="#refundModal"
+										 data-whatever="@mdo" style="width:100%">REQUEST A RETURN</button>
+										 </a>
+									</div>
+									</div>
+								 </div>
+								
+								<div class="row">
+									<div class="col-md-5">
+								
+								<h6 class="yourorder_wholesalesum_head" style="color:black">{{order.OrderItems.[0].Product.Vendor.vendor_name}}'
+									 s Return Policy</h6>
+										<hr class="common_margin" />
+										<br/>
+										<div class="row">
+											<div class="col-md-12">
+												<textarea class="form-control-customized" rows="6">{{order.OrderItems.[0].Product.Vendor.TermsAndConds.[0].return_policy}}</textarea>
 											</div>
 										</div>
-									</div>
-								<!--</div>-->	
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>{{> footer/bottom-footer}}
+
+<div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Reason for Return</h5>
+			</div>
+			<div class="alert" id="gtc-refund-alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="refund-message"></span>
+			</div>
+			<form id="returnReason" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Please enter the reason for return:
+									<span class="text-danger">*</span>
+								</label>
+								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_return" id="reason_for_return" required></textarea>
+							</div>
+						</div>
+						<input type="hidden" id="item_id" name="item_id_name" value="">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input class="required" type="checkbox" onclick="document.getElementById('returnSubmitBtn').disabled=false;" name="checkbox"
+								/>
+								<label class="label-control">Are you sure you want to return this item from you order?</label>
 							</div>
 						</div>
 					</div>
-                        <div class="col-md-2 col-2 ">
-                            
-                        </div>
-                </div>
-                    <!--<div class="col-md-2 re_pr_re_bd_bg">
-                </div>-->
-            </div>
-                
-        </div>
-</section> --}}
- 	{{> footer/bottom-footer}}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Cancel</button>
+					<button type="submit" id="returnSubmitBtn" disabled="disabled" class="btn btn-small btn-primary">
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

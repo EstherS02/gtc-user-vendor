@@ -299,31 +299,6 @@ Handlebars.registerHelper('vendorSelectedcountry', function(context, test) {
     return new Handlebars.SafeString(ret);
 });
 
-// Handlebars.registerHelper('vendorPlan', function(context, plan, option) {
-//     var ret = '';
-//     var option;
-//     if (plan == 1 || plan == 6 || plan == 5) {
-//         return context;
-//     } else if (plan == 2) {
-//         if (context == 'SHOP' || context == 'SERVICES' || context == 'LIFESTYLE') {
-//             return context;
-//         } else {
-//             return ret;
-//         }
-
-//     } else if (plan == 3) {
-//         if (context == 'SERVICES') {
-//             return context;
-//         }
-//     } else if (plan == 4) {
-//         if (context == 'LIFESTYLE') {
-//             return context;
-//         }
-//     } else {
-//         return;
-//     }
-// });
-
 Handlebars.registerHelper('upperCount', function(limit, offset, count, option) {
     return count - (limit * offset);
 });
@@ -551,5 +526,14 @@ Handlebars.registerHelper('MarketPlaceURL', function(marketPlace_id, options) {
 
 
 
+});
+Handlebars.registerHelper('Location', function(id, arrayEle, options) {
+    let name;
+    arrayEle.forEach(function(element) {
+        if(element.id == id){
+            name= element.name;    
+        }
+    });
+    return name;
 });
   

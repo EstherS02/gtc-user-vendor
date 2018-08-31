@@ -9,7 +9,7 @@ export function socketMsg(io) {
 		var talkThreadArray = [];
 		var connections = [];
 		console.log("userArray", userArray);
-	io.sockets.on('connection', function(socket) {
+	io.on('connection', function(socket) {
 		console.log("userArray", userArray);
 		connections.push(socket);
 		console.log("connections", connections.length);
@@ -22,16 +22,20 @@ export function socketMsg(io) {
 		//	console.log("USER.ID", user.id);
 			socket.join(user.id);
 			socket.userId = user.id;
+			console.log("****socket.userId", socket.userId);
 			if (userArray.indexOf(user.id) == -1) {
 				userArray.push(user.id);
 			} else {
 				console.log("user already connected");
 			}
-			socket.broadcast.emit('userOnline', userArray);
-			console.log("***********************user Array*************", userArray);
+			socket.broadcast.emit('user:online', userArray);
 		//	userOnline(user);
 
 		});
+
+		socket.on('user:get_online_users', function(test){
+			io.emit('user:online', userArray);
+		})
 
 		// {id: user_id}
 		socket.on('user:leave', function(user) {
@@ -44,6 +48,7 @@ export function socketMsg(io) {
 				console.log('logout..');
 				var userIndex = userArray.indexOf(user.id);
 				userArray.splice(userIndex, 1);
+				io.emit('user:online', userArray);
 			}
 		//	userOffline(user);
 			console.log("logout userArray", userArray);
@@ -82,6 +87,9 @@ export function socketMsg(io) {
 			return talkCreate(talk).then(function(result) {
 				//console.log("RESULT **************", result.talk_thread_id);
 				//io.to(result.talk_thread_id).emit('chat:receive', result)
+				console.log("BEFORE RESULTTTT", result);
+				result.to_id = talk.to_id;
+				console.log("AFTER result", result);
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					return threadArrObj = talk.talk_thread_id
 				});
@@ -118,9 +126,18 @@ export function socketMsg(io) {
 		});
 
 		socket.on('disconnect', function() {
-			console.log("userArray", userArray);
+			console.log("disconnect", socket.userId);
+			console.log("userArray in disconnect***********8", userArray);
+			console.log("clients when disconnect**", io.sockets.clients().server.sockets.adapter.rooms);
 			connections.splice(connections.indexOf(socket), 1);
 			console.log("%s length", connections.length);
+			if(socket.userId != null) {
+				if(userArray.indexOf(socket.userId) > -1) {
+					console.log("%s disconnected", socket.userId)
+					socket.join(socket.userId);		
+					console.log("%s connected", socket.userId)
+				}
+			}
 			//console.log("%s Disconnected", socket.userId);
 		})
 	})
