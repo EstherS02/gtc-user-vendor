@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('VendorNotificationSetting', {
+    return sequelize.define('VendorNotification', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -9,35 +9,23 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        vendor_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_id',
-            allowNull: false,
-            references: {
-                model: 'vendor',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
+        name: {
+            type: DataTypes.STRING(255),
+            field: 'name',
+            allowNull: false
         },
-        vendor_notification_id: {
-            type: DataTypes.BIGINT,
-            field: 'vendor_notification_id',
-            allowNull: false,
-            references: {
-                model: 'vendor-notification',
-                key: 'id'
-            },
-            onUpdate: 'NO ACTION',
-            onDelete: 'NO ACTION'
+        code: {
+            type: DataTypes.STRING(255),
+            field: 'code',
+            allowNull: false
         },
-        enabled: {
-            type: DataTypes.INTEGER,
-            field: 'enabled',
+        description: {
+            type: DataTypes.TEXT,
+            field: 'description',
             allowNull: false
         },
         status: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             field: 'status',
             allowNull: false
         },
@@ -67,22 +55,20 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'vendor_notification_setting',
+        tableName: 'vendor_notification',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-
     const model = require('../index');
+    const Notification = model.VendorNotification;
     const VendorNotificationSetting = model.VendorNotificationSetting;
-    const Vendor = model.Vendor;
 
-    VendorNotificationSetting.belongsTo(Vendor, {
-        foreignKey: 'vendor_id',
+    Notification.hasMany(VendorNotificationSetting, {
+        foreignKey: 'vendor_notification_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
-
 };
