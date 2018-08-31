@@ -1,436 +1,501 @@
 <script type="text/javascript">
+	$(document).ready(function() {
+		$("#img1").hide();
+		$("#img2").hide();
+		$("#img3").hide();
+		$("#img4").hide();
 
-   
-  $(document).ready(function () {
-    $("#img1").hide();
-    $("#img2").hide();
-    $("#img3").hide();
-    $("#img4").hide();
+		var formInputFile = $('#verificationForm input[type="file"]')
+		var formSubmitBtn = $("#verificationForm button[type='submit']");
+		var submitBtnStatus = false;
 
-    $("#gtc-cart-alert").hide();
+		$("#gtc-cart-alert").hide();
 
-   $('#resetForm').click(function () {
-      if (confirm("Want to clear?")) {
-        /*Clear all input type="text" box*/
-        $('#verificationForm input[type="file"]').val('');
-      }
-    });
-    // on change  for image name display on field
-    $('.custom-file-input').on('change', function () {
-      let fileName = $(this).val().split('\\').pop();
-      $(this).next('.customized-file-label').addClass("selected").html(fileName);
-    });
-    // End -- on change  for image name display on field
-    // upload Personal id proof image
-    $("#personalId").click(function (e) {
-      var img = $('input[name=personal_id_verification_file_type]:checked').val();
-      if (img) {
-        var form = new FormData();
-        form.append("file", $("#personalIdProof")[0].files[0]);
-        if ($("#personalIdProof")[0].files[0]) {
-          uploads(form, function (location) {
-            console.log(location.imageURL); // this is where you get the return value
-            $("#img1_old").hide();
-            $("#img1").attr('src', location.imageURL);
-            $("#personal_id_verification_file_link").val(location.imageURL);
-            $("#img1").show();
-          });
-        } else {
-          ouputPopup("Please select image to upload");
-        }
-      } else {
-        ouputPopup("Please choose type of ID Proof");
-      }
-    });
-    // End upload Personal id proof image
+		$('#resetForm').click(function() {
+			//if (confirm("Want to clear?")) {
+			formInputFile.val('');
+			$('#verificationForm input[type="radio"]').val('');
+			formInputFile.siblings("label").text("")
+			// }
+		});
 
-    // upload Personal address proof image
-    $("#personalAddress").click(function (e) {
-      var form = new FormData();
-      form.append("file", $("#personalAddressProof")[0].files[0]);
-      if ($("#personalAddressProof")[0].files[0]) {
-        uploads(form, function (location) {
-          console.log(location.imageURL); // this is where you get the return value
-          $("#img2_old").hide();
-          $("#img2").attr('src', location.imageURL);
-          $("#personal_address_verification_file_link").val(location.imageURL);
-          $("#img2").show();
-        });
-      } else {
-        ouputPopup("Please select image to upload");
-      }
-    });
-    // End upload Personal address proof image
-    // upload Bussiness id proof image
-    $("#businessId").click(function (e) {
-      var form = new FormData();
-      form.append("file", $("#businessIdProof")[0].files[0]);
-      if ($("#businessIdProof")[0].files[0]) {
-        uploads(form, function (location) {
-          console.log(location.imageURL); // this is where you get the return value
-          $("#img3_old").hide();
-          $("#img3").attr('src', location.imageURL);
-          $("#business_verification_file_link").val(location.imageURL);
-          $("#img3").show();
-        });
-      } else {
-        ouputPopup("Please select image to upload");
-      }
-    });
-    // End upload Bussiness id proof image
 
-    // upload Bussiness address proof image
-    $("#businessAddress").click(function (e) {
-      var form = new FormData();
-      form.append("file", $("#businessAddressProof")[0].files[0]);
-      if ($("#businessAddressProof")[0].files[0]) {
-        uploads(form, function (location) {
-          console.log(location.imageURL); // this is where you get the return value
-          $("#img4_old").hide();
-          $("#img4").attr('src', location.imageURL);
-          $("#business_address_verification_file_link").val(location.imageURL);
-          $("#img4").show();
-        });
-      } else {
-        ouputPopup("Please select image to upload");
-      }
-    });
-    // End upload Bussiness address proof image
+		formInputFile.change(function() {
+			var length = formInputFile.length;
+			for (var i = 0; i < length; i++) {
+				if (formInputFile[i].value.trim().length == 0) {
+					submitBtnStatus = false;
+					break;
+				} else {
+					submitBtnStatus = true;
+				}
+			}
+			if (submitBtnStatus) {
+				formSubmitBtn.removeAttr("disabled")
+				formSubmitBtn.css("cursor", "pointer")
+			} else {
+				formSubmitBtn.attr("disabled", "disabled")
+				formSubmitBtn.css("cursor", "not-allowed")
+			}
+		})
+		
+		// on change  for image name display on field
+		$('.custom-file-input').on('change', function() {
+			let fileName = $(this).val().split('\\').pop();
+			$(this).next('.customized-file-label').addClass("selected").html(fileName);
+		});
+		// End -- on change  for image name display on field
+		// upload Personal id proof image
+		$("#personalId").click(function(e) {
+			var img = $('input[name=personal_id_verification_file_type]:checked').val();
+			if (img) {
+				var form = new FormData();
+				form.append("file", $("#personalIdProof")[0].files[0]);
+				if ($("#personalIdProof")[0].files[0]) {
+					uploads(form, function(location) {
+						console.log(location.imageURL); // this is where you get the return value
+						$("#img1_old").hide();
+						$("#img1").attr('src', location.imageURL);
+						$("#personal_id_verification_file_link").val(location.imageURL);
+						$("#img1").show();
+					});
+				} else {
+					ouputPopup("Please select image to upload");
+				}
+			} else {
+				ouputPopup("Please choose type of ID Proof");
+			}
+		});
+		// End upload Personal id proof image
 
-    function uploads(data, callback) {
-      $.ajax({
-        type: 'POST',
-        url: '/api/vendors/upload',
-        data: data,
-        cache: false,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        success: function (data, text) {
-          callback(data);
-        },
-        error: function (request, status, error) {
-          console.log('status', status);
-          console.log('error', error);
-        }
-      });
-    }
+		// upload Personal address proof image
+		$("#personalAddress").click(function(e) {
+			var form = new FormData();
+			form.append("file", $("#personalAddressProof")[0].files[0]);
+			if ($("#personalAddressProof")[0].files[0]) {
+				uploads(form, function(location) {
+					console.log(location.imageURL); // this is where you get the return value
+					$("#img2_old").hide();
+					$("#img2").attr('src', location.imageURL);
+					$("#personal_address_verification_file_link").val(location.imageURL);
+					$("#img2").show();
+				});
+			} else {
+				ouputPopup("Please select image to upload");
+			}
+		});
+		// End upload Personal address proof image
+		// upload Bussiness id proof image
+		$("#businessId").click(function(e) {
+			var form = new FormData();
+			form.append("file", $("#businessIdProof")[0].files[0]);
+			if ($("#businessIdProof")[0].files[0]) {
+				uploads(form, function(location) {
+					console.log(location.imageURL); // this is where you get the return value
+					$("#img3_old").hide();
+					$("#img3").attr('src', location.imageURL);
+					$("#business_verification_file_link").val(location.imageURL);
+					$("#img3").show();
+				});
+			} else {
+				ouputPopup("Please select image to upload");
+			}
+		});
+		// End upload Bussiness id proof image
 
-    function ouputPopup(data) {
-      $('#gtc-add-to-cart').prop('disabled', false);
-      $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-      $('#gtc-cart-alert .cart-message').text(data);
-      $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-        $("#gtc-cart-alert").slideUp(500);
-      });
-    }
-    $("#verificationForm").submit(function (e) {
-      e.preventDefault();
-      var data = {};
-      data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
-      data.personal_id_verification_file_link = $('#personal_id_verification_file_link').val();
-      data.personal_address_verification_file_link = $('#personal_address_verification_file_link').val();
-      data.business_verification_file_link = $('#business_verification_file_link').val();
-      data.business_address_verification_file_link = $('#business_address_verification_file_link').val();
+		// upload Bussiness address proof image
+		$("#businessAddress").click(function(e) {
+			var form = new FormData();
+			form.append("file", $("#businessAddressProof")[0].files[0]);
+			if ($("#businessAddressProof")[0].files[0]) {
+				uploads(form, function(location) {
+					console.log(location.imageURL); // this is where you get the return value
+					$("#img4_old").hide();
+					$("#img4").attr('src', location.imageURL);
+					$("#business_address_verification_file_link").val(location.imageURL);
+					$("#img4").show();
+				});
+			} else {
+				ouputPopup("Please select image to upload");
+			}
+		});
+		// End upload Bussiness address proof image
 
-      $.ajax({
-        type: 'POST',
-        url: '/api/verification/store',
-        data: data,
-        success: function (data) {
-          ouputPopup("Verification Request sent");
-        },
-        error: function (error) {
-          console.log("Error", error);
-        }
-      });
-    });
-  });
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+		function uploads(data, callback) {
+			$.ajax({
+				type: 'POST',
+				url: '/api/vendors/upload',
+				data: data,
+				cache: false,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: function(data, text) {
+					callback(data);
+				},
+				error: function(request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
+				}
+			});
+		}
+
+		function ouputPopup(data) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text(data);
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+				$("#gtc-cart-alert").slideUp(500);
+			});
+		}
+		$("#verificationForm").submit(function(e) {
+			e.preventDefault();
+			var data = {};
+			data.personal_id_verification_file_type = $('input[name=personal_id_verification_file_type]:checked').val();
+			data.personal_id_verification_file_link = $('#personal_id_verification_file_link').val();
+			data.personal_address_verification_file_link = $('#personal_address_verification_file_link').val();
+			data.business_verification_file_link = $('#business_verification_file_link').val();
+			data.business_address_verification_file_link = $('#business_address_verification_file_link').val();
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/verification/store',
+				data: data,
+				success: function(data) {
+					ouputPopup("Verification Request sent");
+				},
+				error: function(error) {
+					console.log("Error", error);
+				}
+			});
+		});
+	});
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
-  <div class="gtc-container">
-    <div class="row">
-      <div class="col-sm-2">
-        {{> vendor/vendor-side-navbar}}
-      </div>
-      <div class="col-sm-10">
-        <div class="ibox">
-          <div class="ibox-content">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
 
-            <div class="content-body">
-              <form role="form" id="verificationForm">
-                <h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
-                <p class="verification-incomplete">
-                  {{#if verification.vendor_verified_status}} 
-                      {{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
-                        <span class="id-verified">
-                          <i class="fas fa-check-circle"></i>
-                        </span><b>Your Document verification request is approved</b> 
-                      {{else ifCond verificationStatus.WAITING "==" verification.vendor_verified_status}}
-                        <span class="exclamation">
-                          <i class="fas fa-exclamation-circle"></i>
-                        </span>Your Document verification request is awaiting
-                        {{else}}
-                        <span class="exclamation">
-                          <i class="fas fa-exclamation-circle"></i>
-                        </span>You still have incomplete items to address below 
-                      {{/ifCond}}
-                     {{else}}
-                  <span class="exclamation">
-                    <i class="fas fa-exclamation-circle"></i>
-                  </span>You haven't submitted documents yet{{/if}}
-                </p>
-                <div class="alert" id="gtc-cart-alert">
-                  <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  <span class="cart-message"></span>
-                </div>
-                <p style="font-size: 13px;">
-                  Global Trade Connects requires all vendor to go through a several step process of documentation submission in order to verify
-                  their ownership of the business they are representing. Please submit the following 4 peices of documentation
-                  to verify your ownership of this business.
-                </p>
-                <hr style="margin-top: 25px;">
-                <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
-                  <p class="verification-incomplete">
-                    {{#if verification.personal_id_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status
-                    }}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond verificationStatus.APPROVED '=='
-                    verification.personal_id_verification_file_status }}
-                    <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
-                    </span>
-                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status
-                    }}
-                    <span class="id-verified">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>
-                    {{verification.personal_id_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.personal_id_verification_file_status }}
-                    {{else}}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>You haven't submitted this yet. {{/if}}
-                  </p>
-                </div>
-                <p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">
-                  Choose 1 of the 3 following type of ID to upload to verify your personal identity
-                </p>
-                <div class="col-md-8">
-                  <input type="radio" value="passport" name="personal_id_verification_file_type" {{setChecked "passport" verification.personal_id_verification_file_type}}
-                  />
-                  <label for="passport" class="upload-id-card">Passport </label>
-                  <br>
-                  <input type="radio" value="nationalIdCard" name="personal_id_verification_file_type" {{setChecked "nationalIdCard" verification.personal_id_verification_file_type}}
-                  />
-                  <label for="passport" class="upload-id-card">National Id card</label>
-                  <br>
-                   <input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
-                  />
-                  <label for="passport" class="upload-id-card">Driving license</label>
-                  <div class="input-group">
-                      <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpg, .png, .pdf">
-                          {{#if verification.personal_id_verification_file_link }}
-                         <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
-                          {{else}}
-                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
-                          {{/if}}                  
-                      </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
-                  </div>
-               
-                  
-                  {{#if verification.personal_id_verification_file_link }}
-                  <img id="img1_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
-                  /> {{/if}}
-                  <input type="hidden" id="personal_id_verification_file_link">
-                  <img class="verification-id" id="img1" />
-                </div>
-                <hr style="margin-top: 25px;">
-                <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
-                  <p class="verification-incomplete">
-                    {{#if verification.personal_address_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond verificationStatus.APPROVED '=='verification.personal_address_verification_file_status }}
-                    <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
-                    </span>
-                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status}}
-                    <span class="id-verified">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>
-                    {{verification.personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.personal_address_verification_file_status
-                    }} {{else}}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>You haven't submitted this yet. {{/if}}
-                  </p>
-                </div>
-                <p style="font-size: 13px; padding-bottom: 20px;">
-                  Please atleast one utility bill which has the name of the Personal Address you've registered on it
-                </p>
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf" >
-                           {{#if verification.personal_address_verification_file_link }}
-                           <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
-                            {{else}}
-                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Choose file</label>
-                           {{/if}}
-                          
-                      </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress"  style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
-                  </div>
+						<div class="content-body">
+							<form role="form" id="verificationForm">
+								<h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
+								<p class="verification-incomplete">
+									{{#if verification.vendor_verified_status}}
+										{{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
+											<span class="id-verified">
+												<i class="fas fa-check-circle"></i>
+											</span>
+											<b>Your Document verification request is approved</b>
+											{{else ifCond verificationStatus.WAITING "==" verification.vendor_verified_status}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>Your Document verification request is awaiting
+									{{else}}
+										<span class="exclamation">
+											<i class="fas fa-exclamation-circle"></i>
+										</span>You still have incomplete items to address below
+										{{/ifCond}}
+									{{else}}
+										<span class="exclamation">
+											<i class="fas fa-exclamation-circle"></i>
+										</span>You haven't submitted documents yet{{/if}}
+								</p>
+								<div class="alert" id="gtc-cart-alert">
+									<button type="button" class="close" data-dismiss="alert">
+										<span aria-hidden="true">&times;</span>
+									</button>
+									<span class="cart-message"></span>
+								</div>
+								<p style="font-size: 13px;">
+									Global Trade Connects requires all vendor to go through a several step process of documentation submission in order to verify
+									their ownership of the business they are representing. Please submit the following 4 peices of documentation to
+									verify your ownership of this business.
+								</p>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
+									<p class="verification-incomplete">
+										{{#if verification.personal_id_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status }}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '==' verification.personal_id_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved</b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status }}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_id_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.personal_id_verification_file_status }}
+										{{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p>
+								</div>
+								<p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">
+									Choose 1 of the 3 following type of ID to upload to verify your personal identity
+								</p>
+								<div class="col-md-8">
+									<input type="radio" value="passport" name="personal_id_verification_file_type" {{setChecked "passport" verification.personal_id_verification_file_type}}
+									/>
+									<label for="passport" class="upload-id-card">Passport </label>
+									<br>
+									<input type="radio" value="nationalIdCard" name="personal_id_verification_file_type" {{setChecked "nationalIdCard" verification.personal_id_verification_file_type}}
+									/>
+									<label for="passport" class="upload-id-card">National Id card</label>
+									<br>
+									<input type="radio" value="drivingLicense" name="personal_id_verification_file_type" {{setChecked "drivingLicense" verification.personal_id_verification_file_type}}
+									/>
+									<label for="passport" class="upload-id-card">Driving license</label>
 
-                  <br>
-                  <input type="hidden" id="personal_address_verification_file_link"> {{#if verification.personal_address_verification_file_link }}
-                  <img id="img2_old" src="{{verification.personal_address_verification_file_link}}" alt="your image" class="verification-id"
-                    style="object-fit: contain;" /> {{/if}}
-                  <img id="img2" alt="your image" class="verification-id" style="object-fit: contain;" />
-                  <input type="hidden" id="personal_address_verification_file_link">
-                </div>
-                <hr style="margin-top: 25px;">
-                <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">
-                    Business License / Articles Of Incorporation
-                  </h5>
-                  <p class="verification-incomplete">
-                    {{#if verification.business_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.business_verification_file_status
-                    }}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond verificationStatus.APPROVED '=='
-                    verification.business_verification_file_status }}
-                    <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
-                    </span>
-                    <b>Your Id verification request is approved </b>{{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status}}
-                    <span class="id-verified">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>
-                    {{verification.personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_verification_file_status
-                    }} {{else}}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>You haven't submitted this yet. {{/if}}
-                  </p>
-                </div>
-                <p style="font-size: 13px; padding-bottom: 20px;">
-                  Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
-                </p>
-                <div class="col-md-8">
-                   <div class="input-group">
-                        <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
-                         
-                            {{#if verification.business_verification_file_link }}
-                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
-                            {{else}}
-                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Choose file</label>
-                            
-                           {{/if}}
-                          
-                      </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
-                  </div>
-                  <br>
-                  <img id="img3" alt="your image" class="verification-id" style="object-fit: contain;" />
-                  <input type="hidden" id="business_verification_file_link"> {{#if verification.business_verification_file_link }}
-                  <img id="img3_old" src="{{verification.business_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
-                  /> {{/if}}
-                </div>
-                <hr style="margin-top: 25px;">
-                <div class="row">
-                  <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with address</h5>
-                  <p class="verification-incomplete">
-                    {{#if verification.business_address_verification_file_status}} {{#ifCond verificationStatus.WAITING '==' verification.business_address_verification_file_status
-                    }}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>Your Id verification request is awaiting approved {{/ifCond}} {{#ifCond verificationStatus.APPROVED '=='
-                    verification.business_address_verification_file_status }}
-                    <span class="id-verified">
-                      <i class="fas fa-check-circle"></i>
-                    </span>
-                    <b>Your Id verification request is approved</b> {{/ifCond}} {{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status
-                    }}
-                    <span class="id-verified">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>
-                    {{verification.personal_address_reason_for_reject}} {{/ifCond}} {{/if}} {{#if verification.business_address_verification_file_status}}
-                    {{else}}
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>You haven't submitted this yet. {{/if}}
-                  </p>
-                </div>
-                <p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
-                <div class="col-md-8">
-                  <div class="input-group">
-                        <div class="custom-file custom_error_message">
-                          <input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
-                           {{#if verification.business_address_verification_file_link }}
-                            <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
-                            {{else}}
-                          <label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Choose file</label>
-                           {{/if}}
-                      </div>
-                      <button  type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress"  style="border-radius:3px;top:-2px"><span class="ladda-label">Upload</span><span class="ladda-spinner"></span></button>
-                  </div>
-                  <br>
-                  <br>
-                  <img id="img4" alt="your image" class="verification-id" style="object-fit: contain;" />
-                  <input type="hidden" id="business_address_verification_file_link"> {{#if verification.business_address_verification_file_link }}
-                  <img id="img4_old" src="{{verification.business_address_verification_file_link}}" alt="your image" class="verification-id"
-                    style="object-fit: contain;" /> {{/if}}
-                </div>
-                <hr style="margin-top: 25px;">
-                <div style="display:none">
-                  <h5 class="gtc-title" style="padding-top: 20px; float: left;">Connect a Social Account
-                  </h5>
-                  <p class="verification-incomplete">
-                    <span class="exclamation">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>You haven't submitted this yet.
-                  </p>
-                  <p style="font-size: 13px; padding-bottom: 20px;">Connect with one of the following accounts to prove you have ownership of at least social media profile</p>
-                  <div class="col-md-10">
-                    <button class="connect-with-social-medias" type="button">
-                      <i class="fab fa-facebook-f" style="padding-right: 10px;"></i>
-                      CONNECT WITH FACEBOOK
-                    </button>
-                    <button class="connect-with-social-medias" type="button">
-                      <i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>
-                      CONNECT WITH LINKEDIN
-                    </button>
-                    <button class="connect-with-social-medias" type="button">
-                      <i class="fab fa-twitter" style="padding-right: 10px;"></i>
-                      CONNECT WITH TWITTER
-                    </button>
-                  </div>
-                  <hr style="margin-top: 25px;">
-                </div>
-                <div class="col-md-4" style="padding-bottom: 30px;">
-                  {{!-- <button class="update-btn" id="uploadDocs" type="submit">Update</button> --}}
-                  <button disabled type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadDocs" style="border-radius:0px"><span class="ladda-label">SUBMIT</span><span class="ladda-spinner"></span></button>
+									<div class="input-group">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf">
+											{{#if verification.personal_id_verification_file_link }}
+												<label class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
+											{{else}}
+												<label class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
+											{{/if}}
+										</div>
+										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px">
+											<span class="ladda-label">Upload</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
 
-                  <button  type="reset" id="resetForm" class="ladda-button btn cancel-btn" data-style="expand-left"  style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
-                  {{!-- <button class="cancel-btn" type="reset">Cancel</button> --}}
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+									{{#if verification.personal_id_verification_file_link }}
+										<img id="img1_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
+										/> {{/if}}
+									<input type="hidden" id="personal_id_verification_file_link">
+									<img class="verification-id" id="img1" />
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
+									<p class="verification-incomplete">
+										{{#if verification.personal_address_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '=='verification.personal_address_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved</b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status}}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.personal_address_verification_file_status }} {{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p>
+								</div>
+								<p style="font-size: 13px; padding-bottom: 20px;">
+									Please atleast one utility bill which has the name of the Personal Address you've registered on it
+								</p>
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf">
+											{{#if verification.personal_address_verification_file_link }}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
+											{{else}}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Choose file</label>
+											{{/if}}
+
+										</div>
+										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:3px;top:-2px">
+											<span class="ladda-label">Upload</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+
+									<br>
+									<input type="hidden" id="personal_address_verification_file_link">
+									{{#if verification.personal_address_verification_file_link }}
+										<img id="img2_old" src="{{verification.personal_address_verification_file_link}}" alt="your image" class="verification-id"
+										 style="object-fit: contain;" /> {{/if}}
+									<img id="img2" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="personal_address_verification_file_link">
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">
+										Business License / Articles Of Incorporation
+									</h5>
+									<p class="verification-incomplete">
+										{{#if verification.business_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.business_verification_file_status }}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '==' verification.business_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved </b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status}}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.business_verification_file_status }} {{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p>
+								</div>
+								<p style="font-size: 13px; padding-bottom: 20px;">
+									Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
+								</p>
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
+
+											{{#if verification.business_verification_file_link }}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
+											{{else}}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Choose file</label>
+
+											{{/if}}
+
+										</div>
+										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:3px;top:-2px">
+											<span class="ladda-label">Upload</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+									<br>
+									<img id="img3" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="business_verification_file_link">
+									{{#if verification.business_verification_file_link }}
+										<img id="img3_old" src="{{verification.business_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
+										/> {{/if}}
+								</div>
+								<hr style="margin-top: 25px;">
+								<div class="row">
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with address</h5>
+									<p class="verification-incomplete">
+										{{#if verification.business_address_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.business_address_verification_file_status }}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '==' verification.business_address_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved</b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status }}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.business_address_verification_file_status}}
+										{{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p>
+								</div>
+								<p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+								<div class="col-md-8">
+									<div class="input-group">
+										<div class="custom-file custom_error_message">
+											<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
+											{{#if verification.business_address_verification_file_link }}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
+											{{else}}
+												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Choose file</label>
+											{{/if}}
+										</div>
+										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:3px;top:-2px">
+											<span class="ladda-label">Upload</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+									<br>
+									<br>
+									<img id="img4" alt="your image" class="verification-id" style="object-fit: contain;" />
+									<input type="hidden" id="business_address_verification_file_link">
+									{{#if verification.business_address_verification_file_link }}
+										<img id="img4_old" src="{{verification.business_address_verification_file_link}}" alt="your image" class="verification-id"
+										 style="object-fit: contain;" /> {{/if}}
+								</div>
+								<hr style="margin-top: 25px;">
+								<div style="display:none">
+									<h5 class="gtc-title" style="padding-top: 20px; float: left;">Connect a Social Account
+									</h5>
+									<p class="verification-incomplete">
+										<span class="exclamation">
+											<i class="fas fa-exclamation-circle"></i>
+										</span>You haven't submitted this yet.
+									</p>
+									<p style="font-size: 13px; padding-bottom: 20px;">Connect with one of the following accounts to prove you have ownership of at least social media profile</p>
+									<div class="col-md-10">
+										<button class="connect-with-social-medias" type="button">
+											<i class="fab fa-facebook-f" style="padding-right: 10px;"></i>
+											CONNECT WITH FACEBOOK
+										</button>
+										<button class="connect-with-social-medias" type="button">
+											<i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>
+											CONNECT WITH LINKEDIN
+										</button>
+										<button class="connect-with-social-medias" type="button">
+											<i class="fab fa-twitter" style="padding-right: 10px;"></i>
+											CONNECT WITH TWITTER
+										</button>
+									</div>
+									<hr style="margin-top: 25px;">
+								</div>
+								<div class="col-md-4" style="padding-bottom: 30px;">
+									{{!-- <button class="update-btn" id="uploadDocs" type="submit">Update</button> --}}
+									<button disabled type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadDocs" style="border-radius:0px;cursor:not-allowed;">
+										<span class="ladda-label">SUBMIT</span>
+										<span class="ladda-spinner"></span>
+									</button>
+
+									<button type="reset" id="resetForm" class="ladda-button btn cancel-btn" data-style="expand-left" style="border-radius:0px">
+										<span class="ladda-label">Cancel</span>
+										<span class="ladda-spinner"></span>
+									</button>
+									{{!-- <button class="cancel-btn" type="reset">Cancel</button> --}}
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}
