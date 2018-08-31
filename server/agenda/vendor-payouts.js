@@ -135,7 +135,7 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                     PaymentMethod = paymentMethod['PAYPAL'];
 
-                    paypalPromises.push(stripe.vendorPaypalPayout('EMAIL', payoutAmount, CURRENCY, vendor.vendor_payout_paypal_email, payoutOrder));
+                    paypalPromises.push(stripe.vendorPaypalPayout('EMAIL', payoutAmount, 'CAD', vendor.vendor_payout_paypal_email, payoutOrder));
                     return Promise.all(paypalPromises);
                 }
                 else {
