@@ -2,7 +2,9 @@ var emitSocket = {};
 var socket;
 $(function(){
 
-    socket = io();
+    socket = io({
+  transports: ['websocket']
+});
     //emitSocket.socket = io();
     emitSocket.userJoin = function(user){
 
