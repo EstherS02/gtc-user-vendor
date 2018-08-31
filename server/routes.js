@@ -9,6 +9,8 @@ import errors from './components/errors';
 var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
+
+  app.use('/api/vendor-payout', require ('./api/vendor-payout'));
   
   /* Server REST API Routes */
   app.post('/auth/admin-token', require('./admin-auth'));

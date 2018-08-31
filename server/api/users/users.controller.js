@@ -396,6 +396,19 @@ export function userProfile(req, res) {
                 return Promise.all(addressUpdatePromises);
             }
         }).then(function(response){
+            if (req.body.vendorUpdate) {
+
+                var vendorBodyParam = {}, vandorQueryParam = {}, vendorUpdatePromises = [];
+
+                var vendorBodyParam = req.body.vendorUpdate;
+                var vendorQueryParam = {
+                    user_id : user_id
+                }
+
+                vendorUpdatePromises.push(vendorUpdate( vendorBodyParam, vendorQueryParam));
+                return Promise.all(vendorUpdatePromises);
+            }            
+        }).then(function(response){
             return res.status(200).send("Updated Successfully");
         })
         .catch(function (err) {
@@ -447,6 +460,20 @@ function updateAddress(obj, id) {
             console.log("Error::",err)
             return Promise.reject(err);
         })
+}
+
+function vendorUpdate(vendorBodyParam,vendorQueryParam){
+    service.updateRecord('Vendor', vendorBodyParam, vendorQueryParam)
+    .then(function(updatedVendor){
+
+        console.log("-------------------------------",updatedVendor);
+
+        return Promise.resolve(updatedVendor);
+    }).catch(function(err){
+        console.log("-------------------------------",err);
+        console.log("Error::",err)
+        return Promise.reject(err);
+    })
 }
 
 export function vendorFollow(req, res) {

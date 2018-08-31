@@ -1,30 +1,26 @@
 const sequelize = require('sequelize');
-const model = require('../sqldb/model-connect');
-const config = require('../config/environment');
-const statusCode = require('../config/status');
-const service = require('../api/service');
-const orderStatus = require('../config/order_status');
-const paymentType = require('../config/order-payment-type');
+const model = require('../../sqldb/model-connect');
+const config = require('../../config/environment');
+const statusCode = require('../../config/status');
+const service = require('../service');
+const orderStatus = require('../../config/order_status');
+const paymentType = require('../../config/order-payment-type');
 const moment = require('moment');
 const _ = require('lodash');
-const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
-const populate = require('../utilities/populate');
-const paymentMethod = require('../config/payment-method');
-const escrowAction = require('../config/escrow-action');
+const stripe = require('../../payment/stripe.payment');
+const sendEmail = require('../../agenda/send-email');
+const populate = require('../../utilities/populate');
+const paymentMethod = require('../../config/payment-method');
+const escrowAction = require('../../config/escrow-action');
 
 const CURRENCY = 'usd';
 
-
-module.exports = function (job, done) {
-
-    console.log("**********JOBS CALLED")
-    console.log('agenda for vendor payouts..');
+export function vendorPayout(req, res) {
 
     var orderPaymentModel = 'OrderPayment';
     var includeArray = [], orderPaymentQueryObj = {}, payoutDate;
 
-    payoutDate = moment(new Date()).add(-30, 'days');
+    payoutDate = moment(new Date()).add(-5, 'days');
 
     orderPaymentQueryObj['status'] = statusCode["ACTIVE"];
     orderPaymentQueryObj['order_payment_type'] = paymentType["ORDER_PAYMENT"];
@@ -73,11 +69,11 @@ module.exports = function (job, done) {
 
         return Promise.all(escrowPromises);
     }).then(function (paymentInfo) {
-        done();
+        return res.status(200).send(paymentInfo);
 
     }).catch(function (error) {
         console.log("Error::", error);
-        done();
+        return res.status(400).send(error);
     });
 };
 
