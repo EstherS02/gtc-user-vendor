@@ -1,5 +1,6 @@
 'use strict';
 
+const request = require('request');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
@@ -9,6 +10,7 @@ const orderStaus = require('../../config/order_status');
 const sendEmail = require('../../agenda/send-email');
 var async = require('async');
 const populate = require('../../utilities/populate');
+const orderItemStatus = require('../../config/order-item-status');
 
 export function updateStatus(req, res) {
 	var paramsID = req.params.id;
@@ -64,7 +66,7 @@ export function updateStatus(req, res) {
 
 	if (shippingInput === '{}') {
 		console.log("no shipping details");
-		orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
+		orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function (response) {
 			console.log(response);
 		});
 	}
@@ -72,21 +74,21 @@ export function updateStatus(req, res) {
 		shippingInput['status'] = statusCode.ACTIVE;
 		service.createRow('Shipping', shippingInput)
 			.then(function (res) {
-				bodyParams["shipping_id"]=res.id;
-		        orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
-                    console.log(response);
+				bodyParams["shipping_id"] = res.id;
+				orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function (response) {
+					console.log(response);
 				});
 			}).catch(function (err) {
 				console.log(err);
-				orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, function(response){
-                    console.log(response);
+				orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function (response) {
+					console.log(response);
 				});
 			})
 	}
 	return res.status(201).send("Updated");
 }
 
-function orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, res){
+function orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, res) {
 
 	service.findIdRow("Order", paramsID, includeArr)
 		.then(function (row) {
@@ -130,18 +132,18 @@ function orderStatusUpdate(paramsID,includeArr,bodyParams,order_status, res){
 									console.log('Error :::', error);
 									return error;
 								});
-						 } else {
-						 	return "Unable to sent" ;
-						 }
-					 }).catch(function (error) {
-					 	console.log('Error :::', error);
-					 	return error;
-					 })
+						} else {
+							return "Unable to sent";
+						}
+					}).catch(function (error) {
+						console.log('Error :::', error);
+						return error;
+					})
 			}
-		 }).catch(function (error) {
-		 	console.log('Error :::', error);
-		 	return error;
-		 });
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			return error;
+		});
 }
 
 export function vendorCancel(req, res) {
@@ -205,4 +207,67 @@ export function vendorCancel(req, res) {
 			res.status(500).send("Internal server error");
 			return
 		});
+}
+
+
+export function returnRequest(req, res) {
+
+	var currentUser, item_id, itemModel, emailTemplateModel, subject, mailBody;
+	var mailObj = {}, emailTemplateQueryObj = {}, itemBodyParam = {}, itemIncludeArr = [];
+
+	itemModel = 'OrderItem';
+	itemIncludeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User');
+
+	emailTemplateModel = "EmailTemplate";
+	emailTemplateQueryObj['name'] = config.email.templates.returnRequest;
+	emailTemplateQueryObj['status'] = statusCode.ACTIVE;
+
+	if (req.params.id)
+		item_id = req.params.id
+
+	itemBodyParam['order_item_status'] = orderItemStatus.RETURN_IN_REVIEW;
+	itemBodyParam['reason_for_return'] = req.body.reason_for_return;
+	itemBodyParam['return_requested_on'] = new Date();
+
+	service.findIdRow(itemModel, item_id, itemIncludeArr)
+		.then(function (item) {
+
+			service.updateRow(itemModel, itemBodyParam, item_id)
+				.then(function (updatedRow) {
+
+					var item_name, order_id, vendor_name, quantity, user_name, reason_for_return, email;
+
+					item_name = item.Product.product_name;
+					order_id = item.order_id;
+					vendor_name = item.Product.Vendor.vendor_name;
+					quantity = item.quantity;
+					user_name = req.user.first_name + ' ' + req.user.last_name;
+					reason_for_return = req.body.reason_for_return;
+					email = item.Product.Vendor.User.email;
+
+					service.findOneRow(emailTemplateModel, emailTemplateQueryObj)
+						.then(function (template) {
+
+							subject = template.subject;
+							mailBody = template.body.replace('%VENDOR_NAME%', vendor_name);
+							mailBody = template.body.replace('%ITEM%', item_name);
+							mailBody = template.body.replace('%QUANTITY%', quantity);
+							mailBody = template.body.replace('%ORDER_ID%', order_id);
+							mailBody = template.body.replace('%USER%', user_name);
+							mailBody = template.body.replace('%REASON_FOR_RETURN%', reason_for_return);
+
+							sendEmail({
+								to: email,
+								subject: subject,
+								html: mailBody
+							});
+							return res.status(201).send("Return Request Email Sent");
+
+						}).catch(function (error) {
+							return res.status(500).send(error);
+						});
+				})
+		}).catch(function (error) {
+			return res.status(500).send(error);
+		})
 }

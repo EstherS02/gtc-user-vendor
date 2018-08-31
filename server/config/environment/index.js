@@ -75,8 +75,8 @@ var all = {
 			passwordReset: 'PASSWORD-RESET',
 			stripeConnectEmail: 'STRIPE-CONNECT-MAIL',
 			payoutMail: 'PAYOUT-MAIL',
-			askToVendor: 'ASK-TO-VENDOR'
-
+			askToVendor: 'ASK-TO-VENDOR',
+            returnRequest: 'USER-RETURN-REQUEST'
 		}
 	},
 	jobs: {

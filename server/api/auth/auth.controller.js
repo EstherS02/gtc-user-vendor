@@ -804,49 +804,6 @@ export function logout(req, res, next) {
 	});
 }
 
-export function sripeAuth(req, res) {
-
-	var bodyParams = {}, queryObj = {};
-	var vendorModel = 'Vendor';
-
-	/*queryObj={
-		user_id: req.user.id
-	}*/
-
-	var data = {
-		client_secret: 'sk_test_5zda4q0XHsYdJLjbulqoCVpl',
-		code: req.query.code,
-		grant_type: "authorization_code"
-	}
-
-	request.post({
-		"headers": { "content-type": "application/json" },
-		"url": 'https://connect.stripe.com/oauth/token',
-		body: JSON.stringify(data)
-	}, (error, response, body) => {
-		if (error) {
-			console.log("Error::", error);
-		} else {
-			console.log("0000000000000000",body);
-		/*	bodyParams = {
-				vendor_payout_stripe_id: body.stripe_user_id
-			}
-			service.updateRecord(vendorModel, bodyParams, queryObj)
-				.then(function (row) {
-					if (row) {
-						return res.status(200).send("Stripe Connected successfully");
-					} else {
-						return res.status(200).send("Unable to connect with stripe");
-					}
-				}).catch(function (error) {
-					if (error) {
-						return res.status(500).send("Internal server error");
-					}
-				})*/
-		}
-	});
-}
-
 function plainTextResponse(response) {
 	return response;
 }
