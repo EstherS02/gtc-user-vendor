@@ -24,7 +24,7 @@ module.exports = function (job, done) {
     var orderPaymentModel = 'OrderPayment';
     var includeArray = [], orderPaymentQueryObj = {}, payoutDate;
 
-    payoutDate = moment(new Date()).add(-5, 'days');
+    payoutDate = moment(new Date()).add(-30, 'days');
 
     orderPaymentQueryObj['status'] = statusCode["ACTIVE"];
     orderPaymentQueryObj['order_payment_type'] = paymentType["ORDER_PAYMENT"];
