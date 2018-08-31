@@ -2,41 +2,8 @@
     api_key: 81q1ljfijajynj
     authorize: false;
 </script>
-
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<script>
-  $(document).ready(function () {
-      $('#marketplace_type').on('change', function () {
-        $('#searchSubmit').prop('disabled', !$(this).val());
-      }).trigger('change');
-      $('#category').on('change', function () {
-        $('#searchSubmit').prop('disabled', !$(this).val());
-      }).trigger('change');
-      $('#location').on('change', function () {
-        $('#searchSubmit').prop('disabled', !$(this).val());
-      }).trigger('change');
-      $("#searchForm").submit(function (e) {
-        e.preventDefault();
-        let formInput = $("#searchForm :input").filter(function (index, element) {
-          return $(element).val() != '';
-        }).serialize();
-        window.location.href = 'wholesale/search?' + formInput;
-      });
-
-      var userInfo = {{{ DisplayJSON LoggedInUser }}}
-
-      $("a[title='seller']").click(function () {
-        console.log("clicked");
-        if (userInfo.email) {
-        } else {
-          $('#myModal').modal('show');
-        }
-      });
-  });
-</script>
-
 <script src="js/login.js"></script>
-
 <section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">
 	<div class="container-fluid full_view_pad_eighty clearfix">
     <div class="row">
@@ -76,7 +43,7 @@
             </select>
           </div>
         </div>
-        <input type="submit" id="searchSubmit" value="SEARCH WHOLESALE" class="shop_checkout_btn" style="padding: 8px 20px;" />
+        <button type="submit" id="searchSubmit" class="shop_checkout_btn">SEARCH WHOLESALE</button>
       </form>
     </div>
   </div>

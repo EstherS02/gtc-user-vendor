@@ -11,7 +11,7 @@ const discount = require('../../config/discount');
 const _ = require('lodash');
 const moment = require('moment');
 
-export async function addToCartNew(req, res) {
+export async function addToCart(req, res) {
 	var LoggedInUser = {};
 	if (req.user) {
 		LoggedInUser = req.user;
@@ -193,7 +193,7 @@ function addToCartAction(product, orderQuantity, LoggedInUser) {
 	});
 }
 
-export function addToCart(req, res) {
+export function addToCartOld(req, res) {
 	let product_id = parseInt(req.params.id);
 	let order_qty = parseInt(req.body.product_quantity);
 	var LoggedInUser = {};
