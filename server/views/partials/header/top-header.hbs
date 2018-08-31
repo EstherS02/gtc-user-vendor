@@ -233,13 +233,15 @@
 		//console.log("emitSocket", emitSocket.userInfo);
 		
 		//emitSocket.userLeave({{LoggedInUser.id}});
-		console.log("UserInfo", {{{DisplayJSON LoggedInUser.id}}})
-			socket.emit('user:leave', {{{DisplayJSON LoggedInUser.id}}});
+		//console.log("{{{LoggedInUser.id}}}", {{{LoggedInUser.id}}});
+	
+		
+		socket.emit('user:leave', {{{DisplayJSON LoggedInUser.id}}});
 		$.ajax({
 			type: "POST",
 			url: "/api/auth/logout",
-			success: function(result) {1
-					location.reload();
+			success: function(result) {
+				location.reload();
 			},
 			error: function() {
 				console.log("Error while logging out")
