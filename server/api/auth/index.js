@@ -7,7 +7,6 @@ var controller = require('./auth.controller');
 
 var router = express.Router();
 
-router.get('/', controller.sripeAuth);
 router.get('/auth/twitter', controller.twitterAuth);
 router.get('/auth/twitter/callback', controller.twitterCallbackAuth);
 router.post('/login', controller.login);

@@ -8,8 +8,9 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.put('/:id', controller.updateStatus);
-router.post('/vendor-cancel/:id', controller.vendorCancel)
+router.put('/:id', auth.isAuthenticated(), controller.updateStatus);
+router.post('/vendor-cancel/:id', controller.vendorCancel);
+router.put('/return-request/:id', auth.isAuthenticated(),controller.returnRequest);
 // router.put('/add-country', controller.addCountry);
 // router.put('/vendor-update',controller.updateVendor)
 
