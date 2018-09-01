@@ -3,13 +3,7 @@
     authorize: false;
 </script>
 
-<script type="text/javascript">
-console.log("hello")
-    socket.on('chat:receive', function(data){
-        console.log("user room emitting..", data);
-        console.log("data", data);
-    })
-</script>
+
 
 <script type="text/javascript">
 var userInfo = {{{DisplayJSON LoggedInUser}}}
@@ -1065,3 +1059,13 @@ $(document).ready(function() {
 
 
 {{> footer/bottom-footer}}
+<script type="text/javascript">
+var timer = setTimeout(function() {
+    console.log("hello", socket);
+    socket.on('chat:receive', function(data){
+        console.log("user room emitting..", data);
+        console.log("data", data);
+    })                  
+}, 1000);
+
+</script>
