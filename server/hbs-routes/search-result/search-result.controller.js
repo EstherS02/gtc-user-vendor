@@ -21,6 +21,7 @@ export function index(req, res) {
 	var currentMarketPlace = req.originalUrl.split('/')[1];
 	var selectedMarketPlaceID = null;
 	var selectedMarketPlaceTypeID = null;
+	var isFeaturedProduct = false;
 
 	var queryURI = {};
 	var queryPaginationObj = {};
@@ -93,6 +94,7 @@ export function index(req, res) {
 	}
 
 	if (req.query.is_featured_product) {
+		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
@@ -240,7 +242,7 @@ export function index(req, res) {
 				});
 		},
 		productsCountBasedOnMarketplaceTypes: function(callback) {
-			searchResultService.marketplacetypeWithProductCount(productCountQueryParams)
+			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {
@@ -249,7 +251,7 @@ export function index(req, res) {
 				});
 		},
 		productsCountBasedOnCountry: function(callback) {
-			searchResultService.countryWithProductCount(productCountQueryParams)
+			searchResultService.countryWithProductCount(productCountQueryParams, isFeaturedProduct)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {
@@ -258,7 +260,7 @@ export function index(req, res) {
 				});
 		},
 		productsCountBasedOnCategories: function(callback) {
-			searchResultService.categoryWithProductCount(productCountQueryParams)
+			searchResultService.categoryWithProductCount(productCountQueryParams, isFeaturedProduct)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {
