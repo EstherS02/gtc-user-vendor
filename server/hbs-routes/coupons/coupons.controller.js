@@ -63,7 +63,7 @@ export function coupons(req, res) {
 	offset = (page - 1) * limit;
 	var maxSize;
 	// End pagination
-	queryObj['vendor_id'] = req.user.Vendor.id;
+	// queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
 	var queryObjCategory = {

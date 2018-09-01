@@ -50,7 +50,6 @@ export function notificationSettings(req, res) {
 			notifications: function(callback) {
 				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
 					.then(function(results) {
-						console.log("---------================--",results)
 						return callback(null, results);
 
 					}).catch(function(error) {
