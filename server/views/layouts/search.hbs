@@ -129,7 +129,7 @@ function redirectBack() {
 
 			{{#ifCond marketplaceURl "==" "wholesale"}}
 			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY TYPE</h5>
-			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{categoriesWithCount.count}})</p>
+			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
 			<ul class="right-list-view">
 				{{#each marketPlaceTypes.rows}}
 				<li>
@@ -141,7 +141,7 @@ function redirectBack() {
 			</ul>
 			{{else ifCond marketplaceURl "==" "products"}}
 			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY TYPE</h5>
-			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{categoriesWithCount.count}})</p>
+			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{marketPlaceTypes.count}})</p>
 			<ul class="right-list-view">
 				{{#each marketPlaceTypes.rows}}
 				<li>
@@ -167,10 +167,26 @@ function redirectBack() {
 			</ul>
 			{{/ifCond}}
 
-			{{!-- {{#ifCond marketplaceURl "==" 'lifestyle'}}
+			{{#ifCond marketplaceURl "==" 'lifestyle'}}
 			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY DURATION</h5>
-			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
-			{{/ifCond}} --}}
+			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{products.count}})</p>
+			<ul class="right-list-view category-fixed">
+				{{#each durations}}
+				<li>
+					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.duration_type}}">{{this.duration}}</a>
+					<ul class="inner-list-view collapse" id="list{{this.duration_type}}">
+						{{#each this.innerDuration}}
+						<li>
+							<a href="../{{../../marketplaceURl}}/search?{{DurationCalculator ../../queryURI ../this.duration_type this.value}}">
+								<span>{{this.label}}</span>
+							</a>
+						</li>
+						{{/each}}
+					</ul>
+				</li>
+				{{/each}}
+			</ul>
+			{{/ifCond}}
 		</div>
 		<div class="col-md-9">
 			<div class="search-sm-header">

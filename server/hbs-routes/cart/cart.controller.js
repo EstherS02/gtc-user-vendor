@@ -128,6 +128,7 @@ export function cart(req, res) {
 			var defaultShipping = 0;
 			totalPrice['grandTotal'] = 0;
 			var totalItems = results.cartItems.rows;
+			console.log(JSON.stringify(totalItems));
 			var allMarketPlaces = results.marketPlace.rows;
 			var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
 			
