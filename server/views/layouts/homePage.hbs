@@ -1062,10 +1062,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 var timer = setTimeout(function() {
     console.log("hello", socket);
-    socket.on('chat:receive', function(data){
-        console.log("user room emitting..", data);
-        console.log("data", data);
-    })                  
+                     
 }, 1000);
 
 </script>

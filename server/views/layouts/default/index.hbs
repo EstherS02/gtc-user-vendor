@@ -56,8 +56,18 @@
 </head>
 
 <body>
-   
-
+   <script type="text/javascript">
+   var timer = setTimeout(function() {
+        if( {{{DisplayJSON LoggedInUser.id}}} != null) {
+            console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
+            socket.emit('user:join', {{{ DisplayJSON LoggedInUser }}});    
+        }
+        socket.on('chat:receive', function(data){
+        console.log("user room emitting..", data);
+       
+        }) 
+    }, 1000);
+   </script>
     
     {{> environment}} {{> global-scripts}} {{{body}}}
 
