@@ -16,37 +16,38 @@
 		}
 	}
 </script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	function fix_height() {
+		var bodyHeight = $("body").height() - 378;
+		var wrapperHeigh = $('#page-wrapper').height();
+		if (bodyHeight > wrapperHeigh) {
+			$('#page-wrapper').css("min-height", bodyHeight + "px");
+		}
+	}
+
+	$(window).bind("load resize scroll", function() {
+		fix_height();
+	});
+});
+</script>
 <section>
-	<div>
+	<div id="page-wrapper">
 		<div class="container">
 			<div class="row">
-				{{!-- <div class="col-md-6">
-				</div>
-				<div class="col-md-6">
-				</div> --}}
 				<div class="search-sm-header">
-				<br>
+					<br>
+				</div>
 			</div>
-			</div>
-
 			<div class="row">
 				<div class="col-md-7">
-
 				</div>
 				<div class="col-md-5">
 					<div class="row">
 						<div class="col-md-1">
 							<p class="showing_res1">View</p>
 						</div>
-						{{!--
-						<div class="col-md-1">
-							<i class="fas fa-th-large icon_active_showing_res"></i>
-						</div>
-						<div class="col-md-1">
-							<a href="wholesale_result2.html">
-								<i class="fas fa-list-ul"></i>
-							</a>
-						</div> --}}
 						<div class="col-md-1">
 							<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
 							 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}">
@@ -73,7 +74,6 @@
 			</div>
 			<div class="row">
 				<div class="col-md-3 showing_categ">
-
 					<p style="margin-top: 20px;">
 						<b>FILTER BY LOCATION</b>
 					</p>
@@ -85,11 +85,11 @@
 					<div class="list-group panel category-fixed">
 						<ul class="list-group">
 							{{#each locations.rows}}
-							<li class="list-group-item">
-								<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
-									<span>{{this.name}} ({{this.vendor_count}})</span>
-								</a>
-							</li>
+								<li class="list-group-item">
+									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
+										<span>{{this.name}} ({{this.vendor_count}})</span>
+									</a>
+								</li>
 							{{/each}}
 						</ul>
 					</div>
@@ -103,141 +103,138 @@
 							</p>
 						</div>
 					</div>
-
 					<div class="row">
-						{{#ifCond layout_type "==" "grid" }} 
-						{{#each vendors.rows}}
-						<div class="col-md-4 col-lg-4 col-xl-4 common_bottom">
-							<div class="row">
-								<div class="col-md-3 col-3 col-lg-3 col-xl-3">
-									<img src="{{this.url}}" class="img_fixed_height">
-								</div>
-								<div class="col-md-9 col-9 col-lg-9 col-xl-9">
-									<div class="row common_padding">
-										<div class="col-md-12">
-											<p class="wts_header">
-												<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
-											</p>
+						{{#ifCond layout_type "==" "grid" }}
+							{{#each vendors.rows}}
+								<div class="col-md-4 col-lg-4 col-xl-4 common_bottom">
+									<div class="row">
+										<div class="col-md-3 col-3 col-lg-3 col-xl-3">
+											<img src="{{this.url}}" class="img_fixed_height">
 										</div>
+										<div class="col-md-9 col-9 col-lg-9 col-xl-9">
+											<div class="row common_padding">
+												<div class="col-md-12">
+													<p class="wts_header">
+														<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
+													</p>
+												</div>
 
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-											<p>Origin</p>
-										</div>
-										<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-											<p>{{this.origin}}</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-											<p>Inventory</p>
-										</div>
-										<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-											<p>
-												<b>{{this.product_count}} Products</b> Listed
-												<span class="wts_header_red">on Sale</span>
-											</p>
-										</div>
-									</div>
-									<div class="row common_padding">
-										<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-											<p>Seller Rating</p>
-										</div>
-										<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-											<p>{{starCount rating}}</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						{{/each}} {{/ifCond}} 
-					</div>
-
-
-					<div class="row">
-						{{#ifCond layout_type "==" "list" }} 
-						{{#each vendors.rows}}
-						
-						<div class="table-responsive">
-							<table class="table shoping-cart-table">
-								<tbody>
-									<tr class="d-flex">
-										<td class="col-2">
-											<div class="product-middle-col">
-												<img src="{{this.url}}" class="img_fixed_height">
 											</div>
-										</td>
-										<td class="col-10">
-											<div class="product-middle-col">
-												<p class="wts_header">
-												<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
-												</p>
-						
-												<div class="row">
-													<div class="col-md-4 col-4">
-														<span>Origin</span>
-													</div>
-													<div class="col-md-8 col-8">
-														<span class="text-500">{{this.origin}}</span>
-													</div>
-						
-													<div class="col-md-4 col-4">
-														<span>Inventory</span>
-													</div>
-													<div class="col-md-8 col-8 ">
-														<b>{{this.product_count}} Products</b> Listed
-														<span class="wts_header_red">on Sale</span>
-													</div>
-													<div class="col-md-4 col-4 ">
-														<p>Seller Rating</p>
-													</div>
-													<div class="col-md-8 col-8 ">
-														<p>{{starCount rating}}</p>
-													</div>
+											<div class="row common_padding">
+												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
+													<p>Origin</p>
+												</div>
+												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
+													<p>{{this.origin}}</p>
 												</div>
 											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						{{/each}} 
-						{{/ifCond}} 
+											<div class="row common_padding">
+												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
+													<p>Inventory</p>
+												</div>
+												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
+													<p>
+														<b>{{this.product_count}} Products</b> Listed
+														<span class="wts_header_red">on Sale</span>
+													</p>
+												</div>
+											</div>
+											<div class="row common_padding">
+												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
+													<p>Seller Rating</p>
+												</div>
+												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
+													<p>{{starCount rating}}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{{/each}}
+						{{/ifCond}}
+					</div>
+					<div class="row">
+						{{#ifCond layout_type "==" "list" }}
+							{{#each vendors.rows}}
+								<div class="table-responsive">
+									<table class="table shoping-cart-table">
+										<tbody>
+											<tr class="d-flex">
+												<td class="col-2">
+													<div class="product-middle-col">
+														<img src="{{this.url}}" class="img_fixed_height">
+													</div>
+												</td>
+												<td class="col-10">
+													<div class="product-middle-col">
+														<p class="wts_header">
+															<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
+														</p>
+
+														<div class="row">
+															<div class="col-md-4 col-4">
+																<span>Origin</span>
+															</div>
+															<div class="col-md-8 col-8">
+																<span class="text-500">{{this.origin}}</span>
+															</div>
+
+															<div class="col-md-4 col-4">
+																<span>Inventory</span>
+															</div>
+															<div class="col-md-8 col-8 ">
+																<b>{{this.product_count}} Products</b> Listed
+																<span class="wts_header_red">on Sale</span>
+															</div>
+															<div class="col-md-4 col-4 ">
+																<p>Seller Rating</p>
+															</div>
+															<div class="col-md-8 col-8 ">
+																<p>{{starCount rating}}</p>
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							{{/each}}
+						{{/ifCond}}
 					</div>
 					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 					</div>
 				</div>
 			</div>
-
 			{{#ifCond vendors.count '>' queryPaginationObj.limit}}
-			<div class="row">
-				<div class="col-md-3">
+				<div class="row">
+					<div class="col-md-3">
+					</div>
+					<div class="col-md-7">
+						{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+							<nav aria-label="Page navigation example">
+								<ul class="pagination justify-content-center">
+									{{#unless startFromFirstPage}}
+										<li class="page-item">
+											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+										</li>
+									{{/unless}}
+									{{#each pages}}
+										<li class="page-item {{#if isCurrent}} active {{/if}}">
+											<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+										</li>
+									{{/each}}
+									{{#unless endAtLastPage}}
+										<li class="page-item">
+											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+										</li>
+									{{/unless}}
+								</ul>
+							</nav>
+						{{/pagination}}
+					</div>
 				</div>
-				<div class="col-md-7">
-					{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-					<nav aria-label="Page navigation example">
-						<ul class="pagination justify-content-center">
-							{{#unless startFromFirstPage}}
-							<li class="page-item">
-								<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-							</li>
-							{{/unless}} {{#each pages}}
-							<li class="page-item {{#if isCurrent}} active {{/if}}">
-								<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-							</li>
-							{{/each}} {{#unless endAtLastPage}}
-							<li class="page-item">
-								<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-							</li>
-							{{/unless}}
-						</ul>
-					</nav>
-					{{/pagination}}
-				</div>
-			</div>
 			{{/ifCond}}
-
 		</div>
 </section>
 {{> footer/bottom-footer}}

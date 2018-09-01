@@ -16,7 +16,7 @@ const escrowAction = require('../config/escrow-action');
 const CURRENCY = 'usd';
 
 
-module.exports = function (job, done) {
+export function vendorPayouts(job, done) {
 
     console.log("**********JOBS CALLED")
     console.log('agenda for vendor payouts..');
@@ -34,10 +34,10 @@ module.exports = function (job, done) {
             "model": model['Order'],
             where: {
                 status: statusCode["ACTIVE"],
-                order_status: orderStatus["DISPATCHEDORDER"],
-                shipped_on: {
+                order_status: orderStatus["DISPATCHEDORDER"]
+                /*shipped_on: {
                     '$lt': payoutDate
-                },
+                },*/
             },
             include: [
                 {

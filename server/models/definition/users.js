@@ -179,6 +179,7 @@ module.exports.initRelations = () => {
     const Appclient = model.Appclient;
     const Currency = model.Currency;
     const Timezone = model.Timezone;
+    const Notification = model.Notification;
 
     User.hasMany(Address, {
         foreignKey: 'user_id',
@@ -307,6 +308,12 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(WishList, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    User.hasMany(Notification, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
