@@ -16,7 +16,7 @@ const escrowAction = require('../config/escrow-action');
 const CURRENCY = 'usd';
 
 
-module.exports = function (job, done) {
+module.exports = function vendorPayout(job, done) {
 
     console.log("**********JOBS CALLED")
     console.log('agenda for vendor payouts..');
