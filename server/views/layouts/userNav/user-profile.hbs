@@ -244,6 +244,9 @@
 				s_postal_code: {
 					number: true,
 					maxlength: 6
+				},
+				contact_email: {
+					email: true
 				}
 			},
 			messages: {
@@ -255,16 +258,11 @@
 				s_postal_code: {
 					number: "Please enter a valid postal code",
 					maxlength: "Please enter a valid postal code"
+				},
+				contact_email: {
+					email: "Please enter valid email address"
 				}
 			},
-
-		});
-		$('#resetPassword').click(function () {
-			var newwindow = window.open($(this).prop('href'), '', 'height=800,width=800');
-			if (window.focus) {
-				newwindow.focus();
-			}
-			return false;
 		});
 
 		$('#changePwd').validate({

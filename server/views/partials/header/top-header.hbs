@@ -224,7 +224,11 @@
 			if (!formInput || formInput.keyword) {
 				return;
 			}
-			window.location.href = pathname + '/search?' + formInput;
+			if (!pathname) {
+				window.location.href = 'products/search?' + formInput;	
+			} else {
+				window.location.href = pathname + '/search?' + formInput;	
+			}
 		});
 	});
 
