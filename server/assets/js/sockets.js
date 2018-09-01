@@ -2,7 +2,7 @@ var emitSocket = {};
 var socket;
 $(function(){
 
-    socket = io({
+    socket = io('http://localhost:8000',{
   transports: ['websocket'],
   forceNew: true
 });

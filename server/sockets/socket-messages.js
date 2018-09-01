@@ -12,6 +12,7 @@ export function socketMsg(io) {
 	
 
 	io.on('connection', function(socket) {
+		//console.log("socket*********************", socket);
 		console.log("userArray", userArray);
 		connections.push(socket);
 		console.log("connections", connections.length);
@@ -97,14 +98,15 @@ export function socketMsg(io) {
 						return userArrObj == talk.to_id
 					});
 					if (userId) {
-						console.log("user is online, sending to his room...")
+						console.log("opposite user is in online, sending msg to his room... & send also your thread room");
 						io.to(talk.to_id).to(result.talk_thread_id).emit('chat:receive', result);
 					} else {
-						console.log("user offline");
+						io.to(result.talk_thread_id).emit('chat:receive', result);
+						console.log("oppsite user offline, emitted only for your thread room");
 					}
-					io.to(result.talk_thread_id).emit('chat:receive', result);
+					//io.to(result.talk_thread_id).emit('chat:receive', result);
 				} else {
-					console.log("Users are in that room");
+					console.log("Two Users are in that room, emitted in that room");
 					io.to(result.talk_thread_id).emit('chat:receive', result);
 				}
 			})

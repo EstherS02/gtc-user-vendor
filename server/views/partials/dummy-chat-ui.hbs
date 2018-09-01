@@ -83,7 +83,7 @@
         })
 
         socket.on('chat:receive', function(data){
-        
+        console.log("chat:receive emitted", data);
       
         // console.log("socketChat.user", socketChat.user);
         if (data.from_id == socketChat.user) {
