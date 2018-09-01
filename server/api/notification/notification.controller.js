@@ -50,3 +50,13 @@ export function notificationSetting(req, res) {
 		return res.status(404).send("Invalid Entry");
 	}
 }
+export function readNotification(req,res){
+	var id= req.params.id;
+	console.log(id);
+	var modelName = "Notification";
+	var bodyParams= {is_read:0};
+	service.updateRow(modelName,bodyParams,id).then(function(response){
+		return res.status(200).send("success");
+	})
+
+}

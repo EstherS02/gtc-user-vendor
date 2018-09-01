@@ -49,8 +49,8 @@ export function notifications(req, res){
 		status: statusCode["ACTIVE"],
 	};
 	var NotifyqueryObj = {
-		user_id: user_id,
-		is_read: 1,
+		// user_id: user_id,
+		// is_read: 1,
 		status: statusCode["ACTIVE"],
 	};
 
