@@ -11,7 +11,6 @@ var permission = require('../../config/permission');
 var controller = require('./notifications.controller');
 
 router.get('/', auth.isAuthenticated(), controller.notifications)
-router.get('/settings', auth.isAuthenticated(), controller.notificationSettings);
 // var router = express.Router();
 
 module.exports = router;

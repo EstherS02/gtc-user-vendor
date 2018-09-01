@@ -4,24 +4,34 @@
 	}
 </style>
 <script>
-	$(document).ready(function () {
-		$("#gtc-mail-alert").hide();
-		$(".clickable-row").click(function () {
-			var statusObj = {
-				mail_status: 1
+	$(document).ready(function() {
+		$('.clickable-row').click(function() {
+			document.getElementById("Subject").innerHTML = $(this).data('name');
+			document.getElementById("Message").innerHTML = $(this).data('message');
+			if ($(this).hasClass("inbox-tr-unread")) {
+				$(this).removeClass("inbox-tr-unread").addClass("inbox-tr");
+				$.ajax({
+					url: 'api/notification/read/' + $(this).data('id'),
+					type: 'GET',
+					success: function(data) {
+						console.log(data);
+					},
+					error: function(error) {
+						console.log(error);
+					}
+				})
 			}
-			$.ajax({
-				url: 'api/user-mails/' + this.id,
-				type: 'PUT',
-				data: statusObj,
-				success: function (data) {
-					console.log(data);
-				},
-				error: function (error) {
-					console.log(error);
-				}
-			})
-			window.location = $(this).data("href");
+		});
+
+		$('.clickable-row').magnificPopup({
+			type: 'inline',
+			midClick: true,
+			preloader: false,
+			modal: true
+		});
+		$(document).on('click', '.popup-modal-dismiss', function(e) {
+			e.preventDefault();
+			$.magnificPopup.close();
 		});
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
@@ -42,22 +52,25 @@
 									<table class="table">
 										<thead>
 											<tr>
-												
-												<th scope="col">From</th>
-												<th scope="col">Subject</th>
+												<th><input type="checkbox" onclick="selectAll(this);"></th>
+												<th scope="col">Event</th>
+												<th scope="col">Code</th>
+												<th scope="col">Description</th>
 												<th scope="col">Date</th>
-												<th scope="col">Size</th>
+												<th scope="col">Status</th>
+												{{!-- <th scope="col">Size</th> --}}
 											</tr>
 										</thead>
 										<tbody>
-											{{#each inboxMail}}
+											{{#each notifications}}
 
-											<tr class="inbox-tr-unread">
-													
-													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>
-													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.subject}}</td>
-													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.message.length}}</td>
+											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#test-modal">
+													<td><input type="checkbox" value="{{this.id}}"></td>
+													<td scope="row ">{{this.name}}</td>
+													<td scope="row ">{{this.code}}</td>
+													<td scope="row">{{this.description}}</td>
+													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+													<td scope="row" id='{{this.id}}' data-href=''>{{objectKey ../statusCode this.status}}</td>
 												</tr>
 												{{/each}}
 										</tbody>
@@ -89,5 +102,10 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div id="test-modal" class="white-popup-block mfp-hide">
+	<h1 id ="Subject"></h1>
+	<p id="Message"></p>
+	<p><a class="popup-modal-dismiss" href="#">Dismiss</a></p>
 </div>
 {{> footer/bottom-footer}} 
