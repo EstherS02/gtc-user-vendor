@@ -6,7 +6,7 @@ const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 const config = require('../../config/environment');
 
-export async function categoryWithProductCount(productQueryObj) {
+export async function categoryWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
 
 	results['count'] = 0;
@@ -31,7 +31,14 @@ export async function categoryWithProductCount(productQueryObj) {
 				productQueryObj['product_category_id'] = await category.id;
 			}
 			var productCount = await model['Product'].count({
-				where: productQueryObj
+				where: productQueryObj,
+				include: [{
+					model: model['FeaturedProduct'],
+					where: {
+						status: status['ACTIVE']
+					},
+					required: isFeaturedProduct
+				}]
 			});
 			results['count'] += productCount;
 			categories[i].product_count = productCount;
@@ -43,7 +50,7 @@ export async function categoryWithProductCount(productQueryObj) {
 	}
 }
 
-export async function countryWithProductCount(productQueryObj) {
+export async function countryWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
 
 	results['count'] = 0;
@@ -58,14 +65,29 @@ export async function countryWithProductCount(productQueryObj) {
 			include: [{
 				model: model['Product'],
 				where: productQueryObj,
-				attributes: [],
+				attributes: ['id'],
+				include: [{
+					model: model['FeaturedProduct'],
+					where: {
+						status: status['ACTIVE']
+					},
+					attributes: [],
+					required: isFeaturedProduct
+				}],
 				required: false
 			}],
 			group: ['Country.id']
 		});
 		var countries = await JSON.parse(JSON.stringify(locationResponse));
 		var productCount = await model['Product'].count({
-			where: productQueryObj
+			where: productQueryObj,
+			include: [{
+				model: model['FeaturedProduct'],
+				where: {
+					status: status['ACTIVE']
+				},
+				required: isFeaturedProduct
+			}]
 		});
 		results['count'] = productCount;
 		results['rows'] = countries;
@@ -75,7 +97,7 @@ export async function countryWithProductCount(productQueryObj) {
 	}
 }
 
-export async function marketplacetypeWithProductCount(productQueryObj) {
+export async function marketplacetypeWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
 
 	results['count'] = 0;
@@ -90,54 +112,34 @@ export async function marketplacetypeWithProductCount(productQueryObj) {
 			include: [{
 				model: model['Product'],
 				where: productQueryObj,
-				attributes: [],
+				include: [{
+					model: model['FeaturedProduct'],
+					where: {
+						status: status['ACTIVE']
+					},
+					attributes: [],
+					required: isFeaturedProduct
+				}],
+				attributes: ['id'],
 				required: false
 			}],
 			group: ['MarketplaceType.id']
 		});
 		var marketplaceTypes = await JSON.parse(JSON.stringify(marketplaceTypeResponse));
 		var productCount = await model['Product'].count({
-			where: productQueryObj
+			where: productQueryObj,
+			include: [{
+				model: model['FeaturedProduct'],
+				where: {
+					status: status['ACTIVE']
+				},
+				required: isFeaturedProduct
+			}]
 		});
 		results['count'] = productCount;
 		results['rows'] = marketplaceTypes;
 		return results;
 	} catch (error) {
-		return error;
-	}
-}
-
-export async function durationWithProductCount(productQueryObj) {
-	var results = {};
-
-	results['count'] = 0;
-	results['rows'] = [];
-
-	try {
-		var categoriesResponse = await model['Category'].findAll({
-			where: {
-				status: status['ACTIVE']
-			},
-			attributes: ['id', 'name', 'code', 'description'],
-			include: [{
-				model: model['SubCategory'],
-				attributes: ['id', 'category_id', 'name', 'code']
-			}]
-		});
-		var categories = await JSON.parse(JSON.stringify(categoriesResponse));
-		await Promise.all(categories.map(async (category, i) => {
-			productQueryObj['product_category_id'] = category.id;
-			var productCount = await model['Product'].count({
-				where: productQueryObj
-			});
-			results['count'] += productCount;
-			categories[i].product_count = productCount;
-		}));
-		results['rows'] = categories;
-		console.log("****************************888", results)
-		return results;
-	} catch (error) {
-		console.log("****************************888", error)
 		return error;
 	}
 }

@@ -301,6 +301,77 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+	$('#modelBtnSignup').prop('disabled', true);
+
+	$('#modelInputEmail, #modelInputPassword').keyup(function() {
+
+		if ($('#modelInputEmail').val() != '' && $('#modelInputPassword').val() != '' && $('#modelInputTerms').is(":checked")) {
+			$('#modelBtnSignup').prop('disabled', false);
+		} else {
+			$('#modelBtnSignup').prop('disabled', true);
+		}
+	});
+	$('#modelInputTerms').change(function() {
+		if (this.checked == true) {
+			if ($('#modelInputEmail').val() != '' && $('#modelInputPassword').val() != '' && $('#modelInputTerms').is(":checked")) {
+				$('#modelBtnSignup').prop('disabled', false);
+			} else {
+				$('#modelBtnSignup').prop('disabled', true);
+			}
+		} else {
+			$('#modelBtnSignup').prop('disabled', true);
+		}
+
+	});
+
+	$('#modelSignUpForm').validate({
+		rules: {
+			first_name: {
+				required: true
+			},
+			password: {
+				required: true,
+				minlength: 8
+			}
+		},
+		submitHandler: function(form) {
+			var newUser = {};
+			newUser.email = $('#modelInputEmail').val();
+			newUser.first_name = $('#modelInputFirstname').val();
+			newUser.password = $('#modelInputPassword').val();
+			newUser.provider = 1;
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/users',
+				data: newUser,
+				success: function(data, text) {
+					console.log(data)
+					auth.login({
+						email: data.email,
+						password: $('#modelInputPassword').val()
+					}).then(function(user) {
+						if (user) {
+							var timer = setTimeout(function() {
+								window.location.href = '/user-join';
+							}, 1000);
+						} else {}
+					});
+				},
+				error: function(request, status, error) {
+					$('#modelSignUpErrorLog').text(request.responseText);
+
+					setTimeout(function() {
+						$('#modelSignUpErrorLog').hide();
+
+					}, 3000);
+				}
+			});
+		}
+	});
+});
+
+$(document).ready(function() {
 	$('#searchSubmit').prop('disabled', true);
 	$('#searchForm').on('change paste', ':input', function(e) {
 		$('#searchSubmit').prop('disabled', false);
