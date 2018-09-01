@@ -1,320 +1,318 @@
- <script>
-     function priceUpdate(){
-         let price_min, price_max, newURL;
-         price_min = Math.abs($('#min_price_input').val());
-         price_max = Math.abs($('#max_price_input').val());
-         console.log(price_max, price_min)
-         newURL = window.location.href;
+<script>
+	function priceUpdate() {
+		let price_min, price_max, newURL;
+		price_min = Math.abs($('#min_price_input').val());
+		price_max = Math.abs($('#max_price_input').val());
+		console.log(price_max, price_min)
+		newURL = window.location.href;
 
-        if(price_min)
-            newURL = updateQueryString(newURL,'price_min', price_min);
-        if(price_max)
-            newURL = updateQueryString(newURL,'price_max', price_max);
-        
-        location.href = newURL;
-     }
- </script>
- 
- {{> header/top-header LoggedInUser = LoggedInUser}}
+		if (price_min)
+			newURL = updateQueryString(newURL, 'price_min', price_min);
+		if (price_max)
+			newURL = updateQueryString(newURL, 'price_max', price_max);
+
+		location.href = newURL;
+	}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="constant-height" style="height: 650px;">
 	<div class="container-fluid">
 		<div class="row">
 
-		 <div class="col-md-3 constant-height" style="height: 650px;">
+			<div class="col-md-3 constant-height" style="height: 650px;">
 				<div class="row" style="margin-bottom:20px;">
 					<div class="col-md-2 geo_arrow_bg">
 						<a href="/geo-locate/search" style="color: #fff;"><i class="fas fa-caret-left"></i></a>
 					</div>
 					<div class="col-md-10 geo_sort_bg">
-						Sort by 
+						Sort by
 						<select class="acc_textbox"> <option value="Alphabetical">Alphabetical </option></select>
 					</div>
 				</div>
-                <div style="height: 477px;overflow-y: scroll;overflow-x: hidden;">
-                {{#ifCond geoLocateObj.length '==' 0}}
-                    <div class="alert alert-warning" role="alert" style="margin-right: 15px;font-size: 15px;">
-                        No Products near your surroundings. Try Advance Search!
-                    </div>
-                {{/ifCond}}
-                {{#each geoLocateObj}}
-					<div class="row">
-                      <div class="col-md-3 col-2" style="text-align: center;">
-                          <img src="{{this.product_media_base_image}}" style="width: 75px; height: 70px;">
-                      </div>
-                      <div class="col-md-9 col-10">
-                          <div class="row common_padding">
-                              <div class="col-md-8 col-8">
-                                  <p class="wts_header"><a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}" style="font-size: 12px;">{{this.product_name}}</a></p>
-                              </div>
-                              <div class="col-md-4 col-4" style="display:none;">
-                                  <p>MOQ: 40</p>
-                              </div>
-                          </div>
-                          <div class="row common_padding">
-                              <div class="col-md-3 col-3">
-                                  <p>Origin</p>
-                              </div>
-                              <div class="col-md-5 col-6">
-                                  <p>{{this.country_name}}</p>
-                              </div>
-                              <div class="col-md-4 col-3">
-                                  <p>&nbsp;</p>
-                              </div>
-                          </div>
-                          <div class="row common_padding">
-                              <div class="col-md-3 col-3">
-                                  <p>Category</p>
-                              </div>
-                              <div class="col-md-5 col-6">
-                                  <p>{{this.category_name}} - {{this.sub_category_name}}</p>
-                              </div>
-                              <div class="col-md-4 col-3">
-                                  <p>Seller Rating</p>
-                              </div>
-                          </div>
-                          <div class="row common_padding">
-                              <div class="col-md-3 col-3">
-                                  <p>Seller</p>
-                              </div>
-                            <div class="col-md-5 col-6 overflow-txt">
-                                {{#if ../LoggedInUser.email}}
-                                    <a title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}" style="font-size:11px;">{{this.vendor_name}}</a>
-                                {{else}}
-                                    <a href="/login" style="font-size:9px;">(Login for Seller Info)</a>
-                                {{/if}}
-                            </div>
-                              <div class="col-md-4 col-3">
-                                  <p style="font-size: 9px;">
-                                     {{starCount this.product_rating}}
-                                  </p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <hr/>
-                {{/each}}
-                </div>
-				  <div class="row">
-                    <div class="col-md-12" style="background-color: #F0F0F0;">
-                       <p class="geo_show">Showing <span class="geo_pro"> {{geoLocateObj.length}} products </span></p>
-                       <p class="geo_adv"> <a href="/geo-locate/search">Advanced Search / Filter</a> </p> 
-                    </div>
-                    </div>
-			</div> 
+				<div style="height: 477px;overflow-y: scroll;overflow-x: hidden;">
+					{{#ifCond geoLocateObj.length '==' 0}}
+						<div class="alert alert-warning" role="alert" style="margin-right: 15px;font-size: 15px;">
+							No Products near your surroundings. Try Advance Search!
+						</div>
+					{{/ifCond}}
+					{{#each geoLocateObj}}
+						<div class="row">
+							<div class="col-md-3 col-2" style="text-align: center;">
+								<img src="{{this.product_media_base_image}}" style="width: 75px; height: 70px;">
+							</div>
+							<div class="col-md-9 col-10">
+								<div class="row common_padding">
+									<div class="col-md-8 col-8">
+										<p class="wts_header"><a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}"
+											 style="font-size: 12px;">{{this.product_name}}</a></p>
+									</div>
+									<div class="col-md-4 col-4" style="display:none;">
+										<p>MOQ: 40</p>
+									</div>
+								</div>
+								<div class="row common_padding">
+									<div class="col-md-3 col-3">
+										<p>Origin</p>
+									</div>
+									<div class="col-md-5 col-6">
+										<p>{{this.country_name}}</p>
+									</div>
+									<div class="col-md-4 col-3">
+										<p>&nbsp;</p>
+									</div>
+								</div>
+								<div class="row common_padding">
+									<div class="col-md-3 col-3">
+										<p>Category</p>
+									</div>
+									<div class="col-md-5 col-6">
+										<p>{{this.category_name}} - {{this.sub_category_name}}</p>
+									</div>
+									<div class="col-md-4 col-3">
+										<p>Seller Rating</p>
+									</div>
+								</div>
+								<div class="row common_padding">
+									<div class="col-md-3 col-3">
+										<p>Seller</p>
+									</div>
+									<div class="col-md-5 col-6 overflow-txt">
+										{{#if ../LoggedInUser.email}}
+											<a title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}" style="font-size:11px;">{{this.vendor_name}}</a>
+										{{else}}
+											<a href="/login" style="font-size:9px;">(Login for Seller Info)</a>
+										{{/if}}
+									</div>
+									<div class="col-md-4 col-3">
+										<p style="font-size: 9px;">
+											{{starCount this.product_rating}}
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<hr/>
+					{{/each}}
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="background-color: #F0F0F0;">
+						<p class="geo_show">Showing <span class="geo_pro"> {{geoLocateObj.length}} products </span></p>
+						<p class="geo_adv"> <a href="/geo-locate/search">Advanced Search / Filter</a> </p>
+					</div>
+				</div>
+			</div>
 			<div class="col-md-9 common_padding1">
-				 <div id="map" style=""></div>
-			</div> 
+				<div id="map" style=""></div>
+			</div>
 		</div>
 	</div>
 </section>
 {{> footer/bottom-footer}}
 
 
- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&libraries=places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDep_3sNz9G0wPjKYWvnQV-h-zuX427yI0&libraries=places"></script>
 
 <script>
 
-    function markeplaceUrl(marketPlace_id) {
-        if (!marketPlace_id)
-            return 'products';
-        let marketPlace;
-        switch (marketPlace_id) {
-            case 1:
-                marketPlace = "wholesale";
-                break;
-            case 2:
-                marketPlace = "shop";
-                break;
-            case 3:
-                marketPlace = "services";
-                break;
-            case 4:
-                marketPlace = "lifestyle";
-                break;
-            default:
-                marketPlace = "products";
-                break;
-        }
-        return marketPlace;
-    }
+	function markeplaceUrl(marketPlace_id) {
+		if (!marketPlace_id)
+			return 'products';
+		let marketPlace;
+		switch (marketPlace_id) {
+			case 1:
+				marketPlace = "wholesale";
+				break;
+			case 2:
+				marketPlace = "shop";
+				break;
+			case 3:
+				marketPlace = "services";
+				break;
+			case 4:
+				marketPlace = "lifestyle";
+				break;
+			default:
+				marketPlace = "products";
+				break;
+		}
+		return marketPlace;
+	}
 
-    function marketPlaceMapMarker(marketPlace_id){
-        if (!marketPlace_id)
-            return 'products';
-        let mapMarkerUrl;
-        switch (marketPlace_id) {
-            case 1:
-                mapMarkerUrl = "/img/map-markers/pin-yellow.png";
-                break;
-            case 2:
-                mapMarkerUrl = "/img/map-markers/pin-blue.png";
-                break;
-            case 3:
-                mapMarkerUrl = "/img/map-markers/pin-green.png";
-                break;
-            case 4:
-                mapMarkerUrl = "/img/map-markers/pin-red.png";
-                break;
-            default:
-                mapMarkerUrl = "/img/map-markers/pin-blue.png";
-                break;
-        }
-        return mapMarkerUrl;
-    }
+	function marketPlaceMapMarker(marketPlace_id) {
+		if (!marketPlace_id)
+			return 'products';
+		let mapMarkerUrl;
+		switch (marketPlace_id) {
+			case 1:
+				mapMarkerUrl = "/img/map-markers/pin-yellow.png";
+				break;
+			case 2:
+				mapMarkerUrl = "/img/map-markers/pin-blue.png";
+				break;
+			case 3:
+				mapMarkerUrl = "/img/map-markers/pin-green.png";
+				break;
+			case 4:
+				mapMarkerUrl = "/img/map-markers/pin-red.png";
+				break;
+			default:
+				mapMarkerUrl = "/img/map-markers/pin-blue.png";
+				break;
+		}
+		return mapMarkerUrl;
+	}
 
-    function getCookie(c_name) {
-        return localStorage.getItem(c_name);
-    }
+	function getCookie(c_name) {
+		return localStorage.getItem(c_name);
+	}
 
-    function setCookie(c_name, value) {
-        return localStorage.setItem(c_name, JSON.stringify(value));
-    }
+	function setCookie(c_name, value) {
+		return localStorage.setItem(c_name, JSON.stringify(value));
+	}
 
 
-    var userLocation = {}, infowindow, map, marker, formattedLocation, bounds;
-    var vendorGroupedObj = {{{DisplayJSON geoLocateByVendor}}}
-    var mapObjVendor = Object.keys(vendorGroupedObj);
+	var userLocation = {}, infowindow, map, marker, formattedLocation, bounds;
+	var vendorGroupedObj = {{{ DisplayJSON geoLocateByVendor }}}
+	var mapObjVendor = Object.keys(vendorGroupedObj);
 
-     function initMap(geoUserLat, geoUserLng){
-            formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
+	function initMap(geoUserLat, geoUserLng) {
+		formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
 
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 10,
-                center: formattedLocation
-            });
+		map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 10,
+			center: formattedLocation
+		});
 
-            bounds = new google.maps.LatLngBounds();
+		bounds = new google.maps.LatLngBounds();
 
-           for(let i=0; i< mapObjVendor.length; i++){
-                let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
-                var content = `<p><img src="`+ mapObjProduct[0].vendor_profile_pic_url +`" style="width: 50px; height: 50px;">
-                <a href="/vendor/`+ mapObjProduct[0].vendor_id +`" style="font-size: 12px;">`+mapObjProduct[0].vendor_name+`</a>
+		for (let i = 0; i < mapObjVendor.length; i++) {
+			let mapObjProduct = vendorGroupedObj[mapObjVendor[i]];
+			var content = `<p><img src="` + mapObjProduct[0].vendor_profile_pic_url + `" style="width: 50px; height: 50px;">
+                <a href="/vendor/`+ mapObjProduct[0].vendor_id + `" style="font-size: 12px;">` + mapObjProduct[0].vendor_name + `</a>
                 <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
-                let more_content = "", title = mapObjProduct[0].vendor_name;;
-                for(let j=0; j< mapObjProduct.length; j++){
-                    if(j === 4){
-                        break;
-                    }
-                    more_content = more_content + `<a href="/`+ markeplaceUrl(mapObjProduct[j].marketplace_id)+`/`+ mapObjProduct[j].product_slug +`/`+ mapObjProduct[j].product_id+`"><img src="`+ mapObjProduct[j].product_media_base_image +`" style="width: 40px; height: 30px;"></a>`;
-                }
-                content = content + `<p>`+ more_content + `<a href="/vendor/`+ mapObjProduct[0].vendor_id +`">See All</a></p>`;
-                createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
-            }
+			let more_content = "", title = mapObjProduct[0].vendor_name;;
+			for (let j = 0; j < mapObjProduct.length; j++) {
+				if (j === 4) {
+					break;
+				}
+				more_content = more_content + `<a href="/` + markeplaceUrl(mapObjProduct[j].marketplace_id) + `/` + mapObjProduct[j].product_slug + `/` + mapObjProduct[j].product_id + `"><img src="` + mapObjProduct[j].product_media_base_image + `" style="width: 40px; height: 30px;"></a>`;
+			}
+			content = content + `<p>` + more_content + `<a href="/vendor/` + mapObjProduct[0].vendor_id + `">See All</a></p>`;
+			createMarker(mapObjProduct[0].latitude, mapObjProduct[0].longitude, content, title);
+		}
 
 
-            if(mapObjVendor.length > 0)
-                map.fitBounds(bounds);
+		if (mapObjVendor.length > 0)
+			map.fitBounds(bounds);
 
-        }
+	}
 
-        function createMarker(lat, lon, content, title){
+	function createMarker(lat, lon, content, title) {
 
-            var markerLocation = new google.maps.LatLng(lat, lon);
+		var markerLocation = new google.maps.LatLng(lat, lon);
 
-            infowindow = new google.maps.InfoWindow({
-                content: content,
-                maxWidth: 200
-            });
+		infowindow = new google.maps.InfoWindow({
+			content: content,
+			maxWidth: 200
+		});
 
-            /*
-              icon: {
-                    url: 'https://i.imgur.com/MjI0xAW.png'
-                }
-            */
+		/*
+		  icon: {
+				url: 'https://i.imgur.com/MjI0xAW.png'
+			}
+		*/
 
-            marker = new google.maps.Marker({
-                position: markerLocation,
-                map: map,
-                title: title
-                
-            });
+		marker = new google.maps.Marker({
+			position: markerLocation,
+			map: map,
+			title: title
+
+		});
 
 
-            bounds.extend(marker.position);
+		bounds.extend(marker.position);
 
-            google.maps.event.addListener(marker, 'mouseover', function () {
-                infowindow.setContent(content);
-                infowindow.open(map, this);
-            });
+		google.maps.event.addListener(marker, 'mouseover', function() {
+			infowindow.setContent(content);
+			infowindow.open(map, this);
+		});
 
-            google.maps.event.addListener(map, "click", function(event) {
-                infowindow.close();
-            });
+		google.maps.event.addListener(map, "click", function(event) {
+			infowindow.close();
+		});
 
-        }
+	}
 
-         /* google.maps.event.addDomListener(window, 'load', function () {
-            initMap(13.0723623, 80.20335009999997);
-         }); */
+	/* google.maps.event.addDomListener(window, 'load', function () {
+	   initMap(13.0723623, 80.20335009999997);
+	}); */
 
-    if (navigator.geolocation) {
-            function geoLocationSuccess(position) {
-                geoUserLng = position.coords.longitude;
-                geoUserLat = position.coords.latitude;
-    
-                userLocation = {
-                    geoUserLng: geoUserLng,
-                    geoUserLat: geoUserLat
-                };
-                
-                console.log("userLocation", userLocation)
+	if (navigator.geolocation) {
+		function geoLocationSuccess(position) {
+			geoUserLng = position.coords.longitude;
+			geoUserLat = position.coords.latitude;
 
-                setCookie("userLocation", userLocation);
-                
-                if(getUrlQueryString()['lat'] && getUrlQueryString()['lon']){
-                    initMap(geoUserLat, geoUserLng);
-                }else{
-                    newURL = window.location.href;
-                    newURL = updateQueryString(newURL,'lat', geoUserLat);
-                    location.href = updateQueryString(newURL,'lon', geoUserLng);
-                }
-            }
+			userLocation = {
+				geoUserLng: geoUserLng,
+				geoUserLat: geoUserLat
+			};
 
-            function geoLocationError(error) {
-                // Default location
-                userLocation = {
-                    lng: 80.1807201,
-                    lat: 13.07893569
-                };
-                    
-                console.log('Location access denied' + error.code);
-                console.log("Default ", userLocation);
+			console.log("userLocation", userLocation)
 
-                if(getUrlQueryString()['lat'] && getUrlQueryString()['lon']){
-                    initMap(userLocation.lat, userLocation.lng);
-                }else{
-                    newURL = window.location.href;
-                    newURL = updateQueryString(newURL,'lat', userLocation.lat);
-                    location.href = updateQueryString(newURL,'lon', userLocation.lng);
-                }
-            }
+			setCookie("userLocation", userLocation);
 
-            var geoOptions = {
-              enableHighAccuracy: true,
-              maximumAge: 0
-            };
+			if (getUrlQueryString()['lat'] && getUrlQueryString()['lon']) {
+				initMap(geoUserLat, geoUserLng);
+			} else {
+				newURL = window.location.href;
+				newURL = updateQueryString(newURL, 'lat', geoUserLat);
+				location.href = updateQueryString(newURL, 'lon', geoUserLng);
+			}
+		}
 
-            let getCookieItem = JSON.parse(getCookie("userLocation"));
-                console.log("getCookieItem", getCookieItem)
-            if(getCookieItem){
-                console.log("Reusing Location"); 
-                if(getUrlQueryString()['lat'] && getUrlQueryString()['lon']){
-                    initMap(getCookieItem.geoUserLat, getCookieItem.geoUserLng);
-                }else{
-                    newURL = window.location.href;
-                    newURL = updateQueryString(newURL,'lat', getCookieItem.geoUserLat);
-                    location.href = updateQueryString(newURL,'lon', getCookieItem.geoUserLng);
-                }
+		function geoLocationError(error) {
+			// Default location
+			userLocation = {
+				lng: 80.1807201,
+				lat: 13.07893569
+			};
 
-            }else{
-                console.log("Fetching New location");
-                navigator.geolocation.getCurrentPosition(geoLocationSuccess, geoLocationError, geoOptions);
-            }
+			console.log('Location access denied' + error.code);
+			console.log("Default ", userLocation);
 
-        } else {
-            console.log("Browser Cannot determine user location");
-        }
-    
-    </script>
+			if (getUrlQueryString()['lat'] && getUrlQueryString()['lon']) {
+				initMap(userLocation.lat, userLocation.lng);
+			} else {
+				newURL = window.location.href;
+				newURL = updateQueryString(newURL, 'lat', userLocation.lat);
+				location.href = updateQueryString(newURL, 'lon', userLocation.lng);
+			}
+		}
 
+		var geoOptions = {
+			enableHighAccuracy: true,
+			maximumAge: 0
+		};
+
+		let getCookieItem = JSON.parse(getCookie("userLocation"));
+		console.log("getCookieItem", getCookieItem)
+		if (getCookieItem) {
+			console.log("Reusing Location");
+			if (getUrlQueryString()['lat'] && getUrlQueryString()['lon']) {
+				initMap(getCookieItem.geoUserLat, getCookieItem.geoUserLng);
+			} else {
+				newURL = window.location.href;
+				newURL = updateQueryString(newURL, 'lat', getCookieItem.geoUserLat);
+				location.href = updateQueryString(newURL, 'lon', getCookieItem.geoUserLng);
+			}
+
+		} else {
+			console.log("Fetching New location");
+			navigator.geolocation.getCurrentPosition(geoLocationSuccess, geoLocationError, geoOptions);
+		}
+
+	} else {
+		console.log("Browser Cannot determine user location");
+	}
+
+</script>
