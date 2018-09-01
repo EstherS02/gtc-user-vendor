@@ -177,17 +177,17 @@
 													<td>Percentage</td>
 													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 													<td>Fixed Price</td>
-													{{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
+													{{!-- {{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
 													<td>Fixed Price Discount</td>
 													{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
-													<td>Fixed Cart Discount</td>
+													<td>Fixed Cart Discount</td> --}}
 													{{/ifCond}} {{!--End DiscountType --}}
 													<td class="text_blue_color">{{this.sales_count}}</td>
 													<td>{{this.discount_value}}</td>
 													{{!-- satusCode --}} {{#ifCond this.status "==" ../statusCode.ACTIVE}}
 													<td class="text_green_color">Active</td>
 													{{else ifCond this.status "==" ../statusCode.INACTIVE}}
-													<td class="text_orange_color">InActive</td>
+													<td class="text_orange_color">Suspended</td>
 													{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
 													<td class="text_red_color">Sold Out</td>
 													{{/ifCond}} {{!-- End status Code--}}
