@@ -222,13 +222,13 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Country.belongsToMany(Product, {
+  /*   Country.belongsToMany(Product, {
         through: ProductAdsSetting,
         foreignKey: 'country_id',
         otherKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-    });
+    }); */
 
     Country.belongsToMany(State, {
         through: ProductAdsSetting,

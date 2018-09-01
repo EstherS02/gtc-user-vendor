@@ -5,72 +5,52 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 
 const service = require('../../api/service');
+const searchResultService = require('../../api/service/search-result.service');
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
+const durationConfig = require('../../config/duration');
 
 export function index(req, res) {
-	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-	console.log("fullURL", fullUrl);
-	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
-	console.log("marketPlaceUrl", marketplaceURl);
-
-	var selectedLocation = 0;
-	var selectedCategory = 0;
-	var selectedSubCategory = 0;
-	var selectedMarketPlace = 0;
-	var selectedMarketPlaceType = 0;
-
-	var bottomCategory = {};
-	var categoryModel = "Category";
-
-	var page;
-	var queryURI = {};
-	var includeArr = [];
 	var LoggedInUser = {};
-	var queryParameters = {};
-	var queryPaginationObj = {};
-	var marketPlaceTypeSelected = {};
+	var bottomCategory = {};
+	var offset, limit, field, order, layout, page;
 
-	var offset, limit, field, order, layout;
-	var productEndPoint = "MarketplaceProduct";
+	var currentMarketPlace = req.originalUrl.split('/')[1];
+	var selectedMarketPlaceID = null;
+	var selectedMarketPlaceTypeID = null;
+	var isFeaturedProduct = false;
+
+	var queryURI = {};
+	var queryPaginationObj = {};
+	var productQueryParams = {};
+	var productCountQueryParams = {};
+
+	var categoryModel = "Category";
+	var marketPlaceModel = "Marketplace";
+	var productModel = "MarketplaceProduct";
+	var marketPlaceTypeModel = "MarketplaceType";
 
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
 
-	var dateSelect = req.query.dateSelect;
-	var start_date;
-	var end_date;
-	if (dateSelect) {
-		queryURI['dateSelect'] = dateSelect;
-		end_date = moment().add(0, 'd').toDate();
-		if (dateSelect == "today") {
-		   var convertMoment = moment();
-           start_date =  new Date(convertMoment);
-         
-		} else if (dateSelect == "last7day") {
-			start_date = moment().add(-7, 'd').toDate();
-			end_date = start_date;
-		} else if (dateSelect == "last30day") {
-			start_date = moment().add(-30, 'd').toDate();
-		} else if (dateSelect == "last1year") {
-			start_date = moment().add(-1, 'y').toDate();
-		} else if (dateSelect == "last30year") {
-			start_date = moment().add(-30, 'y').toDate();
-		}
+	if (currentMarketPlace == 'wholesale') {
+		selectedMarketPlaceID = marketplace['WHOLESALE'];
+	} else if (currentMarketPlace == 'shop') {
+		selectedMarketPlaceID = marketplace['PUBLIC'];
+	} else if (currentMarketPlace == 'services') {
+		selectedMarketPlaceID = marketplace['SERVICE'];
+	} else if (currentMarketPlace == 'lifestyle') {
+		selectedMarketPlaceID = marketplace['LIFESTYLE'];
+	} else {
+		selectedMarketPlaceID = null;
 	}
 
-	if (dateSelect) {
-		queryPaginationObj.dateSelect = req.query.dateSelect;
-		queryParameters['created_on'] = {
-			$between: [start_date, end_date]
-		};
-		queryURI['start_date'] = start_date;
-		queryURI['end_date'] = end_date;
-		delete req.query.dateSelect;
+	if (req.query.marketplace_type) {
+		selectedMarketPlaceTypeID = parseInt(req.query.marketplace_type);
 	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -90,326 +70,207 @@ export function index(req, res) {
 	queryPaginationObj['layout'] = layout;
 	delete req.query.layout;
 
-
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
 	delete req.query.page;
-	
-	
+
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
+
+	productQueryParams['status'] = status['ACTIVE'];
+	productCountQueryParams['status'] = status['ACTIVE'];
+
+	if (selectedMarketPlaceID) {
+		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
+		productQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+		productCountQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+	}
+
+	if (selectedMarketPlaceTypeID) {
+		queryURI['marketplace_type'] = parseInt(selectedMarketPlaceTypeID);
+		productQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
+		productCountQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
+	}
+
+	if (req.query.is_featured_product) {
+		isFeaturedProduct = true;
+		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+	}
+
+	if (req.query.category) {
+		queryURI['category'] = parseInt(req.query.category);
+		productQueryParams['category_id'] = parseInt(req.query.category);
+		productCountQueryParams['product_category_id'] = parseInt(req.query.category);
+	}
+
+	if (req.query.sub_category) {
+		queryURI['sub_category'] = parseInt(req.query.sub_category);
+		productQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
+		productCountQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
+	}
+
+	if (req.query.location) {
+		queryURI['location'] = req.query.location;
+		productQueryParams['product_location_id'] = req.query.location;
+		productCountQueryParams['product_location'] = req.query.location;
+	}
 
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
 		queryURI['keyword'] = req.query.keyword;
-		queryParameters['product_name'] = {
+		productQueryParams['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+		productCountQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
+
 	if (req.query.origin) {
 		queryURI['origin'] = req.query.origin;
-		queryParameters['$or'] = [{
-			country_name: req.query.origin
+		productQueryParams['$or'] = [{
+			'country_name': req.query.origin
 		}, {
-			state_name: req.query.origin
+			'state_name': req.query.origin
 		}, {
-			city: req.query.origin
+			'city': req.query.origin
 		}];
 	}
 
-	if (marketplaceURl == 'wholesale') {
-		console.log("marketplaceURl", marketplaceURl);
-		selectedMarketPlace = marketplace['WHOLESALE'];
-		queryParameters['marketplace_id'] = marketplace['WHOLESALE'];
-	} else if (marketplaceURl == 'shop') {
-		selectedMarketPlace = marketplace['PUBLIC'];
-		queryParameters['marketplace_id'] = marketplace['PUBLIC'];
-	} else if (marketplaceURl == 'services') {
-		selectedMarketPlace = marketplace['SERVICE'];
-		queryParameters['marketplace_id'] = marketplace['SERVICE'];
-	} else if (marketplaceURl == 'lifestyle') {
-		selectedMarketPlace = marketplace['LIFESTYLE'];
-		queryParameters['marketplace_id'] = marketplace['LIFESTYLE'];
-	} else {
-		if (req.query.marketplace) {
-			selectedMarketPlace = req.query.marketplace;
-			queryURI['marketplace'] = req.query.marketplace;
-			queryParameters['marketplace_id'] = req.query.marketplace;
-		}
+	if (req.query.start_date && req.query.end_date) {
+		queryURI['start_date'] = req.query.start_date;
+		queryURI['end_date'] = req.query.end_date;
+		productQueryParams['created_on'] = {
+			'$gte': req.query.start_date,
+			'$lte': req.query.end_date
+		};
+		productCountQueryParams['created_on'] = {
+			'$gte': req.query.start_date,
+			'$lte': req.query.end_date
+		};
 	}
 
-	if (req.query.is_featured_product) {
-		queryURI['is_featured_product'] = req.query.is_featured_product;
-		queryParameters['is_featured_product'] = req.query.is_featured_product;
-	}
-	if (req.query.location) {
-		selectedLocation = req.query.location;
-		queryURI['location'] = req.query.location;
-		queryParameters['product_location_id'] = req.query.location;
-	}
-	if (req.query.category) {
-		selectedCategory = req.query.category;
-		queryURI['category'] = req.query.category;
-		queryParameters['category_id'] = req.query.category;
-	}
-	if (req.query.sub_category) {
-		selectedSubCategory = req.query.sub_category;
-		queryURI['sub_category'] = req.query.sub_category;
-		queryParameters['sub_category_id'] = req.query.sub_category;
-	}
-
-	if (req.query.marketplace_type) {
-		selectedMarketPlaceType = req.query.marketplace_type;
-		queryURI['marketplace_type'] = req.query.marketplace_type;
-		queryParameters['marketplace_type_id'] = req.query.marketplace_type;
-	}
 	if (req.query.vendor_id) {
 		queryURI['vendor_id'] = req.query.vendor_id;
-		queryParameters['vendor_id'] = req.query.vendor_id;
+		productQueryParams['vendor_id'] = req.query.vendor_id;
+		productCountQueryParams['vendor_id'] = req.query.vendor_id;
 	}
+
 	if (req.query.field) {
 		queryURI['field'] = req.query.field;
-		queryParameters['field'] = req.query.field;
 	}
-	queryParameters['status'] = status["ACTIVE"];
-	//selectedMarketPlace = req.query.marketplace;
+
 	async.series({
-		cartCounts: function (callback) {
-			service.cartHeader(LoggedInUser).then(function (response) {
+		cartCounts: function(callback) {
+			service.cartHeader(LoggedInUser).then(function(response) {
 				return callback(null, response);
-			}).catch(function (error) {
+			}).catch(function(error) {
 				console.log('Error :::', error);
 				return callback(null);
 			});
 		},
-		categories: function (callback) {
-			var includeArr = [];
+		categories: function(callback) {
 			const categoryOffset = 0;
 			const categoryLimit = null;
-			const categoryField = "id";
+			const categoryField = "name";
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
 			categoryQueryObj['status'] = status["ACTIVE"];
 
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function (category) {
+			service.findAllRows(categoryModel, [], categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
 					var categories = category.rows;
 					bottomCategory['left'] = categories.slice(0, 8);
 					bottomCategory['right'] = categories.slice(8, 16);
 					return callback(null, category.rows);
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		marketPlace: function (callback) {
-			var marketPlaceModel = "Marketplace";
-			service.findIdRow(marketPlaceModel, selectedMarketPlace, includeArr)
-				.then(function (result) {
+		selectedMarketPlace: function(callback) {
+			service.findIdRow(marketPlaceModel, selectedMarketPlaceID, [])
+				.then(function(result) {
 					return callback(null, result);
 				})
-				.catch(function (error) {
+				.catch(function(error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypeSelected: function (callback) {
+		selectedMarketPlaceType: function(callback) {
 			var queryObj = {};
-			var marketPlaceTypeModel = "MarketplaceType";
 
-			queryObj['marketplace_id'] = selectedMarketPlace;
-			queryObj['id'] = selectedMarketPlaceType;
-			service.findOneRow(marketPlaceTypeModel, queryObj, includeArr)
-				.then(function (result) {
+			queryObj['id'] = selectedMarketPlaceTypeID;
+			queryObj['marketplace_id'] = selectedMarketPlaceID;
+
+			service.findOneRow(marketPlaceTypeModel, queryObj, [])
+				.then(function(result) {
 					return callback(null, result);
 				})
-				.catch(function (error) {
+				.catch(function(error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		products: function (callback) {
-			//queryParameters['is_featured_product'] = 0;
-            queryParameters['status'] = 1;
-			service.findAllRows(productEndPoint, includeArr, queryParameters, offset, limit, field, order)
-				.then(function (results) {
-					console.log("results:::"+results.rows);
+		products: function(callback) {
+			service.findAllRows(productModel, [], productQueryParams, offset, limit, field, order)
+				.then(function(results) {
 					return callback(null, results);
 				})
-				.catch(function (error) {
+				.catch(function(error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		topProducts: function (callback) {
+		topProducts: function(callback) {
 			var topOffset = 0;
 			var topLimit = 3;
-			var topOrderField;
-			topOrderField = req.query.field ? req.query.field : "created_on";
-			var topOrderType = order;
 
-			queryParameters['is_featured_product'] = 1;
+			productQueryParams['is_featured_product'] = 1;
 
-			service.findAllRows(productEndPoint, includeArr, queryParameters, topOffset, topLimit, topOrderField, topOrderType)
-				.then(function (results) {
+			service.findAllRows(productModel, [], productQueryParams, topOffset, topLimit, field, order)
+				.then(function(results) {
 					return callback(null, results);
 				})
-				.catch(function (error) {
+				.catch(function(error) {
 					console.log('Error:::', error);
 					return callback(error, null);
 				});
 		},
-		marketPlaceTypes: function (callback) {
-			var result = {};
-			var marketplaceTypeQueryObj = {};
-			var productCountQueryParames = {};
-
-			marketplaceTypeQueryObj['status'] = status["ACTIVE"];
-			marketplaceTypeQueryObj['marketplace_id'] = marketplace['WHOLESALE'];
-
-			productCountQueryParames['status'] = status["ACTIVE"];
-			if(marketplaceURl == 'wholesale')
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
-			}
-			else if(marketplaceURl == 'shop')
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['PUBLIC'];
-			}
-			else if(marketplaceURl == 'services')
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['SERVICE'];
-			}
-			else if(marketplaceURl == 'lifestyle')
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['LIFESTYLE'];
-			}
-			else
-			{
-				productCountQueryParames['marketplace_id'] = marketplace['WHOLESALE'];
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.category) {
-				productCountQueryParames['product_category_id'] = req.query.category;
-			}
-			if (req.query.sub_category) {
-				productCountQueryParames['sub_category_id'] = req.query.sub_category;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-			service.getMarketPlaceTypes(marketplaceTypeQueryObj, productCountQueryParames)
-				.then(function (response) {
+		productsCountBasedOnMarketplaceTypes: function(callback) {
+			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
+				.then(function(response) {
 					return callback(null, response);
-
-				}).catch(function (error) {
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
-		locations: function (callback) {
-			console.log("location Query");
-			var result = {};
-			var locationQueryObj = {};
-			var productCountQueryParames = {};
-
-			locationQueryObj['status'] = status["ACTIVE"];
-
-			productCountQueryParames['status'] = status["ACTIVE"];
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.category) {
-				productCountQueryParames['product_category_id'] = req.query.category;
-			}
-			if (req.query.sub_category) {
-				productCountQueryParames['sub_category_id'] = req.query.sub_category;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-
-			model['Country'].findAll({
-				where: locationQueryObj,
-				include: [{
-					model: model['Product'],
-					where: productCountQueryParames,
-					attributes: [],
-					required: false
-				}],
-				attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
-				group: ['Country.id']
-			}).then(function (results) {
-				console.log(results.length);
-				if (results.length > 0) {
-					model['Product'].count({
-						where: productCountQueryParames
-					}).then(function (count) {
-						result.count = count;
-						result.rows = JSON.parse(JSON.stringify(results));
-						return callback(null, result);
-					}).catch(function (error) {
-						console.log('Error:::', error);
-						return callback(error, null);
-					});
-				} else {
-					result.count = 0;
-					result.rows = [];
-					return callback(null, result);
-				}
-			}).catch(function (error) {
-				console.log('Error:::', error);
-				return callback(error, null);
-			});
-		},
-		categoriesWithCount: function (callback) {
-			var result = {};
-			var categoryQueryObj = {};
-			var productCountQueryParames = {};
-
-			categoryQueryObj['status'] = status["ACTIVE"];
-
-			productCountQueryParames['status'] = status["ACTIVE"];
-			if (req.query.marketplace) {
-				productCountQueryParames['marketplace_id'] = req.query.marketplace;
-			}
-			if (req.query.marketplace_type) {
-				productCountQueryParames['marketplace_type_id'] = req.query.marketplace_type;
-			}
-			if (req.query.location) {
-				productCountQueryParames['product_location'] = req.query.location;
-			}
-			if (req.query.keyword) {
-				productCountQueryParames['product_name'] = {
-					like: '%' + req.query.keyword + '%'
-				};
-			}
-			service.getCategory(categoryQueryObj, productCountQueryParames)
-				.then(function (response) {
-					console.log("rettiidasss::");
+		productsCountBasedOnCountry: function(callback) {
+			searchResultService.countryWithProductCount(productCountQueryParams, isFeaturedProduct)
+				.then(function(response) {
 					return callback(null, response);
-
-
-				}).catch(function (error) {
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		productsCountBasedOnCategories: function(callback) {
+			searchResultService.categoryWithProductCount(productCountQueryParams, isFeaturedProduct)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		}
-	}, function (error, results) {
+	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
-		console.log("resssss",results.categoriesWithCount.rows.SubCategories);
-		if (!error) {
+		if (!error && results) {
 			res.render('search', {
 				title: "Global Trade Connect",
 				categories: results.categories,
@@ -417,39 +278,21 @@ export function index(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				LoggedInUser: LoggedInUser,
-				selectedLocation: selectedLocation,
-				selectedCategory: selectedCategory,
-				selectedSubCategory: selectedSubCategory,
-				selectedMarketPlace: results.marketPlace,
-				marketPlace: marketplace,
-				marketPlaceType: marketplace_type,
-				selectedMarketPlaceType: selectedMarketPlaceType,
-				marketPlaceTypeSelected: results.marketPlaceTypeSelected,
-				productResults: results.products,
+				selectedMarketPlaceID: selectedMarketPlaceID,
+				selectedMarketPlace: results.selectedMarketPlace,
+				selectedMarketPlaceTypeID: selectedMarketPlaceTypeID,
+				selectedMarketPlaceType: results.selectedMarketPlaceType,
+				products: results.products,
 				topFeaturedProducts: results.topProducts,
-				marketPlaceTypes: results.marketPlaceTypes,
-				locations: results.locations,
-				categoriesWithCount: results.categoriesWithCount,
-				marketplaceURl: marketplaceURl,
-				cartheader: results.cartCounts,
+				locations: results.productsCountBasedOnCountry,
+				categoriesWithCount: results.productsCountBasedOnCategories,
+				marketPlaceTypes: results.productsCountBasedOnMarketplaceTypes,
+				marketplaceURl: currentMarketPlace,
+				durations: durationConfig,
 				layout_type: layout
 			});
 		} else {
 			res.render('search', error);
 		}
 	});
-}
-
-
-function changeDateFormat(inputDate){  // expects Y-m-d
-    var splitDate = inputDate.split('/');
-    if(splitDate.count == 0){
-        return null;
-    }
-
-    var month = splitDate[0];
-    var day = splitDate[1];
-	var year = splitDate[2];
-
-    return year + '-' + month + '-' + day;
 }

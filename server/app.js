@@ -20,7 +20,7 @@ var mailListener = require('./components/mail-listener');
 var agenda = require('./agenda');
 var couponExpiry = require('./agenda/couponExpiry');
 var sendEmailNew = require('./agenda/send-email-new');
-var vendorPayouts = require('./agenda/vendor-payouts');
+var vendorPayouts = require('./agenda/vendor-payouts').vendorPayouts;
 var mailListener = require('./components/mail-listener');
 var mailService = require('./api/mail/reply-mail.service');
 var aliExpressScrape = require('./agenda/aliexpress-scrape');
@@ -36,7 +36,7 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
-	agenda.every('8 hours', 'vendorPayouts');
+	agenda.every('1 minutes', 'vendorPayouts');
 	agenda.start();
 });
 

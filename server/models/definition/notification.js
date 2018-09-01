@@ -9,6 +9,17 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
+        user_id: {
+            type: DataTypes.BIGINT,
+            field: 'user_id',
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
         name: {
             type: DataTypes.STRING(255),
             field: 'name',
@@ -22,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.TEXT,
             field: 'description',
+            allowNull: false
+        },
+        is_read: {
+            type: DataTypes.BIGINT,
+            field: 'is_read',
             allowNull: false
         },
         status: {
@@ -64,11 +80,17 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
     const model = require('../index');
     const Notification = model.Notification;
-    const VendorNotificationSetting = model.VendorNotificationSetting;
+    const User = model.User;
 
-    Notification.hasMany(VendorNotificationSetting, {
-        foreignKey: 'notification_id',
+    Notification.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
+    // Notification.hasMany(VendorNotificationSetting, {
+    //     foreignKey: 'notification_id',
+    //     onDelete: 'NO ACTION',
+    //     onUpdate: 'NO ACTION'
+    // });
 };

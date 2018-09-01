@@ -5,11 +5,195 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 const status = require('../../config/status');
+const marketplace = require('../../config/marketplace.js');
+const marketplaceType = require('../../config/marketplace_type.js');
 const discount = require('../../config/discount');
 const _ = require('lodash');
 const moment = require('moment');
 
-export function addToCart(req, res) {
+export async function addToCart(req, res) {
+	var LoggedInUser = {};
+	if (req.user) {
+		LoggedInUser = req.user;
+	}
+
+	req.checkBody('product_quantity', 'Missing Query Param').notEmpty().isInt({
+		gt: 0
+	});
+
+	var errors = req.validationErrors();
+	if (errors) {
+		return res.status(400).json({
+			message: "NO_QUANTITY",
+			message_details: "Please Enter the Quantity you want"
+		});
+	}
+
+	const productID = req.params.id;
+	const orderQuantity = req.body.product_quantity;
+	const userID = LoggedInUser.id;
+
+	try {
+		const productResponse = await model["Product"].findOne({
+			where: {
+				id: productID,
+				status: status['ACTIVE']
+			}
+		});
+		if (productResponse) {
+			const product = productResponse.toJSON();
+			console.log("product", product);
+			if (product.quantity_available == 0) {
+				return res.status(400).json({
+					message: "SOLD_OUT",
+					message_details: "OOPS ! This product sold out, seller has no more left"
+				});
+			} else if (product.marketplace_id == marketplace['WHOLESALE'] && product.marketplace_type_id == marketplaceType['WTS']) {
+				if (orderQuantity < product.moq) {
+					return res.status(400).json({
+						message: "MINIMUM_QUANTITY",
+						message_details: "Minimum order quantity " + product.moq + " Items of this product",
+						available_state: product.quantity_available
+					});
+				} else if (orderQuantity > product.quantity_available) {
+					return res.status(400).json({
+						message: "EXCEEDING_AVAILABLITY",
+						message_details: "This seller have only " + product.quantity_available + " Items of this product",
+						available_state: product.quantity_available
+					});
+				} else {
+					const cartResponse = await addToCartAction(product, orderQuantity, LoggedInUser);
+					return res.status(cartResponse.status).json(cartResponse.json);
+				}
+			} else if (orderQuantity > product.quantity_available) {
+				return res.status(400).json({
+					message: "EXCEEDING_AVAILABLITY",
+					message_details: "This seller have only " + product.quantity_available + " Items of this product",
+					available_state: product.quantity_available
+				});
+			} else {
+				const cartResponse = await addToCartAction(product, orderQuantity, LoggedInUser);
+				return res.status(cartResponse.status).json(cartResponse.json);
+			}
+		} else {
+			return res.status(404).json({
+				message: "NOT_FOUND",
+				message_details: "Product not found"
+			});
+		}
+	} catch (error) {
+		console.log("Add To Cart Error:::", error);
+		return res.status(500).send(error);
+	}
+}
+
+function addToCartAction(product, orderQuantity, LoggedInUser) {
+	var queryObj = {}
+	var sendResponse = {};
+	const userID = LoggedInUser.id;
+
+	queryObj['user_id'] = userID;
+	queryObj['product_id'] = product.id;
+	queryObj['status'] = status["ACTIVE"];
+
+	return new Promise(function(resolve, reject) {
+		model["Cart"].findOne({
+			where: queryObj
+		}).then((cartResponse) => {
+			if (cartResponse) {
+				const cart = cartResponse.toJSON();
+
+				var checkCartUpdateQuantity = product.quantity_available - cart.quantity;
+
+				if (orderQuantity > checkCartUpdateQuantity) {
+					var responseMessage;
+
+					if (parseInt(checkCartUpdateQuantity) == 0) {
+						responseMessage = "Already you have " + cart.quantity + " Quantities of this Product in your cart, This seller has no remaining product";
+					} else {
+						responseMessage = "Already you have " + cart.quantity + " Quantities of this Product in your cart, This seller only have " + checkCartUpdateQuantity + " Remaining";
+					}
+					sendResponse['status'] = 400;
+					sendResponse['json'] = {
+						message: "EXCEEDING_AVAILABLITY",
+						message_details: responseMessage,
+						available_state: checkCartUpdateQuantity
+					}
+					return resolve(sendResponse);
+				} else {
+					var cartUpdateObj = {};
+					cartUpdateObj['quantity'] = cartResult.quantity + orderQuantity;
+					cartUpdateObj['last_updated_by'] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
+					cartUpdateObj['last_updated_on'] = new Date();
+					cartUpdateObj['status'] = status["ACTIVE"];
+
+					return model["Cart"].update(cartUpdateObj, {
+						where: {
+							id: cartResult.id,
+							status: status["ACTIVE"]
+						}
+					}).then(function(updatedCartResult) {
+						if (updatedCartResult) {
+							sendResponse['status'] = 200;
+							sendResponse['json'] = {
+								message: "SUCCESS",
+								message_details: "Product already in cart, Product quantity updated to " + cartUpdateObj['quantity']
+							}
+							return resolve(sendResponse);
+						} else {
+							sendResponse['status'] = 500;
+							sendResponse['json'] = {
+								message: "ERROR",
+								message_details: "Internal Server Error, Unable to add to cart."
+							}
+							return resolve(sendResponse);
+						}
+					}).catch(function(error) {
+						console.log('Error:::', error);
+						return res.status(500).json({
+							message: "ERROR",
+							message_details: "Internal Server Error, Unable to add to cart."
+						});
+					});
+				}
+			} else {
+				var createCartObj = {};
+				createCartObj["user_id"] = userID;
+				createCartObj["product_id"] = product.id;
+				createCartObj["quantity"] = orderQuantity;
+				createCartObj["status"] = status['ACTIVE'];
+				createCartObj["created_by"] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
+				createCartObj["created_on"] = new Date();
+
+				model["Cart"].create(createCartObj)
+					.then((createdCartResult) => {
+						if (createdCartResult) {
+							sendResponse['status'] = 200;
+							sendResponse['json'] = {
+								message: "SUCCESS",
+								message_details: "Product successfully added to cart"
+							}
+							return resolve(sendResponse);
+						} else {
+							sendResponse['status'] = 500;
+							sendResponse['json'] = {
+								message: "ERROR",
+								message_details: "Unable to add to cart"
+							}
+							return resolve(sendResponse);
+						}
+					}).catch((error) => {
+						console.log("Create New Cart Error:::", error);
+						return reject(error);
+					});
+			}
+		}).catch((error) => {
+			return reject(error);
+		})
+	});
+}
+
+export function addToCartOld(req, res) {
 	let product_id = parseInt(req.params.id);
 	let order_qty = parseInt(req.body.product_quantity);
 	var LoggedInUser = {};

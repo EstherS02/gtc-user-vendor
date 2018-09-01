@@ -270,7 +270,6 @@ export function changePassword(req, res) {
         req.checkBody('new_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'Missing Query Param').notEmpty();
         req.checkBody('new_confirm_password', 'new_confirm_password should be equal to new_password').equals(req.body.new_password);
-        // console.log("hahi")
     }
     var errors = req.validationErrors();
     if (errors) {
@@ -383,7 +382,7 @@ export function userProfile(req, res) {
                addressUpdatePromises.push(addressUpdate(user_id, billing_address_type, billingUpdate));
                 return Promise.all(addressUpdatePromises);
             }   
-        }).then(function(response){
+        }).then(function(billingUpdatedRow){
             if (req.body.shippingUpdate) {
 
                 var addressUpdatePromises = [];
@@ -395,6 +394,17 @@ export function userProfile(req, res) {
                 addressUpdatePromises.push(addressUpdate(user_id, shipping_address_type, shippingUpdate));
                 return Promise.all(addressUpdatePromises);
             }
+        }).then(function(shippingUpdatedRow){
+            if (req.body.vendorUpdate) {
+
+                var vendorId, vendorUpdatePromises = [];
+
+                var vendorUpdate = JSON.parse(req.body.vendorUpdate);
+                vendorId = req.user.Vendor.id;
+
+                vendorUpdatePromises.push(updateVendor(vendorUpdate, vendorId));
+                return Promise.all(vendorUpdatePromises);
+            }            
         }).then(function(response){
             if (req.body.vendorUpdate) {
 
@@ -462,15 +472,12 @@ function updateAddress(obj, id) {
         })
 }
 
-function vendorUpdate(vendorBodyParam,vendorQueryParam){
-    service.updateRecord('Vendor', vendorBodyParam, vendorQueryParam)
+function updateVendor(vendorBodyParam,vendorId){
+
+    service.updateRow('Vendor', vendorBodyParam, vendorId)
     .then(function(updatedVendor){
-
-        console.log("-------------------------------",updatedVendor);
-
         return Promise.resolve(updatedVendor);
     }).catch(function(err){
-        console.log("-------------------------------",err);
         console.log("Error::",err)
         return Promise.reject(err);
     })
@@ -604,7 +611,6 @@ export function userOnline(user){
     }, [])
         .then(function (row) {
             if (row) {
-                //console.log("ROW*********", row);
                 var rowJSON = row.toJSON();
             console.log("Row JSON", rowJSON);
             service.updateRow('User', queryObj, rowJSON.id)

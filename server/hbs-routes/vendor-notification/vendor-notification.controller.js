@@ -9,6 +9,99 @@ var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 const mailStatus = require('../../config/mail-status');
 
+export function notificationSettings(req, res) {
+	var LoggedInUser = {};
+	var bottomCategory ={};
+
+	if (req.user)
+		LoggedInUser = req.user;
+
+	let user_id = LoggedInUser.id;
+	if (req.user.Vendor.id) {
+		//pagination 
+		var page;
+		var offset;
+		var limit;
+		var order = "asc";
+		var field = "id";
+		var modelName = 'VendorNotification';
+		var queryObj = {};
+		var includeArr = [{
+			model: model["VendorNotificationSetting"],
+			where: {
+				vendor_id: req.user.Vendor.id
+			},
+			required: false
+		}	];
+
+		var queryObjCategory = {
+			status: statusCode['ACTIVE']
+		};
+
+		async.series({
+			cartCounts: function(callback) {
+            service.cartHeader(LoggedInUser).then(function(response) {
+                return callback(null, response);
+            }).catch(function(error) {
+                console.log('Error :::', error);
+                return callback(null);
+            });
+        },
+			notifications: function(callback) {
+				service.findRows(modelName, queryObj, 0, null, field, order, includeArr)
+					.then(function(results) {
+						return callback(null, results);
+
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			categories: function(callback) {
+			var includeArr = [];
+            const categoryOffset = 0;
+            const categoryLimit = null;
+            const categoryField = "id";
+            const categoryOrder = "asc";
+            var categoryModel = "Category";
+            const categoryQueryObj = {};
+
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
+
+            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+                .then(function(category) {
+                    var categories = category.rows;
+                    bottomCategory['left'] = categories.slice(0, 8);
+                    bottomCategory['right'] = categories.slice(8, 16);
+                    return callback(null, category.rows);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+
+		}
+		}, function(err, results) {
+			if (!err) {
+				res.render('vendorNav/notifications-settings', {
+					title: "Global Trade Connect",
+					title: "Global Trade Connect",
+					// count: results.notifications.count,
+					notification: results.notifications.rows,
+					categories: results.categories,
+                    bottomCategory: bottomCategory,
+                    cartheader:results.cartCounts,
+					LoggedInUser: LoggedInUser,
+					selectedPage: 'notifications_settings',
+					vendorPlan: vendorPlan
+				});
+			} else {
+				res.render('notifications', err);
+			}
+
+		});
+	}
+}
+
 function plainTextResponse(response) {
 	return response.get({
 		plain: true
@@ -25,7 +118,6 @@ export function notifications(req, res){
 	field = "created_on";
 	order = "desc";
 	var mailModel = 'UserMail';
-	var NotifyModel = 'Notification';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
@@ -46,11 +138,6 @@ export function notifications(req, res){
 	var queryObj = {
 		user_id: user_id,
 		mail_status: mailStatus["UNREAD"],
-		status: statusCode["ACTIVE"],
-	};
-	var NotifyqueryObj = {
-		user_id: user_id,
-		is_read: 1,
 		status: statusCode["ACTIVE"],
 	};
 
@@ -85,19 +172,6 @@ export function notifications(req, res){
 					return callback(null);
 				});
 		},
-		notifications: function (callback) {
-
-			includeArray = [];
-			service.findRows(NotifyModel, NotifyqueryObj, offset, limit, field, order, includeArray)
-				.then(function (mail) {
-					console.log("********************************mail*********", JSON.parse(JSON.stringify(mail)));
-					return callback(null, mail);
-
-				}).catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
 		inboxMail: function (callback) {
 
 			includeArray = [
@@ -116,6 +190,7 @@ export function notifications(req, res){
 
 			service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
 				.then(function (mail) {
+					console.log("********************************mail*********", JSON.parse(JSON.stringify(mail)));
 					return callback(null, mail);
 
 				}).catch(function (error) {
@@ -136,9 +211,7 @@ export function notifications(req, res){
 					cartheader: results.cartCounts,
 					inboxMail: results.inboxMail.rows,
 					mailStatus: mailStatus,
-					collectionSize: results.inboxMail.count + results.notifications.count,
-					notifications:results.notifications.rows,
-					statusCode:statusCode,
+					collectionSize: results.inboxMail.count,
 					page: page,
 					pageSize: limit,
 					maxSize: 5,

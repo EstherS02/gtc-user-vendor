@@ -107,11 +107,13 @@ $(document).ready(function() {
 			customerInformationObj['rules'].billing_city = "required";
 			customerInformationObj['rules'].billing_country = "required";
 			customerInformationObj['rules'].billing_state = "required";
+			customerInformationObj['rules'].billing_phone = "required";
 			customerInformationObj['messages'].billing_first_name = "First name is required.";
 			customerInformationObj['messages'].billing_addressline1 = "Address line 1 is required.";
 			customerInformationObj['messages'].billing_city = "City is required.";
 			customerInformationObj['messages'].billing_country = "Country is required.";
 			customerInformationObj['messages'].billing_state = "State is required.";
+			customerInformationObj['messages'].billing_phone = "Phone Number is required.";
 		}
 
 		if (!$('#inputShippingAddressId').val() && !$('#shippingAddressSelectId').val()) {
@@ -120,11 +122,13 @@ $(document).ready(function() {
 			customerInformationObj['rules'].shipping_city = "required";
 			customerInformationObj['rules'].shipping_country = "required";
 			customerInformationObj['rules'].shipping_state = "required";
+			customerInformationObj['rules'].shipping_phone = "required";
 			customerInformationObj['messages'].shipping_first_name = "First name is required.";
 			customerInformationObj['messages'].shipping_addressline1 = "Address line 1 is required.";
 			customerInformationObj['messages'].shipping_city = "City is required.";
 			customerInformationObj['messages'].shipping_country = "Country is required.";
 			customerInformationObj['messages'].shipping_state = "State is required.";
+			customerInformationObj['messages'].shipping_phone = "Phone Number is required.";
 		}
 
 		if ($('#customer-information').valid()) {
@@ -189,6 +193,9 @@ $(document).ready(function() {
 		window.location.href = "/order-checkout/payment-method" + window.location.search;
 	});
 });
+function CartPage() {
+	window.location.href = "/cart";
+}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="wrapper-content">
@@ -225,7 +232,7 @@ $(document).ready(function() {
 			<div class="body-content-1">
 				<form id="customer-information" method="post">
 					<div class="row no-margins">
-						<div class="col-sm-9half no-padding">
+						<div class="col-sm-9half no-padding bg-white">
 							<div class="header-left header-lg gtc-p-l-r">
 								<h2 class="header-lg-text alignleft text-white">Customer Information</h2>
 							</div>
@@ -253,6 +260,7 @@ $(document).ready(function() {
 														<p>{{billing_address.[0].State.name}}</p>
 														<p>{{billing_address.[0].Country.name}}</p>
 														<p>{{billing_address.[0].postal_code}}</p>
+														<p>{{billing_address.[0].phone}}</p>
 													</div>
 												</div>
 											</div>
@@ -344,7 +352,7 @@ $(document).ready(function() {
 												</div>
 												<div class="col-6">
 													<div class="form-group">
-														<input type="text" name="billing_phone" value="" class="form-control form-control-sm input-rounded-border" placeholder="Phone">
+														<input type="text" name="billing_phone" value="{{billing_address.[0].phone}}" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
 													</div>
 												</div>
 											</div>
@@ -448,7 +456,7 @@ $(document).ready(function() {
 												</div>
 												<div class="col-6">
 													<div class="form-group">
-														<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone">
+														<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
 													</div>
 												</div>
 											</div>
@@ -487,8 +495,12 @@ $(document).ready(function() {
 						<div class="row no-margins">
 							<div class="col-sm-9half no-padding">
 								<div class="m-cart-body-bottom bg-white">
-									<button type="button" class="btn btn-md btn-success">RETURN TO CART</button>
-									<button type="submit" id="continue" class="btn btn-md btn-primary alignright">CONTINUE TO SHIPPING METHOD</button>
+									<button type="button" onclick="CartPage()" class="ladda-button btn btn-md btn-success">
+										<span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span>
+									</button>
+									<button type="submit" id="continue" class="ladda-button btn btn-md btn-primary alignright">
+										<span class="ladda-label">CONTINUE TO SHIPPING METHOD</span><span class="ladda-spinner"></span>
+									</button>
 								</div>
 							</div>
 						</div>
