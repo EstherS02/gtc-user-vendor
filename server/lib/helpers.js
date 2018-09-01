@@ -518,14 +518,7 @@ Handlebars.registerHelper('MarketPlaceURL', function(marketPlace_id, options) {
             marketPlace = "products";
             break;
     }
-
-    console.log(marketPlace)
-
     return marketPlace;
-    
-
-
-
 });
 Handlebars.registerHelper('Location', function(id, arrayEle, options) {
     let name;
