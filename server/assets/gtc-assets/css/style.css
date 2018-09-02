@@ -1115,7 +1115,7 @@ vertical-align: middle;
 .search-list-header h3 {
 	font-family: 'Roboto', sans-serif;
 	font-size: 1em;
-	line-height: 1.6;
+	line-height: 1.8;
 	font-weight: 300;
 }
 .search-list-left {
@@ -1135,7 +1135,6 @@ vertical-align: middle;
 }
 .search-list-body {
 	background: #ffffff;
-	padding: 0 15px;   
 }
 #signUpForm input {
 	background: none;

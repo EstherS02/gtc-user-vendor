@@ -1,240 +1,275 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
-<script>
-	function sortSearch(e) {
-		var url = window.location.href;
-		var uri = updateQueryStringParameter(url, 'field', e.value);
-		uri = updateQueryStringParameter(uri, 'order', 'asc');
-		window.location.href = uri;
-	}
-	function updateQueryStringParameter(uri, key, value) {
-		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-		if (uri.match(re)) {
-			return uri.replace(re, '$1' + key + "=" + value + '$2');
-		} else {
-			return uri + separator + key + "=" + value;
-		}
-	}
-</script>
-<script type="text/javascript">
-$(document).ready(function() {
+<div class="gtc-container">
+	<div class="search-list-header">
+		
+	</div>
+	<div class="row m-b-sm">
+		<div class="col-md-3 search-list-left">
+			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
+			<p class="right-header-xs bg1">GLOBAL (45)</p>
+			<ul class="right-list-view category-fixed">
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=1">
+						<span>Canada (1)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=2">
+						<span>Afghanistan (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=3">
+						<span>Algeria (1)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=4">
+						<span>Australia (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=5">
+						<span>Austria (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=6">
+						<span>Bahrain (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=7">
+						<span>Bangladesh (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=8">
+						<span>Belgium (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=9">
+						<span>Bermuda (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=10">
+						<span>Brazil (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=11">
+						<span>Cambodia (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=12">
+						<span>China (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=13">
+						<span>Colombia (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=14">
+						<span>Denmark (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=15">
+						<span>Egypt (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=16">
+						<span>France (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=17">
+						<span>Georgia (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=18">
+						<span>Germany (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=19">
+						<span>India (43)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=20">
+						<span>Indonesia (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=21">
+						<span>Iran (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=22">
+						<span>Iraq (0)</span>
+					</a>
+				</li>
+				<li>
+					<a href="../wholesale/search?layout=grid&amp;page=1&amp;marketplace=1&amp;marketplace_type=1&amp;location=23">
+						<span>Japan (0)</span>
+					</a>
+				</li>
+			</ul>
 
-	function fix_height() {
-		var bodyHeight = $("body").height() - 378;
-		var wrapperHeigh = $('#page-wrapper').height();
-		if (bodyHeight > wrapperHeigh) {
-			$('#page-wrapper').css("min-height", bodyHeight + "px");
-		}
-	}
-
-	$(window).bind("load resize scroll", function() {
-		fix_height();
-	});
-});
-</script>
-<section>
-	<div id="page-wrapper">
-		<div class="container">
-			<div class="row">
-				<div class="search-sm-header">
-					<br>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-7">
-				</div>
-				<div class="col-md-5">
-					<div class="row">
-						<div class="col-md-1">
-							<p class="showing_res1">View</p>
-						</div>
-						<div class="col-md-1">
-							<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
-							 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}">
-								<i class="fa fa-th-large"></i>
-							</button>
-						</div>
-						<div class="col-md-1">
-							<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
-							 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}">
-								<i class="fa fa-th-list"></i>
-							</button>
-						</div>
-						<div class="col-md-3">
-							<p class="float-right">Sort by</p>
-						</div>
-						<div class="col-md-6">
-							<select class="geo_textbox" name="order" onchange="sortSearch(this)" id="sortValue">
-								<option disabled selected>select filter type</option>
-								<option value="vendor_name">Alphabetical</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-3 showing_categ">
-					<p style="margin-top: 20px;">
-						<b>FILTER BY LOCATION</b>
-					</p>
-					<p class="cat_bg_title">
-						<a href="../search?{{QueryParams queryURI (FrameObject page=1) 'location'}}">
-							<span>GLOBAL ({{locations.count}})</span>
-						</a>
-					</p>
-					<div class="list-group panel category-fixed">
-						<ul class="list-group">
-							{{#each locations.rows}}
-								<li class="list-group-item">
-									<a {{#ifCond ../selectedLocation "==" this.id}} class="text-black" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
-										<span>{{this.name}} ({{this.vendor_count}})</span>
-									</a>
-								</li>
-							{{/each}}
-						</ul>
-					</div>
-				</div>
-				<div class="col-md-9">
-					<div class="row col-md-12 showing_categ" style="padding: 6px; margin-bottom: 10px;">
-						<div class="col-md-6">
-							<p style="margin-bottom: 0px">
-								<b>TOP {{ convertUpperCase marketplaceURl}}
-								</b>
-							</p>
-						</div>
-					</div>
-					<div class="row">
-						{{#ifCond layout_type "==" "grid" }}
-							{{#each vendors.rows}}
-								<div class="col-md-4 col-lg-4 col-xl-4 common_bottom">
-									<div class="row">
-										<div class="col-md-3 col-3 col-lg-3 col-xl-3">
-											<img src="{{this.url}}" class="img_fixed_height">
-										</div>
-										<div class="col-md-9 col-9 col-lg-9 col-xl-9">
-											<div class="row common_padding">
-												<div class="col-md-12">
-													<p class="wts_header">
-														<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
-													</p>
-												</div>
-
-											</div>
-											<div class="row common_padding">
-												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-													<p>Origin</p>
-												</div>
-												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-													<p>{{this.origin}}</p>
-												</div>
-											</div>
-											<div class="row common_padding">
-												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-													<p>Inventory</p>
-												</div>
-												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-													<p>
-														<b>{{this.product_count}} Products</b> Listed
-														<span class="wts_header_red">on Sale</span>
-													</p>
-												</div>
-											</div>
-											<div class="row common_padding">
-												<div class="col-md-5 col-5 col-lg-5 col-xl-5">
-													<p>Seller Rating</p>
-												</div>
-												<div class="col-md-7 col-7 col-lg-7 col-xl-7">
-													<p>{{starCount rating}}</p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							{{/each}}
-						{{/ifCond}}
-					</div>
-					<div class="row">
-						{{#ifCond layout_type "==" "list" }}
-							{{#each vendors.rows}}
-								<div class="table-responsive">
-									<table class="table shoping-cart-table">
-										<tbody>
-											<tr class="d-flex">
-												<td class="col-2">
-													<div class="product-middle-col">
-														<img src="{{this.url}}" class="img_fixed_height">
-													</div>
-												</td>
-												<td class="col-10">
-													<div class="product-middle-col">
-														<p class="wts_header">
-															<a class="header_title" href="/vendor/{{this.id}}">{{Titlecase this.vendor_name}}</a>
-														</p>
-
-														<div class="row">
-															<div class="col-md-4 col-4">
-																<span>Origin</span>
-															</div>
-															<div class="col-md-8 col-8">
-																<span class="text-500">{{this.origin}}</span>
-															</div>
-
-															<div class="col-md-4 col-4">
-																<span>Inventory</span>
-															</div>
-															<div class="col-md-8 col-8 ">
-																<b>{{this.product_count}} Products</b> Listed
-																<span class="wts_header_red">on Sale</span>
-															</div>
-															<div class="col-md-4 col-4 ">
-																<p>Seller Rating</p>
-															</div>
-															<div class="col-md-8 col-8 ">
-																<p>{{starCount rating}}</p>
-															</div>
-														</div>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							{{/each}}
-						{{/ifCond}}
-					</div>
-					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-					</div>
-				</div>
-			</div>
-			{{#ifCond vendors.count '>' queryPaginationObj.limit}}
-				<div class="row">
-					<div class="col-md-3">
-					</div>
-					<div class="col-md-7">
-						{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-							<nav aria-label="Page navigation example">
-								<ul class="pagination justify-content-center">
-									{{#unless startFromFirstPage}}
-										<li class="page-item">
-											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-										</li>
-									{{/unless}}
-									{{#each pages}}
-										<li class="page-item {{#if isCurrent}} active {{/if}}">
-											<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-										</li>
-									{{/each}}
-									{{#unless endAtLastPage}}
-										<li class="page-item">
-											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-										</li>
-									{{/unless}}
-								</ul>
-							</nav>
-						{{/pagination}}
-					</div>
-				</div>
-			{{/ifCond}}
 		</div>
-</section>
+		<div class="col-md-9">
+			<div class="search-list-body">
+				<div class="row">
+					<div class="col-md-4">
+                        <div class="product-body">
+                            <div class="table-responsive">
+                                <table class="table shoping-cart-table">
+                                    <tbody>
+                                        <tr class="d-flex">
+                                            <td class="col-4">
+                                                <div class="product-left-col" style="height: 86px; background: none;">
+                                                    <img class="object-fit" src="/images/products/vendor7.jpg" alt="Great Earth Expeditions" title="Great Earth Expeditions">
+                                                </div>
+                                            </td>
+                                            <td class="col-8">
+                                                <div class="product-middle-col">
+                                                    <h3>
+                                                        <a href="/vendor/28" class="text-blue">Great Earth Expeditions</a>
+                                                    </h3>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Origin</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                            <span class="text-500">Canada</span>
+                                                        </div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Inventory</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <b class="text-blue">56 Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                        </span></span></div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Seller Rating</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <div class="v-rating">
+                                                                <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-body">
+                            <div class="table-responsive">
+                                <table class="table shoping-cart-table">
+                                    <tbody>
+                                        <tr class="d-flex">
+                                            <td class="col-4">
+                                                <div class="product-left-col" style="height: 86px; background: none;">
+                                                    <img class="object-fit" src="/images/products/vendor7.jpg" alt="Great Earth Expeditions" title="Great Earth Expeditions">
+                                                </div>
+                                            </td>
+                                            <td class="col-8">
+                                                <div class="product-middle-col">
+                                                    <h3>
+                                                        <a href="/vendor/28" class="text-blue">Great Earth Expeditions</a>
+                                                    </h3>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Origin</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                            <span class="text-500">Canada</span>
+                                                        </div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Inventory</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <b class="text-blue">56 Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                        </span></span></div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Seller Rating</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <div class="v-rating">
+                                                                <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="product-body">
+                            <div class="table-responsive">
+                                <table class="table shoping-cart-table">
+                                    <tbody>
+                                        <tr class="d-flex">
+                                            <td class="col-4">
+                                                <div class="product-left-col" style="height: 86px; background: none;">
+                                                    <img class="object-fit" src="/images/products/vendor7.jpg" alt="Great Earth Expeditions" title="Great Earth Expeditions">
+                                                </div>
+                                            </td>
+                                            <td class="col-8">
+                                                <div class="product-middle-col">
+                                                    <h3>
+                                                        <a href="/vendor/28" class="text-blue">Great Earth Expeditions</a>
+                                                    </h3>
+                                                    <div class="row no-margins">
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Origin</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                            <span class="text-500">Canada</span>
+                                                        </div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Inventory</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <b class="text-blue">56 Products</b> Listed <span class="text-red text-500 d-block">6 on Sale<span>
+                                                        </span></span></div>
+                                                        <div class="col-md-5 col-5 no-padding">
+                                                            <span>Seller Rating</span>
+                                                        </div>
+                                                        <div class="col-md-7 col-7 no-padding">
+                                                            <div class="v-rating">
+                                                                <i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #CDBE29;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i><i class="fa fa-star" aria-hidden="true" style="color: #b9bab1;"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 {{> footer/bottom-footer}}

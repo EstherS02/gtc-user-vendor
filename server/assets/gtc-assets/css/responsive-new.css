@@ -108,6 +108,19 @@
 	.col-sm-10half {
 		width: 87.15%;
 	}
+	.search-list-body {
+		padding: 0 15px;
+	}
+	.responsive-flex {
+		display: flex;
+	  	justify-content: space-between;
+	}
+	.responsive-flex .align-left, .align-left {
+		float: left;
+	}
+	.responsive-flex .align-right, .align-right {
+		float: right;
+	}
 }
 
 @media screen and (min-width: 721px) and (max-width: 1280px) {
