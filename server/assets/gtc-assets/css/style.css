@@ -1885,3 +1885,7 @@ p.summary-info span {
     overflow-wrap: normal;
     max-height: 225px;
 }
+.page-item.active .page-link{
+    background-color: #608fab !important;
+    border-color: #608fab !important;
+}

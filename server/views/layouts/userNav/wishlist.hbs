@@ -117,10 +117,10 @@
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-6">
-									<input type="submit" value="REMOVE" onclick="remove(this)" class="vend_edit_lists_buttonstyle" />
+									<input type="submit" value="REMOVE" onclick="remove(this)" class="vend_edit_lists_buttonstyle"/>
 								</div>
 								<div class="col-md-6">
-									<input type="submit" onclick="deleteAll(this)" value="DELETE LIST" class="vend_edit_lists_buttonstyle float-right" />
+									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="vend_edit_lists_buttonstyle float-right bg4"  />
 								</div>
 							</div>
 							<div class="row">
@@ -163,7 +163,7 @@
 												<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
 											</td>
 											<td class="text_blue_color">
-												<a href="#">{{this.User.first_name}} {{this.User.last_name}}</a>
+												<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.User.first_name}} {{this.Product.Vendor.User.last_name}}</a>
 											</td>
 											{{#if this.Product.quantity_available}}
 											<td class="text_green_color" style="font-size: 20px;">
@@ -192,7 +192,7 @@
 											</td>
 											<td class="text_blue_color ">
 												<i class="fas fa-credit-card" onclick="CartUpdate({{this.id}})">
-													<a href="/"> Add to cart </a>
+													<a href="javascript:;"> Add to cart </a>
 												</i>
 											</td>
 										</tr>

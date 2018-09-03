@@ -26,8 +26,21 @@ export function talkCreate(talk) {
 			'status': 1
 		};
 		model['Talk'].create(bodyParams).then(function(response) {
+			var includeArr = [{
+				model: model["User"],
+				attributes: {
+					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+				}
+			}]
+			var modelName = "Talk"
+			service.findIdRow(modelName, response.id, includeArr)
+			.then(function(resp){
+				//console.log("Message Response", resp);
+					resolve(JSON.parse(JSON.stringify(resp)));
+			}).catch(function(err){
+				reject(err);
+			})
 			/*model['TalkThreadUsers'].find*/
-			resolve(JSON.parse(JSON.stringify(response)));
 		}).catch(function(err){
 			reject(err);
 		})

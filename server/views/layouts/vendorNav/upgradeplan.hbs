@@ -1,240 +1,367 @@
 <script type="text/javascript">
-  $(function() {
-	 $('#planHide').show();
-     $('#userPlanShow').hide();
-     $('#vendorPlanShow').hide();
-     $('#selectplan').change(function()
-   {
-     if(document.getElementById("selectplan").value!='')
-     {
-         if(document.getElementById("selectplan").value=='1')
-         {
-           $('#usercarddetails').hide();
+var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	$(function() {
+		$('#planHide').show();
+		$('#userPlanShow').hide();
+		$('#vendorPlanShow').hide();
+		$('#selectplan').change(function() {
+			if (document.getElementById("selectplan").value != '') {
+				if (document.getElementById("selectplan").value == '1') {
+					$('#usercarddetails').hide();
 
-         }
-         else
-         {
-             $('#usercarddetails').show();
-         }
-        $('#upgrade').show();
-     }
-     else
-     {
-         $('#upgrade').hide();
-     }
-   });
+				}
+				else {
+					$('#usercarddetails').show();
+				}
 
-   
-});
-function vendorRedirection()
-{
-   window.location = '/vendor-form';
-}
-function paymentSuccess()
-{
-    window.location = '/upgradeplan';
-}
-function makePayment() {
-        var plan_id=document.getElementById("selectplan").value;
-        $.ajax({
-		url: '/api/payment/planpay',
-		type: 'POST',
-		contentType: 'application/json',
-		dataType: "json",
-		data: JSON.stringify({
-			stripe_customer_id: $('input[name="stripe_customer_id"]').val(),
-			amount: $('input[name="amount"]').val(),
-            carddetailsid:$('input[name="carddetailsid"]').val(),
-            plan_id:plan_id,
-            vendor_id:$('input[name="vendor_id"]').val()
-		}),
-		success: function(data) {
-			setTimeout(function() {
-				$('#paymentSuccess').modal('show');
-			}, 1000);
-		},
-		error: function(error) {
-			$('#complete-order-submit').prop('disabled', false);
-			$('#complete-order-submit').css({
-				'cursor': "pointer"
-			});
-		}
+			}
+
+		});
+
+
 	});
-	
-}
+	function paymentSuccess() {
+		window.location = '/upgradeplan';
+	}
+	$(document).ready(function() {
+		$("#plandetailsform").validate({
+			rules: {
+				selectplan: {
+					required: true
+				},
+				selectcard_details: {
+					required: true
+				}
+		},
+		messages: {
+			selectplan: {
+					required: "Please select the plan",
+				},
+				selectcard_details: {
+					required: "Please select the card details",
+    			}
+    		}
+		});
+		$("#userPlandetails").validate({
+			rules: {
+				selectplan: {
+					required: true
+				},
+				selectcard_details: {
+					required: true
+				}
+		},
+		messages: {
+			selectplan: {
+					required: "Please select the plan",
+				},
+				selectcard_details: {
+					required: "Please select the card details",
+    			}
+    		}
+		});
+	  $("#plandetailsform").submit(function(e) {
+		e.preventDefault();
+		if ($('#plandetailsform').valid()) { 
+             $('#myModal').modal('show');
 
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+			
+		    	
+     		}
+			 
+       });
+	   $("#userPlandetails").submit(function(e) {
+		e.preventDefault();
+		if ($('#userPlandetails').valid()) { 
+			
+			if($('#userplanStatus').val()=='')
+			{
+              $('#myModal').modal('show');
+			}
+			else
+			{
+				
+				//$('#myModal2').modal('show');
+
+			}
+			
+		   
+     		}
+			 
+       });
+	});
+
+	function makePayment() {
+		var plan_id = document.getElementById("selectplan").value;
+		$.ajax({
+			url: '/api/payment/planpay',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				stripe_customer_id: $('input[name="stripe_customer_id"]').val(),
+				amount: $('input[name="amount"]').val(),
+				carddetailsid: $('input[name="carddetailsid"]').val(),
+				plan_id: plan_id,
+				user_id :$('input[name="user_id"]').val(),
+				vendor_id: $('input[name="vendor_id"]').val()
+			}),
+			success: function(data) {
+				setTimeout(function() {
+					$('#paymentSuccess').modal('show');
+				}, 1000);
+			},
+			error: function(error) {
+				$('#complete-order-submit').prop('disabled', false);
+				$('#complete-order-submit').css({
+					'cursor': "pointer"
+				});
+			}
+		});
+	}
+
+
+
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray" id="planHide">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Upgrade plan</h2>
-                        </div>
-                        <div class="content-body">
-                            <form id="socialProfileForm">
-                                <div class="alert" id="gtc-social-profile">
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span aria-hidden="true"></span>
-                                    </button>
-                                    <span class="cart-message"></span>
-                                </div>
-                               {{#if LoggedInUser.Vendor.id}}
-                                <div class="row">
-                                    <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-                                        Current Plan:
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                               </div>
-                                            <span style="font-size:12px">{{PlanDetails.[0].name}}</span>
-                                                                         </div>
-                                    </div>
-                            
-                                </div>
-                                
-                                      
-                              
-                              
-                                
-                                
-                                {{#ifCond PlanDetails.[0].name '!=' "STARTER SELLER"}}
-                                <div class="row">
-                                    <div class="col-md-2 social_face" style="font-size:14px">
-                                        Select plan
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                
-                                            </div>
-                                           <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" id="selectplan">
-													<option value='' selected="">select plan</option>
-												  {{#ifCond PlanDetails.[0].name '!=' "BULK BUYER"}}	<option value="5">Bulk Buyer</option> {{/ifCond}}
-													  {{#ifCond PlanDetails.[0].name '!=' "WHOLESALE PRICING GUIDE"}}	<option value="6">Wholesale pricing guide</option> {{/ifCond}}
-													</select>
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Upgrade Plan</h2>
+						</div>
+						
+						<div class="content-body">
+						
+								<div class="alert" id="gtc-social-profile">
+									<button type="button" class="close" data-dismiss="alert">
+										<span aria-hidden="true"></span>
+									</button>
+									<span class="cart-message"></span>
+								</div>
+								{{#if LoggedInUser.Vendor.id}}
+									<form id="plandetailsform" name="plandetailsform">
+									<div class="row">
+										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+											Current Plan:
+										</div>
+										<div class="col-md-4">
+											<div class="input-group mb-3">
+												<div class="input-group-prepend">
+												</div>
+												<span style="font-size:12px">{{PlanDetails.[0].name}}</span>
 											</div>
-                                        </div>
-                                    </div>
-                                  
-                                    <div class="col-md-1">
-                                      <div class="text-nowrap" onclick="showDetails()"><a href="javascript:;">show details</a> </div>
-                                      </div>
-                                  
-                                     
-                                </div>
-                              {{/ifCond}}
-                              
-                               
-                                <div class="row">
-                                    <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-                                        Select card details
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                             
-                                            </div>
-                                             <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" id="vendorcarddetails" style="width: 180px">
-													{{#ifCond carddetails '!=' '' }}
-							   	
-												     {{#each carddetails}}
-													<option value = "{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-													{{/each}}
-                                                    {{else}}
-                                                    <option disabled="" selected="">Select card details</option>
-                                                    {{/ifCond}}
-												</select>
-											</div>
-                                        </div>
-                                        
-                                    </div>
-                                      <div class="col-md-1">
-                                       <div class="text-nowrap"><a href="/billing-settings">Add to card</a> </div>
-                                     </div>                                   
-                                </div>
-                                {{else}}
-                                  <div class="row">
-                                    
-                                    <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-                                      Select plan
-                                    </div>
-                             
-                                    <div class="col-md-3">
+										</div>
 
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                               </div>
-                                            <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services" id="selectplan">
-													<option disabled="" value='' selected="">Select plan</option>
-                                                    {{#ifCond PlanDetails.[0].name '!=' "STARTER SELLER"}}<option value="1">Starter Seller</option>{{/ifCond}}
-												 {{#ifCond PlanDetails.[0].name '!=' "SERVICE PROVIDER"}}<option value="2">Service provider</option>{{/ifCond}}
-												 {{#ifCond PlanDetails.[0].name '!=' "LIFESTYLE PROVIDER"}}<option value="3">Lifestyle provider</option>{{/ifCond}}
-												{{#ifCond PlanDetails.[0].name '!=' "PUBLIC SELLER PRICING PROVIDER"}}<option value="4">Public seller pricing guide</option>{{/ifCond}}
-								
-												</select>
-											</div>
-                                             </div>
-                                    </div>
-                                     <div class="col-md-1">
-                                      <div class="text-nowrap" onclick="showDetails()"><a href="javascript:;" >show details</a> </div>
-                                      </div>
-                                  
-                                </div>
-                                   <div class="row" id="usercarddetails">
-                                    <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-                                        Select card details
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                             
-                                            </div>
-                                             <div class="select-container">
-												<select class="form-control-customized form-control-sm" name="services">
-														{{#ifCond carddetails '!=' '' }}
-							   	
-												     {{#each carddetails}}
-													<option value = "{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-													{{/each}}
-                                                    {{else}}
-                                                    <option disabled="" selected="">Select card details</option>
-                                                    {{/ifCond}}
-												</select>
-												</select>
-											</div>
-                                        </div>
-                                        
-                                    </div>
-                                      <div class="col-md-1">
-                                       <div class="text-nowrap"><a href="/billing-settings">Add to card</a> </div>
-                                     </div>                                   
-                                </div>
-                               {{/if}}
-                                  {{#each carddetails}}
-												<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
-											   	<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
-                                            		{{/each}}
-                               
-										<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
-                                        <input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									</div>
+
 									
-                                 <hr style="margin-top: 10px" />
-                                <div class="row" id="upgrade" style="display:none">
-                                     {{#if LoggedInUser.Vendor.id}}
-                                    <div class="col-md-2" >
+										<div class="row">
+											<div class="col-md-2 social_face" style="font-size:14px">
+												Select Plan
+											</div>
+											<div class="col-md-3">
+
+												<div class="form-group">
+
+													<div class="input-group">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
+														  required>
+															<option value='' selected="">Select Plan</option>
+                                                            {{#ifCond PlanDetails.[0].name '==' "STARTER SELLER"}}
+																<option value="2">Service Provider</option>
+																<option value="3">Lifestyle Provider</option>
+																<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+																
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "SERVICE PROVIDER"}}
+																<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "LIFESTYLE PROVIDER"}}
+																	<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "PUBLIC SELLER PRICING PROVIDER"}}
+																<option value="2">Service Provider</option>
+																<option value="3">Lifestyle Provider</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "WHOLESALE PRICING GUIDE"}}
+															  <option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+														</select>
+
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-1">
+												<div class="text-nowrap" onclick="showDetails()">
+													<a href="javascript:;">Show Details</a>
+												</div>
+											</div>
+
+
+										</div>
+									
+
+
+									<div class="row">
+										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+											Select card details
+										</div>
+										<div class="col-md-3">
+										
+												
+												<div class="form-group">
+
+													<div class="input-group">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" 
+														 id="selectcard_details" required>
+															{{#ifCond carddetails '!=' '' }}
+
+															{{#each carddetails}}
+																<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+															{{/each}}
+							                             	{{else}}
+								                        	<option disabled="" selected="">Select card details</option>
+														{{/ifCond}}
+
+														</select>
+
+													</div>
+												</div>
+
+										</div>
+										<div class="col-md-1">
+											<div class="text-nowrap">
+												<a href="/billing-settings">Add Card</a>
+											</div>
+										</div>
+									</div>
+									{{#each carddetails}}
+										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
+										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
+									{{/each}}
+
+									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
+									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
+									<hr style="margin-top: 10px" />
+									<div class="row">
+
+										<div class="col-md-2">
+
+											<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
+												<span class="ladda-label">Upgrade</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
+
+										<div class="col-md-2">
+
+											<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+												<span class="ladda-label">Cancel</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
+										</div>
+										</form>
+						</div>
+							
+							 {{else}}
+							 	<form id="userPlandetails" name="userPlandetails">
+							 <div class="row">
+                               <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+								Select Plan
+							</div>
+
+							<div class="col-md-3">
+
+							
+									<div class="form-group">
+
+													<div class="input-group">
+						<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
+													
+														
+															
+										{{#ifCond userplanDetails '==' "1"}}
+											<option value="5">Bulk Buyer</option>
+											{{else}}
+											   	<option disabled="" value='' selected="">Select Plan</option>
+												   <option value="5">Bulk Buyer</option>
+											 {{/ifCond}}
+										
+
+														</select>
+
+													</div>
+												</div>
+							</div>
+							<div class="col-md-1">
+								<div class="text-nowrap" onclick="showDetails()">
+									<a href="javascript:;">Show Details</a>
+								</div>
+							</div>
+
+						</div>
+						<div class="row" id="usercarddetails">
+							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+								Select Card Details
+							</div>
+							<div class="col-md-3">
+						
+									<div class="form-group">
+
+													<div class="input-group">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" 
+														 name="selectcard_details" required>
+															{{#ifCond carddetails '!=' '' }}
+
+															{{#each carddetails}}
+																<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+															{{/each}}
+							                             	{{else}}
+								                        	<option disabled="" selected="">Select card details</option>
+														{{/ifCond}}
+
+														</select>
+
+													</div>
+												</div>
+
+
+							</div>
+							<div class="col-md-1">
+								<div class="text-nowrap">
+									<a href="/billing-settings">Add Card</a>
+								</div>
+							</div>
+						</div>
+							{{#each carddetails}}
+										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
+										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
+									{{/each}}
+
+									<input type="hidden" name="amount" value="99.0000">
+									<input type="hidden" name="vendor_id" value="0">
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
+						{{/if}}
+						<hr style="margin-top: 10px" />
+						<div class="row">
+							{{#if LoggedInUser.Vendor.id}}
+								{{!-- <div class="col-md-2" >
                                      
-                                        <button type="button" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" data-toggle="modal" data-target="#myModal">
+                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" data-toggle="modal" data-target="#myModal">
                                             <span class="ladda-label">Upgrade</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
@@ -246,78 +373,107 @@ function makePayment() {
                                             <span class="ladda-label">Cancel</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
-                                    </div>
-                                    {{else}}
-                                     <div class="col-md-2"  >
-                                     
-                                        <button type="button" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" onclick="vendorRedirection()">
-                                            <span class="ladda-label">Ok</span>
-                                            <span class="ladda-spinner"></span>
-                                        </button>
-                                    </div>
-                                   
-                                    <div class="col-md-2">
-                                       
-                                        <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
-                                            <span class="ladda-label">Cancel</span>
-                                            <span class="ladda-spinner"></span>
-                                        </button>
-                                    </div>  
+                                    </div> --}}
+							{{else}}
+								<div class="col-md-2">
+									<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
 
-                                     {{/if}}
-                                    <div class="col-md-8">
-                                    </div>
-                                </div>
-                                
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+									<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
+										<span class="ladda-label">Upgrade</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+
+								<div class="col-md-2">
+
+									<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+										<span class="ladda-label">Cancel</span>
+										<span class="ladda-spinner"></span>
+									</button>
+								</div>
+
+							{{/if}}
+							<div class="col-md-8">
+							</div>
+						</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 </div>
 <div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+	<div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-           <h4 class="modal-title">Upgrade plan</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-       
-      </div>
-      <div class="modal-body">
-        <p>You have charged {{PlanDetails.[0].cost}} </p>
-      </div>
-      <div class="modal-footer">
-           <button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">ok</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      </div>
-    </div>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Upgrade plan</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
 
-  </div>
+			</div>
+			<div class="modal-body">
+			    {{#if PlanDetails.[0].cost}}
+				<p>You have charged 30.0000</p>
+				{{else}}
+				<p>You have charged 99.0000</p>
+				{{/if}}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">ok</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+
+	</div>
 </div>
-<div id="paymentSuccess" class="modal fade" role="dialog" >
-  <div class="modal-dialog">
+<div id="paymentSuccess" class="modal fade" role="dialog">
+	<div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-           <h4 class="modal-title">success</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-       
-      </div>
-      <div class="modal-body">
-        <p>Payment successfully</p>
-      </div>
-      <div class="modal-footer">
-           <button type="button" class="btn btn-default" data-dismiss="modal" onclick="paymentSuccess()" >ok</button>
-        </div>
-    </div>
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">success</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
 
-  </div>
+			</div>
+			<div class="modal-body">
+				<p>Payment Successfully Completed</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="paymentSuccess()">ok</button>
+			</div>
+		</div>
+
+	</div>
+
 </div>
-{{> plan-detail}}
+<div id="myModal2" class="modal fade" role="dialog">
+	<div class="modal-dialog">
 
-{{> footer/bottom-footer}}
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Upgrade Plan</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+
+			</div>
+			<div class="modal-body">
+
+				<p>Your Plan Not Yet Expired </p>
+				
+							</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+{{> plan-detail}} {{> footer/bottom-footer}}
