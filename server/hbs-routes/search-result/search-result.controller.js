@@ -60,9 +60,11 @@ export function index(req, res) {
 	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "created_on";
+	queryURI['field'] = field;
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
 	order = req.query.order ? req.query.order : "desc";
+	queryURI['order'] = order;
 	queryPaginationObj['order'] = order;
 	delete req.query.order;
 	layout = req.query.layout ? req.query.layout : 'grid';
@@ -84,13 +86,13 @@ export function index(req, res) {
 	if (selectedMarketPlaceID) {
 		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
 		productQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
-		productCountQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+		// productCountQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
 	}
 
 	if (selectedMarketPlaceTypeID) {
 		queryURI['marketplace_type'] = parseInt(selectedMarketPlaceTypeID);
 		productQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
-		productCountQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
+		// productCountQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
 	}
 
 	if (req.query.is_featured_product) {
@@ -102,19 +104,19 @@ export function index(req, res) {
 	if (req.query.category) {
 		queryURI['category'] = parseInt(req.query.category);
 		productQueryParams['category_id'] = parseInt(req.query.category);
-		productCountQueryParams['product_category_id'] = parseInt(req.query.category);
+		// productCountQueryParams['product_category_id'] = parseInt(req.query.category);
 	}
 
 	if (req.query.sub_category) {
 		queryURI['sub_category'] = parseInt(req.query.sub_category);
 		productQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
-		productCountQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
+		// productCountQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
 	}
 
 	if (req.query.location) {
 		queryURI['location'] = req.query.location;
 		productQueryParams['product_location_id'] = req.query.location;
-		productCountQueryParams['product_location'] = req.query.location;
+		// productCountQueryParams['product_location'] = req.query.location;
 	}
 
 	if (req.query.keyword) {
@@ -123,9 +125,9 @@ export function index(req, res) {
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
-		productCountQueryParams['product_name'] = {
-			like: '%' + req.query.keyword + '%'
-		};
+		// productCountQueryParams['product_name'] = {
+		// 	like: '%' + req.query.keyword + '%'
+		// };
 	}
 
 	if (req.query.origin) {
@@ -146,10 +148,10 @@ export function index(req, res) {
 			'$gte': req.query.start_date,
 			'$lte': req.query.end_date
 		};
-		productCountQueryParams['created_on'] = {
-			'$gte': req.query.start_date,
-			'$lte': req.query.end_date
-		};
+		// productCountQueryParams['created_on'] = {
+		// 	'$gte': req.query.start_date,
+		// 	'$lte': req.query.end_date
+		// };
 	}
 
 	if (req.query.vendor_id) {
