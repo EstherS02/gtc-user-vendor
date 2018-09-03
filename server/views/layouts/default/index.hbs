@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" href="gtc-assets/css/message.css">
     <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive.css">
     <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive-new.css">
+   
     <link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
     <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="plugins/datepicker/css/datepicker.min.css">
@@ -34,6 +35,7 @@
     <link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css">
     <link href="plugins/summernote/summernote-bs4.css" rel="stylesheet">
     <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="plugins/toaster/toastr.css">
 
 
     <script src="https://apis.google.com/js/api:client.js"></script>
@@ -51,11 +53,28 @@
     <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
      <script type="text/javascript" src="plugins/handlebars-v4.0.11.js"></script>
     <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="plugins/toaster/toastr.min.js"></script>
      <script src="plugins/socketio/socket.io.js"></script>
-    <script type="text/javascript" src="js/sockets.js"></script>
+    <script type="text/javascript" src="js/sockets.js"></script> 
 </head>
 
 <body>
+    
+    <script type="text/javascript">
+    /*$(function() {
+        console.log( "ready!" );
+        $('#showtoast').click(function() {
+            console.log("::::::::::::::::::::::")
+            toastr.options.closeButton = true;
+            toastr.options.showEasing = 'easeOutBounce';
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.progressBar = true;
+            toastr.success('Are you the 6 fingered man?', 'Yes', {timeOut: 1000});
+        });
+    });*/
+       
+    </script>
+   <!-- <button type="button" class="btn btn-primary" id="showtoast">Show Toast</button> -->
    <script type="text/javascript">
    var timer = setTimeout(function() {
         if( {{{DisplayJSON LoggedInUser.id}}} != null) {
@@ -64,7 +83,12 @@
         }
         socket.on('chat:receive', function(data){
         console.log("user room emitting..", data);
-       
+         console.log("::::::::::::::::::::::")
+            toastr.options.closeButton = true;
+            toastr.options.showEasing = 'easeOutBounce';
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.progressBar = true;
+            toastr.success(data.message, {timeOut: 1000});
         }) 
     }, 1000);
    </script>
