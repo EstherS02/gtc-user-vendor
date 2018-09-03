@@ -34,7 +34,7 @@ export function vendorPayouts(job, done) {
             "model": model['Order'],
             where: {
                 status: statusCode["ACTIVE"],
-                order_status: orderStatus["DISPATCHEDORDER"]
+                //order_status: orderStatus["DISPATCHEDORDER"]
                 /*shipped_on: {
                     '$lt': payoutDate
                 },*/
@@ -221,7 +221,7 @@ function stripeConnectMail(vendor) {
                 var email = vendor.User.email;
 
                 var subject = response.subject;
-                var body = response.body;
+                var body = response.body.replace('%USERNAME%', username);
 
                 sendEmail({
                     to: email,
