@@ -64,7 +64,7 @@
 										<tbody>
 											{{#each notifications}}
 
-											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#test-modal">
+											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#gtc-modal">
 													<td><input type="checkbox" value="{{this.id}}"></td>
 													<td scope="row ">{{this.name}}</td>
 													<td scope="row ">{{this.code}}</td>
@@ -103,7 +103,7 @@
 		</div>
 	</div>
 </div>
-<div id="test-modal" class="white-popup-block mfp-hide">
+<div id="gtc-modal" class="white-popup-block mfp-hide">
 	<h1 id ="Subject"></h1>
 	<p id="Message"></p>
 	<p><a class="popup-modal-dismiss" href="#">Dismiss</a></p>
