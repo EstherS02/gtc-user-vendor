@@ -2,6 +2,17 @@
     api_key: 81q1ljfijajynj
     authorize: false;
 </script>
+
+<script>
+var userInfo = {{{DisplayJSON LoggedInUser}}}
+$(document).ready(function() {
+    $("a[title='seller']").click(function() {
+        if (userInfo.email) {} else {
+            $('#myModal').modal('show');
+        }
+    });
+});
+</script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script src="js/login.js"></script>
 <section class="lifestyle_banner" style="margin-bottom: 0; background-color: #5D5646;">

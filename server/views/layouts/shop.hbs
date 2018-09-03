@@ -7,10 +7,7 @@
 var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
     $(document).ready(function () {
-        console.log("window:::" + userInfo.email);
-
         $("a[title='seller']").click(function () {
-            console.log("clicked");
             if (userInfo.email) {
             }else{
                 $('#myModal').modal('show');

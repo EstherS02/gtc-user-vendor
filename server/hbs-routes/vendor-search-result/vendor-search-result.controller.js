@@ -25,11 +25,14 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var bottomCategory = {};
 	var categoryModel = "Category";
+	var marketPlaceModel = "Marketplace";
+	var selectedMarketPlaceID = null;
 
 	var offset, limit, field, order,layout;
 
-	if (req.user)
-		LoggedInUser = req.user;
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -57,19 +60,23 @@ export function index(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	if (marketplaceURl == 'wholesalers') {
-		selectedMarketPlace = marketplace['WHOLESALE'];
+		selectedMarketPlaceID = marketplace['WHOLESALE'];
 		queryParameters['marketplace_id'] = marketplace['WHOLESALE'];
 	} else if (marketplaceURl == 'retailers') {
-		selectedMarketPlace = marketplace['PUBLIC'];
+		selectedMarketPlaceID = marketplace['PUBLIC'];
 		queryParameters['marketplace_id'] = marketplace['PUBLIC'];
 	} else if (marketplaceURl == 'services-providers') {
-		selectedMarketPlace = marketplace['SERVICE'];
+		selectedMarketPlaceID = marketplace['SERVICE'];
 		queryParameters['marketplace_id'] = marketplace['SERVICE'];
 	} else if (marketplaceURl == 'subscription-providers') {
-		selectedMarketPlace = marketplace['LIFESTYLE'];
+		selectedMarketPlaceID = marketplace['LIFESTYLE'];
 		queryParameters['marketplace_id'] = marketplace['LIFESTYLE'];
 	}
 
+	if (selectedMarketPlaceID) {
+		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
+	}
+	
 	if (req.query.location) {
 		selectedLocation = req.query.location;
 		queryURI['location'] = req.query.location;
@@ -163,7 +170,18 @@ export function index(req, res) {
 					return callback(error, null);
 				});
 		},
+		selectedMarketPlace: function(callback) {
+			service.findIdRow(marketPlaceModel, selectedMarketPlaceID, [])
+				.then(function(result) {
+					return callback(null, result);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(error, null);
+				});
+		},
 	}, function(error, results) {
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555",results.marketPlace)
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('vendor-search', {
@@ -175,7 +193,7 @@ export function index(req, res) {
 				locations: results.locations,
 				vendors: results.vendors,
 				cartheader: results.cartCounts,
-				selectedMarketPlace: results.marketPlace,
+				selectedMarketPlace: results.selectedMarketPlace,
 				LoggedInUser: LoggedInUser,
 				marketplaceURl: marketplaceURl,
 				selectedLocation: selectedLocation,

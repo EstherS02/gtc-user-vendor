@@ -54,7 +54,7 @@
 											<tr>
 												<th><input type="checkbox" onclick="selectAll(this);"></th>
 												<th scope="col">Event</th>
-												<th scope="col">Code</th>
+												{{!-- <th scope="col">Code</th> --}}
 												<th scope="col">Description</th>
 												<th scope="col">Date</th>
 												<th scope="col">Status</th>
@@ -64,10 +64,10 @@
 										<tbody>
 											{{#each notifications}}
 
-											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#test-modal">
+											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#gtc-modal">
 													<td><input type="checkbox" value="{{this.id}}"></td>
 													<td scope="row ">{{this.name}}</td>
-													<td scope="row ">{{this.code}}</td>
+													{{!-- <td scope="row ">{{this.code}}</td> --}}
 													<td scope="row">{{this.description}}</td>
 													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
 													<td scope="row" id='{{this.id}}' data-href=''>{{objectKey ../statusCode this.status}}</td>
@@ -103,9 +103,9 @@
 		</div>
 	</div>
 </div>
-<div id="test-modal" class="white-popup-block mfp-hide">
+<div id="gtc-modal" class="white-popup-block mfp-hide">
 	<h1 id ="Subject"></h1>
 	<p id="Message"></p>
-	<p><a class="popup-modal-dismiss" href="#">Dismiss</a></p>
+	<p><a class="popup-modal-dismiss" style="float:right" href="#">Dismiss</a></p>
 </div>
 {{> footer/bottom-footer}} 
