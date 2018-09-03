@@ -56,14 +56,17 @@ export function wishlist(req, res) {
 		model: model['Product'],
 		include: [{
 			model: model['ProductMedia'],
-			where:{
-				base_image:1
+			where: {
+				base_image: 1
 			},
-			required:false
+			required: false
+		}, {
+			model: model['Vendor'],
+			include: [{
+				model: model['User'],
+				attributes: ['id', 'first_name', 'last_name'],
+			}]
 		}]
-	}, {
-		model: model['User'],
-		attributes:['first_name','last_name'],
 	}];
 	async.series({
 		cartCounts: function(callback) {
