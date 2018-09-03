@@ -51,12 +51,23 @@
     <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
      <script type="text/javascript" src="plugins/handlebars-v4.0.11.js"></script>
     <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+     <script src="plugins/socketio/socket.io.js"></script>
+    <script type="text/javascript" src="js/sockets.js"></script>
 </head>
 
 <body>
-    <script src="plugins/socketio/socket.io.js"></script>
-    <script type="text/javascript" src="js/sockets.js"></script>
-
+   <script type="text/javascript">
+   var timer = setTimeout(function() {
+        if( {{{DisplayJSON LoggedInUser.id}}} != null) {
+            console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
+            socket.emit('user:join', {{{ DisplayJSON LoggedInUser }}});    
+        }
+        socket.on('chat:receive', function(data){
+        console.log("user room emitting..", data);
+       
+        }) 
+    }, 1000);
+   </script>
     
     {{> environment}} {{> global-scripts}} {{{body}}}
 
