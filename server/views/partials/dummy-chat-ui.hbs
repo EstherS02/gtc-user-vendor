@@ -47,7 +47,7 @@
             {{/each}}
           </div>
           <div class="panel-footer panel-body">
-            <div class="input-group text-background">
+            <div class="input-group text-background" id="sendbody">
               <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." required="required"
               />
               <span class="input-group-btn background-btn">
@@ -83,7 +83,7 @@
         })
 
         socket.on('chat:receive', function(data){
-        
+        console.log("chat:receive emitted", data);
       
         // console.log("socketChat.user", socketChat.user);
         if (data.from_id == socketChat.user) {
@@ -113,6 +113,8 @@
          return moment(testDate).format("LT")
         }
         })
+        $("#messagebody").hide();
+        $("#sendbody").hide();
   })
 
       $(document).on('click', '.panel-heading span.icon_minim', function (e) {
@@ -121,7 +123,9 @@
           $this.parents('.panel').find('.panel-body').slideUp(500);
           $this.addClass('panel-collapsed');
           $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+           $("#sendbody").show();
         } else {
+         
           $this.parents('.panel').find('.panel-body').slideDown(500);
           $this.removeClass('panel-collapsed');
           $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
@@ -249,7 +253,7 @@
     background: white;
     padding: 10px;
     border-radius: 14px;
-    box-shadow: 1px -1px 20px 5px rgb(216, 184, 190);
+    box-shadow: inset 1px -1px 12px 0px rgb(216, 184, 190);
     max-width: 100%;
   }
 

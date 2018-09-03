@@ -3,6 +3,8 @@
     authorize: false;
 </script>
 
+
+
 <script type="text/javascript">
 var userInfo = {{{DisplayJSON LoggedInUser}}}
 $(document).ready(function() {
@@ -1057,3 +1059,10 @@ $(document).ready(function() {
 
 
 {{> footer/bottom-footer}}
+<script type="text/javascript">
+var timer = setTimeout(function() {
+    console.log("hello", socket);
+                     
+}, 1000);
+
+</script>

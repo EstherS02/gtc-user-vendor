@@ -2,7 +2,7 @@ var emitSocket = {};
 var socket;
 $(function(){
 
-    socket = io({
+  socket = io({
   transports: ['websocket'],
   forceNew: true
 });
