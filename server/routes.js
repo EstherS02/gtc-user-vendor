@@ -9,6 +9,7 @@ import errors from './components/errors';
 var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
+
   
   /* Server REST API Routes */
   app.post('/auth/admin-token', require('./admin-auth'));

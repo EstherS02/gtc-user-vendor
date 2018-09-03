@@ -16,7 +16,7 @@ const escrowAction = require('../config/escrow-action');
 const CURRENCY = 'usd';
 
 
-module.exports = function (job, done) {
+export function vendorPayouts(job, done) {
 
     console.log("**********JOBS CALLED")
     console.log('agenda for vendor payouts..');
@@ -34,10 +34,10 @@ module.exports = function (job, done) {
             "model": model['Order'],
             where: {
                 status: statusCode["ACTIVE"],
-                order_status: orderStatus["DISPATCHEDORDER"],
-                shipped_on: {
+                //order_status: orderStatus["DISPATCHEDORDER"]
+                /*shipped_on: {
                     '$lt': payoutDate
-                },
+                },*/
             },
             include: [
                 {
@@ -135,7 +135,7 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                     PaymentMethod = paymentMethod['PAYPAL'];
 
-                    paypalPromises.push(stripe.vendorPaypalPayout('EMAIL', payoutAmount, CURRENCY, vendor.vendor_payout_paypal_email, payoutOrder));
+                    paypalPromises.push(stripe.vendorPaypalPayout('EMAIL', payoutAmount, 'CAD', vendor.vendor_payout_paypal_email, payoutOrder));
                     return Promise.all(paypalPromises);
                 }
                 else {
@@ -221,7 +221,7 @@ function stripeConnectMail(vendor) {
                 var email = vendor.User.email;
 
                 var subject = response.subject;
-                var body = response.body;
+                var body = response.body.replace('%USERNAME%', username);
 
                 sendEmail({
                     to: email,

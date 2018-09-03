@@ -75,7 +75,8 @@ function init(sequelize) {
     model.Timezone = sequelize.import('./definition/timezone.js');
     model.UserOrder = sequelize.import('./definition/user-orders.js');
     model.UserMail = sequelize.import('./definition/user-mail.js');
-    model.User = sequelize.import('./definition/users.js');
+	model.User = sequelize.import('./definition/users.js');
+	model.UserPlan = sequelize.import('./definition/user-plan.js');
     model.UserToken = sequelize.import('./definition/user-token.js');
     model.Vendor = sequelize.import('./definition/vendor.js');
     model.VendorFollower = sequelize.import('./definition/vendor-follower.js');
@@ -154,7 +155,8 @@ function init(sequelize) {
     require('./definition/timezone.js').initRelations();
     require('./definition/user-mail.js').initRelations();
     require('./definition/user-orders.js').initRelations();
-    require('./definition/users.js').initRelations();
+	require('./definition/users.js').initRelations();
+	require('./definition/user-plan.js').initRelations();
     require('./definition/user-token.js').initRelations();
     require('./definition/vendor.js').initRelations();
     require('./definition/vendor-follower.js').initRelations();

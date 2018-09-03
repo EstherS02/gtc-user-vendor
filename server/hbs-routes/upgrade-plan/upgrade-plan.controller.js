@@ -81,7 +81,26 @@ export function upgradeplan(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        },
+		},
+		userplanDetails: function(callback)
+		{
+			var includeArr = [];
+            
+			var queryObjs ={};
+			queryObjs = {
+				user_id: user_id
+				
+			};
+					
+			service.findRow("UserPlan", queryObjs, includeArr)
+                .then(function(userplanDetails) {
+					var userplanDetails = userplanDetails;
+					return callback(null, userplanDetails);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+		},
 
 		planDetails: function(callback)
 		{
@@ -98,10 +117,11 @@ export function upgradeplan(req, res) {
 
 
 	}, function(err, results) {
-		console.log("cards:::"+results.cards);
+		console.log("resultsss::"+results.userplanDetails.status);
 		 if (!err) {
 			res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",
+				userplanDetails:results.userplanDetails.status,
 				PlanDetails: results.planDetails,
 				cartheader:results.cartCounts,
 				carddetails:results.cards,

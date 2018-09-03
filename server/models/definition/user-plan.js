@@ -1,7 +1,7 @@
 /* eslint new-cap: "off", global-require: "off" */
 
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Notification', {
+    return sequelize.define('UserPlan', {
         id: {
             type: DataTypes.BIGINT,
             field: 'id',
@@ -20,28 +20,29 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
         },
-        name: {
-            type: DataTypes.STRING(255),
-            field: 'name',
-            allowNull: false
-        },
-        code: {
-            type: DataTypes.STRING(255),
-            field: 'code',
-            allowNull: false
-        },
-        description: {
-            type: DataTypes.TEXT,
-            field: 'description',
-            allowNull: false
-        },
-        is_read: {
+        plan_id: {
             type: DataTypes.BIGINT,
-            field: 'is_read',
+            field: 'plan_id',
+            allowNull: false,
+            references: {
+                model: 'plan',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+		},
+		start_date: {
+            type: DataTypes.DATEONLY,
+            field: 'start_date',
+            allowNull: false
+        },
+        end_date: {
+            type: DataTypes.DATEONLY,
+            field: 'end_date',
             allowNull: false
         },
         status: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
         },
@@ -71,26 +72,32 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     }, {
-        tableName: 'notification',
+        tableName: 'user_plan',
         timestamps: false
     });
 };
 
 module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-    const model = require('../index');
-    const Notification = model.Notification;
-    const User = model.User;
 
-    Notification.belongsTo(User, {
+    const model = require('../index');
+    const UserPlan = model.UserPlan;
+    const User = model.User;
+	const Plan = model.Plan;
+  
+
+    UserPlan.hasMany(Plan, {
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+   
+    UserPlan.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-    // Notification.hasMany(VendorNotificationSetting, {
-    //     foreignKey: 'notification_id',
-    //     onDelete: 'NO ACTION',
-    //     onUpdate: 'NO ACTION'
-    // });
+ 
 };

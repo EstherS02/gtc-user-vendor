@@ -631,18 +631,22 @@ function sendVendorEmail(order,user){
 }
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-    var desc = "GTC ORDER";
-    stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
+	var desc = "GTC ORDER";
+	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
         then(function (response) {
             if (response.paid = "true") {
+				
                 var paymentModel = {
                     paid_date: new Date(response.created),
                     paid_amount: response.amount / 100.0,
                     payment_method: paymentMethod['STRIPE'],
                     status: status['ACTIVE'],
                     payment_response: JSON.stringify(response)
-                };
-                service.createRow('Payment', paymentModel);
+				};
+				service.createRow('Payment', paymentModel);
+				if(req.body.vendor_id!= 0)
+				{
+               
                 var vendorplanModel = {
                   plan_id : req.body.plan_id
                   
@@ -654,8 +658,24 @@ export function makeplanPayment(req, res) {
                  return res.status(200).json({
                     data: response
                 });
-            }
-            else {
+			}
+			else
+		  {
+			var userplanModel = {
+				user_id: req.body.user_id,
+				plan_id: req.body.plan_id,
+				status: status['ACTIVE'],
+				start_date:new Date(),
+				end_date:new Date()
+			};
+			service.createRow('UserPlan', userplanModel);
+			return res.status(200).json({
+				data: response
+			});
+		   }
+   
+		}
+		   else {
                 return res.status(500).json({
                     data: err
                 });

@@ -16,6 +16,22 @@
 		}
 	}
 </script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	function fix_height() {
+		var bodyHeight = $("body").height() - 378;
+		var wrapperHeigh = $('#page-wrapper').height();
+		if (bodyHeight > wrapperHeigh) {
+			$('#page-wrapper').css("min-height", bodyHeight + "px");
+		}
+	}
+
+	$(window).bind("load resize scroll", function() {
+		fix_height();
+	});
+});
+</script>
 <section>
 	<div class="gtc-container">
 	
