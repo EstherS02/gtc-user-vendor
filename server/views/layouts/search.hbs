@@ -118,9 +118,9 @@ function redirectBack() {
 						<label class="label-control m-r-md">Sort by</label>
 						<div class="select-container">
 							<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border" id="sortValue">
-								<option disabled="true" selected>Sort by</option>
-								<option value="product_name" >Alphabetical</option>
-								<option value="created_on">Date</option>
+								<option disabled="true" selected="true">Sort by</option>
+								<option value="product_name" {{#ifCond queryURI.field "==" 'product_name'}} selected="true" {{/ifCond}}>Alphabetical</option>
+								<option value="created_on" {{#ifCond queryURI.field "==" "created_on"}} selected="true" {{/ifCond}}>Date</option>
 							</select>
 						</div>
 					</div>
@@ -135,7 +135,7 @@ function redirectBack() {
 			<ul class="right-list-view category-fixed">
 				{{#each categoriesWithCount.rows}}
 				<li>
-					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.name}}">{{this.name}} ({{this.product_count}})</a>
+					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="{{#ifCond ../queryURI.category "!=" this.id}} collapsed {{/ifCond}}coll" href="#list{{this.name}}"></a><a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 category=this.id) 'null'}}">{{this.name}} ({{this.product_count}})</a>
 					<ul class="inner-list-view collapse {{#ifCond ../queryURI.category '==' this.id}}show{{/ifCond}}" id="list{{this.name}}">
 						{{#each this.SubCategories}}
 						<li>
