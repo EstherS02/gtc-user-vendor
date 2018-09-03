@@ -6,9 +6,7 @@
 <script type="text/javascript">
 var userInfo = {{{DisplayJSON LoggedInUser}}}
 $(document).ready(function() {
-    console.log("window:::" + userInfo.email);
     $("a[title='seller']").click(function() {
-        console.log("clicked");
         if (userInfo.email) {} else {
             $('#myModal').modal('show');
         }
@@ -16,7 +14,6 @@ $(document).ready(function() {
 });
 </script>
 <script src="js/login.js"></script>
-
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
@@ -951,7 +948,7 @@ $(document).ready(function() {
         <a href="javascript:;" class="button-cta">Get started!</a>
     </div>
 </section>
-{{!-- data-backdrop="static" data-keyboard="false" --}}
+{{!-- Model Pop up For Product Force signup --}}
 <div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" align="center">
@@ -1051,9 +1048,7 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-
 </div>
-
 
 
 {{> footer/bottom-footer}}
