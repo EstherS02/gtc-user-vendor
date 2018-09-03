@@ -207,7 +207,7 @@
 													<td scope="row"><img src="{{this.product_base_image}}" style="width: 30px;" />
 														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></td>
 														<td scope="row">{{ prettifyDate this.publish_date }}</td>
-														<td scope="row">{{this.product_selling_count}}</td>
+														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 														<td>${{this.product_price}} CAD</td>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 														<td class="text_green_color">Active</td>
