@@ -3,25 +3,26 @@
     var userInfo = {{{ DisplayJSON LoggedInUser }}}
  function showDetails()
     {
-        
-        if(userInfo.Vendor)
+       if(userInfo.Vendor)
         {
+		  $('#planHide').hide();
+		  $('#userPlanShow').show();
+		  $('#userPlaninfo').show();
+          $('#vendorPlanShow').hide();
+          
+        }else{
           $('#planHide').hide();
           $('#userPlanShow').hide();
           $('#vendorPlanShow').show();
-          
-        }else{
-           console.log("enter the loops11");
-         $('#planHide').hide();
-         $('#userPlanShow').show();
-         $('#vendorPlanShow').hide();
+		  $('#userPlaninfo').show();
           
         }
         
     }
   </script>
 <section id="userPlanShow">
-    <div class="text-center which_pkg" style="margin-bottom: 0px;">
+	    <div class="text-center which_pkg" style="margin-bottom: 0px;">
+			<div id="userPlaninfo" class="pull-right"> <a href="/upgradeplan"><b>Go Back</b></a></div>
         <div class="container">
             <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
             <p class="which_pkg_p">We have a several options to get you started, or dive in with the our most robust offering. </p>
@@ -96,6 +97,7 @@
 <section id="vendorPlanShow">
     <div class="text-center which_pkg" style="margin-bottom: 0px;">
         <div class="container">
+			<div id="userPlaninfo" class="pull-right"> <a href="/upgradeplan"><b>Go Back</b></a></div>
             <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
             <p class="which_pkg_p">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you </p>
             <div class="row" >
