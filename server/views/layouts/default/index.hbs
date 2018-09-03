@@ -6,6 +6,12 @@
         window.FontAwesomeConfig = {
             searchPseudoElements: true
         };
+        function imgError(image) {
+            image.onerror = "";
+            image.src = "/img/noproduct.png";
+            return true;
+        }
+        
     </script>
 
 
