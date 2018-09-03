@@ -124,6 +124,8 @@
 
 		bounds = new google.maps.LatLngBounds();
 
+		console.log("formattedLocation", formattedLocation)
+
 		for (let i = 0; i < advMapObj.length; i++) {
 			let mapObjProduct = advSearchVendorObj[advMapObj[i]];
 
@@ -207,13 +209,14 @@
 
 		function geoLocationError(error) {
 			// Default location
-			userLocation.location = {
+			userLocation = {
 				lng: -100.655093,
 				lat: 41.3884206
 			};
 
 			console.log('Location access denied' + error.code);
 			console.log("Default ", userLocation);
+			initMap(userLocation.lat, userLocation.lng);
 		}
 
 		var geoOptions = {
