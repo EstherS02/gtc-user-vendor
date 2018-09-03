@@ -406,19 +406,6 @@ export function userProfile(req, res) {
                 return Promise.all(vendorUpdatePromises);
             }            
         }).then(function(response){
-            if (req.body.vendorUpdate) {
-
-                var vendorBodyParam = {}, vandorQueryParam = {}, vendorUpdatePromises = [];
-
-                var vendorBodyParam = req.body.vendorUpdate;
-                var vendorQueryParam = {
-                    user_id : user_id
-                }
-
-                vendorUpdatePromises.push(vendorUpdate( vendorBodyParam, vendorQueryParam));
-                return Promise.all(vendorUpdatePromises);
-            }            
-        }).then(function(response){
             return res.status(200).send("Updated Successfully");
         })
         .catch(function (err) {
@@ -654,3 +641,4 @@ export function userOffline(user){
 }
 
 exports.authenticate = authenticate;
+
