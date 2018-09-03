@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	$(function() {
 		$('#planHide').show();
 		$('#userPlanShow').hide();
@@ -19,9 +20,6 @@
 
 
 	});
-	function vendorRedirection() {
-		window.location = '/vendor-form';
-	}
 	function paymentSuccess() {
 		window.location = '/upgradeplan';
 	}
@@ -44,11 +42,50 @@
     			}
     		}
 		});
+		$("#userPlandetails").validate({
+			rules: {
+				selectplan: {
+					required: true
+				},
+				selectcard_details: {
+					required: true
+				}
+		},
+		messages: {
+			selectplan: {
+					required: "Please select the plan",
+				},
+				selectcard_details: {
+					required: "Please select the card details",
+    			}
+    		}
+		});
 	  $("#plandetailsform").submit(function(e) {
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
-			$('#myModal').modal('show');
+			
+		    	$('#myModal').modal('show');
      		}
+			 
+       });
+	   $("#userPlandetails").submit(function(e) {
+		e.preventDefault();
+		if ($('#userPlandetails').valid()) { 
+			
+			if($('#userplanStatus').val()=='')
+			{
+              $('#myModal').modal('show');
+			}
+			else
+			{
+				
+				$('#myModal2').modal('show');
+
+			}
+			
+		   
+     		}
+			 
        });
 	});
 
@@ -64,6 +101,7 @@
 				amount: $('input[name="amount"]').val(),
 				carddetailsid: $('input[name="carddetailsid"]').val(),
 				plan_id: plan_id,
+				user_id :$('input[name="user_id"]').val(),
 				vendor_id: $('input[name="vendor_id"]').val()
 			}),
 			success: function(data) {
@@ -95,8 +133,9 @@
 						<div class="ibox-title">
 							<h2>Upgrade Plan</h2>
 						</div>
+						
 						<div class="content-body">
-							<form id="plandetailsform" name="plandetailsform">
+						
 								<div class="alert" id="gtc-social-profile">
 									<button type="button" class="close" data-dismiss="alert">
 										<span aria-hidden="true"></span>
@@ -104,6 +143,7 @@
 									<span class="cart-message"></span>
 								</div>
 								{{#if LoggedInUser.Vendor.id}}
+									<form id="plandetailsform" name="plandetailsform">
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Current Plan:
@@ -118,7 +158,7 @@
 
 									</div>
 
-									{{#ifCond PlanDetails.[0].name '!=' "STARTER SELLER"}}
+									
 										<div class="row">
 											<div class="col-md-2 social_face" style="font-size:14px">
 												Select Plan
@@ -131,17 +171,29 @@
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
 														 name="selectplan" required>
 															<option value='' selected="">Select Plan</option>
-
-															{{#ifCond PlanDetails.[0].name '!=' "SERVICE PROVIDER"}}
+                                                            {{#ifCond PlanDetails.[0].name '==' "STARTER SELLER"}}
 																<option value="2">Service Provider</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '!=' "LIFESTYLE PROVIDER"}}
 																<option value="3">Lifestyle Provider</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '!=' "PUBLIC SELLER PRICING PROVIDER"}}
 																<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+																
 															{{/ifCond}}
-
+															{{#ifCond PlanDetails.[0].name '==' "SERVICE PROVIDER"}}
+																<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "LIFESTYLE PROVIDER"}}
+																	<option value="4">Public Seller Pricing Guide</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "PUBLIC SELLER PRICING PROVIDER"}}
+																<option value="2">Service Provider</option>
+																<option value="3">Lifestyle Provider</option>
+																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
+															{{#ifCond PlanDetails.[0].name '==' "WHOLESALE PRICING GUIDE"}}
+															  <option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}}
 														</select>
 
 													</div>
@@ -156,7 +208,7 @@
 
 
 										</div>
-									{{/ifCond}}
+									
 
 
 									<div class="row">
@@ -199,6 +251,7 @@
 
 									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
 									<hr style="margin-top: 10px" />
 									<div class="row">
 
@@ -217,11 +270,14 @@
 												<span class="ladda-spinner"></span>
 											</button>
 										</div>
-									</div>
+										</div>
+										</form>
+						</div>
 							
 							 {{else}}
+							 	<form id="userPlandetails" name="userPlandetails">
 							 <div class="row">
-
+                               <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}">
 							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 								Select Plan
 							</div>
@@ -234,9 +290,15 @@
 													<div class="input-group">
 						<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
 													
-															<option disabled="" value='' selected="">Select Plan</option>
+														
+															
+										{{#ifCond userplanDetails '==' "1"}}
 											<option value="5">Bulk Buyer</option>
-											<option value="6">Wholesale pricing guide</option>
+											{{else}}
+											   	<option disabled="" value='' selected="">Select Plan</option>
+												   <option value="5">Bulk Buyer</option>
+											 {{/ifCond}}
+										
 
 														</select>
 
@@ -283,6 +345,14 @@
 								</div>
 							</div>
 						</div>
+							{{#each carddetails}}
+										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
+										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
+									{{/each}}
+
+									<input type="hidden" name="amount" value="99.0000">
+									<input type="hidden" name="vendor_id" value="0">
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
 						{{/if}}
 						<hr style="margin-top: 10px" />
 						<div class="row">
@@ -304,6 +374,7 @@
                                     </div> --}}
 							{{else}}
 								<div class="col-md-2">
+									<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
 
 									<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
 										<span class="ladda-label">Upgrade</span>
@@ -344,7 +415,11 @@
 
 			</div>
 			<div class="modal-body">
+			    {{#if PlanDetails.[0].cost}}
 				<p>You have charged {{PlanDetails.[0].cost}} </p>
+				{{else}}
+				<p>You have charged 99.0000</p>
+				{{/if}}
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">ok</button>
@@ -365,7 +440,7 @@
 
 			</div>
 			<div class="modal-body">
-				<p>Payment successfully</p>
+				<p>Payment Successfully Completed</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="paymentSuccess()">ok</button>
@@ -374,6 +449,29 @@
 
 	</div>
 
+</div>
+<div id="myModal2" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Upgrade Plan</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+
+			</div>
+			<div class="modal-body">
+
+				<p>Your Plan Not Yet Expired </p>
+				
+							</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+
+	</div>
 </div>
 
 {{> plan-detail}} {{> footer/bottom-footer}}
