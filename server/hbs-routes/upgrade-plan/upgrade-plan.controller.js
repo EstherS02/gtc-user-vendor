@@ -117,11 +117,11 @@ export function upgradeplan(req, res) {
 
 
 	}, function(err, results) {
-		console.log("resultsss::"+results.userplanDetails.status);
+		//console.log("resultsss::"+results.userplanDetails.status);
 		 if (!err) {
 			res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",
-				userplanDetails:results.userplanDetails.status,
+				//userplanDetails:results.userplanDetails.status,
 				PlanDetails: results.planDetails,
 				cartheader:results.cartCounts,
 				carddetails:results.cards,
@@ -136,3 +136,4 @@ export function upgradeplan(req, res) {
 		
 
 }
+

@@ -72,7 +72,8 @@ module.exports.initRelations = () => {
     const Plan = model.Plan;
     const PlanLimit = model.PlanLimit;
     const PlanMarketplace = model.PlanMarketplace;
-    const VendorPlan = model.VendorPlan;
+	const VendorPlan = model.VendorPlan;
+	const UserPlan = model.UserPlan;
     const Marketplace = model.Marketplace;
     const Vendor = model.Vendor;
 
@@ -89,6 +90,12 @@ module.exports.initRelations = () => {
     });
 
     Plan.hasMany(VendorPlan, {
+        foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+	});
+	
+	Plan.hasMany(UserPlan, {
         foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
