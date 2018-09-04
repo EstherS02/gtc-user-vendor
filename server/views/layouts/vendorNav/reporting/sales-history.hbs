@@ -15,8 +15,6 @@
 
 		});
 	});
-</script>
-<script type="text/javascript">
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -34,8 +32,6 @@
 			}
 		}
 	}
-</script>
-<script type="text/javascript">
 	function selectDatefun() {
 		var val = $("#selectDate option:selected").val();
 		if (val) {
@@ -64,6 +60,80 @@
 				window.location.href = ' reporting/sales-history?' + formInput;
 			}
 		});
+	});
+	$(document).ready(function() {
+
+		var orderItems, totalTag;
+
+		$('.data-value').click(function() {
+
+			var order_id = $(this).data('id');
+			$('#issueRefundModal').modal('show');
+			$("#order_id").html(order_id);
+
+			$.ajax({
+				url: '/api/orders/' + order_id + '?populate=OrderItem,OrderItem.Product',
+				type: 'GET',
+				success: function(result) {
+					$("#issueRefund").empty();
+
+					for (var i = 0; i < result.OrderItems.length; i++) {
+
+						orderItems = "<tr><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+							+ result.OrderItems[i].quantity + "</td><td>"
+							+ result.OrderItems[i].final_price + "</td><td>"
+							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td><td>"
+							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items refund_amount' style='width:auto;'></td></tr>";
+
+						$("#issueRefund").append(orderItems);
+					}
+					totalTag = "<tr><td colspan='3'></td><td><b>TOTAL REFUND :</b></td><td>"
+						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>";
+
+					$("#issueRefund").append(totalTag);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+
+		$('#issueRefundForm').submit(function(e) {
+			e.preventDefault();
+
+            $('#issueRefundModal').modal('hide');
+			$('#conform-modal').modal('show');
+
+			var refundObj = {};
+
+			var total_refund = $('#total_refund').val();
+			var order_id = $("#order_id").html();
+
+			refundObj = {
+				total_refund: total_refund
+			}
+
+			$.ajax({
+				url: '/api/payment/refund-order/' + order_id,
+				type: 'POST',
+				data: refundObj,
+				success: function(result) {
+                    $('#issueRefundModal').modal('hide');
+					$('#success-modal').modal('show');
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+	});
+
+	$(document).on("change", ".refund_amount", function() {
+		var sum = 0;
+		$(".refund_amount").each(function() {
+			sum += +$(this).val();
+		});
+		$("#total_refund").val(sum);
 	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -196,11 +266,11 @@
 														<td>
 															<a href="/order-track/{{this.id}}">Track Order</a>
 														</td>
-														<td class="text_blue_color" value="{{this.id}}" id="refund">
-															<i class="fas fa-credit-card"></i> 
-                                                            <p data-id="{{orderItems.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo">Issue Refund</p>
-												
-</td> 
+														<td class="text_blue_color">
+															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo">
+																<i class="fas fa-credit-card"></i>
+																Issue Refund</p>
+                                                        </td>
 														<td>${{this.total_price}} CAD</td>
 													</tr>
 												{{/each}}
@@ -255,37 +325,92 @@
 {{> footer/bottom-footer}}
 
 <div class="modal fade" id="issueRefundModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Issue Refund</h5>
-            </div>
-            <form id="issueRefundForm" class="form">
-                <div class="modal-body">
-                    <div class="container">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="shop_list_title">
-                                        <b>Attribute</b>
-                                    </th>
-                                    <th class="shop_list_title">
-                                        <b>Value</b>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="attribute"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-                        <b>Close</button>
-                    <button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-                        <b>Submit</b>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Issue Refund( OrderId: #
+					<span id="order_id"></span>)</h5>
+			</div>
+			<form id="issueRefundForm" class="form">
+				<div class="modal-body">
+					<div class="container">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="shop_list_title">
+										<b>Product</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Qty</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Paid</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Refund Qty</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Refund Amt</b>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="issueRefund">
+                            </tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Cancel</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+						<b>Continue</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+
+<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Refund Conformation:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					{{!-- <p>Are you sure you want to process a refund of {{}} for the order #{{order_id}}.</p> --}}
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="conform-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Refund Initiated Successfully:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>Refund credit to user bank account in 5 to 7 business days.</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+

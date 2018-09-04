@@ -141,12 +141,12 @@
 											<a class="dropdown-item" href="/products">PRODUCTS</a>
 										</div>
 									</div>
-									<input type="search" class="form-control form-control-sm" id="inputSearchText" name="keyword" placeholder="Search the Globe" aria-label="...">
+									<input type="search" class="form-control form-control-sm" id="inputSearchText" value="{{queryURI.keyword}}" name="keyword" placeholder="Search the Globe">
 									<div class="search-select">
 										<select class="form-control form-control-sm" id="inputSearchCategory" name="category">
 											<option disabled selected>Category</option>
 											{{#each categories}}
-											<option value={{this.id}}>{{#Titlecase this.name}}{{/Titlecase}}</option>
+											<option value={{this.id}} {{#ifCond ../queryURI.category "==" this.id}} selected="true" {{/ifCond}}>{{#Titlecase this.name}}{{/Titlecase}}</option>
 											{{/each}}
 										</select>
 									</div>

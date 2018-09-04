@@ -84,17 +84,15 @@ module.exports.initRelations = () => {
     const UserPlan = model.UserPlan;
     const User = model.User;
 	const Plan = model.Plan;
-  
-
-    UserPlan.hasMany(Plan, {
-        foreignKey: 'plan_id',
+  	
+	UserPlan.belongsTo(User, {
+        foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
-   
-    UserPlan.belongsTo(User, {
-        foreignKey: 'user_id',
+    UserPlan.belongsTo(Plan, {
+        foreignKey: 'plan_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

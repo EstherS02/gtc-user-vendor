@@ -63,8 +63,33 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	  $("#plandetailsform").submit(function(e) {
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
+            var plan_id = document.getElementById("selectplan").value;
+            $.ajax({
+			url: '/api/upgrade-plan/selectplan',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				id:plan_id
+			}),
+			success: function(data) {
+				
+				$('#Plan_cost').html("you have charged " + data.data.cost);
+				$('#myModal').modal('show');
+				
+			},
+			error: function(error) {
+				$('#complete-order-submit').prop('disabled', false);
+				$('#complete-order-submit').css({
+					'cursor': "pointer"
+				});
+			}
+		});
+
+             //
+
 			
-		    	$('#myModal').modal('show');
+		    	
      		}
 			 
        });
@@ -143,7 +168,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									<span class="cart-message"></span>
 								</div>
 								{{#if LoggedInUser.Vendor.id}}
-									<form id="plandetailsform" name="plandetailsform">
+								<form id="plandetailsform" name="plandetailsform">
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Current Plan:
@@ -169,7 +194,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 													<div class="input-group">
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														 name="selectplan" required>
+														  required>
 															<option value='' selected="">Select Plan</option>
                                                             {{#ifCond PlanDetails.[0].name '==' "STARTER SELLER"}}
 																<option value="2">Service Provider</option>
@@ -221,8 +246,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 												<div class="form-group">
 
 													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														 name="selectplan" required>
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" 
+														 id="selectcard_details" required>
 															{{#ifCond carddetails '!=' '' }}
 
 															{{#each carddetails}}
@@ -350,7 +375,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" value="99.0000">
+									<input type="hidden" name="amount" value="{{userShowplanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="0">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
 						{{/if}}
@@ -416,7 +441,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			</div>
 			<div class="modal-body">
 			    {{#if PlanDetails.[0].cost}}
-				<p>You have charged {{PlanDetails.[0].cost}} </p>
+				<p id="Plan_cost"></p>
 				{{else}}
 				<p>You have charged 99.0000</p>
 				{{/if}}

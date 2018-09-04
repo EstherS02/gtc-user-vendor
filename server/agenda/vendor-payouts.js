@@ -34,10 +34,10 @@ export function vendorPayouts(job, done) {
             "model": model['Order'],
             where: {
                 status: statusCode["ACTIVE"],
-                //order_status: orderStatus["DISPATCHEDORDER"]
-                /*shipped_on: {
+                order_status: orderStatus["DISPATCHEDORDER"],
+                shipped_on: {
                     '$lt': payoutDate
-                },*/
+                },
             },
             include: [
                 {

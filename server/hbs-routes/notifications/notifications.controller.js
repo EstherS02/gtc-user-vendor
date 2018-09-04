@@ -49,8 +49,8 @@ export function notifications(req, res){
 		status: statusCode["ACTIVE"],
 	};
 	var NotifyqueryObj = {
-		// user_id: user_id,
-		// is_read: 1,
+		user_id: user_id,
+		is_read: 1,
 		status: statusCode["ACTIVE"],
 	};
 
@@ -90,7 +90,6 @@ export function notifications(req, res){
 			includeArray = [];
 			service.findRows(NotifyModel, NotifyqueryObj, offset, limit, field, order, includeArray)
 				.then(function (mail) {
-					console.log("********************************mail*********", JSON.parse(JSON.stringify(mail)));
 					return callback(null, mail);
 
 				}).catch(function (error) {

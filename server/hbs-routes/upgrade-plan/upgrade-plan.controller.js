@@ -95,19 +95,37 @@ export function upgradeplan(req, res) {
 			service.findRow("UserPlan", queryObjs, includeArr)
                 .then(function(userplanDetails) {
 					var userplanDetails = userplanDetails;
+					console.log("userplanDetails:::"+userplanDetails);
 					return callback(null, userplanDetails);
                 }).catch(function(error) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
 		},
-
+		userShowplanDetails: function(callback)
+		{
+			var includeArr = [];
+            const offset = 0;
+            const limit = null;
+            const field = "id";
+			const order = "asc";
+			const id = 5;
+            					 
+            service.findAllRows("Plan", includeArr, id, offset, limit, field, order)
+                .then(function(planSetting) {
+                    var planSetting = planSetting.rows;
+                    return callback(null, planSetting);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });		
+		   
+		},
 		planDetails: function(callback)
 		{
 			
 			productService.planDetails(vendor_id)
 				.then((response) => {
-					
 					return callback(null, response);
 				}).catch((error) => {
 					console.log('Error :::', error);
@@ -117,11 +135,18 @@ export function upgradeplan(req, res) {
 
 
 	}, function(err, results) {
-		console.log("resultsss::"+results.userplanDetails.status);
+		if(results.userplanDetails!= null)
+		{
+			var userplandetails=results.userplanDetails.status;
+		}
+		else
+		{
+			var userplandetails= "0";
+		}
 		 if (!err) {
 			res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",
-				userplanDetails:results.userplanDetails.status,
+				userplanDetails:userplandetails,
 				PlanDetails: results.planDetails,
 				cartheader:results.cartCounts,
 				carddetails:results.cards,
@@ -136,3 +161,4 @@ export function upgradeplan(req, res) {
 		
 
 }
+

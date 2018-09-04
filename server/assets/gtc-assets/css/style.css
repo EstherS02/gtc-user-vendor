@@ -1115,7 +1115,7 @@ vertical-align: middle;
 .search-list-header h3 {
 	font-family: 'Roboto', sans-serif;
 	font-size: 1em;
-	line-height: 1.6;
+	line-height: 1.8;
 	font-weight: 300;
 }
 .search-list-left {
@@ -1135,7 +1135,6 @@ vertical-align: middle;
 }
 .search-list-body {
 	background: #ffffff;
-	padding: 0 15px;   
 }
 #signUpForm input {
 	background: none;
@@ -1889,4 +1888,16 @@ p.summary-info span {
 .page-item.active .page-link{
     background-color: #608fab !important;
     border-color: #608fab !important;
+}
+select.cuntries{
+	    font-size: smaller;
+}
+select.file-uploade:after{
+	border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 10px solid black;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    opacity: 0.5;
 }

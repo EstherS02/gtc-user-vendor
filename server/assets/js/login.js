@@ -262,6 +262,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 	$('#btnSignup').prop('disabled', true);
+	$('#loadingSpinnersignUp').hide();
 
 	$('#inputEmail, #inputPassword').keyup(function() {
 
@@ -295,6 +296,7 @@ $(document).ready(function() {
 			}
 		},
 		submitHandler: function(form) {
+			$('#loadingSpinnersignUp').show();
 			var newUser = {};
 			newUser.email = $('#inputEmail').val();
 			newUser.first_name = $('#inputFirstname').val();
@@ -306,11 +308,12 @@ $(document).ready(function() {
 				url: '/api/users',
 				data: newUser,
 				success: function(data, text) {
-					console.log(data)
+					$('#loadingSpinnersignUp').hide();
 					auth.login({
 						email: data.email,
 						password: $('#inputPassword').val()
 					}).then(function(user) {
+						$('#loadingSpinnersignUp').hide();
 						if (user) {
 							var timer = setTimeout(function() {
 								window.location.href = '/user-join';
@@ -319,8 +322,8 @@ $(document).ready(function() {
 					});
 				},
 				error: function(request, status, error) {
+					$('#loadingSpinnersignUp').hide();
 					$('#signUpErrorLog').text(request.responseText);
-
 					setTimeout(function() {
 						$('#signUpErrorLog').hide();
 

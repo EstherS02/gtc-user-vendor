@@ -22,6 +22,7 @@ export default function(app) {
   app.use('/api/admin', require('./api/admin'));
   app.use('/api/order-history',require('./api/order-history'));
   app.use('/api/product', require('./api/product'));
+  app.use('/api/upgrade-plan', require('./api/upgrade-plan'));
   app.use('/api/product-view', require('./api/product-view'));
   app.use('/api/mail', require('./api/mail'));
   app.use('/api/users', require('./api/users'));
