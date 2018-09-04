@@ -28,7 +28,6 @@
         <li ><a data-toggle="collapse" href="#collapse4Reporting" role="button" aria-expanded="false" aria-controls="collapse4Reporting" onclick="myFunction()" class="{{#ifCond selectedPage '==' 'reporting'}} active {{/ifCond}}">Reporting</a>
             <ul class="collapse m-l vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "reporting"}}show{{/ifCond}}{{/if}}" id="collapse4Reporting">
                 <li class="nav-bar"><a class="vs-link {{#ifCond selectedPage '==' 'performance'}} active {{/ifCond}}" href="/reporting/performance">Performance</a></li>
-                <li class="nav-bar"><a href="/reporting/sales-history" class="vs-link {{#ifCond selectedPage '==' 'sales-history'}} active {{/ifCond}}">Sales History</a></li>
                 <li class="nav-bar"><a data-toggle="collapse" href="#collapse4Account" role="button" aria-expanded="false" aria-controls="collapse4Account"  class="{{#ifCond selectedPage '==' 'accounting'}} active {{/ifCond}}" onclick="myAccountFunction()">Accounting</a>
                     <ul class="collapse m-l vs-nav {{#ifCond selectedPage '==' 'accounting'}} show {{/ifCond}}" id="collapse4Account">
                         <li class="nav-bar"><a href="/reporting/tax" class="{{#ifCond selectedPage '==' 'tax'}} active {{/ifCond}}">Report tax</a></li>
@@ -36,6 +35,7 @@
                 </li>
             </ul>
         </li>
+        <li class="nav-bar"><a href="/reporting/sales-history" class="vs-link {{#ifCond selectedPage '==' 'sales-history'}} active {{/ifCond}}">Sales History</a></li>
         <li ><a data-toggle="collapse" href="#collapse4Listing" role="button" aria-expanded="false" aria-controls="collapse4Listing">Edit Listings</a>
             <ul class="collapse m-l  vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="collapse4Listing">
             {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
