@@ -21,19 +21,31 @@ export function wishlist(req, res) {
 	var queryPaginationObj={};
 	let user_id = LoggedInUser.id;
 
-	var field = 'id';
+	var field = 'created_on';
 	var order = "desc";
-	var offset = 0;
-	// var limit = 10;
-	var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	// var offset = 0;
+	var limit,offset,page;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
-	queryURI['limit'] = limit;
 	delete req.query.limit;
-	var page = req.query.page ? parseInt(req.query.page) : 1;
-	queryPaginationObj['page'] = offset;
-	queryURI['page'] = limit;
+	field = req.query.field ? req.query.field : "id";
+	queryPaginationObj['field'] = field;
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
-	var field = "id";
+
+	offset = (page - 1) * limit;
+	queryPaginationObj['offset'] = offset;
+	// var field = "id";
 	 offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
@@ -117,8 +129,9 @@ export function wishlist(req, res) {
 				if (results.wishlist.count % limit)
 					maxSize++;
 				queryPaginationObj['maxSize'] = maxSize;
-				}else{
-					queryPaginationObj['maxSize'] = 0;
+				}
+				else{
+					queryPaginationObj['maxSize'] = 2;
 				}
 				res.render('userNav/wishlist', {
 					title: "Global Trade Connect",
@@ -129,10 +142,7 @@ export function wishlist(req, res) {
 				    cartheader: results.cartCounts,
 					LoggedInUser: LoggedInUser,
 					vendorPlan:vendorPlan,
-					page: offset,
-					maxSize: maxSize,
 					queryURI: queryURI,
-					pageSize: limit,
 					queryPaginationObj: queryPaginationObj,
 					selectedPage: "wishlist",
 				});

@@ -24,13 +24,6 @@
 					}).serialize();
 					if (formInput != '') {
 						window.location.href = 'order-history?' + formInput;
-					}else{
-						$("#gtc-form-alert").show();
-					    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-					    $('#gtc-form-alert .form-message').text("Please Choose the option");
-					    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-					    $("#gtc-form-alert").slideUp(500);
-					    });
 					}
 				});
 
