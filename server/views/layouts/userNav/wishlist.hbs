@@ -77,6 +77,8 @@
 	}
 
 	function deleteAll(e) {
+	var wishlist = {{{DisplayJSON wishlist}}}
+	if(wishlist.length){
 		$.ajax({
 			type: 'GET',
 			url: '/api/wishlist/delete',
@@ -88,6 +90,7 @@
 				console.log('status', status);
 			}
 		});
+		}
 	}
 
 	function quantityCheck(val) {
@@ -117,10 +120,10 @@
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-6">
-									<input type="submit" value="REMOVE" onclick="remove(this)" class="vend_edit_lists_buttonstyle"/>
+									<input type="submit" value="REMOVE" onclick="remove(this)" class="btn btn-small btn-muted"/>
 								</div>
 								<div class="col-md-6">
-									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="vend_edit_lists_buttonstyle float-right bg4"  />
+									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small btn-muted float-right bg4"  />
 								</div>
 							</div>
 							<div class="row">
@@ -129,10 +132,10 @@
 								</div>
 								<div class="col-md-6">
 									<p class="vend_edit_lists_pstyle float-right">Entries per page:
-										<a href="/wishlist?limit=10"> 10</a>
-										<a href="/wishlist?limit=25"> 25</a>
-										<a href="/wishlist?limit=100"> 100</a>
-										<a href="/wishlist?limit=All"> All </a>
+										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
 									</p>
 								</div>
 							</div>
