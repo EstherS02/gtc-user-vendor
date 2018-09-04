@@ -553,6 +553,7 @@ function wishUpdate() {
 											<div class="m-l-sm block-2">
 												<h3 class="m-b-xs">Ask the Vendor</h3>
 												<p class="text-light-muted">If you`d like to ask the vendor a specific question about this product, please fill out following. It will be sent directly to the vendor.</p>
+												{{#if LoggedInUser.email}}
 												<div class="ask-vendor-form">
 													<form class="form" id="AskVendorForm">
 														<div class="row">
@@ -570,6 +571,11 @@ function wishUpdate() {
 														</div>
 													</form>
 												</div>
+												{{else}}
+												<div class="btn btn-success">
+												<a href="/login">Login to Ask the vendor</a>
+												</div>
+												{{/if}}
 											</div>
 										</div>
                             		</div>
@@ -641,6 +647,10 @@ function wishUpdate() {
                         			</div>
                         		</div>
                         	</div>
+                        	{{!-- {{else}} --}}
+                        	<div class="col-md-12">
+								<p class="text-primary text-center no-margins">No Related Products Available.</p>
+							</div>
 				        {{/if}}
 					</div>
 				</div>
