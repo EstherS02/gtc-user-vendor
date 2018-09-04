@@ -48,6 +48,11 @@ $(document).ready(function() {
 			$('#myModal').modal('show');
 		}
 	});
+
+	$('#loginToAskVendor').click(function(){
+		$('#myModal').modal('show');
+	});
+
      $("#gtc-add-to-cart").click(function () {
 		    var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
@@ -573,7 +578,7 @@ function wishUpdate() {
 												</div>
 												{{else}}
 												<div class="btn btn-success">
-												<a href="/login">Login to Ask the vendor</a>
+												<a id="loginToAskVendor" href="javascript:;">Login to Ask the vendor</a>
 												</div>
 												{{/if}}
 											</div>
