@@ -116,7 +116,11 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>Order History</h2>
+							<h2>Order History 
+							<span class="pull-right" style="font-size:12px"><a href="/order-history">See All</a></span>
+							</h2>
+							
+
 						</div>
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
@@ -153,9 +157,10 @@
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="status">
-													<option disabled selected>STATUS</option>
+													<option disabled selected>Status</option>
 													{{#each orderStatus}}
-													<option value = "{{@key}}">{{@key}}</option>
+													{{!-- <option value = "{{@key}}">{{@key}}</option> --}}
+													<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
 													{{/each}}
 												</select>
 											</div>
@@ -219,66 +224,77 @@
 												</tr>
 											</thead>
 											<tbody>
+												{{#if OrderItems}}
 												{{#each OrderItems}}
 												<tr>
 													<td><input type="checkbox" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
-				  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
-				  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
-				  				</td> --}}
-				  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
-				  				<td>Stripe</td>
-				  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
-								  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
-				  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
-				  				<td>${{this.final_price}} CAD</td>
-				  			</tr>
-				  			{{/each}}
-				  			<tr>
-				  				<td colspan="6"></td>
-				  				<td class="text_blue_color">Total Transaction</td>
-				  				<td>${{totalTransaction}} CAD</td>
-				  			</tr>
-				  		</tbody>
-				  	</table>
-				  	{{!-- Pagination starts --}}
-				  	{{#ifCond count '>' queryPaginationObj.limit}}
-				  	<div class="row">
-				  		<div class="col-md-3">
-				  		</div>
-				  		<div class="col-md-7">
-				  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-				  			<nav aria-label="Page navigation example">
-				  				<ul class="pagination justify-content-center">
-				  					{{#unless startFromFirstPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-				  					</li>
-				  					{{/unless}} {{#each pages}}
-				  					<li class="page-item {{#if isCurrent}} active {{/if}}">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-				  					</li>
-				  					{{/each}} {{#unless endAtLastPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-				  					</li>
-				  					{{/unless}}
-				  				</ul>
-				  			</nav>
-				  			{{/pagination}}
-				  		</div>
-				  	</div>
-				  	{{/ifCond}}
-				  	{{!-- Pagination Ends --}}
-				  </div>
+									  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
+									  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
+									  				</td> --}}
+									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+									  				<td>Stripe</td>
+									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+													  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
+									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
+									  				<td>${{this.final_price}} CAD</td>
+									  			</tr>
+									  			{{/each}}
+									  			<tr>
+									  				<td colspan="6"></td>
+									  				<td class="text_blue_color">Total Transaction</td>
+									  				<td>${{totalTransaction}} CAD</td>
+									  			</tr>
+									  			{{else}}
+									  			<tr>
+									  			<td></td>
+									  			<td></td>
+									  			<td>
+									  			No orders to list
+									  			</td>
+									  			</tr>
+									  			{{/if}}
+									  			
+									  		</tbody>
+									  	</table>
+									  	{{!-- Pagination starts --}}
+									  	{{#ifCond count '>' queryPaginationObj.limit}}
+									  	<div class="row">
+									  		<div class="col-md-3">
+									  		</div>
+									  		<div class="col-md-7">
+									  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									  			<nav aria-label="Page navigation example">
+									  				<ul class="pagination justify-content-center">
+									  					{{#unless startFromFirstPage}}
+									  					<li class="page-item">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+									  					</li>
+									  					{{/unless}} {{#each pages}}
+									  					<li class="page-item {{#if isCurrent}} active {{/if}}">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+									  					</li>
+									  					{{/each}} {{#unless endAtLastPage}}
+									  					<li class="page-item">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+									  					</li>
+									  					{{/unless}}
+									  				</ul>
+									  			</nav>
+									  			{{/pagination}}
+									  		</div>
+									  	</div>
+									  	{{/ifCond}}
+									  	{{!-- Pagination Ends --}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 {{> footer/bottom-footer}}
