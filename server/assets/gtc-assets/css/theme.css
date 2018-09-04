@@ -786,6 +786,11 @@ table.shoping-cart-table tr td {
 table.shoping-cart-table tr td div.product-middle-col h3 {
 	font-size: 1em;
 	margin-bottom: 5px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 table.shoping-cart-table > tbody > tr > td {
 	padding: 5px !important;

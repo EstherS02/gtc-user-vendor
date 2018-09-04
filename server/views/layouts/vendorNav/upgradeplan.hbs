@@ -63,8 +63,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	  $("#plandetailsform").submit(function(e) {
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
+             $('#myModal').modal('show');
+
 			
-		    	$('#myModal').modal('show');
+		    	
      		}
 			 
        });
@@ -79,7 +81,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			else
 			{
 				
-				$('#myModal2').modal('show');
+				//$('#myModal2').modal('show');
 
 			}
 			
@@ -169,7 +171,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 													<div class="input-group">
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														 name="selectplan" required>
+														  required>
 															<option value='' selected="">Select Plan</option>
                                                             {{#ifCond PlanDetails.[0].name '==' "STARTER SELLER"}}
 																<option value="2">Service Provider</option>
@@ -221,8 +223,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 												<div class="form-group">
 
 													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														 name="selectplan" required>
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" 
+														 id="selectcard_details" required>
 															{{#ifCond carddetails '!=' '' }}
 
 															{{#each carddetails}}
@@ -416,7 +418,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			</div>
 			<div class="modal-body">
 			    {{#if PlanDetails.[0].cost}}
-				<p>You have charged {{PlanDetails.[0].cost}} </p>
+				<p>You have charged 30.0000</p>
 				{{else}}
 				<p>You have charged 99.0000</p>
 				{{/if}}

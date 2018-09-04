@@ -8,6 +8,7 @@
     // const auth = Auth();
 
     $(document).ready(function() {
+        $('#loadingSpinner').hide();
          var url = window.location.href;
         var base_url = window.location.origin+window.location.pathname;
         var var_id= url.replace(base_url,"")
@@ -35,16 +36,18 @@
 
         $('#loginForm').submit(function(event) {
             event.preventDefault();
-
+            $('#loadingSpinner').show();
             auth.login({
                 email: $('#loginInputEmail').val(),
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
+                $('#loadingSpinner').hide();
                 socket.emit('user:join', user);
                 //emitSocket.userJoin(user);
                // console.log("socket io working", emitSocket);
                 window.location = "/";
             }).catch(function(error) {
+                $('#loadingSpinner').hide();
                 $('#loginErrorMessage').text(error.responseText);
             });
         });
