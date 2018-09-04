@@ -4,14 +4,38 @@ $(document).ready(function() {
 
 	var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
-			// Retrieve the singleton for the GoogleAuth library and set up the client.
 			auth2 = gapi.auth2.init({
 				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
 				cookiepolicy: 'single_host_origin'
 			});
-			googleAttachSignin(document.getElementById('gtc-google-login'));
 		});
 	};
+
+	$('#gtc-google-login').click(function() {
+		auth2.grantOfflineAccess().then(signInCallback);
+	});
+
+	function signInCallback(authResult) {
+		if (authResult['code']) {
+			$("#gtc-google-login").off('click');
+			authResult['clientId'] = "334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com";
+			authResult['redirectUri'] = window.location.origin;
+
+			$.ajax({
+				type: 'POST',
+				url: '/auth/google',
+				data: authResult,
+				success: function(result) {
+					console.log("result", result);
+				},
+				error: function(response, status, error) {
+					$('#signupLog').append('<p class="text-danger text-500">' + response.responseText + '</p>');
+				}
+			});
+		} else {
+			// There was an error.
+		}
+	}
 
 	var startGoogleLoginProcessModal = function() {
 		gapi.load('auth2', function() {
@@ -34,6 +58,8 @@ $(document).ready(function() {
 			googleAttachSignin(document.getElementById('footer-modal-gtc-google-login'));
 		});
 	};
+
+
 
 	function googleAttachSignin(element) {
 		auth2.attachClickHandler(element, {},
