@@ -278,7 +278,7 @@ Handlebars.registerHelper('objectKey', function(obj, value_pass, options) {
 		if (value_pass == obj[key]) {
 			var val1 = key.toLowerCase();
 			val = val1.charAt(0).toUpperCase() + val1.slice(1);
-			val = val.replace("order", " Order");
+			val = val.replace("order", " "); //Order
 		}
 	});
 	return val;
