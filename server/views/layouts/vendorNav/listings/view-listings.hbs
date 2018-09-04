@@ -16,17 +16,7 @@
 		}
 	}
 	$(document).ready(function() {
-
 		$("#gtc-cart-alert").hide();
-		$("#serviceListing").submit(function(e) {
-			e.preventDefault();
-			let formInput = $("#serviceListing :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serialize();
-			if (formInput != '') {
-				window.location.href = 'listings/services?' + formInput;
-			}
-		});
 	})
 	function changeStatus(e) {
 		window.location.href = '/listings/' + e.name + '?product_status=' + e.value;
@@ -136,11 +126,10 @@
 									</div>
 								</div>
 								<div class="col-md-5">
-									{{!-- <form id="serviceListing"> --}}
 									<div class="form-inline ml-auto pull-right">
-										<div class="form-group mx-sm-3 mb-2 form-inline">
+										{{!-- <div class="form-group mx-sm-3 mb-2 form-inline">
 											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
-										</div>
+										</div> --}}
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);">
@@ -150,7 +139,6 @@
 											</div>
 										</div>
 									</div>
-									{{!-- </form> --}}
 								</div>
 							</div>
 							<div class="row">
