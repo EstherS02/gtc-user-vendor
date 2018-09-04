@@ -187,8 +187,8 @@ export function salesHistory(req, res) {
             }
         },
         function(err, results) {
-            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+            // var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            // var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
@@ -227,7 +227,7 @@ export function salesHistory(req, res) {
                     collectionSize: results.orderHistory.count,
                     // End pagination
                     vendorPlan: vendorPlan,
-                    dropDownUrl: dropDownUrl
+                    // dropDownUrl: dropDownUrl
                 });
             } else {
                 res.render('vendorNav/reporting/sales-history', err);

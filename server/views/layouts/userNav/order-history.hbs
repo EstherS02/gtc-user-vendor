@@ -34,6 +34,13 @@
 					}).serialize();
 					if (formInput != '') {
 						window.location.href = 'order-history?' + formInput;
+					}else{
+						$("#gtc-form-alert").show();
+					    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					    $('#gtc-form-alert .form-message').text("Please enter search key");
+					    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+					    $("#gtc-form-alert").slideUp(500);
+					    });
 					}
 				});
 			});
@@ -102,7 +109,6 @@
 			$('#to').val(""); 
 		}
 	}
-
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -116,11 +122,9 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>Order History 
+							<h2> Personal Order History 
 							<span class="pull-right" style="font-size:12px"><a href="/order-history">See All</a></span>
 							</h2>
-							
-
 						</div>
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
@@ -134,7 +138,7 @@
 									<form class="form-inline" id="searchOrderhistory1">
 										<div class="form-group mb-2">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="dateSelect"	>
+												<select class="form-control-customized form-control-sm" name="dateSelect">
 													<option disabled selected >Days</option>
 													<option value="today">Today</option>
 													<option value="yesterday">Yesterday</option>
@@ -194,16 +198,16 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page : 
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
 									</div>
 								</div>
-								<div class="col-md-12">
+					`			<div class="col-md-12">
 									<div class="table-responsive">
 										<table class="table">
 											<thead>
