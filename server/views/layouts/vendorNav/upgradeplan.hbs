@@ -63,7 +63,32 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	  $("#plandetailsform").submit(function(e) {
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
-             $('#myModal').modal('show');
+            var plan_id = document.getElementById("selectplan").value;
+            $.ajax({
+			url: '/api/upgrade-plan/selectplan',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				id:plan_id
+			}),
+			success: function(data) {
+				
+				$('#Plan_cost').html("you have charged " + data.data.cost);
+				$('#myModal').modal('show');
+				//setTimeout(function() {
+					//$('#paymentSuccess').modal('show');
+				//}, 1000);
+			},
+			error: function(error) {
+				$('#complete-order-submit').prop('disabled', false);
+				$('#complete-order-submit').css({
+					'cursor': "pointer"
+				});
+			}
+		});
+
+             //
 
 			
 		    	
@@ -418,7 +443,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			</div>
 			<div class="modal-body">
 			    {{#if PlanDetails.[0].cost}}
-				<p>You have charged 30.0000</p>
+				<p id="Plan_cost"></p>
 				{{else}}
 				<p>You have charged 99.0000</p>
 				{{/if}}
