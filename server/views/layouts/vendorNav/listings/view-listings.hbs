@@ -1,4 +1,4 @@
-<script>
+ <script>
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -26,7 +26,7 @@
 	}
 	function edit(e) {
 		var chkArray = [];
-		$(':checkbox:checked').each(function(i) {
+		$(':checkbox:checked').each(function (i) {
 			chkArray.push($(this).val());
 		});
 		var selected;
@@ -38,55 +38,62 @@
 		else {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
 			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
-			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-				$("#gtc-cart-alert").slideUp(500);
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(500);
 			});
 		}
 	}
 	function add(e) {
 		window.location.href = '/listings/' + e.name + '/add-product';
 	}
-	function importCSV() {
+	function importCSV()
+	{
 		var file = $("#csvfile")[0].files[0];
-		var reader = new FileReader();
-		reader.onload = function(e) {
-			var output = document.getElementById("csvfile");
-			var texto = e.target.result;
-			csvJSON(texto);
-		};
-		reader.readAsText(file);
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        var output = document.getElementById("csvfile");
+        var texto = e.target.result;
+        csvJSON(texto);
+	};
+    reader.readAsText(file);
 	}
 	function csvJSON(csv) {
-		var lines = csv.split("\n");
-		var result = [];
-		var headers = lines[0].split(",");
-		for (var i = 1; i < lines.length; i++) {
-			var obj = {};
-			var currentline = lines[i].split(",");
-			for (var j = 0; j < headers.length; j++) {
-				if (currentline[j] != '') {
-					obj[headers[j]] = currentline[j];
+	var lines = csv.split("\n");
+    var result = [];
+    var headers=lines[0].split(",");
+    for(var i=1;i<lines.length;i++){
+      var obj = {};
+	  var currentline=lines[i].split(",");
+	  for(var j=0;j<headers.length;j++)
+	  {
+	      if(currentline[j]!='')
+		  {
+           obj[headers[j]] = currentline[j];
+		  }
+	  }
+	       result.push(obj);
+      }
+   // console.log("result22"+JSON.stringify(result));
+    //return JSON.stringify(result); //JSON
+	var data = JSON.stringify(result);
+	$.ajax({
+    			url: '/api/product/import-product',
+				type: 'POST',
+				data: data,
+				cache: false,
+				dataType: 'json',
+				contentType: 'application/json',
+				success: function (data, text) {
+					$('#exampleModal').modal('hide');
+            	},
+				error: function (request, status, error) {
+					console.log('status', status);
+					console.log('error', error);
 				}
-			}
-			result.push(obj);
-		}
-		var data = JSON.stringify(result);
-		$.ajax({
-			url: '/api/product/import-product',
-			type: 'POST',
-			data: data,
-			cache: false,
-			dataType: 'json',
-			contentType: 'application/json',
-			success: function(data, text) {
-				$('#exampleModal').modal('hide');
-			},
-			error: function(request, status, error) {
-				console.log('status', status);
-				console.log('error', error);
-			}
-		});
-	}
+			});
+
+	
+}
 
 </script>{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
@@ -100,12 +107,10 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="content-body">
-							<p class="content-txt">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or
-								feature products, or import and syncronize them with an outside source. To administer specific details of products,
-								click on the product name or SKU to go to the full edit details page for that specific products.</p>
+							<p class="content-txt">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature products, or import and syncronize them with an outside source. To administer specific details of products, click on the product name or SKU to go to the full edit details page for that specific products.</p>
 							<div class="row">
 								<div class="col-md-7">
-									<div class="form-inline">
+										<div class="form-inline">
 										<div class="form-group mb-2">
 											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="add(this);">ADD PRODUCT</button>
 										</div>
@@ -123,16 +128,17 @@
 										<div class="form-group mb-2">
 											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
 										</div>
-									</div>
+										</div>
 								</div>
 								<div class="col-md-5">
 									<div class="form-inline ml-auto pull-right">
-										{{!-- <div class="form-group mx-sm-3 mb-2 form-inline">
+										<div class="form-group mx-sm-3 mb-2 form-inline">
 											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
-										</div> --}}
+											{{!-- <button type="button" id="changePwd" class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
+										</div>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
-												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);">
+												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="keyword" onChange="search(this);">
 												<button type="submit" class="btn btn-sm btn-gtc">
 													<i class="fa fa-search"></i>
 												</button>
@@ -155,7 +161,7 @@
 										</div>
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
-												Entries per page :
+												Entries per page : 
 												<a href="listings/{{this.type}}?limit=10">10</a>
 												<a href="listings/{{this.type}}?limit=25">25</a>
 												<a href="listings/{{this.type}}?limit=100">100</a>
@@ -183,18 +189,12 @@
 											</thead>
 											<tbody>
 												{{#each products}}
-													<tr>
-														<td scope="row">
-															<input type="checkbox" name="selected" value= {{this.product_slug}}>
-														</td>
-														<td scope="row">
-															<img src="{{this.product_base_image}}" style="width: 30px;" />
-															<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a>
-														</td>
+												<tr>
+													<td scope="row"><input type="checkbox" name="selected" value={{this.product_slug}}></td>
+													<td scope="row"><img src="{{this.product_base_image}}" style="width: 30px;" />
+														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></td>
 														<td scope="row">{{ prettifyDate this.publish_date }}</td>
-														<td scope="row">
-															{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}
-														</td>
+														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 														<td>${{this.product_price}} CAD</td>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 															<td class="text_green_color">Active</td>
@@ -207,31 +207,30 @@
 														{{/ifCond}}
 														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
 													</tr>
-												{{/each}}
-											</tbody>
-										</table>
-									</div>
-									{{#pagination collectionSize page pageSize maxSize}}
+													{{/each}}
+												</tbody>
+											</table>
+										</div>
+										{{#pagination collectionSize page pageSize maxSize}}
 										<nav aria-label="Page navigation example">
 											<ul class="pagination justify-content-center">
 												{{#unless startFromFirstPage}}
-													<li class="page-item">
-														<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
-													</li>
-												{{/unless}}
-												{{#each pages}}
-													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-													</li>
-												{{/each}}
-												{{#unless endAtLastPage}}
-													<li class="page-item">
-														<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
-													</li>
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+												</li>
 												{{/unless}}
 											</ul>
 										</nav>
-									{{/pagination}}
+										{{/pagination}}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -240,7 +239,6 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 {{> footer/bottom-footer}}
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -255,16 +253,16 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control d-block">Import files</label>
-								<input type="file" id="csvfile" accept=".csv" name="file" />
+								<input type="file"  id="csvfile" accept=".csv" name="file"/>
 							</div>
 						</div>
-					</div>
+						</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>Close</button>
 					<button type="button" id="submitBtn" onclick="importCSV()" class="btn btn-small btn-primary">
-
+						
 						<b>Submit</b>
 					</button>
 				</div>

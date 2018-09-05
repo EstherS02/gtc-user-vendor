@@ -14,6 +14,8 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 const async=require('async');
 const Json2csvParser = require('json2csv').Parser;
+const orderStatus = require('../../config/order_status');
+
 
 // starts export csv Ad-revenue //
 exports.exportcsv = function (req, res) {
@@ -27,16 +29,6 @@ exports.exportcsv = function (req, res) {
 		"type1" : "AD",
 		"type2" : "Featured Listing",
 			};
-	var position ={
-		 "position1" : "Wholesale Landing",
-		 "position2" : "Shop Landing",
-		 "position3" : "Service Landing",
-		 "position4" : "Lifestyle Landing",
-		 "position5" : "Directory Landing",
-		 "position6" : "Profile Square",
-		 "position7" : "Sign Up",
-	   }
-
 	offset = req.query.offset ? parseInt(req.query.offset) : null;
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : null;
@@ -94,33 +86,13 @@ exports.exportcsv = function (req, res) {
 				 {
 					 value.type = adType.type2;
 				 }
-				 if(value.position==1)
+				 if(value.position!='')
 				 {
-					value.position = position.position1;
-				 }
-				 else if(value.position==2)
-				 {
-					value.position = position.position2;
-				 }
-				 else if(value.position==3)
-				 {
-					value.position = position.position3;
-				 }
-				 else if(value.position==4)
-				 {
-					value.position = position.position4;
-				 }
-				 else if(value.position==5)
-				 {
-					value.position = position.position5;
-				 }
-				 else if(value.position==6)
-				 {
-					value.position = position.position6;
-				 }
-				 else if(value.position==7)
-				 {
-					value.position = position.position7;
+					Object.keys(position).forEach(function(key) {
+						if (value.position == position[key]) {
+							value.position = key;
+						}
+					});
 				 }
 				  
 				 if(value.clicks!="null" && value.impression!="null")
@@ -163,34 +135,15 @@ exports.exportcsv = function (req, res) {
 				 {
 					 value.type = adType.type2;
 				 }
-				 if(value.position==1)
+				 if(value.position!='')
 				 {
-					value.position = position.position1;
+					Object.keys(position).forEach(function(key) {
+						if (value.position == position[key]) {
+							value.position = key;
+						}
+					});
 				 }
-				 else if(value.position==2)
-				 {
-					value.position = position.position2;
-				 }
-				 else if(value.position==3)
-				 {
-					value.position = position.position3;
-				 }
-				 else if(value.position==4)
-				 {
-					value.position = position.position4;
-				 }
-				 else if(value.position==5)
-				 {
-					value.position = position.position5;
-				 }
-				 else if(value.position==6)
-				 {
-					value.position = position.position6;
-				 }
-				 else if(value.position==7)
-				 {
-					value.position = position.position7;
-				 }
+				 
 				 if(value.clicks!=null && value.impression!=null)
 				 {
 					value.CTR = ((value.clicks/value.impression)*100).toFixed(2)+"%";
@@ -218,4 +171,142 @@ exports.exportcsv = function (req, res) {
 		});
 	}
 };
-// starts export csv Ad-revenue //
+// ends export csv Ad-revenue //
+
+// starts export csv order-history//
+exports.orderHistoryexportcsv =function(req,res)
+{
+	
+	if(req.body.id!=0)
+	{
+		var offset, limit, field, order;
+	    var queryObj = {};
+	    var ids =[];
+	    var type = [];
+		let includeArr=[];
+		offset = req.query.offset ? parseInt(req.query.offset) : null;
+	    delete req.query.offset;
+	    limit = req.query.limit ? parseInt(req.query.limit) : null;
+	    delete req.query.limit;
+	    field = req.query.field ? req.query.field : "id";
+	    delete req.query.field;
+	    order = req.query.order ? req.query.order : "asc";
+		delete req.query.order;
+
+		queryObj['id'] = JSON.parse("[" + req.body.id + "]");
+
+		service.findAllRows('Order',includeArr, queryObj, 0, null, field, order)
+		.then(function (rows) {
+			for(let value of rows.rows)
+			{
+				if(value.id != '') 
+				{
+				   value.invoice = value.id;
+				   value.Date = value.ordered_date;
+				   value.Method = "Stripe";
+				  
+				   value.Amount =((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+
+				}
+				if(value.order_status!='')
+				{
+				Object.keys(orderStatus).forEach(function(key) {
+					if (value.order_status == orderStatus[key]) {
+						var val1 = key.toLowerCase();
+						var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+						val = val.replace("order", " "); //Order
+						value.Status = val;
+					}
+				});
+			}
+				
+			}
+		   
+			var fields = [];
+			fields = _.map(rows.rows.columns, 'columnName');
+			fields.push('invoice','Date','Method','Status','Amount');
+			const opts = {
+					fields
+			};
+			const parser = new Json2csvParser(opts);
+			const csv = parser.parse(rows.rows);
+			console.log("csv"+csv);
+			res.write(csv);
+			res.end();
+			return;
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+		
+        
+	}
+	else
+	{
+
+
+	 var offset, limit, field, order;
+	    var queryObj = {};
+	    var ids =[];
+	    var type = [];
+		let includeArr=[];
+		offset = req.query.offset ? parseInt(req.query.offset) : null;
+	    delete req.query.offset;
+	    limit = req.query.limit ? parseInt(req.query.limit) : null;
+	    delete req.query.limit;
+	    field = req.query.field ? req.query.field : "id";
+	    delete req.query.field;
+	    order = req.query.order ? req.query.order : "asc";
+		delete req.query.order;
+
+		queryObj['user_id'] = JSON.parse("[" + req.body.user_id + "]");
+	service.getAllFindRow('Order',includeArr, queryObj, field, order)
+	.then(function (rows) {
+		//console.log(rows);
+		for(let value of rows.rows)
+		{
+			if(value.id != '') 
+			{
+			   value.invoice = value.id;
+			   value.Date = value.ordered_date;
+			   value.Method = "Stripe";
+			   value.Amount =((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+
+			}
+			if(value.order_status!='')
+				{
+				Object.keys(orderStatus).forEach(function(key) {
+					if (value.order_status == orderStatus[key]) {
+						var val1 = key.toLowerCase();
+			             var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+						 val = val.replace("order", " "); //Order
+						 value.Status = val;
+					}
+				});
+			}
+		
+			
+		}
+		 
+		var fields = [];
+		fields = _.map(rows.rows.columns, 'columnName');
+		fields.push('invoice','Date','Method','Status','Amount');
+		const opts = {
+				fields
+		};
+		const parser = new Json2csvParser(opts);
+		const csv = parser.parse(rows.rows);
+		console.log("csv"+csv);
+		res.write(csv);
+		res.end();
+		return;
+	}).catch(function (error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+  }
+};
+// ends export csv Ad-revenue //
+

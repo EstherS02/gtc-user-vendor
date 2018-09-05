@@ -25,9 +25,9 @@ export function updateStatus(req, res) {
 		delete bodyParams.provider_name;
 	}
 
-	if (bodyParams.tracking_url) {
-		shippingInput['tracking_url'] = bodyParams.tracking_url;
-		delete bodyParams.tracking_url;
+	if (bodyParams.tracking_id) {
+		shippingInput['tracking_id'] = bodyParams.tracking_id;
+		delete bodyParams.tracking_id;
 	}
 
 	if (bodyParams.order_status == orderStaus.CONFIRMEDORDER) {
