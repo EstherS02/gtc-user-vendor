@@ -513,7 +513,7 @@
 														</div>
 														<div class="col-xs-5 col-sm-5 col-md-5">
 															<div class="form-group">
-																<select class="edit-listing" name="product_status" id="product_status" value="${{product.product_status}}" style="background:white;">
+																<select class="edit-listing" name="status" id="status" value="${{product.status}}" style="background:white;">
 																	<option value="ACTIVE">Active</option>
 																	<option value="INACTIVE">InActive</option>
 																	<option value="SUSPENDED">Suspended</option>
@@ -532,7 +532,7 @@
 															<div class="form-group">
 																<select class="edit-listing" name="product_category_id" id="category" style="background:white;" onchange="changeCategory(this)">
 																	<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
-																	{{#each categories}}
+																	{{#each category}}
 																	<option value="{{this.id}}">{{Titlecase this.name}}</option>
 																	{{/each}}
 																</select>
