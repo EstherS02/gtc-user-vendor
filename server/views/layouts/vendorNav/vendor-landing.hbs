@@ -75,14 +75,26 @@
 					type: 'POST',
 					url: '/api/product/import-woocommerce',
 					data: credentials,
-					success: function(data, response) {
+					success: function(data) {
 						$('#btnFaSpinner').hide();
-						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products added successfully.</p>');
+							if (data.skippedProduct == 0) {
+								$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully.</p>');
+							} else if (data.successProduct == 0) {
+								$('#logMessage').append('<p class="text-center text-danger m-b-xs">' + data.skippedProduct + ' products skipped while import.</p>');
+							} else {
+								$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully and ' + data.skippedProduct + ' products skipped while import.</p>');
+							}
 						$('#importWooCommerModal').modal('toggle');
+						setTimeout(function() {
+							$("#logMessage p").remove();
+						}, 10000);
 					},
 					error: function(response, status, error) {
 						$('#btnFaSpinner').hide();
 						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						setTimeout(function() {
+							$("#popupError p").remove();
+						}, 10000);
 					}
 				});
 			}
