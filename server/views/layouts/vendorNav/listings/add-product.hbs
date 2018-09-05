@@ -83,20 +83,35 @@
 		});
 
 		$("#imageUpload").change(function() {
+			test='';
 			fasterPreview(this);
 		});
 
 		$('#baseImage').on('change', function() {
-            imagesPreview(this);
-            test = 'div.icon';
+			test = 'div.base_image';
+            fasterPreview(this);
         });
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}; var dataURLFileName, index = 0;
+		var fileDetails = {}; var dataURLFileName, index = 0, baseImageFileDetails;
 
 		$('#crop-profile-image').click(function() {
+ 
+            if (test == 'div.base_image') {
+			   cropper.getCroppedCanvas().toBlob(function(blob) {
 
-			cropper.getCroppedCanvas().toBlob(function(blob) {
+                cropperOutputImage = blob;
+                fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+                fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+                //imgUp(cropperOutputImage, fileDetails["fileName"]);
+              });
+			  var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+               $(test).html(temp);
+               $('#profile-picture-modal').modal('hide');
+
+             } else{
+
+			  cropper.getCroppedCanvas().toBlob(function(blob) {
 				var fileTempHold = {};
 				fileTempHold['cropperOutputImage'] = blob;
 				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
@@ -117,6 +132,8 @@
 
 			$('#profile-picture-modal').modal('hide');
 			index++;
+
+		  }	
 		});
 
 		$('#profile-picture-modal').on('shown.bs.modal', function() {
@@ -326,31 +343,57 @@
 
 	$("#productForm").submit(function(e) {
 		e.preventDefault();
+		var imageURLsArr = []
 
 		let input = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
-		var temp = $("#imageUpload")[0].files.length;
+        if($('#baseImage')[0].files.length > 0){
+           var form1 = new FormData();
+		   form1.append("file", cropperOutputImage, fileDetails["fileName"]);
+		   $.ajax({
+					type: 'POST',
+					url: '/api/prod/upload',
+					data: form1,
+					cache: false,
+					dataType: 'json',
+					processData: false,
+					contentType: false,
+					success: function (data) {
+						var imageURLobj = {};
 
+						imageURLobj.status = 1;
+						imageURLobj.type = 1;
+						imageURLobj.base_image=1;
+						imageURLobj.url = data.imageURLs;
+
+						imageURLsArr.push(imageURLobj);
+
+						console.log("---------------------------------",imageURLsArr);
+					},
+					error: function (error) {
+						console.log("Error", error);
+					}
+				})
+		}	
 		if ($("#imageUpload")[0].files.length > 0) {
-			var form = new FormData();
+			var form2 = new FormData();
 
 			$.each(allFiles, function(i, file) {
-				form.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
+				form2.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
 			});
 
 			$.ajax({
 				type: 'POST',
 				url: '/api/prod/multiple',
-				data: form,
+				data: form2,
 				cache: false,
 				dataType: 'json',
 				processData: false,
 				contentType: false,
 				success: function(data) {
-					var imageURLs = data.imageURLs;
-					var imageURLsArr = [], i = 0;
+					var imageURLs = data.imageURLs, i = 0;
 
 					imageURLs.forEach(function(element) {
 						var imageURLobj = {};
@@ -363,11 +406,13 @@
 						i++;
 					});
 
+					console.log("-@@@@@@@@@@@@@@@@@",imageURLsArr);
+
 					var dataFormate = {};
 					dataFormate.data = JSON.stringify(imageURLsArr);
 
 
-					addProduct(dataFormate, input);
+					//addProduct(dataFormate, input);
 				},
 				error: function(error) {
 					console.log('error', error);
@@ -376,7 +421,7 @@
 		} else {
 			var obj = {};
 			obj.data = null;
-			addProduct(obj, input);
+			//addProduct(obj, input);
 		}
 	});
 
@@ -605,6 +650,8 @@
 										<div class="form-group" id="attributePopup">
 										</div>
 									</div>
+									</div><br/>
+									<div class="row">
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">Add More Images( 3 max.)</label>
