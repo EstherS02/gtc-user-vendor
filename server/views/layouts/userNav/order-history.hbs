@@ -1,5 +1,5 @@
 	<script type="text/javascript"> 
-	    var selectedArray=[];
+		var selectedArray=[];
 		
 		$(function () {
 			$("#from").datepicker({
@@ -18,15 +18,15 @@
     	});
 		});
 		$(function () {
-				$("#gtc-form-alert").hide();
-				$("#searchOrderhistory").submit(function (e) {
-					e.preventDefault();
-					let formInput = $("#searchOrderhistory :input").filter(function (index, element) {
-						return $(element).val() != '';
-					}).serialize();
-					if (formInput != '') {
-						window.location.href = 'order-history?' + formInput;
-					}
+			$("#gtc-form-alert").hide();
+			$("#searchOrderhistory").submit(function (e) {
+				e.preventDefault();
+				let formInput = $("#searchOrderhistory :input").filter(function (index, element) {
+					return $(element).val() != '';
+				}).serialize();
+				if (formInput != '') {
+					window.location.href = 'order-history?' + formInput;
+				}
 					//else{
 					//	$("#gtc-form-alert").show();
 					 //   $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -37,27 +37,27 @@
 					//}
 				});
 
-				$("#searchOrderhistory1").submit(function (e) {
-					e.preventDefault();
-					let formInput = $("#searchOrderhistory1 :input").filter(function (index, element) {
-						return $(element).val() != '';
-					}).serialize();
-					if (formInput != '') {
-						window.location.href = 'order-history?' + formInput;
-					}else{
-						$("#gtc-form-alert").show();
-					    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-					    $('#gtc-form-alert .form-message').text("Please choose the filter options");
-					    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-					    $("#gtc-form-alert").slideUp(500);
-					    });
-					}
-				});
-
+			$("#searchOrderhistory1").submit(function (e) {
+				e.preventDefault();
+				let formInput = $("#searchOrderhistory1 :input").filter(function (index, element) {
+					return $(element).val() != '';
+				}).serialize();
+				if (formInput != '') {
+					window.location.href = 'order-history?' + formInput;
+				}else{
+					$("#gtc-form-alert").show();
+					$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-form-alert .form-message').text("Please choose the filter options");
+					$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+						$("#gtc-form-alert").slideUp(500);
+					});
+				}
 			});
+
+		});
 		
 
-	
+		
 	</script>
 	<script type="text/javascript">
 		function selectAll(ele) {
@@ -107,9 +107,9 @@
 			}
 		}
 
-      function downloadCSV(args)
-	  {
-		  	var chkArray = [];
+		function downloadCSV(args)
+		{
+			var chkArray = [];
 			$(':checkbox:checked').each(function(i) {
 				if ($(this).val() != 'on') {
 					chkArray.push($(this).val());
@@ -123,143 +123,152 @@
 			{
 				var selectedvalues=0;
 			}
-           
-		    $.ajax({
-					type: 'POST',
-					url: '/api/export-csv/orderhistorycsv',
-					data: {"user_id":$('#loginuserid').val(),id: selectedvalues },
-					success: function(data) {
-					   var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
-                       var csvURL =  null;
-                       if (navigator.msSaveBlob) {
-                       csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
-                        } else {
-                        csvURL = window.URL.createObjectURL(csvData);
-                        }
-                        var tempLink = document.createElement('a');
-                        tempLink.href = csvURL;
-                        tempLink.setAttribute('download', 'orderhistory.csv');
-                        tempLink.click();
-						
-					},
-					error: function(request, status, error) {
-						console.log('request', request);
-						console.log('status', status);
+			
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/orderhistorycsv',
+				data: {"user_id":$('#loginuserid').val(),id: selectedvalues },
+				success: function(data) {
+					var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+					var csvURL =  null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
 					}
-				});
-		  
-	  }
-</script>
-<script type="text/javascript">
-	function selectDatefun(){
-		var val = $( "#selectDate option:selected" ).val();
-		if(val){
-			$('#from').val("");
-			$('#to').val(""); 
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'orderhistory.csv');
+					tempLink.click();
+					
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
+				}
+			});
+			
 		}
-	}
-</script>
+	</script>
+	<script type="text/javascript">
+		function selectDatefun(){
+			var val = $( "#selectDate option:selected" ).val();
+			if(val){
+				$('#from').val("");
+				$('#to').val(""); 
+			}
+		}
+	</script>
 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<div class="wrapper-content bg-gray">
-	<div class="gtc-container">
-		<div class="row">
-			<div class="col-sm-2">
-				{{> vendor/vendor-side-navbar}}
-			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2> Personal Order History 
-							<span class="pull-right" style="font-size:12px"><a href="/order-history">See All</a></span>
-							</h2>
-						</div>
-						<div class="alert" id="gtc-form-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="form-message"></span>
-						</div>
-						<div class="content-body">
-							<div class="row">
-								<div class="col-md-7">
-									<form class="form-inline" id="searchOrderhistory1">
-										<div class="form-group mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="dateSelect">
-													<option disabled selected >Days</option>
-													<option value="today">Today</option>
-													<option value="yesterday">Yesterday</option>
-													<option value="last7day">LAST 7 DAY</option>
-													<option value="last15day">LAST 15 DAY</option>
-													<option value="last30day">LAST 30 DAY</option>
-												</select>
-											</div>
-										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<div class="select-container"> 
-												<select class="form-control-customized form-control-sm" name="marketType">
-													<option disabled selected> Type</option>
-													{{#each marketPlace}}
-													<option value = "{{this}}">{{@key}}</option>
-													{{/each}}
-												</select>
-											</div>
-										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="status">
-													<option disabled selected>Status</option>
-													{{#each orderStatus}}
-													{{!-- <option value = "{{@key}}">{{@key}}</option> --}}
-													<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
-													{{/each}}
-												</select>
-											</div>
-										</div>
-										<input type="submit" value="Search" class="btn btn-sm btn-success" style="margin-top: -8px;">
-									</form>
-								</div>
-								<div class="col-md-5">
-									<div class="form-inline ml-auto pull-right" >
-										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
-											<input type="hidden" name="user_id" id="loginuserid" value={{LoggedInUser.id}}>
-										</div>
-										<form id="searchOrderhistory">
-										<div class="form-group mb-2">
-											<div class="input-group gtc-rounded">
-												
-												<input type="text"  name="keyword" class="form-control form-control-sm" placeholder="Search Invoice" />
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
-											</div>
-										</div>
-										</form>
-									   </div>
-								</div>
+	{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+	<div class="wrapper-content bg-gray">
+		<div class="gtc-container">
+			<div class="row">
+				<div class="col-sm-2">
+					{{> vendor/vendor-side-navbar}}
+				</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+								<h2> Personal Order History 
+									<span class="pull-right" style="font-size:12px"><a href="/order-history">See All</a></span>
+								</h2>
 							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+							<div class="alert" id="gtc-form-alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="form-message"></span>
+							</div>
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-7">
+										<form class="form-inline" id="searchOrderhistory1">
+											<div class="form-group mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="dateSelect">
+														{{#select queryURI.dateSelect}}
+														<option disabled selected >Days</option>
+														<option value="today">Today</option>
+														<option value="yesterday">Yesterday</option>
+														<option value="last7day">LAST 7 DAY</option>
+														<option value="last15day">LAST 15 DAY</option>
+														<option value="last30day">LAST 30 DAY</option>
+														{{/select}}
+													</select>
+												</div>
+											</div>
+											<div class="form-group mx-sm-3 mb-2">
+												<div class="select-container"> 
+													<select class="form-control-customized form-control-sm" name="marketType">
+														{{#select queryURI.marketType}}
+														<option disabled selected> Type</option>
+														{{#each marketPlace}}
+														<option value = "{{this}}">{{@key}}</option>
+														{{/each}}
+														{{/select}}
+													</select>
+												</div>
+											</div>
+											<div class="form-group mx-sm-3 mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="status">
+														{{#select queryURI.status}}
+
+														<option disabled selected>Status</option>
+														{{#each orderStatus}}
+														{{!-- <option value = "{{@key}}">{{@key}}</option> --}}
+														<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
+														{{/each}}
+														{{/select}}
+
+													</select>
+												</div>
+											</div>
+											<input type="submit" value="Search" class="btn btn-sm btn-success" style="margin-top: -8px;">
+										</form>
+									</div>
+									<div class="col-md-5">
+										<div class="form-inline ml-auto pull-right" >
+											<div class="form-group mx-sm-3 mb-2">
+												<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+												<input type="hidden" name="user_id" id="loginuserid" value={{LoggedInUser.id}}>
+											</div>
+											<form id="searchOrderhistory">
+												<div class="form-group mb-2">
+													<div class="input-group gtc-rounded">
+														
+														<input type="text"  name="keyword" {{#if queryURI.keyword}}
+														value={{queryURI.keyword}}{{/if}} class="form-control form-control-sm" placeholder="Search Invoice" />
+														<button type="submit" class="btn btn-sm btn-gtc">
+															<i class="fa fa-search"></i>
+														</button>
+													</div>
+												</div>
+											</form>
 										</div>
-										<div class="alignright cart-top-right">
-											<span class="m-r-sm text-muted">
-												Entries per page : 
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
-											</span>
-										</div>
-										<div style="clear: both;"></div>
 									</div>
 								</div>
-					`			<div class="col-md-12">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="cart-top-header">
+											<div class="alignleft cart-top-left">
+												<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+											</div>
+											<div class="alignright cart-top-right">
+												<span class="m-r-sm text-muted">
+													Entries per page : 
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
+												</span>
+											</div>
+											<div style="clear: both;"></div>
+										</div>
+									</div>
+									`			<div class="col-md-12">
 									<div class="table-responsive">
 										<table class="table">
 											<thead>
@@ -292,7 +301,7 @@
 									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 									  				<td>Stripe</td>
 									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
-													  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
+									  				<td><a href="/order-track/{{this.id}}">Track Order</a></td>
 									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
 									  				<td>${{this.final_price}} CAD</td>
 									  			</tr>
@@ -304,11 +313,11 @@
 									  			</tr>
 									  			{{else}}
 									  			<tr>
-									  			<td></td>
-									  			<td></td>
-									  			<td>
-									  			No orders to list
-									  			</td>
+									  				<td></td>
+									  				<td></td>
+									  				<td>
+									  					No orders to list
+									  				</td>
 									  			</tr>
 									  			{{/if}}
 									  			
@@ -343,6 +352,7 @@
 									  	</div>
 									  	{{/ifCond}}
 									  	{{!-- Pagination Ends --}}
+									  </div>
 									</div>
 								</div>
 							</div>
@@ -352,5 +362,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-{{> footer/bottom-footer}}
+	{{> footer/bottom-footer}}

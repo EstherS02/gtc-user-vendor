@@ -6,6 +6,8 @@ const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
 var async = require('async');
+const sequelize = require('sequelize');
+
 const vendorPlan = require('../../config/gtc-plan');
 
 export function messages(req, res) {
@@ -50,7 +52,8 @@ export function messages(req, res) {
 						}, {
 							model: model['TalkThread'],
 							include: [{
-								model: model['Talk']
+								model: model['Talk'],
+								// attributes: ['id', 'group_name', 'talk_thread_status', 'status', [sequelize.fn("COUNT", sequelize.col("TalkThread->Talks.id")), "unread_count"]]
 							}]
 						}],
 						order: [
