@@ -3,7 +3,6 @@
 const async = require('async');
 const config = require('../../../config/environment');
 const statusCode = require('../../../config/status');
-const productStatus = require('../../../config/product');
 const marketPlaceType = require('../../../config/marketplace');
 const service = require('../../../api/service');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -122,7 +121,6 @@ export function viewListings(req, res) {
 				pageSize: limit,
 				offset: offset,
 				maxSize: 5,
-				productStatus: productStatus,
 				LoggedInUser: LoggedInUser,
 				type: type,
 				selectedPage: type,
