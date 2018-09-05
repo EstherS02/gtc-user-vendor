@@ -19,7 +19,7 @@
 		$("#gtc-cart-alert").hide();
 	})
 	function changeStatus(e) {
-		window.location.href = '/listings/' + e.name + '?product_status=' + e.value;
+		window.location.href = '/listings/' + e.name + '?status=' + e.value;
 	}
 	function search(e) {
 		window.location.href = '/listings/' + e.name + '?keyword=' + e.value;
@@ -196,13 +196,13 @@
 															{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}
 														</td>
 														<td>${{this.product_price}} CAD</td>
-														{{#ifCond this.product_status '==' ../productStatus.ACTIVE}}
+														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 															<td class="text_green_color">Active</td>
-															{{else ifCond this.product_status '==' ../productStatus.INACTIVE}}
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 															<td class="text_red_color">InActive</td>
-															{{else ifCond this.product_status '==' ../productStatus.SUSPENDED}}
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
 															<td class="text_orange_color">Suspended</td>
-															{{else ifCond this.product_status '==' ../productStatus.SOLDOUT}}
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
 															<td class="text_red_color">Sold Out</td>
 														{{/ifCond}}
 														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
