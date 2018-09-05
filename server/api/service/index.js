@@ -175,6 +175,19 @@ export function updateRecord(modelName, bodyParams, queryObj) {
     })
 }
 
+export function updateRecordNew(modelName, bodyParams, queryObj) {
+    return new Promise((resolve, reject) => {
+        model[modelName].update(bodyParams, {
+            where: queryObj,
+            individualHooks: true
+        }).then(function([rowsUpdate, [updatedRow]]) {
+            return resolve(updatedRow.toJSON());
+        }).catch(function(error) {
+            return reject(error);
+        })
+    });
+}
+
 export function updateManyRecord(modelName, bodyParams, queryObj) {
     return new Promise((resolve, reject) => {
         model[modelName].update(bodyParams, {
