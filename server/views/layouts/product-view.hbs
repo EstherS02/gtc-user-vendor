@@ -48,6 +48,11 @@ $(document).ready(function() {
 			$('#myModal').modal('show');
 		}
 	});
+
+	$('#loginToAskVendor').click(function(){
+		$('#myModal').modal('show');
+	});
+
      $("#gtc-add-to-cart").click(function () {
 		    var cartInfo = {};
 			cartInfo.product_quantity = $('#quantityInput').val();
@@ -215,23 +220,21 @@ function wishUpdate() {
                             <div class="ibox-content">
                             	<div class="row">
                             		<div class="col-md-4" >
-                            			<a class="image-popup-vertical-fit " href="{{product.ProductMedia.[0].url}}" style="border:none">
-											<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
-										</a>
-                            			{{!-- <img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image"> --}}
-										<div class="row">
-											<div class="popup-gallery ">
-											{{#each product.ProductMedia}}
-											{{#if @first}} 
-											{{else}} 
-											{{#ifCond @index '<' 4}}
-											<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
-											{{/ifCond}}
-											{{/if}}
-											{{/each}}
-										</div>
-											
-										</div>
+                            			<div class="popup-gallery ">
+                            				<a href="{{product.ProductMedia.[0].url}}">
+                            					<img src="{{product.ProductMedia.[0].url}}"  onError="imgError(this)" class="m-b-sm img-fluid" >
+                            				</a>
+                            				<div class="row">
+                            					{{#each product.ProductMedia}}
+                            					{{#if @first}} 
+                            					{{else}} 
+                            					{{#ifCond @index '<' 4}}
+                            					<a href="{{this.url}}" ><img src="{{this.url}}" onError="imgError(this)" width="75" class="img-fluid" height="75"></a>
+                            					{{/ifCond}}
+                            					{{/if}}
+                            					{{/each}}
+                            				</div>
+                            			</div>
                             		</div>
                             		<div class="col-md-8">
                             			<div class="product-desc">
@@ -287,7 +290,7 @@ function wishUpdate() {
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 value="{{product.moq}}" min="1" max="{{product.moq}}">
+														 {{#if product.moq }} value="{{product.moq}}" {{else}} value="1"{{/if}} min="1" max="{{product.moq}}">
 														  <input type="hidden" value="{{product.MarketplaceType.code}}" id="typecode" name="typecode"/>
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
@@ -536,7 +539,7 @@ function wishUpdate() {
 															</div>
 															{{/each}}
 														</div>
-														{{#ifCond productRecentReview.count ">" 1}}
+														{{#ifCond productRecentReview.count ">=" 1}}
 														<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
@@ -553,6 +556,7 @@ function wishUpdate() {
 											<div class="m-l-sm block-2">
 												<h3 class="m-b-xs">Ask the Vendor</h3>
 												<p class="text-light-muted">If you`d like to ask the vendor a specific question about this product, please fill out following. It will be sent directly to the vendor.</p>
+												{{#if LoggedInUser.email}}
 												<div class="ask-vendor-form">
 													<form class="form" id="AskVendorForm">
 														<div class="row">
@@ -570,13 +574,18 @@ function wishUpdate() {
 														</div>
 													</form>
 												</div>
+												{{else}}
+												<div class="btn btn-success">
+												<a id="loginToAskVendor" href="javascript:;">Login to Ask the vendor</a>
+												</div>
+												{{/if}}
 											</div>
 										</div>
                             		</div>
                             	</div>
                             </div>
                         </div>
-                        {{#if RelatedProducts.rows}}
+                       
                         <div class="marketplace-type-bg m-t"></div>
                         <div class="marketplace-type-headers  bg-white">
                         	<div class="ibox">
@@ -586,6 +595,7 @@ function wishUpdate() {
                         					<h4 class="header-md-text"><strong>Related Products From This Vendor</strong></h4>
                         				</div>
                         			</div>
+                        			 {{#if RelatedProducts.rows}}
                         			{{#each RelatedProducts.rows}}
                         			<div class="col-md-4 no-padding">
                         				<div class="product-list-body">
@@ -595,8 +605,8 @@ function wishUpdate() {
                         								<tbody>
                         									<tr class="d-flex">
                         										<td class="col-2 img-padding">
-                        											<div class="product-left-col">
-                        												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        											<div class="product-left-col"><a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}">
+                        												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}"></a>
                         											</div>
                         										</td>
                         										<td class="col-10">
@@ -604,7 +614,7 @@ function wishUpdate() {
                         												<div class="row">
                         													<div class="col-8">
                         														<h3>
-                        															<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
+                        															<a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
                         														</h3>
                         													</div>
                         													<div class="col-4">
@@ -638,10 +648,14 @@ function wishUpdate() {
                         					</div>
                         				</div>
                         				{{/each}}
+                        				{{else}}
+                        				<div class="col-md-12">
+											<p class="text-primary text-center no-margins">No Related Products Available.</p>
+										</div>
+							        {{/if}}
                         			</div>
                         		</div>
                         	</div>
-				        {{/if}}
 					</div>
 				</div>
 				<div class="col-md-3 no-padding">

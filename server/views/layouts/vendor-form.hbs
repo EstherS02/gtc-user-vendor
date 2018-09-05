@@ -123,10 +123,12 @@
             var country_id = $('#country').val();
 
             $.ajax({
-                url: '/api/states?country_id=' + country_id,
+                url: '/api/states?country_id=' + country_id + '&field=name&order=asc',
                 type: 'GET',
                 success: function(result) {
                     $("#state").empty();
+                    let selectOptionProvince = `<option selected disabled>Select Province...</option>`;
+                    $('#state').append(selectOptionProvince);
                     for (var i = 0; i < result.rows.length; i++) {
                         var options;
                         options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
@@ -206,7 +208,7 @@
                                     <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Vendor Name <span class="text-danger">*</span></label>
-                                            <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required/>
+                                            <input type="text" name="vendor_name" class="form-control-customized form-control-sm" required="true" autofocus="true">
                                         </div>
                                     </div>
                                 </div>

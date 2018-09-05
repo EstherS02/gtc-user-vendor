@@ -278,7 +278,7 @@ Handlebars.registerHelper('objectKey', function(obj, value_pass, options) {
 		if (value_pass == obj[key]) {
 			var val1 = key.toLowerCase();
 			val = val1.charAt(0).toUpperCase() + val1.slice(1);
-			val = val.replace("order", " Order");
+			val = val.replace("order", " "); //Order
 		}
 	});
 	return val;
@@ -545,10 +545,10 @@ Handlebars.registerHelper('searchCategory', function(element,id) {
     for (var i = 0, len = element.length; i < len; i++) {
         if (element[i].id == id) {
             name = element[i].name;
-            return name;
+            return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
         }
     }
-    return name;
+    return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 });
 
 Handlebars.registerHelper('searchSubCategory', function(element, sub_cat,cat) {
@@ -560,10 +560,15 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat,cat) {
             for (var j = 0, sub_len = name.length; j < sub_len; j++) {
              if(name[j].id == sub_cat){
                 sub_name =name[j].name;
-                return sub_name;
+                return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
                 }
             }
         }
     }
-    return sub_name;
+    return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
+});
+Handlebars.registerHelper('dotdotdot', function(str) {
+  if (str.length > 100)
+    return str.substring(0,100) + '...';
+  return str;
 });

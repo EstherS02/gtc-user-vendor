@@ -541,9 +541,9 @@ p.order-details {
   font-size: 10px;
 }*/
 
-.custom-file-input {
+/*.custom-file-input {
   height: 1px !important;
-}
+}*/
 
 .custom-header-style.topbar p {
   margin-top: 0px;
@@ -1125,4 +1125,15 @@ button.update-btn1{
 
 .note-editor.note-frame.card{
   z-index: 10;
+}
+.verfication_header{
+	padding-top: 20px;
+	 padding-left: 5px; 
+	 float: left;
+}
+.verfication_para{
+	font-size: 13px;
+	padding-bottom: 20px;
+	font-weight:bold;
+	padding-left:5px
 }

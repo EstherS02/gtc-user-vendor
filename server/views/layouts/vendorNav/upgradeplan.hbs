@@ -76,9 +76,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				
 				$('#Plan_cost').html("you have charged " + data.data.cost);
 				$('#myModal').modal('show');
-				//setTimeout(function() {
-					//$('#paymentSuccess').modal('show');
-				//}, 1000);
+				
 			},
 			error: function(error) {
 				$('#complete-order-submit').prop('disabled', false);
@@ -106,7 +104,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			else
 			{
 				
-				//$('#myModal2').modal('show');
+				$('#myModal2').modal('show');
 
 			}
 			
@@ -170,7 +168,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									<span class="cart-message"></span>
 								</div>
 								{{#if LoggedInUser.Vendor.id}}
-									<form id="plandetailsform" name="plandetailsform">
+								<form id="plandetailsform" name="plandetailsform">
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Current Plan:
@@ -377,7 +375,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" value="99.0000">
+									<input type="hidden" name="amount" value="{{userShowplanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="0">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
 						{{/if}}

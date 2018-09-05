@@ -15,21 +15,8 @@
 			}
 		}
 	}
-</script>
-<script type="text/javascript">
-	$(document).ready(function () {
-		
+	$(document).ready(function() {
 		$("#gtc-cart-alert").hide();
-		 $("#serviceListing").submit(function(e) {
-            e.preventDefault();
-            let formInput = $("#serviceListing :input").filter(function(index, element) {
-                return $(element).val() != '';
-            }).serialize();
-           if(formInput!='')
-            {
-              window.location.href = 'listings/services?' + formInput;
-             }
-          });
 	})
 	function changeStatus(e) {
 		window.location.href = '/listings/' + e.name + '?status=' + e.value;
@@ -144,10 +131,10 @@
 										</div>
 								</div>
 								<div class="col-md-5">
-									<form class="form-inline ml-auto pull-right" id="serviceListing">
-										<div class="form-group mx-sm-3 mb-2">
+									<div class="form-inline ml-auto pull-right">
+										<div class="form-group mx-sm-3 mb-2 form-inline">
 											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
-											{{!-- <button type="button" id="changePwd"  class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
+											{{!-- <button type="button" id="changePwd" class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
 										</div>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
@@ -157,7 +144,7 @@
 												</button>
 											</div>
 										</div>
-									</form>
+									</div>
 								</div>
 							</div>
 							<div class="row">
@@ -210,13 +197,13 @@
 														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 														<td>${{this.product_price}} CAD</td>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-														<td class="text_green_color">Active</td>
-														{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-														<td class="text_red_color">InActive</td>
-														{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-														<td class="text_orange_color">Suspended</td>
-														{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-														<td class="text_red_color">Sold Out</td>
+															<td class="text_green_color">Active</td>
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+															<td class="text_red_color">InActive</td>
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+															<td class="text_orange_color">Suspended</td>
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+															<td class="text_red_color">Sold Out</td>
 														{{/ifCond}}
 														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
 													</tr>

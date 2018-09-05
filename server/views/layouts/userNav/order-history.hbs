@@ -1,4 +1,6 @@
 	<script type="text/javascript"> 
+	    var selectedArray=[];
+		
 		$(function () {
 			$("#from").datepicker({
 				format: 'yyyy-mm-dd',
@@ -25,6 +27,14 @@
 					if (formInput != '') {
 						window.location.href = 'order-history?' + formInput;
 					}
+					//else{
+					//	$("#gtc-form-alert").show();
+					 //   $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					  //  $('#gtc-form-alert .form-message').text("Please Choose the option");
+					   // $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+					   // $("#gtc-form-alert").slideUp(500);
+					   // });
+					//}
 				});
 
 				$("#searchOrderhistory1").submit(function (e) {
@@ -34,10 +44,20 @@
 					}).serialize();
 					if (formInput != '') {
 						window.location.href = 'order-history?' + formInput;
+					}else{
+						$("#gtc-form-alert").show();
+					    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					    $('#gtc-form-alert .form-message').text("Please choose the filter options");
+					    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+					    $("#gtc-form-alert").slideUp(500);
+					    });
 					}
 				});
-			});
 
+			});
+		
+
+	
 	</script>
 	<script type="text/javascript">
 		function selectAll(ele) {
@@ -50,7 +70,6 @@
 				}
 			} else {
 				for (var i = 0; i < checkboxes.length; i++) {
-					console.log(i)
 					if (checkboxes[i].type == 'checkbox') {
 						checkboxes[i].checked = false;
 					}
@@ -88,11 +107,48 @@
 			}
 		}
 
-	// function refund(e) {
-	// 	alert("hai");
-	// }
-
-
+      function downloadCSV(args)
+	  {
+		  	var chkArray = [];
+			$(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					chkArray.push($(this).val());
+				}
+			});
+			if(chkArray!='')
+			{
+				var selectedvalues= JSON.stringify(chkArray);
+			}
+			else
+			{
+				var selectedvalues=0;
+			}
+           
+		    $.ajax({
+					type: 'POST',
+					url: '/api/export-csv/orderhistorycsv',
+					data: {"user_id":$('#loginuserid').val(),id: selectedvalues },
+					success: function(data) {
+					   var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+                       var csvURL =  null;
+                       if (navigator.msSaveBlob) {
+                       csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
+                        } else {
+                        csvURL = window.URL.createObjectURL(csvData);
+                        }
+                        var tempLink = document.createElement('a');
+                        tempLink.href = csvURL;
+                        tempLink.setAttribute('download', 'orderhistory.csv');
+                        tempLink.click();
+						
+					},
+					error: function(request, status, error) {
+						console.log('request', request);
+						console.log('status', status);
+					}
+				});
+		  
+	  }
 </script>
 <script type="text/javascript">
 	function selectDatefun(){
@@ -102,7 +158,6 @@
 			$('#to').val(""); 
 		}
 	}
-
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -116,7 +171,9 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>Order History</h2>
+							<h2> Personal Order History 
+							<span class="pull-right" style="font-size:12px"><a href="/order-history">See All</a></span>
+							</h2>
 						</div>
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
@@ -130,7 +187,7 @@
 									<form class="form-inline" id="searchOrderhistory1">
 										<div class="form-group mb-2">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="dateSelect"	>
+												<select class="form-control-customized form-control-sm" name="dateSelect">
 													<option disabled selected >Days</option>
 													<option value="today">Today</option>
 													<option value="yesterday">Yesterday</option>
@@ -153,9 +210,10 @@
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="status">
-													<option disabled selected>STATUS</option>
+													<option disabled selected>Status</option>
 													{{#each orderStatus}}
-													<option value = "{{@key}}">{{@key}}</option>
+													{{!-- <option value = "{{@key}}">{{@key}}</option> --}}
+													<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
 													{{/each}}
 												</select>
 											</div>
@@ -164,10 +222,12 @@
 									</form>
 								</div>
 								<div class="col-md-5">
-									<form class="form-inline ml-auto pull-right" id="searchOrderhistory">
+									<div class="form-inline ml-auto pull-right" >
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
+											<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<input type="hidden" name="user_id" id="loginuserid" value={{LoggedInUser.id}}>
 										</div>
+										<form id="searchOrderhistory">
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 												
@@ -177,7 +237,8 @@
 												</button>
 											</div>
 										</div>
-									</form>
+										</form>
+									   </div>
 								</div>
 							</div>
 							<div class="row">
@@ -189,22 +250,22 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page : 
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
+												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
 									</div>
 								</div>
-								<div class="col-md-12">
+					`			<div class="col-md-12">
 									<div class="table-responsive">
 										<table class="table">
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox">
+														<input type="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Invoice#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -219,66 +280,77 @@
 												</tr>
 											</thead>
 											<tbody>
+												{{#if OrderItems}}
 												{{#each OrderItems}}
 												<tr>
-													<td><input type="checkbox" value="{{this.id}}"></td>
+													<td ><input type="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
-				  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
-				  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
-				  				</td> --}}
-				  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
-				  				<td>Stripe</td>
-				  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
-								  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
-				  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
-				  				<td>${{this.final_price}} CAD</td>
-				  			</tr>
-				  			{{/each}}
-				  			<tr>
-				  				<td colspan="6"></td>
-				  				<td class="text_blue_color">Total Transaction</td>
-				  				<td>${{totalTransaction}} CAD</td>
-				  			</tr>
-				  		</tbody>
-				  	</table>
-				  	{{!-- Pagination starts --}}
-				  	{{#ifCond count '>' queryPaginationObj.limit}}
-				  	<div class="row">
-				  		<div class="col-md-3">
-				  		</div>
-				  		<div class="col-md-7">
-				  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-				  			<nav aria-label="Page navigation example">
-				  				<ul class="pagination justify-content-center">
-				  					{{#unless startFromFirstPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-				  					</li>
-				  					{{/unless}} {{#each pages}}
-				  					<li class="page-item {{#if isCurrent}} active {{/if}}">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-				  					</li>
-				  					{{/each}} {{#unless endAtLastPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-				  					</li>
-				  					{{/unless}}
-				  				</ul>
-				  			</nav>
-				  			{{/pagination}}
-				  		</div>
-				  	</div>
-				  	{{/ifCond}}
-				  	{{!-- Pagination Ends --}}
-				  </div>
+									  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
+									  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
+									  				</td> --}}
+									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+									  				<td>Stripe</td>
+									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+													  <td><a href="/order-track/{{this.id}}">Track Order</a></td>
+									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
+									  				<td>${{this.final_price}} CAD</td>
+									  			</tr>
+									  			{{/each}}
+									  			<tr>
+									  				<td colspan="6"></td>
+									  				<td class="text_blue_color">Total Transaction</td>
+									  				<td>${{totalTransaction}} CAD</td>
+									  			</tr>
+									  			{{else}}
+									  			<tr>
+									  			<td></td>
+									  			<td></td>
+									  			<td>
+									  			No orders to list
+									  			</td>
+									  			</tr>
+									  			{{/if}}
+									  			
+									  		</tbody>
+									  	</table>
+									  	{{!-- Pagination starts --}}
+									  	{{#ifCond count '>' queryPaginationObj.limit}}
+									  	<div class="row">
+									  		<div class="col-md-3">
+									  		</div>
+									  		<div class="col-md-7">
+									  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+									  			<nav aria-label="Page navigation example">
+									  				<ul class="pagination justify-content-center">
+									  					{{#unless startFromFirstPage}}
+									  					<li class="page-item">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+									  					</li>
+									  					{{/unless}} {{#each pages}}
+									  					<li class="page-item {{#if isCurrent}} active {{/if}}">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+									  					</li>
+									  					{{/each}} {{#unless endAtLastPage}}
+									  					<li class="page-item">
+									  						<a class="page-link" href="../order-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+									  					</li>
+									  					{{/unless}}
+									  				</ul>
+									  			</nav>
+									  			{{/pagination}}
+									  		</div>
+									  	</div>
+									  	{{/ifCond}}
+									  	{{!-- Pagination Ends --}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 {{> footer/bottom-footer}}

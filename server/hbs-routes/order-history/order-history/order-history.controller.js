@@ -84,7 +84,7 @@ if (dateSelect) {
 		$between: [start_date, end_date]
 	};
 	queryURI['start_date'] = start_date;
-	queryURI['end_date'] = end_date;
+	// queryURI['end_date'] = end_date;
 }
 
 
@@ -118,7 +118,7 @@ if (dateSelect) {
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
 		queryURI['keyword'] = req.query.keyword;
-		orderQueryObj['invoice_id'] = {
+		orderQueryObj['id'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}

@@ -1,22 +1,18 @@
 'use strict';
 
 const async = require('async');
-const _ = require('lodash');
 const config = require('../../../config/environment');
-const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
-const status = require('../../../config/status');
+const statusCode = require('../../../config/status');
+const marketPlaceType = require('../../../config/marketplace');
 const service = require('../../../api/service');
-const populate = require('../../../utilities/populate');
 const vendorPlan = require('../../../config/gtc-plan');
-var url = require('url');
+const url = require('url');
 
 export function viewListings(req, res) {
 
 	var offset, limit, field, order, page, type;
-	var queryParams = {},
-		LoggedInUser = {};
-	var bottomCategory = {};
+	var queryParams = {}, LoggedInUser = {}, bottomCategory = {};
+
 	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
 	field = "id";
@@ -42,20 +38,19 @@ export function viewListings(req, res) {
 
 
 	if (req.params.type == 'wholesale') {
-		queryParams["marketplace_id"] = 1;
-		type = 'wholesale';
+		queryParams["marketplace_id"] = marketPlaceType['WHOLESALE'];
 	}
 
 	if (req.params.type == 'shop') {
-		queryParams["marketplace_id"] = 2;
+		queryParams["marketplace_id"] = marketPlaceType['PUBLIC'];
 	}
 
 	if (req.params.type == 'services') {
-		queryParams["marketplace_id"] = 3;
+		queryParams["marketplace_id"] = marketPlaceType['SERVICE'];
 	}
 
 	if (req.params.type == 'lifestyle') {
-		queryParams["marketplace_id"] = 4;
+		queryParams["marketplace_id"] = marketPlaceType['LIFESTYLE'];
 	}
 
 	if (req.query.keyword) {
@@ -65,32 +60,23 @@ export function viewListings(req, res) {
 	}
 
 	if (req.query.status) {
-		if (req.query.status == 'ACTIVE')
-			queryParams['status'] = status[req.query.status];
-		if (req.query.status == 'INACTIVE')
-			queryParams['status'] = status[req.query.status];
-		if (req.query.status == 'SUSPENDED')
-			queryParams['status'] = status[req.query.status];
-		if (req.query.status == 'SOLDOUT')
-			queryParams['status'] = status[req.query.status];
-	} else {
-		queryParams['status'] = {
-			'$ne': status["DELETED"]
-		}
+		queryParams['status'] = statusCode[req.query.status]
+	}else{
+        queryParams['status'] = statusCode["ACTIVE"];
 	}
+	
 	var queryObjCategory = {
-		status: status['ACTIVE']
+		status: statusCode['ACTIVE']
 	};
-	// console.log(queryParams)
 	async.series({
 		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+			service.cartHeader(LoggedInUser).then(function(response) {
+				return callback(null, response);
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return callback(null);
+			});
+		},
 		products: function(callback) {
 
 			service.findRows(productModel, queryParams, offset, limit, field, order)
@@ -110,7 +96,7 @@ export function viewListings(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -133,13 +119,13 @@ export function viewListings(req, res) {
 				products: results.products.rows,
 				collectionSize: results.products.count,
 				categories: results.categories,
-				cartheader:results.cartCounts,
+				cartheader: results.cartCounts,
+				statusCode: statusCode,
 				page: page,
 				bottomCategory: bottomCategory,
 				pageSize: limit,
 				offset: offset,
 				maxSize: 5,
-				statusCode: status,
 				LoggedInUser: LoggedInUser,
 				type: type,
 				selectedPage: type,

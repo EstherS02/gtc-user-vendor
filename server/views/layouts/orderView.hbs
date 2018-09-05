@@ -42,7 +42,7 @@
                             } else { return false; }
                         }
 			},
-			tracking_url: {
+			tracking_id: {
 				required: function(){
                             if($("select[name=order_status]").val() == 4){
                             return true;
@@ -63,9 +63,9 @@
 			provider_name: {
 				required: "Please select the carrier name"
 			},
-			tracking_url: {
-				required:"Please enter tracking url",
-				minlength:"Please enter valid url"
+			tracking_id: {
+				required:"Please enter tracking id",
+				minlength:"Please enter valid id( min length 8 char. )"
 			},
 			expected_delivery_date: {
 				required: "Please enter expected delivery date"
@@ -113,7 +113,7 @@
 		error: function (error) {
 			console.log("error", error);
 			$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-cancel-alert .cancel-message').text(error.responseText);
+			$('#gtc-cancel-alert .cancel-message').text('Internal server error.. Please try later.');
 			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
 			});
@@ -180,7 +180,7 @@
 			</div>
 			<div class="row checkout_bg_color ">
 				<div class="col-md-9 checkout_title_color">
-					<h4>ORDER #{{order.purchase_order_id}}
+					<h4>ORDER #{{order.id}}
 						<span class="checkout_title_color_span">({{orderItemsCount}} Item Totals)</span>
 					</h4>
 				</div>
@@ -381,7 +381,8 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
+										  {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 									</div>
 								</div>
 							</div>
@@ -397,7 +398,7 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										   {{#if order.Shipping.provider_name}}
 										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
 										   {{else}}
@@ -420,7 +421,7 @@
 								<div class="col-md-5">
 									<div class="form-group">
 										<div class="input-group">
-											<input type="text" name="tracking_url" value="{{order.Shipping.tracking_url}}" class="form-control-customized form-control-sm">
+											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										</div>
 									</div>
 								</div>
@@ -530,12 +531,15 @@
 								<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
 							</div>
 							{{else}}
+							   {{#ifCond order.order_status "<" orderStatus.DISPATCHEDORDER}}
 							<div class="col-md-7">
 								<p class="shop_subtotal float-right">Your Order Not yet shipped</p>
 							</div>
+							  {{/ifCond}}
 							{{/if}}
 						</div>
 						<hr class="common_margin" />
+                         {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-5">
 								<p class="shop_subtotal">
@@ -546,7 +550,7 @@
 								<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
+                        <hr class="common_margin" />{{/ifCond}}{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -568,7 +572,7 @@
 								<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{/ifCond}} {{#if order.shipped_on}}
+						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -579,7 +583,7 @@
 								<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" />
+						<hr class="common_margin" />	
 						<div class="row">	
 							<div class="col-md-8">
 								<p class="shop_subtotal">
@@ -587,10 +591,10 @@
 								</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{order.Shipping.tracking_url}}</p>
+								<p class="shop_subtotal float-right">{{order.Shipping.tracking_id}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{/if}}
+						<hr class="common_margin" /> {{/ifCond}}
 					</div>
 				</div>
 			</div>
@@ -631,7 +635,11 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" id="submitBtn" disabled="disabled" class="btn btn-small btn-primary"><b>Submit</b></button>
+
+					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
+					<span class="ladda-label">Submit</span>
+					<span class="ladda-spinner"></span>
+					</button>
 				</div>
 			</form>
 		</div>

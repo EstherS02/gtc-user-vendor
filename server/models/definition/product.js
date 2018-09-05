@@ -150,7 +150,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'exchanging_product_quantity',
             allowNull: true
-        },
+		},
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',

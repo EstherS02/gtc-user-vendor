@@ -2,6 +2,41 @@ const auth = Auth();
 $(document).ready(function() {
 	var googleUser = {};
 
+	/*var startGoogleLoginProcess = function() {
+		gapi.load('auth2', function() {
+			auth2 = gapi.auth2.init({
+				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+				cookiepolicy: 'single_host_origin'
+			});
+		});
+	};
+
+	$('#gtc-google-login').click(function() {
+		auth2.grantOfflineAccess().then(signInCallback);
+	});
+
+	function signInCallback(authResult) {
+		if (authResult['code']) {
+			$("#gtc-google-login").off('click');
+			authResult['clientId'] = "334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com";
+			authResult['redirectUri'] = window.location.origin;
+
+			$.ajax({
+				type: 'POST',
+				url: '/auth/google',
+				data: authResult,
+				success: function(result) {
+					window.location.href = "/";
+				},
+				error: function(response, status, error) {
+					$('#signupLog').append('<p class="text-danger text-500">' + response.responseText + '</p>');
+				}
+			});
+		} else {
+			// There was an error.
+		}
+	}*/
+
 	var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
 			// Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -23,6 +58,18 @@ $(document).ready(function() {
 			googleAttachSignin(document.getElementById('modal-gtc-google-login'));
 		});
 	};
+
+	var startGoogleLoginProcessFooter = function() {
+		gapi.load('auth2', function() {
+			// Retrieve the singleton for the GoogleAuth library and set up the client.
+			auth2 = gapi.auth2.init({
+				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+				cookiepolicy: 'single_host_origin'
+			});
+			googleAttachSignin(document.getElementById('footer-modal-gtc-google-login'));
+		});
+	};
+
 
 	function googleAttachSignin(element) {
 		auth2.attachClickHandler(element, {},
@@ -54,6 +101,7 @@ $(document).ready(function() {
 
 	startGoogleLoginProcess();
 	startGoogleLoginProcessModal();
+	startGoogleLoginProcessFooter();
 
 	function decodeJwt(token) {
 		var base64Url = token.split('.')[1];
@@ -112,6 +160,25 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#footer-modal-gtc-linkedin-login').click(function(e) {
+		if (!IN.User.isAuthorized()) {
+			IN.User.authorize(function() {
+				getProfileData();
+			});
+		} else {
+			console.log("Already Login In with LinkedIn");
+		}
+	});
+
+	$('#gtcVerficationLinkedLogin').click(function(e) {
+		if (!IN.User.isAuthorized()) {
+			IN.User.authorize(function() {
+				getProfileData();
+			});
+		} else {
+			console.log("Already Login In with LinkedIn");
+		}
+	});
 	function linkedInSignIn() {
 		if (!IN.User.isAuthorized()) {
 			IN.User.authorize(function() {
@@ -134,7 +201,9 @@ $(document).ready(function() {
 			cookie: true,
 			xfbml: true,
 			version: 'v3.0'
-		});
+		}).then(function(res) {
+			console.log("Res", res);
+		})
 
 		FB.getLoginStatus(function(loginStatus) {
 			console.log(loginStatus);
@@ -189,6 +258,14 @@ $(document).ready(function() {
 		fb_login();
 	});
 
+	$("#footer-modal-gtc-fb-login").click(function() {
+		fb_login();
+	});
+
+	$("#gtcVerficationFbLogin").click(function() {
+		fb_login();
+	});
+
 	var twitterWin;
 	var checkConnect;
 
@@ -198,6 +275,16 @@ $(document).ready(function() {
 	});
 
 	$("#modal-gtc-twitter-login").click(function() {
+		var oAuthURL = "/api/auth/twitter";
+		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+	});
+
+	$("#footer-modal-gtc-twitter-login").click(function() {
+		var oAuthURL = "/api/auth/twitter";
+		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+	});
+
+	$("#gtcVerficationTwitterLogin").click(function() {
 		var oAuthURL = "/api/auth/twitter";
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});
@@ -373,6 +460,78 @@ $(document).ready(function() {
 		}
 	});
 });
+
+$(document).ready(function() {
+	$('#footerModelBtnSignup').prop('disabled', true);
+
+	$('#footerModelInputEmail, #footerModelInputPassword').keyup(function() {
+
+		if ($('#footerModelInputEmail').val() != '' && $('#footerModelInputPassword').val() != '' && $('#footerModelInputTerms').is(":checked")) {
+			$('#footerModelBtnSignup').prop('disabled', false);
+		} else {
+			$('#footerModelBtnSignup').prop('disabled', true);
+		}
+	});
+	$('#footerModelInputTerms').change(function() {
+		if (this.checked == true) {
+			if ($('#footerModelInputEmail').val() != '' && $('#footerModelInputPassword').val() != '' && $('#footerModelInputTerms').is(":checked")) {
+				$('#footerModelBtnSignup').prop('disabled', false);
+			} else {
+				$('#footerModelBtnSignup').prop('disabled', true);
+			}
+		} else {
+			$('#footerModelBtnSignup').prop('disabled', true);
+		}
+
+	});
+
+	$('#footerModelSignUpForm').validate({
+		rules: {
+			first_name: {
+				required: true
+			},
+			password: {
+				required: true,
+				minlength: 8
+			}
+		},
+		submitHandler: function(form) {
+			var newUser = {};
+			newUser.email = $('#footerModelInputEmail').val();
+			newUser.first_name = $('#footerModelInputFirstname').val();
+			newUser.password = $('#footerModelInputPassword').val();
+			newUser.provider = 1;
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/users',
+				data: newUser,
+				success: function(data, text) {
+					console.log(data)
+					auth.login({
+						email: data.email,
+						password: $('#footerModelInputPassword').val()
+					}).then(function(user) {
+						if (user) {
+							var timer = setTimeout(function() {
+								window.location.href = '/user-join';
+							}, 1000);
+						} else {}
+					});
+				},
+				error: function(request, status, error) {
+					$('#footerModelSignUpErrorLog').text(request.responseText);
+
+					setTimeout(function() {
+						$('#footerModelSignUpErrorLog').hide();
+
+					}, 3000);
+				}
+			});
+		}
+	});
+});
+
 
 $(document).ready(function() {
 	$('#searchSubmit').prop('disabled', true);
