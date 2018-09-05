@@ -99,23 +99,25 @@
 
 </html>
 </script>
-   <!-- <button type="button" class="btn btn-primary" id="showtoast">Show Toast</button> -->
-   <script type="text/javascript">
-   var timer = setTimeout(function() {
-        if( {{{DisplayJSON LoggedInUser.id}}} != null) {
-          //  console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
-            socket.emit('user:join', {{{ DisplayJSON LoggedInUser }}});    
-        }
-        socket.on('chat:receive', function(data){
-        if({{LoggedInUser.id}} != data.from_id) {
-          //  console.log("user room emitting..", data);
-            toastr.options.closeButton = true;
-            toastr.options.showEasing = 'easeOutBounce';
-            toastr.options.showMethod = 'slideDown';
-            toastr.options.progressBar = true;
-            toastr.options.closeMethod = 'slideUp'
-            toastr.info(data.message,data.User.first_name, {timeOut: 3000});
-            }     
-        }) 
-    }, 1000);
-   </script>
+<!-- <button type="button" class="btn btn-primary" id="showtoast">Show Toast</button> -->
+<script type="text/javascript">
+var userInfo = {{{DisplayJSON LoggedInUser}}};
+console.log("userInfo", userInfo);
+var timer = setTimeout(function() {
+    if(userInfo && userInfo.id != null) {
+      //  console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
+        socket.emit('user:join', userInfo);    
+    }
+    socket.on('chat:receive', function(data){
+    if(userInfo.id != data.from_id) {
+        console.log("user room emitting..", data);
+        toastr.options.closeButton = true;
+        toastr.options.showEasing = 'easeOutBounce';
+        toastr.options.showMethod = 'slideDown';
+        toastr.options.progressBar = true;
+        toastr.options.closeMethod = 'slideUp'
+        toastr.info(data.message,data.User.first_name, {timeOut: 3000});
+        }     
+    }) 
+}, 1000);
+</script>
