@@ -220,23 +220,21 @@ function wishUpdate() {
                             <div class="ibox-content">
                             	<div class="row">
                             		<div class="col-md-4" >
-                            			<a class="image-popup-vertical-fit " href="{{product.ProductMedia.[0].url}}" style="border:none">
-											<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
-										</a>
-                            			{{!-- <img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" alt="product image"> --}}
-										<div class="row">
-											<div class="popup-gallery ">
-											{{#each product.ProductMedia}}
-											{{#if @first}} 
-											{{else}} 
-											{{#ifCond @index '<' 4}}
-											<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
-											{{/ifCond}}
-											{{/if}}
-											{{/each}}
-										</div>
-											
-										</div>
+                            			<div class="popup-gallery ">
+                            				<a href="{{product.ProductMedia.[0].url}}">
+                            					<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
+                            				</a>
+                            				<div class="row">
+                            					{{#each product.ProductMedia}}
+                            					{{#if @first}} 
+                            					{{else}} 
+                            					{{#ifCond @index '<' 4}}
+                            					<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
+                            					{{/ifCond}}
+                            					{{/if}}
+                            					{{/each}}
+                            				</div>
+                            			</div>
                             		</div>
                             		<div class="col-md-8">
                             			<div class="product-desc">
