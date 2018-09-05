@@ -140,14 +140,24 @@ $(document).ready(function() {
 			});
 	};
 
+	var serialize = function(obj) {
+		var str = [];
+		for (var p in obj)
+			if (obj.hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+			}
+		return str.join("&");
+	}
+
 	$('#gtc-linkedin-login').click(function(e) {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
+		var credentials = {
+			response_type: 'code',
+			client_id: '81epswkuklqmde',
+			redirect_uri: 'http://localhost:9000/api/auth/linkedin',
+			state: '987654321',
+			scope: 'r_basicprofile'
 		}
+		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=auto');
 	});
 
 	$('#modal-gtc-linkedin-login').click(function(e) {
@@ -201,9 +211,7 @@ $(document).ready(function() {
 			cookie: true,
 			xfbml: true,
 			version: 'v3.0'
-		}).then(function(res) {
-			console.log("Res", res);
-		})
+		});
 
 		FB.getLoginStatus(function(loginStatus) {
 			console.log(loginStatus);
@@ -275,7 +283,7 @@ $(document).ready(function() {
 	});
 
 	$("#modal-gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/twitter";
+		var oAuthURL = "/api/auth/twitter"; 
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});
 

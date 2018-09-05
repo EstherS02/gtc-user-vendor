@@ -1,6 +1,5 @@
 (function(XHR) {
     "use strict";
-    const auth = Auth();
     $(document).ready(function() {
         $.ajaxSetup({
             beforeSend: function(xhr) {

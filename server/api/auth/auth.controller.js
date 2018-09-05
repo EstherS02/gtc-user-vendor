@@ -38,6 +38,9 @@ export function twitterAuth(req, res) {
 	});
 }
 
+export function linkedIN(req, res) {
+	console.log("req.query", req.query);
+}
 
 export function twitterCallbackAuth(req, res) {
 	oauth.getOAuthAccessToken(req.query.oauth_token, oauth.token_secret, req.query.oauth_verifier,
