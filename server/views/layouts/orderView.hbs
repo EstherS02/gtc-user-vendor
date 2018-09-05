@@ -382,7 +382,7 @@
 								<div class="form-group">
 									<div class="input-group">
 										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
-										  >
+										  {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 									</div>
 								</div>
 							</div>
@@ -398,7 +398,7 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										   {{#if order.Shipping.provider_name}}
 										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
 										   {{else}}
@@ -421,7 +421,7 @@
 								<div class="col-md-5">
 									<div class="form-group">
 										<div class="input-group">
-											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm">
+											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										</div>
 									</div>
 								</div>
