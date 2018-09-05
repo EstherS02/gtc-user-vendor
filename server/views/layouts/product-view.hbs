@@ -222,14 +222,14 @@ function wishUpdate() {
                             		<div class="col-md-4" >
                             			<div class="popup-gallery ">
                             				<a href="{{product.ProductMedia.[0].url}}">
-                            					<img src="{{product.ProductMedia.[0].url}}" class="m-b-sm img-fluid" >
+                            					<img src="{{product.ProductMedia.[0].url}}"  onError="imgError(this)" class="m-b-sm img-fluid" >
                             				</a>
                             				<div class="row">
                             					{{#each product.ProductMedia}}
                             					{{#if @first}} 
                             					{{else}} 
                             					{{#ifCond @index '<' 4}}
-                            					<a href="{{this.url}}" ><img src="{{this.url}}" width="75" class="img-fluid" height="75"></a>
+                            					<a href="{{this.url}}" ><img src="{{this.url}}" onError="imgError(this)" width="75" class="img-fluid" height="75"></a>
                             					{{/ifCond}}
                             					{{/if}}
                             					{{/each}}
@@ -606,7 +606,7 @@ function wishUpdate() {
                         									<tr class="d-flex">
                         										<td class="col-2 img-padding">
                         											<div class="product-left-col"><a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}">
-                        												<img class="object-fit" src="{{00this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}"></a>
+                        												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}"></a>
                         											</div>
                         										</td>
                         										<td class="col-10">
