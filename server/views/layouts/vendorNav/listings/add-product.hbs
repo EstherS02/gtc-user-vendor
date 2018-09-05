@@ -74,16 +74,22 @@
 
 	$(document).ready(function() {
 
+		var test;
+
 		$("#gtc-cart-alert").hide();
 
 		$("#productImage").click(function(e) {
 			$("#imageUpload").click();
 		});
 
-
 		$("#imageUpload").change(function() {
 			fasterPreview(this);
 		});
+
+		$('#baseImage').on('change', function() {
+            imagesPreview(this);
+            test = 'div.icon';
+        });
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {}; var dataURLFileName, index = 0;
