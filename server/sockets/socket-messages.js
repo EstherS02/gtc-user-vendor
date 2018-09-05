@@ -11,7 +11,7 @@ export function socketMsg(io) {
 	//console.log("userArray", userArray);
 	
 
-	io.on('connection', function(socket) {
+	io.sockets.on('connection', function(socket) {
 		//console.log("socket*********************", socket);
 		//console.log("userArray", userArray);
 		connections.push(socket.id);
@@ -21,7 +21,7 @@ export function socketMsg(io) {
 		// id:  user_id}
 		socket.on('user:join', function(user) {
 
-			//console.log("USER JOIN*******************************", user)
+		//	console.log("USER JOIN*******************************", user)
 			socket.join(user.id);
 			socket.userId = user.id;
 			//console.log("****socket.userId", socket.userId);
@@ -30,7 +30,8 @@ export function socketMsg(io) {
 			} else {
 				console.log("user already connected");
 			}
-			//console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
+
+			console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			socket.broadcast.emit('user:online', userArray);
 			//	userOnline(user);
 		});
@@ -59,7 +60,8 @@ export function socketMsg(io) {
 
 		//{id: 1, user: user_id}
 		socket.on('chat:join', function(thread) {
-			//console.log("CHAT JOIN ON CODE", thread);
+			console.log("CHAT JOIN ON CODE", thread);
+			console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			//console.log("Before talkThreadArray", talkThreadArray);
 			socket.join(thread.id);
 
@@ -83,13 +85,12 @@ export function socketMsg(io) {
 			//console.log("After talkThreadArray", talkThreadArray);
 		});
 		
-		// {id: threadid, message:"Hello", from: user_id, to_id: user_id, to_name: to_username}
+		// {id: threadid, message:"Hello", from: user_id, to_id: user_id}
 		socket.on('chat:send', function(talk) {
 
 			return talkCreate(talk).then(function(result) {
 				//console.log("RESULT", result);
 				result.to_id = talk.to_id;
-				result.to_name = talk.to_name;
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					return threadArrObj.thread == result.talk_thread_id
 				});
@@ -131,7 +132,7 @@ export function socketMsg(io) {
 
 		socket.on('disconnect', function() {
 			//console.log("disconnect", socket.userId);
-			//console.log("userArray in disconnect***********", userArray);
+			console.log("userArray in disconnect***********", userArray);
 			//console.log("clients when disconnect**", io.sockets.clients().server.sockets.adapter.rooms);
 			connections.splice(connections.indexOf(socket), 1);
 		//	console.log("%s length", connections.length);
