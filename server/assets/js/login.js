@@ -71,7 +71,6 @@ $(document).ready(function() {
 	};
 
 
-
 	function googleAttachSignin(element) {
 		auth2.attachClickHandler(element, {},
 			function(googleUser) {
@@ -188,44 +187,6 @@ $(document).ready(function() {
 	};
 
 	window.fbAsyncInit = function() {
-		// FB JavaScript SDK configuration and setup
-		FB.init({
-			appId: '393416147793353', // FB App ID
-			cookie: true, // enable cookies to allow the server to access the session
-			xfbml: true, // parse social plugins on this page
-			version: 'v2.8' // use graph api version 2.8
-		});
-
-		// Check whether the user already logged in
-		FB.getLoginStatus(function(response) {
-			if (response.status === 'connected') {
-				//display user data
-				//getFbUserData();
-			}
-		});
-	};
-
-	// Load the JavaScript SDK asynchronously
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s);
-		js.id = id;
-		js.src = "//connect.facebook.net/en_US/sdk.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-
-	$("#gtc-fb-login").click(function() {
-		FB.login(function(response) {
-			console.log('response', response);
-		}, {
-			scope: 'email',
-			auth_type: 'reauthorize',
-			return_scopes: true
-		});
-	});
-
-	/*window.fbAsyncInit = function() {
 		FB.init({
 			appId: '393416147793353',
 			cookie: true,
@@ -290,7 +251,7 @@ $(document).ready(function() {
 
 	$("#footer-modal-gtc-fb-login").click(function() {
 		fb_login();
-	});*/
+	});
 
 	var twitterWin;
 	var checkConnect;
