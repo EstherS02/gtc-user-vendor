@@ -7,6 +7,6 @@ var controller = require('./export-csv.controller');
 
 
 router.get('/',auth.isAuthenticated(), controller.exportcsv);
-
+router.post('/orderhistorycsv', controller.orderHistoryexportcsv);
 
 module.exports = router;

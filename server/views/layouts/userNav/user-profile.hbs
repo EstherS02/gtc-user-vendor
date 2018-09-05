@@ -1,9 +1,5 @@
 <style>
-	#imageUpload {
-		display: none;
-	}
-
-	#profileImage,
+    #profileImage,
 	#userUpdateBtn,
 	#userCancelBtn,
 	#changePwd {
@@ -139,11 +135,11 @@
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
 
-			if ($('#contact_email').val()) {
+		
 				var vendorUpdate = {}
 				vendorUpdate.contact_email = $('#contact_email').val();
 				data.vendorUpdate = JSON.stringify(vendorUpdate);
-			}
+			
 
 			if ($('#b_address1').val()) {
 				var billingUpdate = {};
@@ -383,7 +379,7 @@
 												<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
 												<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 												<p id="profileImage" class="text_blue_color">Change Avatar</p>
-												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" capture>
+												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" style="display:none" capture>
 											</div>
 										</div>
 										<br/>

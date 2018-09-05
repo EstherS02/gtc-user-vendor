@@ -116,6 +116,7 @@ export function viewListings(req, res) {
 				collectionSize: results.products.count,
 				categories: results.categories,
 				cartheader: results.cartCounts,
+				statusCode: statusCode,
 				page: page,
 				bottomCategory: bottomCategory,
 				pageSize: limit,

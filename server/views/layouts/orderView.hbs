@@ -42,7 +42,7 @@
                             } else { return false; }
                         }
 			},
-			tracking_url: {
+			tracking_id: {
 				required: function(){
                             if($("select[name=order_status]").val() == 4){
                             return true;
@@ -63,7 +63,7 @@
 			provider_name: {
 				required: "Please select the carrier name"
 			},
-			tracking_url: {
+			tracking_id: {
 				required:"Please enter tracking id",
 				minlength:"Please enter valid id( min length 8 char. )"
 			},
@@ -381,7 +381,8 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm">
+										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
+										  {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 									</div>
 								</div>
 							</div>
@@ -397,7 +398,7 @@
 							<div class="col-md-5">
 								<div class="form-group">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										   {{#if order.Shipping.provider_name}}
 										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
 										   {{else}}
@@ -420,7 +421,7 @@
 								<div class="col-md-5">
 									<div class="form-group">
 										<div class="input-group">
-											<input type="text" name="tracking_url" value="{{order.Shipping.tracking_url}}" class="form-control-customized form-control-sm">
+											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
 										</div>
 									</div>
 								</div>
@@ -530,9 +531,11 @@
 								<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
 							</div>
 							{{else}}
+							   {{#ifCond order.order_status "<" orderStatus.DISPATCHEDORDER}}
 							<div class="col-md-7">
 								<p class="shop_subtotal float-right">Your Order Not yet shipped</p>
 							</div>
+							  {{/ifCond}}
 							{{/if}}
 						</div>
 						<hr class="common_margin" />
@@ -588,7 +591,7 @@
 								</p>
 							</div>
 							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{order.Shipping.tracking_url}}</p>
+								<p class="shop_subtotal float-right">{{order.Shipping.tracking_id}}</p>
 							</div>
 						</div>
 						<hr class="common_margin" /> {{/if}}
