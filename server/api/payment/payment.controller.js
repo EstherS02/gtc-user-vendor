@@ -689,8 +689,6 @@ export function refundOrder(req, res) {
 
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
-	
-	console.log("---------------------------------------", order_id,refundAmt);
 
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");

@@ -395,8 +395,7 @@ export function userProfile(req, res) {
                 return Promise.all(addressUpdatePromises);
             }
         }).then(function(shippingUpdatedRow){
-            if (req.body.vendorUpdate) {
-
+            if (req.user.Vendor) {
                 var vendorId, vendorUpdatePromises = [];
 
                 var vendorUpdate = JSON.parse(req.body.vendorUpdate);
