@@ -71,24 +71,9 @@ select {
 .form-control-customized:focus {
 	color: #495057;
 	background-color: #f3f3f2;
-	border-color: #f3f3f2;
+	border-color: #f49d3f;
 	outline: 0;
-}
-.form-control-customized,
-.form-control-customized:focus,
-.has-error .form-control-customized:focus,
-.has-success .form-control-customized:focus,
-.has-warning .form-control-customized:focus,
-.navbar-collapse,
-.navbar-form,
-.navbar-form-custom .form-control-customized:focus,
-.navbar-form-custom .form-control-customized:hover,
-.open .btn.dropdown-toggle,
-.panel,
-.popover,
-.progress,
-.progress-bar {
-	box-shadow: none;
+	box-shadow: 0 0 0 0.1rem rgb(244, 157, 63);
 }
 .form-control,
 .single-line {
@@ -932,9 +917,9 @@ select {
 	border-top: 10px solid black;
 	opacity: 0.5;
 }
-.custom-select:focus {
+/*.custom-select:focus {
 	box-shadow: none;
-}
+}*/
 .custom-select {
 	padding: .25rem .5rem;
 }
@@ -947,6 +932,12 @@ select::-ms-expand {
 }
 label {
 	margin-bottom: 0;
+}
+.input-group>.custom-file {
+	height: calc(1.8125rem + 2px);
+}
+.custom-file-input {
+	height: calc(1.8125rem + 2px);	
 }
 .customized-file-label {
 	border: 0;

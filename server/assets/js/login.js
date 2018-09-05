@@ -2,6 +2,41 @@ const auth = Auth();
 $(document).ready(function() {
 	var googleUser = {};
 
+	/*var startGoogleLoginProcess = function() {
+		gapi.load('auth2', function() {
+			auth2 = gapi.auth2.init({
+				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+				cookiepolicy: 'single_host_origin'
+			});
+		});
+	};
+
+	$('#gtc-google-login').click(function() {
+		auth2.grantOfflineAccess().then(signInCallback);
+	});
+
+	function signInCallback(authResult) {
+		if (authResult['code']) {
+			$("#gtc-google-login").off('click');
+			authResult['clientId'] = "334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com";
+			authResult['redirectUri'] = window.location.origin;
+
+			$.ajax({
+				type: 'POST',
+				url: '/auth/google',
+				data: authResult,
+				success: function(result) {
+					window.location.href = "/";
+				},
+				error: function(response, status, error) {
+					$('#signupLog').append('<p class="text-danger text-500">' + response.responseText + '</p>');
+				}
+			});
+		} else {
+			// There was an error.
+		}
+	}*/
+
 	var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
 			// Retrieve the singleton for the GoogleAuth library and set up the client.
@@ -34,6 +69,8 @@ $(document).ready(function() {
 			googleAttachSignin(document.getElementById('footer-modal-gtc-google-login'));
 		});
 	};
+
+
 
 	function googleAttachSignin(element) {
 		auth2.attachClickHandler(element, {},
@@ -151,12 +188,52 @@ $(document).ready(function() {
 	};
 
 	window.fbAsyncInit = function() {
+		// FB JavaScript SDK configuration and setup
+		FB.init({
+			appId: '393416147793353', // FB App ID
+			cookie: true, // enable cookies to allow the server to access the session
+			xfbml: true, // parse social plugins on this page
+			version: 'v2.8' // use graph api version 2.8
+		});
+
+		// Check whether the user already logged in
+		FB.getLoginStatus(function(response) {
+			if (response.status === 'connected') {
+				//display user data
+				//getFbUserData();
+			}
+		});
+	};
+
+	// Load the JavaScript SDK asynchronously
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+
+	$("#gtc-fb-login").click(function() {
+		FB.login(function(response) {
+			console.log('response', response);
+		}, {
+			scope: 'email',
+			auth_type: 'reauthorize',
+			return_scopes: true
+		});
+	});
+
+	/*window.fbAsyncInit = function() {
 		FB.init({
 			appId: '393416147793353',
 			cookie: true,
 			xfbml: true,
 			version: 'v3.0'
-		});
+		}).then(function(res) {
+			console.log("Res", res);
+		})
 
 		FB.getLoginStatus(function(loginStatus) {
 			console.log(loginStatus);
@@ -213,7 +290,7 @@ $(document).ready(function() {
 
 	$("#footer-modal-gtc-fb-login").click(function() {
 		fb_login();
-	});
+	});*/
 
 	var twitterWin;
 	var checkConnect;

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'provider_name',
             allowNull: true
         },
-        tracking_url: {
-            type: DataTypes.TEXT,
-            field: 'tracking_url',
+		tracking_id: {
+            type: DataTypes.STRING(64),
+            field: 'tracking_id',
             allowNull: true
         },
         status: {

@@ -52,7 +52,7 @@
 			}else{
 				$("#gtc-form-alert").show();
 			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			    $('#gtc-form-alert .form-message').text("Please Choose the option");
+			    $('#gtc-form-alert .form-message').text("Please choose the filter options");
 			    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
 			    $("#gtc-form-alert").slideUp(500);
 			    });
@@ -255,7 +255,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox">
+														<input type="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Invoice#</th>
 													<th style="display:none" scope="col">purchase order id</th>

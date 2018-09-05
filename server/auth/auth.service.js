@@ -178,7 +178,6 @@ function hasRole(roleRequired) {
 			status: status['ACTIVE']
 		},
 		attributes: ['id', 'name', 'code', 'currency_id', 'status']
-		/*attributes: ['id', 'name', 'code', 'continent_id', 'currency_id', 'status']*/
 	}, {
 		model: model["Currency"],
 		where: {
@@ -190,6 +189,7 @@ function hasRole(roleRequired) {
 		where: {
 			status: status['ACTIVE']
 		},
+		required: false,
 		attributes: ['id', 'country_id', 'timezone', 'timezone_abbreviation', 'status']
 	}, {
 		model: model["VendorPlan"],
