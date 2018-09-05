@@ -181,7 +181,8 @@ export function importAliExpress(req, res) {
 
 	(async () => {
 		const browser = await puppeteer.launch({
-			headless: true
+			headless: true,
+			args: ['--no-sandbox']
 		});
 
 		const loginPage = await browser.newPage();
@@ -252,7 +253,7 @@ export function importAliExpress(req, res) {
 										user: req.user
 									});
 									await browser.close();
-									return res.status(200).send("AliExpress product import process started.");
+									return res.status(200).send("We started importing products from AliExpress. Please check it few minutes later.");
 								} else {
 									return res.status(403).send("Limit exceeded to add product.");
 								}

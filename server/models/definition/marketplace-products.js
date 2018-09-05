@@ -33,12 +33,6 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'status',
 			allowNull: false
 		},
-
-		product_status: {
-            type: DataTypes.INTEGER,
-            field: 'product_status',
-            allowNull: false
-        },
 		publish_date: {
 			type: DataTypes.DATEONLY,
 			field: 'publish_date',

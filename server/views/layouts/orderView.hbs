@@ -536,6 +536,7 @@
 							{{/if}}
 						</div>
 						<hr class="common_margin" />
+                         {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-5">
 								<p class="shop_subtotal">
@@ -546,7 +547,7 @@
 								<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
+                        <hr class="common_margin" />{{/ifCond}}{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -631,7 +632,11 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" id="submitBtn" disabled="disabled" class="btn btn-small btn-primary"><b>Submit</b></button>
+
+					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
+					<span class="ladda-label">Submit</span>
+					<span class="ladda-spinner"></span>
+					</button>
 				</div>
 			</form>
 		</div>

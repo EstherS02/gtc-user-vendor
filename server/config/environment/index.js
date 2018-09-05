@@ -76,7 +76,7 @@ var all = {
 			stripeConnectEmail: 'STRIPE-CONNECT-MAIL',
 			payoutMail: 'PAYOUT-MAIL',
 			askToVendor: 'ASK-TO-VENDOR',
-            returnRequest: 'USER-RETURN-REQUEST'
+			returnRequest: 'USER-RETURN-REQUEST'
 		}
 	},
 	jobs: {
@@ -110,6 +110,14 @@ var all = {
 		googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
 	},
 
+	loginFaceBook: {
+		fbClientId: process.env.FB_CLIENT_ID,
+		fbClientSecret: process.env.FB_CLIENT_SECRET_KEY,
+		fbFields: ['id', 'email', 'first_name', 'last_name', 'link', 'name'],
+		fbAccessTokenUrl: 'https://graph.facebook.com/v2.7/oauth/access_token',
+		fbGraphApiUrl: 'https://graph.facebook.com/v2.7/me?fields='
+	},
+
 	mysql: {
 		host: process.env.MYSQL_HOST,
 		database: process.env.MYSQL_DATABASE,
@@ -140,7 +148,7 @@ var all = {
 	},
 
 	payPalConfig: {
-	    'mode': 'sandbox', //sandbox or live
+		'mode': 'sandbox', //sandbox or live
 		'client_id': process.env.PAYPAL_CLIENT_ID,
 		'client_secret': process.env.PAYPAL_SECRET_KEY
 	},

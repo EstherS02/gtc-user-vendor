@@ -541,7 +541,7 @@ function wishUpdate() {
 															</div>
 															{{/each}}
 														</div>
-														{{#ifCond productRecentReview.count ">" 1}}
+														{{#ifCond productRecentReview.count ">=" 1}}
 														<a href="/{{selectedPage}}/{{product.product_slug}}/{{product.id}}/reviews" class="btn btn-success alignright m-t-xs rounded btn-sm">See All Reviews</a>
 														{{else}}
 														<span class="text-sm">There is no review about this product.</span>
@@ -587,7 +587,7 @@ function wishUpdate() {
                             	</div>
                             </div>
                         </div>
-                        {{#if RelatedProducts.rows}}
+                       
                         <div class="marketplace-type-bg m-t"></div>
                         <div class="marketplace-type-headers  bg-white">
                         	<div class="ibox">
@@ -597,6 +597,7 @@ function wishUpdate() {
                         					<h4 class="header-md-text"><strong>Related Products From This Vendor</strong></h4>
                         				</div>
                         			</div>
+                        			 {{#if RelatedProducts.rows}}
                         			{{#each RelatedProducts.rows}}
                         			<div class="col-md-4 no-padding">
                         				<div class="product-list-body">
@@ -606,8 +607,8 @@ function wishUpdate() {
                         								<tbody>
                         									<tr class="d-flex">
                         										<td class="col-2 img-padding">
-                        											<div class="product-left-col">
-                        												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        											<div class="product-left-col"><a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}">
+                        												<img class="object-fit" src="{{00this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}"></a>
                         											</div>
                         										</td>
                         										<td class="col-10">
@@ -615,7 +616,7 @@ function wishUpdate() {
                         												<div class="row">
                         													<div class="col-8">
                         														<h3>
-                        															<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
+                        															<a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
                         														</h3>
                         													</div>
                         													<div class="col-4">
@@ -649,14 +650,14 @@ function wishUpdate() {
                         					</div>
                         				</div>
                         				{{/each}}
+                        				{{else}}
+                        				<div class="col-md-12">
+											<p class="text-primary text-center no-margins">No Related Products Available.</p>
+										</div>
+							        {{/if}}
                         			</div>
                         		</div>
                         	</div>
-                        	{{!-- {{else}} --}}
-                        	<div class="col-md-12">
-								<p class="text-primary text-center no-margins">No Related Products Available.</p>
-							</div>
-				        {{/if}}
 					</div>
 				</div>
 				<div class="col-md-3 no-padding">
