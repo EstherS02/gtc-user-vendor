@@ -17,6 +17,7 @@ const marketplace = require('../../config/marketplace.js');
 const marketplaceType = require('../../config/marketplace_type.js');
 const planPermissions = require('../../config/plan-marketplace-permission.js');
 const status = require('../../config/status');
+const productStatus = require('../../config/product');
 const roles = require('../../config/roles');
 const mws = require('mws-advanced');
 
@@ -612,6 +613,7 @@ export function addProduct(req, res) {
 		req.query.vendor_id = req.user.Vendor.id;
 	}
 	req.query.status = status['ACTIVE'];
+	req.query.product_status = productStatus['ACTIVE'];
 	req.query.publish_date = new Date();
 	req.query.product_slug = string_to_slug(req.query.product_name);
 	req.query.created_on = new Date();
@@ -706,11 +708,12 @@ export function editProduct(req, res) {
 
 	var id = req.query.product_id;
 
-	var stat = req.body.status;
-	delete req.body.status;
+	var product_status = req.body.product_status;
+	delete req.body.product_status;
 
-	req.body.status = status[stat];
 	var bodyParams = req.body;
+	bodyParams['status'] = status.ACTIVE;
+	bodyParams['product_status'] = productStatus[product_status];
 
 	model["Product"].update(bodyParams, {
 		where: {
