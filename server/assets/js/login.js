@@ -170,6 +170,15 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#gtcVerficationLinkedLogin').click(function(e) {
+		if (!IN.User.isAuthorized()) {
+			IN.User.authorize(function() {
+				getProfileData();
+			});
+		} else {
+			console.log("Already Login In with LinkedIn");
+		}
+	});
 	function linkedInSignIn() {
 		if (!IN.User.isAuthorized()) {
 			IN.User.authorize(function() {
@@ -253,6 +262,10 @@ $(document).ready(function() {
 		fb_login();
 	});
 
+	$("#gtcVerficationFbLogin").click(function() {
+		fb_login();
+	});
+
 	var twitterWin;
 	var checkConnect;
 
@@ -267,6 +280,11 @@ $(document).ready(function() {
 	});
 
 	$("#footer-modal-gtc-twitter-login").click(function() {
+		var oAuthURL = "/api/auth/twitter";
+		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+	});
+
+	$("#gtcVerficationTwitterLogin").click(function() {
 		var oAuthURL = "/api/auth/twitter";
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});
