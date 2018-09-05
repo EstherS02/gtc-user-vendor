@@ -30,14 +30,20 @@
 					type: 'POST',
 					url: '/api/product/import-aliexpress',
 					data: data,
-					success: function(data, response) {
+					success: function(data) {
 						$('#btnAliExpressFaSpinner').hide();
-						 $('#importAliExpressModal').modal('toggle');
-						$('#logMessage').append('<p class="text-center text-primary m-b-xs">products added successfully.</p>');
+						$('#importAliExpressModal').modal('toggle');
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
+						setTimeout(function() {
+							$("#logMessage p").remove();
+						}, 10000);
 					},
 					error: function(response, status, error) {
 						$('#btnAliExpressFaSpinner').hide();
 						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						setTimeout(function() {
+							$("#popupError p").remove();
+						}, 10000);
 					}
 				});
 			}
