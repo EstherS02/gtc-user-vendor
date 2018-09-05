@@ -1,4 +1,6 @@
 	<script type="text/javascript"> 
+	    var selectedArray=[];
+		
 		$(function () {
 			$("#from").datepicker({
 				format: 'yyyy-mm-dd',
@@ -51,8 +53,15 @@
 					    });
 					}
 				});
-			});
 
+			});
+		function singleSelect(id)
+		{
+			selectedArray.push(id);
+			
+		}
+
+	
 	</script>
 	<script type="text/javascript">
 		function selectAll(ele) {
@@ -106,21 +115,31 @@
       function downloadCSV(args)
 	  {
 		  console.log("enter the loopss");
-		  	$.ajax({
+		  console.log("selectedarrays:::"+"[" + selectedArray + "]");
+		  console.log("selectedarrays:111:"+selectedArray);
+		  if(selectedArray!='')
+		  {
+             var  selectedvalues = "[" + selectedArray + "]";
+		  }
+		  else
+		  {
+			   var  selectedvalues = 0;
+		  }
+		  $.ajax({
 					type: 'POST',
 					url: '/api/export-csv/orderhistorycsv',
-					data: {"user_id":$('#loginuserid').val()},
+					data: {"user_id":$('#loginuserid').val(),id: selectedvalues },
 					success: function(data) {
 					   var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
                        var csvURL =  null;
                        if (navigator.msSaveBlob) {
-                       csvURL = navigator.msSaveBlob(csvData, 'download.csv');
+                       csvURL = navigator.msSaveBlob(csvData, 'orderhistory.csv');
                         } else {
                         csvURL = window.URL.createObjectURL(csvData);
                         }
                         var tempLink = document.createElement('a');
                         tempLink.href = csvURL;
-                        tempLink.setAttribute('download', 'download.csv');
+                        tempLink.setAttribute('download', 'orderhistory.csv');
                         tempLink.click();
 						
 					},
@@ -130,14 +149,6 @@
 					}
 				});
 	  }
-
-
-	   
-	// function refund(e) {
-	// 	alert("hai");
-	// }
-
-
 </script>
 <script type="text/javascript">
 	function selectDatefun(){
@@ -253,7 +264,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox">
+														<input type="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Invoice#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -271,7 +282,7 @@
 												{{#if OrderItems}}
 												{{#each OrderItems}}
 												<tr>
-													<td><input type="checkbox" value="{{this.id}}"></td>
+													<td ><input type="checkbox" value="{{this.id}}" onchange="singleSelect({{this.id}});"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
 									  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
