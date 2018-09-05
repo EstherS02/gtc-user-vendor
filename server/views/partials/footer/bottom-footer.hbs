@@ -5,29 +5,22 @@
 
 <script>
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	console.log(userInfo)
 	$(document).ready(function() {
 		$("#footerSignup").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
+			$('#myModal').modal('show');
 		});
 
 		$("#trackOrderSignup").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
+			$('#myModal').modal('show');
 		});
 
 		$("#wishlistSignup").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
+			$('#myModal').modal('show');
 		});
 
 		$("#shoppingSignup").click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
+			$('#myModal').modal('show');
 		});
 	});
 </script>
@@ -94,12 +87,15 @@
                                 <ul class="footer-menu-list">
                                     {{#if LoggedInUser.id}}
                                     <li><a href="/user/my-profile">My Account</a></li>
+									<li ><a href="/order-track">Track your Order</a></li>
+                                    <li ><a href="/wishlist">Wishlist</a></li>
+                                    <li ><a href="/cart">Shopping Cart</a></li>
                                     {{else}}
                                     <li id="footerSignup"><a href="javascript:;">Sign Up / Sign In</a></li>
-                                    {{/if}}
                                     <li id="trackOrderSignup"><a href="javascript:;">Track your Order</a></li>
                                     <li id="wishlistSignup"><a href="javascript:;">Wishlist</a></li>
                                     <li id="shoppingSignup"><a href="javascript:;">Shopping Cart</a></li>
+									{{/if}}
                                 </ul>
                             </div>
                         </div>
@@ -221,7 +217,7 @@
                                                     <form id="footerModelSignUpForm" class="form">
                                                         <div class="row">
                                                             <div class="col">
-                                                                <div class="form-group m-b-xs">;k
+                                                                <div class="form-group m-b-xs">
                                                                     <input type="email" id="footerModelInputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
                                                                         placeholder="Email" required="true">
                                                                 </div>

@@ -135,7 +135,7 @@ export function product(req, res) {
 			var includeArr = [];
 			var field = "created_on";
 			var queryObj = {
-				// category_id: categoryID,
+				category_id: categoryID,
 				vendor_id: vendorID,
 				id: {
 					$ne: productID
@@ -144,6 +144,8 @@ export function product(req, res) {
 					$ne: marketplace['WHOLESALE']
 				}
 			};
+			// console.log("-=-=-========================------",queryObj)
+			
 
 			service.findAllRows(productModel, includeArr, queryObj, 0, 9, field, order)
 				.then(function(RelatedProducts) {
@@ -536,7 +538,6 @@ export function GetProductReview(req, res) {
 
 			queryObj['status'] = status['ACTIVE'];
 			queryObj['product_id'] = productID;
-
 			productService.productReviews(queryObj, offset, limit, 'created_on', 'DESC')
 				.then((productLatestReview) => {
 					return callback(null, productLatestReview);
