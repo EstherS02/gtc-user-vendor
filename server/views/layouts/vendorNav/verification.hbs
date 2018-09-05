@@ -6,19 +6,21 @@
 		$("#img4").hide();
 
 		var formInputFile = $('#verificationForm input[type="file"]')
+		var formLabelPersonalId=$('label[name="pId"]').html().length;
+		var formLabelPersonalAddress=$('label[name="pAddress"]').html().length;
+		var formLabelBusinessId=$('label[name="bId"]').html().length;
+		var formLabelBusinessAddress=$('label[name="bAddress"]').html().length;
+		console.log(formLabelBusinessAddress,formLabelBusinessId,formLabelPersonalAddress,formLabelPersonalId)
 		var formSubmitBtn = $("#verificationForm button[type='submit']");
 		var submitBtnStatus = false;
 
 		$("#gtc-cart-alert").hide();
 
 		$('#resetForm').click(function() {
-			//if (confirm("Want to clear?")) {
 			formInputFile.val('');
 			$('#verificationForm input[type="radio"]').val('');
 			formInputFile.siblings("label").text("")
-			// }
 		});
-
 
 		formInputFile.change(function() {
 			var length = formInputFile.length;
@@ -26,7 +28,10 @@
 				if (formInputFile[i].value.trim().length == 0) {
 					submitBtnStatus = false;
 					break;
-				} else {
+				} else if (formLabelPersonalId==0 && formLabelBusinessId==0 && formLabelBusinessId==0 && formLabelBusinessAddress==0) {
+					submitBtnStatus = false;
+					break;
+				}else{
 					submitBtnStatus = true;
 				}
 			}
@@ -181,10 +186,37 @@
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
-
 						<div class="content-body">
 							<form role="form" id="verificationForm">
-								<h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
+								<div class="row">
+									<div class="col-5">
+										<h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
+									</div>
+									<div class="col-7">
+										<p class="verification-incomplete">
+											{{#if verification.vendor_verified_status}}
+												{{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
+													<span class="id-verified">
+														<i class="fas fa-check-circle"></i>
+													</span>
+													<b>Your Document verification request is approved</b>
+													{{else ifCond verificationStatus.WAITING "==" verification.vendor_verified_status}}
+													<span class="exclamation">
+														<i class="fas fa-exclamation-circle"></i>
+													</span>Your Document verification request is awaiting
+											{{else}}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>You still have incomplete items to address below
+												{{/ifCond}}
+											{{else}}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>You haven't submitted documents yet{{/if}}
+										</p>
+									</div>
+								</div>
+								{{!-- <h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
 								<p class="verification-incomplete">
 									{{#if verification.vendor_verified_status}}
 										{{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
@@ -205,22 +237,26 @@
 										<span class="exclamation">
 											<i class="fas fa-exclamation-circle"></i>
 										</span>You haven't submitted documents yet{{/if}}
-								</p>
+								</p> --}}
 								<div class="alert" id="gtc-cart-alert">
 									<button type="button" class="close" data-dismiss="alert">
 										<span aria-hidden="true">&times;</span>
 									</button>
 									<span class="cart-message"></span>
 								</div>
-								<p style="font-size: 13px;">
+								<p style="font-size: 13px;padding-left:5px">
 									Global Trade Connects requires all vendor to go through a several step process of documentation submission in order to verify
 									their ownership of the business they are representing. Please submit the following 4 peices of documentation to
 									verify your ownership of this business.
 								</p>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
-									<p class="verification-incomplete">
+									<div class="col-5">
+									<h5 class="gtc-title verfication_header"> Personal ID Verification</h5>
+
+									</div>
+									<div class="col-7">
+										<p class="verification-incomplete">
 										{{#if verification.personal_id_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status }}
 												<span class="exclamation">
@@ -245,11 +281,38 @@
 												<i class="fas fa-exclamation-circle"></i>
 											</span>You haven't submitted this yet. {{/if}}
 									</p>
+									</div>
+									{{!-- <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
+									<p class="verification-incomplete">
+										{{#if verification.personal_id_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status }}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '==' verification.personal_id_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved</b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status }}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_id_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.personal_id_verification_file_status }}
+										{{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p> --}}
 								</div>
-								<p style="font-size: 13px; font-weight: bold; padding-bottom: 20px;">
+								<p class="verfication_para">
 									Choose 1 of the 3 following type of ID to upload to verify your personal identity
 								</p>
-								<div class="col-md-8">
+								<div class="col-md-10">
 									<input type="radio" value="passport" name="personal_id_verification_file_type" {{setChecked "passport" verification.personal_id_verification_file_type}}
 									/>
 									<label for="passport" class="upload-id-card">Passport </label>
@@ -266,9 +329,9 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf">
 											{{#if verification.personal_id_verification_file_link }}
-												<label class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
+												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
 											{{else}}
-												<label class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
+												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Choose file</label>
 											{{/if}}
 										</div>
 										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px">
@@ -286,8 +349,12 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
-									<p class="verification-incomplete">
+									<div class="col-5">
+									<h5 class="gtc-title verfication_header">Upload Bill With Personal Address</h5>
+
+									</div>
+									<div class="col-7">
+										<p class="verification-incomplete">
 										{{#if verification.personal_address_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
 												<span class="exclamation">
@@ -311,18 +378,44 @@
 												<i class="fas fa-exclamation-circle"></i>
 											</span>You haven't submitted this yet. {{/if}}
 									</p>
+									</div>
+									{{!-- <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
+									<p class="verification-incomplete">
+										{{#if verification.personal_address_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '=='verification.personal_address_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved</b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status}}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.personal_address_verification_file_status }} {{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p> --}}
 								</div>
-								<p style="font-size: 13px; padding-bottom: 20px;">
+								<p class="verfication_para">
 									Please atleast one utility bill which has the name of the Personal Address you've registered on it
 								</p>
-								<div class="col-md-8">
+								<div class="col-md-10">
 									<div class="input-group">
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.personal_address_verification_file_link }}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
+												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
 											{{else}}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Choose file</label>
+												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Choose file</label>
 											{{/if}}
 
 										</div>
@@ -342,7 +435,38 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">
+									<div class="col-5">
+										<h5 class="gtc-title verfication_header">
+											Business License / Articles Of Incorporation
+										</h5>
+									</div>
+									<div class="col-7">
+										<p class="verification-incomplete">
+										{{#if verification.business_verification_file_status}}
+											{{#ifCond verificationStatus.WAITING '==' verification.business_verification_file_status }}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>Your Id verification request is awaiting approved {{/ifCond}}
+											{{#ifCond verificationStatus.APPROVED '==' verification.business_verification_file_status
+											 }}
+												<span class="id-verified">
+													<i class="fas fa-check-circle"></i>
+												</span>
+												<b>Your Id verification request is approved </b>
+											{{/ifCond}}
+											{{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status}}
+												<span class="id-verified">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>
+												{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+										{{/if}}
+										{{#if verification.business_verification_file_status }} {{else}}
+											<span class="exclamation">
+												<i class="fas fa-exclamation-circle"></i>
+											</span>You haven't submitted this yet. {{/if}}
+									</p>
+									</div>
+									{{!-- <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">
 										Business License / Articles Of Incorporation
 									</h5>
 									<p class="verification-incomplete">
@@ -368,20 +492,20 @@
 											<span class="exclamation">
 												<i class="fas fa-exclamation-circle"></i>
 											</span>You haven't submitted this yet. {{/if}}
-									</p>
+									</p> --}}
 								</div>
-								<p style="font-size: 13px; padding-bottom: 20px;">
+								<p class="verfication_para">
 									Submit at least one piece of documentation which confirms you have an active business license, or an article of incorporation.
 								</p>
-								<div class="col-md-8">
+								<div class="col-md-10">
 									<div class="input-group">
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
 
 											{{#if verification.business_verification_file_link }}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
+												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
 											{{else}}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Choose file</label>
+												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Choose file</label>
 
 											{{/if}}
 
@@ -400,8 +524,38 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with address</h5>
-									<p class="verification-incomplete">
+									<div class="col-5">
+									<h5 class="gtc-title verfication_header">Upload bill with address</h5>
+
+									</div>
+									<div class="col-7">
+										<p class="verification-incomplete">
+											{{#if verification.business_address_verification_file_status}}
+												{{#ifCond verificationStatus.WAITING '==' verification.business_address_verification_file_status }}
+													<span class="exclamation">
+														<i class="fas fa-exclamation-circle"></i>
+													</span>Your Id verification request is awaiting approved {{/ifCond}}
+												{{#ifCond verificationStatus.APPROVED '==' verification.business_address_verification_file_status }}
+													<span class="id-verified">
+														<i class="fas fa-check-circle"></i>
+													</span>
+													<b>Your Id verification request is approved</b>
+												{{/ifCond}}
+												{{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status }}
+													<span class="id-verified">
+														<i class="fas fa-exclamation-circle"></i>
+													</span>
+													{{verification.personal_address_reason_for_reject}} {{/ifCond}}
+											{{/if}}
+											{{#if verification.business_address_verification_file_status}}
+											{{else}}
+												<span class="exclamation">
+													<i class="fas fa-exclamation-circle"></i>
+												</span>You haven't submitted this yet. {{/if}}
+										</p>
+									</div>
+									{{!-- <h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with address</h5> --}}
+									{{!-- <p class="verification-incomplete">
 										{{#if verification.business_address_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.business_address_verification_file_status }}
 												<span class="exclamation">
@@ -425,17 +579,17 @@
 											<span class="exclamation">
 												<i class="fas fa-exclamation-circle"></i>
 											</span>You haven't submitted this yet. {{/if}}
-									</p>
+									</p> --}}
 								</div>
-								<p style="font-size: 13px; padding-bottom: 20px;">Please atleast one utility bill which has the name of the Company you've registered on it</p>
-								<div class="col-md-8">
+								<p class="verfication_para">Please atleast one utility bill which has the name of the Company you've registered on it</p>
+								<div class="col-md-10">
 									<div class="input-group">
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.business_address_verification_file_link }}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
+												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
 											{{else}}
-												<label class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Choose file</label>
+												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Choose file</label>
 											{{/if}}
 										</div>
 										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:3px;top:-2px">
@@ -453,7 +607,7 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div style="display:none">
-									<h5 class="gtc-title" style="padding-top: 20px; float: left;">Connect a Social Account
+									<h5 class="gtc-title verfication_header">Connect a Social Account
 									</h5>
 									<p class="verification-incomplete">
 										<span class="exclamation">

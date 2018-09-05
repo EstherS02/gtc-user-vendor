@@ -49,6 +49,13 @@
 			}).serialize();
 			if (formInput != '') {
 				window.location.href = ' reporting/sales-history?' + formInput;
+			}else{
+				$("#gtc-form-alert").show();
+			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			    $('#gtc-form-alert .form-message').text("Please Choose the option");
+			    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#gtc-form-alert").slideUp(500);
+			    });
 			}
 		});
 		$("#searchSaleshistory1").submit(function(e) {
@@ -176,32 +183,43 @@
 										<div class="form-group mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="dateSelect">
+												 {{!-- {{#if queryURI.dateSelect}} --}}
+												{{#select queryURI.dateSelect}}
 													<option disabled selected>Days</option>
 													<option value="today">Today</option>
 													<option value="yesterday">Yesterday</option>
 													<option value="last7day">LAST 7 DAY</option>
 													<option value="last15day">LAST 15 DAY</option>
 													<option value="last30day">LAST 30 DAY</option>
-												</select>
+													{{/select}}
+													{{!--{{/if }} --}}
+ 												</select>
 											</div>
 										</div>
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="marketType">
+												{{#select queryURI.marketType}}
 													<option disabled selected> Type</option>
 													{{#each marketPlace}}
 														<option value="{{this}}">{{@key}}</option>
 													{{/each}}
+													{{/select}}
 												</select>
+
 											</div>
 										</div>
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="status">
+												{{#select queryURI.status}}
+
 													<option disabled selected>STATUS</option>
 													{{#each orderStatus}}
-														<option value="{{@key}}">{{@key}}</option>
+														{{!-- <option value="{{@key}}">{{@key}}</option> --}}
+														<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
 													{{/each}}
+												{{/select}}
 												</select>
 											</div>
 										</div>
@@ -216,7 +234,8 @@
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 
-												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Invoice " aria-label="..."
+												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Invoice " {{#if queryURI.keyword}}
+												value={{queryURI.keyword}}{{/if}} aria-label="..."
 												/>
 												<button type="submit" class="btn btn-sm btn-gtc">
 													<i class="fa fa-search"></i>
@@ -236,10 +255,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>

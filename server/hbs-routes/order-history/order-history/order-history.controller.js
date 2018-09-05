@@ -84,7 +84,7 @@ if (dateSelect) {
 		$between: [start_date, end_date]
 	};
 	queryURI['start_date'] = start_date;
-	queryURI['end_date'] = end_date;
+	// queryURI['end_date'] = end_date;
 }
 
 
