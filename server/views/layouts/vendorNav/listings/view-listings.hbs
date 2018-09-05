@@ -197,6 +197,7 @@
 														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 														<td>${{this.product_price}} CAD</td>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+<<<<<<< HEAD
 														<td class="text_green_color">Active</td>
 														{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 														<td class="text_red_color">InActive</td>
@@ -204,6 +205,15 @@
 														<td class="text_orange_color">Suspended</td>
 														{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
 														<td class="text_red_color">Sold Out</td>
+=======
+															<td class="text_green_color">Active</td>
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+															<td class="text_red_color">InActive</td>
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+															<td class="text_orange_color">Suspended</td>
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+															<td class="text_red_color">Sold Out</td>
+>>>>>>> 9e30a77463351b7dfe601533466b9fb989551d14
 														{{/ifCond}}
 														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
 													</tr>
