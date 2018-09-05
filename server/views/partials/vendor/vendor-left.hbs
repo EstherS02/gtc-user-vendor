@@ -1,3 +1,7 @@
+<script>
+	var vendorDetails={{{ DisplayJSON VendorDetail}}}
+	console.log(vendorDetails)
+</script>
 <div class="vendor-public-left-side">
 	{{#navbarSetting LoggedInUser.Vendor.id selectedPage}}
 	<div class="table-responsive">
@@ -13,18 +17,21 @@
 				</tr>
 				<tr>
 					<td><span class="text-muted">User Rating</span></td>
+					{{#each VendorDetail.VendorRatings}}
 					<td>
 						<div class="p-rating">
+			                {{!-- <i class="fa fa-star" aria-hidden="true"></i>
 			                <i class="fa fa-star" aria-hidden="true"></i>
 			                <i class="fa fa-star" aria-hidden="true"></i>
 			                <i class="fa fa-star" aria-hidden="true"></i>
 			                <i class="fa fa-star" aria-hidden="true"></i>
 			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
+			                <i class="fa fa-star" aria-hidden="true"></i> --}}
+							{{starCount this.rating}}
 			            </div>
-			            <p class="v-rating"><a href="#"><strong>(23 Ratings - See All)</strong></a></p>
+			            <p class="v-rating"><a href="#"><strong>({{this.count}} Ratings - See All)</strong></a></p>
 					</td>
+					{{/each}}
 				</tr>
 			</tbody>
 		</table>
