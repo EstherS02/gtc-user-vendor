@@ -215,8 +215,11 @@ function getGooglePeople(accessToken) {
 	});
 }
 
-export async function googleLoginNew(req, res, next) {
+export async function googleLogin(req, res, next) {
+	var rspTokens = {};
 	var bodyParams = {};
+	var dbUser = {};
+	var refreshToken, encryptedRefToken;
 	var params = {
 		code: req.body.code,
 		client_id: req.body.clientId,
@@ -231,8 +234,36 @@ export async function googleLoginNew(req, res, next) {
 		const existsUser = await service.findOneRow('User', {
 			email: profile.email
 		});
+		const appClient = await service.findOneRow('Appclient', {
+			id: config.auth.clientId,
+			status: status['ACTIVE']
+		});
 
-		if (!existsUser) {
+		if (existsUser) {
+			if (existsUser.google_id == null) {
+				bodyParams['email_verified'] = 1;
+				bodyParams['google_id'] = profile.sub;
+
+				dbUser = await service.updateRecordNew('User', bodyParams, {
+					email: existsUser.email,
+					status: status['ACTIVE']
+				});
+				refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+				encryptedRefToken = await cryptography.encrypt(refreshToken);
+				rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+			} else if (existsUser.google_id == profile.sub) {
+				dbUser = await service.findOneRow('User', {
+					email: existsUser.email,
+					google_id: existsUser.google_id,
+					status: status['ACTIVE']
+				});
+				refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+				encryptedRefToken = await cryptography.encrypt(refreshToken);
+				rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+			} else {
+				return res.status(400).send("Failed to login with your google account...");
+			}
+		} else {
 			bodyParams['email_verified'] = 1;
 			bodyParams['role'] = roles['USER'];
 			bodyParams['email'] = profile.email;
@@ -244,88 +275,38 @@ export async function googleLoginNew(req, res, next) {
 			bodyParams['user_pic_url'] = profile.picture;
 			bodyParams['google_id'] = profile.sub;
 
-			const newUser = await service.createRow('User', bodyParams);
-			const appClient = await service.findOneRow('Appclient', {
-				id: config.auth.clientId,
-				status: status['ACTIVE']
-			});
-			if (appClient) {
-				var rspTokens = {};
-				const refreshToken = await generateRefreshToken(newUser, appClient, config.secrets.refreshToken);
-				const encryptedRefToken = await cryptography.encrypt(refreshToken);
-				rspTokens.access_token = await generateAccessToken(newUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+			dbUser = await service.createRow('User', bodyParams);
 
-				var userToken = {
-					client_id: appClient.id,
-					refresh_token: refreshToken,
-					status: status["ACTIVE"],
-					user_id: newUser.id
-				};
-				const newToken = await service.createRow('UserToken', userToken);
-				res.cookie("gtc_refresh_token", encryptedRefToken);
-				res.cookie("gtc_access_token", rspTokens.access_token);
-				return res.status(200).json({
-					'status': 200,
-					'message': 'ok',
-					'messageDetails': 'successful'
-				});
-			} else {
-				return res.status(404).send("App Client does not exists.");
-			}
-		} else if (existsUser && existsUser.provider == providers["GOOGLE"]) {
-			const appClient = await service.findOneRow('Appclient', {
-				id: config.auth.clientId,
-				status: status['ACTIVE']
-			});
-			if (appClient) {
-				var rspTokens = {};
-				rspTokens.access_token = await generateAccessToken(existsUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
-
-				const existsUserToken = await service.findOneRow("UserToken", {
-					user_id: existsUser.id,
-					client_id: appClient.id
-				});
-
-				if (existsUserToken) {
-					var encryptedRefToken = cryptography.encrypt(existsUserToken.refresh_token);
-					res.cookie("gtc_refresh_token", encryptedRefToken);
-					res.cookie("gtc_access_token", rspTokens.access_token);
-					return res.status(200).json({
-						'status': 200,
-						'message': 'ok',
-						'messageDetails': 'successful'
-					});
-				} else {
-					const refreshToken = await generateRefreshToken(existsUser, appClient, config.secrets.refreshToken);
-					const encryptedRefToken = await cryptography.encrypt(refreshToken);
-					const userToken = {
-						client_id: appClient.id,
-						refresh_token: refreshToken,
-						status: status["ACTIVE"],
-						user_id: existsUser.id
-					};
-					const newToken = await service.createRow('UserToken', userToken);
-					res.cookie("gtc_refresh_token", encryptedRefToken);
-					res.cookie("gtc_access_token", rspTokens.access_token);
-					return res.status(200).json({
-						'status': 200,
-						'message': 'ok',
-						'messageDetails': 'successful'
-					});
-				}
-			} else {
-				return res.status(404).send("App Client does not exists.");
-			}
-		} else {
-			return res.status(400).send("This email address is already used...");
+			refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+			encryptedRefToken = await cryptography.encrypt(refreshToken);
+			rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
 		}
+
+		var userToken = {
+			client_id: appClient.id,
+			refresh_token: refreshToken,
+			status: status["ACTIVE"],
+			user_id: dbUser.id
+		};
+
+		const newToken = await service.upsertRecord('UserToken', userToken, {
+			user_id: dbUser.id,
+			client_id: appClient.id
+		});
+		res.cookie("gtc_refresh_token", encryptedRefToken);
+		res.cookie("gtc_access_token", rspTokens.access_token);
+		return res.status(200).json({
+			'status': 200,
+			'message': 'ok',
+			'messageDetails': 'successful'
+		});
 	} catch (error) {
 		console.log("googleLoginNew Error:::", error);
 		return res.status(500).send(error);
 	}
 }
 
-export function googleLogin(req, res, next) {
+/* export function googleLogin(req, res, next) {
 	var queryObj = {};
 
 	req.checkBody('first_name', 'Missing Query Param').notEmpty();
@@ -478,7 +459,11 @@ export function googleLogin(req, res, next) {
 			res.status(500).send("Internal server error");
 			return
 		});
-};
+}; */
+
+export async function facebookLoginNew(req, res, next) {
+	
+}
 
 export function facebookLogin(req, res, next) {
 	var queryObj = {};

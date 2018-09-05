@@ -42,7 +42,7 @@ export default function(app) {
   app.use('/api/export-csv', require('./api/export-csv'));
   app.use('/api', require('./api/gtc'));
   app.post('/auth/google', controller.googleLogin);
-  app.post('/auth/fb', controller.facebookLogin);
+  app.post('/auth/fb', controller.facebookLoginNew);
   app.post('/auth/linkedin', controller.linkedInLogin);
   app.post('/auth/twitter', controller.twitterLogin);
 
