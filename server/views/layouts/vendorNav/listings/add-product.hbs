@@ -349,8 +349,11 @@
 			return $(element).val() != '';
 		}).serialize();
 
+		$.ajaxSetup({ async: false });
+
         if($('#baseImage')[0].files.length > 0){
            var form1 = new FormData();
+
 		   form1.append("file", cropperOutputImage, fileDetails["fileName"]);
 		   $.ajax({
 					type: 'POST',
@@ -361,16 +364,15 @@
 					processData: false,
 					contentType: false,
 					success: function (data) {
+
 						var imageURLobj = {};
 
 						imageURLobj.status = 1;
 						imageURLobj.type = 1;
 						imageURLobj.base_image=1;
-						imageURLobj.url = data.imageURLs;
+						imageURLobj.url = data.imageURL;
 
 						imageURLsArr.push(imageURLobj);
-
-						console.log("---------------------------------",imageURLsArr);
 					},
 					error: function (error) {
 						console.log("Error", error);
@@ -405,14 +407,11 @@
 						imageURLsArr.push(imageURLobj);
 						i++;
 					});
-
-					console.log("-@@@@@@@@@@@@@@@@@",imageURLsArr);
-
 					var dataFormate = {};
 					dataFormate.data = JSON.stringify(imageURLsArr);
 
 
-					//addProduct(dataFormate, input);
+					addProduct(dataFormate, input);
 				},
 				error: function(error) {
 					console.log('error', error);
@@ -421,8 +420,10 @@
 		} else {
 			var obj = {};
 			obj.data = null;
-			//addProduct(obj, input);
+			addProduct(obj, input);
 		}
+      $.ajaxSetup({ async: true });
+
 	});
 
 	$("#attributeForm").submit(function(e) {
