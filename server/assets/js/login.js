@@ -149,7 +149,7 @@ $(document).ready(function() {
 		return str.join("&");
 	}
 
-	$('#gtc-linkedin-login').click(function(e) {
+	/*$('#gtc-linkedin-login').click(function(e) {
 		var credentials = {
 			response_type: 'code',
 			client_id: '81epswkuklqmde',
@@ -158,6 +158,16 @@ $(document).ready(function() {
 			scope: 'r_basicprofile'
 		}
 		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=auto');
+	});*/
+
+	$('#gtc-linkedin-login').click(function(e) {
+		if (!IN.User.isAuthorized()) {
+			IN.User.authorize(function() {
+				getProfileData();
+			});
+		} else {
+			console.log("Already Login In with LinkedIn");
+		}
 	});
 
 	$('#modal-gtc-linkedin-login').click(function(e) {
