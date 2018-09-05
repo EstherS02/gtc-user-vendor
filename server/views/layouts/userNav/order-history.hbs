@@ -24,14 +24,15 @@
 					}).serialize();
 					if (formInput != '') {
 						window.location.href = 'order-history?' + formInput;
-					}else{
-						$("#gtc-form-alert").show();
-					    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-					    $('#gtc-form-alert .form-message').text("Please Choose the option");
-					    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-					    $("#gtc-form-alert").slideUp(500);
-					    });
 					}
+					//else{
+					//	$("#gtc-form-alert").show();
+					 //   $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					  //  $('#gtc-form-alert .form-message').text("Please Choose the option");
+					   // $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+					   // $("#gtc-form-alert").slideUp(500);
+					   // });
+					//}
 				});
 
 				$("#searchOrderhistory1").submit(function (e) {
@@ -102,6 +103,36 @@
 			}
 		}
 
+      function downloadCSV(args)
+	  {
+		  console.log("enter the loopss");
+		  	$.ajax({
+					type: 'POST',
+					url: '/api/export-csv/orderhistorycsv',
+					data: {"user_id":$('#loginuserid').val()},
+					success: function(data) {
+					   var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+                       var csvURL =  null;
+                       if (navigator.msSaveBlob) {
+                       csvURL = navigator.msSaveBlob(csvData, 'download.csv');
+                        } else {
+                        csvURL = window.URL.createObjectURL(csvData);
+                        }
+                        var tempLink = document.createElement('a');
+                        tempLink.href = csvURL;
+                        tempLink.setAttribute('download', 'download.csv');
+                        tempLink.click();
+						
+					},
+					error: function(request, status, error) {
+						console.log('request', request);
+						console.log('status', status);
+					}
+				});
+	  }
+
+
+	   
 	// function refund(e) {
 	// 	alert("hai");
 	// }
@@ -180,10 +211,12 @@
 									</form>
 								</div>
 								<div class="col-md-5">
-									<form class="form-inline ml-auto pull-right" id="searchOrderhistory">
+									
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
+											<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<input type="text" name="user_id" id="loginuserid" value={{LoggedInUser.id}}>
 										</div>
+										<form class="form-inline ml-auto pull-right" id="searchOrderhistory">
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 												
@@ -193,7 +226,7 @@
 												</button>
 											</div>
 										</div>
-									</form>
+									   </form>
 								</div>
 							</div>
 							<div class="row">
