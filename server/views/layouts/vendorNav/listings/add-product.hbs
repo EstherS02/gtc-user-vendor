@@ -1,659 +1,669 @@
 <style>
-    .imageThumb {
-        height: 150px;
-        width: 150px;
-        border: 2px solid;
-        padding: 1px;
-        cursor: pointer;
-    }
-    .pip {
-        display: inline-block;
-        margin: 10px 10px 0 0;
-    }
-
-    .imgBlock {
-        display: block;
-        width: 150px;
-        background: #444;
-        border: 1px solid black;
-        color: white;
-        text-align: center;
-        cursor: pointer;
-    }
-
-    .imgBlock:hover {
-        background: white;
-        color: black;
-    }
-
-    .fas {
-        cursor: pointer;
-    }
+	.imageThumb {
+		height: 150px;
+		width: 150px;
+		border: 2px solid;
+		padding: 1px;
+		cursor: pointer;
+	}
+	.pip {
+		display: inline-block;
+		margin: 10px 10px 0 0;
+		position: relative;
+	}
+	.fas {
+		cursor: pointer;
+	}
+	.productRemoveIcon {
+		position: absolute;
+		bottom: 0px;
+		right: 0px;
+		padding: 2px 2px 2px 2px;
+		background-color: #dbdadc;
+		color: #383434;
+		font-size: 15px;
+		cursor: pointer;
+	}
 </style>
 <script>
 
-    var allFiles = [], attributeArr = [];
-    function addProduct(obj, input) {
+	var allFiles = [], attributeArr = [];
+	function addProduct(obj, input) {
 
-        if ($('#productForm').valid()) {
-            obj.attributeArr = JSON.stringify(attributeArr);
-            $.ajax({
-                type: 'POST',
-                url: '/api/product/add-product?' + input,
-                data: obj,
-                success: function (data) {
+		if ($('#productForm').valid()) {
+			obj.attributeArr = JSON.stringify(attributeArr);
+			$.ajax({
+				type: 'POST',
+				url: '/api/product/add-product?' + input,
+				data: obj,
+				success: function(data) {
 
-                    $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-                    $('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                        $("#gtc-cart-alert").slideUp(500);
-                    });
-                    $('.pip').empty();
-                    $("#productForm")[0].reset();
-                },
-                error: function (error) {
+					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
+					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-cart-alert").slideUp(500);
+					});
+					$('.pip').empty();
+					$("#productForm")[0].reset();
+					setTimeout(function() {
+						location.reload(true);
+					}, 1000);
+				},
+				error: function(error) {
 
-                    $('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-                    $('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
-                    $("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
-                        $("#gtc-cart-alert").slideUp(500);
-                    });
-                    $('.pip').empty();
-                    $("#productForm")[0].reset();
-                }
-            })
-        }
-    }
+					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-cart-alert").slideUp(500);
+					});
+					$('.pip').empty();
+					$("#productForm")[0].reset();
+				}
+			})
+		}
+	}
 
-    function remove(e, index) {
-        console.log($(this))
-        allFiles.splice(index, 1);
-        $(e).parents(".pip").remove();
-         if(allFiles.length<3){
+	function remove(e, index) {
+		console.log($(this))
+		allFiles.splice(index, 1);
+		$(e).parents(".pip").remove();
+		if (allFiles.length < 3) {
 			$("#productImage").show();
 		}
-    }
+	}
 
-    $(document).ready(function () {
-		
-        $("#gtc-cart-alert").hide();
+	$(document).ready(function() {
 
-       $("#productImage").click(function (e) {
+		$("#gtc-cart-alert").hide();
+
+		$("#productImage").click(function(e) {
 			$("#imageUpload").click();
 		});
 
-		
-        $("#imageUpload").change(function () {
-            fasterPreview(this);
-        });
 
-        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-        var fileDetails = {}; var dataURLFileName, index = 0;
+		$("#imageUpload").change(function() {
+			fasterPreview(this);
+		});
 
-        $('#crop-profile-image').click(function () {
+		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
+		var fileDetails = {}; var dataURLFileName, index = 0;
 
-            cropper.getCroppedCanvas().toBlob(function (blob) {
-                var fileTempHold = {};
-                fileTempHold['cropperOutputImage'] = blob;
-                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
-                dataURLFileName = fileTempHold["fileName"];
-                allFiles.push(fileTempHold);
-                if(allFiles.length>=3){
+		$('#crop-profile-image').click(function() {
+
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				var fileTempHold = {};
+				fileTempHold['cropperOutputImage'] = blob;
+				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+				dataURLFileName = fileTempHold["fileName"];
+				allFiles.push(fileTempHold);
+				if (allFiles.length >= 3) {
 					$("#productImage").hide();
 				}
-            });
+			});
 
-            var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-            var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
-                "<br/><span class=\"imgBlock\">"+
-				"<i class='fa fa-times float-right' onclick='remove(this," + index + ")' aria-hidden='true'></i></span></span>"
+			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+				"<i class='fa fa-times productRemoveIcon' onclick='remove(this," + index + ")' aria-hidden='true'></i>	</span>"
 
-            $(domElement).insertAfter(".preview");
+			$(domElement).insertAfter(".preview");
 
-            $('#profile-picture-modal').modal('hide');
-            index++;
-        });
+			$('#profile-picture-modal').modal('hide');
+			index++;
+		});
 
-        $('#profile-picture-modal').on('shown.bs.modal', function () {
-            cropper = new Cropper(cropperInputImage, {
-                aspectRatio: 16 / 16,
-                minCropBoxHeight: 280,
-                minCropBoxWidth: 1364,
-                ready: function () { }
-            });
-        }).on('hidden.bs.modal', function () {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
-        });
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 16 / 16,
+				minCropBoxHeight: 280,
+				minCropBoxWidth: 1364,
+				ready: function() { }
+			});
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
 
-        function fasterPreview(uploader) {
-            if (uploader.files && uploader.files[0]) {
-                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+		function fasterPreview(uploader) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
-                console.log(fileDetails, uploader.files[0])
-                $('#UploadedImage').attr('src',
-                    window.URL.createObjectURL(uploader.files[0]));
-                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-picture');
-                $('#profile-picture-modal').modal('show');
-            }
-        }
+				console.log(fileDetails, uploader.files[0])
+				$('#UploadedImage').attr('src',
+					window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+			}
+		}
 
-        $("#country").change(function () {
-            var country_id = $('#country').val();
+		$("#country").change(function() {
+			var country_id = $('#country').val();
 
-            $.ajax({
-                url: '/api/states?country_id=' + country_id,
-                type: 'GET',
-                success: function (result) {
-                    $("#state").empty();
-                    $("#state").append("<option disabled selected>Select State...</option>")
-                    for (var i = 0; i < result.rows.length; i++) {
-                        var options;
-                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                        $("#state").append(options);
-                    }
-                },
-                error: function (error) {
-                    console.log("Error", error);
-                }
-            });
-        });
+			$.ajax({
+				url: '/api/states?country_id=' + country_id,
+				type: 'GET',
+				success: function(result) {
+					$("#state").empty();
+					$("#state").append("<option disabled selected>Select State...</option>")
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#state").append(options);
+					}
+				},
+				error: function(error) {
+					console.log("Error", error);
+				}
+			});
+		});
 
-        $("#marketplace_type_id").change(function () {
-            var marketplace_type_id = $('#marketplace_type_id').val();
+		$("#marketplace_type_id").change(function() {
+			var marketplace_type_id = $('#marketplace_type_id').val();
 
-            if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}){
-                $(".priceDiv").hide();
-                $('#price').removeAttr('value');
-            }
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
+			{
+	        	$(".priceDiv").hide();
+				$('#price').removeAttr('value');
+			}
             else {
-               $(".priceDiv").show();
-               $("price").attr('value');
-            }
-
-            if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-                $(".shippingDiv").hide();
-                $('#shipping_cost').removeAttr('value');
-            }
+				$(".priceDiv").show();
+				$("price").attr('value');
+			}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".shippingDiv").hide();
+				$('#shipping_cost').removeAttr('value');
+			}
             else {
-                $(".shippingDiv").show();
-                $("shipping_cost").attr('value');
-            }
+				$(".shippingDiv").show();
+				$("shipping_cost").attr('value');
+			}
 
-            if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-                    $(".exchangingProductDiv").show();
-                    $(".exchangingProductQuantityDiv").show();
-                    $("exchanging_product").attr('value');
-                    $("exchanging_product_quantity").attr('value');
-                }
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+				$(".exchangingProductDiv").show();
+				$(".exchangingProductQuantityDiv").show();
+				$("exchanging_product").attr('value');
+				$("exchanging_product_quantity").attr('value');
+			}
             else {
-                    $(".exchangingProductDiv").hide();
-                    $(".exchangingProductQuantityDiv").hide();
-                    $('#exchanging_product').removeAttr('value');
-                    $('#exchanging_product_quantity').removeAttr('value');
-                }        
-            });
-
-    $("#category").change(function () {
-        var category_id = $('#category').val();
-        $('#attributePopup').empty();
-
-        $.ajax({
-            url: '/api/sub-categories?category_id=' + category_id,
-            type: 'GET',
-            success: function (result) {
-                $("#sub_category").empty();
-                $("#sub_category").append("<option disabled selected>Select Sub Category...</option>")
-                for (var i = 0; i < result.rows.length; i++) {
-                    var options;
-                    options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                    $("#sub_category").append(options)
-                }
-            },
-            error: function (error) {
-                console.log("Error", error);
-            }
+				$(".exchangingProductDiv").hide();
+				$(".exchangingProductQuantityDiv").hide();
+				$('#exchanging_product').removeAttr('value');
+				$('#exchanging_product_quantity').removeAttr('value');
+			}        
         });
 
-        $.ajax({
-            url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
-            type: 'GET',
-            success: function (result) {
-                $("#attribute").empty();
-                for (var i = 0; i < result.rows.length; i++) {
-                    var productAttribute;
-                    productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
-                        "<input type='text' min='1'name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
-                    $("#attribute").append(productAttribute);
-                }
-            },
-            error: function (error) {
-                console.log("Error", error);
-            }
-        });
-        var domElement = "<label class='label-control'>Add Attribute</label><div class='input-group'>" +
-            "<div class='custom-file'> <i class='fas fa-plus' data-toggle='modal'" +
-            "data-target='#exampleModal' data-whatever='@mdo'></i></div> </div>"
+	$("#category").change(function() {
+		var category_id = $('#category').val();
+		$('#attributePopup').empty();
 
-        $('#attributePopup').append(domElement);
+		$.ajax({
+			url: '/api/sub-categories?category_id=' + category_id,
+			type: 'GET',
+			success: function(result) {
+				$("#sub_category").empty();
+				$("#sub_category").append("<option disabled selected>Select Sub Category...</option>")
+				for (var i = 0; i < result.rows.length; i++) {
+					var options;
+					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+					$("#sub_category").append(options)
+				}
+			},
+			error: function(error) {
+				console.log("Error", error);
+			}
+		});
 
-    });
+		$.ajax({
+			url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
+			type: 'GET',
+			success: function(result) {
+				$("#attribute").empty();
+				for (var i = 0; i < result.rows.length; i++) {
+					var productAttribute;
+					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
+						"<input type='text' min='1'name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
+					$("#attribute").append(productAttribute);
+				}
+			},
+			error: function(error) {
+				console.log("Error", error);
+			}
+		});
+		var domElement = "<label class='label-control'>Add Attribute</label><div class='input-group'>" +
+			"<div class='custom-file'> <i class='fas fa-plus' data-toggle='modal'" +
+			"data-target='#exampleModal' data-whatever='@mdo'></i></div> </div>"
 
-    $("#productForm").validate({
-        rules: {
-            product_name: "required",
-            product_category_id: "required",
-            sub_category_id: "required",
-            product_location: "required",
-            sku: {
-                required: true,
-                digits: true
-            },
-            price: {
-                number: true,
-                dollarsscents: true
-            },
-            quantity_available: {
-                required: true,
-                digits: true
-            },
-            city: {
-                lettersonly: true
-            },
-            shipping_cost: {
-                number: true,
-                dollarsscents: true
-            },
-            exchanging_product: {
-                required: function () {
-                    if ($("select[name=marketplace_type_id]").val() == 3) {
-                        return true;
-                    } else { return false; }
-                }
-            },
-            exchanging_product_quantity: {
-                required: function () {
-                    if ($("select[name=marketplace_type_id]").val() == 3) {
-                        return true;
-                    } else { return false; }
-                }
-            },
-        },
-        messages: {
-            product_name: "Please enter the product name",
-            product_category_id: "Please select product category",
-            sub_category_id: "Please select product sub-category",
-            product_location: "Please select product origin",
-            sku: {
-                required: "Please enter Stock Keeping Unit",
-                digits: "Please enter valid Stock Keeping Unit"
-            },
-            price: {
-                number: "Please enter valid product price",
-                dollarsscents: "Only two decimal values accepted"
-            },
-            quantity_available: {
-                required: "Please enter available quantity",
-                digits: "Please enter valid available quantity"
-            },
-            city: {
-                lettersonly: "Please enter vaild city name"
-            },
-            shipping_cost: {
-                number: "Please enter valid shipping cost",
-                dollarsscents: "Only two decimal values accepted"
-            },
-            exchanging_product: "Please enter the exchanging product name",
-            exchanging_product_quantity: "Please enter exchanging product quantity"
-        }
-    });
+		$('#attributePopup').append(domElement);
 
-    $.validator.addMethod("lettersonly", function (value, element) {
-        return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
-    }, "Letters only please");
+	});
 
-    $.validator.addMethod("dollarsscents", function (value, element) {
-        return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
-    }, "You must include two decimal places");
+	$("#productForm").validate({
+		rules: {
+			product_name: "required",
+			product_category_id: "required",
+			sub_category_id: "required",
+			product_location: "required",
+			sku: {
+				required: true,
+				digits: true
+			},
+			price: {
+				number: true,
+				dollarsscents: true
+			},
+			quantity_available: {
+				required: true,
+				digits: true
+			},
+			city: {
+				lettersonly: true
+			},
+			shipping_cost: {
+				number: true,
+				dollarsscents: true
+			},
+			exchanging_product: {
+				required: function() {
+					if ($("select[name=marketplace_type_id]").val() == 3) {
+						return true;
+					} else { return false; }
+				}
+			},
+			exchanging_product_quantity: {
+				required: function() {
+					if ($("select[name=marketplace_type_id]").val() == 3) {
+						return true;
+					} else { return false; }
+				}
+			},
+		},
+		messages: {
+			product_name: "Please enter the product name",
+			product_category_id: "Please select product category",
+			sub_category_id: "Please select product sub-category",
+			product_location: "Please select product origin",
+			sku: {
+				required: "Please enter Stock Keeping Unit",
+				digits: "Please enter valid Stock Keeping Unit"
+			},
+			price: {
+				number: "Please enter valid product price",
+				dollarsscents: "Only two decimal values accepted"
+			},
+			quantity_available: {
+				required: "Please enter available quantity",
+				digits: "Please enter valid available quantity"
+			},
+			city: {
+				lettersonly: "Please enter vaild city name"
+			},
+			shipping_cost: {
+				number: "Please enter valid shipping cost",
+				dollarsscents: "Only two decimal values accepted"
+			},
+			exchanging_product: "Please enter the exchanging product name",
+			exchanging_product_quantity: "Please enter exchanging product quantity"
+		}
+	});
 
-    $("#productForm").submit(function (e) {
-        e.preventDefault();
+	$.validator.addMethod("lettersonly", function(value, element) {
+		return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
+	}, "Letters only please");
 
-        let input = $("#productForm :input").filter(function (index, element) {
-            return $(element).val() != '';
-        }).serialize();
+	$.validator.addMethod("dollarsscents", function(value, element) {
+		return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
+	}, "You must include two decimal places");
 
-        var temp = $("#imageUpload")[0].files.length;
+	$("#productForm").submit(function(e) {
+		e.preventDefault();
 
-        if ($("#imageUpload")[0].files.length > 0) {
-            var form = new FormData();
+		let input = $("#productForm :input").filter(function(index, element) {
+			return $(element).val() != '';
+		}).serialize();
 
-            $.each(allFiles, function (i, file) {
-                form.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
-            });
+		var temp = $("#imageUpload")[0].files.length;
 
-            $.ajax({
-                type: 'POST',
-                url: '/api/prod/multiple',
-                data: form,
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    var imageURLs = data.imageURLs;
-                    var imageURLsArr = [], i = 0;
+		if ($("#imageUpload")[0].files.length > 0) {
+			var form = new FormData();
 
-                    imageURLs.forEach(function (element) {
-                        var imageURLobj = {};
+			$.each(allFiles, function(i, file) {
+				form.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
+			});
 
-                        imageURLobj.status = 1;
-                        imageURLobj.type = 1;
-                        imageURLobj.url = imageURLs[i];
+			$.ajax({
+				type: 'POST',
+				url: '/api/prod/multiple',
+				data: form,
+				cache: false,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				success: function(data) {
+					var imageURLs = data.imageURLs;
+					var imageURLsArr = [], i = 0;
 
-                        imageURLsArr.push(imageURLobj);
-                        i++;
-                    });
+					imageURLs.forEach(function(element) {
+						var imageURLobj = {};
 
-                    var dataFormate = {};
-                    dataFormate.data = JSON.stringify(imageURLsArr);
+						imageURLobj.status = 1;
+						imageURLobj.type = 1;
+						imageURLobj.url = imageURLs[i];
+
+						imageURLsArr.push(imageURLobj);
+						i++;
+					});
+
+					var dataFormate = {};
+					dataFormate.data = JSON.stringify(imageURLsArr);
 
 
-                    addProduct(dataFormate, input);
-                },
-                error: function (error) {
-                    console.log('error', error);
-                }
-            });
-        } else {
-            var obj = {};
-            obj.data = null;
-            addProduct(obj, input);
-        }
-    });
+					addProduct(dataFormate, input);
+				},
+				error: function(error) {
+					console.log('error', error);
+				}
+			});
+		} else {
+			var obj = {};
+			obj.data = null;
+			addProduct(obj, input);
+		}
+	});
 
-    $("#attributeForm").submit(function (e) {
+	$("#attributeForm").submit(function(e) {
 
-        e.preventDefault();
+		e.preventDefault();
 
-        attributeArr = $("#attributeForm :input").filter(function (index, element) {
-            return $(element).val() != '';
-        }).serializeArray();
+		attributeArr = $("#attributeForm :input").filter(function(index, element) {
+			return $(element).val() != '';
+		}).serializeArray();
 
-        $('#exampleModal').modal('hide');
-    });
+		$('#exampleModal').modal('hide');
+	});
     });
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profile-picture-modalLabel">Product Image Crop</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" style="margin-right:35px">
-                <div class="container">
-                    <img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-            </div>
-        </div>
-    </div>
+ aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="profile-picture-modalLabel">Product Image Crop</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" style="margin-right:35px">
+				<div class="container">
+					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+			</div>
+		</div>
+	</div>
 </div>
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title">
-                            <h2>Add Product</h2>
-                            <div class="alert" id="gtc-cart-alert">
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <span class="cart-message"></span>
-                            </div>
-                        </div>
-                        <div class="content-body">
-                            <form id="productForm" class="form">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="label-control">Product Name
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control-customized form-control-sm" name="product_name" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Marketplace
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            {{#ifCond this.type '==' 'wholesale'}}
-                                            <input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Private Wholesale Marketplace"
-                                                readonly> {{else ifCond this.type '==' 'shop'}}
-                                            <input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Public Marketplace" readonly> {{else ifCond this.type '==' 'services'}}
-                                            <input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Services Marketplace" readonly> {{else ifCond this.type '==' 'lifestyle'}}
-                                            <input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Lifestyle Marketplace" readonly> {{/ifCond}}
-                                        </div>
-                                    </div>
-                                    {{#ifCond this.type '==' 'wholesale'}}
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Type</label>
-                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
-                                                id="marketplace_type_id">
-                                                <option disabled selected>Select Category...</option>
-                                                {{#each marketplaceType}}
-                                                <option value="{{this.id}}">{{ Titlecase this.name}}</option>
-                                                {{/each}}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    {{/ifCond}}
-                                    <div class="col-lg-4 shippingDiv">
-                                        <div class="form-group">
-                                            <label class="label-control">Shipping Cost</label>
-                                            <input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 exchangingProductDiv" style="display:none">
-                                        <div class="form-group">
-                                            <label class="label-control">Exchanging Product
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control-customized form-control-sm" name="exchanging_product" id="exchanging_product">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 exchangingProductQuantityDiv" style="display:none">
-                                        <div class="form-group">
-                                            <label class="label-control">Exchanging Product Qunatity
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control-customized form-control-sm" name="exchanging_product_quantity" id="exchanging_product_quantity">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Category
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_category_id"
-                                                    id="category" required>
-                                                    <option disabled selected>Select Category...</option>
-                                                    {{#each categories}}
-                                                    <option value="{{this.id}}">{{ Titlecase this.name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="label-control">Sub Category
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
-                                                    required>
-                                                    <option disabled selected>Select Sub Category...</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Country
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_location" id="country"
-                                                    required>
-                                                    <option disabled selected>Select Country...</option>
-                                                    {{#each country}}
-                                                    <option value="{{this.id}}">{{ this.name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">State</label>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
-                                                    value="">
-                                                    <option disabled selected>Select State...</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">City</label>
-                                            <input type="text" class="form-control-customized form-control-sm" name="city">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">SKU
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 priceDiv">
-                                        <div class="form-group">
-                                            <label class="label-control">Price
-                                            </label>
-                                            <input type="text" name="price" id="price" class="form-control-customized form-control-sm">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group">
-                                            <label class="label-control">Quantity Available
-                                                <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label class="label-control">Description</label>
-                                            <textarea class="form-control-customized" name="description" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <div class="form-group">
-                                            <label class="label-control">Add More Images( 3 max.)</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Add Product</h2>
+							<div class="alert" id="gtc-cart-alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="cart-message"></span>
+							</div>
+						</div>
+						<div class="content-body">
+							<form id="productForm" class="form">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">Product Name
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control-customized form-control-sm" name="product_name" required>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Marketplace
+												<span class="text-danger">*</span>
+											</label>
+											{{#ifCond this.type '==' 'wholesale'}}
+												<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Private Wholesale Marketplace"
+												 readonly> {{else ifCond this.type '==' 'shop'}}
+												<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Public Marketplace" readonly> {{else ifCond this.type '==' 'services'}}
+												<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Services Marketplace" readonly> {{else ifCond this.type '==' 'lifestyle'}}
+												<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Lifestyle Marketplace" readonly> {{/ifCond}}
+										</div>
+									</div>
+									{{#ifCond this.type '==' 'wholesale'}}
+										<div class="col-lg-4">
+											<div class="form-group">
+												<label class="label-control">Type</label>
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
+												 id="marketplace_type_id">
+													<option disabled selected>Select Category...</option>
+													{{#each marketplaceType}}
+														<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									{{/ifCond}}
+									<div class="col-lg-4 shippingDiv">
+										<div class="form-group">
+											<label class="label-control">Shipping Cost</label>
+											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
+										</div>
+									</div>
+									<div class="col-lg-6 exchangingProductDiv" style="display:none">
+										<div class="form-group">
+											<label class="label-control">Exchanging Product
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<input type="text" class="form-control-customized form-control-sm" name="exchanging_product" id="exchanging_product">
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6 exchangingProductQuantityDiv" style="display:none">
+										<div class="form-group">
+											<label class="label-control">Exchanging Product Qunatity
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<input type="text" class="form-control-customized form-control-sm" name="exchanging_product_quantity" id="exchanging_product_quantity">
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="form-group">
+											<label class="label-control">Category
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_category_id"
+												 id="category" required>
+													<option disabled selected>Select Category...</option>
+													{{#each categories}}
+														<option value="{{this.id}}">{{ Titlecase this.name}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="form-group">
+											<label class="label-control">Sub Category
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
+												 required>
+													<option disabled selected>Select Sub Category...</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Country
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_location" id="country"
+												 required>
+													<option disabled selected>Select Country...</option>
+													{{#each country}}
+														<option value="{{this.id}}">{{ this.name}}</option>
+													{{/each}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">State</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
+												 value="">
+													<option disabled selected>Select State...</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">City</label>
+											<input type="text" class="form-control-customized form-control-sm" name="city">
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">SKU
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" required>
+										</div>
+									</div>
+									<div class="col-lg-4 priceDiv">
+										<div class="form-group">
+											<label class="label-control">Price
+											</label>
+											<input type="text" name="price" id="price" class="form-control-customized form-control-sm">
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Quantity Available
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
+										</div>
+									</div>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">Description</label>
+											<textarea class="form-control-customized" name="description" rows="3"></textarea>
+										</div>
+									</div>
+									<div class="col-lg-8">
+										<div class="form-group">
+											<label class="label-control">Upload product base image</label>
+											<div class="input-group">
+												<div class="custom-file">
+													<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
+													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
+												</div>
+											</div>
+										</div>
+										<div class="base_image"></div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group" id="attributePopup">
+										</div>
+									</div>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">Add More Images( 3 max.)</label>
+											<div class="input-group">
+												<div class="custom-file">
 													<i class='fas fa-plus' id='productImage'></i>
-                                                    <input type="file" class="custom-file-input" id="imageUpload" name="files" style="display:none">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group" id="attributePopup">
-                                        </div>
-                                    </div>
-                                    <div class="preview"></div>
-                                </div>
-                                <br/>
-                                <br/>
-
+													<input type="file" class="custom-file-input" id="imageUpload" name="files" style="display:none">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-12">
+										<div class="preview"></div>
+									</div>
+								</div>
+								<br/>
+								<br/>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                                        <button type="reset" class="btn btn-gray btn-sm">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+									<div class="col-lg-12">
+										<button type="submit" class="btn btn-primary btn-sm">Submit</button>
+										<button type="reset" class="btn btn-gray btn-sm">Cancel</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Product Attributes</h5>
-            </div>
-            <form id="attributeForm" class="form">
-                <div class="modal-body">
-                    <div class="container">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="shop_list_title">
-                                        <b>Attribute</b>
-                                    </th>
-                                    <th class="shop_list_title">
-                                        <b>Value</b>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="attribute"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-                        <b>Close</button>
-                    <button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-                        <b>Submit</b>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Product Attributes</h5>
+			</div>
+			<form id="attributeForm" class="form">
+				<div class="modal-body">
+					<div class="container">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="shop_list_title">
+										<b>Attribute</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Value</b>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="attribute"></tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Close</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
