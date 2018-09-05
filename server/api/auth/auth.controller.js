@@ -215,7 +215,7 @@ function getGooglePeople(accessToken) {
 	});
 }
 
-export async function googleLogin(req, res, next) {
+export async function googleLoginNew(req, res, next) {
 	var rspTokens = {};
 	var bodyParams = {};
 	var dbUser = {};
@@ -306,7 +306,7 @@ export async function googleLogin(req, res, next) {
 	}
 }
 
-/* export function googleLogin(req, res, next) {
+export function googleLogin(req, res, next) {
 	var queryObj = {};
 
 	req.checkBody('first_name', 'Missing Query Param').notEmpty();
@@ -459,10 +459,10 @@ export async function googleLogin(req, res, next) {
 			res.status(500).send("Internal server error");
 			return
 		});
-}; */
+};
 
 export async function facebookLoginNew(req, res, next) {
-	
+
 }
 
 export function facebookLogin(req, res, next) {

@@ -60,10 +60,6 @@ export function viewListings(req, res) {
 		};
 	}
 
-	if (req.query.product_status) {
-			queryParams['product_status'] = productStatus[req.query.product_status];
-	}
-
 	queryParams['status'] = statusCode["ACTIVE"]
 	
 	var queryObjCategory = {
