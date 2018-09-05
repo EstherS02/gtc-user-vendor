@@ -64,8 +64,8 @@
 				required: "Please select the carrier name"
 			},
 			tracking_url: {
-				required:"Please enter tracking url",
-				minlength:"Please enter valid url"
+				required:"Please enter tracking id",
+				minlength:"Please enter valid id( min length 8 char. )"
 			},
 			expected_delivery_date: {
 				required: "Please enter expected delivery date"
@@ -113,7 +113,7 @@
 		error: function (error) {
 			console.log("error", error);
 			$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-cancel-alert .cancel-message').text(error.responseText);
+			$('#gtc-cancel-alert .cancel-message').text('Internal server error.. Please try later.');
 			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
 				$("#gtc-cancel-alert").slideUp(500);
 			});
