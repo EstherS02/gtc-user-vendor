@@ -8,13 +8,17 @@
 		$('.clickable-row').click(function() {
 			document.getElementById("Subject").innerHTML = $(this).data('name');
 			document.getElementById("Message").innerHTML = $(this).data('message');
+
 			if ($(this).hasClass("inbox-tr-unread")) {
 				$(this).removeClass("inbox-tr-unread").addClass("inbox-tr");
+				var id = $(this).data('id');
 				$.ajax({
-					url: 'api/notification/read/' + $(this).data('id'),
+					url: 'api/notification/read/' +id,
 					type: 'GET',
 					success: function(data) {
 						console.log(data);
+						$("#"+id).hide();
+						
 					},
 					error: function(error) {
 						console.log(error);
@@ -52,30 +56,23 @@
 									<table class="table">
 										<thead>
 											<tr>
-												<th><input type="checkbox" onclick="selectAll(this);"></th>
 												<th scope="col">Event</th>
-												{{!-- <th scope="col">Code</th> --}}
 												<th scope="col">Description</th>
 												<th scope="col">Date</th>
-												<th scope="col">Status</th>
-												{{!-- <th scope="col">Size</th> --}}
 											</tr>
 										</thead>
 										<tbody>
 											{{#each notifications}}
-
-											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} data-message="{{this.description}}" href="#gtc-modal">
-													<td><input type="checkbox" value="{{this.id}}"></td>
-													<td scope="row ">{{this.name}}</td>
-													{{!-- <td scope="row ">{{this.code}}</td> --}}
-													<td scope="row">{{this.description}}</td>
-													<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
-													<td scope="row" id='{{this.id}}' data-href=''>{{objectKey ../statusCode this.status}}</td>
-												</tr>
-												{{/each}}
+											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
+												<td scope="row ">{{this.name}}</td>
+												<td scope="row">{{dotdotdot this.description}}</td>
+												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
+											</tr>
+											{{/each}}
 										</tbody>
 									</table>
 								</div>
+								{{#if notifications}}
 								{{#pagination collectionSize page pageSize maxSize}}
 								<nav aria-label="Page navigation example">
 									<ul class="pagination justify-content-center">
@@ -95,6 +92,9 @@
 									</ul>
 								</nav>
 								{{/pagination}}
+								{{else}}
+								<div> No notification received </div>
+								{{/if}}
 							</div>
 						</div>
 					</div>
@@ -104,8 +104,8 @@
 	</div>
 </div>
 <div id="gtc-modal" class="white-popup-block mfp-hide">
+	<p><a class="popup-modal-dismiss" style="float:right" href="javascript:;">&times</a></p>
 	<h1 id ="Subject"></h1>
 	<p id="Message"></p>
-	<p><a class="popup-modal-dismiss" style="float:right" href="#">Dismiss</a></p>
 </div>
 {{> footer/bottom-footer}} 

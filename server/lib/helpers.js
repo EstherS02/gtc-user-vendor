@@ -567,3 +567,8 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat,cat) {
     }
     return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
+Handlebars.registerHelper('dotdotdot', function(str) {
+  if (str.length > 100)
+    return str.substring(0,100) + '...';
+  return str;
+});

@@ -108,31 +108,46 @@
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
 
-            $('#issueRefundModal').modal('hide');
+			$('#issueRefundModal').modal('hide');
 			$('#conform-modal').modal('show');
-
-			var refundObj = {};
 
 			var total_refund = $('#total_refund').val();
 			var order_id = $("#order_id").html();
 
+			$("#orderId").html(order_id);
+			$("#refund_amount").html(total_refund);
+		
+		});
+
+		$('#refundConformForm').submit(function(e){
+			e.preventDefault();
+
+			var totalRefund = $("#refund_amount").html();
+			var refund_order_id = $("#orderId").html();
+
+			var refundObj = {};
+
 			refundObj = {
-				total_refund: total_refund
+				total_refund: totalRefund
 			}
 
-			$.ajax({
-				url: '/api/payment/refund-order/' + order_id,
+            $.ajax({
+				url: '/api/payment/refund-order/' + refund_order_id,
 				type: 'POST',
 				data: refundObj,
 				success: function(result) {
-                    $('#issueRefundModal').modal('hide');
+                    $('#conform-modal').modal('hide');
 					$('#success-modal').modal('show');
 				},
 				error: function(error) {
 					console.log(error);
 				}
 			})
-		});
+
+
+		})
+
+
 	});
 
 	$(document).on("change", ".refund_amount", function() {
@@ -289,7 +304,7 @@
 															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
-                                                        </td>
+														</td>
 														<td>${{this.total_price}} CAD</td>
 													</tr>
 												{{/each}}
@@ -374,7 +389,7 @@
 								</tr>
 							</thead>
 							<tbody id="issueRefund">
-                            </tbody>
+							</tbody>
 						</table>
 					</div>
 				</div>
@@ -390,27 +405,34 @@
 	</div>
 </div>
 
-<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+<div class="modal fade" id="conform-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Refund Conformation:</h5>
 			</div>
+			<form id="refundConformForm" class="form">
 			<div class="modal-body">
 				<div class="container">
-					{{!-- <p>Are you sure you want to process a refund of {{}} for the order #{{order_id}}.</p> --}}
+					<p>Are you sure you want to process a refund of $
+						<span id='refund_amount'></span> for the order #
+						<span id="orderId"></span>?</p>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-					<b>Ok</button>
+					<b>Cancel</button>
+				<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+					<b>Yes</b>
+				</button>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>
 
 
-<div class="modal fade" id="conform-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+<div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -428,8 +450,3 @@
 		</div>
 	</div>
 </div>
-
-
-
-
-
