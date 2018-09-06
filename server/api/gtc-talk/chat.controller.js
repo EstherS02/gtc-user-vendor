@@ -27,14 +27,21 @@ export function chatConversation(req, res) {
 	var field = "sent_at";
 	var order = "asc";
 	var thread_user = null;
-
-	service.findRows(modelName, queryObj, offset, limit, field, order, includeArr).then(function(response){
+	model[modelName].update({
+		is_read: 1
+	}, {
+		where: {
+			talk_thread_id: thread_id
+		}
+	}).then(function(response) {
+		console.log("RESPONSE for read all conversation", JSON.stringify(JSON.parse(response)));
+		service.findRows(modelName, queryObj, offset, limit, field, order, includeArr).then(function(response){
 			// thread_user = response[0].User.id;
-			
+				
 			if (response) {
 				_.forOwn(response.rows, function (element) {
  				if(element.User.id != req.user.id){
- 					thread_user = element.User.id;
+ 					thread_user = element.User;
  					return false;
  					}
  
@@ -55,8 +62,12 @@ export function chatConversation(req, res) {
 						});
 			}
 			
-	});
+		});
 
+	}).catch(function(err) {
+		console.log("err", err);
+	})
+	
 
 
 

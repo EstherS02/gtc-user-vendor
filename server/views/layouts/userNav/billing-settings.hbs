@@ -72,12 +72,12 @@
 							<div class="row">
 								<div class="col-md-8">
 									<p style="margin-bottom: 15px;">Billing Address</p>
-									<p>publishing World Inc</p>
-									<p>Tina Olivero</p>
-									<p>Po Box 21178</p>
-									<p>St. John's, Newfoundland A1B 5C1</p>
-									<p>Canada</p>
-								</div>
+									<p>{{billingAddress.[0].company_name}}</p>
+									<p>{{billingAddress.[0].address_line1}}</p>
+									<p>{{billingAddress.[0].address_line2}}</p>
+									<p>{{billingAddress.[0].postal_code}}</p>
+									<p>{{billingAddress.[0].city}}</p>
+									</div>
 								<div class="col-md-4">
 									<a href="user/my-profile"><p class="text_blue_color">Edit</p></a>
 								</div>

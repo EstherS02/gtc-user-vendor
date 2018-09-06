@@ -117,11 +117,13 @@
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+													{{#select queryURI.status}}
 													<option disabled selected>CHANGE STATUS</option>
 													<option value="ACTIVE">Active</option>
 													<option value="INACTIVE">InActive</option>
 													<option value="SUSPENDED">Suspended</option>
 													<option value="SOLDOUT">Sold Out</option>
+													{{/select}}
 												</select>
 											</div>
 										</div>
@@ -133,12 +135,13 @@
 								<div class="col-md-5">
 									<div class="form-inline ml-auto pull-right">
 										<div class="form-group mx-sm-3 mb-2 form-inline">
-											<button class="btn btn-small btn-muted" type="button">IMPORT</button>
+											<button class="btn btn-small btn-muted" type="button" onclick="location.href='/dashboard-vendor-connect'">IMPORT</button>
 											{{!-- <button type="button" id="changePwd" class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
 										</div>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
-												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="keyword" onChange="search(this);">
+												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);" {{#if queryURI.keyword}}
+												value={{queryURI.keyword}}{{/if}}>
 												<button type="submit" class="btn btn-sm btn-gtc">
 													<i class="fa fa-search"></i>
 												</button>
@@ -162,10 +165,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page : 
-												<a href="listings/{{this.type}}?limit=10">10</a>
-												<a href="listings/{{this.type}}?limit=25">25</a>
-												<a href="listings/{{this.type}}?limit=100">100</a>
-												<a href="listings/{{this.type}}">All</a>
+												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -216,15 +219,15 @@
 											<ul class="pagination justify-content-center">
 												{{#unless startFromFirstPage}}
 												<li class="page-item">
-													<a class="page-link" href="listings/{{../../this.type}}?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 												</li>
 												{{/unless}} {{#each pages}}
 												<li class="page-item {{#if isCurrent}} active {{/if}}">
-													<a class="page-link" href="listings/{{../../this.type}}?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 												</li>
 												{{/each}} {{#unless endAtLastPage}}
 												<li class="page-item">
-													<a class="page-link" href="listings/{{../../this.type}}?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 												</li>
 												{{/unless}}
 											</ul>

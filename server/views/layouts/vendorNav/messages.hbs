@@ -1,10 +1,10 @@
 <script type="text/javascript">
   var userInfo = {{{ DisplayJSON LoggedInUser}}}
   var messenger = {{{ DisplayJSON messenger }}}
-  console.log("userInfo", userInfo);
+  console.log("messenger", messenger);
   var threadId;
   var to_id = null;
-
+  var onlineUsers = null;
   function getConversations(e) {
     threadId = e;
     var socketChat = {
@@ -35,29 +35,39 @@
     });
   }
 
-  var userInformation;
-  
 
-  userInfo.User = userInfo;
-  var vendorInformation;
-  vendorInformation = userInfo;
-  
-  console.log("vendorInformation", userInfo);
   function chatPage(result) {
     var domElement = '';
     var time = '';
+    
+    var domElementUserName = '';
+    console.log("onlineUsers", onlineUsers);
+    
+    
+
+    domElementUserName = domElementUserName + ` <div class="row">
+                                <div class="col-2 avatar"> 
+                                    <img src="` +userProfile(to_id.user_pic_url) +`" alt="User Avatar" style="width: 60px; margin-left: 30px;">
+                                </div>
+                                <div class="col-8">
+                                  <strong><p>`+ to_id.first_name +` </h4></p></strong>
+                                  <small id="on-off"></small>
+                                </div>
+                              </div>`;
+    document.getElementById('chatUserName').innerHTML = domElementUserName;
+    if(onlineUsers.indexOf(to_id.id) > -1) {
+      document.getElementById('on-off').innerHTML = 'online';
+    } else {
+      document.getElementById('on-off').innerHTML = 'offline';
+    }
     result.forEach(function (element) {
       console.log("element",element);
       if (element.from_id == userInfo.id) {
-        time = 'pull-left';
+        time = 'pull-right';
         //vendorInformation = element;
-        domElement = domElement + `<li class="right clearfix">
-            <span class="chat-img pull-right">
-				      <img src="` +userProfile(userInfo.user_pic_url) +`" alt="User Avatar">
-			     </span>
+        domElement = domElement + `<li class="left clearfix">
       			<div class="chat-body clearfix">
       				<div class="header">
-      					<strong class="primary-font pull-right">` + element.User.first_name + ' ' + lastname(element.User.last_name) +`</strong>
       					<small class="text-muted ` + time + `"><i class="fa fa-clock-o">` + FormatDate(element.created_on) + `</i> </small>
       				</div>
       				<p>` + element.message +`</p>
@@ -65,14 +75,11 @@
       		  </li>`;
       } else {
         userInformation = element;
-        time = 'pull-right';
-        domElement = domElement + `<li class="left clearfix" >
-      			<span class="chat-img pull-left">
-      				<img src="` +userProfile(element.User) +`" alt="User Avatar">
-      			</span>
+        time = 'pull-left';
+        domElement = domElement + `<li class="right clearfix" >
       			<div class="chat-body clearfix">																		
       				<div class="header m-b-xs">		
-      					<strong class="primary-font pull-left">` +element.User.first_name + " " + lastname(element.User.last_name) + `</strong><small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
+      					<small class=" text-muted ` +time + `"><i class="fa fa-clock-o"></i>` + FormatDate(element.created_on) +`</small>
       				</div>
       				<p>` + element.message +`</p>
       			</div>
@@ -126,10 +133,19 @@
   }
 
   $(document).ready(function () {
+   
     socket.on('user:online', function (users) {
-      //console.log("user:online", users);
+      console.log("usersonline", users)
+      onlineUsers = users;
+      if(to_id && to_id.id != null) {
+        if (users.indexOf(to_id.id) > -1) {
+          document.getElementById('on-off').innerHTML = 'online';
+        } else {
+          document.getElementById('on-off').innerHTML = 'offline';
+        }
+      }
+      console.log("onlineUsers", onlineUsers);
       messenger.forEach(function (element) {
-        //console.log("element", element);
         if (users.indexOf(element.User.id) != -1) {
           document.getElementById("online" + element.User.id).innerHTML =
             `<i class="on b-white top" style="border: green"></i>`;
@@ -142,48 +158,48 @@
 
     var commonInfo, base, base1, time;
     
-  socket.on('chat:receive', function(data) {
-    //console.log("emitting........", data);
-   /* messenger.forEach(function(element) {
-      if (data.from_id == element.User.id) {*/
+  
+    socket.on('chat:receive', function(data) {
 
         messenger.forEach(function (element) {
-      //    console.log("element iterating", element);
-          //data.from_id
+          console.log("element iterating", element);
+          console.log("userInfo", userInfo)
+          console.log("data.from_id", data.from_id);
+          console.log("data.to_id", data.to_id);
+          
           if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
+          
             if(data.from_id == userInfo.id) {
               document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
             } else {
               document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> `+ data.message +`<strong>` ;
             }
-            //console.log("emitted socket", data);
+          
           }
         })
 
         if (data.from_id == userInfo.id) {
-          base = "pull-right"
-          base1 = "right";
-          time = 'pull-left';
-          commonInfo = vendorInformation;
-      //    console.log("commonInfo User Info", commonInfo);
-        //  console.log("base sent", base);
-        } else {
           base = "pull-left"
           base1 = "left"
           time = 'pull-right';
           commonInfo = userInformation;
+      //    console.log("commonInfo User Info", commonInfo);
+        //  console.log("base sent", base);
+        } else {
+          
+          base = "pull-right"
+          base1 = "right";
+          time = 'pull-left';
+          commonInfo = vendorInformation;
           //console.log("commonInfo", commonInfo);
           //console.log("base receive", base);
         }
 
         var body = `<li class="` + base1 + ` clearfix" >
-                      <span class="chat-img ` + base + `">
-                        <img src="` + userProfile(commonInfo.User.user_pic_url) + `" alt="User Avatar">
-                      </span>
+                     
                       <div class="chat-body clearfix">
                         <div class="header m-b-xs">
-                          <strong class="primary-font ` + base + `">` + commonInfo.User.first_name + " " + lastname(commonInfo.User.last_name) +
-                      `     </strong>
+                          
                               <small class=" text-muted ` + time + `"><i class="fa fa-clock-o"></i>` + FormatDate(data.created_on) +
                       `</small>
                         </div>
@@ -241,7 +257,7 @@
         <div class="ibox">
           <div class="ibox-content">
             <div class="ibox-title">
-              <h2>MY MESSAGES {{!-- {{messenger.length}} --}}</h2>
+              <h6>MY MESSAGES {{!-- {{messenger.length}} --}}</h6>
             </div>
             <div class="content-body">
 
@@ -267,7 +283,14 @@
                                   <span
                                     class="m-l-sm"></span>
                                 </div>
-                                <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">{{#if this.TalkThread.Talks}}<small>{{this.TalkThread.Talks.[0].message}}</small>{{/if}}</div>
+                                <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
+                                  {{#if this.TalkThread.Talks}}
+                                      {{#ifCond this.TalkThread.Talks.[0].is_read "==" 0}}
+                                        <p><strong>{{this.TalkThread.Talks.[0].message}}</strong></p>
+                                        {{else}}
+                                        <p><small>{{this.TalkThread.Talks.[0].message}}</small></p>
+                                      {{/ifCond}}
+                                  {{/if}}</div>
                                 <small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
                                 <small class="chat-alert online" id="online{{this.User.id}}">
                                 </small>
@@ -279,10 +302,10 @@
                         <!--=========================================================-->
                         <!-- selected chat -->
                         <div class="col-md-8 bg-white">
-                          <div class="chats-messager" id="scrollMessage" style="height: 400px; overflow-y: auto;">
-
+                          <div class="chat-name col-md-12" id="chatUserName"></div>
+                          <div class="chats-messager chat-content-body" id="scrollMessage">
                             <ul class="chats" id="message">
-
+                                
 
                             </ul>
                           </div>

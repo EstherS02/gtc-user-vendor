@@ -67,7 +67,7 @@
 		console.log($(this))
 		allFiles.splice(index, 1);
 		$(e).parents(".pip").remove();
-		if (allFiles.length < 3) {
+		if (allFiles.length < 6) {
 			$("#productImage").show();
 		}
 	}
@@ -118,7 +118,7 @@
 				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
 				dataURLFileName = fileTempHold["fileName"];
 				allFiles.push(fileTempHold);
-				if (allFiles.length >= 3) {
+				if (allFiles.length >= 6) {
 					$("#productImage").hide();
 				}
 			});
@@ -655,7 +655,7 @@
 									<div class="row">
 									<div class="col-lg-12">
 										<div class="form-group">
-											<label class="label-control">Add More Images( 3 max.)</label>
+											<label class="label-control">Add More Images( 6 max.)</label>
 											<div class="input-group">
 												<div class="custom-file">
 													<i class='fas fa-plus' id='productImage'></i>

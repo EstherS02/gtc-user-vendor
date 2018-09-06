@@ -10,6 +10,7 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const cartObj = require('../../../api/cart/cart.controller');
 const populate = require('../../../utilities/populate');
+const carriersCode = require('../../../config/carriers');
 
 export function orderView(req, res) {
     var LoggedInUser = {}, bottomCategory = {}, searchObj = {}, itemIncludeArr = [], orderIncludeArr=[];
@@ -60,7 +61,7 @@ export function orderView(req, res) {
             if (req.params.id)
                 var id = req.params.id;
 
-               return service.findIdRow(orderModel, id,[])
+               return service.findIdRow(orderModel, id,orderIncludeArr)
                 .then(function(order){
                     return cb(null, order)
                 }).catch(function(error){
@@ -179,7 +180,8 @@ export function orderView(req, res) {
                 orderStatus: orderStatus,
                 categories: results.categories,
                 cartheader:results.cartCounts,
-                bottomCategory: bottomCategory
+				bottomCategory: bottomCategory,
+				carriersCode:carriersCode
             }
             return res.status(200).render('orderView', result_obj);
         }
