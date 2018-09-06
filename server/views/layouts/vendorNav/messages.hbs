@@ -4,7 +4,7 @@
   console.log("messenger", messenger);
   var threadId;
   var to_id = null;
-
+  var onlineUsers = null;
   function getConversations(e) {
     threadId = e;
     var socketChat = {
@@ -35,23 +35,31 @@
     });
   }
 
-  var userInformation;
-  
-
-  userInfo.User = userInfo;
-  var vendorInformation;
-  vendorInformation = userInfo;
-  
-  console.log("vendorInformation", userInfo);
 
   function chatPage(result) {
     var domElement = '';
     var time = '';
     
     var domElementUserName = '';
-    domElementUserName = domElementUserName + `<h4>`+ to_id.first_name +` </h4>`;
-    document.getElementById('chatUserName').innerHTML = domElementUserName;
+    console.log("onlineUsers", onlineUsers);
     
+    
+
+    domElementUserName = domElementUserName + ` <div class="row">
+                                <div class="col-2 avatar"> 
+                                    <img src="` +userProfile(to_id.user_pic_url) +`" alt="User Avatar" style="width: 60px; margin-left: 30px;">
+                                </div>
+                                <div class="col-8">
+                                  <strong><p>`+ to_id.first_name +` </h4></p></strong>
+                                  <small id="on-off"></small>
+                                </div>
+                              </div>`;
+    document.getElementById('chatUserName').innerHTML = domElementUserName;
+    if(onlineUsers.indexOf(to_id.id) > -1) {
+      document.getElementById('on-off').innerHTML = 'online';
+    } else {
+      document.getElementById('on-off').innerHTML = 'offline';
+    }
     result.forEach(function (element) {
       console.log("element",element);
       if (element.from_id == userInfo.id) {
@@ -127,9 +135,17 @@
   $(document).ready(function () {
    
     socket.on('user:online', function (users) {
-      //console.log("user:online", users);
+      console.log("usersonline", users)
+      onlineUsers = users;
+      if(to_id && to_id.id != null) {
+        if (users.indexOf(to_id.id) > -1) {
+          document.getElementById('on-off').innerHTML = 'online';
+        } else {
+          document.getElementById('on-off').innerHTML = 'offline';
+        }
+      }
+      console.log("onlineUsers", onlineUsers);
       messenger.forEach(function (element) {
-        //console.log("element", element);
         if (users.indexOf(element.User.id) != -1) {
           document.getElementById("online" + element.User.id).innerHTML =
             `<i class="on b-white top" style="border: green"></i>`;
@@ -144,9 +160,6 @@
     
   
     socket.on('chat:receive', function(data) {
-    console.log("emitting........", data);
-   /* messenger.forEach(function(element) {
-      if (data.from_id == element.User.id) {*/
 
         messenger.forEach(function (element) {
           console.log("element iterating", element);
@@ -244,7 +257,7 @@
         <div class="ibox">
           <div class="ibox-content">
             <div class="ibox-title">
-              <h2>MY MESSAGES {{!-- {{messenger.length}} --}}</h2>
+              <h6>MY MESSAGES {{!-- {{messenger.length}} --}}</h6>
             </div>
             <div class="content-body">
 

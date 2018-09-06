@@ -62,7 +62,7 @@ export function messages(req, res) {
 							[model['TalkThread'],model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
-						return callback(null,results1);
+			 			return callback(null,results1);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -89,7 +89,7 @@ export function messages(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
+			}
 		},
 		function(err, results) {
 
