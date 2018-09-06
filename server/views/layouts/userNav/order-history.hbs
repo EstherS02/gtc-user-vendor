@@ -116,13 +116,7 @@
 			if(chkArray!='')
 			{
 				var selectedvalues= JSON.stringify(chkArray);
-			}
-			else
-			{
-				var selectedvalues=0;
-			}
-			
-			$.ajax({
+				$.ajax({
 				type: 'POST',
 				url: '/api/export-csv/orderhistorycsv',
 				data: {"user_id":$('#loginuserid').val(),id: selectedvalues },
@@ -145,7 +139,20 @@
 					console.log('status', status);
 				}
 			});
+
+			}
+			else
+			{
+				
+				$("#gtc-form-alert").show();
+			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			    $('#gtc-form-alert .form-message').text("Please select the orders");
+				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#gtc-form-alert").slideUp(500);
+			});
+			}
 			
+						
 		}
 	</script>
 	<script type="text/javascript">

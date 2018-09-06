@@ -163,22 +163,9 @@
 			});
 			if(chkArray!='')
 			{
-				console.log("enter the loopss"+selectedvalues);
-				var selectedvalues= JSON.stringify(chkArray);
 				
-			}
-			else
-			{
-				var selectedvalues=0;
-				$("#gtc-form-alert").show();
-			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			    $('#gtc-form-alert .form-message').text("Please select the orders");
-				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-			    $("#gtc-form-alert").slideUp(500);
-			});
-			}
-           
-		    $.ajax({
+				var selectedvalues= JSON.stringify(chkArray);
+				$.ajax({
 					type: 'POST',
 					url: '/api/export-csv/saleshistorycsv',
 					data: {"vendor_id":$('#login_vendoruserid').val(),id:selectedvalues},
@@ -202,6 +189,19 @@
 						console.log('status', status);
 					}
 				});
+				
+			}
+			else
+			{
+				$("#gtc-form-alert").show();
+			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			    $('#gtc-form-alert .form-message').text("Please select the orders");
+				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#gtc-form-alert").slideUp(500);
+			});
+			}
+           
+		    
 		  
 	  }
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
