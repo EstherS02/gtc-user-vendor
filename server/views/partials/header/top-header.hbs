@@ -164,6 +164,7 @@
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var productPathName;
 		const pathname = location.pathname.split('/')[1];
 		if (pathname == "directory") {
 			$("#topSearchForm").removeClass("search-form-home");
@@ -214,6 +215,7 @@
 			$("#searchListLocation").addClass("products-menu");
 		} else {
 			$("#searchBtnGrp").css("display", "none");
+			productPathName = "products";
 		}
 
 		$('#topSearchForm').submit(function(e) {
@@ -225,9 +227,11 @@
 				return;
 			}
 			if (!pathname) {
-				window.location.href = 'products/search?' + formInput;	
+				window.location.href = 'products/search?' + formInput;
+			} else if (productPathName) {
+				window.location.href = productPathName + '/search?' + formInput;
 			} else {
-				window.location.href = pathname + '/search?' + formInput;	
+				window.location.href = pathname + '/search?' + formInput;
 			}
 		});
 	});
