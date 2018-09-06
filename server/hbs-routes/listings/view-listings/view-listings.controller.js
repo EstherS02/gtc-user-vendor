@@ -10,8 +10,8 @@ const url = require('url');
 
 export function viewListings(req, res) {
 
-	var offset, limit, field, order, page, type;
-	var queryParams = {}, LoggedInUser = {}, bottomCategory = {};
+	var offset, limit, field, order, page, type, maxSize;;
+	var queryParams = {}, LoggedInUser = {}, bottomCategory = {}, queryURI = {}, queryPaginationObj = {};
 
 	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
@@ -20,46 +20,47 @@ export function viewListings(req, res) {
 	offset = 0;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
-	delete req.query.limit;
-
-	page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['offset'] = offset;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    queryPaginationObj['limit'] = limit;
+    delete req.query.limit;
+    order = req.query.order ? req.query.order : "desc";
+    queryPaginationObj['order'] = order;
+    delete req.query.order;
+    page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['page'] = page;
 	delete req.query.page;
-
+	
 	offset = (page - 1) * limit;
 
 	if (req.user)
 		LoggedInUser = req.user;
 
 	queryParams['vendor_id'] = LoggedInUser.Vendor.id;
-
-	type = req.params.type;
-
+    type = req.params.type;
 
 	if (req.params.type == 'wholesale') {
 		queryParams["marketplace_id"] = marketPlaceType['WHOLESALE'];
 	}
-
 	if (req.params.type == 'shop') {
 		queryParams["marketplace_id"] = marketPlaceType['PUBLIC'];
 	}
-
 	if (req.params.type == 'services') {
 		queryParams["marketplace_id"] = marketPlaceType['SERVICE'];
 	}
-
 	if (req.params.type == 'lifestyle') {
 		queryParams["marketplace_id"] = marketPlaceType['LIFESTYLE'];
 	}
-
 	if (req.query.keyword) {
+		queryURI['keyword'] = req.query.keyword;
 		queryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 	}
 
 	if (req.query.status) {
+		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
 	}else{
         queryParams['status'] = statusCode["ACTIVE"];
@@ -110,6 +111,12 @@ export function viewListings(req, res) {
 				});
 		},
 	}, function(err, results) {
+		maxSize = results.products.count / limit;
+            if (results.products.count % limit)
+				maxSize++;
+
+		queryPaginationObj['maxSize'] = maxSize;
+				
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 
@@ -130,7 +137,9 @@ export function viewListings(req, res) {
 				type: type,
 				selectedPage: type,
 				vendorPlan: vendorPlan,
-				dropDownUrl: dropDownUrl
+				dropDownUrl: dropDownUrl,
+				queryURI: queryURI,
+				queryPaginationObj: queryPaginationObj,
 			});
 		} else {
 			res.render('vendorNav/listings/view-listings', err);
