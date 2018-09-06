@@ -18,5 +18,6 @@ router.get('/sales-history',auth.isAuthenticated(), saleshistoryCtrl.salesHistor
 router.get('/sales-history/:id',auth.isAuthenticated(), saleshistoryCtrl.orderView);
 router.get('/accounting',auth.isAuthenticated(), accountingCtrl.accounting);
 router.get('/tax',auth.isAuthenticated(), taxCtrl.tax);
+router.get('/order',auth.isAuthenticated(), saleshistoryCtrl.salesHistory);
 
 module.exports = router;

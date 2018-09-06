@@ -368,9 +368,18 @@ function redirectBack() {
 			</div>
 			
 			
-			<div class="search-xs-header"></div>
 			{{/ifCond}}
+			{{else}}
+			<div class="search-sm-header">
+				<div class="alignleft">
+					<span class="text-sm">
+						<strong>ALL PRODUCTS </strong>
+					</span>
+				</div>
+				<div style="clear: both;"></div>
+			</div>
 			{{/if}}
+
 			<div class="search-list-body">
 			{{#if products.count}}
 				<div class="row">

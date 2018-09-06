@@ -10,6 +10,12 @@
 .messager-list li {
     /* border-bottom: 1px solid #eee; */
 }
+.chat-name {
+   
+    z-index: 100;
+    background-color: #ededed;
+    color: #5387b7
+}
 .messager-list li a {
     position: relative;
     display: block;
@@ -96,6 +102,9 @@
     background: #f9f9f9;
     padding: 5px 40px 5px 0;
 }
+.chat-content-body {
+    height: 346px; 
+    overflow-y: auto;}
 .chats {
     list-style: none;
     margin: 0;

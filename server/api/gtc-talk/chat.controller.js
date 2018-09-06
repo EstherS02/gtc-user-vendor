@@ -41,7 +41,7 @@ export function chatConversation(req, res) {
 			if (response) {
 				_.forOwn(response.rows, function (element) {
  				if(element.User.id != req.user.id){
- 					thread_user = element.User.id;
+ 					thread_user = element.User;
  					return false;
  					}
  

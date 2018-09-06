@@ -19,6 +19,11 @@ export function reviews(req, res) {
 
 	let user_id = LoggedInUser.id;
 	var queryPaginationObj = {};
+	var queryURI = {};
+	var vendorId;
+
+	// queryURI['vendor_id']=req.query.vendor_id;
+
 	if (req.query.sort == 'rating') {
 		var field = req.query.sort;
 		queryPaginationObj["field"] = field;
@@ -30,11 +35,12 @@ export function reviews(req, res) {
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit = 1;
-	var vendor_id = req.user.Vendor.id;
+	
+	vendorId = req.query.vendor_id;
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {
-		vendor_id: vendor_id,
+		vendor_id: vendorId,
 	};
 
 	//pagination 
@@ -182,7 +188,8 @@ export function reviews(req, res) {
 					collectionSize: results.Reviews.count,
 					selectedPage: 'reviews',
 					// End pagination
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					queryURI: queryURI
 				});
 			} else {
 				res.render('vendorNav/reviews', err);
