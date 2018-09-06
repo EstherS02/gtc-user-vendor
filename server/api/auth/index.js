@@ -7,9 +7,11 @@ var controller = require('./auth.controller');
 
 var router = express.Router();
 
-router.get('/auth/twitter', controller.twitterAuth);
-router.get('/linkedin', controller.linkedIN)
+//router.get('/auth/twitter', controller.twitterAuth);
+router.get('/request-twitter', controller.requestTwitter);
+router.get('/linkedin', controller.linkedin)
 router.get('/facebook', controller.facebook)
+router.get('/twitter', controller.twitter)
 router.get('/auth/twitter/callback', controller.twitterCallbackAuth);
 router.post('/login', controller.login);
 router.post('/refresh-token', controller.refreshToken);

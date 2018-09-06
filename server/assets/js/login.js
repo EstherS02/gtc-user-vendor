@@ -160,15 +160,18 @@ $(document).ready(function() {
 	});
 
 	window.onPopupClose = function(data) {
-		if (data) {
-			console.log('data', data);
+		if (data == 'successful') {
+			window.location.href = "/";
+		} else {
+			console.log('failed');
 		}
 	};
 
 	$("#gtc-fb-login").click(function() {
 		var credentials = {
 			client_id: "393416147793353",
-			redirect_uri: "https://localhost:9010/api/auth/facebook"
+			redirect_uri: "https://localhost:9010/api/auth/facebook",
+			scope: 'email'
 		}
 		var linkedINWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'LinkedInPopup', 'location=0,status=0,width=800,height=auto');
 	});
@@ -301,7 +304,7 @@ $(document).ready(function() {
 	var checkConnect;
 
 	$("#gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/twitter";
+		var oAuthURL = "/api/auth/request-twitter";
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});
 

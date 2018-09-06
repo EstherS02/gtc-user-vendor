@@ -38,7 +38,27 @@ export function twitterAuth(req, res) {
 	});
 }
 
-export async function linkedIN(req, res) {
+export function requestTwitter(req, res) {
+	var redirect_uri = 'http://localhost:9000/api/auth/twitter';
+	var oauthNew = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', redirect_uri, 'HMAC-SHA1')
+	oauth.getOAuthRequestToken(function(error, oAuthToken, oAuthTokenSecret, results) {
+		if (!error) {
+			res.redirect("https://api.twitter.com/oauth/authenticate?oauth_token=" + oAuthToken);
+		} else {
+			res.status(error.statusCode).json(error);
+		}
+	})
+}
+
+export async function twitter(req, res) {
+	console.log("twitter-----");
+}
+
+export async function linkedin(req, res) {
+	var rspTokens = {};
+	var bodyParams = {};
+	var dbUser = {};
+	var refreshToken, encryptedRefToken;
 	const accessTokenUrl = config.linkedInLogin.accessTokenUrl;
 	const peopleApiUrl = config.linkedInLogin.peopleApiUrl;
 	var params = {
@@ -57,23 +77,189 @@ export async function linkedIN(req, res) {
 			});
 		} else {
 			const token = await getAccessToken(params, accessTokenUrl);
-			const profile = await getGooglePeople(token.access_token, peopleApiUrl);
-			console.log("profile----------", profile);
+			const profile = await getPeople(token.access_token, peopleApiUrl);
+			if (!profile.emailAddress) {
+				profile['emailAddress'] = profile.id + '@linkedin.com';
+			}
+			const existsUser = await service.findOneRow('User', {
+				email: profile.emailAddress
+			});
+			const appClient = await service.findOneRow('Appclient', {
+				id: config.auth.clientId,
+				status: status['ACTIVE']
+			});
+			if (existsUser) {
+				if (existsUser.linkedin_id == null) {
+					bodyParams['email_verified'] = 1;
+					bodyParams['linkedin_id'] = profile.id;
+
+					dbUser = await service.updateRecordNew('User', bodyParams, {
+						email: existsUser.email,
+						status: status['ACTIVE']
+					});
+					refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+					encryptedRefToken = await cryptography.encrypt(refreshToken);
+					rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+				} else if (existsUser.linkedin_id == profile.id) {
+					dbUser = await service.findOneRow('User', {
+						email: existsUser.email,
+						linkedin_id: existsUser.linkedin_id,
+						status: status['ACTIVE']
+					});
+					refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+					encryptedRefToken = await cryptography.encrypt(refreshToken);
+					rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+				} else {
+					return res.status(400).send("Failed to login with your google account...");
+				}
+			} else {
+				bodyParams['email_verified'] = 1;
+				bodyParams['role'] = roles['USER'];
+				bodyParams['email'] = profile.emailAddress;
+				bodyParams['created_on'] = new Date();
+				bodyParams["status"] = status["ACTIVE"];
+				bodyParams['provider'] = providers["LINKEDIN"];
+				bodyParams['first_name'] = profile.given_name;
+				bodyParams['last_name'] = profile.family_name;
+				bodyParams['user_pic_url'] = profile.picture;
+				bodyParams['linkedin_id'] = profile.id;
+
+				dbUser = await service.createRow('User', bodyParams);
+
+				refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+				encryptedRefToken = await cryptography.encrypt(refreshToken);
+				rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+			}
+
+			var userToken = {
+				client_id: appClient.id,
+				refresh_token: refreshToken,
+				status: status["ACTIVE"],
+				user_id: dbUser.id
+			};
+
+			const newToken = await service.upsertRecord('UserToken', userToken, {
+				user_id: dbUser.id,
+				client_id: appClient.id
+			});
+			res.cookie("gtc_refresh_token", encryptedRefToken);
+			res.cookie("gtc_access_token", rspTokens.access_token);
+			return res.render('window-popup-close', {
+				layout: false,
+				popupResponseData: "successful"
+			});
 		}
 	} catch (error) {
 		console.log("linkedIN Error:::", error);
-		return res.status(500).send(error);
+		return res.render('window-popup-close', {
+			layout: false,
+			popupResponseData: error
+		});
 	}
 }
 
-export function facebook(req, res) {
-	if (req.query.error = 'access_denied') {
+export async function facebook(req, res) {
+	var rspTokens = {};
+	var bodyParams = {};
+	var dbUser = {};
+	var refreshToken, encryptedRefToken;
+	var fields = config.facebookLogin.fields;
+	const accessTokenUrl = config.facebookLogin.accessTokenUrl;
+	const peopleApiUrl = config.facebookLogin.peopleApiUrl + fields.join(',');
+	var params = {
+		code: req.query.code,
+		client_id: config.facebookLogin.clientId,
+		client_secret: config.facebookLogin.secretKey,
+		redirect_uri: 'https://localhost:9010/api/auth/facebook',
+		grant_type: 'authorization_code'
+	};
+
+	try {
+		if (req.query.error == 'access_denied') {
+			return res.render('window-popup-close', {
+				layout: false,
+				popupResponseData: null
+			});
+		} else {
+			const token = await getAccessToken(params, accessTokenUrl);
+			const profile = await getPeople(token.access_token, peopleApiUrl);
+			if (!profile.email) {
+				profile['email'] = profile.id + '@facebook.com';
+			}
+			const existsUser = await service.findOneRow('User', {
+				email: profile.email
+			});
+			const appClient = await service.findOneRow('Appclient', {
+				id: config.auth.clientId,
+				status: status['ACTIVE']
+			});
+			if (existsUser) {
+				if (existsUser.fb_id == null) {
+					bodyParams['email_verified'] = 1;
+					bodyParams['fb_id'] = profile.id;
+
+					dbUser = await service.updateRecordNew('User', bodyParams, {
+						email: existsUser.email,
+						status: status['ACTIVE']
+					});
+					refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+					encryptedRefToken = await cryptography.encrypt(refreshToken);
+					rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+				} else if (existsUser.fb_id == profile.id) {
+					dbUser = await service.findOneRow('User', {
+						email: existsUser.email,
+						fb_id: existsUser.fb_id,
+						status: status['ACTIVE']
+					});
+					refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+					encryptedRefToken = await cryptography.encrypt(refreshToken);
+					rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+				} else {
+					return res.status(400).send("Failed to login with your google account...");
+				}
+			} else {
+				bodyParams['email_verified'] = 1;
+				bodyParams['role'] = roles['USER'];
+				bodyParams['email'] = profile.email;
+				bodyParams['created_on'] = new Date();
+				bodyParams["status"] = status["ACTIVE"];
+				bodyParams['provider'] = providers["LINKEDIN"];
+				bodyParams['first_name'] = profile.given_name;
+				bodyParams['last_name'] = profile.family_name;
+				bodyParams['user_pic_url'] = "https://graph.facebook.com/" + profile.id + "/picture?type=large";
+				bodyParams['fb_id'] = profile.id;
+
+				dbUser = await service.createRow('User', bodyParams);
+
+				refreshToken = await generateRefreshToken(dbUser, appClient, config.secrets.refreshToken);
+				encryptedRefToken = await cryptography.encrypt(refreshToken);
+				rspTokens.access_token = await generateAccessToken(dbUser, appClient, config.secrets.accessToken, config.token.expiresInMinutes);
+			}
+
+			var userToken = {
+				client_id: appClient.id,
+				refresh_token: refreshToken,
+				status: status["ACTIVE"],
+				user_id: dbUser.id
+			};
+
+			const newToken = await service.upsertRecord('UserToken', userToken, {
+				user_id: dbUser.id,
+				client_id: appClient.id
+			});
+			res.cookie("gtc_refresh_token", encryptedRefToken);
+			res.cookie("gtc_access_token", rspTokens.access_token);
+			return res.render('window-popup-close', {
+				layout: false,
+				popupResponseData: "successful"
+			});
+		}
+	} catch (error) {
+		console.log("facebook Error:::", error);
 		return res.render('window-popup-close', {
 			layout: false,
-			popupResponseData: null
+			popupResponseData: error
 		});
-	} else {
-
 	}
 }
 
@@ -233,7 +419,23 @@ function getAccessToken(params, accessTokenUrl) {
 	});
 }
 
-function getGooglePeople(accessToken, peopleApiUrl) {
+/*function getAccessTokenGet(params, accessTokenUrl) {
+	return new Promise(function(resolve, reject) {
+		request.get({
+			url: accessTokenUrl,
+			qs: params,
+			json: true
+		}, function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				return resolve(body);
+			} else {
+				return reject(error);
+			}
+		});
+	});
+}*/
+
+function getPeople(accessToken, peopleApiUrl) {
 	return new Promise(function(resolve, reject) {
 		request.get({
 			url: peopleApiUrl,
@@ -241,9 +443,9 @@ function getGooglePeople(accessToken, peopleApiUrl) {
 				Authorization: 'Bearer ' + accessToken
 			},
 			json: true
-		}, function(error, response, result) {
+		}, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
-				return resolve(result);
+				return resolve(body);
 			} else {
 				return reject(error);
 			}
@@ -256,8 +458,8 @@ export async function googleLoginNew(req, res, next) {
 	var bodyParams = {};
 	var dbUser = {};
 	var refreshToken, encryptedRefToken;
-	var accessTokenUrl = config.googleLogin.googleAccessTokenUrl;
-	var peopleApiUrl = config.googleLogin.googlePeopleApiUrl;
+	var accessTokenUrl = config.googleLogin.accessTokenUrl;
+	var peopleApiUrl = config.googleLogin.peopleApiUrl;
 	var params = {
 		code: req.body.code,
 		client_id: req.body.clientId,
@@ -268,7 +470,7 @@ export async function googleLoginNew(req, res, next) {
 
 	try {
 		const token = await getAccessToken(params, accessTokenUrl);
-		const profile = await getGooglePeople(token.access_token, peopleApiUrl);
+		const profile = await getPeople(token.access_token, peopleApiUrl);
 		const existsUser = await service.findOneRow('User', {
 			email: profile.email
 		});
@@ -500,10 +702,6 @@ export function googleLogin(req, res, next) {
 			return
 		});
 };
-
-export async function facebookLoginNew(req, res, next) {
-
-}
 
 export function facebookLogin(req, res, next) {
 	var queryObj = {};
