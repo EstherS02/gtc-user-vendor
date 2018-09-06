@@ -253,10 +253,12 @@ export function product(req, res) {
 		},
 		talkThreads: function(callback) {
 			var includeArr = [];
+			console.log("****************VENDOR ID", vendorID);
 			if (LoggedInUser.id != null && LoggedInUser.role == 3) {
 				service.findOneRow('Vendor', vendorID, includeArr)
 					.then(function(response) {
-
+						console.log("response.user_id", response.user_id);
+						console.log("LoggedInUser.id", LoggedInUser.id);
 						var talkIncludeArr = [];
 						var talkThreadUsersQueryObj = {};
 
@@ -275,7 +277,7 @@ export function product(req, res) {
 							}), 'thread_id'), _.map(_.filter(talkUserCheck, function(o) {
 								return o.user_id == LoggedInUser.id;
 							}), 'thread_id'));
-
+							console.log("threadArr", threadArr);
 							if (threadArr.length > 0) {
 								console.log("Match ID", threadArr[0]);
 								// GetTalks arr
@@ -288,7 +290,7 @@ export function product(req, res) {
 								model['Talk'].findAll({
 									where: talkThread
 								}).then(function(talk){
-									//console.log("talk", talk);
+									console.log("talk", talk);
 									if(talk.length > 0){
 										console.log("talkThread", {
 											threadId : threadArr[0],
@@ -300,7 +302,10 @@ export function product(req, res) {
 										});
 									}else {
 										console.log("start new conversation");
-										callback(null, null);
+										callback(null, {
+											threadId : threadArr[0],
+											talk: JSON.parse(JSON.stringify(talk)) 
+										});
 									}
 								}).catch(function(err){
 									console.log("Error:::", err);
