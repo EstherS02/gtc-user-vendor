@@ -15,7 +15,8 @@ export function billingSettings(req, res) {
     var LoggedInUser = {};
     var bottomCategory = {};
 	var categoryModel = "Category";
-    var paymentSettingModel = "PaymentSetting";
+	var paymentSettingModel = "PaymentSetting";
+	var billingAddressModel = "Address"
 
     if (req.user)
         LoggedInUser = req.user;
@@ -72,15 +73,34 @@ export function billingSettings(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
+		},
+		billingAddress: function (callback) {
+            var includeArr = [];
+            const offset = 0;
+            const limit = null;
+            const field = "id";
+            const order = "asc";
+			queryObjCategory.user_id = req.user.id;
+			queryObjCategory.address_type = 1;
+
+            service.findAllRows(billingAddressModel, includeArr, queryObjCategory, offset, limit, field, order)
+                .then(function(billingAddressdetails) {
+                    var billingAddressdetails = billingAddressdetails.rows;
+                    return callback(null, billingAddressdetails);
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
         }
 
     }, function(err, results) {
-            console.log(results)
+            console.log("billingAddress"+results.billingAddress);
             if (!err) {
                 res.render('userNav/billing-settings', {
                     title: "Global Trade Connect",
                     LoggedInUser: LoggedInUser,
-                    categories: results.categories,
+					categories: results.categories,
+					billingAddress:results.billingAddress,
                     cards: results.cards,
 				    bottomCategory: bottomCategory,
                     cartheader: results.cartCounts,
