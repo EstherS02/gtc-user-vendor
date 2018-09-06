@@ -17,22 +17,23 @@
 				</tr>
 				<tr>
 					<td><span class="text-muted">User Rating</span></td>
+					
 					{{#if VendorDetail.VendorRatings}}
-					{{#each VendorDetail.VendorRatings}}
 					<td>
+						{{#each VendorDetail.VendorRatings}}
 						<div class="p-rating">
-			                {{!-- <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i>
-			                <i class="fa fa-star" aria-hidden="true"></i> --}}
 							{{starCount this.rating}}
 			            </div>
-			            <p class="v-rating"><a href="/reviews"><strong>({{this.count}} Ratings - See All)</strong></a></p>
+						<p class="v-rating">
+							<a href="/reviews">
+								<strong>({{this.count}} Ratings - See All)</strong>
+							</a>
+								{{!-- <a href="/reviews?vendor_id={{../VendorDetail.id}}">
+								<strong>({{this.count}} Ratings - See All)</strong>
+							</a> --}}
+						</p>
+						{{/each}}
 					</td>
-					{{/each}}
 					{{else}}
 					<td>
 						<div class="p-rating">
@@ -41,6 +42,7 @@
 			            <p class="v-rating"><a href="/reviews"><strong>(0 Ratings - See All)</strong></a></p>
 					</td>
 					{{/if}}
+				
 				</tr>
 			</tbody>
 		</table>
