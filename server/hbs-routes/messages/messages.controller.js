@@ -7,7 +7,6 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 var async = require('async');
-const vendorPlan = require('../../config/gtc-plan');
 
 export function messages(req, res) {
 	var categoryModel = "Category";
@@ -102,7 +101,7 @@ export function messages(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
 					LoggedInUser: LoggedInUser,
-					vendorPlan: vendorPlan,
+					// vendorPlan: vendorPlan,
 				});
 			} else {
 				res.render('vendorNav/messages', err);

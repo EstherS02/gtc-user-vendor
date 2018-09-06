@@ -18,20 +18,46 @@
 	}
 
 	function changeStatus(e) {
-		window.location.href = '/coupons?status=' + e.value;
+		// window.location.href = '/coupons?status=' + e.value;
+		console.log(e.value)
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+				if ($(this).val() != 'on') {
+					chkArray.push($(this).val());
+				}
+		});
+		var selected;
+		selected = chkArray.join(',');
+		var data = {};
+		 data.status = e.value;
+		 data.ids = JSON.stringify(chkArray);
+		$.ajax({
+			type: 'PUT',
+			data:data,
+			url: '/api/coupon/update-status',
+			success: function (data) {
+				console.log(data);
+				location.reload();
+			},
+			error: function (error) {
+                console.log(error);
+			}
+        })
+
 	}
 
 	function edit(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function (i) {
-			chkArray.push($(this).val());
+			if ($(this).val() != 'on') {
+					chkArray.push($(this).val());
+				}
 		});
 		var selected;
 		selected = chkArray.join(',');
 		if (selected.length > 0) {
 			window.location.href = '/coupons/edit-coupons?id=' + selected;
 		} else {
-			// alert("Please at least check one of the checkbox");
 			ouputErrorPopup("Please at least check one of the checkbox");
 		}
 	}
@@ -77,25 +103,6 @@
 							<div class="row">
 								<div class="col-md-12" style="background-color: #fff;">
 									<p class="vend_edit_lists_pstyle"></p>
-									{{!-- <div class="row">
-										<div class="col-md-10">
-											<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" />
-											<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
-												<option disabled selected>CHANGE STATUS</option>
-												<option value="ACTIVE">Active</option>
-												<option value="INACTIVE">InActive</option>
-												<option value="SUSPENDED">Suspended</option>
-												<option value="SOLDOUT">Sold Out</option>
-											</select>
-											<input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
-										</div>
-										<div class="col-md-2">
-											<form>
-												<input type="text" name="keyword" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" onkeypress="searchName(event,this)"
-												/>
-											</form>
-										</div>
-									</div> --}}
 									<div class="alert" id="gtc-coupon-alert">
 										<button type="button" class="close" data-dismiss="alert">
 											<span aria-hidden="true">&times;</span>
@@ -113,9 +120,8 @@
 												<select class="form-control-customized form-control-sm" onChange="changeStatus(this);">
 													<option disabled selected>CHANGE STATUS</option>
 													<option value="ACTIVE">Active</option>
-													<option value="INACTIVE">InActive</option>
-													{{!-- <option value="SUSPENDED">Suspended</option> --}}
-													{{!-- <option value="SOLDOUT">Sold Out</option> --}}
+													<option value="SUSPENDED">Suspended</option>
+													<option value="SOLDOUT">Sold Out</option>
 												</select>
 											</div>
 										</div>
@@ -146,7 +152,7 @@
 												<a href="/coupons?limit=10"> 10</a>
 												<a href="/coupons?limit=25"> 25</a>
 												<a href="/coupons?limit=100"> 100</a>
-												<a href="/coupons?limit=10"> All </a>
+												<a href="/coupons?limit=1000"> All </a>
 											</p>
 										</div>
 									</div>
@@ -158,6 +164,7 @@
 														<input type="checkbox" onclick="selectAll(this);">
 													</th>
 													<th>Coupon Name</th>
+													<th>Coupon Code</th>
 													<th>Publish Date</th>
 													<th>Type</th>
 													<th>Sales</th>
@@ -166,12 +173,14 @@
 												</tr>
 											</thead>
 											<tbody>
+											{{#if Coupons}}
 												{{#each Coupons}}
 												<tr>
 													<td>
 														<input type="checkbox" value="{{this.id}}">
 													</td>
-													<td class="text_blue_color">{{this.coupon_name}}</td>
+													<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
+													<td>{{this.code}}</td>
 													<td>{{formatTime this.publish_date "MMM D YY"}}</td>
 													{{!-- DiscountType --}} {{#ifCond this.discount_type "==" ../discountType.Percentage}}
 													<td>Percentage</td>
@@ -183,16 +192,32 @@
 													<td>Fixed Cart Discount</td> --}}
 													{{/ifCond}} {{!--End DiscountType --}}
 													<td class="text_blue_color">{{this.sales_count}}</td>
-													<td>{{this.discount_value}}</td>
+													<td>{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+														<strong>{{decimalFixed this.discount_value}}</strong>&nbsp;%
+													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
+													$&nbsp;<strong>{{decimalFixed this.discount_value}}</strong>&nbsp;<small>CAD</small>{{/ifCond}}
+													</td>
 													{{!-- satusCode --}} {{#ifCond this.status "==" ../statusCode.ACTIVE}}
 													<td class="text_green_color">Active</td>
-													{{else ifCond this.status "==" ../statusCode.INACTIVE}}
+													{{else ifCond this.status "==" ../statusCode.SUSPENDED}}
 													<td class="text_orange_color">Suspended</td>
 													{{else ifCond this.status "==" ../statusCode.SOLDOUT}}
 													<td class="text_red_color">Sold Out</td>
+													{{else ifCond this.status "==" ../statusCode.INACTIVE}}
+													<td class="text_orange_color">Inactive</td>
 													{{/ifCond}} {{!-- End status Code--}}
 												</tr>
 												{{/each}}
+											{{else}}
+												<tr>
+													<td></td>
+													<td></td>
+													<td>No Coupons Available<td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											{{/if}}
 											</tbody>
 										</table>
 									</div>
@@ -205,24 +230,36 @@
 												<a href="/coupons?limit=10"> 10</a>
 												<a href="/coupons?limit=25"> 25</a>
 												<a href="/coupons?limit=100"> 100</a>
-												<a href="/coupons?limit=10"> All </a>
+												<a href="/coupons?limit=1000"> All </a>
 											</p>
 										</div>
 									</div>
 									{{!-- Pagination starts --}}
 									<div class="row">
 										<div style="margin:0 auto;width:100px;">
+											{{#if Coupons}}
 											{{#pagination collectionSize page pageSize maxSize}}
 											<nav aria-label="Page navigation example">
 												<ul class="pagination justify-content-center">
+													{{#unless startFromFirstPage}}
+													<li class="page-item">
+														{{!-- <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a> --}}
+													</li>
+													{{/unless}}
 													{{#each pages}}
 													<li class="page-item {{#if isCurrent}} active {{/if}}">
 														<a class="page-link" href="coupons?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
 													</li>
 													{{/each}}
+													{{#unless endAtLastPage}}
+													<li class="page-item">
+														{{!-- <a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a> --}}
+													</li>
+													{{/unless}}
 												</ul>
 											</nav>
 											{{/pagination}}
+											{{/if}}
 										</div>
 									</div>
 									{{!-- Pagination starts --}}

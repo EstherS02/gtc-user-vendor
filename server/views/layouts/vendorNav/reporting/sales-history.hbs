@@ -284,7 +284,7 @@
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 
-												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Invoice " {{#if queryURI.keyword}}
+												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Order# " {{#if queryURI.keyword}}
 												value={{queryURI.keyword}}{{/if}} aria-label="..."
 												/>
 												<button type="submit" class="btn btn-sm btn-gtc">
@@ -323,7 +323,7 @@
 													<th scope="col">
 														<input type="checkbox" onclick="selectAll(this);">
 													</th>
-													<th scope="col">Invoice#</th>
+													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
 													<th scope="col">Date</th>
 													<th scope="col">Method</th>
@@ -335,6 +335,7 @@
 												</tr>
 											</thead>
 											<tbody>
+											{{#if OrderItems}}
 												{{#each OrderItems}}
 													<tr>
 														<td>
@@ -364,10 +365,18 @@
 													<td class="text_blue_color">Total Transaction</td>
 													<td>${{totalTransaction}} CAD</td>
 												</tr>
+												{{else}}
+												<tr>
+													<td></td>
+													<td> No Data Found</td>
+													<td colspan="7"></td>
+												</tr>
+												{{/if}}
 											</tbody>
 										</table>
 										{{!-- Pagination starts --}}
-										{{#ifCond count '>' queryPaginationObj.limit}}
+										{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
+										{{#if count}}
 											<div class="row">
 												<div class="col-md-3">
 												</div>
@@ -395,7 +404,8 @@
 													{{/pagination}}
 												</div>
 											</div>
-										{{/ifCond}}
+										{{!-- {{/ifCond}} --}}
+										{{/if}}
 										{{!-- Pagination Ends --}}
 									</div>
 								</div>
