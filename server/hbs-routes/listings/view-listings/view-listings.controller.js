@@ -59,7 +59,11 @@ export function viewListings(req, res) {
 		};
 	}
 
-	queryParams['status'] = statusCode["ACTIVE"]
+	if (req.query.status) {
+		queryParams['status'] = statusCode[req.query.status]
+	}else{
+        queryParams['status'] = statusCode["ACTIVE"];
+	}
 	
 	var queryObjCategory = {
 		status: statusCode['ACTIVE']

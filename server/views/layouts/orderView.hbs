@@ -180,7 +180,7 @@
 			</div>
 			<div class="row checkout_bg_color ">
 				<div class="col-md-9 checkout_title_color">
-					<h4>ORDER #{{order.purchase_order_id}}
+					<h4>ORDER #{{order.id}}
 						<span class="checkout_title_color_span">({{orderItemsCount}} Item Totals)</span>
 					</h4>
 				</div>
@@ -572,7 +572,7 @@
 								<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{/ifCond}} {{#if order.shipped_on}}
+						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
 						<div class="row">
 							<div class="col-md-6">
 								<p class="shop_subtotal">
@@ -583,7 +583,7 @@
 								<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" />
+						<hr class="common_margin" />	
 						<div class="row">	
 							<div class="col-md-8">
 								<p class="shop_subtotal">
@@ -594,7 +594,7 @@
 								<p class="shop_subtotal float-right">{{order.Shipping.tracking_id}}</p>
 							</div>
 						</div>
-						<hr class="common_margin" /> {{/if}}
+						<hr class="common_margin" /> {{/ifCond}}
 					</div>
 				</div>
 			</div>

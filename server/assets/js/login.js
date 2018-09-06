@@ -71,7 +71,6 @@ $(document).ready(function() {
 	};
 
 
-
 	function googleAttachSignin(element) {
 		auth2.attachClickHandler(element, {},
 			function(googleUser) {
@@ -141,6 +140,26 @@ $(document).ready(function() {
 			});
 	};
 
+	var serialize = function(obj) {
+		var str = [];
+		for (var p in obj)
+			if (obj.hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+			}
+		return str.join("&");
+	}
+
+	/*$('#gtc-linkedin-login').click(function(e) {
+		var credentials = {
+			response_type: 'code',
+			client_id: '81epswkuklqmde',
+			redirect_uri: 'http://localhost:9000/api/auth/linkedin',
+			state: '987654321',
+			scope: 'r_basicprofile'
+		}
+		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=auto');
+	});*/
+
 	$('#gtc-linkedin-login').click(function(e) {
 		if (!IN.User.isAuthorized()) {
 			IN.User.authorize(function() {
@@ -171,6 +190,15 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#gtcVerficationLinkedLogin').click(function(e) {
+		if (!IN.User.isAuthorized()) {
+			IN.User.authorize(function() {
+				getProfileData();
+			});
+		} else {
+			console.log("Already Login In with LinkedIn");
+		}
+	});
 	function linkedInSignIn() {
 		if (!IN.User.isAuthorized()) {
 			IN.User.authorize(function() {
@@ -188,52 +216,12 @@ $(document).ready(function() {
 	};
 
 	window.fbAsyncInit = function() {
-		// FB JavaScript SDK configuration and setup
-		FB.init({
-			appId: '393416147793353', // FB App ID
-			cookie: true, // enable cookies to allow the server to access the session
-			xfbml: true, // parse social plugins on this page
-			version: 'v2.8' // use graph api version 2.8
-		});
-
-		// Check whether the user already logged in
-		FB.getLoginStatus(function(response) {
-			if (response.status === 'connected') {
-				//display user data
-				//getFbUserData();
-			}
-		});
-	};
-
-	// Load the JavaScript SDK asynchronously
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s);
-		js.id = id;
-		js.src = "//connect.facebook.net/en_US/sdk.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-
-	$("#gtc-fb-login").click(function() {
-		FB.login(function(response) {
-			console.log('response', response);
-		}, {
-			scope: 'email',
-			auth_type: 'reauthorize',
-			return_scopes: true
-		});
-	});
-
-	/*window.fbAsyncInit = function() {
 		FB.init({
 			appId: '393416147793353',
 			cookie: true,
 			xfbml: true,
 			version: 'v3.0'
-		}).then(function(res) {
-			console.log("Res", res);
-		})
+		});
 
 		FB.getLoginStatus(function(loginStatus) {
 			console.log(loginStatus);
@@ -290,7 +278,11 @@ $(document).ready(function() {
 
 	$("#footer-modal-gtc-fb-login").click(function() {
 		fb_login();
-	});*/
+	});
+
+	$("#gtcVerficationFbLogin").click(function() {
+		fb_login();
+	});
 
 	var twitterWin;
 	var checkConnect;
@@ -301,11 +293,16 @@ $(document).ready(function() {
 	});
 
 	$("#modal-gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/twitter";
+		var oAuthURL = "/api/auth/twitter"; 
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});
 
 	$("#footer-modal-gtc-twitter-login").click(function() {
+		var oAuthURL = "/api/auth/twitter";
+		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+	});
+
+	$("#gtcVerficationTwitterLogin").click(function() {
 		var oAuthURL = "/api/auth/twitter";
 		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
 	});

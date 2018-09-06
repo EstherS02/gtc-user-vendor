@@ -572,3 +572,6 @@ Handlebars.registerHelper('dotdotdot', function(str) {
     return str.substring(0,100) + '...';
   return str;
 });
+Handlebars.registerHelper('decimalFixed', function(distance) {
+  return parseFloat(distance).toFixed(0);
+});
