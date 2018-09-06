@@ -9,7 +9,8 @@ module.exports = async function(job, done) {
 	const products = job.attrs.data.products;
 	const currentUser = job.attrs.data.user;
 	const browser = await puppeteer.launch({
-		headless: true
+		headless: true,
+		args: ['--no-sandbox']
 	});
 	const productPage = await browser.newPage();
 
