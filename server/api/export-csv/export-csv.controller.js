@@ -230,7 +230,6 @@ exports.orderHistoryexportcsv =function(req,res)
 			};
 			const parser = new Json2csvParser(opts);
 			const csv = parser.parse(rows.rows);
-			console.log("csv"+csv);
 			res.write(csv);
 			res.end();
 			return;
@@ -297,7 +296,6 @@ exports.orderHistoryexportcsv =function(req,res)
 		};
 		const parser = new Json2csvParser(opts);
 		const csv = parser.parse(rows.rows);
-		console.log("csv"+csv);
 		res.write(csv);
 		res.end();
 		return;
@@ -308,5 +306,145 @@ exports.orderHistoryexportcsv =function(req,res)
 	});
   }
 };
-// ends export csv Ad-revenue //
+// ends export csv order-history //
+
+//starts export csv sales-history//
+exports.salesHistoryexportcsv =function(req,res)
+{
+	
+	if(req.body.id!=0)
+	{
+		var offset, limit, field, order;
+	    var queryObj = {};
+	    var ids =[];
+	    var type = [];
+		let includeArr=[];
+		offset = req.query.offset ? parseInt(req.query.offset) : null;
+	    delete req.query.offset;
+	    limit = req.query.limit ? parseInt(req.query.limit) : null;
+	    delete req.query.limit;
+	    field = req.query.field ? req.query.field : "id";
+	    delete req.query.field;
+	    order = req.query.order ? req.query.order : "asc";
+		delete req.query.order;
+
+		queryObj['id'] = JSON.parse("[" + req.body.id + "]");
+
+		service.findAllRows('Order',includeArr, queryObj, 0, null, field, order)
+		.then(function (rows) {
+			for(let value of rows.rows)
+			{
+				if(value.id != '') 
+				{
+				   value.invoice = value.id;
+				   value.Date = value.ordered_date;
+				   value.Method = "Stripe";
+				  
+				   value.Amount =((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+
+				}
+				if(value.order_status!='')
+				{
+				Object.keys(orderStatus).forEach(function(key) {
+					if (value.order_status == orderStatus[key]) {
+						var val1 = key.toLowerCase();
+						var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+						val = val.replace("order", " "); //Order
+						value.Status = val;
+					}
+				});
+			}
+				
+			}
+		   
+			var fields = [];
+			fields = _.map(rows.rows.columns, 'columnName');
+			fields.push('invoice','Date','Method','Status','Amount');
+			const opts = {
+					fields
+			};
+			const parser = new Json2csvParser(opts);
+			const csv = parser.parse(rows.rows);
+			res.write(csv);
+			res.end();
+			return;
+		}).catch(function (error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+		
+        
+	}
+	else
+	{
+	var productQueryObj={};
+	var orderQueryObj ={};
+	var modelName = "Order";
+	var offset,limit,offset,field,order;
+	productQueryObj['vendor_id'] = req.body.vendor_id;
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
+
+    var includeArr = [{
+        model: model['Product'],
+        where: productQueryObj,
+        include: [{
+            model: model['Vendor'],
+        }]
+	}];
+	service.findRows(modelName,orderQueryObj , offset, limit, field, order, includeArr)
+	.then(function (rows) {
+		for(let value of rows.rows)
+		{
+			if(value.id != '') 
+			{
+			   value.invoice = value.id;
+			   value.Date = value.ordered_date;
+			   value.Method = "Stripe";
+			   value.Amount =((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+
+			}
+			if(value.order_status!='')
+				{
+				Object.keys(orderStatus).forEach(function(key) {
+					if (value.order_status == orderStatus[key]) {
+						var val1 = key.toLowerCase();
+			             var val = val1.charAt(0).toUpperCase() + val1.slice(1);
+						 val = val.replace("order", " "); //Order
+						 value.Status = val;
+					}
+				});
+			}
+		
+			
+		}
+		
+		var fields = [];
+		fields = _.map(rows.rows.columns, 'columnName');
+		fields.push('invoice','Date','Method','Status','Amount');
+		const opts = {
+				fields
+		};
+		const parser = new Json2csvParser(opts);
+		const csv = parser.parse(rows.rows);
+		res.write(csv);
+		res.end();
+		return;
+	}).catch(function (error) {
+		console.log('Error :::', error);
+		res.status(500).send("Internal server error");
+		return
+	});
+}
+   
+};
+
+// ends export csv sales-history//
 
