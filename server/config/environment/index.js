@@ -104,18 +104,25 @@ var all = {
 	},
 
 	googleLogin: {
-		googleClientId: process.env.GOOGLE_CLIENT_ID,
-		googleClientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
+		clientId: process.env.GOOGLE_CLIENT_ID,
+		secretKey: process.env.GOOGLE_CLIENT_SECRET_KEY,
 		googleAccessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
 		googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
 	},
 
-	loginFaceBook: {
-		fbClientId: process.env.FB_CLIENT_ID,
-		fbClientSecret: process.env.FB_CLIENT_SECRET_KEY,
+	facebookLogin: {
+		clientId: process.env.FACEBOOK_CLIENT_ID,
+		secretKey: process.env.FACEBOOK_SECRET_KEY,
 		fbFields: ['id', 'email', 'first_name', 'last_name', 'link', 'name'],
 		fbAccessTokenUrl: 'https://graph.facebook.com/v2.7/oauth/access_token',
 		fbGraphApiUrl: 'https://graph.facebook.com/v2.7/me?fields='
+	},
+
+	linkedInLogin: {
+		clientId: process.env.LINKEDIN_CLIENT_ID,
+		secretKey: process.env.LINKEDIN_SECRET_KEY,
+		accessTokenUrl: 'https://www.linkedin.com/uas/oauth2/accessToken',
+		peopleApiUrl: 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,picture-url,email-address)?format=json'
 	},
 
 	mysql: {

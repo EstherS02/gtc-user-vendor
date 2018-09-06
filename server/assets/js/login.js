@@ -2,7 +2,7 @@ const auth = Auth();
 $(document).ready(function() {
 	var googleUser = {};
 
-	/*var startGoogleLoginProcess = function() {
+	var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
 			auth2 = gapi.auth2.init({
 				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
@@ -35,9 +35,9 @@ $(document).ready(function() {
 		} else {
 			// There was an error.
 		}
-	}*/
+	}
 
-	var startGoogleLoginProcess = function() {
+	/*var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
 			// Retrieve the singleton for the GoogleAuth library and set up the client.
 			auth2 = gapi.auth2.init({
@@ -46,7 +46,7 @@ $(document).ready(function() {
 			});
 			googleAttachSignin(document.getElementById('gtc-google-login'));
 		});
-	};
+	};*/
 
 	var startGoogleLoginProcessModal = function() {
 		gapi.load('auth2', function() {
@@ -149,18 +149,31 @@ $(document).ready(function() {
 		return str.join("&");
 	}
 
-	/*$('#gtc-linkedin-login').click(function(e) {
+	$('#gtc-linkedin-login').click(function(e) {
 		var credentials = {
 			response_type: 'code',
 			client_id: '81epswkuklqmde',
 			redirect_uri: 'http://localhost:9000/api/auth/linkedin',
-			state: '987654321',
-			scope: 'r_basicprofile'
+			scope: 'r_basicprofile,r_emailaddress'
 		}
-		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=auto');
-	});*/
+		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'LinkedInPopup', 'location=0,status=0,width=800,height=auto');
+	});
 
-	$('#gtc-linkedin-login').click(function(e) {
+	window.onPopupClose = function(data) {
+		if (data) {
+			console.log('data', data);
+		}
+	};
+
+	$("#gtc-fb-login").click(function() {
+		var credentials = {
+			client_id: "393416147793353",
+			redirect_uri: "https://localhost:9010/api/auth/facebook"
+		}
+		var linkedINWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'LinkedInPopup', 'location=0,status=0,width=800,height=auto');
+	});
+
+	/*$('#gtc-linkedin-login').click(function(e) {
 		if (!IN.User.isAuthorized()) {
 			IN.User.authorize(function() {
 				getProfileData();
@@ -168,7 +181,7 @@ $(document).ready(function() {
 		} else {
 			console.log("Already Login In with LinkedIn");
 		}
-	});
+	});*/
 
 	$('#modal-gtc-linkedin-login').click(function(e) {
 		if (!IN.User.isAuthorized()) {
@@ -268,9 +281,9 @@ $(document).ready(function() {
 		});
 	};
 
-	$("#gtc-fb-login").click(function() {
+	/*$("#gtc-fb-login").click(function() {
 		fb_login();
-	});
+	});*/
 
 	$("#modal-gtc-fb-login").click(function() {
 		fb_login();

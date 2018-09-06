@@ -38,8 +38,43 @@ export function twitterAuth(req, res) {
 	});
 }
 
-export function linkedIN(req, res) {
-	console.log("req.query", req.query);
+export async function linkedIN(req, res) {
+	const accessTokenUrl = config.linkedInLogin.accessTokenUrl;
+	const peopleApiUrl = config.linkedInLogin.peopleApiUrl;
+	var params = {
+		code: req.query.code,
+		client_id: config.linkedInLogin.clientId,
+		client_secret: config.linkedInLogin.secretKey,
+		redirect_uri: 'http://localhost:9000/api/auth/linkedin',
+		grant_type: 'authorization_code'
+	};
+
+	try {
+		if (req.query.error == 'user_cancelled_authorize') {
+			return res.render('window-popup-close', {
+				layout: false,
+				popupResponseData: null
+			});
+		} else {
+			const token = await getAccessToken(params, accessTokenUrl);
+			const profile = await getGooglePeople(token.access_token, peopleApiUrl);
+			console.log("profile----------", profile);
+		}
+	} catch (error) {
+		console.log("linkedIN Error:::", error);
+		return res.status(500).send(error);
+	}
+}
+
+export function facebook(req, res) {
+	if (req.query.error = 'access_denied') {
+		return res.render('window-popup-close', {
+			layout: false,
+			popupResponseData: null
+		});
+	} else {
+
+	}
 }
 
 export function twitterCallbackAuth(req, res) {
@@ -183,8 +218,7 @@ exports.refreshToken = function(req, res, next) {
 	});
 }
 
-function getGoogleToken(params) {
-	var accessTokenUrl = config.googleLogin.googleAccessTokenUrl;
+function getAccessToken(params, accessTokenUrl) {
 	return new Promise(function(resolve, reject) {
 		request.post(accessTokenUrl, {
 			json: true,
@@ -199,8 +233,7 @@ function getGoogleToken(params) {
 	});
 }
 
-function getGooglePeople(accessToken) {
-	var peopleApiUrl = config.googleLogin.googlePeopleApiUrl;
+function getGooglePeople(accessToken, peopleApiUrl) {
 	return new Promise(function(resolve, reject) {
 		request.get({
 			url: peopleApiUrl,
@@ -223,17 +256,19 @@ export async function googleLoginNew(req, res, next) {
 	var bodyParams = {};
 	var dbUser = {};
 	var refreshToken, encryptedRefToken;
+	var accessTokenUrl = config.googleLogin.googleAccessTokenUrl;
+	var peopleApiUrl = config.googleLogin.googlePeopleApiUrl;
 	var params = {
 		code: req.body.code,
 		client_id: req.body.clientId,
-		client_secret: config.googleLogin.googleClientSecret,
+		client_secret: config.googleLogin.secretKey,
 		redirect_uri: req.body.redirectUri,
 		grant_type: 'authorization_code'
 	};
 
 	try {
-		const token = await getGoogleToken(params);
-		const profile = await getGooglePeople(token.access_token);
+		const token = await getAccessToken(params, accessTokenUrl);
+		const profile = await getGooglePeople(token.access_token, peopleApiUrl);
 		const existsUser = await service.findOneRow('User', {
 			email: profile.email
 		});
@@ -241,6 +276,8 @@ export async function googleLoginNew(req, res, next) {
 			id: config.auth.clientId,
 			status: status['ACTIVE']
 		});
+
+		console.log("appClient", appClient);
 
 		if (existsUser) {
 			if (existsUser.google_id == null) {
