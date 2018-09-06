@@ -7,7 +7,6 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 var async = require('async');
-const vendorPlan = require('../../config/gtc-plan');
 
 export function messages(req, res) {
 	var categoryModel = "Category";
@@ -62,7 +61,7 @@ export function messages(req, res) {
 							[model['TalkThread'],model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
-						return callback(null,results1);
+			 			return callback(null,results1);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -89,7 +88,7 @@ export function messages(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
-			},
+			}
 		},
 		function(err, results) {
 
@@ -102,7 +101,7 @@ export function messages(req, res) {
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,
 					LoggedInUser: LoggedInUser,
-					vendorPlan: vendorPlan,
+					// vendorPlan: vendorPlan,
 				});
 			} else {
 				res.render('vendorNav/messages', err);

@@ -229,3 +229,21 @@ export function saveCoupon(req, res) {
             res.status(500).send("Internal server error");
 		});
 }
+export function updateStatus(req,res){
+	// console.log("-=-=-=-=-=-=-=-=-=-=-=-",req.body)
+	var status1 = req.body.status;
+	var ids = JSON.parse(req.body.ids)
+	var modelName = 'Coupon';
+	var bodyParams = {
+		status : status[status1],
+		last_updated_on:new Date()
+	}
+
+	service.updateRow(modelName,bodyParams,ids).then(function(response){
+		return res.status(200).send("success");
+	}).catch(function(error){
+		console.log("Coupon status update:::",error)
+		return res.status(500).send("error");
+	})
+	return res.status(200).send(req.body.data)
+}

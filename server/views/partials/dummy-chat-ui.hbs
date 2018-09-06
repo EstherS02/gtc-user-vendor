@@ -62,6 +62,8 @@
 
     <script>
       $(function(){
+
+        console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
         if({{{ DisplayJSON LoggedInUser.id }}} != null){
           var socketChat = {
             "id": {{{ DisplayJSON talkThreads.threadId }}},

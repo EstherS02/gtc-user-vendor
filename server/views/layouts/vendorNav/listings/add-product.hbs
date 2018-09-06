@@ -44,6 +44,7 @@
 						$("#gtc-cart-alert").slideUp(500);
 					});
 					$('.pip').empty();
+                    $('.base_image').empty();
 					$("#productForm")[0].reset();
 					setTimeout(function() {
 						location.reload(true);
@@ -57,6 +58,7 @@
 						$("#gtc-cart-alert").slideUp(500);
 					});
 					$('.pip').empty();
+					$('.base_image').empty();
 					$("#productForm")[0].reset();
 				}
 			})
@@ -436,7 +438,13 @@
 
 		$('#exampleModal').modal('hide');
 	});
-    });
+
+	$("#reset").click(function(){
+        $('.pip').empty();
+        $('.base_image').empty();
+		$("#productForm")[0].reset();
+	})
+ });
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
@@ -673,7 +681,7 @@
                                 <div class="row">
 									<div class="col-lg-12">
 										<button type="submit" class="btn btn-primary btn-sm">Submit</button>
-										<button type="reset" class="btn btn-gray btn-sm">Cancel</button>
+										<button type="reset" id="reset" class="btn btn-gray btn-sm">Cancel</button>
 									</div>
 								</div>
 							</form>
