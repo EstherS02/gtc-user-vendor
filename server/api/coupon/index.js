@@ -9,6 +9,7 @@ var permission = require('../../config/permission');
 var router = express.Router();
 
 router.put('/update', controller.updateCoupon);
+router.put('/update-status',controller.updateStatus);
 // router.put('/update-product-coupon', controller.updateProductCoupon);
 // router.put('/update-category-coupon',controller.updateCategoryCoupon);
 router.post('/save',controller.saveCoupon);
