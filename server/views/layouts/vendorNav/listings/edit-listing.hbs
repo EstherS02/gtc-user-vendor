@@ -32,15 +32,15 @@
 	}
 </style>
 <script>
-	$(function () {
+	$(function() {
 		$("#from, #to").datepicker();
 	});
 </script>
 <script>
 	var textarea = null;
-	window.addEventListener("load", function () {
+	window.addEventListener("load", function() {
 		textarea = window.document.querySelector("textarea");
-		textarea.addEventListener("keypress", function () {
+		textarea.addEventListener("keypress", function() {
 			if (textarea.scrollTop != 0) {
 				textarea.style.height = textarea.scrollHeight + "px";
 			}
@@ -51,7 +51,7 @@
 		$.ajax({
 			url: '/api/sub-categories?category_id=' + e.value,
 			type: 'GET',
-			success: function (result) {
+			success: function(result) {
 				$("#sub_category").empty();
 				for (var i = 0; i < result.rows.length; i++) {
 					var options;
@@ -59,7 +59,7 @@
 					$("#sub_category").append(options)
 				}
 			},
-			error: function (error) {
+			error: function(error) {
 				console.log("Error", error);
 			}
 		});
@@ -70,27 +70,30 @@
 			type: 'POST',
 			url: '/api/product/edit-product?product_id=' + data,
 			data: input,
-			success: function (data) {
+			success: function(data) {
 				$('#gtc-listing-alert').removeClass('alert-danger').addClass('alert-success');
 				$('#gtc-listing-alert .listing-message').text('Product Updated Successfully');
-				$("#gtc-listing-alert").fadeTo(7000, 500).slideUp(500, function () {
+				$("#gtc-listing-alert").fadeTo(7000, 500).slideUp(500, function() {
 					$("#gtc-listing-alert").slideUp(500);
 				});
+				setTimeout(function () {
+							location.reload(true);
+				}, 1000);
 			},
-			error: function (error) {
+			error: function(error) {
 				console.log('error', error);
 			}
 		})
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$("#gtc-listing-alert").hide();
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
 
-		$('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -99,49 +102,49 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-		$('#profile-picture-modal').on('shown.bs.modal', function () {
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
-				ready: function () {
+				ready: function() {
 					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
 				}
 			});
-		}).on('hidden.bs.modal', function () {
+		}).on('hidden.bs.modal', function() {
 			cropBoxData = cropper.getCropBoxData();
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
 		});
 		var test = "#UploadedImage1";
 
-		$("#edit-image1").click(function (e) {
+		$("#edit-image1").click(function(e) {
 			test = '#UploadedImage1';
 			$(".upload1").click();
 		});
 
-		$("#edit-image2").click(function (e) {
+		$("#edit-image2").click(function(e) {
 			test = "#UploadedImage2";
 			$(".upload2").click();
 		});
 
-		$("#edit-image3").click(function (e) {
+		$("#edit-image3").click(function(e) {
 			test = "#UploadedImage3";
 			$(".upload3").click();
 		});
 
-		$("#edit-image4").click(function (e) {
+		$("#edit-image4").click(function(e) {
 			test = "#UploadedImage4";
 			$(".upload4").click();
 		});
-		$(".upload1").change(function () {
+		$(".upload1").change(function() {
 			fasterPreview(this);
 		});
-		$(".upload2").change(function () {
+		$(".upload2").change(function() {
 			fasterPreview(this);
 		});
-		$(".upload3").change(function () {
+		$(".upload3").change(function() {
 			fasterPreview(this);
 		});
-		$(".upload4").change(function () {
+		$(".upload4").change(function() {
 			fasterPreview(this);
 		});
 
@@ -154,11 +157,11 @@
 				dataType: 'json',
 				processData: false,
 				contentType: false,
-				success: function (data, text) {
+				success: function(data, text) {
 					callback(data);
 
 				},
-				error: function (request, status, error) {
+				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
@@ -170,10 +173,10 @@
 				type: 'PUT',
 				url: '/api/product-medias/' + id,
 				data: data,
-				success: function (data, text) {
+				success: function(data, text) {
 					callback(data);
 				},
-				error: function (request, status, error) {
+				error: function(request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
 				}
@@ -195,25 +198,25 @@
 
 		var data = {{ product.id }};
 
-	$("#editForm").submit(function (e) {
+	$("#editForm").submit(function(e) {
 		e.preventDefault();
 
-		var temp1 = $.map($('.quantity'), function (el) {
+		var temp1 = $.map($('.quantity'), function(el) {
 			return el.value;
 		});
-		var quantArr = temp1.filter(function (v) { return v !== '' });
+		var quantArr = temp1.filter(function(v) { return v !== '' });
 
-		var typeArr = $.map($('.discount_type:radio:checked'), function (el) {
+		var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
 			return el.value;
 		});
 
-		var temp2 = $.map($('.discount_amount'), function (el) {
+		var temp2 = $.map($('.discount_amount'), function(el) {
 			return el.value;
 		});
-		var amtArr = temp2.filter(function (v) { return v !== '' });
+		var amtArr = temp2.filter(function(v) { return v !== '' });
 
 		var j = 0; discountArr = [];
-		quantArr.forEach(function (element) {
+		quantArr.forEach(function(element) {
 
 			let discount = {};
 			discount.product_id = data;
@@ -238,28 +241,30 @@
 			type: 'POST',
 			url: '/api/product/discount',
 			data: dataFormate,
-			success: function (data, text) {
+			success: function(data, text) {
 				console.log("discount updated");
 			},
-			error: function (request, status, error) {
+			error: function(request, status, error) {
 				console.log('status', status);
 				console.log('error', error);
 			}
 		});
 
-		let input = $("#editForm :input").filter(function (index, element) {
+		let editInput = $("#editForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
+       console.log("-------------------------------------------", editInput);
+
 		if ($('#editForm').valid()) {
-			editProduct(data, input);
+			editProduct(data, editInput);
 		}
 
 		var productImage = {{{ DisplayJSON product.ProductMedia }}};
 
 	var i = 0;
 	var imageId = [];
-	productImage.forEach(function (element) {
+	productImage.forEach(function(element) {
 		imageId[i] = element.id;
 		i++;
 	});
@@ -269,11 +274,11 @@
 	if ($("#imageEdit1")[0].files[0]) {
 		var form = new FormData();
 		form.append("file", $("#imageEdit1")[0].files[0]);
-		uploads(form, function (location) {
+		uploads(form, function(location) {
 			obj = {
 				url: location.imageURL
 			}
-			uploadMedia(obj, imageId[0], function (data) {
+			uploadMedia(obj, imageId[0], function(data) {
 				console.log("updated Successfully");
 			})
 		});
@@ -281,11 +286,11 @@
 	if ($("#imageEdit2")[0].files[0]) {
 		var form = new FormData();
 		form.append("file", $("#imageEdit2")[0].files[0]);
-		uploads(form, function (location) {
+		uploads(form, function(location) {
 			obj = {
 				url: location.imageURL
 			}
-			uploadMedia(obj, imageId[1], function (data) {
+			uploadMedia(obj, imageId[1], function(data) {
 				console.log("updated Successfully");
 			})
 		});
@@ -293,11 +298,11 @@
 	if ($("#imageEdit3")[0].files[0]) {
 		var form = new FormData();
 		form.append("file", $("#imageEdit3")[0].files[0]);
-		uploads(form, function (location) {
+		uploads(form, function(location) {
 			obj = {
 				url: location.imageURL
 			}
-			uploadMedia(obj, imageId[2], function (data) {
+			uploadMedia(obj, imageId[2], function(data) {
 				console.log("updated Successfully");
 			})
 		});
@@ -305,15 +310,17 @@
 	if ($("#imageEdit4")[0].files[0]) {
 		var form = new FormData();
 		form.append("file", $("#imageEdit4")[0].files[0]);
-		uploads(form, function (location) {
+		uploads(form, function(location) {
 			obj = {
 				url: location.imageURL
 			}
-			uploadMedia(obj, imageId[3], function (data) {
+			uploadMedia(obj, imageId[3], function(data) {
 				console.log("updated Successfully");
 			})
 		});
-	} 
+	}
+
+
 	})
 
 	$("#editForm").validate({
@@ -332,7 +339,7 @@
 	});
 
 	var count = 1;
-	$("#editdiscount").click(function (e) {
+	$("#editdiscount").click(function(e) {
 
 		if (count < 3) {
 
@@ -370,12 +377,12 @@
 		$(".percent_discount_amount" + count).show();
 	}
 
-	$('input:checkbox:not("#feature_indefinitely")').change(function () {
+	$('input:checkbox:not("#feature_indefinitely")').change(function() {
 		recalculate();
 	});
 	function recalculate() {
 		var sum = 0;
-		$("input:checkbox:not('#feature_indefinitely'):checked").each(function () {
+		$("input:checkbox:not('#feature_indefinitely'):checked").each(function() {
 			sum += parseInt($(this).val());
 		});
 		$('#totalFees').html(sum);
@@ -384,7 +391,7 @@
 	$("#featureForm").validate({
 		rules: {
 			feature_position: {
-				required: function (elem) { return $("input.select:checked").length > 0; }
+				required: function(elem) { return $("input.select:checked").length > 0; }
 
 			}
 		},
@@ -393,7 +400,7 @@
 		}
 	});
 
-	$("#featureForm").submit(function (e) {
+	$("#featureForm").submit(function(e) {
 		if ($('#featureForm').valid()) {
 
 		}
@@ -449,278 +456,281 @@
 						</div>
 						<div class="content-body">
 							{{#ifCond this.type '==' 'wholesale'}}
-							<section class="box2 list_sec">
-								{{else ifCond this.type '==' 'shop'}}
-								<section class="public-market-bg list_sec">
-									{{else ifCond this.type '==' 'services'}}
-									<section class="service-market-bg list_sec">
-										{{else ifCond this.type '==' 'lifestyle'}}
-										<section class="lifestyle-market-bg list_sec">
-											{{/ifCond}}
-											<div class="container">
-												<div class="row">
-													<div class="col-md-12 box2_align">
-														<h5>{{ convertUpperCase product.Marketplace.name}}</h5>
-													</div>
-												</div>
+								<section class="box2 list_sec">
+									{{else ifCond this.type '==' 'shop'}}
+									<section class="public-market-bg list_sec">
+										{{else ifCond this.type '==' 'services'}}
+										<section class="service-market-bg list_sec">
+											{{else ifCond this.type '==' 'lifestyle'}}
+											<section class="lifestyle-market-bg list_sec">
+							{{/ifCond}}
+							<div class="container">
+								<div class="row">
+									<div class="col-md-12 box2_align">
+										<h5>{{ convertUpperCase product.Marketplace.name}}</h5>
+									</div>
+								</div>
+							</div>
+							</section>
+							<form role="form" id="editForm">
+								<div class="row">
+									<div class="col-md-4">
+										{{#if product.ProductMedia.[0].url}}
+											<img id="UploadedImage1" src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;"
+											/>
+											<div class="editpic">
+												<i class="far fa-edit edit-image" id="edit-image1" style="color:black"></i>
 											</div>
-										</section>
-										<form role="form" id="editForm">
-											<div class="row">
+											<input class="upload1" id="imageEdit1" type="file" name="file" onclick="this.value=null;" style="display:none"> {{/if}}
+										<div class="row">
+											{{#if product.ProductMedia.[1].url}}
 												<div class="col-md-4">
-													{{#if product.ProductMedia.[0].url}}
-													<img id="UploadedImage1" src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;"
-													/>
+													<img id="UploadedImage2" src="{{product.ProductMedia.[1].url}}" alt="logo" style="width:70px;height:100px;" />
 													<div class="editpic">
-														<i class="far fa-edit edit-image" id="edit-image1" style="color:black"></i>
+														<i class="far fa-edit edit-image" id="edit-image2" style="color:black"></i>
 													</div>
-													<input class="upload1" id="imageEdit1" type="file" name="file" onclick="this.value=null;" style="display:none"> {{/if}}
-													<div class="row">
-														{{#if product.ProductMedia.[1].url}}
-														<div class="col-md-4">
-															<img id="UploadedImage2" src="{{product.ProductMedia.[1].url}}" alt="logo" style="width:70px;height:100px;" />
-															<div class="editpic">
-																<i class="far fa-edit edit-image" id="edit-image2" style="color:black"></i>
-															</div>
-															<input class="upload2" id="imageEdit2" type="file" name="file" onclick="this.value=null;" style="display:none">
-														</div>
-														{{/if}} {{#if product.ProductMedia.[2].url}}
-														<div class="col-md-4">
-															<img id="UploadedImage3" src="{{product.ProductMedia.[2].url}}" alt="logo" style="width:70px;height:100px;" />
-															<div class="editpic">
-																<i class="far fa-edit edit-image" id="edit-image3" style="color:black"></i>
-															</div>
-															<input class="upload3" id="imageEdit3" type="file" name="file" onclick="this.value=null;" style="display:none">
-														</div>
-														{{/if}} {{#if product.ProductMedia.[3].url}}
-														<div class="col-md-4">
-															<img id="UploadedImage4" src="{{product.ProductMedia.[3].url}}" alt="logo" style="width:70px;height:100px;" />
-															<div class="editpic">
-																<i class="far fa-edit edit-image" id="edit-image4" style="color:black"></i>
-															</div>
-															<input class="upload4" id="imageEdit4" type="file" name="file" onclick="this.value=null;" style="display:none">
-														</div>
-														{{/if}}
+													<input class="upload2" id="imageEdit2" type="file" name="file" onclick="this.value=null;" style="display:none">
+												</div>
+											{{/if}}
+											{{#if product.ProductMedia.[2].url}}
+												<div class="col-md-4">
+													<img id="UploadedImage3" src="{{product.ProductMedia.[2].url}}" alt="logo" style="width:70px;height:100px;" />
+													<div class="editpic">
+														<i class="far fa-edit edit-image" id="edit-image3" style="color:black"></i>
+													</div>
+													<input class="upload3" id="imageEdit3" type="file" name="file" onclick="this.value=null;" style="display:none">
+												</div>
+											{{/if}}
+											{{#if product.ProductMedia.[3].url}}
+												<div class="col-md-4">
+													<img id="UploadedImage4" src="{{product.ProductMedia.[3].url}}" alt="logo" style="width:70px;height:100px;" />
+													<div class="editpic">
+														<i class="far fa-edit edit-image" id="edit-image4" style="color:black"></i>
+													</div>
+													<input class="upload4" id="imageEdit4" type="file" name="file" onclick="this.value=null;" style="display:none">
+												</div>
+											{{/if}}
+										</div>
+									</div>
+
+									<div class="col-md-8">
+										<div class="row" style="padding-top:20px">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Status
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<select class="edit-listing" name="status" id="status" style="background:white;">
+														<option value="{{product.status}}" disabled selected>{{objectKey statusCode product.status}}</option>
+														<option value="ACTIVE">Active</option>
+														<option value="INACTIVE">InActive</option>
+														<option value="SUSPENDED">Suspended</option>
+														<option value="SOLDOUT">Sold Out</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Category
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<select class="edit-listing" name="product_category_id" id="category" style="background:white;" onchange="changeCategory(this)">
+														<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
+														{{#each categories}}
+															<option value="{{this.id}}">{{Titlecase this.name}}</option>
+														{{/each}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Sub Category
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<select class="edit-listing" name="sub_category_id" style="background:white;" id="sub_category" value="">
+														<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													SKU
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<input type="text" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" class="edit-listing"
+													 required/>
+												</div>
+											</div>
+										</div>
+										{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														MOQ
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
+														/>
 													</div>
 												</div>
-
-												<div class="col-md-8">
-													<div class="row" style="padding-top:20px">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Status
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<select class="edit-listing" name="status" id="status" value="${{product.status}}" style="background:white;">
-																	<option value="ACTIVE">Active</option>
-																	<option value="INACTIVE">InActive</option>
-																	<option value="SUSPENDED">Suspended</option>
-																	<option value="SOLDOUT">Sold Out</option>
-																</select>
-															</div>
-														</div>
+											</div>
+										{{/ifCond}}
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Availablity
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<input type="text" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}"
+													 class="edit-listing" required/>
+												</div>
+											</div>
+										</div>
+										{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+													<label class="edit-listing">
+														Category
+													</label>
+												</div>
+												<div class="col-xs-5 col-sm-5 col-md-5">
+													<div class="form-group">
+														<select class="edit-listing" name="marketplace_type_id" style="background:white;">
+															<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
+															{{#each marketplaceType}}
+																<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
+														</select>
 													</div>
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Category
-															</label>
+												</div>
+											</div>
+										{{/ifCond}}
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Name
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" placeholder="Enter Product Name"
+													 required/>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Price
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<input type="text" name="price" id="price" value="{{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
+												</div>
+											</div>
+										</div>
+										{{#ifCond this.type '==' 'wholesale'}}
+											<div class="row" id="discountAppend">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+												</div>
+												<div class="col-xs-9 col-sm-9 col-md-9">
+													<div class="row form-group">
+														<div class="col-md-1 edit-listing-discount">
+															<p>For</p>
 														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<select class="edit-listing" name="product_category_id" id="category" style="background:white;" onchange="changeCategory(this)">
-																	<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
-																	{{#each category}}
-																	<option value="{{this.id}}">{{Titlecase this.name}}</option>
-																	{{/each}}
-																</select>
-															</div>
+														<div class="col-md-1 common_padding1" style="margin-right: 5px;">
+															<input class="list_place_1 quantity" type="text" name="discount_quantity0" id="discount_quantity0" placeholder="20" />
 														</div>
-													</div>
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Sub Category
-															</label>
+														<div class="col-md-2 common_padding1" style="margin-right:15px;">
+															<p class="edit-listing-dis">user recieves</p>
 														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<select class="edit-listing" name="sub_category_id" style="background:white;" id="sub_category" value="">
-																	<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
-																</select>
-															</div>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																SKU
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<input type="text" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" class="edit-listing"
-																 required/>
-															</div>
-														</div>
-													</div>
-													{{#ifCond this.type '==' 'wholesale'}}
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																MOQ
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
-																/>
-															</div>
-														</div>
-													</div>
-													{{/ifCond}}
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Availablity
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<input type="text" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}"
-																 class="edit-listing" required/>
-															</div>
-														</div>
-													</div>
-													{{#ifCond this.type '==' 'wholesale'}}
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Category
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<select class="edit-listing" name="marketplace_type_id" style="background:white;">
-																	<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
-																	{{#each marketplaceType}}
-																	<option value="{{this.id}}">{{this.name}}</option>
-																	{{/each}}
-																</select>
-															</div>
-														</div>
-													</div>
-													{{/ifCond}}
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Name
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" placeholder="Enter Product Name"
-																 required/>
-															</div>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Price
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<input type="text" name="price" id="price" value="{{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
-															</div>
-														</div>
-													</div>
-													{{#ifCond this.type '==' 'wholesale'}}
-													<div class="row" id="discountAppend">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-														</div>
-														<div class="col-xs-9 col-sm-9 col-md-9">
-															<div class="row form-group">
-																<div class="col-md-1 edit-listing-discount">
-																	<p>For</p>
+														<div class="col-md-7 common_padding1">
+															<div class="row ">
+																<div class="col-md-6 common_padding1">
+																	<p class="edit-listing-dis">
+																		<input type="radio" class="discount_type" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked
+																		 onclick=testPercent( '0'); /> Total Percent Discount</p>
 																</div>
-																<div class="col-md-1 common_padding1" style="margin-right: 5px;">
-																	<input class="list_place_1 quantity" type="text" name="discount_quantity0" id="discount_quantity0" placeholder="20" />
+																<div class="col-md-3 common_padding1 percent_discount_amount0">
+																	<input class="list_place_2 discount_amount" type="text" name="percent_discount_amount0" placeholder="20%" />%
 																</div>
-																<div class="col-md-2 common_padding1" style="margin-right:15px;">
-																	<p class="edit-listing-dis">user recieves</p>
-																</div>
-																<div class="col-md-7 common_padding1">
-																	<div class="row ">
-																		<div class="col-md-6 common_padding1">
-																			<p class="edit-listing-dis">
-																				<input type="radio" class="discount_type" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked
-																				 onclick=testPercent( '0'); /> Total Percent Discount</p>
-																		</div>
-																		<div class="col-md-3 common_padding1 percent_discount_amount0">
-																			<input class="list_place_2 discount_amount" type="text" name="percent_discount_amount0" placeholder="20%" />%
-																		</div>
-																		<div class="col-md-1 common_padding1 percent_discount_amount0">
-																			<p class="list_edit">
-																				<i class="fas fa-pencil-alt"></i> Edit</p>
-																		</div>
-																	</div>
-																	<div class="row ">
-																		<div class="col-md-6 common_padding1">
-																			<p class="edit-listing-dis">
-																				<input type="radio" class="discount_type" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue(
-																				 '0'); /> Total Value Discount</p>
-																		</div>
-																		<div class="col-md-3 common_padding1 value_discount_amount0" style="display:none">
-																			<input class="list_place_2 discount_amount" type="text" name="value_discount_amount0" placeholder="20$" />$
-																		</div>
-																		<div class="col-md-1 common_padding1 value_discount_amount0" style="display:none">
-																			<p class="list_edit">
-																				<i class="fas fa-pencil-alt"></i> Edit</p>
-																		</div>
-																	</div>
+																<div class="col-md-1 common_padding1 percent_discount_amount0">
+																	<p class="list_edit">
+																		<i class="fas fa-pencil-alt"></i> Edit</p>
 																</div>
 															</div>
-														</div>
-													</div>
-													<div class="row discount_tier">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-														</div>
-														<div class="col-xs-9 col-sm-9 col-md-9">
-															<div class="row form-group">
-																<p class="col-md-12 edit-listing-discount" id="editdiscount">
-																	<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
+															<div class="row ">
+																<div class="col-md-6 common_padding1">
+																	<p class="edit-listing-dis">
+																		<input type="radio" class="discount_type" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue(
+																		 '0'); /> Total Value Discount</p>
+																</div>
+																<div class="col-md-3 common_padding1 value_discount_amount0" style="display:none">
+																	<input class="list_place_2 discount_amount" type="text" name="value_discount_amount0" placeholder="20$" />$
+																</div>
+																<div class="col-md-1 common_padding1 value_discount_amount0" style="display:none">
+																	<p class="list_edit">
+																		<i class="fas fa-pencil-alt"></i> Edit</p>
+																</div>
 															</div>
-														</div>
-													</div>
-													{{/ifCond}}
-													<div class="row">
-														<div class="col-xs-3 col-sm-3 col-md-3">
-															<label class="edit-listing">
-																Description
-															</label>
-														</div>
-														<div class="col-xs-5 col-sm-5 col-md-5">
-															<div class="form-group">
-																<textarea class="edit-listing" id="description" name="description" rows="7" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
-															</div>
-														</div>
-													</div>
-													<hr/>
-													<div class="row" style="margin-bottom: 20px;">
-														<div class="col-md-2 col-5">
-															<input class="list_butt_1" type="submit" id="update" value="UPDATE" />
-														</div>
-														<div class="col-md-10 col-6">
-															<input class="list_butt_2" type="reset" id="reset" value="CANCEL" />
 														</div>
 													</div>
 												</div>
 											</div>
-										</form>
+											<div class="row discount_tier">
+												<div class="col-xs-3 col-sm-3 col-md-3">
+												</div>
+												<div class="col-xs-9 col-sm-9 col-md-9">
+													<div class="row form-group">
+														<p class="col-md-12 edit-listing-discount" id="editdiscount">
+															<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
+													</div>
+												</div>
+											</div>
+										{{/ifCond}}
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3">
+												<label class="edit-listing">
+													Description
+												</label>
+											</div>
+											<div class="col-xs-5 col-sm-5 col-md-5">
+												<div class="form-group">
+													<textarea class="edit-listing" id="description" name="description" rows="7" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
+												</div>
+											</div>
+										</div>
+										<hr/>
+										<div class="row" style="margin-bottom: 20px;">
+											<div class="col-md-2 col-5">
+												<input class="list_butt_1" type="submit" id="update" value="UPDATE" />
+											</div>
+											<div class="col-md-10 col-6">
+												<input class="list_butt_2" type="reset" id="reset" value="CANCEL" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -797,21 +807,21 @@
 											<input type="checkbox" class="position" name="feature_position[]" value="50" />In Search Results(+$50/mo)
 										</div>
 										{{#ifCond this.type '==' 'wholesale'}}
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="150" />Wholesale Landing(+$150/mo)
-										</div>
-										{{else ifCond this.type '==' 'shop'}}
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="150" />Shop Landing(+$150/mo)
-										</div>
-										{{else ifCond this.type '==' 'services'}}
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="150" />Services Landing(+$150/mo)
-										</div>
-										{{else ifCond this.type '==' 'lifestyle'}}
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="150" />Subscription Landing(+$150/mo)
-										</div>
+											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+												<input type="checkbox" class="position" name="feature_position[]" value="150" />Wholesale Landing(+$150/mo)
+											</div>
+											{{else ifCond this.type '==' 'shop'}}
+											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+												<input type="checkbox" class="position" name="feature_position[]" value="150" />Shop Landing(+$150/mo)
+											</div>
+											{{else ifCond this.type '==' 'services'}}
+											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+												<input type="checkbox" class="position" name="feature_position[]" value="150" />Services Landing(+$150/mo)
+											</div>
+											{{else ifCond this.type '==' 'lifestyle'}}
+											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
+												<input type="checkbox" class="position" name="feature_position[]" value="150" />Subscription Landing(+$150/mo)
+											</div>
 										{{/ifCond}}
 										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
 											<input type="checkbox" class="position" name="feature_position[]" value="250" />GTC Homepage(+$250/mo)
@@ -866,7 +876,7 @@
 		</div>
 	</div>
 </div>
-{{> footer/bottom-footer}} {{!-- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{!-- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <section class="showing_categ">
 	<div class="">
 		<div class="container-fluid">
@@ -898,16 +908,10 @@
 											</div>
 										</div>
 									</section>
-
-
-
-				</div> --}} {{!--
+</div> --}}
+{{!--
 				<div class="col-md-2">
-
-
-
-
-				</div>
+</div>
 			</div>
 		</div>
 	</div>

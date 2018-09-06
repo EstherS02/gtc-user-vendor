@@ -1,3 +1,5 @@
+import { stat } from 'fs';
+
 'use strict';
 
 const fs = require('fs');
@@ -707,10 +709,12 @@ export function editProduct(req, res) {
 
 	var id = req.query.product_id;
 
-	var stat = req.body.status;
-	delete req.body.status;
-
-	req.body.status = status[stat];
+	if(req.body.status){
+		var productStatus = req.body.status;
+		delete req.body.status;
+        req.body.status = status[productStatus]
+	}
+	
 	var bodyParams = req.body;
 
 	model["Product"].update(bodyParams, {
