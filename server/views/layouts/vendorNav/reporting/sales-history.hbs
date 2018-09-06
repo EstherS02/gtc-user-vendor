@@ -142,6 +142,36 @@
 		});
 		$("#total_refund").val(sum);
 	});
+	function downloadCSV(args)
+	  {
+		  	
+           
+		    $.ajax({
+					type: 'POST',
+					url: '/api/export-csv/saleshistorycsv',
+					data: {"vendor_id":$('#login_vendoruserid').val()},
+					success: function(data) {
+						console.log("enter the loopsss");
+					    var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+                        var csvURL =  null;
+                        if (navigator.msSaveBlob) {
+                        csvURL = navigator.msSaveBlob(csvData, 'saleshistory.csv');
+                        } else {
+                        csvURL = window.URL.createObjectURL(csvData);
+                        }
+                        var tempLink = document.createElement('a');
+                        tempLink.href = csvURL;
+                        tempLink.setAttribute('download', 'saleshistory.csv');
+                        tempLink.click();
+						
+					},
+					error: function(request, status, error) {
+						console.log('request', request);
+						console.log('status', status);
+					}
+				});
+		  
+	  }
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -212,10 +242,12 @@
 									</form>
 								</div>
 								<div class="col-md-5">
-									<form id="searchSaleshistory1" class="form-inline ml-auto pull-right">
+									<div  class="form-inline ml-auto pull-right">
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn">EXPORT</button>
+											<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<input type="text" name="user_id" id="login_vendoruserid" value={{LoggedInUser.Vendor.id}}>
 										</div>
+										<form id="searchSaleshistory1" class="form-inline ml-auto pull-right"></form>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
 
@@ -228,6 +260,7 @@
 											</div>
 										</div>
 									</form>
+									</div>
 								</div>
 							</div>
 							<div class="row">
