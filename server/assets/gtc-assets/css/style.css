@@ -1520,8 +1520,13 @@ ul.inner-list-view li a {
 	padding: 5px 45px;
 }
 .m-cart-title {
-	font-size: 1em;
+    font-size: 1em;
     margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .m-qty {
 	font-weight: 500;
