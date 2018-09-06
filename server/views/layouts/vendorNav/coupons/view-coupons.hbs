@@ -77,25 +77,6 @@
 							<div class="row">
 								<div class="col-md-12" style="background-color: #fff;">
 									<p class="vend_edit_lists_pstyle"></p>
-									{{!-- <div class="row">
-										<div class="col-md-10">
-											<input type="submit" onclick="create(this)" value="ADD COUPON" class="vend_edit_lists_buttonstyle" />
-											<select class="vend_edit_lists_buttonstyle" onChange="changeStatus(this);">
-												<option disabled selected>CHANGE STATUS</option>
-												<option value="ACTIVE">Active</option>
-												<option value="INACTIVE">InActive</option>
-												<option value="SUSPENDED">Suspended</option>
-												<option value="SOLDOUT">Sold Out</option>
-											</select>
-											<input type="submit" onclick="edit(this)" value="EDIT / FEATURE" class="vend_edit_lists_buttonstyle" />
-										</div>
-										<div class="col-md-2">
-											<form>
-												<input type="text" name="keyword" placeholder="Search Coupons" class="vend_edit_lists_searchstyle float-right" onkeypress="searchName(event,this)"
-												/>
-											</form>
-										</div>
-									</div> --}}
 									<div class="alert" id="gtc-coupon-alert">
 										<button type="button" class="close" data-dismiss="alert">
 											<span aria-hidden="true">&times;</span>
@@ -114,8 +95,8 @@
 													<option disabled selected>CHANGE STATUS</option>
 													<option value="ACTIVE">Active</option>
 													<option value="INACTIVE">InActive</option>
-													{{!-- <option value="SUSPENDED">Suspended</option> --}}
-													{{!-- <option value="SOLDOUT">Sold Out</option> --}}
+													<option value="SUSPENDED">Suspended</option>
+													<option value="SOLDOUT">Sold Out</option>
 												</select>
 											</div>
 										</div>
@@ -166,6 +147,7 @@
 												</tr>
 											</thead>
 											<tbody>
+											{{#if Coupons}}
 												{{#each Coupons}}
 												<tr>
 													<td>
@@ -193,6 +175,16 @@
 													{{/ifCond}} {{!-- End status Code--}}
 												</tr>
 												{{/each}}
+											{{else}}
+												<tr>
+													<td></td>
+													<td></td>
+													<td>No Coupons Available<td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											{{/if}}
 											</tbody>
 										</table>
 									</div>
@@ -212,6 +204,7 @@
 									{{!-- Pagination starts --}}
 									<div class="row">
 										<div style="margin:0 auto;width:100px;">
+											{{#if Coupons}}
 											{{#pagination collectionSize page pageSize maxSize}}
 											<nav aria-label="Page navigation example">
 												<ul class="pagination justify-content-center">
@@ -223,6 +216,7 @@
 												</ul>
 											</nav>
 											{{/pagination}}
+											{{/if}}
 										</div>
 									</div>
 									{{!-- Pagination starts --}}
