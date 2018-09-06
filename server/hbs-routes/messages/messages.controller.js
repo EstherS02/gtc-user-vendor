@@ -5,6 +5,7 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
+const sequelize = require('sequelize');
 var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
@@ -46,20 +47,26 @@ export function messages(req, res) {
 							}
 						},
 						include: [{
-							model: model['User']
+							model: model['User'],
+							attributes: ["id", "role", "first_name", "last_name", "user_pic_url", "email"]
 						}, {
 							model: model['TalkThread'],
+							attributes: ["id", "group_name", "status"],
 							include: [{
-								model: model['Talk']
+								model: model['Talk'],
+								attributes: ['id', 'from_id', 'is_read', 'message', 'sent_at', 'talk_thread_id']
 							}]
 						}],
 						order: [
 							[field, order],
-							[model['TalkThread'],model['Talk'], "sent_at", "desc"]
+							[model['TalkThread'],model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
 						return callback(null,results1);
-					})
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 				});
 			},
 			categories: function(callback) {

@@ -23,7 +23,8 @@ export function talkCreate(talk) {
 			'created_on': new Date(),
 			'sent_at':new Date(),
 			'talk_status': 1,
-			'status': 1
+			'status': 1,
+			'is_read': 0
 		};
 		model['Talk'].create(bodyParams).then(function(response) {
 			var includeArr = [{
@@ -35,7 +36,7 @@ export function talkCreate(talk) {
 			var modelName = "Talk"
 			service.findIdRow(modelName, response.id, includeArr)
 			.then(function(resp){
-				//console.log("Message Response", resp);
+				console.log("Message Response", resp);
 					resolve(JSON.parse(JSON.stringify(resp)));
 			}).catch(function(err){
 				reject(err);

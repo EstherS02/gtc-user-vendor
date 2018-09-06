@@ -1,6 +1,6 @@
 <script type="text/javascript" src="//platform.linkedin.com/in.js">
     api_key: 81q1ljfijajynj
-    authorize: false;
+    authorize: true
 </script>
 
 
@@ -15,7 +15,6 @@ $(document).ready(function() {
     });
 });
 </script>
-<script src="js/login.js"></script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
 
@@ -167,7 +166,7 @@ $(document).ready(function() {
                                                     <a id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
                                                 </li>
                                                 <li>
-                                                    <a id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
+                                                    <a href="javascript:;" id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1049,13 +1048,4 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
-
 {{> footer/bottom-footer}}
-<script type="text/javascript">
-var timer = setTimeout(function() {
-    console.log("hello", socket);
-                     
-}, 1000);
-
-</script>
