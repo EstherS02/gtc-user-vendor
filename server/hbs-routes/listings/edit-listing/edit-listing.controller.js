@@ -5,7 +5,7 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
-const status = require('../../../config/status');
+const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -13,10 +13,7 @@ var url = require('url');
 
 export function editListing(req, res) {
 
-	let searchObj = {},
-		LoggedInUser = {},
-		queryObj = {},
-		type;
+	let searchObj = {}, LoggedInUser = {}, queryObj = {}, type;
 	var productModel = "Product";
 	var categoryModel = "Category";
 	var subCategoryModel = "SubCategory";
@@ -69,7 +66,7 @@ export function editListing(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = status["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -119,7 +116,7 @@ export function editListing(req, res) {
 		if (!err) {
 			res.render('vendorNav/listings/edit-listing', {
 				title: "Global Trade Connect",
-				statusCode: status,
+				statusCode: statusCode,
 				product: results.product,
 				categories: results.categories,
 				bottomCategory: bottomCategory,

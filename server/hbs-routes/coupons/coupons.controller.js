@@ -116,8 +116,8 @@ export function coupons(req, res) {
 		function(err, results) {
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
-				if (results.Coupons.count % limit)
-					maxSize++;
+		// queryPaginationObj['maxSize'] = 5;
+				
 				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
