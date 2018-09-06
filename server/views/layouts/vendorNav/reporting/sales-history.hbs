@@ -163,13 +163,20 @@
 			});
 			if(chkArray!='')
 			{
+				console.log("enter the loopss"+selectedvalues);
 				var selectedvalues= JSON.stringify(chkArray);
+				
 			}
 			else
 			{
 				var selectedvalues=0;
+				$("#gtc-form-alert").show();
+			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			    $('#gtc-form-alert .form-message').text("Please select the orders");
+				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#gtc-form-alert").slideUp(500);
+			});
 			}
-           	
            
 		    $.ajax({
 					type: 'POST',
@@ -222,7 +229,7 @@
 									<form class="form-inline" id="searchSaleshistory">
 										<div class="form-group mb-2">
 											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="dateSelect">
+												<select class="form-control-customized form-control-sm" name="dateSelect" id="dateSelect">
 												 {{!-- {{#if queryURI.dateSelect}} --}}
 												{{#select queryURI.dateSelect}}
 													<option disabled selected>Days</option>
@@ -269,9 +276,10 @@
 								<div class="col-md-5">
 									<div  class="form-inline ml-auto pull-right">
 										<div class="form-group mx-sm-3 mb-2">
-											<button class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+											<button  type="sumbit" class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
 											<input type="hidden" name="user_id" id="login_vendoruserid" value={{LoggedInUser.Vendor.id}}>
 										</div>
+										
 										<form id="searchSaleshistory1" class="form-inline ml-auto pull-right"></form>
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
