@@ -23,7 +23,7 @@
 	}
 
 	function editProduct(editInput) {
-l
+
 		$.ajax({
 			type: 'POST',
 			url: '/api/product/edit-product?product_id=' + product_id,
@@ -214,7 +214,13 @@ l
 							<form role="form" id="editForm">
 								<div class="row">
 									<div class="col-lg-4">
-                                        <img src="{{product.ProductMedia.[0].url}}" alt="logo"/>
+										<div class='row'>
+											<div class="col-lg-3">
+                                                   <img src="{{product.ProductMedia.[0].url}}" style="width: 240px; height:300px; margin-bottom: 10px;"/>
+											</div>
+                                           
+										</div>
+                                        
 									</div>
 									<div class="col-lg-8">
 										<div class="row">
