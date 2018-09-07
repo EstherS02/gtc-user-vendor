@@ -93,8 +93,8 @@ export function featureMany(req, res) {
 		arr.push(obj);
 	}
 	model["FeaturedProduct"].bulkCreate(arr, {
-		ignoreDuplicates: true
-	})
+			ignoreDuplicates: true
+		})
 		.then(function(row) {
 			res.status(201).send("Created");
 			return;
@@ -302,42 +302,31 @@ function getEbayToken(params) {
 	});
 }
 
-function getEbayInventoryItems(headers) {
-	return new Promise(function(resolve, reject) {
-		request.get({
-			url: config.ebay.inventoryItems + '/?limit=2&offset=0',
-			headers: headers,
-			json: true
-		}, function(error, response, body) {
-			if (!error && response.statusCode == 200) {
-				resolve(body);
-			} else {
-				reject(error);
-			}
-		});
-	});
-}
-
-function getEbaySellerItems(access_token, bodyParams) {
-	const xmlBodyParams = json2xml(bodyParams, {
-		attributes_key: 'attr',
-		header: true
-	})
-	console.log("xmlBodyParams -----------------", xmlBodyParams);
+function getEbaySellerItems(ebayObject) {
 	return new Promise(function(resolve, reject) {
 		var options = {
 			method: 'POST',
-			url: 'https://api.ebay.com/ws/api.dll',
+			url: config.ebay.sellerListURL,
 			headers: {
 				'X-EBAY-API-SITEID': 0,
 				'X-EBAY-API-COMPATIBILITY-LEVEL': 967,
 				'X-EBAY-API-CALL-NAME': "GetSellerList",
-				'X-EBAY-API-IAF-TOKEN': access_token
+				'X-EBAY-API-IAF-TOKEN': ebayObject.accessToken
 			},
-			body: xmlBodyParams
+			body: `<?xml version="1.0" encoding="utf-8"?>
+					<GetSellerListRequest xmlns="urn:ebay:apis:eBLBaseComponents">    
+						<ErrorLanguage>en_US</ErrorLanguage>
+						<WarningLevel>High</WarningLevel>
+					  	<GranularityLevel>Coarse</GranularityLevel>
+					  	<StartTimeFrom>${ebayObject.startTimeFrom}</StartTimeFrom> 
+					  	<StartTimeTo>${ebayObject.startTimeTo}</StartTimeTo> 
+					  	<IncludeWatchCount>true</IncludeWatchCount> 
+					  	<Pagination> 
+					    	<EntriesPerPage>${config.ebay.entriesPerPage}</EntriesPerPage> 
+					  	</Pagination>
+					</GetSellerListRequest>`
 		};
 		request(options, function(error, response, body) {
-			console.log("body -----------------", body);
 			if (!error && response.statusCode == 200) {
 				const parsedJSON = parser.toJson(body);
 				resolve(JSON.parse(parsedJSON));
@@ -350,6 +339,7 @@ function getEbaySellerItems(access_token, bodyParams) {
 
 export async function importEbay(req, res) {
 	var params = {};
+	var ebayCredentials = {};
 	var queryObjProduct = {};
 	var queryObjPlanLimit = {}
 	var maximumProductLimit = 0;
@@ -371,33 +361,13 @@ export async function importEbay(req, res) {
 				if (actionsValues && Array.isArray(actionsValues) && actionsValues.length > 0) {
 					if (getIndexOfAction(actionsValues, '*') > -1) {
 						const loginResponse = await getEbayToken(params);
-						var bodyParams = {
-							'GetSellerListRequest': [{
-								ErrorLanguage: "en_US"
-							}, {
-								WarningLevel: "High"
-							}, {
-								GranularityLevel: "Coarse"
-							}, {
-								StartTimeFrom: "2018-08-13T00:00:00.000Z"
-							}, {
-								StartTimeTo: "2018-09-07T23:59:59.999Z"
-							}, {
-								IncludeWatchCount: true
-							}, {
-								Pagination: [{
-									EntriesPerPage: 100
-								}]
-							}],
-							attr: {
-								xmlns: "urn:ebay:apis:eBLBaseComponents"
-							}
-						};
+						ebayCredentials['accessToken'] = loginResponse.access_token;
+						ebayCredentials['startTimeFrom'] = '2018-08-13T00:00:00.000Z';
+						ebayCredentials['startTimeTo'] = '2018-09-07T23:59:59.999Z';
+						const sellerListResponse = await getEbaySellerItems(ebayCredentials);
+						const totalNumberOfEntries = await parseInt(sellerListResponse.GetSellerListResponse.PaginationResult.TotalNumberOfEntries);
 
-						const sellerListResponse = await getEbaySellerItems(loginResponse.access_token, bodyParams);
-						//const totalNumberOfEntries = await parseInt(sellerListResponse.GetSellerListResponse.PaginationResult.TotalNumberOfEntries);
-
-						/*if (totalNumberOfEntries > 0) {
+						if (totalNumberOfEntries > 0) {
 							if (req.user.role === roles['VENDOR']) {
 								const vendorCurrentPlan = req.user.Vendor.VendorPlans[0];
 								const planStartDate = moment(vendorCurrentPlan.start_date, 'YYYY-MM-DD').startOf('day').utc().format("YYYY-MM-DD HH:mm");
@@ -421,9 +391,8 @@ export async function importEbay(req, res) {
 
 									if (totalNumberOfEntries <= remainingProductLength) {
 										agenda.now(config.jobs.ebayInventory, {
-											headers: headers,
-											user: req.user,
-											size: 50
+											ebayCredentials: ebayCredentials,
+											user: req.user
 										});
 										return res.status(200).send("Ebay product import process started.");
 									} else {
@@ -440,7 +409,7 @@ export async function importEbay(req, res) {
 								layout: false,
 								ebayResponseData: "404 products not found"
 							});
-						}*/
+						}
 					} else {
 						return res.send(403, "Forbidden");
 					}
@@ -802,7 +771,7 @@ export function discount(req, res) {
 				.catch(function(error) {
 					console.log('Error:::', error);
 					return;
-				})	
+				})
 		});
 	}).catch(function(error) {
 		console.log("Error::", error);

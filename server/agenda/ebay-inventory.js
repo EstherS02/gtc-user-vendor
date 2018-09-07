@@ -1,6 +1,7 @@
 'use strict';
 
 const request = require('request');
+const parser = require('xml2json');
 const service = require('../api/service');
 const status = require('../config/status');
 const config = require('../config/environment');
@@ -10,94 +11,122 @@ module.exports = async function(job, done) {
 	var products = [];
 	var otherCategoryId = 39;
 	var otherSubCategoryId = 730;
-	let nextURL = "/?limit=2&offset=0";
+	var productEntity = "Product";
+	var productImageEntity = "ProductMedia";
 
-	const headers = job.attrs.data.headers;
+	const ebayCredentials = job.attrs.data.ebayCredentials;
 	const user = job.attrs.data.user;
-	const size = job.attrs.data.size;
 
 	try {
-		callEbayMethod(0, nextURL);
+		callEbayMethod(1);
 
-		async function callEbayMethod(sizeCount, nextURL) {
-			sizeCount += 1;
-			if (sizeCount <= size) {
-				var productResponse = await getEbayInventoryItems(headers, nextURL);
-				if (productResponse.next) {
-					nextURL = productResponse.next;
-					callEbayMethod(sizeCount, nextURL);
-				}
-				products.concat(productResponse.inventoryItems);
-			}
-			const productRsp = await Promise.all(products.map(async (obj) => {
-				var newProductObj = {};
-				const existingProduct = await service.findOneRow('Product', {
-					sku: obj.sku,
-					status: status['ACTIVE'],
-					vendor_id: user.Vendor.id
-				}, []);
-				if (!existingProduct) {
-					newProductObj['sku'] = obj.sku;
-					newProductObj['product_name'] = obj.product.title;
-					newProductObj['product_slug'] = await string_to_slug(obj.product.title);
-					newProductObj['vendor_id'] = user.Vendor.id;
-					newProductObj['status'] = status['ACTIVE'];
-					newProductObj['marketplace_id'] = marketplace['PUBLIC'];
-					newProductObj['publish_date'] = new Date();
-					newProductObj['product_category_id'] = otherCategoryId;
-					newProductObj['quantity_available'] = obj.availability.shipToLocationAvailability.quantity;
-					newProductObj['sub_category_id'] = otherSubCategoryId;
-					newProductObj['price'] = 0;
-					newProductObj['description'] = obj.product.description;
-					newProductObj['product_location'] = user.Vendor.Country.id;
-					newProductObj['city'] = user.Vendor.city;
-					newProductObj['city_id'] = user.Vendor.city_id;
-					newProductObj['created_on'] = new Date();
-					var newProduct = await service.createRow('Product', newProductObj);
-					var images = obj.product.imageUrls;
-					await Promise.all(images.map(async (img, i) => {
-						var productMediaObj = {};
-						if (i == 0) {
-							productMediaObj['product_id'] = newProduct.id;
-							productMediaObj['type'] = 1;
-							productMediaObj['status'] = status['ACTIVE'];
-							productMediaObj['url'] = img;
-							productMediaObj['base_image'] = 1;
-							productMediaObj['created_on'] = new Date();
-							productMediaObj['created_by'] = user.first_name;
+		async function callEbayMethod(pageNumber) {
+			const sellerListResponse = await getEbaySellerItems(ebayCredentials, pageNumber);
+			if (sellerListResponse.GetSellerListResponse.HasMoreItems == 'true') {
+				pageNumber += 1;
+				products = products.concat(sellerListResponse.GetSellerListResponse.ItemArray.Item);
+				callEbayMethod(pageNumber);
+			} else {
+				products = products.concat(sellerListResponse.GetSellerListResponse.ItemArray.Item);
+				await Promise.all(products.map(async (item) => {
+					var productObj = {};
+					productObj['sku'] = item.ItemID;
+					productObj['product_name'] = item.Title;
+					productObj['product_slug'] = await string_to_slug(item.Title);
+					productObj['vendor_id'] = user.Vendor.id;
+					productObj['status'] = status['ACTIVE'];
+					productObj['marketplace_id'] = marketplace['PUBLIC'];
+					productObj['publish_date'] = new Date();
+					productObj['product_category_id'] = otherCategoryId;
+					productObj['quantity_available'] = item.Quantity;
+					productObj['sub_category_id'] = otherSubCategoryId;
+					productObj['price'] = item.SellingStatus.CurrentPrice.$t;
+					productObj['product_location'] = user.Vendor.base_location;
+					productObj['state_id'] = user.Vendor.province_id;
+					productObj['city'] = user.Vendor.city;
+					productObj['created_on'] = new Date();
+
+					const productResponse = await service.upsertRecord(productEntity, productObj, {
+						vendor_id: user.Vendor.id,
+						sku: item.ItemID
+					});
+					const product = await productResponse.toJSON();
+					if (product.last_updated_on == null) {
+						if (Array.isArray(item.PictureDetails.PictureURL) && item.PictureDetails.PictureURL.length > 0) {
+							await Promise.all(item.PictureDetails.PictureURL.map(async (image, i) => {
+								var productImageObj = {};
+								if (i == 0) {
+									productImageObj['product_id'] = product.id;
+									productImageObj['type'] = 1;
+									productImageObj['base_image'] = 1;
+									productImageObj['url'] = image;
+									productImageObj['status'] = status['ACTIVE'];
+									productImageObj['base_image'] = 1;
+									productImageObj['created_on'] = new Date();
+								} else {
+									productImageObj['product_id'] = product.id;
+									productImageObj['type'] = 1;
+									productImageObj['base_image'] = 0;
+									productImageObj['url'] = image;
+									productImageObj['base_image'] = 1;
+									productImageObj['status'] = status['ACTIVE'];
+									productImageObj['created_on'] = new Date();
+								}
+								const productImage = await service.createRow(productImageEntity, productImageObj);
+							}));
 						} else {
-							productMediaObj['product_id'] = newProduct.id;
-							productMediaObj['type'] = 1;
-							productMediaObj['status'] = status['ACTIVE'];
-							productMediaObj['url'] = img;
-							productMediaObj['base_image'] = 0;
-							productMediaObj['created_on'] = new Date();
-							productMediaObj['created_by'] = user.first_name;
+							var productImageObj = {};
+							productImageObj['product_id'] = product.id;
+							productImageObj['type'] = 1;
+							productImageObj['base_image'] = 1;
+							productImageObj['url'] = item.PictureDetails.PictureURL;
+							productImageObj['base_image'] = 1;
+							productImageObj['status'] = status['ACTIVE'];
+							productImageObj['created_on'] = new Date();
+							const productImage = await service.createRow(productImageEntity, productImageObj);
 						}
-						const response = await service.createRow('ProductMedia', productMediaObj);
-						return response;
-					}));
-				}
-			}));
-			return productRsp;
+					}
+				}));
+			}
 		}
 		done();
 	} catch (error) {
-		console.log("Agenda Import Ebay Error:::", error);
+		console.log("Agenda import Ebay Error:::", error);
 		done();
 		return error;
 	}
 };
 
-function getEbayInventoryItems(headers, nextURL) {
+function getEbaySellerItems(ebayObject, pageNumber) {
+	console.log("pageNumber", pageNumber);
 	return new Promise(function(resolve, reject) {
-		request.get({
-			url: config.ebay.inventoryItems + nextURL,
-			headers: headers,
-			json: true
-		}, function(error, response, body) {
+		var options = {
+			method: 'POST',
+			url: 'https://api.ebay.com/ws/api.dll',
+			headers: {
+				'X-EBAY-API-SITEID': 0,
+				'X-EBAY-API-COMPATIBILITY-LEVEL': 967,
+				'X-EBAY-API-CALL-NAME': "GetSellerList",
+				'X-EBAY-API-IAF-TOKEN': ebayObject.accessToken
+			},
+			body: `<?xml version="1.0" encoding="utf-8"?>
+					<GetSellerListRequest xmlns="urn:ebay:apis:eBLBaseComponents">    
+						<ErrorLanguage>en_US</ErrorLanguage>
+						<WarningLevel>High</WarningLevel>
+					  	<GranularityLevel>Coarse</GranularityLevel>
+					  	<StartTimeFrom>${ebayObject.startTimeFrom}</StartTimeFrom> 
+					  	<StartTimeTo>${ebayObject.startTimeTo}</StartTimeTo> 
+					  	<IncludeWatchCount>true</IncludeWatchCount> 
+					  	<Pagination> 
+					    	<EntriesPerPage>${config.ebay.entriesPerPage}</EntriesPerPage>
+					    	<PageNumber>${pageNumber}</PageNumber>
+					  	</Pagination>
+					</GetSellerListRequest>`
+		};
+		request(options, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
-				resolve(body);
+				const parsedJSON = parser.toJson(body);
+				resolve(JSON.parse(parsedJSON));
 			} else {
 				reject(error);
 			}
