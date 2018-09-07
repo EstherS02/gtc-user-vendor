@@ -28,7 +28,7 @@ export function editListing(req, res) {
 	field = "id";
 	order = "asc";
 
-	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute');
 
 	type = req.params.type;
 

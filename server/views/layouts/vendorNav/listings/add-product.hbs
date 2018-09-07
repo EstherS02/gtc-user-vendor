@@ -291,6 +291,13 @@
 				number: true,
 				dollarsscents: true
 			},
+			moq:{
+               required: function() {
+					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
+						return true;
+					} else { return false; }
+				}
+			},
 			exchanging_product: {
 				required: function() {
 					if ($("select[name=marketplace_type_id]").val() == 3) {
@@ -331,7 +338,8 @@
 				dollarsscents: "Only two decimal values accepted"
 			},
 			exchanging_product: "Please enter the exchanging product name",
-			exchanging_product_quantity: "Please enter exchanging product quantity"
+			exchanging_product_quantity: "Please enter exchanging product quantity",
+			moq: "Please enter minimum order quantity"
 		}
 	});
 
@@ -499,7 +507,8 @@
 											<input type="text" class="form-control-customized form-control-sm" name="product_name" required>
 										</div>
 									</div>
-									<div class="col-lg-4">
+									<div class="row col-lg-12">
+									<div class="col-lg-6">
 										<div class="form-group">
 											<label class="label-control">Marketplace
 												<span class="text-danger">*</span>
@@ -526,11 +535,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									<div class="col-lg-4 shippingDiv">
-										<div class="form-group">
-											<label class="label-control">Shipping Cost</label>
-											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
-										</div>
 									</div>
 									<div class="col-lg-6 exchangingProductDiv" style="display:none">
 										<div class="form-group">
@@ -635,6 +639,22 @@
 												<span class="text-danger">*</span>
 											</label>
 											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
+										</div>
+									</div>
+									{{#ifCond this.type '==' 'wholesale'}}
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">MOQ
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control-customized form-control-sm" name="moq" id="moq" placeholder="Minimum order Quantity">
+										</div>
+									</div>
+									{{/ifCond}}
+									<div class="col-lg-4 shippingDiv">
+										<div class="form-group">
+											<label class="label-control">Shipping Cost</label>
+											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
 										</div>
 									</div>
 									<div class="col-lg-12">
