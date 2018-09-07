@@ -233,22 +233,22 @@ $(document).ready(function() {
 												<div class="product-middle-col">
 													{{#ifCond marketPlace.id '==' 1}}
 													<h3 class="m-cart-title">
-														<a href="../wholesale/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+														<a href="../wholesale/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}" class="text-black">{{cartItem.Product.product_name}}</a>
 													</h3>
 													{{/ifCond}}
 													{{#ifCond marketPlace.id '==' 2}}
 													<h3 class="m-cart-title">
-														<a href="../shop/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+														<a href="../shop/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}" class="text-black">{{cartItem.Product.product_name}}</a>
 													</h3>
 													{{/ifCond}}
 													{{#ifCond marketPlace.id '==' 3}}
 													<h3 class="m-cart-title">
-														<a href="../services/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+														<a href="../services/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}" class="text-black">{{cartItem.Product.product_name}}</a>
 													</h3>
 													{{/ifCond}}
 													{{#ifCond marketPlace.id '==' 4}}
 													<h3 class="m-cart-title">
-														<a href="../lifestyle/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" class="text-black">{{cartItem.Product.product_name}}</a>
+														<a href="../lifestyle/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}" class="text-black">{{cartItem.Product.product_name}}</a>
 													</h3>
 													{{/ifCond}}
 													<div class="row no-margins">
