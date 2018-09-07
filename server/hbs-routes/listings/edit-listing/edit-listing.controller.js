@@ -28,7 +28,7 @@ export function editListing(req, res) {
 	field = "id";
 	order = "asc";
 
-	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute');
 
 	type = req.params.type;
 
@@ -51,7 +51,6 @@ export function editListing(req, res) {
 
 			service.findOneRow(productModel, searchObj, productIncludeArr)
 				.then(function(product) {
-					console.log("-------------------------------------------",product.Discounts);
 					return callback(null, product);
 
 				}).catch(function(error) {
