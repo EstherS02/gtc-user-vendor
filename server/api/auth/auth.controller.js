@@ -224,8 +224,8 @@ export async function facebook(req, res) {
 				bodyParams['created_on'] = new Date();
 				bodyParams["status"] = status["ACTIVE"];
 				bodyParams['provider'] = providers["LINKEDIN"];
-				bodyParams['first_name'] = profile.given_name;
-				bodyParams['last_name'] = profile.family_name;
+				bodyParams['first_name'] = profile.first_name;
+				bodyParams['last_name'] = profile.last_name;
 				bodyParams['user_pic_url'] = "https://graph.facebook.com/" + profile.id + "/picture?type=large";
 				bodyParams['fb_id'] = profile.id;
 

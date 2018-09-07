@@ -156,7 +156,7 @@ $(document).ready(function() {
 			redirect_uri: 'http://localhost:9000/api/auth/linkedin',
 			scope: 'r_basicprofile,r_emailaddress'
 		}
-		var linkedINWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'LinkedInPopup', 'location=0,status=0,width=800,height=auto');
+		var linkedinWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'LinkedinPopup', 'location=0,status=0,width=800,height=400');
 	});
 
 	window.onPopupClose = function(data) {
@@ -173,7 +173,7 @@ $(document).ready(function() {
 			redirect_uri: "https://localhost:9010/api/auth/facebook",
 			scope: 'email'
 		}
-		var linkedINWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'LinkedInPopup', 'location=0,status=0,width=800,height=auto');
+		var facebookWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'facebookPopup', 'location=0,status=0,width=800,height=400');
 	});
 
 	/*$('#gtc-linkedin-login').click(function(e) {
