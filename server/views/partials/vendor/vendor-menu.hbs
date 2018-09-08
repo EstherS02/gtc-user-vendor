@@ -23,7 +23,7 @@
                         {{/ifCond}}
 						<li class="nav-item"><a href="/gtc-mail/inbox" class="nav-link">Inbox
                         <div  class="messages UnreadMessages"></div></a></li>
-                        <li class="nav-item"><a href="/messages" class="nav-link">Messages
+                        <li class="nav-item"><a href="/messages" class="nav-link">Messages <strong><small class="vendor-bar-chat-count" id="msg-count"></small></strong>
                         </a></li>
                         <li class="nav-item"><a href="/notifications" class="nav-link">Notifications</a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promote Your Store</a></li>
@@ -36,3 +36,30 @@
     </div>
 </div>
 {{/if}}
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        var userInfo = {{{ DisplayJSON LoggedInUser}}}
+         $.ajax({
+            type: 'GET',
+            url: '/api/talk/talk-count',
+            success: function (data) {
+              //  console.log("data", data.length);   
+                document.getElementById('msg-count').innerHTML = data.length; 
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        })
+        
+        var timer = setTimeout(function() {
+            
+            socket.on('chat:count:receive', function(result){
+              //  console.log("chat Receive count", result);
+                //  document.getElementById("count").innerHTML = result;
+                 document.getElementById('msg-count').innerHTML = result; 
+            }) 
+        }, 1000);
+    });
+    
+</script>

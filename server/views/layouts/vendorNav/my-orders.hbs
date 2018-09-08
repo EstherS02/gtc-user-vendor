@@ -48,7 +48,7 @@
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = ' reporting/sales-history?' + formInput;
+				window.location.href = 'my-order/order?' + formInput;
 			}else{
 				$("#gtc-form-alert").show();
 			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -64,7 +64,7 @@
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = ' reporting/sales-history?' + formInput;
+				window.location.href = 'my-order/order?' + formInput;
 			}
 		});
 	});
@@ -199,10 +199,7 @@
 				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
 			    $("#gtc-form-alert").slideUp(500);
 			});
-			}
-           
-		    
-		  
+			}		    
 	  }
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -215,9 +212,7 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>Sales History
-							<span class="pull-right" style="font-size:12px"><a href="reporting/sales-history">Clear All</a></span>
-							</h2>
+							<h2>My Orders</h2>
 						</div>
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
@@ -367,7 +362,7 @@
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="8"></td>
+													<td colspan="7"></td>
 													<td class="text_blue_color">Total Transaction</td>
 													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>

@@ -73,7 +73,7 @@ $(document).ready(function() {
 				}
 				else
 				{
-					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.User.first_name;
+					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id;
 				}
 			} else {
 				$('#myModal').modal('show');
@@ -186,6 +186,10 @@ function wishUpdate() {
 		$('#myModal').modal('show');
 	}
 };
+
+function mailVendor(){
+	window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.vendor_name;
+}
 </script>
 
 <style>
@@ -444,7 +448,12 @@ function wishUpdate() {
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
-                            			<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
+										{{#ifCond product.marketplace_type_id '==' wholesaleTypes.WTB}}
+										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.WTT}}
+										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.RFQ}}
+                                        {{else}}
+                            			<h1 class="p-rate"><span class="p-symbol">{{currency product.price '$'}}</h1>
+                                         {{/ifCond}}
                             			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
                             			<div class="p-social-compare">
                             				<div class="alignleft icon">
@@ -467,6 +476,12 @@ function wishUpdate() {
 																<span>Add to Wishlist</span>
 														</a>
                             							{{/if}}
+                            						</li>
+													<li>
+                            							<a href="javascript:;" onclick="mailVendor()">
+															<i class="fa fa-envelope" aria-hidden="true"></i>
+                                                           <span>Mail Vendor</span>
+														</a>
                             						</li>
                             					</ul>
                             				</div>
@@ -518,7 +533,7 @@ function wishUpdate() {
 															{{#each productRecentReview.rows}}
 															<div class="feed-element b-b-none">
 																<a class="float-left" href="javascript:;">
-																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+																	<img alt="image" onError="imgError(this)" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
 																	<h4 class="review-title">{{this.title}}</h4>
@@ -590,7 +605,7 @@ function wishUpdate() {
                         	<div class="ibox">
                         		<div class="row no-margins">
                         			<div class="col-md-12 no-padding">
-                        				<div class="wts-header-bg">
+                        				<div class="header-lg bg{{product.Marketplace.id}}">
                         					<h4 class="header-md-text"><strong>Related Products From This Vendor</strong></h4>
                         				</div>
                         			</div>
@@ -618,9 +633,13 @@ function wishUpdate() {
                         													</div>
                         													<div class="col-4">
                         														<div class="product-related-col">
+                        														{{#ifCond this.marketplace_id '==' 1}}
                         															{{#if this.minimum_order_quantity}}
                         															<h4>MOQ : {{this.minimum_order_quantity}}</h4>
                         															{{/if}}
+                        															{{else}}
+                        															<h4>{{currency this.product_price '$'}}</h4>
+                        															{{/ifCond}}
                         														</div>
                         													</div>
                         												</div>
@@ -731,8 +750,7 @@ function wishUpdate() {
 							reviewObj['comment'] = $('#inputComment').val();
 						}
 						$('#btnFaSpinner').show()
-					}
-					$.ajax({
+						$.ajax({
 						type: "POST",
 						url: "/api/reviews",
 						data: reviewObj,
@@ -740,6 +758,12 @@ function wishUpdate() {
 							location.reload();
 						}
 					});
+					}
+					else{
+					$(':input[type="submit"]').prop('disabled', false);
+						// $('#btnFaSpinner').show();
+					}
+					
 				});
 
 			$("#reviewForm").validate({
