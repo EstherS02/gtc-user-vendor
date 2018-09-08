@@ -98,7 +98,6 @@ module.exports = async function(job, done) {
 };
 
 function getEbaySellerItems(ebayObject, pageNumber) {
-	console.log("pageNumber", pageNumber);
 	return new Promise(function(resolve, reject) {
 		var options = {
 			method: 'POST',

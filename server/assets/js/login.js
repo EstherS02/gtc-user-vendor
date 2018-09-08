@@ -1,11 +1,14 @@
 const auth = Auth();
 $(document).ready(function() {
 	var googleUser = {};
+	var googleClientID = "365861189994-btvs30d57molferkqd7kds8u9e5qapi6.apps.googleusercontent.com";
+	var facebookClientID = "2176475222638001";
+	var linkedinClientID = "81wncf8gzyo3oh";
 
 	var startGoogleLoginProcess = function() {
 		gapi.load('auth2', function() {
 			auth2 = gapi.auth2.init({
-				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
+				client_id: googleClientID,
 				cookiepolicy: 'single_host_origin'
 			});
 		});
@@ -15,10 +18,18 @@ $(document).ready(function() {
 		auth2.grantOfflineAccess().then(signInCallback);
 	});
 
+	$('#modal-gtc-google-login').click(function() {
+		auth2.grantOfflineAccess().then(signInCallback);
+	});
+
+	$('#footer-modal-gtc-google-login').click(function() {
+		auth2.grantOfflineAccess().then(signInCallback);
+	});
+
 	function signInCallback(authResult) {
 		if (authResult['code']) {
 			$("#gtc-google-login").off('click');
-			authResult['clientId'] = "334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com";
+			authResult['clientId'] = googleClientID;
 			authResult['redirectUri'] = window.location.origin;
 
 			$.ajax({
@@ -37,126 +48,78 @@ $(document).ready(function() {
 		}
 	}
 
-	/*var startGoogleLoginProcess = function() {
-		gapi.load('auth2', function() {
-			// Retrieve the singleton for the GoogleAuth library and set up the client.
-			auth2 = gapi.auth2.init({
-				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
-				cookiepolicy: 'single_host_origin'
-			});
-			googleAttachSignin(document.getElementById('gtc-google-login'));
-		});
-	};*/
-
-	var startGoogleLoginProcessModal = function() {
-		gapi.load('auth2', function() {
-			// Retrieve the singleton for the GoogleAuth library and set up the client.
-			auth2 = gapi.auth2.init({
-				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
-				cookiepolicy: 'single_host_origin'
-			});
-			googleAttachSignin(document.getElementById('modal-gtc-google-login'));
-		});
-	};
-
-	var startGoogleLoginProcessFooter = function() {
-		gapi.load('auth2', function() {
-			// Retrieve the singleton for the GoogleAuth library and set up the client.
-			auth2 = gapi.auth2.init({
-				client_id: '334369412681-p9f585ii666p18mdq2tg06gta717ree9.apps.googleusercontent.com',
-				cookiepolicy: 'single_host_origin'
-			});
-			googleAttachSignin(document.getElementById('footer-modal-gtc-google-login'));
-		});
-	};
-
-
-	function googleAttachSignin(element) {
-		auth2.attachClickHandler(element, {},
-			function(googleUser) {
-				var newGoogleUser = {};
-				var profileId = googleUser.getBasicProfile().getId();
-				var id_token = googleUser.getAuthResponse().id_token;
-				var profile = decodeJwt(id_token);
-				newGoogleUser.first_name = profile.given_name;
-				if (profile.family_name) {
-					newGoogleUser.last_name = profile.family_name;
-				}
-				newGoogleUser.email = profile.email;
-				newGoogleUser.role = 3;
-				newGoogleUser.google_id = profileId;
-				$.ajax({
-					type: "POST",
-					url: "/auth/google",
-					data: newGoogleUser,
-					success: function(result) {
-						window.location.href = "/";
-					}
-				});
-			},
-			function(error) {
-				console.log(JSON.stringify(error, undefined, 2))
-			});
-	};
-
 	startGoogleLoginProcess();
-	startGoogleLoginProcessModal();
-	startGoogleLoginProcessFooter();
 
-	function decodeJwt(token) {
-		var base64Url = token.split('.')[1];
-		var base64 = base64Url.replace('-', '+').replace('_', '/');
-		return JSON.parse(window.atob(base64));
+	function facebookLogin() {
+		var credentials = {
+			client_id: facebookClientID,
+			redirect_uri: window.origin + "/api/auth/facebook",
+			scope: 'email'
+		}
+		var facebookWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'facebookPopup', 'location=0,status=0,width=800,height=400');
 	};
 
-	function googleSignOut() {
-		auth2.signOut().then(function() {
-			console.log('User signed out.');
-		});
-	};
+	$("#gtc-fb-login").click(function() {
+		facebookLogin();
+	});
 
-	function getProfileData() {
-		IN.API.Profile("me")
-			.fields("id", "email-address", "first-name", "last-name", "formatted-name", "headline", "location", "public-profile-url", "summary", "num-connections", "picture-url")
-			.result(function(data) {
-				var profileData = data.values[0];
-				var linkedInUser = {};
-				linkedInUser.first_name = profileData.firstName;
-				if (profileData.lastName) {
-					linkedInUser.last_name = profileData.lastName;
-				}
-				linkedInUser.email = profileData.emailAddress;
-				linkedInUser.role = 3;
-				linkedInUser.linkedin_id = profileData.id;
-				$.ajax({
-					type: "POST",
-					url: "/auth/linkedin",
-					data: linkedInUser,
-					success: function(result) {
-						localStorage.setItem("access_token", result.access_token);
-						window.location.href = "/";
-					}
-				});
-			});
-	};
+	$("#modal-gtc-fb-login").click(function() {
+		facebookLogin();
+	});
 
-	var serialize = function(obj) {
-		var str = [];
-		for (var p in obj)
-			if (obj.hasOwnProperty(p)) {
-				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-			}
-		return str.join("&");
-	}
+	$("#footer-modal-gtc-fb-login").click(function() {
+		facebookLogin();
+	});
 
-	$('#gtc-linkedin-login').click(function(e) {
+	$("#gtcVerficationFbLogin").click(function() {
+		facebookLogin();
+	});
+
+	function linkedinLogin() {
 		var credentials = {
 			response_type: 'code',
-			client_id: '81epswkuklqmde',
-			redirect_uri: 'http://localhost:9000/api/auth/linkedin',
+			client_id: linkedinClientID,
+			redirect_uri: window.origin + "/api/auth/linkedin",
 			scope: 'r_basicprofile,r_emailaddress'
 		}
 		var linkedinWindow = window.open("https://www.linkedin.com/oauth/v2/authorization?" + serialize(credentials), 'LinkedinPopup', 'location=0,status=0,width=800,height=400');
+	};
+
+	$('#gtc-linkedin-login').click(function(e) {
+		linkedinLogin();
+	});
+
+	$('#modal-gtc-linkedin-login').click(function(e) {
+		linkedinLogin();
+	});
+
+	$('#footer-modal-gtc-linkedin-login').click(function(e) {
+		linkedinLogin();
+	});
+
+	$('#gtcVerficationLinkedLogin').click(function(e) {
+		linkedinLogin();
+	});
+
+	function twitterLogin() {
+		var oAuthURL = "/api/auth/request-twitter";
+		var twitterWindow = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
+	};
+
+	$("#gtc-twitter-login").click(function() {
+		twitterLogin();
+	});
+
+	$("#modal-gtc-twitter-login").click(function() {
+		twitterLogin();
+	});
+
+	$("#footer-modal-gtc-twitter-login").click(function() {
+		twitterLogin();
+	});
+
+	$("#gtcVerficationTwitterLogin").click(function() {
+		twitterLogin();
 	});
 
 	window.onPopupClose = function(data) {
@@ -167,187 +130,14 @@ $(document).ready(function() {
 		}
 	};
 
-	$("#gtc-fb-login").click(function() {
-		var credentials = {
-			client_id: "393416147793353",
-			redirect_uri: "https://localhost:9010/api/auth/facebook",
-			scope: 'email'
-		}
-		var facebookWindow = window.open("https://www.facebook.com/v3.1/dialog/oauth?" + serialize(credentials), 'facebookPopup', 'location=0,status=0,width=800,height=400');
-	});
-
-	/*$('#gtc-linkedin-login').click(function(e) {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
-		}
-	});*/
-
-	$('#modal-gtc-linkedin-login').click(function(e) {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
-		}
-	});
-
-	$('#footer-modal-gtc-linkedin-login').click(function(e) {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
-		}
-	});
-
-	$('#gtcVerficationLinkedLogin').click(function(e) {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
-		}
-	});
-	function linkedInSignIn() {
-		if (!IN.User.isAuthorized()) {
-			IN.User.authorize(function() {
-				getProfileData();
-			});
-		} else {
-			console.log("Already Login In with LinkedIn");
-		}
-	};
-
-	function linkedinLogout() {
-		IN.User.logout(function() {
-			console.log("Linkedin User Logout successful");
-		});
-	};
-
-	window.fbAsyncInit = function() {
-		FB.init({
-			appId: '393416147793353',
-			cookie: true,
-			xfbml: true,
-			version: 'v3.0'
-		});
-
-		FB.getLoginStatus(function(loginStatus) {
-			console.log(loginStatus);
-		});
-	};
-
-	(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s);
-		js.id = id;
-		js.src = "https://connect.facebook.net/en_US/sdk.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-
-	function fb_login() {
-		FB.login(function(response) {
-			if (response.authResponse) {
-				FB.api('/me?fields=id,name,email', function(profileInfo) {
-					var fbUser = {};
-					fbUser.first_name = profileInfo.name;
-					if (profileInfo.lastName) {
-						fbUser.last_name = profileInfo.lastName;
-					}
-					fbUser.email = profileInfo.email;
-					fbUser.role = 3;
-					fbUser.fb_id = profileInfo.id;
-					$.ajax({
-						type: "POST",
-						url: "/auth/fb",
-						data: fbUser,
-						success: function(result) {
-							localStorage.setItem("access_token", result.access_token);
-							window.location.href = "/";
-						}
-					});
-				});
-			} else {
-				console.log('User cancelled login or did not fully authorize.');
-
+	var serialize = function(obj) {
+		var str = [];
+		for (var p in obj)
+			if (obj.hasOwnProperty(p)) {
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 			}
-		}, {
-			scope: 'public_profile,email'
-		});
-	};
-
-	/*$("#gtc-fb-login").click(function() {
-		fb_login();
-	});*/
-
-	$("#modal-gtc-fb-login").click(function() {
-		fb_login();
-	});
-
-	$("#footer-modal-gtc-fb-login").click(function() {
-		fb_login();
-	});
-
-	$("#gtcVerficationFbLogin").click(function() {
-		fb_login();
-	});
-
-	var twitterWin;
-	var checkConnect;
-
-	$("#gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/request-twitter";
-		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
-	});
-
-	$("#modal-gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/twitter"; 
-		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
-	});
-
-	$("#footer-modal-gtc-twitter-login").click(function() {
-		var oAuthURL = "/api/auth/twitter";
-		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
-	});
-
-	$("#gtcVerficationTwitterLogin").click(function() {
-		var oAuthURL = "/api/auth/twitter";
-		twitterWin = window.open(oAuthURL, 'TwitterOAuthPopup', 'location=0,status=0,width=800,height=400');
-	});
-
-	checkConnect = setInterval(function() {
-		if (!twitterWin || !twitterWin.closed) return;
-		clearInterval(checkConnect);
-	}, 100);
-
-	window.onTwitterAuthClose = function(data) {
-		const profileData = JSON.parse(decodeURIComponent(data));
-		var twitterUser = {};
-		twitterUser.first_name = profileData.name;
-		if (profileData.lastName) {
-			twitterUser.last_name = profileData.lastName;
-		}
-		twitterUser.email = profileData.email;
-		twitterUser.role = 3;
-		twitterUser.twitter_id = profileData.id;
-		$.ajax({
-			type: "POST",
-			url: "/auth/twitter",
-			data: twitterUser,
-			success: function(result) {
-				localStorage.setItem("access_token", result.access_token);
-				window.location.href = "/";
-			}
-		});
-	};
+		return str.join("&");
+	}
 });
 
 $(document).ready(function() {
@@ -565,7 +355,6 @@ $(document).ready(function() {
 		}
 	});
 });
-
 
 $(document).ready(function() {
 	$('#searchSubmit').prop('disabled', true);

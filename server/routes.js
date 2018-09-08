@@ -14,7 +14,7 @@ export default function(app) {
   /* Server REST API Routes */
   app.post('/auth/admin-token', require('./admin-auth'));
   app.post('/auth/token', require('./auth'));
-  app.use('/api/auth/twitter', require('./api/social-login-auth'));
+  //app.use('/api/auth/twitter', require('./api/social-login-auth'));
   app.use('/api/admin-auth', require('./api/admin-auth'));
   app.use('/api/auth', require('./api/auth'));
   app.use('/api/cart', require('./api/cart'));
@@ -41,10 +41,10 @@ export default function(app) {
   app.use('/api/reports', require('./api/reports'));
   app.use('/api/export-csv', require('./api/export-csv'));
   app.use('/api', require('./api/gtc'));
-  app.post('/auth/google', controller.googleLoginNew);
-  app.post('/auth/fb', controller.facebookLogin);
-  app.post('/auth/linkedin', controller.linkedInLogin);
-  app.post('/auth/twitter', controller.twitterLogin);
+  app.post('/auth/google', controller.googleLogin);
+  //app.post('/auth/fb', controller.facebookLogin);
+  //app.post('/auth/linkedin', controller.linkedInLogin);
+  //app.post('/auth/twitter', controller.twitterLogin);
 
   /* Handlerbars routes */
   app.use('/', require('./hbs-routes/homePage'));

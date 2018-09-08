@@ -106,7 +106,7 @@ var all = {
 
 	googleLogin: {
 		clientId: process.env.GOOGLE_CLIENT_ID,
-		secretKey: process.env.GOOGLE_CLIENT_SECRET_KEY,
+		secretKey: process.env.GOOGLE_SECRET_KEY,
 		accessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
 		peopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
 	},

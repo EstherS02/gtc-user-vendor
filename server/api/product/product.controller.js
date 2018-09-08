@@ -394,7 +394,10 @@ export async function importEbay(req, res) {
 											ebayCredentials: ebayCredentials,
 											user: req.user
 										});
-										return res.status(200).send("Ebay product import process started.");
+										return res.render('ebay-callback-close', {
+											layout: false,
+											ebayResponseData: "We started importing products from Ebay. Please check it few minutes later."
+										});
 									} else {
 										return res.status(403).send("Limit exceeded to add product.");
 									}
