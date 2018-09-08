@@ -533,7 +533,7 @@ function mailVendor(){
 															{{#each productRecentReview.rows}}
 															<div class="feed-element b-b-none">
 																<a class="float-left" href="javascript:;">
-																	<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+																	<img alt="image" onError="imgError(this)" class="rounded-circle" src="{{this.User.user_pic_url}}">
 																</a>
 																<div class="media-body">
 																	<h4 class="review-title">{{this.title}}</h4>
@@ -605,7 +605,7 @@ function mailVendor(){
                         	<div class="ibox">
                         		<div class="row no-margins">
                         			<div class="col-md-12 no-padding">
-                        				<div class="wts-header-bg">
+                        				<div class="header-lg bg{{product.Marketplace.id}}">
                         					<h4 class="header-md-text"><strong>Related Products From This Vendor</strong></h4>
                         				</div>
                         			</div>
@@ -750,8 +750,7 @@ function mailVendor(){
 							reviewObj['comment'] = $('#inputComment').val();
 						}
 						$('#btnFaSpinner').show()
-					}
-					$.ajax({
+						$.ajax({
 						type: "POST",
 						url: "/api/reviews",
 						data: reviewObj,
@@ -759,6 +758,12 @@ function mailVendor(){
 							location.reload();
 						}
 					});
+					}
+					else{
+					$(':input[type="submit"]').prop('disabled', false);
+						// $('#btnFaSpinner').show();
+					}
+					
 				});
 
 			$("#reviewForm").validate({
