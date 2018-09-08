@@ -1520,8 +1520,13 @@ ul.inner-list-view li a {
 	padding: 5px 45px;
 }
 .m-cart-title {
-	font-size: 1em;
+    font-size: 1em;
     margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .m-qty {
 	font-weight: 500;
@@ -1891,4 +1896,16 @@ select.file-uploade:after{
     right: 0;
     margin: 10px;
     opacity: 0.5;
+}
+.discount_type .discount_amount{
+display: inline-block;
+}
+.list_place_21{
+	width:20% !important;
+	border: 1px solid #DDDDDD;
+    padding: 1px;
+}
+
+#editdiscount{
+	cursor: pointer;
 }

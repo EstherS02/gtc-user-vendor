@@ -44,6 +44,7 @@
 						$("#gtc-cart-alert").slideUp(500);
 					});
 					$('.pip').empty();
+                    $('.base_image').empty();
 					$("#productForm")[0].reset();
 					setTimeout(function() {
 						location.reload(true);
@@ -57,6 +58,7 @@
 						$("#gtc-cart-alert").slideUp(500);
 					});
 					$('.pip').empty();
+					$('.base_image').empty();
 					$("#productForm")[0].reset();
 				}
 			})
@@ -289,6 +291,13 @@
 				number: true,
 				dollarsscents: true
 			},
+			moq:{
+               required: function() {
+					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
+						return true;
+					} else { return false; }
+				}
+			},
 			exchanging_product: {
 				required: function() {
 					if ($("select[name=marketplace_type_id]").val() == 3) {
@@ -329,7 +338,8 @@
 				dollarsscents: "Only two decimal values accepted"
 			},
 			exchanging_product: "Please enter the exchanging product name",
-			exchanging_product_quantity: "Please enter exchanging product quantity"
+			exchanging_product_quantity: "Please enter exchanging product quantity",
+			moq: "Please enter minimum order quantity"
 		}
 	});
 
@@ -436,7 +446,13 @@
 
 		$('#exampleModal').modal('hide');
 	});
-    });
+
+	$("#reset").click(function(){
+        $('.pip').empty();
+        $('.base_image').empty();
+		$("#productForm")[0].reset();
+	})
+ });
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
@@ -491,7 +507,8 @@
 											<input type="text" class="form-control-customized form-control-sm" name="product_name" required>
 										</div>
 									</div>
-									<div class="col-lg-4">
+									<div class="row col-lg-12">
+									<div class="col-lg-6">
 										<div class="form-group">
 											<label class="label-control">Marketplace
 												<span class="text-danger">*</span>
@@ -518,11 +535,6 @@
 											</div>
 										</div>
 									{{/ifCond}}
-									<div class="col-lg-4 shippingDiv">
-										<div class="form-group">
-											<label class="label-control">Shipping Cost</label>
-											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
-										</div>
 									</div>
 									<div class="col-lg-6 exchangingProductDiv" style="display:none">
 										<div class="form-group">
@@ -629,6 +641,22 @@
 											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
 										</div>
 									</div>
+									{{#ifCond this.type '==' 'wholesale'}}
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">MOQ
+												<span class="text-danger">*</span>
+											</label>
+											<input type="text" class="form-control-customized form-control-sm" name="moq" id="moq" placeholder="Minimum order Quantity">
+										</div>
+									</div>
+									{{/ifCond}}
+									<div class="col-lg-4 shippingDiv">
+										<div class="form-group">
+											<label class="label-control">Shipping Cost</label>
+											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
+										</div>
+									</div>
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">Description</label>
@@ -673,7 +701,7 @@
                                 <div class="row">
 									<div class="col-lg-12">
 										<button type="submit" class="btn btn-primary btn-sm">Submit</button>
-										<button type="reset" class="btn btn-gray btn-sm">Cancel</button>
+										<button type="reset" id="reset" class="btn btn-gray btn-sm">Cancel</button>
 									</div>
 								</div>
 							</form>
