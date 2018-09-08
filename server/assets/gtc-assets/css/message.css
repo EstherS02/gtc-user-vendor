@@ -11,9 +11,9 @@
     /* border-bottom: 1px solid #eee; */
 }
 .chat-name {
-   
+    height: 62px;
     z-index: 100;
-    background-color: #ededed;
+    background-color: #f1f7ee;
     color: #5387b7
 }
 .messager-list li a {
@@ -25,6 +25,19 @@
     -moz-transition: all .2s ease;
     -ms-transition: all .2s ease;
     -o-transition: all .2s ease;
+}
+.vendor-bar-chat-count {
+    background-color: #f1143cfc;
+    color: white;
+    margin-left: 0px;
+    padding: 4px;
+    border-radius: 50%;
+    line-height: 14px;
+    font-size: 10px;
+}
+.msg-receive {
+    color: #ff0000;
+    margin-left: 13px;
 }
 
 .avatar {
@@ -103,11 +116,21 @@
     padding: 5px 40px 5px 0;
 }
 .chat-content-body {
-    height: 346px; 
+    height: 375px; 
+    background-color: #ececec;
     overflow-y: auto;}
 .chats {
     list-style: none;
     margin: 0;
+}
+.count {
+    background-color: green;
+    color: white;
+    margin-left: 13px;
+    padding: 4px;
+    border-radius: 50%;
+    height: 20px;
+    line-height: 14px;
 }
 .chats li {
     margin: 15px 0;

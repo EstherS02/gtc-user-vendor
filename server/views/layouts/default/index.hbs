@@ -105,10 +105,11 @@
 var userInfo = {{{DisplayJSON LoggedInUser}}};
 var timer = setTimeout(function() {
     if(userInfo && userInfo.id != null) {
+        console.log("SOCKET INNNN", socket);
       //  console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
         socket.emit('user:join', userInfo);    
     }
-    socket.on('chat:receive', function(data){
+    socket.on('chat:receive', function(data) {
     if(userInfo.id != data.from_id) {
         console.log("user room emitting..", data);
         toastr.options.closeButton = true;
