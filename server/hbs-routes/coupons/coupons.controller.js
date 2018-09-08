@@ -47,6 +47,7 @@ export function coupons(req, res) {
 		queryObj['coupon_name'] = {
 			$like: '%' + req.query.name + '%'
 		};
+		queryURI['name'] = req.query.name;
 	}
 	//pagination 
 	var page;
