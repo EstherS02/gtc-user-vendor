@@ -367,9 +367,28 @@ export function product(req, res) {
 				console.log("****Disable Chat******");
 				return callback(null);
 			}
-		}
+		},
+		VendorAvgRating: function(callback) {
+			var vendorAvgRating = {};
+			vendorAvgRating['vendor_id'] = vendorID;
 
-	}, function(error, results) {
+			vendorAvgRating['status'] = {
+				'$eq': status["ACTIVE"]
+			}
+			model['ProductRatings'].findAll({
+				where: vendorAvgRating,
+				attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+			}).then(function(data) {
+				var result = JSON.parse(JSON.stringify(data));
+				return callback(null, result);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		},
+
+	}, 
+	function(error, results) {
 		var selectedPage;
 		if (marketplaceID == marketplace['WHOLESALE']) {
 			selectedPage = "wholesale";
@@ -401,7 +420,8 @@ export function product(req, res) {
 				status: status,
 				LoggedInUser: LoggedInUser,
 				selectedPage: selectedPage,
-				Plan: Plan
+				Plan: Plan,
+				VendorAvgRating:results.VendorAvgRating
 			});
 		} else {
 			res.render('product-view', {
@@ -615,7 +635,25 @@ export function GetProductReview(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
+		VendorAvgRating: function(callback) {
+			var vendorAvgRating = {};
+			vendorAvgRating['vendor_id'] = vendorID;
+
+			vendorAvgRating['status'] = {
+				'$eq': status["ACTIVE"]
+			}
+			model['ProductRatings'].findAll({
+				where: vendorAvgRating,
+				attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+			}).then(function(data) {
+				var result = JSON.parse(JSON.stringify(data));
+				return callback(null, result);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		},
 	}, function(error, results) {
 		var selectedPage;
 		queryPaginationObj['maxSize'] = 2;
@@ -647,7 +685,8 @@ export function GetProductReview(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				urlPathname: req.path,
 				status: status,
-				Plan: Plan
+				Plan: Plan,
+				VendorAvgRating:results.VendorAvgRating
 			});
 		} else {
 			res.render('product-review', {
