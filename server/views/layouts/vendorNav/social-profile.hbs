@@ -272,17 +272,19 @@
                     <div class="ibox-content">
                         <div class="ibox-title">
                             <h2>Social Profile Settings</h2>
-                        </div>
+                        </div><br/>
                         <div class="content-body">
                             <form id="socialProfileForm">
-                                <p class="social_para"> Here you can connect your various social profiles and have them show up on your profile page.
-                                    Please include those you'd like to feature. </p>
+								<p>
+									<small> Here you can connect your various social profiles and have them show up on your profile page.
+                                    Please include those you'd like to feature.</small>
+						  		</p>
                                 <div class="alert" id="gtc-social-profile">
                                     <button type="button" class="close" data-dismiss="alert">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                     <span class="cart-message"></span>
-                                </div>
+                                </div><br/>
                                 <div class="row">
                                     <div class="col-md-1 social_face">
                                         Facebook
@@ -454,29 +456,19 @@
                                     </div>
                                     <div id="flickr_append"> </div>
                                 </div>
-                                <hr style="margin-top: 10px" />
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        {{!--
-                                        <input class="list_butt_1" type="submit" value="UPDATE" style="padding: 5px 20px;"
-                                        /> --}}
-                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"  style="border-radius:0px">
-                                            <span class="ladda-label">Update</span>
-                                            <span class="ladda-spinner"></span>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-2">
-                                        {{!--
-                                        <input class="list_butt_2" type="reset" value="CANCEL" style="padding: 5px 20px;"
-                                        /> --}}
-                                        <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px" onclick="location.href='/social-profile'">
-                                            <span class="ladda-label">Cancel</span>
-                                            <span class="ladda-spinner"></span>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-8">
-                                    </div>
-                                </div>
+                                <hr/>
+								<div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn btn-small btn-muted" type="submit" data-style="expand-left">
+											<span class="ladda-label">UPDATE</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" data-style="expand-left" onclick="location.href='/social-profile'">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+								</div>
                             </form>
                         </div>
                     </div>
