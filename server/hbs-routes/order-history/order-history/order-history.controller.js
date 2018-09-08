@@ -23,7 +23,6 @@ export function orderHistory(req, res) {
 
 	var queryURI = {};
 	var queryPaginationObj = {};
-	var orderItemQueryObj = {};
 	var orderQueryObj = {};
 	var productQueryObj = {};
 
@@ -129,18 +128,20 @@ if (dateSelect) {
 
 	var modelName = "Order";
 	orderQueryObj['user_id'] = user_id;
-	// var includeArr = [{
-	// 	model: model["Orderitem"],
-	// 	where: orderItemQueryObj,
-	// }, {
-	// 	model: model['Product'],
-	// 	where: productQueryObj,
-	// 	include: [{
-	// 		model: model['Vendor'],
-	// 	}]
-
-	// }];
-	var includeArr=[];
+	var orderIncludeArr = [
+		{
+		model: model["OrderItem"],
+		include: [{
+				model: model['Product'],
+				include: [{
+					model: model['Vendor'],
+					attributes: ['id','vendor_name']
+				}],
+				attributes: ['id', 'vendor_id']
+			}],
+		attributes: ['id','product_id']
+		}
+	];
 	var queryObjCategory = {
 		status: statusCode['ACTIVE']
 	};
@@ -175,7 +176,8 @@ if (dateSelect) {
 				});
 		},
 		orderHistory: function(callback) {
-			service.findRows(modelName,orderQueryObj, offset, limit, field, order, includeArr)
+
+			service.findAllRows(modelName, orderIncludeArr, orderQueryObj, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
 				}).catch(function(error) {
@@ -203,7 +205,7 @@ if (dateSelect) {
 				title: "Global Trade Connect",
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				OrderItems: results.orderHistory.rows,
+				Order: results.orderHistory.rows,
 				count: results.orderHistory.count,
 				queryURI: queryURI,
 				LoggedInUser: LoggedInUser,

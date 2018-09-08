@@ -27,7 +27,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		var sentInput = {};
 
-		if ($('#toAddress').val().length == 0) {
+		/*if ($('#toAddress').val().length == 0) {
 			message = '<p>Please specify at least one recipient.</p>';
 			$('#dialog').empty();
 			$('#dialog').append(message)
@@ -40,7 +40,7 @@ $(document).ready(function() {
 
 			});
 			return;
-		}
+		}*/
 
 		if ($('#subject').val().length == 0) {
 			message = '<p>Please enter the subject.</p>';
@@ -70,7 +70,12 @@ $(document).ready(function() {
 			return;
 		}
 
-		sentInput.to = JSON.stringify($('#toAddress').val());
+		var urlData = getUrlQueryString();
+		if (urlData.id) {
+            sentInput.to = urlData.id;
+		}
+
+		//sentInput.to = JSON.stringify($('#toAddress').val());
 		sentInput.subject = $('#subject').val();
 		sentInput.message = $('#message').val();
 
@@ -90,11 +95,11 @@ $(document).ready(function() {
 					}
 				});
 				setTimeout(function() {
-					location.reload(true);
-				}, 1000);
+					window.location.href = 'http://localhost:9000/gtc-mail/compose';
+				}, 2000);
 			},
 			error: function(error) {
-				message = error.responseText;
+				message = "Server Error..";
 				$('#dialog').empty();
 				$('#dialog').append(message)
 				$("#dialog").dialog({
@@ -174,11 +179,13 @@ $(function() {
 	if (data.text) {
 		var text = data.text;
 		text = text.replace(/%20/g, ' ');
-		var newOption = new Option(text, data.id, false, false);
-		$('#toAddress').append(newOption).trigger('change');
+
+       $("#to").val(text);
+		//var newOption = new Option(text, data.id, false, false);
+		//$('#toAddress').append(newOption).trigger('change');
 	}
 
-	$(".select2-hidden-accessible").prop("disabled", true);
+	/*$(".select2-hidden-accessible").prop("disabled", true);
 	$("#toAddress").select2({
 		minimumInputLength: 2,
 		multiple: true,
@@ -207,7 +214,7 @@ $(function() {
 				};
 			}
 		},
-	});
+	});*/
 });
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -238,8 +245,10 @@ $(function() {
 													</label>
 												</div>
 												<div class="col-lg-10">
-													<select class="custom-select form-control-customized form-control-sm" id='toAddress' name="toAddress">
-													</select>
+													{{!-- <select class="custom-select form-control-customized form-control-sm" id='toAddress' name="toAddress">
+													</select> --}}
+													<input type="text" class="form-control-customized form-control-sm" id="to" name="to" readonly>
+													
 												</div>
 											</div>
 										</div>

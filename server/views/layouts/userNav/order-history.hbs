@@ -287,15 +287,15 @@
 													<th scope="col">Type</th> --}}
 													<th scope="col">Date</th>
 													<th scope="col">Method</th>
-													<th scope="col">Status</th>
-													<th scope="col"></th>
-													<th scope="col"></th>
+													<th colspan="4">Status</th>
+													{{!-- <th scope="col"></th>
+													<th scope="col"></th> --}}
 													<th scope="col">Amount</th>
 												</tr>
 											</thead>
 											<tbody>
-												{{#if OrderItems}}
-												{{#each OrderItems}}
+												{{#if Order}}
+												{{#each Order}}
 												<tr>
 													<td ><input type="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
@@ -307,13 +307,17 @@
 									  				<td>Stripe</td>
 									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
 									  				<td><a href="/order-track/{{this.id}}">Track Order</a></td>
-									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
+									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}">
+													  <i class="fas fa-credit-card"></i> Request Refund</a></td>
+													<td class="text_blue_color">
+														<a onclick="javascript:location.href='gtc-mail/compose?id={{this.OrderItems.[0].Product.Vendor.id}}&text={{this.OrderItems.[0].Product.Vendor.vendor_name}}'">
+													  <i class="fa fa-envelope" aria-hidden="true"></i> Contact Seller</a></td>
 									  				<td>{{currency this.final_price '$'}} CAD</td>
 									  			</tr>
 									  			{{/each}}
 									  			<tr>
-									  				<td colspan="6"></td>
-									  				<td class="text_blue_color">Total Transaction</td>
+									  				<td colspan="7"></td>
+									  				<td class="text_blue_color">Total Transaction:</td>
 									  				<td>{{currency totalTransaction '$'}} CAD</td>
 									  			</tr>
 									  			{{else}}
