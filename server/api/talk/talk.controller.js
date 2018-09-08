@@ -5,12 +5,45 @@ const config = require('../../config/environment');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
-
+const sequelize = require('sequelize');
 const service = require('../service');
 const model = require('../../sqldb/model-connect');
 
-export function talkCheck(req, res) {
-	var userModel = "TalkThreadUsers";
+export function talkCounts(req, res) {
+	//console.log("REQUEST", req);
+	var threadsUnRead = [];
+		model['TalkThreadUsers'].findAll({
+			where: {
+				user_id: req.user.id
+			},
+		}).then(function(instances) {
+			for (var i = 0, iLen = instances.length; i < iLen; i++) {
+				threadsUnRead.push(instances[i].thread_id);
+			}
+		}).then(function(results) {
+			model['Talk'].findAll({
+				raw: true,
+				where: {
+					from_id: {
+						$ne: req.user.id
+					},
+					talk_thread_id: {
+						$in: threadsUnRead
+					},
+					is_read: 0
+				},
+				attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
+				group: ['talk_thread_id']
+			}).then(function(results1) {
+				
+				console.log("RESULTS1", results1.length)
+				res.status(200).send(results1);
+				return;
+			});
+		}).catch(function(err){
+			res.status(500).send(err);
+			return;
+		})
 }
 
 export function talkCreate(talk) {
@@ -21,7 +54,7 @@ export function talkCreate(talk) {
 			'message': talk.message,
 			'talk_thread_id': talk.talk_thread_id,
 			'created_on': new Date(),
-			'sent_at':new Date(),
+			'sent_at': new Date(),
 			'talk_status': 1,
 			'status': 1,
 			'is_read': 0
@@ -35,15 +68,49 @@ export function talkCreate(talk) {
 			}]
 			var modelName = "Talk"
 			service.findIdRow(modelName, response.id, includeArr)
-			.then(function(resp){
-				console.log("Message Response", resp);
+				.then(function(resp) {
+					//console.log("Message Response", resp);
 					resolve(JSON.parse(JSON.stringify(resp)));
-			}).catch(function(err){
-				reject(err);
-			})
+				}).catch(function(err) {
+					reject(err);
+				})
 			/*model['TalkThreadUsers'].find*/
-		}).catch(function(err){
+		}).catch(function(err) {
 			reject(err);
+		})
+	})
+}
+
+export function talkCount(user) {
+	return new Promise(function(resolve, reject) {
+		var threadsUnRead = [];
+		model['TalkThreadUsers'].findAll({
+			where: {
+				user_id: user
+			},
+		}).then(function(instances) {
+			for (var i = 0, iLen = instances.length; i < iLen; i++) {
+				threadsUnRead.push(instances[i].thread_id);
+			}
+		}).then(function(results) {
+			model['Talk'].findAll({
+				raw: true,
+				where: {
+					from_id: {
+						$ne: user
+					},
+					talk_thread_id: {
+						$in: threadsUnRead
+					},
+					is_read: 0
+				},
+				attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
+				group: ['talk_thread_id']
+			}).then(function(results1) {
+				resolve(results1.length);
+			});
+		}).catch(function(err){
+			reject(err)
 		})
 	})
 }
