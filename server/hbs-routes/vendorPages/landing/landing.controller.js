@@ -108,7 +108,6 @@ export function vendor(req, res) {
 					return callback(null);
 				});
 		},
-
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
 				model: model['Country']
@@ -148,6 +147,25 @@ export function vendor(req, res) {
 					return callback(null);
 				});
 		},
+		VendorAvgRating: function(callback) {
+			var vendorAvgRating = {};
+			vendorAvgRating['vendor_id'] = vendor_id;
+
+			vendorAvgRating['status'] = {
+				'$eq': status["ACTIVE"]
+			}
+
+			model['ProductRatings'].findAll({
+				where: vendorAvgRating,
+				attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+			}).then(function(data) {
+				var result = JSON.parse(JSON.stringify(data));
+				return callback(null, result);
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return callback(error, null);
+			});
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorPages/vendor', {
@@ -161,6 +179,7 @@ export function vendor(req, res) {
 				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				Plan: Plan,
+				VendorAvgRating:results.VendorAvgRating
 				// selectedPage:'shop'
 			});
 		} else {

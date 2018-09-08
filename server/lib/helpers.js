@@ -575,3 +575,7 @@ Handlebars.registerHelper('dotdotdot', function(str) {
 Handlebars.registerHelper('decimalFixed', function(distance) {
   return parseFloat(distance).toFixed(0);
 });
+Handlebars.registerHelper('decimalFixedOne', function(distance) {
+	var rating = Math.ceil(distance);
+	return rating;
+  });

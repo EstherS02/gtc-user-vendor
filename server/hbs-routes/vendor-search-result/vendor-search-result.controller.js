@@ -181,7 +181,6 @@ export function index(req, res) {
 				});
 		},
 	}, function(error, results) {
-		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555",results.marketPlace)
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('vendor-search', {
