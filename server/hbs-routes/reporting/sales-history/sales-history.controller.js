@@ -19,7 +19,7 @@ const populate = require('../../../utilities/populate');
 
 // salesHistory
 export function salesHistory(req, res) {
-    console.log("current url", req.url)
+    
     var LoggedInUser = {};
     var bottomCategory = {};
     var categoryModel = "Category";
@@ -193,8 +193,8 @@ export function salesHistory(req, res) {
             }
         },
         function(err, results) {
-            // var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            // var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+            var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+            var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             maxSize = results.orderHistory.count / limit;
             if (results.orderHistory.count % limit)
                 maxSize++;
@@ -209,33 +209,65 @@ export function salesHistory(req, res) {
 
             queryPaginationObj['maxSize'] = maxSize;
             if (!err) {
-                res.render('vendorNav/reporting/sales-history', {
-                    title: "Global Trade Connect",
-                    Order: results.orderHistory.rows,
-                    count: results.orderHistory.count,
-                    queryURI: queryURI,
-                    LoggedInUser: LoggedInUser,
-                    statusCode: statusCode,
-                    marketPlace: marketPlace,
-                    categories: results.categories,
-                    bottomCategory: bottomCategory,
-                    queryUrl: queryUrl,
-                    selectedPage: 'sales-history',
-                    cartheader: results.cartCounts,
-                    totalTransaction: (total_transaction).toFixed(2),
-                    orderStatus: orderStatus,
-                    
-                    // pagination
-                    page: page,
-                    maxSize: maxSize,
-                    pageSize: limit,
-                    queryPaginationObj: queryPaginationObj,
-                    collectionSize: results.orderHistory.count,
-                    // End pagination
-                    vendorPlan: vendorPlan,
-                    // dropDownUrl: dropDownUrl
-                });
-            } else {
+
+				if(dropDownUrl == 'reporting'){
+			   
+					res.render('vendorNav/reporting/sales-history', {
+						title: "Global Trade Connect",
+						Order: results.orderHistory.rows,
+						count: results.orderHistory.count,
+						queryURI: queryURI,
+						LoggedInUser: LoggedInUser,
+						statusCode: statusCode,
+						marketPlace: marketPlace,
+						categories: results.categories,
+						bottomCategory: bottomCategory,
+						queryUrl: queryUrl,
+						selectedPage: 'sales-history',
+						cartheader: results.cartCounts,
+						totalTransaction: (total_transaction).toFixed(2),
+						orderStatus: orderStatus,
+						
+						// pagination
+						page: page,
+						maxSize: maxSize,
+						pageSize: limit,
+						queryPaginationObj: queryPaginationObj,
+						collectionSize: results.orderHistory.count,
+						// End pagination
+						vendorPlan: vendorPlan,
+						dropDownUrl: dropDownUrl
+					});
+                }else{
+
+					res.render('vendorNav/my-orders', {
+						title: "Global Trade Connect",
+						Order: results.orderHistory.rows,
+						count: results.orderHistory.count,
+						queryURI: queryURI,
+						LoggedInUser: LoggedInUser,
+						statusCode: statusCode,
+						marketPlace: marketPlace,
+						categories: results.categories,
+						bottomCategory: bottomCategory,
+						queryUrl: queryUrl,
+						selectedPage: 'order',
+						cartheader: results.cartCounts,
+						totalTransaction: (total_transaction).toFixed(2),
+						orderStatus: orderStatus,
+						
+						// pagination
+						page: page,
+						maxSize: maxSize,
+						pageSize: limit,
+						queryPaginationObj: queryPaginationObj,
+						collectionSize: results.orderHistory.count,
+						// End pagination
+						vendorPlan: vendorPlan
+					});
+
+				}
+			} else {
                 res.render('vendorNav/reporting/sales-history', err);
             }
         });
