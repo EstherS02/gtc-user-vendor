@@ -99,7 +99,7 @@ $(document).ready(function() {
 				}, 2000);
 			},
 			error: function(error) {
-				message = error.responseText;
+				message = "Server Error..";
 				$('#dialog').empty();
 				$('#dialog').append(message)
 				$("#dialog").dialog({
