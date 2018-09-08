@@ -25,6 +25,7 @@ export default function(app) {
   app.use('/api/upgrade-plan', require('./api/upgrade-plan'));
   app.use('/api/product-view', require('./api/product-view'));
   app.use('/api/mail', require('./api/mail'));
+  app.use('/api/talk', require('./api/talk'));
   app.use('/api/users', require('./api/users'));
   app.use('/api/tickets', require('./api/ticket'));
   app.use('/api/ticket-threads', require('./api/ticket-thread'));

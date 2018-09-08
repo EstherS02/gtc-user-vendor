@@ -172,6 +172,7 @@
       console.log("sendSocket",sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
+      socket.emit('chat:count', userInfo.id);
   }}
   // send function end
   $("#btn-chat").click(function () {
