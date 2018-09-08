@@ -310,7 +310,7 @@
 									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}">
 													  <i class="fas fa-credit-card"></i> Request Refund</a></td>
 													<td class="text_blue_color">
-														<a onclick="javascript:location.href='gtc-mail/compose?id={{this.OrderItems.[0].Product.Vendor.id}}&text={{this.OrderItems.[0].Product.Vendor.vendor_name}}'">
+														<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.OrderItems.[0].Product.Vendor.id}}&text={{this.OrderItems.[0].Product.Vendor.vendor_name}}'">
 													  <i class="fa fa-envelope" aria-hidden="true"></i> Contact Seller</a></td>
 									  				<td>{{currency this.final_price '$'}} CAD</td>
 									  			</tr>

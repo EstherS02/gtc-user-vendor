@@ -15,6 +15,7 @@ const service = require('../../api/service');
 const categoryService = require('../../api/category/category.service');
 const sequelize = require('sequelize');
 const marketplace = require('../../config/marketplace');
+const wholesaleTypes = require('../../config/marketplace_type');
 const Plan = require('../../config/gtc-plan');
 
 export function product(req, res) {
@@ -395,6 +396,7 @@ export function product(req, res) {
 				VendorDetail: results.VendorDetail,
 				categoriesWithCount: results.categoriesWithCount,
 				marketPlaceTypes: results.marketPlaceTypes,
+				wholesaleTypes:wholesaleTypes,
 				talkThreads: results.talkThreads,
 				status: status,
 				LoggedInUser: LoggedInUser,

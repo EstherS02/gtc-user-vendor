@@ -448,7 +448,12 @@ function mailVendor(){
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
-                            			<h1 class="p-rate">{{currency product.price '$'}}</h1>
+										{{#ifCond product.marketplace_type_id '==' wholesaleTypes.WTB}}
+										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.WTT}}
+										{{else ifCond product.marketplace_type_id '==' wholesaleTypes.RFQ}}
+                                        {{else}}
+                            			<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
+                                         {{/ifCond}}
                             			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
                             			<div class="p-social-compare">
                             				<div class="alignleft icon">
