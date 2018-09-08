@@ -31,18 +31,22 @@
 		var data = {};
 		 data.status = e.value;
 		 data.ids = JSON.stringify(chkArray);
-		$.ajax({
-			type: 'PUT',
-			data:data,
-			url: '/api/coupon/update-status',
-			success: function (data) {
-				console.log(data);
-				location.reload();
-			},
-			error: function (error) {
-                console.log(error);
-			}
-        })
+		 if(chkArray.length>0){
+			$.ajax({
+				type: 'PUT',
+				data:data,
+				url: '/api/coupon/update-status',
+				success: function (data) {
+					console.log(data);
+					location.reload();
+				},
+				error: function (error) {
+	                console.log(error);
+				}
+	        })
+		}else{
+			ouputErrorPopup("Select Atleast One Coupon");
+		}
 
 	}
 
@@ -58,7 +62,7 @@
 		if (selected.length > 0) {
 			window.location.href = '/coupons/edit-coupons?id=' + selected;
 		} else {
-			ouputErrorPopup("Please at least check one of the checkbox");
+			ouputErrorPopup("Please atleast check one of the checkbox");
 		}
 	}
 	function create(e) {
@@ -98,6 +102,9 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
+						<h2>Coupons
+						<span class="pull-right" style="font-size:12px"><a href="/coupons">Clear All</a></span>
+						</h2>
 						</div>
 						<div class="content-body">
 							<div class="row">
@@ -134,7 +141,8 @@
 									<form class="form-inline ml-auto pull-right" id="coupenListing">
 										<div class="form-group mb-2">
 											<div class="input-group gtc-rounded">
-												<input type="search" name="name" class="form-control form-control-sm" placeholder="Search Coupons">
+												<input type="search" name="name" {{#if queryURI.name}}
+														value={{queryURI.name}}{{/if}} class="form-control form-control-sm" placeholder="Search Coupons">
 												<button type="submit" class="btn btn-sm btn-gtc" >
 													<i class="fa fa-search"></i>
 												</button>
@@ -149,10 +157,10 @@
 										</div>
 										<div class="col-md-6">
 											<p class="vend_edit_lists_pstyle float-right">Entries per page:
-												<a href="/coupons?limit=10"> 10</a>
-												<a href="/coupons?limit=25"> 25</a>
-												<a href="/coupons?limit=100"> 100</a>
-												<a href="/coupons?limit=1000"> All </a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
 											</p>
 										</div>
 									</div>
@@ -188,10 +196,6 @@
 													<td>Percentage</td>
 													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 													<td>Fixed Price</td>
-													{{!-- {{else ifCond this.discount_type "==" ../discountType.FixedPriceDiscount}}
-													<td>Fixed Price Discount</td>
-													{{else ifCond this.discount_type "==" ../discountType.FixeCartDiscount}}
-													<td>Fixed Cart Discount</td> --}}
 													{{/ifCond}} {{!--End DiscountType --}}
 													<td class="text_blue_color">{{this.sales_count}}</td>
 													<td style="text-align:center">{{#ifCond this.discount_type "==" ../discountType.Percentage}}
@@ -229,10 +233,10 @@
 										</div>
 										<div class="col-md-6">
 											<p class="vend_edit_lists_pstyle float-right">Entries per page:
-												<a href="/coupons?limit=10"> 10</a>
-												<a href="/coupons?limit=25"> 25</a>
-												<a href="/coupons?limit=100"> 100</a>
-												<a href="/coupons?limit=1000"> All </a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
 											</p>
 										</div>
 									</div>
