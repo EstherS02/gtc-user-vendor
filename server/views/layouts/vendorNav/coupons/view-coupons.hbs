@@ -166,6 +166,7 @@
 													<th>Coupon Name</th>
 													<th>Coupon Code</th>
 													<th>Publish Date</th>
+													<th>Expiry Date</th>
 													<th>Type</th>
 													<th>Sales</th>
 													<th>Discount</th>
@@ -182,6 +183,7 @@
 													<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
 													<td>{{this.code}}</td>
 													<td>{{formatTime this.publish_date "MMM D YY"}}</td>
+													<td>{{formatTime this.expiry_date "MMM D YY"}}</td>
 													{{!-- DiscountType --}} {{#ifCond this.discount_type "==" ../discountType.Percentage}}
 													<td>Percentage</td>
 													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
@@ -192,10 +194,10 @@
 													<td>Fixed Cart Discount</td> --}}
 													{{/ifCond}} {{!--End DiscountType --}}
 													<td class="text_blue_color">{{this.sales_count}}</td>
-													<td>{{#ifCond this.discount_type "==" ../discountType.Percentage}}
-														<strong>{{decimalFixed this.discount_value}}</strong>&nbsp;%
+													<td style="text-align:center">{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+													{{decimalFixed this.discount_value}}&nbsp;%
 													{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
-													$&nbsp;<strong>{{decimalFixed this.discount_value}}</strong>&nbsp;<small>CAD</small>{{/ifCond}}
+													{{currency this.discount_value '$'}}&nbsp;<small>CAD</small>{{/ifCond}}
 													</td>
 													{{!-- satusCode --}} {{#ifCond this.status "==" ../statusCode.ACTIVE}}
 													<td class="text_green_color">Active</td>

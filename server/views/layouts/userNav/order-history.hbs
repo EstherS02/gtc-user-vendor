@@ -210,7 +210,7 @@
 														{{#select queryURI.marketType}}
 														<option disabled selected> Type</option>
 														{{#each marketPlace}}
-														<option value = "{{this}}">{{@key}}</option>
+														<option value="{{this}}">{{@key}}</option>
 														{{/each}}
 														{{/select}}
 													</select>
@@ -308,13 +308,13 @@
 									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
 									  				<td><a href="/order-track/{{this.id}}">Track Order</a></td>
 									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}"><i class="fas fa-credit-card"></i> Request Refund</td>
-									  				<td>${{this.final_price}} CAD</td>
+									  				<td>{{currency this.final_price '$'}} CAD</td>
 									  			</tr>
 									  			{{/each}}
 									  			<tr>
 									  				<td colspan="6"></td>
 									  				<td class="text_blue_color">Total Transaction</td>
-									  				<td>${{totalTransaction}} CAD</td>
+									  				<td>{{currency totalTransaction '$'}} CAD</td>
 									  			</tr>
 									  			{{else}}
 									  			<tr>

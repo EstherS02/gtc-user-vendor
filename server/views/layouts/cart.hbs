@@ -227,7 +227,7 @@ $(document).ready(function() {
 									<tr>
 										<td class="d-flex">
 											<div class="col-4 product-left-col">
-												<img class="object-fit" src="{{cartItem.Product.ProductMedia.[0].url}}">
+												<img class="object-fit" onError="imgError(this)" src="{{cartItem.Product.ProductMedia.[0].url}}">
 											</div>
 											<div class="col-8">
 												<div class="product-middle-col">
@@ -296,7 +296,7 @@ $(document).ready(function() {
 											</div>
 										</td>
 										<td>
-											<span class="price-tag d-block text-blue">${{cartItem.Product.price}}</span>
+											<span class="price-tag d-block text-blue">{{currency cartItem.Product.price '$'}}</span>
 											{{#if cartItem.Product.moq}}
 											<small class="m-qty">Minimum Order Quantity: {{cartItem.Product.moq}}</small>
 											{{/if}}
@@ -314,10 +314,10 @@ $(document).ready(function() {
 									</td>
 									<td class="text-right">
 										{{#if cartItem.quantity}}
-										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.quantity cartItem.Product.price}}</span>
+										<span class="price-tag m-b-xs d-block">{{quantityPrice cartItem.quantity cartItem.Product.price '$'}}</span>
 										<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 										{{else}}
-										<span class="price-tag m-b-xs d-block">${{quantityPrice cartItem.Product.moq cartItem.Product.price}}</span>
+										<span class="price-tag m-b-xs d-block">{{quantityPrice cartItem.Product.moq cartItem.Product.price '$'}}</span>
 										<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
 										{{/if}}
 									</td>
