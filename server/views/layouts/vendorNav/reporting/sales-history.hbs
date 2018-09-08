@@ -353,12 +353,12 @@
 															<a href="/order-track/{{this.id}}">Track Order</a>
 														</td>
 														<td class="text_blue_color">
-															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo">
+															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
 														</td>
 														<td class="text_blue_color">
-															<a onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
+															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
 															<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
 														</td>
 														<td>${{this.total_price}} CAD</td>
