@@ -373,3 +373,16 @@ export function planDetails(params) {
 		}
 	});
 }
+export function RelatedProducts(modelName,queryObj,limit,order) {
+	return new Promise((resolve, reject) => {
+		model[modelName].findAndCountAll({
+            where: queryObj,
+            limit: limit,
+            order: order
+        }).then(function(rows) {
+            resolve(rows);
+        }).catch(function(error) {
+            reject(error);
+        });
+	});
+}

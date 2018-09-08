@@ -99,7 +99,12 @@ let sqlQueries = {
     planDetailsQuery: function(params) {
 	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
 	    return query;
-    } 
+	},
+	countryCountForVendor:function(params){
+		let query=`SELECT vendorplan.id,vendorplan.name,vendorplan.code, COUNT(vendor_user_product.origin_id) as vendorCount 
+		FROM country as vendorplan INNER join  vendor_user_product on vendor_user_product.origin_id=vendorplan.id where vendorplan.status=1 and vendor_user_product.status=1 GROUP by vendorplan.id`;
+		return query;
+	}
 };
 
 module.exports = sqlQueries;

@@ -18,10 +18,10 @@ $(document).ready(function() {
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-md-2 col-12 m-t-sm col-sm-12">
-				{{> vendor/vendor-left VendorDetail = VendorDetail}}
+				{{> vendor/vendor-left VendorAvgRating = VendorAvgRating}}
 			</div>
 			<div class="col-md-10 col-12 m-t-sm col-sm-12">
-				<div class="header-lg bg2">
+				<div class="header-lg bg-{{selectedPage}}">
 					<h2 class="header-lg-text">Product Review</h2>
 				</div>
 				<div class="row no-margins">
@@ -192,8 +192,7 @@ $(document).ready(function() {
 							reviewObj['comment'] = $('#inputComment').val();
 						}
 						$('#btnFaSpinner').show()
-					}
-					$.ajax({
+						$.ajax({
 						type: "POST",
 						url: "/api/reviews",
 						data: reviewObj,
@@ -201,6 +200,10 @@ $(document).ready(function() {
 							location.reload();
 						}
 					});
+					}else{
+						$(':input[type="submit"]').prop('disabled', false);
+					}
+					
 				});
 
 			$("#reviewForm").validate({

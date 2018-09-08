@@ -287,7 +287,7 @@ function redirectBack() {
 													{{#ifCond this.marketplace_id '==' 1}}
 													<h4>MOQ : {{this.minimum_order_quantity}}</h4>
 													{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
-													<h2 class="text-red">${{this.product_price}}</h2>
+													<h2 class="text-red">{{currency this.product_price '$'}}{{!-- ${{this.product_price}} --}}</h2>
 													{{/ifCond}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
@@ -348,7 +348,7 @@ function redirectBack() {
 											{{#ifCond this.marketplace_id '==' 1}}
 											<h4>MOQ : {{this.minimum_order_quantity}}</h4>
 											{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
-											<h2 class="text-red">${{this.product_price}}</h2>
+											<h2 class="text-red">{{currency this.product_price '$'}}{{!-- ${{this.product_price}} --}}</h2>
 											{{/ifCond}}
 											<div class="prc-bottom">
 												<p>Seller Rating</p>
@@ -424,7 +424,7 @@ function redirectBack() {
 											{{#ifCond this.marketplace_id '==' 1}}
 											<h4>MOQ : {{this.minimum_order_quantity}}</h4>
 											{{/ifCond}} {{#ifCond this.marketplace_id '!=' 1}}
-											<h2 class="text-red">${{this.product_price}}</h2>
+											<h2 class="text-red">{{currency this.product_price '$'}}{{!-- ${{this.product_price}} --}}</h2>
 											{{/ifCond}}
 											<div class="prc-bottom">
 												<p>Seller Rating</p>
@@ -491,7 +491,7 @@ function redirectBack() {
 													<h4>MOQ : {{this.minimum_order_quantity}}</h4>
 													{{/ifCond}}
 													{{#ifCond this.marketplace_id '!=' 1}}
-													<h2 class="text-red">${{this.product_price}}</h2>
+													<h2 class="text-red">{{currency this.product_price '$'}}{{!-- ${{this.product_price}} --}}</h2>
 													{{/ifCond}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>

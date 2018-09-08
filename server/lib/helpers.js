@@ -107,8 +107,9 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 	return parseFloat(v1) + parseFloat(v2);
 });
 
-Handlebars.registerHelper('quantityPrice', function(quantity, price, options) {
-	return parseInt(quantity) * parseFloat(price);
+Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
+	 var amt = parseInt(quantity) * parseFloat(price);
+     return numeral(amt).format(symbol + '0,0.00');
 });
 
 Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, options) {
@@ -575,3 +576,7 @@ Handlebars.registerHelper('dotdotdot', function(str) {
 Handlebars.registerHelper('decimalFixed', function(distance) {
   return parseFloat(distance).toFixed(0);
 });
+Handlebars.registerHelper('decimalFixedOne', function(distance) {
+	var rating = Math.ceil(distance);
+	return rating;
+  });

@@ -51,10 +51,10 @@ export function vendorPayouts(job, done) {
                             where: {
                                 status: statusCode["ACTIVE"]
                             },
-                            attribute: ['id', 'user_id'],
+                            attributes: ['id', 'user_id'],
                         }
                     ],
-                    atrribute: ['id', 'vendor_id']
+                    atrributes: ['id', 'vendor_id']
                 }
             ]
         }

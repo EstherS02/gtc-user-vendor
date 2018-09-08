@@ -7,6 +7,7 @@ const statusCode = require('../../config/status');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 var async = require('async');
+const Op = sequelize.Op
 
 export function messages(req, res) {
 	var categoryModel = "Category";
@@ -17,6 +18,7 @@ export function messages(req, res) {
 
 	let user_id = LoggedInUser.id;
 	var threads = [];
+	var threadsUnRead = [];
 	var field ="created_on";
 	var order = "desc";
 	async.series({
@@ -27,6 +29,34 @@ export function messages(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+			},
+			messages_count: function(callback){
+				model['TalkThreadUsers'].findAll({
+					where: {
+						user_id: LoggedInUser.id
+					},
+				}).then(function(instances){
+					console.log("instances***********************", instances);
+					for (var i = 0, iLen = instances.length; i < iLen; i++) {
+						threadsUnRead.push(instances[i].thread_id);
+					}	
+				}).then(function(results){
+					model['Talk'].findAll({
+						raw: true,
+						where: {
+							from_id: {
+								$ne: LoggedInUser.id
+							},
+							talk_thread_id: {$in: threadsUnRead}, 
+							is_read: 0
+						},
+						attributes: ['talk_thread_id',[sequelize.fn('count', 1), 'count']],
+						group: ['talk_thread_id']
+					}).then(function(results1) {
+						console.log("**********************************************results1", results1);
+			 			return callback(null,results1);
+					});
+				})
 			},
 			messages: function(callback) {
 				model['TalkThreadUsers'].findAll({
@@ -61,6 +91,7 @@ export function messages(req, res) {
 							[model['TalkThread'],model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
+						//console.log("**********************************************results1", results1);
 			 			return callback(null,results1);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -93,10 +124,12 @@ export function messages(req, res) {
 		function(err, results) {
 
 			if (!err) {
-				console.log(JSON.stringify(results.messages));
+				console.log("MESSAGES&******************",JSON.stringify(results.messages));
+				console.log("MESSAGES COUNT=========================", results.messages_count);
 				res.render('vendorNav/messages', {
 					title: "Global Trade Connect",
 					messenger: results.messages,
+					messages_count: results.messages_count,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					cartheader: results.cartCounts,

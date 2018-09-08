@@ -475,7 +475,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -545,7 +545,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -615,7 +615,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -707,7 +707,7 @@ $(document).ready(function() {
                                                 </td>
                                                 <td class="col-3">
                                                     <div class="product-left-col">
-                                                        <img class="object-fit" src="{{this.url}}"  alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                        <img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
                                                     </div>
                                                 </td>
                                                 <td class="col-7">
@@ -774,7 +774,7 @@ $(document).ready(function() {
                                                         <h3><a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
                                                         <div class="row no-margins">
                                                             <div class="col-md-12 col-12 no-padding">
-                                                                <h2 class="text-red price">${{this.product_price}}</h2>
+                                                                <h2 class="text-red price">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                             </div>
                                                             <div class="col-md-4 col-4 no-padding">
                                                                 <span>Origin</span>
