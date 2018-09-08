@@ -92,8 +92,8 @@ export function featureMany(req, res) {
 		arr.push(obj);
 	}
 	model["FeaturedProduct"].bulkCreate(arr, {
-			ignoreDuplicates: true
-		})
+		ignoreDuplicates: true
+	})
 		.then(function(row) {
 			res.status(201).send("Created");
 			return;
@@ -709,12 +709,12 @@ export function editProduct(req, res) {
 
 	var id = req.query.product_id;
 
-	if(req.body.status){
+	if (req.body.status) {
 		var productStatus = req.body.status;
 		delete req.body.status;
-        req.body.status = status[productStatus]
+		req.body.status = status[productStatus]
 	}
-	
+
 	var bodyParams = req.body;
 
 	model["Product"].update(bodyParams, {
@@ -734,18 +734,31 @@ export function editProduct(req, res) {
 
 
 export function discount(req, res) {
-	var arrayEle = JSON.parse(req.body.data);
-	arrayEle.forEach(function(element) {
+	var discountArrayEle = JSON.parse(req.body.data);
 
-		service.createRow('Discount', element)
-			.then(function(discount) {
-				return res.status(201).send(discount);
-			})
-			.catch(function(error) {
-				console.log('Error:::', error);
-				return res.status(500).send("Internal server error.");
-			})
-	});
+	var queryObj = {
+		product_id: req.params.product_id
+	}
+
+	model['Discount'].destroy({
+		where: queryObj
+	}).then(function(row) {
+		discountArrayEle.forEach(function(element) {
+
+			service.createRow('Discount', element)
+				.then(function(discount) {
+					return;
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return;
+				})	
+		});
+	}).catch(function(error) {
+		console.log("Error::", error);
+	})
+
+	return res.status(201).send("discount updated");
 }
 
 function string_to_slug(str) {

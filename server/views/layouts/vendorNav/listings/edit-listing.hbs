@@ -1,51 +1,13 @@
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <style>
-	textarea {
-		resize: none;
-		overflow: hidden;
-		height: auto;
-	}
-
-	.edit-image {
-		cursor: pointer;
-	}
-
-	#editdiscount,
-	#update,
-	#reset {
-		cursor: pointer;
-	}
-
-	.upload {
-		display: none;
-	}
-
-	.editpic {
-		padding-top: 10px;
-		padding-right: 10px;
-		position: absolute;
-		right: 0;
-		top: 0;
-	}
-
-	.edit-image {
-		transform: scale(1, 2);
-	}
+	.imageId{
+    width: 100%;
+    height: 100%;
+}
 </style>
 <script>
-	$(function() {
-		$("#from, #to").datepicker();
-	});
-</script>
-<script>
-	var textarea = null;
-	window.addEventListener("load", function() {
-		textarea = window.document.querySelector("textarea");
-		textarea.addEventListener("keypress", function() {
-			if (textarea.scrollTop != 0) {
-				textarea.style.height = textarea.scrollHeight + "px";
-			}
-		}, false);
-	}, false);
+	var product_id = {{ product.id }};
+	var discountLength = {{product.Discounts.length}};
 
 	function changeCategory(e) {
 		$.ajax({
@@ -65,11 +27,12 @@
 		});
 	}
 
-	function editProduct(data, input) {
+	function editProduct(editInput) {
+
 		$.ajax({
 			type: 'POST',
-			url: '/api/product/edit-product?product_id=' + data,
-			data: input,
+			url: '/api/product/edit-product?product_id=' + product_id,
+			data: editInput,
 			success: function(data) {
 				$('#gtc-listing-alert').removeClass('alert-danger').addClass('alert-success');
 				$('#gtc-listing-alert .listing-message').text('Product Updated Successfully');
@@ -87,241 +50,116 @@
 	}
 
 	$(document).ready(function() {
-
 		$("#gtc-listing-alert").hide();
-		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {};
 
-		$('#crop-profile-image').click(function() {
-			cropper.getCroppedCanvas().toBlob(function(blob) {
-				cropperOutputImage = blob;
-				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-			});
-			$(test).attr('src', cropper.getCroppedCanvas().toDataURL());
-			$('#profile-picture-modal').modal('hide');
-		})
-
-		$('#profile-picture-modal').on('shown.bs.modal', function() {
-			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
-				ready: function() {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-				}
-			});
-		}).on('hidden.bs.modal', function() {
-			cropBoxData = cropper.getCropBoxData();
-			canvasData = cropper.getCanvasData();
-			cropper.destroy();
-		});
-		var test = "#UploadedImage1";
-
-		$("#edit-image1").click(function(e) {
-			test = '#UploadedImage1';
-			$(".upload1").click();
-		});
-
-		$("#edit-image2").click(function(e) {
-			test = "#UploadedImage2";
-			$(".upload2").click();
-		});
-
-		$("#edit-image3").click(function(e) {
-			test = "#UploadedImage3";
-			$(".upload3").click();
-		});
-
-		$("#edit-image4").click(function(e) {
-			test = "#UploadedImage4";
-			$(".upload4").click();
-		});
-		$(".upload1").change(function() {
-			fasterPreview(this);
-		});
-		$(".upload2").change(function() {
-			fasterPreview(this);
-		});
-		$(".upload3").change(function() {
-			fasterPreview(this);
-		});
-		$(".upload4").change(function() {
-			fasterPreview(this);
-		});
-
-		function uploads(data, callback) {
-			$.ajax({
-				type: 'POST',
-				url: '/api/prod/upload',
-				data: data,
-				cache: false,
-				dataType: 'json',
-				processData: false,
-				contentType: false,
-				success: function(data, text) {
-					callback(data);
-
-				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
-				}
-			});
+		if(discountLength){
+			var count = discountLength;
+		}else{
+			var count =1;
 		}
 
-		function uploadMedia(data, id, callback) {
-			$.ajax({
-				type: 'PUT',
-				url: '/api/product-medias/' + id,
-				data: data,
-				success: function(data, text) {
-					callback(data);
-				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
-				}
-			});
-		}
-
-		function fasterPreview(uploader) {
-			if (uploader.files && uploader.files[0]) {
-				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-
-				$(test).attr('src',
-					window.URL.createObjectURL(uploader.files[0]));
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
-			}
-		}
-
-		var data = {{ product.id }};
-
-	$("#editForm").submit(function(e) {
-		e.preventDefault();
-
-		var temp1 = $.map($('.quantity'), function(el) {
-			return el.value;
-		});
-		var quantArr = temp1.filter(function(v) { return v !== '' });
-
-		var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
-			return el.value;
-		});
-
-		var temp2 = $.map($('.discount_amount'), function(el) {
-			return el.value;
-		});
-		var amtArr = temp2.filter(function(v) { return v !== '' });
-
-		var j = 0; discountArr = [];
-		quantArr.forEach(function(element) {
-
-			let discount = {};
-			discount.product_id = data;
-			discount.status = 1;
-			discount.quantity = quantArr[j];
-			if (typeArr[j] == 'percentage_discount') {
-				discount.type = 1;
-				discount.percent_discount = amtArr[j];
-			}
-			else {
-				discount.type = 2;
-				discount.value_discount = amtArr[j];
-			}
-			discountArr.push(discount);
-			j++;
-		})
-
-		var dataFormate = {};
-		dataFormate.data = JSON.stringify(discountArr);
-
-		$.ajax({
-			type: 'POST',
-			url: '/api/product/discount',
-			data: dataFormate,
-			success: function(data, text) {
-				console.log("discount updated");
+		$("#editForm").validate({
+			rules: {
+				product_name: "required",
+				sku: "required",
+				quantity_available: "required",
+				price: "required"
 			},
-			error: function(request, status, error) {
-				console.log('status', status);
-				console.log('error', error);
+			messages: {
+				product_name: "Please enter product name",
+				sku: "Please enter stock keeping unit",
+				quantity_available: "Please enter available quantity",
+				price: "Please enter product price"
 			}
 		});
 
-		let editInput = $("#editForm :input").filter(function(index, element) {
-			return $(element).val() != '';
-		}).serialize();
+		$("#editdiscount").click(function(e) {
 
-		if ($('#editForm').valid()) {
-			editProduct(data, editInput);
-		}
+			if (count < 3) {
 
-		var productImage = {{{ DisplayJSON product.ProductMedia }}};
+				var domElement = '<br/><div class="row"><div class="col-lg-1"><p class="edit-listing-dis">For</p></div><div class="col-lg-2">'+
+								    '<input type="text" class="list_place_1 quantity" name="discount_quantity'+count+'" id="discount_quantity'+count+'" placeholder="20"></div>'+
+									'<div class="col-lg-3 no-padding"><p class="edit-listing-dis">&nbsp; &nbsp; user receives</p></div>'+
+									'<div class="col-lg-6 no-padding"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"'+
+									'name="discount_type'+count+'" value="percentage_discount" checked onclick=testPercent(' + count + ');> Total Percent Discount&nbsp; &nbsp;'+
+									'<input class="list_place_21 discount_amount percent_discount_amount'+count+'" type="text" name="percent_discount_amount'+count+'" placeholder="20%" onclick=testPercent(' + count + ');></div>'+
+									'<div class="row edit-listing-dis"><input type="radio" class="discount_type" id="value_discount'+count+'" name="discount_type'+count+'"'+
+									'value="value_discount" onclick=testValue(' + count + ')> Total Value Discount &nbsp;&nbsp;<input class="list_place_21 discount_amount value_discount_amount'+count+'"'+
+									'type="text" name="value_discount_amount'+count+'" placeholder="20$" style="display:none" /></div></div></div>'
+			
+			$('#discountAppend').append(domElement);
 
-	var i = 0;
-	var imageId = [];
-	productImage.forEach(function(element) {
-		imageId[i] = element.id;
-		i++;
-	});
-
-	let obj = {};
-
-	if ($("#imageEdit1")[0].files[0]) {
-		var form = new FormData();
-		form.append("file", $("#imageEdit1")[0].files[0]);
-		uploads(form, function(location) {
-			obj = {
-				url: location.imageURL
-			}
-			uploadMedia(obj, imageId[0], function(data) {
-				console.log("updated Successfully");
-			})
+			count = count + 1;
+			   if (count == 3) {
+				$(".discount_tier").hide();
+			    }
+			  }
 		});
-	}
-	if ($("#imageEdit2")[0].files[0]) {
-		var form = new FormData();
-		form.append("file", $("#imageEdit2")[0].files[0]);
-		uploads(form, function(location) {
-			obj = {
-				url: location.imageURL
-			}
-			uploadMedia(obj, imageId[1], function(data) {
-				console.log("updated Successfully");
-			})
-		});
-	}
-	if ($("#imageEdit3")[0].files[0]) {
-		var form = new FormData();
-		form.append("file", $("#imageEdit3")[0].files[0]);
-		uploads(form, function(location) {
-			obj = {
-				url: location.imageURL
-			}
-			uploadMedia(obj, imageId[2], function(data) {
-				console.log("updated Successfully");
-			})
-		});
-	}
-	if ($("#imageEdit4")[0].files[0]) {
-		var form = new FormData();
-		form.append("file", $("#imageEdit4")[0].files[0]);
-		uploads(form, function(location) {
-			obj = {
-				url: location.imageURL
-			}
-			uploadMedia(obj, imageId[3], function(data) {
-				console.log("updated Successfully");
-			})
-		});
-	}
 
+		$("#editForm").submit(function(e) {
+		    e.preventDefault();
 
-	})
+			  	var temp1 = $.map($('.quantity'), function(el) {
+			  		return el.value;
+		     	});
 
-	$("#editForm").validate({
+				var quantArr = temp1.filter(function(v) { return v !== '' });
+
+				var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
+					return el.value;
+				});
+
+				var temp2 = $.map($('.discount_amount'), function(el) {
+					return el.value;
+				});
+ 
+				var amtArr = temp2.filter(function(v) { return v !== '' });
+
+				var j = 0; discountArr = [];
+				quantArr.forEach(function(element) {
+
+					let discount = {};
+					discount.product_id = product_id;
+					discount.status = 1;
+					discount.quantity = quantArr[j];
+					if (typeArr[j] == 'percentage_discount') {
+						discount.type = 1;
+						discount.percent_discount = amtArr[j];
+					}
+					else {
+						discount.type = 2;
+						discount.value_discount = amtArr[j];
+					}
+					discountArr.push(discount);
+					j++;
+				})
+
+				var dataFormate = {};
+				dataFormate.data = JSON.stringify(discountArr);
+
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/discount/'+product_id,
+					data: dataFormate,
+					success: function(data, text) {
+						console.log("discount updated");
+					},
+					error: function(request, status, error) {
+						console.log('status', status);
+						console.log('error', error);
+					}
+				});
+
+				var editInput = $("#editForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+			if ($('#editForm').valid()) {
+				editProduct(editInput);
+			}
+		});
+
+		$("#editForm").validate({
 		rules: {
 			product_name: "required",
 			sku: "required",
@@ -334,106 +172,19 @@
 			quantity_available: "Please enter available quantity",
 			price: "Please enter product price"
 		}
+	  });
 	});
 
-	var count = 1;
-	$("#editdiscount").click(function(e) {
+	 function testValue(count) {
+			$(".value_discount_amount" + count).show();
+			$(".percent_discount_amount" + count).hide();
+	    }
 
-		if (count < 3) {
-
-			var domElements = '<div class="row" style="margin-left:7px;"><div class="col-xs-3 col-sm-3 col-md-3"></div><div class="col-xs-9 col-sm-9 col-md-9">' +
-				'<div class="row form-group"' + 'style="padding-left: 10px;"' + '><div class="col-md-1 edit-listing-discount"><p>For</p></div>' +
-				'<div class="col-md-1 common_padding1" style="margin-right: 5px;">' +
-				'<input class="list_place_1 quantity" type="text" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"/></div>' +
-				'<div class="col-md-2 common_padding1" style="margin-right:15px;"><p class="edit-listing-dis">user recieves</p></div>' +
-				'<div class="col-md-7 common_padding1"><div class="row" ><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" class="discount_type" name="discount_type' + count + '" id="percentage_discount' + count + '" value="percentage_discount" onclick=testPercent(' + count + '); checked /> Total Percent Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 percent_discount_amount' + count + '"><input class="list_place_2 discount_amount" type="text" id="percent_discount_amount' + count + '" name="percent_discount_amount' + count + '" placeholder="20%" />%</div>' +
-				'<div class="col-md-1 common_padding1 percent_discount_amount' + count + '"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div>' +
-				'<div class="row "><div class="col-md-6 common_padding1"><p class="edit-listing-dis">' +
-				'<input type="radio" class="discount_type" name="discount_type' + count + '" id="value_discount' + count + '" value="value_discount" onclick=testValue(' + count + '); /> Total Value Discount</p></div>' +
-				'<div class="col-md-3 common_padding1 value_discount_amount' + count + '" style="display:none"><input class="list_place_2 discount_amount" type="text" name="value_discount_amount' + count + '" placeholder="20$"/>$</div>' +
-				'<div class="col-md-1 common_padding1 value_discount_amount' + count + '" style="display:none"><p class="list_edit"><i class="fas fa-pencil-alt"></i> Edit</p></div></div></div></div></div></div>'
-
-			$('#discountAppend').append(domElements)
-			//	document.getElementById("discountAppend").innerHTML=document.getElementById("discountAppend").innerHTML+domElements;
-
-			count = count + 1;
-			if (count == 3) {
-				$(".discount_tier").hide();
-			}
+		function testPercent(count) {
+			$(".value_discount_amount" + count).hide();
+			$(".percent_discount_amount" + count).show();
 		}
-	})
-
-	function testValue(count) {
-		$(".value_discount_amount" + count).show();
-		$(".percent_discount_amount" + count).hide();
-	}
-
-	function testPercent(count) {
-		$(".value_discount_amount" + count).hide();
-		$(".percent_discount_amount" + count).show();
-	}
-
-	$('input:checkbox:not("#feature_indefinitely")').change(function() {
-		recalculate();
-	});
-	function recalculate() {
-		var sum = 0;
-		$("input:checkbox:not('#feature_indefinitely'):checked").each(function() {
-			sum += parseInt($(this).val());
-		});
-		$('#totalFees').html(sum);
-	}
-
-	$("#featureForm").validate({
-		rules: {
-			feature_position: {
-				required: function(elem) { return $("input.select:checked").length > 0; }
-
-			}
-		},
-		messages: {
-			feature_position: "Please select one feature position"
-		}
-	});
-
-	$("#featureForm").submit(function(e) {
-		if ($('#featureForm').valid()) {
-
-		}
-	})
-
-	});
-
 </script>
-
-<div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
- aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="profile-picture-modalLabel">Crop Profile Avatar</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body" style="margin-right:35px">
-				<div class="container">
-					<img src="" style="max-width: 100% !important;" id="uploaded-profile-picture" alt="Profile Picture">
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -453,465 +204,284 @@
 							</div>
 						</div>
 						<div class="content-body">
-							{{#ifCond this.type '==' 'wholesale'}}
-								<section class="box2 list_sec">
-									{{else ifCond this.type '==' 'shop'}}
-									<section class="public-market-bg list_sec">
-										{{else ifCond this.type '==' 'services'}}
-										<section class="service-market-bg list_sec">
-											{{else ifCond this.type '==' 'lifestyle'}}
-											<section class="lifestyle-market-bg list_sec">
-							{{/ifCond}}
-							<div class="container">
+							<section class= {{#ifCond this.type '==' 'wholesale'}}"box2 list_sec"
+							                {{else ifCond this.type '==' 'shop'}}"public-market-bg list_sec"
+											{{else ifCond this.type '==' 'services'}}"service-market-bg list_sec"
+											{{else ifCond this.type '==' 'lifestyle'}}"lifestyle-market-bg list_sec"{{/ifCond}}>
+                            <div class="container">
 								<div class="row">
-									<div class="col-md-12 box2_align">
+									<div class="col-lg-12 box2_align">
 										<h5>{{ convertUpperCase product.Marketplace.name}}</h5>
 									</div>
 								</div>
 							</div>
-							</section>
+                            </section>
 							<form role="form" id="editForm">
 								<div class="row">
-									<div class="col-md-4">
-										{{#if product.ProductMedia.[0].url}}
-											<img id="UploadedImage1" src="{{product.ProductMedia.[0].url}}" alt="logo" style="width: 240px; height:300px; margin-bottom: 10px;"
-											/>
-											<div class="editpic">
-												<i class="far fa-edit edit-image" id="edit-image1" style="color:black"></i>
+									<div class="col-lg-4">
+									    <div class='row'>
+											<div class="col-lg-12">
+                                                {{#each product.ProductMedia}}
+													{{#ifCond this.base_image '==' 1 }}
+                                                 				<img class="imageId" src="{{this.url}}"/>
+														{{/ifCond}}
+												{{/each}}
 											</div>
-											<input class="upload1" id="imageEdit1" type="file" name="file" onclick="this.value=null;" style="display:none"> {{/if}}
+                                        </div><br/>
+										<div class='row'>
+											{{#each product.ProductMedia}}
+											    {{#ifCond @index '<' 3}}
+											        {{#ifCond this.base_image '!=' 1 }}
+														<div class="col-lg-4">
+                                                 			<img class="imageId" src="{{this.url}}"/>
+														</div>
+													{{/ifCond}}
+												{{/ifCond}}
+											{{/each}}
+                                        </div>
+                                    </div>
+									<div class="col-lg-8">
 										<div class="row">
-											{{#if product.ProductMedia.[1].url}}
-												<div class="col-md-4">
-													<img id="UploadedImage2" src="{{product.ProductMedia.[1].url}}" alt="logo" style="width:70px;height:100px;" />
-													<div class="editpic">
-														<i class="far fa-edit edit-image" id="edit-image2" style="color:black"></i>
-													</div>
-													<input class="upload2" id="imageEdit2" type="file" name="file" onclick="this.value=null;" style="display:none">
-												</div>
-											{{/if}}
-											{{#if product.ProductMedia.[2].url}}
-												<div class="col-md-4">
-													<img id="UploadedImage3" src="{{product.ProductMedia.[2].url}}" alt="logo" style="width:70px;height:100px;" />
-													<div class="editpic">
-														<i class="far fa-edit edit-image" id="edit-image3" style="color:black"></i>
-													</div>
-													<input class="upload3" id="imageEdit3" type="file" name="file" onclick="this.value=null;" style="display:none">
-												</div>
-											{{/if}}
-											{{#if product.ProductMedia.[3].url}}
-												<div class="col-md-4">
-													<img id="UploadedImage4" src="{{product.ProductMedia.[3].url}}" alt="logo" style="width:70px;height:100px;" />
-													<div class="editpic">
-														<i class="far fa-edit edit-image" id="edit-image4" style="color:black"></i>
-													</div>
-													<input class="upload4" id="imageEdit4" type="file" name="file" onclick="this.value=null;" style="display:none">
-												</div>
-											{{/if}}
-										</div>
-									</div>
-
-									<div class="col-md-8">
-										<div class="row" style="padding-top:20px">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Status
+											<div class="col-lg-3">
+												<label class="label-control">
+													Status:
 												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status" style="background:white;">
+													<option value="{{product.status}}" disabled selected>{{objectKey statusCode product.status}}</option>
+													<option value="ACTIVE">Active</option>
+													<option value="INACTIVE">InActive</option>
+													<option value="SUSPENDED">Suspended</option>
+													<option value="SOLDOUT">Sold Out</option>
+												</select>
 											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<select class="edit-listing" name="status" id="status" style="background:white;">
-														<option value="{{product.status}}" disabled selected>{{objectKey statusCode product.status}}</option>
-														<option value="ACTIVE">Active</option>
-														<option value="INACTIVE">InActive</option>
-														<option value="SUSPENDED">Suspended</option>
-														<option value="SOLDOUT">Sold Out</option>
-													</select>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Category
+											<div class="col-lg-3">
+												<label class="label-control">
+													Category:
 												</label>
-											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<select class="edit-listing" name="product_category_id" id="category" style="background:white;" onchange="changeCategory(this)">
-														<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
+                                            </div>
+											<div class="col-lg-9">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_category_id" onchange="changeCategory(this)" style="background:white;">
+													<option value="{{product.product_category_id}}" disabled selected>{{ Titlecase product.Category.name}}</option>
 														{{#each categories}}
 															<option value="{{this.id}}">{{Titlecase this.name}}</option>
 														{{/each}}
-													</select>
-												</div>
+												</select>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Sub Category
+											<div class="col-lg-3">
+												<label class="label-control">
+													Sub Category:
 												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category" style="background:white;">
+													<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
+												</select>
 											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<select class="edit-listing" name="sub_category_id" style="background:white;" id="sub_category" value="">
-														<option value="{{product.sub_category_id}}" disabled selected>{{product.SubCategory.name}}</option>
-													</select>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													SKU
+											<div class="col-lg-3">
+												<label class="label-control">
+													SKU:
 												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <input type="text" class="form-control-customized form-control-sm" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" value="{{product.moq}}" style="background:white;" required>
 											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<input type="text" name="sku" id="sku" placeholder="Enter Stock Keeping Unit" value="{{product.sku}}" class="edit-listing"
-													 required/>
-												</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<div class="col-lg-3">
+												<label class="label-control">
+													MOQ:
+												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <input type="text" class="form-control-customized form-control-sm" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" style="background:white;" required>
 											</div>
-										</div>
-										{{#ifCond this.type '==' 'wholesale'}}
-											<div class="row">
-												<div class="col-xs-3 col-sm-3 col-md-3">
-													<label class="edit-listing">
-														MOQ
-													</label>
+											{{/ifCond}}
+											<div class="col-lg-3">
+												<label class="label-control">
+													Availablity:
+												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <input type="text" class="form-control-customized form-control-sm" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}" style="background:white;" required>
+											</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<div class="col-lg-3">
+												<label class="label-control">
+													Type:
+												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id" style="background:white;">
+													<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
+														{{#each marketplaceType}}
+														  <option value="{{this.id}}">{{this.name}}</option>
+														{{/each}}
+												</select>
+											</div>
+                                            {{/ifCond}}
+											<div class="col-lg-3">
+												<label class="label-control">
+													Name:
+												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <input type="text" class="form-control-customized form-control-sm" name="product_name" id="product_name" value="{{product.product_name}}" placeholder="Enter Product Name" style="background:white;" required>
+											</div>
+											<div class="col-lg-3">
+												<label class="label-control">
+													Price:
+												</label>
+                                            </div>
+											<div class="col-lg-9">
+                                                <input type="text" class="form-control-customized form-control-sm" name="price" id="price" value="{{product.price}}" placeholder="Enter Price" style="background:white;" required>
+											</div>
+											{{#ifCond this.type '==' 'wholesale'}}
+											<br/><br/>
+											{{#if product.Discounts}}
+											{{#each product.Discounts}}
+											<div class="col-lg-3"></div>
+											<div class="col-lg-9" id="discountAppend">
+												{{#ifCond @index '>' 0}}<br/> {{/ifCond}}
+												<div class="row">
+                                                <div class="col-lg-1">
+                                                    <p class="edit-listing-dis">For</p>
 												</div>
-												<div class="col-xs-5 col-sm-5 col-md-5">
-													<div class="form-group">
-														<input type="text" name="moq" id="moq" placeholder="Enter Minimum Order Quantity" value="{{product.moq}}" class="edit-listing"
-														/>
+												<div class="col-lg-2">
+													<input type="text" class="list_place_1 quantity" name="discount_quantity{{@index}}"  id="discount_quantity{{@index}}" value="{{this.quantity}}" placeholder="20">
+												</div>
+												<div class="col-lg-3 no-padding">
+													<p class="edit-listing-dis">&nbsp; &nbsp; user receives</p>
+												</div>
+												<div class="col-lg-6 no-padding">
+													<div class="row edit-listing-dis">
+                                                        <input type="radio" class="discount_type " id="percentage_discount{{@index}}" name="discount_type{{@index}}" value="percentage_discount"
+														{{#ifCond this.type '==' 1}} checked {{/ifCond}} onclick=testPercent('{{@index}}'); /> Total Percent Discount&nbsp; &nbsp; 
+													    <input class="list_place_21 percent_discount_amount{{@index}} discount_amount" type="text" name="percent_discount_amount{{@index}}" value="{{this.percent_discount}}" placeholder="20%" 
+														{{#ifCond this.type '==' 2}} style="display:none" {{/ifCond}} />
+													</div>
+													<div class="row edit-listing-dis">
+														<input type="radio" class="discount_type" id="value_discount{{@index}}" name="discount_type{{@index}}" value="value_discount" 
+														{{#ifCond this.type '==' 2}} checked {{/ifCond}} onclick=testValue('{{@index}}'); /> Total Value Discount &nbsp;&nbsp;
+														<input class="list_place_21 value_discount_amount{{@index}} discount_amount" type="text" name="value_discount_amount{{@index}}" placeholder="20$" value="{{this.value_discount}}"
+														{{#ifCond this.type '==' 1}} style="display:none" {{/ifCond}} />
 													</div>
 												</div>
+											   </div>
 											</div>
-										{{/ifCond}}
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Availablity
-												</label>
-											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<input type="text" name="quantity_available" placeholder="Enter Available Quantity" id="quantity_available" value="{{product.quantity_available}}"
-													 class="edit-listing" required/>
+											{{/each}}
+											{{else}}
+											<div class="col-lg-3"></div>
+											<div class="col-lg-9" id="discountAppend">
+												<div class="row">
+                                                <div class="col-lg-1">
+                                                    <p class="edit-listing-dis">For</p>
 												</div>
-											</div>
-										</div>
-										{{#ifCond this.type '==' 'wholesale'}}
-											<div class="row">
-												<div class="col-xs-3 col-sm-3 col-md-3">
-													<label class="edit-listing">
-														Category
-													</label>
+												<div class="col-lg-2">
+													<input type="text" class="list_place_1 quantity" name="discount_quantity0"  id="discount_quantity0" placeholder="20">
 												</div>
-												<div class="col-xs-5 col-sm-5 col-md-5">
-													<div class="form-group">
-														<select class="edit-listing" name="marketplace_type_id" style="background:white;">
-															<option value="{{product.marketplace_type_id}}" disabled selected>{{product.MarketplaceType.name}}</option>
-															{{#each marketplaceType}}
-																<option value="{{this.id}}">{{this.name}}</option>
-															{{/each}}
-														</select>
+												<div class="col-lg-3 no-padding">
+													<p class="edit-listing-dis">&nbsp; &nbsp; user receives</p>
+												</div>
+												<div class="col-lg-6 no-padding">
+													<div class="row edit-listing-dis">
+                                                        <input type="radio" class="discount_type " id="percentage_discount0" name="discount_type0" value="percentage_discount" checked /> Total Percent Discount&nbsp; &nbsp; 
+													    <input class="list_place_21 percent_discount_amount0 discount_amount" type="text" name="percent_discount_amount0" placeholder="20%" />
+													</div>
+													<div class="row edit-listing-dis">
+														<input type="radio" class="discount_type" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue('0'); /> Total Value Discount &nbsp;&nbsp;
+														<input class="list_place_21 value_discount_amount0 discount_amount" type="text" name="value_discount_amount0" placeholder="20$" style="display:none" />
 													</div>
 												</div>
+											   </div>
 											</div>
-										{{/ifCond}}
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Name
+											{{/if}}
+		                                    {{#ifCond product.Discounts.length '<' 3}}
+											<div class="col-lg-3 discount_tier"></div>
+											<div class="col-lg-9 discount_tier">
+												<p class="col-md-12 edit-listing-discount" id="editdiscount">
+												<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
+											</div>
+											{{/ifCond}}
+											{{#ifCond product.Discounts.length '==' null}}
+											<div class="col-lg-3 discount_tier"></div>
+											<div class="col-lg-9 discount_tier">
+												<p class="col-md-12 edit-listing-discount" id="editdiscount">
+												<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
+											</div>
+											{{/ifCond}}
+											{{/ifCond}}<br/><br/>
+											<div class="col-lg-12">
+												<i class='fa fa-pencil' data-toggle='modal' data-target='#editAttribute' data-whatever='@mdo'>
+													<label class="label-control"> Edit Product Attributes</label>
+												</i>
+											</div><br/><br/>
+                                        	<div class="col-lg-3">
+												<label class="label-control">
+													Description:
 												</label>
-											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<input type="text" name="product_name" id="product_name" value="{{product.product_name}}" class="edit-listing" placeholder="Enter Product Name"
-													 required/>
-												</div>
-											</div>
-										</div>
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Price
-												</label>
-											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<input type="text" name="price" id="price" value="{{product.price}}" class="edit-listing" placeholder="Enter Price" required/>
-												</div>
-											</div>
-										</div>
-										{{#ifCond this.type '==' 'wholesale'}}
-											<div class="row" id="discountAppend">
-												<div class="col-xs-3 col-sm-3 col-md-3">
-												</div>
-												<div class="col-xs-9 col-sm-9 col-md-9">
-													<div class="row form-group">
-														<div class="col-md-1 edit-listing-discount">
-															<p>For</p>
-														</div>
-														<div class="col-md-1 common_padding1" style="margin-right: 5px;">
-															<input class="list_place_1 quantity" type="text" name="discount_quantity0" id="discount_quantity0" placeholder="20" />
-														</div>
-														<div class="col-md-2 common_padding1" style="margin-right:15px;">
-															<p class="edit-listing-dis">user recieves</p>
-														</div>
-														<div class="col-md-7 common_padding1">
-															<div class="row ">
-																<div class="col-md-6 common_padding1">
-																	<p class="edit-listing-dis">
-																		<input type="radio" class="discount_type" id="percentage_discount0" name="discount_type0" value="percentage_discount" checked
-																		 onclick=testPercent( '0'); /> Total Percent Discount</p>
-																</div>
-																<div class="col-md-3 common_padding1 percent_discount_amount0">
-																	<input class="list_place_2 discount_amount" type="text" name="percent_discount_amount0" placeholder="20%" />%
-																</div>
-																<div class="col-md-1 common_padding1 percent_discount_amount0">
-																	<p class="list_edit">
-																		<i class="fas fa-pencil-alt"></i> Edit</p>
-																</div>
-															</div>
-															<div class="row ">
-																<div class="col-md-6 common_padding1">
-																	<p class="edit-listing-dis">
-																		<input type="radio" class="discount_type" id="value_discount0" name="discount_type0" value="value_discount" onclick=testValue(
-																		 '0'); /> Total Value Discount</p>
-																</div>
-																<div class="col-md-3 common_padding1 value_discount_amount0" style="display:none">
-																	<input class="list_place_2 discount_amount" type="text" name="value_discount_amount0" placeholder="20$" />$
-																</div>
-																<div class="col-md-1 common_padding1 value_discount_amount0" style="display:none">
-																	<p class="list_edit">
-																		<i class="fas fa-pencil-alt"></i> Edit</p>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="row discount_tier">
-												<div class="col-xs-3 col-sm-3 col-md-3">
-												</div>
-												<div class="col-xs-9 col-sm-9 col-md-9">
-													<div class="row form-group">
-														<p class="col-md-12 edit-listing-discount" id="editdiscount">
-															<i class="fas fa-plus list_plus"></i> add bulk order discount tier.</p>
-													</div>
-												</div>
-											</div>
-										{{/ifCond}}
-										<div class="row">
-											<div class="col-xs-3 col-sm-3 col-md-3">
-												<label class="edit-listing">
-													Description
-												</label>
-											</div>
-											<div class="col-xs-5 col-sm-5 col-md-5">
-												<div class="form-group">
-													<textarea class="edit-listing" id="description" name="description" rows="7" cols="35" placeholder="Enter Product Description">{{product.description}}</textarea>
-												</div>
+                                            </div>
+											<div class="col-lg-9">
+                                               <textarea class="form-control-customized" id="description" rows="7" cols="35" name="description" placeholder="Enter Product Description" style="background:white;">{{product.description}}</textarea>
 											</div>
 										</div>
 										<hr/>
-										<div class="row" style="margin-bottom: 20px;">
-											<div class="col-md-2 col-5">
-												<input class="list_butt_1" type="submit" id="update" value="UPDATE" />
-											</div>
-											<div class="col-md-10 col-6">
-												<input class="list_butt_2" type="reset" id="reset" value="CANCEL" />
-											</div>
-										</div>
-									</div>
+                                        <div class="row">
+									        <div class="col-lg-12">
+										        <button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
+											        <span class="ladda-label">Update</span>
+											        <span class="ladda-spinner"></span>
+										        </button>
+										        <button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+											        <span class="ladda-label">Cancel</span>
+											        <span class="ladda-spinner"></span>
+										        </button>
+									        </div>
+								        </div>
+                                    </div>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-2">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="content-body">
-							<div class="list_bg">
-								<p class="list_fe">FEATURE THIS PRODUCT!</p>
-								<div class="list-padding">
-									<form id="featureForm">
-										<div class="row ">
-											<div class="col-md-6">
-												<img src="{{feature.product_base_image}}" alt="logo" style="width: 100%" />
-											</div>
-											<div class="col-md-6">
-											</div>
-										</div>
-										<p class="list_ip">{{feature.product_name}}</p>
-										<div class="row">
-											<div class="col-md-6 list_rup">
-												${{feature.product_price}}
-											</div>
-											{{!--
-											<div class="col-md-6">
-												<p class="list_save">SAVE $20 </p>
-												<p class="list_left">12m left! </p>
-											</div> --}}
-										</div>
-										<div class="row">
-											<div class="col-md-5 edit-listing-feature">
-												<p style="margin-left:10px;">Category:</p>
-											</div>
-											<div class="col-md-7 edit-listing-feature">
-												<p style="margin-right:10px;">{{Titlecase feature.category_name}}> {{feature.sub_category_name}} </p>
-											</div>
-											<div class="col-md-5 edit-listing-feature">
-												<p style="margin-left:10px;">Sellar Rating:</p>
-											</div>
-											<div class="col-md-7 edit-listing-feature">
-												<p>{{ starCount feature.product_rating}}</p>
-											</div>
-										</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}
 
-										<hr class="list-hr">
-										<p class="edit-listing-feature"> Status:
-											<span> Live </span>
-										</p>
-										<select class="edit_lists_feature_buttonstyle">
-											<option disabled selected>Change</option>
-											<option value="active">Live</option>
-											<option value="inactive">InActive</option>
-										</select>
-										<p class="edit-listing-feature">Duration:</p>
-										<div class="row" style="margin-bottom: 20px;">
-											<div class="col-md-12 edit-listing-feature">
-												<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px; margin-left:20px;"
-												 type="text" id="from" placeholder="mm/dd/yyyy"> to
-												<input style="width: 60px;border: 1px solid #eee;background-color: #eee;font-size: 10px;padding: 1px;" type="text" id="to"
-												 placeholder="mm/dd/yyyy">
-											</div>
-										</div>
-										<div class="row" style="margin-left: 5px; margin-bottom:10px;">
-											<div class="col-md-12 edit-listing-feature">
-												<input type="checkbox" id="feature_indefinitely" />Feature this product indefinitely.
-											</div>
-										</div>
-										<p class="edit-listing-feature" style="margin-bottom:10px;">Feature this product:</p>
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" />My Profile Page Only (Free)
-										</div>
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="50" />In Search Results(+$50/mo)
-										</div>
-										{{#ifCond this.type '==' 'wholesale'}}
-											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-												<input type="checkbox" class="position" name="feature_position[]" value="150" />Wholesale Landing(+$150/mo)
-											</div>
-											{{else ifCond this.type '==' 'shop'}}
-											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-												<input type="checkbox" class="position" name="feature_position[]" value="150" />Shop Landing(+$150/mo)
-											</div>
-											{{else ifCond this.type '==' 'services'}}
-											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-												<input type="checkbox" class="position" name="feature_position[]" value="150" />Services Landing(+$150/mo)
-											</div>
-											{{else ifCond this.type '==' 'lifestyle'}}
-											<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 3px;">
-												<input type="checkbox" class="position" name="feature_position[]" value="150" />Subscription Landing(+$150/mo)
-											</div>
-										{{/ifCond}}
-										<div class="row col-md-12 edit-listing-feature" style="margin-bottom: 10px;">
-											<input type="checkbox" class="position" name="feature_position[]" value="250" />GTC Homepage(+$250/mo)
-										</div>
-
-										<p class="list_tot"> TOTAL:$
-											<span class="list_tot" id="totalFees"></span>
-										</p>
-										<p class="list_bg_blue">
-											<a href="/order-checkout/payment-method">YES,PROMOTE THIS!
-												<i class="fas fa-caret-right"></i>
-											</a>
-										</p>
-										{{!--
-										<p class="list_butt_2">Performance</p>
-										<div class="row col-md-12">
-											<p>Ad has been running for: 123days </p>
-										</div>
-										<hr/>
-										<p> Impressions Vs Clicks </p>
-										<p>
-											<img width="100%" src="../../img/verification-id.png" />
-										</p>
-										<p> Total Clicks:div>
-											<b>233</b>
-										</p>
-										<p> Impressions:
-											<b>33,0000</b>
-										</p>
-										<p>Click-Through rate (CTR):
-											<b>12%</b>
-										</p>
-										<p> Total Purchases:
-											<b>45</b>
-										</p>
-										<p> Total Revanus:
-											<b>$4500</b>
-										</p>
-										<p class="list_bg_blue">
-											<a href="#">EXPORT REPORT AS PDF
-												<i class="fas fa-caret-right"></i>
-											</a>
-										</p> --}}
-
-									</form>
-								</div>
-							</div>
-						</div>
+<div class="modal fade" id="editAttribute" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Edit Attributes</h5>
+			</div>
+			<form id="attributeForm" class="form">
+				<div class="modal-body">
+					<div class="container">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="shop_list_title">
+										<b>Attribute</b>
+									</th>
+									<th class="shop_list_title">
+										<b>Value</b>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="attribute"></tbody>
+						</table>
 					</div>
 				</div>
-			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>Close</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+						<b>Submit</b>
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
-{{!-- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<section class="showing_categ">
-	<div class="">
-		<div class="container-fluid">
-			<div class="row">
-				{{> vendor/navbar}}
-				<div class="col-md-8" style="background-color: #fff;">
-					<form role="form" id="editForm">
-						<h5 class="list_manage">Manage Product - {{ product.product_name}}</h5>
-						<div class="alert" id="gtc-listing-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="listing-message"></span>
-						</div>
-						{{#ifCond this.type '==' 'wholesale'}}
-						<section class="box2 list_sec">
-							{{else ifCond this.type '==' 'shop'}}
-							<section class="public-market-bg list_sec">
-								{{else ifCond this.type '==' 'services'}}
-								<section class="service-market-bg list_sec">
-									{{else ifCond this.type '==' 'lifestyle'}}
-									<section class="lifestyle-market-bg list_sec">
-										{{/ifCond}}
-										<div class="container">
-											<div class="row">
-												<div class="col-md-12 box2_align">
-													<h5>{{ convertUpperCase product.Marketplace.name}}</h5>
-												</div>
-											</div>
-										</div>
-									</section>
-</div> --}}
-{{!--
-				<div class="col-md-2">
-</div>
-			</div>
-		</div>
-	</div>
-	</section>
-	{{> footer/bottom-footer}} --}}

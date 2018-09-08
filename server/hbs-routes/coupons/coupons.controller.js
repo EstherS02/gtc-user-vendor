@@ -20,7 +20,8 @@ export function coupons(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
-	console.log(req.user)
+	var queryPaginationObj={};
+    var queryURI = {};
 
 	let user_id = LoggedInUser.id;
 
@@ -50,17 +51,25 @@ export function coupons(req, res) {
 	//pagination 
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
+	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
 	delete req.query.order;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
 	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
+	queryURI['page'] = page;
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
+    queryPaginationObj['offset'] = offset;
+
 	var maxSize;
 	// End pagination
 	queryObj['vendor_id'] = req.user.Vendor.id;
@@ -116,11 +125,12 @@ export function coupons(req, res) {
 		function(err, results) {
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
-		// queryPaginationObj['maxSize'] = 5;
-				
+            if (results.Coupons.count % limit)
+                maxSize++;
+            queryPaginationObj['maxSize'] = maxSize;
 				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
-					Coupons: results.Coupons.rows,
+				Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
 					statusCode: status,
 					discountType: discountType,
@@ -130,10 +140,11 @@ export function coupons(req, res) {
 					cartheader:results.cartCounts,
 					selectedPage: 'coupons',
 					// pagination
-					page: page,
 					maxSize: maxSize,
+					queryURI:queryURI,
 					pageSize: limit,
 					collectionSize: results.count,
+                    queryPaginationObj: queryPaginationObj,
 					// End pagination
 					vendorPlan: vendorPlan
 				});

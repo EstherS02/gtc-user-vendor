@@ -40,7 +40,7 @@ export function reviews(req, res) {
 	var rating_limit = 120;
 	var queryObj = {};
 	queryObj = {
-		vendor_id: vendorId,
+		user_id: user_id,
 	};
 
 	//pagination 
@@ -166,7 +166,23 @@ export function reviews(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-			}
+			},
+			userReviews: function(callback){
+				model['Review'].findAndCountAll({
+					where: queryObj,
+					offset: offset,
+					limit: limit,
+					order: [
+						[field, order]
+					],
+				}).then(function(Reviews) {
+					maxSize = Reviews.count / limit;
+					return callback(null, Reviews);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			},
 		},
 		function(err, results) {
 			if (!err) {
@@ -189,7 +205,9 @@ export function reviews(req, res) {
 					selectedPage: 'reviews',
 					// End pagination
 					vendorPlan: vendorPlan,
-					queryURI: queryURI
+					queryURI: queryURI,
+					userReviews:results.userReviews,
+					userCollectionSize: results.userReviews.count,
 				});
 			} else {
 				res.render('vendorNav/reviews', err);
