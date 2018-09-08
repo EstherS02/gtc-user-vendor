@@ -330,14 +330,13 @@
 													<th scope="col">Method</th>
 													<th scope="col">Status</th>
 													<th scope="col">Notes</th>
-													<th scope="col"></th>
-													<th scope="col"></th>
+													<th colspan="3"></th>
 													<th scope="col">Amount</th>
 												</tr>
 											</thead>
 											<tbody>
-											{{#if OrderItems}}
-												{{#each OrderItems}}
+											{{#if Order}}
+												{{#each Order}}
 													<tr>
 														<td>
 															<input type="checkbox" value="{{this.id}}">
@@ -357,6 +356,10 @@
 															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
+														</td>
+														<td class="text_blue_color">
+															<a onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
+															<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
 														</td>
 														<td>${{this.total_price}} CAD</td>
 													</tr>

@@ -139,13 +139,19 @@ export function salesHistory(req, res) {
     var modelName = "Order";
     productQueryObj['vendor_id'] = req.user.Vendor.id;
     console.log("productQueryObj", productQueryObj)
-    var includeArr = [{
-        model: model['Product'],
-        where: productQueryObj,
-        include: [{
-            model: model['Vendor'],
-        }]
-    }];
+    var orderIncludeArr = [
+	  	{
+       		model: model['Product'],
+        	where: productQueryObj,
+       		include:[{
+            		model: model['Vendor'],
+        		}]
+        },{
+			model: model['User'],
+			attributes: ['id','first_name','last_name']
+
+		}
+	];
     async.series({
         cartCounts: function(callback) {
             service.cartHeader(LoggedInUser).then(function(response) {
@@ -156,7 +162,7 @@ export function salesHistory(req, res) {
             });
         },
             orderHistory: function(callback) {
-                service.findRows(modelName, orderQueryObj, offset, limit, field, order, includeArr)
+                service.findRows(modelName, orderQueryObj, offset, limit, field, order, orderIncludeArr)
                     .then(function(results) {
                         return callback(null, results);
                     }).catch(function(error) {
@@ -205,7 +211,7 @@ export function salesHistory(req, res) {
             if (!err) {
                 res.render('vendorNav/reporting/sales-history', {
                     title: "Global Trade Connect",
-                    OrderItems: results.orderHistory.rows,
+                    Order: results.orderHistory.rows,
                     count: results.orderHistory.count,
                     queryURI: queryURI,
                     LoggedInUser: LoggedInUser,
