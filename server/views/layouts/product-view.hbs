@@ -448,8 +448,7 @@ function mailVendor(){
                             			</div>
                             			<h1 class="p-title m-t-sm" id="start">{{product.product_name}}</h1>
 										<input type="hidden" id="productname" value="{{product.product_name}}">
-										{{product.marketplace_id}}
-                            			<h1 class="p-rate"><span class="p-symbol">$</span>{{product.price}}</h1>
+                            			<h1 class="p-rate">{{currency product.price '$'}}</h1>
                             			<p class="discount-text text-muted m-t-sm m-b-sm">This product has discounts on bulk orders.</p>
                             			<div class="p-social-compare">
                             				<div class="alignleft icon">
@@ -629,9 +628,13 @@ function mailVendor(){
                         													</div>
                         													<div class="col-4">
                         														<div class="product-related-col">
+                        														{{#ifCond this.marketplace_id '==' 1}}
                         															{{#if this.minimum_order_quantity}}
                         															<h4>MOQ : {{this.minimum_order_quantity}}</h4>
                         															{{/if}}
+                        															{{else}}
+                        															<h4>{{currency this.product_price '$'}}</h4>
+                        															{{/ifCond}}
                         														</div>
                         													</div>
                         												</div>

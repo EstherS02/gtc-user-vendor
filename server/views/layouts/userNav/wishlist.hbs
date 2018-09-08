@@ -184,7 +184,7 @@
 											{{else ifCond this.Product.marketplace_id "==" 4}}
 											<td>Lifestyle</td>
 											{{/ifCond}} {{!--End Type --}}
-											<td class="text_black_color">{{this.Product.price}}</td>
+											<td class="text_black_color">{{currency this.Product.price '$'}}</td>
 											<input type="hidden" id="product_id{{this.id}}" name="product_id" value="{{this.product_id}}"> {{!--
 											<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
 											<td class="text_blue_color">

@@ -107,8 +107,9 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 	return parseFloat(v1) + parseFloat(v2);
 });
 
-Handlebars.registerHelper('quantityPrice', function(quantity, price, options) {
-	return parseInt(quantity) * parseFloat(price);
+Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
+	 var amt = parseInt(quantity) * parseFloat(price);
+     return numeral(amt).format(symbol + '0,0.00');
 });
 
 Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, options) {
