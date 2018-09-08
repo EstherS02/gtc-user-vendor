@@ -633,9 +633,13 @@ function mailVendor(){
                         													</div>
                         													<div class="col-4">
                         														<div class="product-related-col">
+                        														{{#ifCond this.marketplace_id '==' 1}}
                         															{{#if this.minimum_order_quantity}}
                         															<h4>MOQ : {{this.minimum_order_quantity}}</h4>
                         															{{/if}}
+                        															{{else}}
+                        															<h4>{{currency this.product_price '$'}}</h4>
+                        															{{/ifCond}}
                         														</div>
                         													</div>
                         												</div>

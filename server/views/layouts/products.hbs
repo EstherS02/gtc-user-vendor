@@ -93,7 +93,7 @@
                           <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">${{this.product_price}}</h2>
+                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>
@@ -151,7 +151,7 @@
                           <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">${{this.product_price}}</h2>
+                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>

@@ -361,13 +361,13 @@
 															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
 															<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
 														</td>
-														<td>${{this.total_price}} CAD</td>
+														<td>{{currency this.total_price '$'}} CAD</td>
 													</tr>
 												{{/each}}
 												<tr>
 													<td colspan="7"></td>
 													<td class="text_blue_color">Total Transaction</td>
-													<td>${{totalTransaction}} CAD</td>
+													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>
 												{{else}}
 												<tr>
