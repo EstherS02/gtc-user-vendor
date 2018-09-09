@@ -115,12 +115,14 @@ export function findOneRow(modelName, queryObj, includeArr) {
             include: includeArr,
             where: queryObj
         }).then(function(row) {
+            console.log("findOneRow row", row);
             if (row) {
                 resolve(row.toJSON());
             } else {
                 resolve(null);
             }
         }).catch(function(error) {
+            console.log("findOneRow Error:::", error);
             reject(error);
         });
     });

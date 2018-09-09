@@ -306,6 +306,7 @@ export async function facebook(req, res) {
 				id: config.auth.clientId,
 				status: status['ACTIVE']
 			});
+			console.log("appClient---", appClient);
 			if (existsUser) {
 				if (existsUser.fb_id == null) {
 					bodyParams['email_verified'] = 1;
