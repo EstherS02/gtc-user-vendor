@@ -143,13 +143,11 @@ exports.refreshToken = function(req, res, next) {
 }
 
 function getAccessToken(params, accessTokenUrl) {
-	console.log("getAccessToken params", params);
 	return new Promise(function(resolve, reject) {
 		request.post(accessTokenUrl, {
 			json: true,
 			form: params
 		}, function(error, response, body) {
-			console.log("getAccessToken body", body);
 			if (!error && response.statusCode == 200) {
 				return resolve(body);
 			} else {
@@ -168,7 +166,6 @@ function getPeople(accessToken, peopleApiUrl) {
 			},
 			json: true
 		}, function(error, response, body) {
-			console.log("body", body);
 			if (!error && response.statusCode == 200) {
 				return resolve(body);
 			} else {
@@ -302,17 +299,10 @@ export async function facebook(req, res) {
 			const existsUser = await service.findOneRow('User', {
 				email: profile.email
 			});
-			const updateAppClient = await service.upsertRecord('Appclient', {
-				status: status['ACTIVE']
-			}, {
-				id: config.auth.clientId
-			});
-			console.log("updateAppClient",updateAppClient);
 			const appClient = await service.findOneRow('Appclient', {
 				id: config.auth.clientId,
 				status: status['ACTIVE']
 			});
-			console.log("appClient---", appClient);
 			if (existsUser) {
 				if (existsUser.fb_id == null) {
 					bodyParams['email_verified'] = 1;
