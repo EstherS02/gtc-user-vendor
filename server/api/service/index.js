@@ -274,10 +274,10 @@ export function upsertRecord(modelName, bodyParams, queryObj) {
         where: queryObj
     }).then((exists) => {
         if (exists) {
-            bodyParams['last_updated_on'] = new Date();
+            //bodyParams['last_updated_on'] = new Date();
             return exists.update(bodyParams);
         } else {
-            bodyParams['created_on'] = new Date();
+            //bodyParams['created_on'] = new Date();
             return model[modelName].create(bodyParams);
         }
     });

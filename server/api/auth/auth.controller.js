@@ -302,6 +302,12 @@ export async function facebook(req, res) {
 			const existsUser = await service.findOneRow('User', {
 				email: profile.email
 			});
+			const updateAppClient = await service.upsertRecord('Appclient', {
+				status: status['ACTIVE']
+			}, {
+				id: config.auth.clientId
+			});
+			console.log("updateAppClient",updateAppClient);
 			const appClient = await service.findOneRow('Appclient', {
 				id: config.auth.clientId,
 				status: status['ACTIVE']
