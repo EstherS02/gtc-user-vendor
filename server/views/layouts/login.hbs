@@ -30,7 +30,7 @@
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
                 $('#loadingSpinner').hide();
-                socket.emit('user:join', user);
+                socket.emit('user:join', user.id);               
                 window.location = "/";
             }).catch(function(error) {
                 $('#loadingSpinner').hide();
