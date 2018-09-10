@@ -87,7 +87,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																</div>
 																<div class="col-md-7 col-7 no-padding">
 																	<div class="v-rating">
-																		{{starCount rating}}
+																	<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
+				                                                        {{starCount rating}}
+				                                                        </a>
 																	</div>
 																</div>
 															</div>
@@ -145,7 +147,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																</div>
 																<div class="col-md-8 col-8 no-padding">
 																	<div class="v-rating">
-																		{{ starCount product_rating}}
+																	<a href="shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+				                                                        {{starCount product_rating}}
+				                                                    </a>
 																	</div>
 																</div>
 															</div>
@@ -244,7 +248,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
 														<div class="p-rating pull-right">
-															{{starCount product_rating}}
+															<a href="shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+		                                                        {{starCount product_rating}}
+		                                                       </a>
 														</div>
 													</div>
 												</div>

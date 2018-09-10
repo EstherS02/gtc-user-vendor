@@ -95,7 +95,9 @@ $(document).on('change', "#sortListing", function() {
                                                                     <div class="prc-bottom">
                                                                         <p>Seller Rating</p>
                                                                         <div class="p-rating pull-right">
-                                                                            {{starCount product_rating}}
+                                                                            <a href="lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                                                {{starCount product_rating}}
+                                                                            </a>
                                                                         </div>
                                                                     </div>
                                                                 </div>

@@ -88,7 +88,7 @@ export function compare(req, res) {
 				}
 			};
 			if(product_category_id.length>0){
-			productService.RelatedProducts("MarketplaceProduct", queryObj, limit, order)
+			productService.RandomProducts("MarketplaceProduct", queryObj, limit, order)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {

@@ -8,6 +8,8 @@ const model = require('../../sqldb/model-connect');
 const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
+const productService = require('../../api/product/product.service');
+const sequelize = require('sequelize');
 const config = require('../../config/environment');
 const _ = require('lodash');
 
@@ -216,12 +218,15 @@ export function homePage(req, res) {
 			delete queryObj['marketplace_id'];
 			queryObj['featured_position'] = position.HomePage;
 			queryObj['is_featured_product'] = 1;
-			limit = null;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(featuredProducts) {
-					return callback(null, featuredProducts.rows);
+			limit = 6;
+			var order = [
+				    sequelize.fn( 'RAND' ),
+				  ];
+			productService.RandomProducts(productModel, queryObj, limit, order)
+				.then(function(response) {
+					return callback(null, response.rows);
 				}).catch(function(error) {
-					console.log('Error :::', error);
+					console.log('Error::', error);
 					return callback(null);
 				});
 		},

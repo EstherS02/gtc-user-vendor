@@ -94,12 +94,12 @@ function ouputPopup(data) {
 	$("#inputIndividualUseOnly[value=1]").prop("checked", "true");
 	$("#inputExcluseSaleItem[value=1]").prop("checked", "true");
 
-	$("#couponUpdateBtn").click(function (e) {
-		e.preventDefault();
+	// $("#couponUpdateBtn").click(function (e) {
+	// 	e.preventDefault();
 
-		const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
-		const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
-	});
+	// 	const inputIndividualUseOnly = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
+	// 	const inputExcluseSaleItem = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
+	// });
 	$("#couponForm").validate({
         rules: {
             coupon_name: "required",
@@ -125,24 +125,16 @@ function ouputPopup(data) {
 		newCoupon.discount_type = $('#inputDiscountType').val();
 		newCoupon.discount_value = $('#inputDiscountValue').val();
 		newCoupon.expiry_date = $('#inputExpiryDate').val();
-		// newCoupon.minimum_spend = $('#inputMinimumSpend').val();
-		// newCoupon.maximum_spend = $('#inputMaximumSpend').val();
 		newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 		newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
+		newCoupon.status = $('#inputStatus').val();
 		newCoupon.publish_date = new Date().toISOString().split("T")[0];
-		// newCoupon.usage_limit = $('#inputUsageLimit').val();
-		// newCoupon.limit_usage_to_x_items = $('#inputLimitUsageToXItems').val();
-		// newCoupon.usage_limit_per_user = $('#inputUsageLimitPerUser').val();
 		if(($('#inputMinimumSpend').val() != '') && ($('#inputMinimumSpend').val() != 'null'))
 			 newCoupon.minimum_spend = $('#inputMinimumSpend').val();
 			if($('#inputMaximumSpend').val() != '')
-			 newCoupon.maximum_spend = $('#inputMaximumSpend').val();
-			// if($('#inputMaximumSpend').val())
-			//  newCoupon.maximum_spend = $('#inputMaximumSpend').val();
+     		newCoupon.maximum_spend = $('#inputMaximumSpend').val();
 			newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 			newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
-			newCoupon.status = 1;
-			
 			newCoupon.vendor_id = {{ LoggedInUser.Vendor.id }};
 			newCoupon.publish_date = new Date().toISOString().split("T")[0];
 			if($('#inputUsageLimit').val() != '')
@@ -178,9 +170,6 @@ function ouputPopup(data) {
 			url: '/api/coupon/update',
 			data: newCoupon,
 			success: function (data, text) {
-				// alert("Updated successfully");
-				// location.reload();
-				// window.location.href="/coupons"
 				ouputPopup("Updated successfully");
 			},
 			error: function (request, status, error) {
@@ -278,6 +267,20 @@ function ouputPopup(data) {
 										/><span class="text-danger">*</span>
 										<span class="vend_edit_list_spanstyle"> Expiry Date</span>
 									</div>
+									{{#if coupon.id }}
+									{{!-- statusCode --}}
+									<div class="col-md-12">
+										<select class="vend_edit_lists_dropdownstyle" id="inputStatus">
+													<option disabled selected>CHANGE STATUS</option>
+													{{#select coupon.status}}
+													<option value="{{statusCode.ACTIVE}}">Active</option>
+													<option value="{{statusCode.SUSPENDED}}">Suspended</option>
+													<option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+													{{/select}}
+										</select>
+										<span class="vend_edit_list_spanstyle">Change Your Staus</span>
+									</div>
+									{{/if}}
 									<div class="col-md-12">
 										<input type="text" name="minimum_spend" placeholder="Minimum Spend" class="vend_edit_lists_textstyle1" id="inputMinimumSpend"
 										 value="{{coupon.minimum_spend}}" />
@@ -364,10 +367,7 @@ function ouputPopup(data) {
 										<button class="list_butt_2" type="reset" id="couponCancelBtn">Cancel</button>
 									</div>
 								</div>
-
 							</form>
-
-
 						</div>
 					</div>
 				</div>
