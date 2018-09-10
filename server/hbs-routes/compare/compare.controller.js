@@ -7,6 +7,7 @@ const status = require('../../config/status');
 const service = require('../../api/service');
 const productService = require('../../api/product/product.service');
 const sequelize = require('sequelize');
+const marketplace = require('../../config/marketplace');
 const moment = require('moment');
 const _ = require('lodash');
 import series from 'async/series';
@@ -25,7 +26,7 @@ export function compare(req, res) {
 	var includeArr = [];
 	var compareProductIDs;
 	// var product_category_id = 1;
-	var product_category_id = [15];
+	var product_category_id = [];
 
 	if (req.session && req.session['compare']) {
 		compareProductIDs = req.session['compare'].join(", ");
@@ -76,21 +77,27 @@ export function compare(req, res) {
 				});
 		},
 		RelatedProducts: function(callback) {
-			var offset = 0;
 			var limit = 9;
-			var field = "id";
-			var order = "ASC";
+			var order = [
+				    sequelize.fn( 'RAND' ),
+				  ];
 			var queryObj = {
-				sub_category_id: product_category_id
+				sub_category_id: product_category_id,
+				marketplace_id: {
+					$ne: marketplace['WHOLESALE']
+				}
 			};
-			includeArr = [];
-			service.findAllRows("MarketplaceProduct", includeArr, queryObj, offset, limit, field, order)
+			if(product_category_id.length>0){
+			productService.RelatedProducts("MarketplaceProduct", queryObj, limit, order)
 				.then(function(response) {
 					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+			}else{
+				return callback(null);
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];

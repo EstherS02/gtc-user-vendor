@@ -17,93 +17,7 @@ $(document).ready(function() {
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
-
-<!-- <section class="box1" style="margin-bottom:0">
-    <div class="container-fluid full_view_pad">
-        <div class="row">
-
-            {{#if LoggedInUser.email}} {{else}}
-
-            <div class="col-md-6 col-lg-6 col-xl-6">
-                <div class="row geo_bgimg">
-                    <div class="col-md-7 col-lg-7 col-xl-7">
-
-                    </div>
-                    <div class="col-md-5 col-lg-5 col-xl-5">
-                        <form id="searchForm">
-                            <p class="why_geo">What is Geo-Locate?</p>
-                            <p class="why_geo_p">Find products close to home, or nearby your target market with Lorom ipsum dolor sholt</p>
-                            <h3>GIVE IT A TRY!:</h3>
-                            <input type="text" id="origin" name="origin" placeholder="Location (eg Calgary, AB)" class="geo_textbox" />
-                            <select class="geo_textbox" name="category" id="category">
-                                <option disabled selected>Category</option>
-                                {{#each categories}}
-                                <option value="{{this.id}}">{{ this.name}}</option>
-                                {{/each}}
-                            </select>
-                            <input type="text" id="keyword" name="keyword" placeholder="Keyword (eg Spoiler" class="geo_textbox" />
-                            <input type="submit" id="searchSubmit" value="SEARCH!" class="geo_button" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div id="loginBanner" class="col-md-6 col-lg-6 col-xl-6">
-                <div class="row geo_bgimg1">
-                    <h1>CREATE A FREE ACCOUNT!</h1>
-                    <p>Start searching the globe for the
-                        <span class="text_blue_color_p"> best bulk discount, wholesale pricing, subsriptions, services </span> everywhere! And it's
-                        <span class="text_blue_color_p">FREE</span> to join!</p>
-                    <div class="col-md-6 offset-md-4">
-                        <small id="signUpErrorLog" class="error"></small>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-lg-4 col-xl-4">
-                            <div class="d-sm-block d-md-none">
-                                <img src="img/social-icons/facebook.png" alt="facebook" style="margin-bottom: 5px;" />
-                                <img src="img/social-icons/google.png" alt="google+" style="margin-bottom: 5px;" />
-                                <img src="img/social-icons/twitter.png" alt="twitter" style="margin-bottom: 5px;" />
-                                <img src="img/social-icons/linked-in.png" alt="linkedIn" style="margin-bottom: 5px;" />
-                            </div>
-                            <div class="d-none d-md-block d-xs-none">
-                                <a id="gtc-fb-login">
-                                    <img src="img/login-facebook.png" alt="facebook" style="margin-bottom: 5px;width: 100%;" />
-                                </a>
-                                <a id="gtc-google-login">
-                                    <img src="img/login-google.png" alt="google" style="margin-bottom: 5px;width: 100%;" />
-                                </a>
-                                <a id="gtc-twitter-login">
-                                    <img src="img/login-twitter.png" alt="twitter" style="margin-bottom: 5px;width: 100%;" />
-                                </a>
-                                <a id="gtc-linkedin-login">
-                                    <img src="img/login-linkedin.png" alt="linkedin" style="margin-bottom: 5px;width: 100%;" />
-                                </a>
-
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-6">
-
-                            <form id="signUpForm" method="post">
-
-                                <input type="email" id="inputEmail" name="email" class="acc_textbox" placeholder="Email" required>
-                                <input type="text" placeholder="First name" id="inputFirstname" name="first_name" class="acc_textbox">
-                                <input type="password" placeholder="Password" id="inputPassword" name="password" class="acc_textbox">
-                                <br/>
-                                <input type="checkbox" id="inputTerms" name="input_terms" required="true"> Accept terms and conditions {{!--
-                                <input type="checkbox"> Accept terms and conditions --}}
-                                <button type="submit" id="btnSignup" class="acc_button btn">CREATE ACCOUNT</button>
-                                <br>
-
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{/if}}
-        </div>
-    </div>
-</section> -->
- {{#if LoggedInUser.id}} {{else}}
+{{#if LoggedInUser.id}} {{else}}
 <div class="home-banner">
     <div class="gtc-container banner-padding">
         <div class="row">
@@ -163,7 +77,7 @@ $(document).ready(function() {
                                                     <a href="javascript:;" id="gtc-google-login"><img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google"></a>
                                                 </li>
                                                 <li>
-                                                    <a id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
+                                                    <a href="javascript:;" id="gtc-twitter-login"><img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter"></a>
                                                 </li>
                                                 <li>
                                                     <a href="javascript:;" id="gtc-linkedin-login"><img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn"></a>
@@ -561,7 +475,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -631,7 +545,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -701,7 +615,7 @@ $(document).ready(function() {
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                <h2 class="text-red">${{this.product_price}}</h2>
+                                                <h2 class="text-red">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                 <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
@@ -793,7 +707,7 @@ $(document).ready(function() {
                                                 </td>
                                                 <td class="col-3">
                                                     <div class="product-left-col">
-                                                        <img class="object-fit" src="{{this.url}}"  alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                        <img class="object-fit" src="{{this.url}}" onError="imgError(this)" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
                                                     </div>
                                                 </td>
                                                 <td class="col-7">
@@ -860,7 +774,7 @@ $(document).ready(function() {
                                                         <h3><a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
                                                         <div class="row no-margins">
                                                             <div class="col-md-12 col-12 no-padding">
-                                                                <h2 class="text-red price">${{this.product_price}}</h2>
+                                                                <h2 class="text-red price">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
                                                             </div>
                                                             <div class="col-md-4 col-4 no-padding">
                                                                 <span>Origin</span>

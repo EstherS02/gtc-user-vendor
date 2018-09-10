@@ -1909,3 +1909,7 @@ display: inline-block;
 #editdiscount{
 	cursor: pointer;
 }
+.bg-services{
+    background: #55b82e;
+    color: #FFFFFF;
+}

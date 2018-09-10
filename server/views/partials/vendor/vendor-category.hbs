@@ -1,7 +1,7 @@
 <div class="ibox">
 	<div class="ibox-content bg-transparent">
 		<h5 class="right-header-sm">SEARCH BY CATEGORY</h5>
-		<p class="right-header-xs bg{{product.Marketplace.id}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
+		<p class="right-header-xs bg-{{selectedPage}}{{!-- {{product.Marketplace.id}} --}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
 		<ul class="right-list-view">
 			{{#each categoriesWithCount.rows}}
 			<li>

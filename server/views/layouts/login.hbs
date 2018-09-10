@@ -1,27 +1,17 @@
-<script type="text/javascript" src="//platform.linkedin.com/in.js">
-    api_key: 81q1ljfijajynj
-    authorize: false
-</script>
-
 <script type="text/javascript">
-
     $(document).ready(function() {
         $('#loadingSpinner').hide();
-         var url = window.location.href;
-        var base_url = window.location.origin+window.location.pathname;
-        var var_id= url.replace(base_url,"")
-        if(var_id) {
+        var url = window.location.href;
+        var base_url = window.location.origin + window.location.pathname;
+        var var_id = url.replace(base_url, "")
+        if (var_id) {
             $('html, body').animate({
-                scrollTop:  $(var_id).offset().top
-            },0);
+                scrollTop: $(var_id).offset().top
+            }, 0);
         }
-        // plan page partial starts//
-          $('#userPlanShow').show();
-         $('#vendorPlanShow').hide();
-		 $('#userPlaninfo').hide();
-         //plan page partial ends//
-          var userInfo = {{{ DisplayJSON LoggedInUser }}}
-   // var socket = io();
+        $('#userPlanShow').show();
+        $('#vendorPlanShow').hide();
+        $('#userPlaninfo').hide();
         $('#btnLogin').prop('disabled', true);
 
         $('#loginInputEmail, #loginInputPassword').keyup(function() {
@@ -41,20 +31,15 @@
             }).then(function(user) {
                 $('#loadingSpinner').hide();
                 socket.emit('user:join', user);
-                //emitSocket.userJoin(user);
-               // console.log("socket io working", emitSocket);
                 window.location = "/";
             }).catch(function(error) {
                 $('#loadingSpinner').hide();
                 $('#loginErrorMessage').text(error.responseText);
             });
         });
-       
-        });
+    });
 </script>
-
 {{> header/login-header}}
-
 <section class="signup_bg">
     <div class="container">
         <div class="row">

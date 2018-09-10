@@ -1,0 +1,9 @@
+<script>
+var popupResponse = "{{{popupResponseData}}}";
+try {
+	window.opener.onPopupClose(popupResponse);
+} catch (error) {
+	alert(error);
+}
+window.close();
+</script>

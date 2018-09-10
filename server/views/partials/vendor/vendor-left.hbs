@@ -1,6 +1,5 @@
 <script>
-	var vendorDetails={{{ DisplayJSON VendorDetail}}}
-	console.log(vendorDetails)
+	var VendorAvgRating={{{ DisplayJSON VendorAvgRating}}}
 </script>
 <div class="vendor-public-left-side">
 	{{#navbarSetting LoggedInUser.Vendor.id selectedPage}}
@@ -17,16 +16,15 @@
 				</tr>
 				<tr>
 					<td><span class="text-muted">User Rating</span></td>
-					
-					{{#if VendorDetail.VendorRatings}}
+					{{#if VendorAvgRating}}
 					<td>
-						{{#each VendorDetail.VendorRatings}}
+						{{#each VendorAvgRating}}
 						<div class="p-rating">
 							{{starCount this.rating}}
 			            </div>
 						<p class="v-rating">
 							<a href="/reviews">
-								<strong>({{this.count}} Ratings - See All)</strong>
+								<strong>({{decimalFixedOne this.rating}} Ratings - See All)</strong>
 							</a>
 								{{!-- <a href="/reviews?vendor_id={{../VendorDetail.id}}">
 								<strong>({{this.count}} Ratings - See All)</strong>
