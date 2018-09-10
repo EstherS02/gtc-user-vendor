@@ -66,12 +66,14 @@
 	}
 
 	function remove(e, index) {
-		console.log($(this))
+		console.log("=================================================",e);
+		console.log("********************************************",index);
 		allFiles.splice(index, 1);
 		$(e).parents(".pip").remove();
 		if (allFiles.length < 6) {
 			$("#productImage").show();
 		}
+		console.log("--------------------------------------",allFiles.length);
 	}
 
 	$(document).ready(function() {
@@ -95,9 +97,9 @@
         });
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}; var dataURLFileName, index = 0, baseImageFileDetails;
+		var fileDetails = {}; var index = 0, baseImageFileDetails;
 
-		$('#crop-profile-image').click(function() {
+		$('#crop-product-image').click(function() {
  
             if (test == 'div.base_image') {
 			   cropper.getCroppedCanvas().toBlob(function(blob) {
@@ -118,7 +120,6 @@
 				fileTempHold['cropperOutputImage'] = blob;
 				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
 				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
-				dataURLFileName = fileTempHold["fileName"];
 				allFiles.push(fileTempHold);
 				if (allFiles.length >= 6) {
 					$("#productImage").hide();
@@ -127,7 +128,7 @@
 
 			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\"/>" +
 				"<i class='fa fa-times productRemoveIcon' onclick='remove(this," + index + ")' aria-hidden='true'></i>	</span>"
 
 			$(domElement).insertAfter(".preview");
@@ -155,10 +156,6 @@
 			if (uploader.files && uploader.files[0]) {
 				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
 				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-
-				console.log(fileDetails, uploader.files[0])
-				$('#UploadedImage').attr('src',
-					window.URL.createObjectURL(uploader.files[0]));
 				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
 				cropperInputImage = document.getElementById('uploaded-profile-picture');
 				$('#profile-picture-modal').modal('show');
@@ -471,7 +468,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="crop-profile-image">Crop Image</button>
+				<button type="button" class="btn btn-primary" id="crop-product-image">Crop Image</button>
 			</div>
 		</div>
 	</div>

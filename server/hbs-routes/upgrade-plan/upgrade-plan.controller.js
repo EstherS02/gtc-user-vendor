@@ -67,15 +67,18 @@ export function upgradeplan(req, res) {
 			});
 		},
 		cards: function (callback) {
+			console.log("userss::"+req.user.id);
             var includeArr = [];
             const offset = 0;
             const limit = null;
             const field = "id";
-            const order = "asc";
-           
-            service.findAllRows("PaymentSetting", includeArr, user_id, offset, limit, field, order)
+			const order = "asc";
+			var queryObjects={};
+			queryObjects.user_id = req.user.id;
+            service.findAllRows("PaymentSetting", includeArr, queryObjects, offset, limit, field, order)
                 .then(function(paymentSetting) {
-                    var paymentSettings = paymentSetting.rows;
+					var paymentSettings = paymentSetting.rows;
+					
                     return callback(null, paymentSettings);
                 }).catch(function(error) {
                     console.log('Error :::', error);
@@ -143,6 +146,7 @@ export function upgradeplan(req, res) {
 		{
 			var userplandetails= "0";
 		}
+		console.log("userdetails111:::"+results.cards);
 		 if (!err) {
 			res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",

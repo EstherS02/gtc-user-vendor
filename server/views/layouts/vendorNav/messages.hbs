@@ -2,8 +2,8 @@
   var userInfo = {{{ DisplayJSON LoggedInUser}}}
   var messenger = {{{ DisplayJSON messenger }}}
   var message_count = {{{ DisplayJSON messages_count }}}
-  console.log("messenger", messenger);
-  console.log("message_count", message_count)
+ // console.log("messenger", messenger);
+//  console.log("message_count", message_count)
   var threadId;
   var to_id = null;
   var onlineUsers = null;
@@ -14,7 +14,7 @@
       "id": e,
       "user": userInfo.id
     }
-    console.log("socketChat", socketChat);
+   // console.log("socketChat", socketChat);
     socket.emit('chat:join', socketChat);
     var formData = {};
     formData.thread_id = e;
@@ -46,7 +46,7 @@
     socket.emit('chat:count', userInfo.id);
 
     var domElementUserName = '';
-    console.log("onlineUsers", onlineUsers);  
+    //console.log("onlineUsers", onlineUsers);  
 
     domElementUserName = domElementUserName + ` <div class="row">
                                 <div class="col-2 avatar"> 
@@ -128,7 +128,7 @@
         'to_id': to_id.id,
         'message': chat,
       }
-      console.log("chat:send", sendSocket);
+      //console.log("chat:send", sendSocket);
       //emitSocket.chatSend(sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
@@ -149,7 +149,7 @@
 
 
     socket.on('user:online', function (users) {
-      console.log("usersonline", users)
+    //  console.log("usersonline", users)
       onlineUsers = users;
       if(to_id && to_id.id != null) {
         if (users.indexOf(to_id.id) > -1) {
@@ -158,7 +158,7 @@
           document.getElementById('on-off').innerHTML = '<p>offline</p>';
         }
       }
-      console.log("onlineUsers", onlineUsers);
+   //   console.log("onlineUsers", onlineUsers);
       
       messenger.forEach(function (element) {
         if (users.indexOf(element.User.id) != -1) {
@@ -179,7 +179,7 @@
 
         messenger.forEach(function (element) {
           if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
-            console.log("its coming in receive");
+           // console.log("its coming in receive");
             if(data.from_id == userInfo.id) {
               document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
             } else {
