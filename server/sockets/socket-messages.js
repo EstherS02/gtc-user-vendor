@@ -22,12 +22,12 @@ export function socketMsg(io) {
 		// id:  user_id}
 		socket.on('user:join', function(user) {
 
-		//	console.log("USER JOIN*******************************", user)
-			socket.join(user.id);
-			socket.userId = user.id;
+			//console.log("USER JOIN*******************************", user)
+			socket.join(user);
+			socket.userId = user;
 			//console.log("****socket.userId", socket.userId);
-			if (userArray.indexOf(user.id) == -1) {
-				userArray.push(user.id);
+			if (userArray.indexOf(user) == -1) {
+				userArray.push(user);
 			} else {
 				console.log("user already connected");
 			}
@@ -91,6 +91,10 @@ export function socketMsg(io) {
 
 			return talkCreate(talk).then(function(result) {
 				//console.log("RESULT", result);
+				talkCount(talk.to_id).then(function(res){
+					console.log("RESULT_____________________", res);
+					io.to(user).emit('chat:count:receive', res);
+				})
 				result.to_id = talk.to_id;
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					return threadArrObj.thread == result.talk_thread_id
@@ -114,6 +118,7 @@ export function socketMsg(io) {
 					//console.log("Two Users are in that room, emitted in that room");
 					io.to(result.talk_thread_id).to(talk.to_id).emit('chat:receive', result);
 				}
+
 			})
 		});
 		

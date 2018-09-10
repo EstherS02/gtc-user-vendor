@@ -63,7 +63,7 @@
     <script>
       $(function(){
 
-        console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
+       // console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
         if({{{ DisplayJSON LoggedInUser.id }}} != null){
           var socketChat = {
             "id": {{{ DisplayJSON talkThreads.threadId }}},
@@ -170,7 +170,7 @@
         'to_id':{{{ DisplayJSON VendorDetail.user_id }}},
         'message': chat
       }
-      console.log("sendSocket",sendSocket);
+      //console.log("sendSocket",sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
   }}

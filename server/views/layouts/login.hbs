@@ -40,7 +40,7 @@
                 password: $('#loginInputPassword').val()
             }).then(function(user) {
                 $('#loadingSpinner').hide();
-                socket.emit('user:join', user);
+                socket.emit('user:join', user.id);
                 //emitSocket.userJoin(user);
                // console.log("socket io working", emitSocket);
                 window.location = "/";
