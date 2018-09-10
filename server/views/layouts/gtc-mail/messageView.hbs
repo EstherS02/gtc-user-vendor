@@ -54,12 +54,10 @@
 										{{formatTime message.created_on "MMM D, YYYY"}}
 									</p>
 								</div>
-							</div>
-							<div class="row justify-content-md-center">
-								<div class="col-sm-8" style="padding:20px;">
-									<div class="row justify-content-md-center">
-										{{{message.message}}}
-									</div>
+							</div><br/>
+							<div class="row">
+								<div class="col-sm-8">
+									{{{message.message}}}
 								</div>
 							</div>
 							<div class="row">
@@ -68,7 +66,6 @@
 									<a href="gtc-mail/compose?id={{message.fromUser.id}}&text={{message.fromUser.first_name}}">Reply</a>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>

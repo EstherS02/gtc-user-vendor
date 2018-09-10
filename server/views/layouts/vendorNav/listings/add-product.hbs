@@ -66,12 +66,14 @@
 	}
 
 	function remove(e, index) {
-		console.log($(this))
+		console.log("=================================================",e);
+		console.log("********************************************",index);
 		allFiles.splice(index, 1);
 		$(e).parents(".pip").remove();
 		if (allFiles.length < 6) {
 			$("#productImage").show();
 		}
+		console.log("--------------------------------------",allFiles.length);
 	}
 
 	$(document).ready(function() {
@@ -95,7 +97,7 @@
         });
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}; var dataURLFileName, index = 0, baseImageFileDetails;
+		var fileDetails = {}; var index = 0, baseImageFileDetails;
 
 		$('#crop-product-image').click(function() {
  
@@ -118,7 +120,6 @@
 				fileTempHold['cropperOutputImage'] = blob;
 				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
 				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
-				dataURLFileName = fileTempHold["fileName"];
 				allFiles.push(fileTempHold);
 				if (allFiles.length >= 6) {
 					$("#productImage").hide();
@@ -127,7 +128,7 @@
 
 			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\"/>" +
 				"<i class='fa fa-times productRemoveIcon' onclick='remove(this," + index + ")' aria-hidden='true'></i>	</span>"
 
 			$(domElement).insertAfter(".preview");
