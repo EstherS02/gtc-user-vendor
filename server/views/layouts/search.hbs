@@ -261,7 +261,9 @@ function redirectBack() {
 										<tr class="d-flex">
 											<td class="col-3">
 												<div class="product-left-col">
+												<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
 													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+													</a>
 												</div>
 											</td>
 											<td class="col-6">
@@ -305,7 +307,9 @@ function redirectBack() {
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
 														<div class="p-rating pull-right">
-															{{starCount product_rating}}
+															<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                                {{starCount product_rating}}
+                                                            </a>
 														</div>
 													</div>
 												</div>
@@ -327,7 +331,9 @@ function redirectBack() {
 								<tr class="d-flex">
 									<td class="col-2">
 										<div class="product-left-col">
+										<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
 											<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+											</a>
 										</div>
 									</td>
 									<td class="col-7">
@@ -366,7 +372,9 @@ function redirectBack() {
 											<div class="prc-bottom">
 												<p>Seller Rating</p>
 												<div class="p-rating pull-right">
-													{{starCount product_rating}}
+													<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                        {{starCount product_rating}}
+                                                    </a>
 												</div>
 											</div>
 										</div>
@@ -379,8 +387,6 @@ function redirectBack() {
 					{{/ifCond}}
 				</div>
 			</div>
-			
-			
 			{{/ifCond}}
 			{{else}}
 			<div class="search-sm-header">
@@ -389,12 +395,16 @@ function redirectBack() {
 						<strong>ALL PRODUCTS </strong>
 					</span>
 				</div>
-				<div style="clear: both;"></div>
 			</div>
 			{{/if}}
-
+			{{#if queryURI.is_featured_product}}
+			{{else}}
+			<div class="search-sm-header"><br></div>
+			{{/if}}
 			<div class="search-list-body">
+
 			{{#if products.count}}
+
 				<div class="row">
 					{{#ifCond layout_type "==" "list"}}
 					{{#each products.rows}}
@@ -404,7 +414,9 @@ function redirectBack() {
 								<tr class="d-flex">
 									<td class="col-2">
 										<div class="product-left-col">
+										<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
 											<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+											</a>
 										</div>
 									</td>
 									<td class="col-7">
@@ -442,7 +454,9 @@ function redirectBack() {
 											<div class="prc-bottom">
 												<p>Seller Rating</p>
 												<div class="p-rating pull-right">
-													{{starCount product_rating}}
+													<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+	                                                    {{starCount product_rating}}
+	                                                </a>
 												</div>
 											</div>
 										</div>
@@ -464,7 +478,9 @@ function redirectBack() {
 										<tr class="d-flex">
 											<td class="col-2">
 												<div class="product-left-col">
+												<a href="/{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" class="text-blue">
 													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+													</a>
 												</div>
 											</td>
 											<td class="col-7">
@@ -509,7 +525,9 @@ function redirectBack() {
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
 														<div class="p-rating pull-right">
-															{{starCount product_rating}}
+															<a href="{{../marketplaceURl}}/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                                {{starCount product_rating}}
+                                                            </a>
 														</div>
 													</div>
 												</div>

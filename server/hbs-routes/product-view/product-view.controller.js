@@ -135,6 +135,9 @@ export function product(req, res) {
 			var order = "desc";
 			var includeArr = [];
 			var field = "created_on";
+			var order = [
+				    sequelize.fn( 'RAND' ),
+				  ];
 			var queryObj = {
 				category_id: categoryID,
 				vendor_id: vendorID,
@@ -147,14 +150,20 @@ export function product(req, res) {
 			};
 			// console.log("-=-=-========================------",queryObj)
 			
-
-			service.findAllRows(productModel, includeArr, queryObj, 0, 9, field, order)
-				.then(function(RelatedProducts) {
-					return callback(null, RelatedProducts);
+			productService.RandomProducts(productModel, queryObj, 9, order)
+				.then(function(response) {
+					return callback(null, response);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+			// service.findAllRows(productModel, includeArr, queryObj, 0, 9, field, order)
+			// 	.then(function(RelatedProducts) {
+			// 		return callback(null, RelatedProducts);
+			// 	}).catch(function(error) {
+			// 		console.log('Error :::', error);
+			// 		return callback(null);
+			// 	});
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{
