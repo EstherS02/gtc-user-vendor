@@ -7,37 +7,37 @@
             </div>
 			<div class="col-sm-10">
 				<div class="ibox">
-				 <div class="ibox-content">
-					 <div class="ibox-title">
-						 <h2>Billing Settings</h2>
-					 </div>
-				 <div class="content-body">
-					 <div class="row">
-						<div class="col-md-12">
-							<p style="font-size: 10px;" class="vend_edit_lists_pstyle">Credit Cards on File</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							{{#each cards}}
-							<div class="row" style="height:44px">
-								<div class="col-md-1">
-									<img src="/img/cc/{{this.card_type}}-128.png" alt="{{this.card_type}}" style="width:100%" />
-								</div>
-								<div class="col-md-3">
-									**** **** **** {{json this.card_details 'last4'}}
-								</div>
-								<div class="col-md-3">
-									Exp {{padZero this.card_details '2' 'true' 'exp_month'}}/{{last2 this.card_details 'true' 'exp_year'}}
-								</div>
-								<div class="col-md-2">
-									{{#if this.is_primary}}(Primary){{/if}}
-								</div>
-								<div class="col-md-2">
-									<a href="#" class="card-delete text_red_color" data-id="{{this.id}}">Delete</a>
+					 <div class="ibox-content">
+						<div class="ibox-title">
+						 	<h2>Billing Settings</h2>
+					 	</div><br/>
+				 		<div class="content-body">
+					 		<div class="row">
+								<div class="col-md-12">
+									<p class="content-txt">Credit Cards on File</p>
 								</div>
 							</div>
-							{{/each}}
+							<div class="row">
+								<div class="col-md-8">
+									{{#each cards}}
+										<div class="row" style="height:44px">
+											<div class="col-md-1">
+												<img src="/img/cc/{{this.card_type}}-128.png" alt="{{this.card_type}}" style="width:100%" />
+											</div>
+											<div class="col-md-3">
+												**** **** **** {{json this.card_details 'last4'}}
+											</div>
+											<div class="col-md-3">
+												Exp {{padZero this.card_details '2' 'true' 'exp_month'}}/{{last2 this.card_details 'true' 'exp_year'}}
+											</div>
+											<div class="col-md-2">
+												{{#if this.is_primary}}(Primary){{/if}}
+												</div>
+											<div class="col-md-2">
+												<a href="#" class="card-delete text_red_color" data-id="{{this.id}}">Delete</a>
+											</div>
+										</div>
+									{{/each}}
 
 							<div style="border: 1px solid #eee;padding: 0 10px 10px 10px;margin-top: 10px;">
 							<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i> Add Card</p>
