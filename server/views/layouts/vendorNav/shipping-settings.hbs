@@ -136,59 +136,92 @@ $(document).ready(function () {
                     <div class="ibox-content">
                         <div class="ibox-title">
                             <h2>Shipping Settings</h2>
+							<br/>
                         </div>
                         <div class="alert" id="gtc-shipping">
-                          <button type="button" class="close" data-dismiss="alert">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <span class="cart-message"></span>
-                    </div>
-                    <div class="content-body">
-                        <select class="payment-selection" name="base_location">
-                            {{#each Countries.rows}} {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
-                            <option value={{this.id}} selected>Base :{{this.name}}</option>
-                            {{else}}
-                            <option value={{this.id}}>{{this.name}}</option>
-                            {{/ifCond}} {{/each}}
-                        </select>
-                        <label class="base-location" for="lacation">The physical location of your business</label>
-                        <div class="col-sm-8 all-coutries" style="height: 300px;">
-                            <h5 class="gtc-title"> Selling Location </h5>
-                            <p style="float: left;font-size: 10px; padding-right: 50px;">select the countries you are able to sell and ship to:</p>
-                            <p style="float: left;font-size: 10px;">select the countries you are able to sell and ship to:</p>
-                            <select class="cuntries" size="4" name="country" id="sellingCountry">
-                                {{#ifCond Countries.count "!=" vendorCountry.count}}
-                                <option value="All">All </option>
-                                {{#if vendorCountry.vendorCountriesID}} {{{countrySelected Countries.rows vendorCountry.vendorCountriesID}}} {{else}} {{#each
-                                Countries.rows}}
-                                <option value={{this.id}}>{{this.name}}</option>
-                                {{/each}} {{/if}} {{/ifCond}}
-                            </select>
-                            <div class="add-remove">
-                                <button class="add-btn" type="submit" onclick="myAdd(this)">ADD</button>
-                                <br>
-                                <button class="remove-btn" type="submit" onclick="myRemove(this)">REMOVE</button>
-                            </div>
-                            <select id="removeCountry" size="4" class="cuntries" name="addedCountry">
-                                {{#if vendorCountry.count}}
-                                <option value="All">All </option>
-                                {{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
-                                {{#each Countries}}
-                                <option value={{this.id}}>{{this.name}}</option>
-                                {{/each}} {{/if}} {{/if}}
-                            </select>
-                        </div>
-                        <hr style="margin-top: 10px;" />
-                        {{!-- <button class="update-btn" style="padding: 5px 20px;" >UPDATE </button> --}}
-                        <button  type="submit" class="ladda-button btn update-btn" data-style="expand-left" onclick="updateFunction(this)" style="border-radius:0px"><span class="ladda-label">Update</span><span class="ladda-spinner"></span></button>
-                        <button  type="reset" class="ladda-button btn cancel-btn" data-style="expand-left" style="border-radius:0px"><span class="ladda-label">Cancel</span><span class="ladda-spinner"></span></button>
+                         	<button type="button" class="close" data-dismiss="alert">
+                            	<span aria-hidden="true">&times;</span>
+                         	</button>
+                        		<span class="cart-message"></span>
+                    	</div>
+						<div class="content-body">
+							<div class="row">
+								<div class="col-lg-4">
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="base_location">
+										{{#each Countries.rows}} {{#ifCond this.id '==' ../LoggedInUser.Vendor.base_location}}
+											<option value={{this.id}} selected>Base :{{this.name}}</option>
+											{{else}}
+											<option value={{this.id}}>{{this.name}}</option>
+											{{/ifCond}} {{/each}}
+									</select>
+								</div>
+								<div class="col-lg-8">
+									<p>
+										<small>The physical location of your business.</small>
+									</p>
+								</div>
+							</div><br/>
+							<div class="row">
+								<div class="col-lg-12 ibox-title">
+									<h2>Selling Location</h2>
+								</div>
+							</div><br/>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="row">
+										<div class ="col-lg-5">
+											<p>
+												<small>Select the countries you are able to sell and ship to:</small>
+											</p>
+										</div>
+										<div class ="col-lg-6">
+											<p>
+												<small>You are willing to sell and ship to these countries:</small>
+											</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class ="col-lg-3">
+											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" size="15" name="country" id="sellingCountry">
+												{{#ifCond Countries.count "!=" vendorCountry.count}}
+												<option value="All">All </option>
+												{{#if vendorCountry.vendorCountriesID}} {{{countrySelected Countries.rows vendorCountry.vendorCountriesID}}} {{else}} {{#each
+												Countries.rows}}
+												<option value={{this.id}}>{{this.name}}</option>
+												{{/each}} {{/if}} {{/ifCond}}
+											</select>
+										</div>
+										<div class="col-lg-2"><br/><br/>
+											<button class="ladda-button btn btn-small btn-muted" type="submit" onclick="myAdd(this)">ADD</button><br/><br/>
+											<button class="ladda-button btn btn-small btn-muted" type="submit" onclick="myRemove(this)">REMOVE</button>
+										</div>
+										<div class ="col-lg-3">
+											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" size="15" name="addedCountry" id="removeCountry">
+												{{#if vendorCountry.count}}
+												<option value="All">All </option>
+												{{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
+												{{#each Countries}}
+												<option value={{this.id}}>{{this.name}}</option>
+												{{/each}} {{/if}} {{/if}}
+											</select>
+										</div>
+									</div>
+								</div>
+							</div><br/><hr/>
+							<button class="ladda-button btn update-btn btn-small btn-muted" onclick="updateFunction(this)" type="submit" data-style="expand-left">
+								<span class="ladda-label">UPDATE</span>
+								<span class="ladda-spinner"></span>
+							</button>
+							<button class="ladda-button btn btn-small btn-muted" type="reset" data-style="expand-left">
+								<span class="ladda-label">CANCEL</span>
+								<span class="ladda-spinner"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}			
 
-                        {{!-- <button class="cancel-btn" style="padding: 5px 20px;">CANCEL </button> --}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-{{> footer/bottom-footer}}

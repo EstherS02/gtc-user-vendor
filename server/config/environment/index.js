@@ -19,6 +19,8 @@ var all = {
 	env: process.env.NODE_ENV,
 
 	baseUrl: process.env.DOMAIN,
+
+	secureBaseURL: process.env.SECURE_BASE_URL || process.env.DOMAIN,
 	// Root path of server
 	root: path.normalize(`${__dirname}/../../..`),
 
@@ -60,8 +62,9 @@ var all = {
 		clientId: process.env.EBAY_CLIENT_ID,
 		clientSecret: process.env.EBAY_CLIENT_SECRET,
 		redirectUri: process.env.EBAY_REDIRECT_URI,
-		inventoryItems: 'https://api.sandbox.ebay.com/sell/inventory/v1/inventory_item',
-		authURL: 'https://api.sandbox.ebay.com/identity/v1/oauth2/token'
+		entriesPerPage: 100,
+		authURL: 'https://api.ebay.com/identity/v1/oauth2/token',
+		sellerListURL: 'https://api.ebay.com/ws/api.dll'
 	},
 
 	//Email
@@ -104,20 +107,31 @@ var all = {
 	},
 
 	googleLogin: {
-		googleClientId: process.env.GOOGLE_CLIENT_ID,
-		googleClientSecret: process.env.GOOGLE_CLIENT_SECRET_KEY,
-		googleAccessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
-		googlePeopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
+		clientId: process.env.GOOGLE_CLIENT_ID,
+		secretKey: process.env.GOOGLE_SECRET_KEY,
+		accessTokenUrl: 'https://accounts.google.com/o/oauth2/token',
+		peopleApiUrl: 'https://www.googleapis.com/plus/v1/people/me/openIdConnect'
 	},
-
-	loginFaceBook: {
-		fbClientId: process.env.FB_CLIENT_ID,
-		fbClientSecret: process.env.FB_CLIENT_SECRET_KEY,
-		fbFields: ['id', 'email', 'first_name', 'last_name', 'link', 'name'],
-		fbAccessTokenUrl: 'https://graph.facebook.com/v2.7/oauth/access_token',
-		fbGraphApiUrl: 'https://graph.facebook.com/v2.7/me?fields='
+	facebookLogin: {
+		clientId: process.env.FACEBOOK_CLIENT_ID,
+		secretKey: process.env.FACEBOOK_SECRET_KEY,
+		accessTokenUrl: 'https://graph.facebook.com/oauth/access_token',
+		peopleApiUrl: 'https://graph.facebook.com/me?fields=',
+		fields: ['id', 'email', 'first_name', 'last_name', 'link', 'name']
 	},
-
+	linkedInLogin: {
+		clientId: process.env.LINKEDIN_CLIENT_ID,
+		secretKey: process.env.LINKEDIN_SECRET_KEY,
+		accessTokenUrl: 'https://www.linkedin.com/uas/oauth2/accessToken',
+		peopleApiUrl: 'https://api.linkedin.com/v1/people/~:(id,first-name,last-name,picture-url,email-address)?format=json'
+	},
+	twitterLogin: {
+		clientId: process.env.TWITTER_CLIENT_ID,
+		secretKey: process.env.TWITTER_SECRET_KEY,
+		requestTokenUrl: "https://api.twitter.com/oauth/request_token",
+		accessTokenUrl: "https://api.twitter.com/oauth/access_token",
+		peopleApiUrl: "https://api.twitter.com/1.1/account/verify_credentials.json"
+	},
 	mysql: {
 		host: process.env.MYSQL_HOST,
 		database: process.env.MYSQL_DATABASE,
