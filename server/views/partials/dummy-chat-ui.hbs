@@ -63,7 +63,7 @@
     <script>
       $(function(){
 
-        console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
+       // console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
         if({{{ DisplayJSON LoggedInUser.id }}} != null){
           var socketChat = {
             "id": {{{ DisplayJSON talkThreads.threadId }}},
@@ -154,6 +154,7 @@
   // send function start
 
   function send() {
+    var userInfo = {{{ DisplayJSON LoggedInUser }}};
     var chat = $("#btn-input").val();
 
     var dt = new Date();
@@ -169,10 +170,9 @@
         'to_id':{{{ DisplayJSON VendorDetail.user_id }}},
         'message': chat
       }
-      console.log("sendSocket",sendSocket);
+      //console.log("sendSocket",sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
-      socket.emit('chat:count', userInfo.id);
   }}
   // send function end
   $("#btn-chat").click(function () {

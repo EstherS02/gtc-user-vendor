@@ -16,8 +16,6 @@
 			}
 		}
 	}
-</script>
-<script type="text/javascript">
 	function CartUpdate(e) {
 		let allCartInfo = {};
 
@@ -52,7 +50,7 @@
 
 	function remove(e) {
 		var chkArray = [];
-		$(':checkbox:checked').each(function (i) {
+		$(':checkbox:checked').each(function(i) {
 			if ($(this).val() != 'on') {
 				chkArray.push($(this).val());
 			}
@@ -63,10 +61,10 @@
 				url: '/api/wishlist/remove',
 				contentType: "application/json",
 				data: JSON.stringify(chkArray),
-				success: function (data, text) {
+				success: function(data, text) {
 					location.reload();
 				},
-				error: function (request, status, error) {
+				error: function(request, status, error) {
 					console.log('request', request);
 					console.log('status', status);
 				}
@@ -80,10 +78,10 @@
 		$.ajax({
 			type: 'GET',
 			url: '/api/wishlist/delete',
-			success: function (data, text) {
+			success: function(data, text) {
 				location.reload();
 			},
-			error: function (request, status, error) {
+			error: function(request, status, error) {
 				console.log('request', request);
 				console.log('status', status);
 			}
@@ -99,6 +97,9 @@
 			$("#inputQuantity").val(availableProductQuantity);
 		}
 	}
+	$(document).ready(function() {
+		$("#gtc-wishlist-alert").hide();
+	})
 
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
@@ -114,152 +115,147 @@
 						<div class="ibox-title">
 							<h2>My Wishlist</h2>
 						</div>
+						<br/>
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-6">
-									<input type="submit" value="REMOVE" onclick="remove(this)" class="btn btn-small btn-muted" {{#ifCond wishlist.length "==" 0}}disabled="true" {{/ifCond}}/>
+									<input type="submit" value="REMOVE" onclick="remove(this)" class="btn btn-small btn-muted" {{#ifCond wishlist.length "==" 0}}
+									 disabled="true" {{/ifCond}} />
 								</div>
 								<div class="col-md-6">
-									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small btn-muted float-right bg4" {{#ifCond wishlist.length "==" 0}}disabled="true" {{/ifCond}} />
+									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small btn-muted float-right bg4" {{#ifCond wishlist.length "==" 0}}
+									 disabled="true" {{/ifCond}} />
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
+								<div class="col-sm-12">
+									<div class="alert" id="gtc-wishlist-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="wishlist-message"></span>
+									</div>
+									<div class="cart-top-header">
+										<div class="alignleft cart-top-left">
+											<span class="m-r-sm text-muted">{{this.count}} items total</span>
+										</div>
+										<div class="alignright cart-top-right">
+											<span class="m-r-sm text-muted">
+												Entries per page :
+												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="wishlist?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+											</span>
+										</div>
+										<div style="clear: both;"></div>
+									</div>
 								</div>
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle float-right">Entries per page:
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
-									</p>
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th>
+														{{#ifCond wishlist.length "!=" 0}}
+															<input type="checkbox" onclick="selectAll(this);">
+														{{/ifCond}}
+													</th>
+													<th>Product Name</th>
+													<th>Store Name</th>
+													<th>Available</th>
+													<th>Type</th>
+													<th>price</th>
+													<th>Add to Cart</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#if wishlist}}
+													{{#each wishlist}}
+														<tr>
+															<td>
+																<input type="checkbox" value="{{this.id}}">
+															</td>
+															<td class="text_blue_color">
+																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" />
+																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
+															</td>
+															<td class="text_blue_color">
+																<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.User.first_name}} {{this.Product.Vendor.User.last_name}}</a>
+															</td>
+															{{#if this.Product.quantity_available}}
+																<td class="text_green_color" style="font-size: 20px;">
+																	<i class="fas fa-check-circle"></i>
+																</td>
+															{{else}}
+																<td class="text_orange_color" style="font-size: 20px;">
+																	<i class="fas fa-exclamation-circle"></i>
+																</td>
+															{{/if}} {{!-- Type --}}
+															{{#ifCond this.Product.marketplace_id "==" 1}}
+																<td>Wholesale</td>
+																{{else ifCond this.Product.marketplace_id "==" 2}}
+																<td>Retail</td>
+																{{else ifCond this.Product.marketplace_id "==" 3}}
+																<td>Service</td>
+																{{else ifCond this.Product.marketplace_id "==" 4}}
+																<td>Lifestyle</td>
+															{{/ifCond}} {{!--End Type --}}
+															<td class="text_black_color">{{currency this.Product.price '$'}}</td>
+															<input type="hidden" id="product_id{{this.id}}" name="product_id" value="{{this.product_id}}">{{!--
+															<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
+															<td class="text_blue_color">
+																<input type="number" name="product_quantity" id="inputQuantity{{this.id}}" min="1" max="{{this.Product.quantity_available}}"
+																 placeholder="1" onchange="quantityCheck(this)">{{!-- <a href="#"> --}}
+																{{!-- Update </a> --}}
+															</td>
+															<td class="text_blue_color ">
+																<i class="fas fa-credit-card" onclick="CartUpdate({{this.id}})">
+																	<a href="javascript:;"> Add to cart </a>
+																</i>
+															</td>
+														</tr>
+													{{/each}}
+												{{else}}
+													<tr>
+														<td></td>
+														<td></td>
+														<td> No Data Found</td>
+														<td colspan=6></td>
+													</tr>
+												{{/if}}
+											</tbody>
+										</table>
+									</div>
+									{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+													<li class="page-item">
+														<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+													</li>
+												{{/unless}}
+												{{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="../wishlist?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+													</li>
+												{{/each}}
+												{{#unless endAtLastPage}}
+													<li class="page-item">
+														<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+													</li>
+												{{/unless}}
+											</ul>
+										</nav>
+									{{/pagination}}
 								</div>
 							</div>
-							<div class="row">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>{{#ifCond wishlist.length "!=" 0}}
-												<input type="checkbox" onclick="selectAll(this);">
-												{{/ifCond}}
-											</th>
-											<th>Product Name</th>
-											<th>Store Name</th>
-											<th>Available</th>
-											<th>Type</th>
-											<th>price</th>
-											<th>Add to Cart</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										{{#if wishlist}}
-										{{#each wishlist}}
-										<tr>
-											<td>
-												<input type="checkbox" value="{{this.id}}">
-											</td>
-											<td class="text_blue_color">
-												<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" />
-												<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
-											</td>
-											<td class="text_blue_color">
-												<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.User.first_name}} {{this.Product.Vendor.User.last_name}}</a>
-											</td>
-											{{#if this.Product.quantity_available}}
-											<td class="text_green_color" style="font-size: 20px;">
-												<i class="fas fa-check-circle"></i>
-											</td>
-											{{else}}
-											<td class="text_orange_color" style="font-size: 20px;">
-												<i class="fas fa-exclamation-circle"></i>
-											</td>
-											{{/if}} {{!-- Type --}} {{#ifCond this.Product.marketplace_id "==" 1}}
-											<td>Wholesale</td>
-											{{else ifCond this.Product.marketplace_id "==" 2}}
-											<td>Retail</td>
-											{{else ifCond this.Product.marketplace_id "==" 3}}
-											<td>Service</td>
-											{{else ifCond this.Product.marketplace_id "==" 4}}
-											<td>Lifestyle</td>
-											{{/ifCond}} {{!--End Type --}}
-											<td class="text_black_color">{{currency this.Product.price '$'}}</td>
-											<input type="hidden" id="product_id{{this.id}}" name="product_id" value="{{this.product_id}}"> {{!--
-											<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
-											<td class="text_blue_color">
-												<input type="number" name="product_quantity" id="inputQuantity{{this.id}}" min="1" max="{{this.Product.quantity_available}}" placeholder="1" onchange="quantityCheck(this)">
-												{{!-- <a href="#"> --}}
-													{{!-- Update </a> --}}
-											</td>
-											<td class="text_blue_color ">
-												<i class="fas fa-credit-card" onclick="CartUpdate({{this.id}})">
-													<a href="javascript:;"> Add to cart </a>
-												</i>
-											</td>
-										</tr>
-										{{/each}}
-										{{else}}
-										<tr>
-											<td></td>
-											<td></td>
-											<td> No Data Found</td>	
-											<td colspan=6></td>
-										</tr>
-										{{/if}}
-									</tbody>
-								</table>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle">{{this.count}} items total</p>
-								</div>
-								<div class="col-md-6">
-									<p class="vend_edit_lists_pstyle float-right">Entries per page:
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-										<a href="/wishlist?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
-									</p>
-								</div>
-							</div>
-							{{!-- Pagination starts --}}
-				  	{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
-				  	<div class="row">
-				  		<div class="col-md-3">
-				  		</div>
-				  		<div class="col-md-7">
-				  			{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-				  			<nav aria-label="Page navigation example">
-				  				<ul class="pagination justify-content-center">
-				  					{{#unless startFromFirstPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-				  					</li>
-				  					{{/unless}} {{#each pages}}
-				  					<li class="page-item {{#if isCurrent}} active {{/if}}">
-				  						<a class="page-link" href="../wishlist?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-				  					</li>
-				  					{{/each}} {{#unless endAtLastPage}}
-				  					<li class="page-item">
-				  						<a class="page-link" href="../wishlist?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-				  					</li>
-				  					{{/unless}}
-				  				</ul>
-				  			</nav>
-				  			{{/pagination}}
-				  		</div>
-				  	</div>
-				  	{{!-- {{/ifCond}} --}}
-				  	{{!-- Pagination Ends --}}
 						</div>
 					</div>
-
 				</div>
 			</div>
-		
 		</div>
-
 	</div>
 </div>
 {{> footer/bottom-footer}}

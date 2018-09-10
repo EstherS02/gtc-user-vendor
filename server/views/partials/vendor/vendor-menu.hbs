@@ -35,31 +35,33 @@
         </div>
     </div>
 </div>
-{{/if}}
 
 <script type="text/javascript">
     $( document ).ready(function() {
-        var userInfo = {{{ DisplayJSON LoggedInUser}}}
+          $('#msg-count').hide();
+       // var userInfo = {{{ DisplayJSON LoggedInUser}}}
          $.ajax({
             type: 'GET',
             url: '/api/talk/talk-count',
             success: function (data) {
               //  console.log("data", data.length);   
+              if(data.length > 0) {
+                $('#msg-count').show();
                 document.getElementById('msg-count').innerHTML = data.length; 
+              }
             },
             error: function (error) {
                 console.log(error);
             }
         })
-        
-        var timer = setTimeout(function() {
-            
+         socket.on('connect', () => {
             socket.on('chat:count:receive', function(result){
-              //  console.log("chat Receive count", result);
-                //  document.getElementById("count").innerHTML = result;
+                //console.log("chat:count:receive", result);
                  document.getElementById('msg-count').innerHTML = result; 
             }) 
-        }, 1000);
+         })
     });
     
 </script>
+{{/if}}
+
