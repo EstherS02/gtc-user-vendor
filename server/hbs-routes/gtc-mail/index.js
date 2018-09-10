@@ -14,7 +14,7 @@ var deletedCtrl = require('./deleted/deleted.controller');
 
 
 router.get('/inbox', auth.isAuthenticated(), inboxCtrl.inbox);
-router.get('/:view/:id', auth.isAuthenticated(), inboxCtrl.message);
+router.get('/:path/:id', auth.isAuthenticated(), inboxCtrl.message);
 router.get('/sent', auth.isAuthenticated(), sentCtrl.sent);
 router.get('/drafts', auth.isAuthenticated(), draftsCtrl.drafts);
 router.get('/deleted', auth.isAuthenticated(), deletedCtrl.deleted);
