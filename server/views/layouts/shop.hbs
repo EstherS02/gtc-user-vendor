@@ -49,7 +49,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each retailers}}
+						{{#each retailers.rows}}
 						<div class="col-md-6">
 							<div class="product-body">
 								<div class="table-responsive">
@@ -87,7 +87,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																</div>
 																<div class="col-md-7 col-7 no-padding">
 																	<div class="v-rating">
-																		{{starCount rating}}
+																		{{starCount avg_rating}}
 																	</div>
 																</div>
 															</div>
