@@ -13,7 +13,9 @@
         }
         
     </script>
-
+    <script type="text/javascript">
+         var userId = {{{DisplayJSON LoggedInUser.id}}};
+    </script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,9 +63,9 @@
     <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
      <script type="text/javascript" src="plugins/handlebars-v4.0.11.js"></script>
     <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/sockets.js"></script> 
     <script src="plugins/toaster/toastr.min.js"></script>
      <script src="plugins/socketio/socket.io.js"></script>
-    <script type="text/javascript" src="js/sockets.js"></script> 
 </head>
 
 <body>
@@ -85,7 +87,6 @@
     <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
     <script src="plugins/magnific-popup/custom-magnific-popup.js"></script>
     <script src="plugins/lodash/lodash.min.js"></script>
-    <script src="plugins/socketio/socket.io.js"></script>
     {{!-- <script src="../../../config/environment"></script> --}}
     <script src="plugins/cropperjs/cropper.min.js"></script>
     <script src="plugins/notifyjs/notify.min.js"></script>
@@ -95,29 +96,31 @@
     <script src="plugins/ladda/customLadda.js"></script>
     <script src="plugins/moment/moment.min.js"></script>
     <script type="text/javascript" src="plugins/summernote/summernote-bs4.min.js"></script>
-
+    <!--<script type="text/javascript">
+        var userInfo = {{{DisplayJSON LoggedInUser}}};
+        console.log("emitSocket",emitSocket);
+        console.log("SOCKET OUT", socket);
+       // emitSocket.userJoin(userInfo);
+        var timer = setTimeout(function() {
+            if (userInfo && userInfo.id != null) {
+                console.log("SOCKET INNNN", socket);
+                socket.emit('user:join', userInfo);
+            }
+            socket.on('chat:receive', function(data) {
+                if (userInfo.id != data.from_id) {
+                    console.log("user room emitting..", data);
+                    toastr.options.closeButton = true;
+                    toastr.options.showEasing = 'easeOutBounce';
+                    toastr.options.showMethod = 'slideDown';
+                    toastr.options.progressBar = true;
+                    toastr.options.closeMethod = 'slideUp'
+                    toastr.info(data.message, data.User.first_name, {
+                        timeOut: 3000
+                    });
+                }
+            })
+        }, 1000);
+    </script>-->
 </body>
 
 </html>
-</script>
-<!-- <button type="button" class="btn btn-primary" id="showtoast">Show Toast</button> -->
-<script type="text/javascript">
-var userInfo = {{{DisplayJSON LoggedInUser}}};
-var timer = setTimeout(function() {
-    if(userInfo && userInfo.id != null) {
-      //  console.log("{{{ DisplayJSON LoggedInUser.id }}}", {{{ DisplayJSON LoggedInUser }}});
-        socket.emit('user:join', userInfo);    
-    }
-    socket.on('chat:receive', function(data){
-    if(userInfo.id != data.from_id) {
-        console.log("user room emitting..", data);
-        toastr.options.closeButton = true;
-        toastr.options.showEasing = 'easeOutBounce';
-        toastr.options.showMethod = 'slideDown';
-        toastr.options.progressBar = true;
-        toastr.options.closeMethod = 'slideUp'
-        toastr.info(data.message,data.User.first_name, {timeOut: 3000});
-        }     
-    }) 
-}, 1000);
-</script>

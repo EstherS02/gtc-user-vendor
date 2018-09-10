@@ -275,13 +275,11 @@
 												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Browse</label>
 											{{/if}}
 										</div>
-										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalId" style="border-radius:3px;top:-2px">
-											<span class="ladda-label">Upload</span>
+                                        <button class="ladda-button btn btn-small btn-muted" type="button" id="personalId" data-style="expand-left">
+											<span class="ladda-label">SUBMIT</span>
 											<span class="ladda-spinner"></span>
 										</button>
 									</div>
-
-
 									{{#if verification.personal_id_verification_file_link }}
 										<img id="img1_old" src="{{verification.personal_id_verification_file_link}}" alt="your image" class="verification-id" style="object-fit: contain;"
 										/> {{/if}}
@@ -330,8 +328,8 @@
 											{{/if}}
 
 										</div>
-										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="personalAddress" style="border-radius:3px;top:-2px">
-											<span class="ladda-label">Upload</span>
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="personalAddress" data-style="expand-left">
+											<span class="ladda-label">SUBMIT</span>
 											<span class="ladda-spinner"></span>
 										</button>
 									</div>
@@ -390,8 +388,8 @@
 											{{/if}}
 
 										</div>
-										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessId" style="border-radius:3px;top:-2px">
-											<span class="ladda-label">Upload</span>
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="businessId" data-style="expand-left">
+											<span class="ladda-label">SUBMIT</span>
 											<span class="ladda-spinner"></span>
 										</button>
 									</div>
@@ -442,8 +440,8 @@
 												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Browse</label>
 											{{/if}}
 										</div>
-										<button type="button" class="ladda-button btn update-btn1" data-style="expand-left" id="businessAddress" style="border-radius:3px;top:-2px">
-											<span class="ladda-label">Upload</span>
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="businessAddress" data-style="expand-left">
+											<span class="ladda-label">SUBMIT</span>
 											<span class="ladda-spinner"></span>
 										</button>
 									</div>
@@ -465,37 +463,38 @@
 											<i class="fas fa-exclamation-circle"></i>
 										</span>You haven't submitted this yet.
 									</p>
-									<p class="verfication_para">Connect with one of the following accounts to prove you have ownership of at least social media profile</p>
+									<p>
+										<small>Connect with one of the following accounts to prove you have ownership of at least social media profile</small>
+									</p>
 									<div class="col-md-10">
-										<button class="connect-with-social-medias" type="button" id="gtcVerficationFbLogin">
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationFbLogin">
 											<i class="fab fa-facebook-f" style="padding-right: 10px;"></i>
 											CONNECT WITH FACEBOOK
 										</button>
-										<button class="connect-with-social-medias" type="button" id="gtcVerficationLinkedLogin">
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationLinkedLogin">
 											<i class="fab fa-linkedin-in" style="padding-right: 10px;"></i>
 											CONNECT WITH LINKEDIN
 										</button>
-										<button class="connect-with-social-medias" type="button" id="gtcVerficationTwitterLogin">
+										<button class="ladda-button btn btn-small btn-muted" type="button" id="gtcVerficationTwitterLogin">
 											<i class="fab fa-twitter" style="padding-right: 10px;"></i>
 											CONNECT WITH TWITTER
 										</button>
 									</div>
-									<hr style="margin-top: 25px;">
+								<hr/>
 								</div>
-								<div class="col-md-4" style="padding-bottom: 30px;">
-									{{!-- <button class="update-btn" id="uploadDocs" type="submit">Update</button> --}}
-									<button disabled type="submit" class="ladda-button btn update-btn" data-style="expand-left" id="uploadDocs" style="border-radius:0px;cursor:not-allowed;">
-										<span class="ladda-label">SUBMIT</span>
-										<span class="ladda-spinner"></span>
-									</button>
-
-									<button type="reset" id="resetForm" class="ladda-button btn cancel-btn" data-style="expand-left" style="border-radius:0px">
-										<span class="ladda-label">Cancel</span>
-										<span class="ladda-spinner"></span>
-									</button>
-									{{!-- <button class="cancel-btn" type="reset">Cancel</button> --}}
+                                <div class="row">
+									<div class="col-md-12">
+										<button class="ladda-button btn update-btn btn-small btn-muted" disabled type="submit" data-style="expand-left" id="uploadDocs" >
+											<span class="ladda-label">UPDATE</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" data-style="expand-left" id="resetForm">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
 								</div>
-							</form>
+ 							</form>
 						</div>
 					</div>
 				</div>

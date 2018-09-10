@@ -10,10 +10,10 @@ var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
 
+
     /* Server REST API Routes */
     app.post('/auth/admin-token', require('./admin-auth'));
     app.post('/auth/token', require('./auth'));
-    app.use('/api/auth/twitter', require('./api/social-login-auth'));
     app.use('/api/admin-auth', require('./api/admin-auth'));
     app.use('/api/auth', require('./api/auth'));
     app.use('/api/cart', require('./api/cart'));
@@ -24,6 +24,7 @@ export default function(app) {
     app.use('/api/upgrade-plan', require('./api/upgrade-plan'));
     app.use('/api/product-view', require('./api/product-view'));
     app.use('/api/mail', require('./api/mail'));
+    app.use('/api/talk', require('./api/talk'));
     app.use('/api/users', require('./api/users'));
     app.use('/api/tickets', require('./api/ticket'));
     app.use('/api/ticket-threads', require('./api/ticket-thread'));
@@ -39,12 +40,8 @@ export default function(app) {
     app.use('/api/shipping-setting', require('./api/shipping-setting'));
     app.use('/api/reports', require('./api/reports'));
     app.use('/api/export-csv', require('./api/export-csv'));
-    app.use('/api/paypal', require('./api/paypal'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
-    app.post('/auth/fb', controller.facebookLogin);
-    app.post('/auth/linkedin', controller.linkedInLogin);
-    app.post('/auth/twitter', controller.twitterLogin);
 
     /* Handlerbars routes */
     app.use('/', require('./hbs-routes/homePage'));
@@ -90,7 +87,7 @@ export default function(app) {
     app.use('/order-checkout', require('./hbs-routes/checkout'));
     app.use('/user-join', require('./hbs-routes/user-join'));
 
-    app.use('/:vendorType(wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
+    app.use('/:vendorType(sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
 
     //should be last route
     app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/product-view'));

@@ -414,7 +414,7 @@
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>
 											<input id="product-quantity-{{compareProducts.[0].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"
-											 placeholder="1" value="{{compareProducts.[0].moq}}" min="{{compareProducts.[0].moq}}" max="{{compareProducts.[0].quantity_available}}">
+											 placeholder="1"  {{#if compareProducts.[0].moq }} value="{{compareProducts.[0].moq}}" min="{{compareProducts.[0].moq}}" {{else}} value="1" min="1"{{/if}} max="{{compareProducts.[0].quantity_available}}">
 											{{#ifCond compareProducts.[0].marketplace_type_id '==' '1'}}
 												<a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[0].id}})" class="btn btn-sm add-bag-btn">
 													<svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
@@ -469,7 +469,7 @@
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>
 											<input id="product-quantity-{{compareProducts.[1].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"
-											 placeholder="1" value="{{compareProducts.[1].moq}}" min="{{compareProducts.[1].moq}}" max="{{compareProducts.[1].quantity_available}}">
+											 placeholder="1"    {{#if compareProducts.[1].moq }} value="{{compareProducts.[1].moq}}" min="{{compareProducts.[1].moq}}" {{else}} value="1" min="1"{{/if}} max="{{compareProducts.[1].quantity_available}}">
 											{{#ifCond compareProducts.[1].marketplace_type_id '==' '1'}}
 												<a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[1].id}})" class="btn btn-sm add-bag-btn">
 													<svg width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
@@ -525,7 +525,7 @@
 										<div class="add-to-bag">
 											<label class="text-light-muted">Qty: </label>
 											<input id="product-quantity-{{compareProducts.[2].id}}" type="number" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57"
-											 placeholder="1" value="{{compareProducts.[2].moq}}" min="{{compareProducts.[2].moq}}" max="{{compareProducts.[2].quantity_available}}">
+											 placeholder="1"   {{#if compareProducts.[2].moq }} value="{{compareProducts.[2].moq}}" min="{{compareProducts.[2].moq}}" {{else}} value="1" min="1"{{/if}} max="{{compareProducts.[2].quantity_available}}">
 
 											{{#ifCond compareProducts.[2].marketplace_type_id '==' '1'}}
 												<a href="javascript:;" onclick="gtcAddToCart({{compareProducts.[2].id}})" class="btn btn-sm add-bag-btn">
@@ -721,6 +721,7 @@
 				</div>
 			{{/if}}
 		</div>
+		{{#if RelatedProducts}}
 		<div class="marketplace-type-bg m-t"></div>
 		<div class="marketplace-type-headers">
 			<div class="row no-margins">
@@ -739,13 +740,15 @@
 											<tr class="d-flex">
 												<td class="col-2">
 													<div class="product-left-col">
+													<a href="{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.id}}">
 														<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+														</a>
 													</div>
 												</td>
 												<td class="col-7">
 													<div class="product-middle-col">
 														<h3>
-															<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTS - {{this.product_name}}</a>
+															<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
 														</h3>
 														<div class="row no-margins">
 															<div class="col-md-4 col-4 no-padding">
@@ -758,7 +761,7 @@
 																<span>Category</span>
 															</div>
 															<div class="col-md-8 col-8 no-padding overflow-txt">
-																<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}}
+																<a class="text-500" href="products/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}}
 																	> {{this.sub_category_name}}</a>
 															</div>
 															<div class="col-md-4 col-4 no-padding">
@@ -795,6 +798,9 @@
 				</div>
 			</div>
 		</div>
+		{{/if}}
+	</div>
+</div>
 
 		
 		{{> footer/bottom-footer}}

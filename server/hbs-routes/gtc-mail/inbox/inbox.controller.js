@@ -134,7 +134,7 @@ export function inbox(req, res) {
 
 
 export function message(req, res) {
-	var LoggedInUser = {}, queryObj = {}, bottomCategory = {}, mail_id;
+	var LoggedInUser = {}, queryObj = {}, bottomCategory = {}, mail_id, path;
 	var includeArr = [], messageArr = [];
 	var mailModal = "Mail";
 	var messageUserModel = "UserMail";
@@ -144,6 +144,9 @@ export function message(req, res) {
 
 	if (req.params.id)
 		mail_id = req.params.id;
+
+	if (req.params.path)
+		path = req.params.path;
 
 	messageArr = [
 		{
@@ -222,7 +225,7 @@ export function message(req, res) {
 					cartheader: results.cartCounts,
 					message: results.message,
 					messageUserId: results.messageUserId,
-					selectedPage: 'inbox',
+					selectedPage: path,
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
 				});

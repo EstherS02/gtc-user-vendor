@@ -1,20 +1,24 @@
 <script type="text/javascript">
   var userInfo = {{{ DisplayJSON LoggedInUser}}}
   var messenger = {{{ DisplayJSON messenger }}}
-  console.log("messenger", messenger);
+  var message_count = {{{ DisplayJSON messages_count }}}
+ // console.log("messenger", messenger);
+//  console.log("message_count", message_count)
   var threadId;
   var to_id = null;
   var onlineUsers = null;
+  
   function getConversations(e) {
     threadId = e;
     var socketChat = {
       "id": e,
       "user": userInfo.id
     }
-    console.log("socketChat", socketChat);
+   // console.log("socketChat", socketChat);
     socket.emit('chat:join', socketChat);
     var formData = {};
     formData.thread_id = e;
+    $("#count" + e).hide();
     $.ajax({
       type: 'POST',
       url: '/api/gtc-talk/chat-conversation',
@@ -39,11 +43,10 @@
   function chatPage(result) {
     var domElement = '';
     var time = '';
-    
+    socket.emit('chat:count', userInfo.id);
+
     var domElementUserName = '';
-    console.log("onlineUsers", onlineUsers);
-    
-    
+    //console.log("onlineUsers", onlineUsers);  
 
     domElementUserName = domElementUserName + ` <div class="row">
                                 <div class="col-2 avatar"> 
@@ -56,9 +59,9 @@
                               </div>`;
     document.getElementById('chatUserName').innerHTML = domElementUserName;
     if(onlineUsers.indexOf(to_id.id) > -1) {
-      document.getElementById('on-off').innerHTML = 'online';
+      document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
     } else {
-      document.getElementById('on-off').innerHTML = 'offline';
+      document.getElementById('on-off').innerHTML = '<p>offline</p>';
     }
     result.forEach(function (element) {
       console.log("element",element);
@@ -83,7 +86,7 @@
       				</div>
       				<p>` + element.message +`</p>
       			</div>
-		 </li>`;
+		     </li>`;
       }
     });
     $('.chats').attr('id', threadId);        
@@ -122,10 +125,10 @@
         'from_id': userInfo.id,
         'from_name':userInfo.first_name,
         'talk_thread_id': threadId,
-        'to_id': to_id,
+        'to_id': to_id.id,
         'message': chat,
       }
-      console.log("chat:send", sendSocket);
+      //console.log("chat:send", sendSocket);
       //emitSocket.chatSend(sendSocket);
       socket.emit('chat:send', sendSocket);
       $('#btn-input').val('');
@@ -134,17 +137,29 @@
 
   $(document).ready(function () {
    
+    messenger.forEach(function(element) {
+      message_count.forEach(function(msgCount) {
+        if (element.thread_id == msgCount.talk_thread_id && element.user_id != userInfo.id) {
+          document.getElementById("count" + element.thread_id).innerHTML =
+            `<strong><p class="count"> ` + msgCount.count + `</p></strong>`;
+        }
+      })
+    })
+
+
+
     socket.on('user:online', function (users) {
-      console.log("usersonline", users)
+    //  console.log("usersonline", users)
       onlineUsers = users;
       if(to_id && to_id.id != null) {
         if (users.indexOf(to_id.id) > -1) {
-          document.getElementById('on-off').innerHTML = 'online';
+          document.getElementById('on-off').innerHTML = '<p style="color: green">online</p>';
         } else {
-          document.getElementById('on-off').innerHTML = 'offline';
+          document.getElementById('on-off').innerHTML = '<p>offline</p>';
         }
       }
-      console.log("onlineUsers", onlineUsers);
+   //   console.log("onlineUsers", onlineUsers);
+      
       messenger.forEach(function (element) {
         if (users.indexOf(element.User.id) != -1) {
           document.getElementById("online" + element.User.id).innerHTML =
@@ -154,6 +169,7 @@
             `<i class="off b-white top" style="border: white"></i>`;
         }
       })
+
     })
 
     var commonInfo, base, base1, time;
@@ -162,19 +178,15 @@
     socket.on('chat:receive', function(data) {
 
         messenger.forEach(function (element) {
-          console.log("element iterating", element);
-          console.log("userInfo", userInfo)
-          console.log("data.from_id", data.from_id);
-          console.log("data.to_id", data.to_id);
-          
           if ([data.from_id, data.to_id].indexOf(element.User.id) > -1) {
-          
+           // console.log("its coming in receive");
             if(data.from_id == userInfo.id) {
               document.getElementById("lastMsg" + element.User.id).innerHTML = data.message ;              
             } else {
               document.getElementById("lastMsg" + element.User.id).innerHTML = `<strong> `+ data.message +`<strong>` ;
+               document.getElementById("count" + element.thread_id).innerHTML =
+                `<strong><p class="msg-receive">  New Message </p></strong>`;
             }
-          
           }
         })
 
@@ -280,18 +292,27 @@
                                 </span>
                                 <div class="messager-name" style="display: flex">
                                   <strong>{{this.User.first_name}} {{#if this.User.last_name}}{{this.User.last_name}} {{/if}}</strong>
+                                   <span><small id="count{{this.thread_id}}"></small></span>
                                   <span
                                     class="m-l-sm"></span>
                                 </div>
                                 <div class="last-messager text-muted" id="lastMsg{{this.User.id}}">
                                   {{#if this.TalkThread.Talks}}
-                                      {{#ifCond this.TalkThread.Talks.[0].is_read "==" 0}}
-                                        <p><strong>{{this.TalkThread.Talks.[0].message}}</strong></p>
+                                      {{#ifCond this.TalkThread.Talks.[0].is_read "==" 0 }}
+                                          {{#ifCond this.TalkThread.Talks.[0].from_id "==" ../LoggedInUser.id}}
+                                            <p>{{this.TalkThread.Talks.[0].message}}</p>
+                                          {{else}}
+                                            <p><strong>{{this.TalkThread.Talks.[0].message}}</strong></p>
+                                          {{/ifCond}} 
                                         {{else}}
-                                        <p><small>{{this.TalkThread.Talks.[0].message}}</small></p>
+                                        <p>{{this.TalkThread.Talks.[0].message}}</p>
                                       {{/ifCond}}
-                                  {{/if}}</div>
+                                  {{/if}}
+
+                                </div>
                                 <small class="time text-muted">{{#if this.TalkThread.Talks}}{{formatTime this.TalkThread.Talks.[0].created_on "LT"}}{{/if}}</small>
+                               
+                                
                                 <small class="chat-alert online" id="online{{this.User.id}}">
                                 </small>
                               </a>
@@ -312,7 +333,7 @@
                           <div class="chat-box bg-white" id="replayBox">
                             <form class="input-group" ng-submit="sendMessage(foodie, message)">
                               <textarea id="btn-input" class="form-control border no-shadow no-rounded" ng-model="message" placeholder="Type your message here"
-                                style="height: 70px"></textarea>
+                                style="height: 37px"></textarea>
                               <span class="input-group-btn">
                                 <button id="btn-chat" class="btn btn-success no-rounded" type="button" style="margin-left: 10px !important;
 																margin-right: 10px !important;">Send</button>

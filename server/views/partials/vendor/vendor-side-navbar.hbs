@@ -36,7 +36,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-bar"><a href="/my-order/order" class="vs-link {{#ifCond selectedPage '==' 'sales-history'}} active {{/ifCond}}">My Orders</a></li>
+        <li class="nav-bar"><a href="/my-order/order" class="vs-link {{#ifCond selectedPage '==' 'order'}} active {{/ifCond}}">My Orders</a></li>
         <li ><a data-toggle="collapse" href="#collapse4Listing" role="button" aria-expanded="false" aria-controls="collapse4Listing">Edit Listings</a>
             <ul class="collapse m-l  vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "listings"}}show{{/ifCond}}{{/if}}" id="collapse4Listing">
             {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
@@ -95,7 +95,7 @@
 <div class="dropdown-v-list">
     <ul class="vs-nav">
         <li class="nav-bar"><a href="/order-history"class="vs-link {{#ifCond selectedPage '==' 'order-history'}} active {{/ifCond}}">Personal Order History</a></li>
-        <li class="nav-bar"><a href="#"class="vs-link {{#ifCond selectedPage '==' 'downloads'}} active {{/ifCond}}">My Downloads</a></li>
+        <li class="nav-bar"><a href="javascript:;" class="vs-link {{#ifCond selectedPage '==' 'downloads'}} active {{/ifCond}}">My Downloads</a></li>
         <li class="nav-bar"><a href="/wishlist"class="vs-link {{#ifCond selectedPage '==' 'wishlist'}} active {{/ifCond}}">Wishlist</a></li>
         <li class="nav-bar"><a href="/billing-settings"class="vs-link {{#ifCond selectedPage '==' 'billing-settings'}} active {{/ifCond}}">Billing Settings</a></li>
         <li class="nav-bar"><a href="/upgradeplan"class="vs-link {{#ifCond selectedPage '==' 'upgradeplan'}} active {{/ifCond}}">Upgrade Plan</a></li>
@@ -106,11 +106,11 @@
                 <li class="nav-bar"><a href="/gtc-mail/sent" class="vs-link {{#ifCond selectedPage '==' 'sent'}} active {{/ifCond}}">Sent</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/drafts" class="vs-link {{#ifCond selectedPage '==' 'drafts'}} active {{/ifCond}}">Drafts</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/deleted" class="vs-link {{#ifCond selectedPage '==' 'deleted'}} active {{/ifCond}}">Deleted</a></li>
-                <li class="nav-bar"><a href="#">GTC Mail Settings</a></li>
+                <li class="nav-bar"><a href="javascript:;">GTC Mail Settings</a></li>
             </ul>
         </li>
-        <li class="nav-bar"><a href="#" class="vs-link {{#ifCond selectedPage '==' 'contact'}} active {{/ifCond}}">Contact</a></li>
-        <li class="nav-bar"><a href="#">Feed</a></li>
+        <li class="nav-bar"><a href="javascript:;" class="vs-link {{#ifCond selectedPage '==' 'contact'}} active {{/ifCond}}">Contact</a></li>
+        <li class="nav-bar"><a href="javascript:;">Feed</a></li>
         <li><a data-toggle="collapse" href="#collapse4Support" role="button" aria-expanded="false" aria-controls="collapse4Support">Support</a>
             <ul class="collapse m-l vs-nav" id="collapse4Support">
                 <li class="nav-bar"><a href="/login#FAQ">FAQ</a></li>

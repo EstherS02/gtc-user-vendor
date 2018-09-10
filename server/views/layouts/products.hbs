@@ -85,15 +85,17 @@
                     <tr class="d-flex">
                       <td class="col-3">
                         <div class="product-left-col">
-                          <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        <a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
+                          <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          </a>
                         </div>
                       </td>
                       <td class="col-9">
                         <div class="product-middle-col">
-                          <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                          <h3><a href="/wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">${{this.product_price}}</h2>
+                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>
@@ -143,15 +145,17 @@
                     <tr class="d-flex">
                       <td class="col-3">
                         <div class="product-left-col">
-                          <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                        <a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
+                          <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          </a>
                         </div>
                       </td>
                       <td class="col-9">
                         <div class="product-middle-col">
-                          <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                          <h3><a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                           <div class="row no-margins">
                             <div class="col-md-12 col-12 no-padding">
-                              <h2 class="text-red price">${{this.product_price}}</h2>
+                              <h2 class="text-red price">{{currency this.product_price '$'}}</h2>
                             </div>
                             <div class="col-md-4 col-4 no-padding">
                               <span>Origin</span>
@@ -209,12 +213,14 @@
                       <tr class="d-flex">
                         <td class="col-3">
                           <div class="product-left-col">
-                            <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          <a href="/services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
+                            <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                            </a>
                           </div>
                         </td>
                         <td class="col-9">
                           <div class="product-middle-col">
-                            <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                            <h3><a href="/services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
                                 <h2 class="text-red price">${{this.product_price}}</h2>
@@ -267,12 +273,14 @@
                       <tr class="d-flex">
                         <td class="col-3">
                           <div class="product-left-col">
-                            <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+                          <a href="/lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">
+                            <img class="object-fit" src="{{this.product_base_image}}" onError="imgError(this)" alt="{{this.product_name}}" title="{{this.product_name}}">
+                            </a>
                           </div>
                         </td>
                         <td class="col-9">
                           <div class="product-middle-col">
-                            <h3><a href="/products/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
+                            <h3><a href="/lifestyle/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a></h3>
                             <div class="row no-margins">
                               <div class="col-md-12 col-12 no-padding">
                                 <h2 class="text-red price">${{this.product_price}}</h2>

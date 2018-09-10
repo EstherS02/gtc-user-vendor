@@ -1,5 +1,6 @@
 import _ from 'lodash';
 var talkCreate = require('../api/talk/talk.controller').talkCreate;
+var talkCount = require('../api/talk/talk.controller').talkCount;
 var userOnline = require('../api/users/users.controller').userOnline;
 var userOffline = require('../api/users/users.controller').userOffline;
 
@@ -21,17 +22,17 @@ export function socketMsg(io) {
 		// id:  user_id}
 		socket.on('user:join', function(user) {
 
-		//	console.log("USER JOIN*******************************", user)
-			socket.join(user.id);
-			socket.userId = user.id;
+			//console.log("USER JOIN*******************************", user)
+			socket.join(user);
+			socket.userId = user;
 			//console.log("****socket.userId", socket.userId);
-			if (userArray.indexOf(user.id) == -1) {
-				userArray.push(user.id);
+			if (userArray.indexOf(user) == -1) {
+				userArray.push(user);
 			} else {
 				console.log("user already connected");
 			}
 
-			console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
+			//console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			socket.broadcast.emit('user:online', userArray);
 			//	userOnline(user);
 		});
@@ -60,8 +61,8 @@ export function socketMsg(io) {
 
 		//{id: 1, user: user_id}
 		socket.on('chat:join', function(thread) {
-			console.log("CHAT JOIN ON CODE", thread);
-			console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
+			//console.log("CHAT JOIN ON CODE", thread);
+			//console.log("clients rooms connected", io.sockets.clients().server.sockets.adapter.rooms);
 			//console.log("Before talkThreadArray", talkThreadArray);
 			socket.join(thread.id);
 
@@ -90,6 +91,10 @@ export function socketMsg(io) {
 
 			return talkCreate(talk).then(function(result) {
 				//console.log("RESULT", result);
+				talkCount(talk.to_id).then(function(res){
+					console.log("RESULT_____________________", res);
+					io.to(user).emit('chat:count:receive', res);
+				})
 				result.to_id = talk.to_id;
 				var talkThreadCheck = _.find(talkThreadArray, function(threadArrObj) {
 					return threadArrObj.thread == result.talk_thread_id
@@ -105,7 +110,7 @@ export function socketMsg(io) {
 					//	console.log("opposite user is in online, sending msg to his room... & send also your thread room");
 						io.to(talk.to_id).to(result.talk_thread_id).emit('chat:receive', result);
 					} else {
-						io.to(result.talk_thread_id).emit('chat:receive', result);
+						io.to(result.talk_thread_id).to(talk.to_id).emit('chat:receive', result);
 					//	console.log("oppsite user offline, emitted only for your thread room");
 					}
 					//io.to(result.talk_thread_id).emit('chat:receive', result);
@@ -113,9 +118,17 @@ export function socketMsg(io) {
 					//console.log("Two Users are in that room, emitted in that room");
 					io.to(result.talk_thread_id).to(talk.to_id).emit('chat:receive', result);
 				}
+
 			})
 		});
 		
+		socket.on('chat:count', function(user){
+			//console.log("CONSOLE.log CHAT COUNT***********************",user);
+			return talkCount(user).then(function(result){
+				//console.log("RESULT_____________________", result);
+				io.to(user).emit('chat:count:receive', result);
+			})
+		})
 		//{id: thread_id, user: user_id}
 		socket.on('chat:leave', function(talk) {
 			socket.leave(talk.id);
