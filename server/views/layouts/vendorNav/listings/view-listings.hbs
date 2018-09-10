@@ -191,6 +191,7 @@
 												</tr>
 											</thead>
 											<tbody>
+												{{#if products}}
 												{{#each products}}
 												<tr>
 													<td scope="row"><input type="checkbox" name="selected" value={{this.product_slug}}></td>
@@ -211,6 +212,9 @@
 														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
 													</tr>
 													{{/each}}
+													{{else}}
+													<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
+													{{/if}}
 												</tbody>
 											</table>
 										</div>
