@@ -1,4 +1,5 @@
 <script type="text/javascript"> 
+    var bulksave;
 	$(function() {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -89,8 +90,9 @@
 						orderItems = "<tr><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
 							+ result.OrderItems[i].quantity + "</td><td>"
 							+ result.OrderItems[i].final_price + "</td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items refund_amount' style='width:auto;'></td></tr>";
+							+ "<input type='text' name='orderItemId[]' id='orderItemId' value="+result.OrderItems[i].id+">"
+							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td><td>"
+							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id=Order_refundamt"+result.OrderItems[i].id+" style='width:auto;'></td></tr>";
 
 						$("#issueRefund").append(orderItems);
 					}
@@ -101,35 +103,86 @@
 				},
 				error: function(error) {
 					console.log(error);
-				}
+				}	
 			})
 		});
 
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
+              // var obj =$('#issueRefundForm').serializeJSON();
+			//console.log(obj);
+	var arrayEle =[]
+		   var	attributeArr = $("#issueRefundForm :input").filter(function(index, element) {
+			return $(element).val() != '';
+	         	}).serializeArray();
+				  var data = {};
+                 $(attributeArr).each(function(index, obj){
+                  data[obj.name] = obj.value;
+				  arrayEle.push(data);
+                  });
+				     
+                 var newArray = new Array();
+				 var newArray1 = new Array();
+				 var newArray2 = new Array();
 
+$("input:text[name=orderItemId]").each(function(){
+    newArray.push($(this).val());
+});
+$("input:text[name=refund_quantity]").each(function(){
+    newArray1.push($(this).val());
+});
+$("input:text[name=refund_amount]").each(function(){
+    newArray2.push($(this).val());
+});
+			   console.log("newArray::"+newArray);
+			    console.log("newArray::"+newArray1);
+				 console.log("newArray::"+newArray2);		
+                     
+			  console.log("datasss:::"+JSON.stringify(data1));
+		         console.log("ArrayItem::"+JSON.stringify(arrayEle));
+				 console.log("attributeArr::"+JSON.stringify(data));
+                bulksave=(JSON.stringify(data));
+				//console.log("bulksave::"+bulksave);
+               
+			
 			$('#issueRefundModal').modal('hide');
 			$('#conform-modal').modal('show');
 
 			var total_refund = $('#total_refund').val();
 			var order_id = $("#order_id").html();
+			var orderItemId = $("#orderItemId").val();
+			var refund_amount = $('#Order_refundamt'+orderItemId).val();
+			console.log("refund_amount:::"+refund_amount);
+			console.log("issue::"+orderItemId);
 
 			$("#orderId").html(order_id);
 			$("#refund_amount").html(total_refund);
+			$("#orderItemid").val(orderItemId);
+			$("#order_refund_amount").val(refund_amount);
+			
 		
 		});
 
 		$('#refundConformForm').submit(function(e){
 			e.preventDefault();
-
+            console.log("bulksave::"+bulksave);
 			var totalRefund = $("#refund_amount").html();
 			var refund_order_id = $("#orderId").html();
+			var orderItem_id =$("#orderItemid").val();
+			var orderRefund_amt= $("#order_refund_amount").val();
+
+
 
 			var refundObj = {};
 
 			refundObj = {
-				total_refund: totalRefund
+				total_refund: totalRefund,
+				orderItem_id:orderItem_id,
+				orderRefund_amt:orderRefund_amt,
+				bulksave:bulksave
+				
 			}
+			console.log("refundObj::"+JSON.stringify(refundObj));
 
             $.ajax({
 				url: '/api/payment/refund-order/' + refund_order_id,
@@ -147,10 +200,13 @@
 	});
 
 	$(document).on("change", ".refund_amount", function() {
+		
 		var sum = 0;
 		$(".refund_amount").each(function() {
 			sum += +$(this).val();
+			
 		});
+		
 		$("#total_refund").val(sum);
 	});
 	function downloadCSV(args)
@@ -479,7 +535,9 @@
 					<p>Are you sure you want to process a refund of $
 						<span id='refund_amount'></span> for the order #
 						<span id="orderId"></span>?</p>
-				</div>
+						<input type="text" name="orderItemid" value="" id="orderItemid">
+						<input type="text" name="order_refund_amount" value="" id="order_refund_amount">
+ 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
