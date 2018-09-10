@@ -15,7 +15,7 @@ const model = require('../../sqldb/model-connect');
 var OAuth = require('oauth').OAuth;
 
 export function requestTwitter(req, res) {
-	var redirect_uri = 'http://localhost:9000/api/auth/twitter';
+	var redirect_uri = config.baseUrl + '/api/auth/twitter';
 	var oauth = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', redirect_uri, 'HMAC-SHA1');
 	oauth.getOAuthRequestToken(function(error, oAuthToken, oAuthTokenSecret, results) {
 		if (!error) {
@@ -148,7 +148,6 @@ function getAccessToken(params, accessTokenUrl) {
 			json: true,
 			form: params
 		}, function(error, response, body) {
-			console.log("getAccessToken body", body);
 			if (!error && response.statusCode == 200) {
 				return resolve(body);
 			} else {
@@ -167,7 +166,6 @@ function getPeople(accessToken, peopleApiUrl) {
 			},
 			json: true
 		}, function(error, response, body) {
-			console.log("body", body);
 			if (!error && response.statusCode == 200) {
 				return resolve(body);
 			} else {
@@ -282,7 +280,7 @@ export async function facebook(req, res) {
 		code: req.query.code,
 		client_id: config.facebookLogin.clientId,
 		client_secret: config.facebookLogin.secretKey,
-		redirect_uri: 'https://localhost:9010/api/auth/facebook',
+		redirect_uri: config.secureBaseURL + '/api/auth/facebook',
 		grant_type: 'authorization_code'
 	};
 
@@ -386,7 +384,7 @@ export async function linkedin(req, res) {
 		code: req.query.code,
 		client_id: config.linkedInLogin.clientId,
 		client_secret: config.linkedInLogin.secretKey,
-		redirect_uri: 'http://localhost:9000/api/auth/linkedin',
+		redirect_uri: config.baseUrl + '/api/auth/linkedin',
 		grant_type: 'authorization_code'
 	};
 
@@ -484,7 +482,7 @@ export async function twitter(req, res) {
 	var rspTokens = {};
 	var bodyParams = {};
 	var refreshToken, encryptedRefToken;
-	var redirect_uri = 'http://localhost:9000/api/auth/twitter';
+	var redirect_uri = config.baseUrl + '/api/auth/twitter';
 	var oauth = new OAuth(config.twitterLogin.requestTokenUrl, config.twitterLogin.accessTokenUrl, config.twitterLogin.clientId, config.twitterLogin.secretKey, '1.0A', redirect_uri, 'HMAC-SHA1');
 	oauth.getOAuthAccessToken(req.query.oauth_token, config.twitterLogin.secretKey, req.query.oauth_verifier, async function(error, oauth_access_token, oauth_access_token_secret, results) {
 		if (error === null) {

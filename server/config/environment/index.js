@@ -19,6 +19,8 @@ var all = {
 	env: process.env.NODE_ENV,
 
 	baseUrl: process.env.DOMAIN,
+
+	secureBaseURL: process.env.SECURE_BASE_URL || process.env.DOMAIN,
 	// Root path of server
 	root: path.normalize(`${__dirname}/../../..`),
 
