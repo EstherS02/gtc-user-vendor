@@ -1,15 +1,15 @@
 <script>
 
-    var twitterUserData = "{{{twitterResponseData}}}";
+	var twitterUserData = "{{{twitterResponseData}}}";
 
-    try { 
-        window.opener.onTwitterAuthClose(twitterUserData); 
-    } catch (err) {
-        console.log("err", err)
-        alert(err);
-    }
-    
-    window.close();
+	try {
+		window.opener.onTwitterAuthClose(twitterUserData);
+	} catch (err) {
+		console.log("err", err)
+		alert(err);
+	}
+
+	window.close();
 
 
 </script>

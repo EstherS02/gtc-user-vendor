@@ -3,89 +3,100 @@
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
+				{{> vendor/vendor-side-navbar}}
+			</div>
 			<div class="col-sm-10">
 				<div class="ibox">
-				 <div class="ibox-content">
-					 <div class="ibox-title">
-						 <h2>Billing Settings</h2>
-					 </div>
-				 <div class="content-body">
-					 <div class="row">
-						<div class="col-md-12">
-							<p style="font-size: 10px;" class="vend_edit_lists_pstyle">Credit Cards on File</p>
+					<div class="ibox-content">
+						<div class="ibox-title">
+							<h2>Billing Settings</h2>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							{{#each cards}}
-							<div class="row" style="height:44px">
-								<div class="col-md-1">
-									<img src="/img/cc/{{this.card_type}}-128.png" alt="{{this.card_type}}" style="width:100%" />
-								</div>
-								<div class="col-md-3">
-									**** **** **** {{json this.card_details 'last4'}}
-								</div>
-								<div class="col-md-3">
-									Exp {{padZero this.card_details '2' 'true' 'exp_month'}}/{{last2 this.card_details 'true' 'exp_year'}}
-								</div>
-								<div class="col-md-2">
-									{{#if this.is_primary}}(Primary){{/if}}
-								</div>
-								<div class="col-md-2">
-									<a href="#" class="card-delete text_red_color" data-id="{{this.id}}">Delete</a>
+						<div class="content-body">
+							<div class="row">
+								<div class="col-md-12">
+									<p style="font-size: 10px;" class="vend_edit_lists_pstyle">Credit Cards on File</p>
 								</div>
 							</div>
-							{{/each}}
-
-							<div style="border: 1px solid #eee;padding: 0 10px 10px 10px;margin-top: 10px;">
-							<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i> Add Card</p>
-							
-							<div class="row">
-								<div class="col-md-8" style="margin-left: 15px">
-								<form id="add-card-form">
-					              <div class="row">
-					                <div class="col-md-2"><label for="card-name">Name</label></div>
-					                <div class="col-md-10"><input type="text" class="name vend_edit_lists_textstyle1" id="card-name" placeholder="Jane Doe" style="width: 100%;"/></div>
-					              </div>
-					              <div class="row" style="padding:14px 0">
-					                <div class="col-md-2"><label for="card-element">Card</label></div>
-					                <div class="col-md-10"><div id="card-element" style="margin-top:3px"></div></div>
-					              </div>
-					              <div id="stripe-error-validation" class="alert alert-warning" style="display:none;"></div>
-					              <div class="row" style="margin-left: 0;">
-					                <button type="submit" class="list_butt_2">Submit</button>
-					                <span id="add-card-form-error" class="error" style="margin:3px 0 0 5px"></span>
-					              </div>
-					            </form>
-					        	</div>
-					        </div>
-					    	</div>
-							<p style="font-size: 10px;padding-top: 15px;">Connect Paypal</p>
-							<p style="padding-top: 10px;"><img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px;"/>&nbsp;&nbsp; <input type="text" placeholder="Enter Your Paypal Email" class="vend_edit_lists_textstyle1" style="width: 50%;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="list_butt_2" type="submit" value="CONNECT" /></p>
-						</div>
-					</div>
-					<hr/>
-					<div class="row" style="font-size: 11px;">
-						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-8">
-									<p style="margin-bottom: 15px;">Billing Address</p>
-									<p>{{billingAddress.[0].company_name}}</p>
-									<p>{{billingAddress.[0].address_line1}}</p>
-									<p>{{billingAddress.[0].address_line2}}</p>
-									<p>{{billingAddress.[0].postal_code}}</p>
-									<p>{{billingAddress.[0].city}}</p>
+									{{#each cards}}
+										<div class="row" style="height:44px">
+											<div class="col-md-1">
+												<img src="/img/cc/{{this.card_type}}-128.png" alt="{{this.card_type}}" style="width:100%" />
+											</div>
+											<div class="col-md-3">
+												**** **** **** {{json this.card_details 'last4'}}
+											</div>
+											<div class="col-md-3">
+												Exp {{padZero this.card_details '2' 'true' 'exp_month'}}/{{last2 this.card_details 'true' 'exp_year'}}
+											</div>
+											<div class="col-md-2">
+												{{#if this.is_primary}}(Primary){{/if}}
+											</div>
+											<div class="col-md-2">
+												<a href="#" class="card-delete text_red_color" data-id="{{this.id}}">Delete</a>
+											</div>
+										</div>
+									{{/each}}
+
+									<div style="border: 1px solid #eee;padding: 0 10px 10px 10px;margin-top: 10px;">
+										<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i> Add Card</p>
+
+										<div class="row">
+											<div class="col-md-8" style="margin-left: 15px">
+												<form id="add-card-form">
+													<div class="row">
+														<div class="col-md-2"><label for="card-name">Name</label></div>
+														<div class="col-md-10"><input type="text" class="name vend_edit_lists_textstyle1" id="card-name"
+															 placeholder="Jane Doe" style="width: 100%;" /></div>
+													</div>
+													<div class="row" style="padding:14px 0">
+														<div class="col-md-2"><label for="card-element">Card</label></div>
+														<div class="col-md-10">
+															<div id="card-element" style="margin-top:3px"></div>
+														</div>
+													</div>
+													<div id="stripe-error-validation" class="alert alert-warning" style="display:none;"></div>
+													<div class="row" style="margin-left: 0;">
+														<button type="submit" class="list_butt_2">Submit</button>
+														<span id="add-card-form-error" class="error" style="margin:3px 0 0 5px"></span>
+													</div>
+												</form>
+											</div>
+										</div>
 									</div>
-								<div class="col-md-4">
-									<a href="user/my-profile"><p class="text_blue_color">Edit</p></a>
+									<p style="font-size: 10px;padding-top: 15px;">Connect Paypal</p>
+									<p style="padding-top: 10px;">
+										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px;" />
+										&nbsp;&nbsp; <input type="text" placeholder="Enter Your Paypal Email" class="vend_edit_lists_textstyle1"
+										 style="width: 50%;" />
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="list_butt_2" style="cursor:pointer;" type="submit" onclick="paypalVerifyEmail()"
+										 value="CONNECT" />
+									</p>
+								</div>
+							</div>
+							<hr />
+							<div class="row" style="font-size: 11px;">
+								<div class="col-md-8">
+									<div class="row">
+										<div class="col-md-8">
+											<p style="margin-bottom: 15px;">Billing Address</p>
+											<p>{{billingAddress.[0].company_name}}</p>
+											<p>{{billingAddress.[0].address_line1}}</p>
+											<p>{{billingAddress.[0].address_line2}}</p>
+											<p>{{billingAddress.[0].postal_code}}</p>
+											<p>{{billingAddress.[0].city}}</p>
+										</div>
+										<div class="col-md-4">
+											<a href="user/my-profile">
+												<p class="text_blue_color">Edit</p>
+											</a>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				 </div>
-				  </div>	
 				</div>
 			</div>
 		</div>
@@ -95,86 +106,107 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
-$(document).ready(function() {	
+	$(document).ready(function() {
 
-	var stripe = Stripe('{{stripePublishableKey}}');
-	var elements = stripe.elements({
-		fonts: [{
-			cssSrc: 'https://fonts.googleapis.com/css?family=Roboto:400,700',
-		}],
-		locale: 'auto'
-	});
+		var stripe = Stripe('{{stripePublishableKey}}');
+		var elements = stripe.elements({
+			fonts: [{
+				cssSrc: 'https://fonts.googleapis.com/css?family=Roboto:400,700',
+			}],
+			locale: 'auto'
+		});
 
-	var card = elements.create('card', {hidePostalCode: true,
-	style: {
-			base: {
-				iconColor: '#666EE8',
-				color: '#31325F',
-				fontWeight: 700,
-				fontFamily: 'Roboto, sans-serif',
-				fontSize: '16px',
-				lineHeight: '38px',
-				fontSmoothing: 'antialiased',
-				
-				'::placeholder': {
-					color: '#b1afaf'
-				}
-			},
-		}});
-	card.mount('#card-element');
+		var card = elements.create('card', {
+			hidePostalCode: true,
+			style: {
+				base: {
+					iconColor: '#666EE8',
+					color: '#31325F',
+					fontWeight: 700,
+					fontFamily: 'Roboto, sans-serif',
+					fontSize: '16px',
+					lineHeight: '38px',
+					fontSmoothing: 'antialiased',
 
-	$("#add-card-form").submit(function(e) {
-		e.preventDefault();
-		let extraDetails = {
-			name: $('#card-name').val(),
-		};
-		var promise = stripe.createToken(card, extraDetails);
-		promise.then(function(result) {
-			//console.log(result);
-			var errorElement = $('#stripe-error-validation')
-			errorElement.css("display","none");
-			if (result.error && result.error.message) {
-				//$("#add-card-form-error").text(result.error.message);
-				
-				errorElement.text(result.error.message);
-				errorElement.css("display","block");
-				return;
+					'::placeholder': {
+						color: '#b1afaf'
+					}
+				},
 			}
+		});
+		card.mount('#card-element');
+
+		$("#add-card-form").submit(function(e) {
+			e.preventDefault();
+			let extraDetails = {
+				name: $('#card-name').val(),
+			};
+			var promise = stripe.createToken(card, extraDetails);
+			promise.then(function(result) {
+				//console.log(result);
+				var errorElement = $('#stripe-error-validation')
+				errorElement.css("display", "none");
+				if (result.error && result.error.message) {
+					//$("#add-card-form-error").text(result.error.message);
+
+					errorElement.text(result.error.message);
+					errorElement.css("display", "block");
+					return;
+				}
+				$.ajax({
+					url: '/api/payment/card',
+					type: 'POST',
+					contentType: 'application/json',
+					dataType: "json",
+					data: JSON.stringify({ token: result.token, isPrimary: false }),
+					success: function(data) {
+						window.location.reload();
+					},
+					error: function(error) {
+
+					}
+				});
+			});
+		});
+
+		$(".card-delete").click(function(e) {
+			e.preventDefault();
+			var id = $(this).attr('data-id');
+			console.log(id);
+
 			$.ajax({
 				url: '/api/payment/card',
-				type: 'POST',
+				type: 'DELETE',
 				contentType: 'application/json',
 				dataType: "json",
-				data: JSON.stringify({token: result.token, isPrimary: false}),
-				success: function (data) {
+				data: JSON.stringify({ paymentSettingId: id }),
+				success: function(data) {
 					window.location.reload();
 				},
-				error: function (error) {
-					
+				error: function(error) {
+
 				}
 			});
 		});
+
 	});
 
-	$(".card-delete").click(function(e) {
-		e.preventDefault();
-		var id = $(this).attr('data-id');
-		console.log(id);
+	var paypalCheckConnect, paypalOAuthWin;
 
-		$.ajax({
-			url: '/api/payment/card',
-			type: 'DELETE',
-			contentType: 'application/json',
-			dataType: "json",
-			data: JSON.stringify({paymentSettingId: id}),
-			success: function (data) {
-				window.location.reload();
-			},
-			error: function (error) {
-				
-			}
-		});
-	});
+	function paypalVerifyEmail() {
+		var paypalOAuthURL = '{{{payPalOAuthUrl}}}';
+		paypalOAuthWin = window.open(paypalOAuthURL, 'PaypalOAuthPopup', 'location=0,status=0,width=800,height=700');
 
-});
+		paypalCheckConnect = setInterval(function() {
+			if (!paypalOAuthWin || !paypalOAuthWin.closed) return;
+			clearInterval(paypalCheckConnect);
+		}, 100);
+
+		window.onTwitterAuthClose = function(data) {
+			console.log("============", data)
+		}
+
+	}
+
+
 </script>
