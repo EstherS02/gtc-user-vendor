@@ -1,4 +1,5 @@
 <script type="text/javascript"> 
+    var bulksave=[];
 	$(function() {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -89,8 +90,9 @@
 						orderItems = "<tr><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
 							+ result.OrderItems[i].quantity + "</td><td>"
 							+ result.OrderItems[i].final_price + "</td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items refund_amount' style='width:auto;'></td></tr>";
+							+ "<input type='text' name='' quantity='' orderid='' class='orderItems' id=orderItemID"+result.OrderItems[i].id+" value=''>"
+							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" style='width:auto;'></td><td>"
+							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" style='width:auto;'></td></tr>";
 
 						$("#issueRefund").append(orderItems);
 					}
@@ -101,37 +103,45 @@
 				},
 				error: function(error) {
 					console.log(error);
-				}
+				}	
 			})
 		});
 
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
-
-			$('#issueRefundModal').modal('hide');
-			$('#conform-modal').modal('show');
-
-			var total_refund = $('#total_refund').val();
-			var order_id = $("#order_id").html();
-
-			$("#orderId").html(order_id);
+           $("input[class=orderItems]").each(function() {
+           var ids = $(this).attr("orderid");
+		   var refund_quantity = $(this).attr("quantity");
+           var refundamt = $(this).val();
+           item = {}
+           item ["order_id"] = ids;
+           item ["refund_quantity"] = refund_quantity;
+           item["refund_amount"]=refundamt;
+           bulksave.push(item);
+           });
+           $('#issueRefundModal').modal('hide');
+		   $('#conform-modal').modal('show');
+		   var total_refund = $('#total_refund').val();
+		   var order_id = $("#order_id").html();
+		    $("#orderId").html(order_id);
 			$("#refund_amount").html(total_refund);
+			//$("#orderItemid").val(orderItemId);
+			//$("#order_refund_amount").val(refund_amount);
+			
 		
 		});
 
 		$('#refundConformForm').submit(function(e){
 			e.preventDefault();
-
-			var totalRefund = $("#refund_amount").html();
+            var totalRefund = $("#refund_amount").html();
 			var refund_order_id = $("#orderId").html();
-
 			var refundObj = {};
-
 			refundObj = {
-				total_refund: totalRefund
+				total_refund: totalRefund,
+				orderItems:JSON.stringify(bulksave)
+				
 			}
-
-            $.ajax({
+		    $.ajax({
 				url: '/api/payment/refund-order/' + refund_order_id,
 				type: 'POST',
 				data: refundObj,
@@ -146,10 +156,29 @@
 		})
 	});
 
+	
+
+		$(document).on("change", ".refund_quantity", function() {
+		
+		var sum = 0;
+		$(".refund_quantity").each(function() {
+			sum += +$(this).val();
+			var currentquantity=$(this).val();
+			var orderid = $(this).attr('id');
+			var id = $(this).attr('id');
+			$('#orderItemID'+id).attr( "quantity", currentquantity);
+			$('#orderItemID'+id).attr( "orderid", orderid);
+     	});
+      });
+
 	$(document).on("change", ".refund_amount", function() {
 		var sum = 0;
 		$(".refund_amount").each(function() {
 			sum += +$(this).val();
+		    var currentval=$(this).val();
+			 var id = $(this).attr('id');
+			 $('#orderItemID'+id).val(currentval);
+			
 		});
 		$("#total_refund").val(sum);
 	});
@@ -484,7 +513,9 @@
 					<p>Are you sure you want to process a refund of $
 						<span id='refund_amount'></span> for the order #
 						<span id="orderId"></span>?</p>
-				</div>
+						<input type="text" name="orderItemid" value="" id="orderItemid">
+						<input type="text" name="order_refund_amount" value="" id="order_refund_amount">
+ 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">

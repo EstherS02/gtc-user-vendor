@@ -580,3 +580,8 @@ Handlebars.registerHelper('decimalFixedOne', function(distance) {
 	var rating = Math.ceil(distance);
 	return rating;
   });
+
+Handlebars.registerHelper('sizeInKB', function(value) {
+	var valueInKB = value/1000;
+	return valueInKB.toFixed(2);
+});

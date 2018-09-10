@@ -1,4 +1,17 @@
+<script type="text/javascript" src="//platform.linkedin.com/in.js">
+    api_key: 81q1ljfijajynj
+    authorize: true
+</script>
+
 <script type="text/javascript">
+$(document).ready(function() {
+    $("a[title='seller']").click(function() {
+        if (userInfo.email) {} else {
+            $('#myModal').modal('show');
+        }
+    });
+});
+
 function updateQueryStringParameter(uri, key, value) {
 	var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
 	var separator = uri.indexOf('?') !== -1 ? "&" : "?";
@@ -550,4 +563,105 @@ function redirectBack() {
 		</div>
 	</div>
 </div>
+<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" align="center">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row geo_bgimg1">
+                        <div class="row">
+                            <div class="col-md-12 offset-md-0">
+                                <h1>LIKE WHAT YOU SEE?</h1>
+                                <p class="modal_sign text-center">Sign Up &amp; Access Your Wholesale Marketplace.</p>
+                                <p class="modal_why_geo_p">If you' d like uniterupted access to our wholesale marketplace, we need you to create an
+                                    account with Global Trade Connect
+                                </p>
+                            </div>
+                        </div>
+                        <div class="gtc-container banner-padding">
+                            <div class="home-banner-right">
+                                <div class="row">
+                                    <div class="col-md-12 offset-md-0">
+                                        <div class="signup-box">
+                                            <div class="col-md-6 offset-md-6">
+                                                <small id="modelSignUpErrorLog" class="error"></small>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="signup-left">
+                                                        <ul>
+                                                            <li>
+                                                                <a id="modal-gtc-fb-login">
+                                                                    <img src="gtc-assets/img/login-facebook.png" alt="Login with Facebook" title="Login with Facebook">
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a id="modal-gtc-google-login">
+                                                                    <img src="gtc-assets/img/login-google.png" alt="Login with Google" title="Login with Google">
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a id="modal-gtc-twitter-login">
+                                                                    <img src="gtc-assets/img/login-twitter.png" alt="Login with Twitter" title="Login with Twitter">
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a id="modal-gtc-linkedin-login">
+                                                                    <img src="gtc-assets/img/login-linkedin.png" alt="Login with LinkedIn" title="Login with LinkedIn">
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <div class="form-group" style="padding:4px">
+                                                                    <p class="modal_sign">Already have a Account?</p>
+                                                                    <button type="submit" onclick="window.location.href='/login'" id="modelBtnLogin" class="btn btn-small btn-success">
+                                                                        <strong>Login</strong>
+                                                                    </button>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <h2 class="divider-line" style="z-index:1"><span class="text-black">OR</span></h2>
+                                                <div class="col-md-6 signup-right">
+                                                    <form id="modelSignUpForm" class="form">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="form-group m-b-xs">
+                                                                    <input type="email" id="modelInputEmail" name="email" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                        placeholder="Email" required="true">
+                                                                </div>
+                                                                <div class="form-group m-b-xs">
+                                                                    <input type="text" id="modelInputFirstname" name="first_name" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                        placeholder="First Name" required="true">
+                                                                </div>
+                                                                <div class="form-group m-b-xs">
+                                                                    <input type="password" id="modelInputPassword" name="password" class="form-control-customized form-control-sm rounded form-control-border"
+                                                                        placeholder="Password" required="true">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <input type="checkbox" id="modelInputTerms" name="input_terms" required="true">
+                                                                    <small>Accept terms and conditions</small>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <button type="submit" id="modelBtnSignup" class="btn btn-small btn-block btn-danger">
+                                                                        <strong>CREATE ACCOUNT</strong>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{> footer/bottom-footer}}

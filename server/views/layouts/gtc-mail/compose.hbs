@@ -95,7 +95,7 @@ $(document).ready(function() {
 					}
 				});
 				setTimeout(function() {
-					window.location.href = 'http://localhost:9000/gtc-mail/compose';
+					window.location.href = '/gtc-mail/compose';
 				}, 2000);
 			},
 			error: function(error) {
@@ -179,10 +179,16 @@ $(function() {
 	if (data.text) {
 		var text = data.text;
 		text = text.replace(/%20/g, ' ');
-
-       $("#to").val(text);
+        $("#to").val(text);
 		//var newOption = new Option(text, data.id, false, false);
 		//$('#toAddress').append(newOption).trigger('change');
+	}
+
+	if(data.subject){
+		var subject =data.subject;
+		subject =subject.replace(/%20/g, ' ');
+		 $("#subject").val("Reg: "+subject);
+		 $("#subject").prop('disabled', true);		 
 	}
 
 	/*$(".select2-hidden-accessible").prop("disabled", true);
@@ -240,9 +246,7 @@ $(function() {
 											<div class="row">
 												<div class="col-lg-2">
 													<label class="label-control float-right">
-														<b>To:</b> {{!--
-														<span class="text-danger">*</span> --}}
-													</label>
+														<b>To:</b>
 												</div>
 												<div class="col-lg-10">
 													{{!-- <select class="custom-select form-control-customized form-control-sm" id='toAddress' name="toAddress">
@@ -256,12 +260,11 @@ $(function() {
 											<div class="row">
 												<div class="col-lg-2">
 													<label class="label-control float-right">
-														<b>Subject:</b> {{!--
-														<span class="text-danger">*</span> --}}
+														<b>Subject:</b>
 													</label>
 												</div>
 												<div class="col-lg-10">
-													<input type="text" class="form-control-customized form-control-sm" id="subject" name="subject">
+													<input type="text" class="form-control-customized form-control-sm" id="subject" name="subject" >
 												</div>
 											</div>
 										</div>
