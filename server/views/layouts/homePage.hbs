@@ -3,8 +3,6 @@
     authorize: true
 </script>
 
-
-
 <script type="text/javascript">
 var userInfo = {{{DisplayJSON LoggedInUser}}}
 $(document).ready(function() {
@@ -706,11 +704,11 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-md-6 no-padding">
                 <div class="header-lg bg-topseller">
-                    <h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/directory/search">SEE ALL</a></h2>
+                    <h2 class="header-lg-text">TOP SELLERS <a class="see-all" href="/sellers/search">SEE ALL</a></h2>
                 </div>
                 <div class="product-list-body">
                     <div class="row">
-                        {{#each topSellers}}
+                        {{#each topSellers.rows}}
                         <div class="col-md-6">
                             <div class="product-body">
                                 <div class="table-responsive">
@@ -749,7 +747,7 @@ $(document).ready(function() {
                                                             <div class="col-md-7 col-7 no-padding">
                                                                 <div class="v-rating">
                                                                     <a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-                                                                    {{starCount product_rating}}
+                                                                    {{starCount avg_rating}}
                                                                     </a>
                                                                 </div>
                                                             </div>

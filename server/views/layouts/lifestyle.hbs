@@ -49,7 +49,7 @@
 				</div>
 				<div class="product-list-body">
 					<div class="row">
-						{{#each subscriptionProviders}}
+						{{#each subscriptionProviders.rows}}
 						<div class="col-md-6">
 							<div class="product-body">
 								<div class="table-responsive">
@@ -88,8 +88,9 @@
 																<div class="col-md-7 col-7 no-padding">
 																	<div class="v-rating">
 																		<a href="vendor/{{this.id}}" title="{{this.vendor_name}}">
-				                                                        {{starCount rating}}
+				                                                        {{starCount avg_rating}}
 				                                                        </a>
+
 																	</div>
 																</div>
 															</div>

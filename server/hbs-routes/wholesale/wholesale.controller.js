@@ -1,5 +1,5 @@
 	'use strict';
-
+const sequelize = require('sequelize');
 const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -127,6 +127,7 @@ export function wholesale(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
+			var result={};
 			limit = null;
 			delete queryObj['marketplace_type_id'];
 			queryObj['featured_position'] = position.WholesaleLanding;
@@ -164,12 +165,36 @@ export function wholesale(req, res) {
 		},
 		wholesalers: function(callback) {
 			queryObj['type'] = 'Private Wholesale Marketplace';
+			var result = {};
 			field = 'sales_count';
 			order = 'desc';
 			limit = 6;
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(wholesalers) {
-					return callback(null, wholesalers.rows);
+					result.rows = JSON.parse(JSON.stringify(wholesalers.rows));
+					var vendorAvgRating = {};
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
+						});
+					}, function done(err, success) {
+						if (!err) {
+							console.log('providers', result.rows);
+							return callback(null, result);
+						}
+					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

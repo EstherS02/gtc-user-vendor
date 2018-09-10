@@ -1,23 +1,42 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <style>
-	.fas{
-       cursor: pointer
+	.fas {
+		cursor: pointer
 	}
 </style>
 <script>
 	function deleteMail(id) {
-			$.ajax({
-				url: '/api/mail/delete/' + id,
-				type: 'PUT',
-				success: function (result) {
-					console.log(result)
-				},
-				error: function (error) {
-					console.log(error);
-				}
-			});
-		window.location.href = '/gtc-mail/inbox';
+		$.ajax({
+			url: '/api/mail/delete/' + id,
+			type: 'PUT',
+			success: function (result) {
+				console.log(result)
+			},
+			error: function (error) {
+				console.log(error);
+			}
+		});
+	window.location.href = '/gtc-mail/inbox';
 	}
+
+	$(function() {
+		var mailDetails = $('.mailDetails');
+		var popupRefernece = $('.popupRefernece');
+		mailDetails.hide();
+		$(document).on('click', function(e) {
+			var target = $(e.target);
+			if (target.is(mailDetails)) return;
+			if (target.is(popupRefernece)) {
+				e.preventDefault();
+				mailDetails.show();
+				var popper = new Popper(target, mailDetails, {
+					placement: 'bottom-start',
+				});
+			} else {
+				mailDetails.hide();
+			}
+		});
+	});
 </script>
 
 <div class="wrapper-content bg-gray">
@@ -45,9 +64,9 @@
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-7">
-									From: {{message.fromUser.first_name}}
-									<br/> To: me
-									<i class="fas fa-caret-down"></i>
+									From:  {{message.fromUser.first_name}}
+									<br/> To:  me
+									<i class="fas fa-caret-down popupRefernece"></i>
 								</div>
 								<div class="col-md-5">
 									<p class="pull-right">
@@ -55,20 +74,18 @@
 									</p>
 								</div>
 							</div>
-							<div class="row justify-content-md-center">
-								<div class="col-sm-8" style="padding:20px;">
-									<div class="row justify-content-md-center">
-										{{{message.message}}}
-									</div>
+							<br/>
+							<div class="row">
+								<div class="col-sm-8">
+									{{{message.message}}}
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-7">
 									Click here to
-									<a href="gtc-mail/compose?id={{message.fromUser.id}}&text={{message.fromUser.first_name}}">Reply</a>
+									<a href="gtc-mail/compose?id={{message.fromUser.id}}&text={{message.fromUser.first_name}}&subject={{message.subject}}">Reply</a>
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -77,3 +94,30 @@
 	</div>
 </div>
 {{> footer/bottom-footer}}
+
+<div class="mailDetails">
+	<div class="modal-dialog" style="margin: 0px; padding:0px;">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row col-lg-12" style="margin: 0px; padding:0px;">
+					<div class="table-responsive">
+						<table>
+							<tr>
+								<td style="padding-right:8px;">from:</td>
+								<td>{{message.fromUser.first_name}}</td>
+							</tr>
+							<tr>
+								<td style="padding-right:8px;">date:</td>
+								<td>{{formatTime message.created_on "MMM D, YYYY, hh:mm A"}}</td>
+							</tr>
+							<tr>
+								<td style="padding-right:8px;">subject:</td>
+								<td>{{message.subject}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

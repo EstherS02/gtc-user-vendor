@@ -1,4 +1,5 @@
 'use strict';
+const sequelize = require('sequelize');
 
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
@@ -94,6 +95,7 @@ export function shop(req, res) {
 				});
 		},
 		retailers: function(callback) {
+			var result = {};
 			delete queryObj['marketplace_id'];
 			queryObj['type'] = 'Public Marketplace';
 			field = 'sales_count';
@@ -101,13 +103,35 @@ export function shop(req, res) {
 			limit = 6;
 			service.findRows(vendorModel, queryObj, offset, limit, field, order)
 				.then(function(retailers) {
-					return callback(null, retailers.rows);
+					result.rows = JSON.parse(JSON.stringify(retailers.rows));
+					var vendorAvgRating = {};
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
+						});
+					}, function done(err, success) {
+						if (!err) {
+							return callback(null, result);
+						}
+					});
 
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
 	}, function(err, results) {
 		if (!err) {
 			res.render('shop', {
