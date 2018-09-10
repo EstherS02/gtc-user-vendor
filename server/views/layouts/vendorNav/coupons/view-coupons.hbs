@@ -18,35 +18,35 @@
 	}
 
 	function changeStatus(e) {
-		// window.location.href = '/coupons?status=' + e.value;
-		console.log(e.value)
-		var chkArray = [];
-		$(':checkbox:checked').each(function (i) {
-				if ($(this).val() != 'on') {
-					chkArray.push($(this).val());
-				}
-		});
-		var selected;
-		selected = chkArray.join(',');
-		var data = {};
-		 data.status = e.value;
-		 data.ids = JSON.stringify(chkArray);
-		 if(chkArray.length>0){
-			$.ajax({
-				type: 'PUT',
-				data:data,
-				url: '/api/coupon/update-status',
-				success: function (data) {
-					console.log(data);
-					location.reload();
-				},
-				error: function (error) {
-	                console.log(error);
-				}
-	        })
-		}else{
-			ouputErrorPopup("Select Atleast One Coupon");
-		}
+		window.location.href = '/coupons?status=' + e.value;
+		// console.log(e.value)
+		// var chkArray = [];
+		// $(':checkbox:checked').each(function (i) {
+		// 		if ($(this).val() != 'on') {
+		// 			chkArray.push($(this).val());
+		// 		}
+		// });
+		// var selected;
+		// selected = chkArray.join(',');
+		// var data = {};
+		//  data.status = e.value;
+		//  data.ids = JSON.stringify(chkArray);
+		//  if(chkArray.length>0){
+		// 	$.ajax({
+		// 		type: 'PUT',
+		// 		data:data,
+		// 		url: '/api/coupon/update-status',
+		// 		success: function (data) {
+		// 			console.log(data);
+		// 			location.reload();
+		// 		},
+		// 		error: function (error) {
+	 //                console.log(error);
+		// 		}
+	 //        })
+		// }else{
+		// 	ouputErrorPopup("Select Atleast One Coupon");
+		// }
 
 	}
 
@@ -140,6 +140,7 @@
 											</div>
 										</div>
 									</form>
+
 								</div></div>
 									<div class="row">
 										<div class="col-sm-12">
@@ -192,14 +193,14 @@
 															</td>
 															<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
 															<td>{{this.code}}</td>
-															<td>{{formatTime this.publish_date "MMM D YY"}}</td>
-															<td>{{formatTime this.expiry_date "MMM D YY"}}</td>
+															<td>{{formatTime this.publish_date "MMM D, YYYY"}}</td>
+															<td>{{formatTime this.expiry_date "MMM D, YYYY"}}</td>
 															{{!-- DiscountType --}} {{#ifCond this.discount_type "==" ../discountType.Percentage}}
 															<td>Percentage</td>
 															{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 															<td>Fixed Price</td>
 															{{/ifCond}} {{!--End DiscountType --}}
-															<td class="text_blue_color">{{this.sales_count}}</td>
+															<td class="text_blue_color">{{#if this.sales_count}} {{this.sales_count}}{{else}} 0 {{/if}}</td>
 															<td style="text-align:center">{{#ifCond this.discount_type "==" ../discountType.Percentage}}
 															{{decimalFixed this.discount_value}}&nbsp;%
 															{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}

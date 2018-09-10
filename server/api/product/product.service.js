@@ -373,7 +373,7 @@ export function planDetails(params) {
 		}
 	});
 }
-export function RelatedProducts(modelName,queryObj,limit,order) {
+export function RandomProducts(modelName,queryObj,limit,order) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findAndCountAll({
             where: queryObj,
