@@ -75,7 +75,13 @@ $(document).ready(function() {
             sentInput.to = urlData.id;
 		}
 
-		//sentInput.to = JSON.stringify($('#toAddress').val());
+		var to = $('#toAddress').val();
+		var toAddress = [];
+
+		toAddress.push(to);
+
+		sentInput.to = JSON.stringify(toAddress);
+        //sentInput.to = $('#toAddress').val();
 		sentInput.subject = $('#subject').val();
 		sentInput.message = $('#message').val();
 
@@ -109,10 +115,6 @@ $(document).ready(function() {
 						$(".wrapper-content").attr('style', 'opacity:1; z-index:100;');
 					}
 				});
-				setTimeout(function() {
-					location.reload(true);
-				}, 2000);
-
 			}
 		})
 	})
@@ -135,7 +137,13 @@ $(document).ready(function() {
 			return;
 		}
 
-		DraftInput.to = JSON.stringify($('#toAddress').val());
+		var to = $('#toAddress').val();
+		var toAddress = [];
+
+		toAddress.push(to);
+
+		DraftInput.to = JSON.stringify(toAddress);
+		//DraftInput.to = $('#toAddress').val();
 		DraftInput.subject = $('#subject').val();
 		DraftInput.message = $('#message').val();
 
@@ -165,7 +173,7 @@ $(document).ready(function() {
 	});
 
 	$('#discard').click(function() {
-		$("#toAddress").select2("val", "");
+		$("#to").attr("val", "");
 		$("#subject").attr('value', "");
 		$('#message').summernote('code', '');
 
@@ -176,10 +184,14 @@ $(function() {
 
 	var data = getUrlQueryString();
 
-	if (data.text) {
+	if (data.id) {
+		var id = data.id;
+		//var toAddress = [];
+		//toAddress.push(id);
 		var text = data.text;
 		text = text.replace(/%20/g, ' ');
         $("#to").val(text);
+		$("#toAddress").val(id);
 		//var newOption = new Option(text, data.id, false, false);
 		//$('#toAddress').append(newOption).trigger('change');
 	}
@@ -252,7 +264,7 @@ $(function() {
 													{{!-- <select class="custom-select form-control-customized form-control-sm" id='toAddress' name="toAddress">
 													</select> --}}
 													<input type="text" class="form-control-customized form-control-sm" id="to" name="to" readonly>
-													
+													<input type="text" id="toAddress" name="toAddress" style="display:none">
 												</div>
 											</div>
 										</div>
