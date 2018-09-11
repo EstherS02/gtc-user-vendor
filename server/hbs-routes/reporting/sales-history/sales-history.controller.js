@@ -92,7 +92,10 @@ export function salesHistory(req, res) {
         $between: [start_date, end_date]
     };
     queryURI['start_date'] = start_date;
+    
+    if(from_date && to_date){
     queryURI['end_date'] = end_date;
+    }
 }
 
 

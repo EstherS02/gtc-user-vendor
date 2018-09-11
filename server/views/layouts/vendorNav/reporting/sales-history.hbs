@@ -55,6 +55,7 @@ $("#total_refund").val(total);
 	}
 	$(function() {
 		$("#gtc-form-alert").hide();
+		$("#refundSelection").hide();
 		$("#searchSaleshistory").submit(function(e) {
 			e.preventDefault();
 			let formInput = $("#searchSaleshistory :input").filter(function(index, element) {
@@ -122,7 +123,15 @@ $("#total_refund").val(total);
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
               	   
-		
+		  	 var bulksave = [];
+			
+				$(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					bulksave.push($(this).attr("id"));
+				}
+			});
+		    if(bulksave !='')
+			 {
            $('#issueRefundModal').modal('hide');
 		   $('#conform-modal').modal('show');
 		   var total_refund = $('#total_refund').val();
@@ -132,13 +141,23 @@ $("#total_refund").val(total);
 			$("#refund_amount").html(total_refund);
 			//$("#orderItemid").val(orderItemId);
 			//$("#order_refund_amount").val(refund_amount);
+			}
+			else
+			{
+                $("#refundSelection").show();
+			    $('#refundSelection').removeClass('alert-success').addClass('alert-danger');
+			    $('#refundSelection .form-message').text("Please Select the Product Name");
+			    $("#refundSelection").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#refundSelection").slideUp(500);
+			    });
+			}
 			
 		
 		});
 
 		$('#refundConformForm').submit(function(e){
 			 var bulksave = [];
-				$(':checkbox:checked').each(function(i) {
+			 $(':checkbox:checked').each(function(i) {
 				if ($(this).val() != 'on') {
 					bulksave.push($(this).attr("id"));
 				}
@@ -169,24 +188,14 @@ $("#total_refund").val(total);
 					console.log(error);
 				}
 			})
+			 
+		
 		})
 	});
 
 	
 
-		$(document).on("change", ".refund_quantity", function() {
 		
-		var sum = 0;
-		$(".refund_quantity").each(function() {
-			sum += +$(this).val();
-			var currentquantity=$(this).val();
-			var orderid = $(this).attr('id');
-			var id = $(this).attr('id');
-			$('#orderItemID'+id).attr( "quantity", currentquantity);
-			$('#orderItemID'+id).attr( "orderid", orderid);
-     	});
-      });
-
 	$(document).on("change", ".refund_amount", function() {
 		var sum = 0;
 		$(".refund_amount").each(function() {
@@ -486,6 +495,12 @@ $("#total_refund").val(total);
 			</div>
 			<form id="issueRefundForm" class="form">
 				<div class="modal-body">
+						<div class="alert" id="refundSelection">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div><br/>
 					<div class="container">
 						<table class="table table-hover">
 							<thead>

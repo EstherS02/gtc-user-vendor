@@ -33,6 +33,7 @@ export function coupons(req, res) {
 	var couponModel = 'Coupon';
 	var categoryModel = "Category";
 
+
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
@@ -41,6 +42,7 @@ export function coupons(req, res) {
 		var statusNew = '';
 		if (statusNew = status[req.query.status])
 			queryObj['status'] = parseInt(statusNew);
+		queryURI['status'] = req.query.status;
 	}
 	if (typeof req.query.name !== 'undefined') {
 		queryObj['coupon_name'] = {
@@ -123,6 +125,7 @@ export function coupons(req, res) {
 
 		},
 		function(err, results) {
+			console.log("-----------------=============",queryURI);
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
             if (results.Coupons.count % limit)
@@ -163,7 +166,6 @@ export function addCoupon(req, res) {
 
 	var productModel = "Product";
 	var categoryModel = "Category";
-
 
 	var offset, limit, field, order;
 	var productQueryObj = {};
@@ -287,6 +289,7 @@ export function editCoupons(req, res) {
 			var productModel = "Product";
 
 			productQueryObj['status'] = status["ACTIVE"];
+			productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 			service.findAllRows(productModel, includeArr, productQueryObj, offset, limit, field, order)
 				.then(function(products) {
