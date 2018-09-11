@@ -33,7 +33,7 @@
 		selected = chkArray.join(',');
 
 		if (chkArray.length == 1) {
-			window.location.href = '/listings/' + e.name + '/' + selected;
+			window.location.href = '/listings/' + e.name + '/add-product';
 		}
 		else {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
@@ -171,7 +171,6 @@
 												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
-										<div style="clear: both;"></div>
 									</div>
 								</div>
 								<div class="col-md-12">

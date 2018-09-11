@@ -139,7 +139,7 @@ export function viewListings(req, res) {
 				vendorPlan: vendorPlan,
 				dropDownUrl: dropDownUrl,
 				queryURI: queryURI,
-				queryPaginationObj: queryPaginationObj,
+				queryPaginationObj: queryPaginationObj
 			});
 		} else {
 			res.render('vendorNav/listings/view-listings', err);
