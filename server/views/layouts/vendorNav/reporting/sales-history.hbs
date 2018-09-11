@@ -400,9 +400,16 @@ $("#total_refund").val(total);
 															<a href="/order-track/{{this.id}}">Track Order</a>
 														</td>
 														<td class="text_blue_color">
+															{{#ifCond this.order_status '!=' "6" }}
 															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
+																{{else}}
+																<p    style="cursor:pointer">
+																
+																 Refund Returned</p>
+															
+																{{/ifCond}}
 														</td>
 														<td class="text_blue_color">
 															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
