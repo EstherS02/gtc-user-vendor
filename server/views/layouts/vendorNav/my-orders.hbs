@@ -304,10 +304,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -362,7 +362,7 @@
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="7"></td>
+													<td colspan="8"></td>
 													<td class="text_blue_color">Total Transaction</td>
 													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>
@@ -370,7 +370,7 @@
 												<tr>
 													<td></td>
 													<td> No Data Found</td>
-													<td colspan="7"></td>
+													<td colspan="8"></td>
 												</tr>
 												{{/if}}
 											</tbody>
@@ -387,17 +387,17 @@
 															<ul class="pagination justify-content-center">
 																{{#unless startFromFirstPage}}
 																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 																	</li>
 																{{/unless}}
 																{{#each pages}}
 																	<li class="page-item {{#if isCurrent}} active {{/if}}">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																	</li>
 																{{/each}}
 																{{#unless endAtLastPage}}
 																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 																	</li>
 																{{/unless}}
 															</ul>

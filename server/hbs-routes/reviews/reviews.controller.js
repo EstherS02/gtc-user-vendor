@@ -175,8 +175,58 @@ export function reviews(req, res) {
 					order: [
 						[field, order]
 					],
+					attributes: [
+				'rating','title','comment', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+			],
+			group: ['Review.rating']
+
 				}).then(function(Reviews) {
-					maxSize = Reviews.count / limit;
+					var productRating = [{
+						"rating": 7,
+						"userCount": 0
+					}, {
+						"rating": 6,
+						"userCount": 0
+					}, {
+						"rating": 5,
+						"userCount": 0
+					}, {
+						"rating": 4,
+						"userCount": 0
+					}, {
+						"rating": 3,
+						"userCount": 0
+					}, {
+						"rating": 2,
+						"userCount": 0
+					}, {
+						"rating": 1,
+						"userCount": 0
+					}];
+					var total = 0;
+					var responseRatings = JSON.parse(JSON.stringify(Reviews.rows));
+					if (responseRatings.length > 0) {
+						for (var i = 0; i < productRating.length; i++) {
+							for (var j = 0; j < responseRatings.length; j++) {
+								if (productRating[i].rating == responseRatings[j].rating) {
+									total = total+responseRatings[j].userCount;
+									productRating[i].userCount = responseRatings[j].userCount;
+								}
+							}
+						}
+					}
+					Reviews.productRating = productRating;
+					Reviews.avgRating = (total > 0) ? (total / responseRatings.length).toFixed(1) : 0;
+					var counts = JSON.parse(JSON.stringify(Reviews.count));
+					var count = 0;
+					if(counts>0){
+						for(var a=0;a<counts.length;a++){
+							console.log("-------",counts[a].count)
+							count = count+counts[a].count;
+						}
+					}
+					Reviews.totalCount = count;
+					maxSize = Reviews.count.length / limit;
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -186,12 +236,13 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
+				console.log("===========================",results.userReviews)
 				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
-					Ratings: results.Rating.productRating,
-					ratingCount: results.Rating.count,
-					avgRating: results.Rating.avgRating,
+					Ratings: results.userReviews.productRating,
+					ratingCount: results.userReviews.totalCount,
+					avgRating: results.userReviews.avgRating,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					cartheader: results.cartCounts,

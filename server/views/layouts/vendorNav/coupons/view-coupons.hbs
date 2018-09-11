@@ -116,10 +116,12 @@
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" onChange="changeStatus(this);">
+													{{#select queryURI.status}}
 													<option disabled selected>CHANGE STATUS</option>
 													<option value="ACTIVE">Active</option>
 													<option value="SUSPENDED">Suspended</option>
 													<option value="SOLDOUT">Sold Out</option>
+													{{/select}}
 												</select>
 											</div>
 										</div>
@@ -201,7 +203,7 @@
 															<td>Fixed Price</td>
 															{{/ifCond}} {{!--End DiscountType --}}
 															<td class="text_blue_color">{{#if this.sales_count}} {{this.sales_count}}{{else}} 0 {{/if}}</td>
-															<td style="text-align:center">{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+															<td >{{#ifCond this.discount_type "==" ../discountType.Percentage}}
 															{{decimalFixed this.discount_value}}&nbsp;%
 															{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 															{{currency this.discount_value '$'}}&nbsp;<small>CAD</small>{{/ifCond}}
