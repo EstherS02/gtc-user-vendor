@@ -75,6 +75,7 @@ export function upgradeplan(req, res) {
 			const order = "asc";
 			var queryObjects={};
 			queryObjects.user_id = req.user.id;
+			queryObjects.status =statusCode['ACTIVE'];
             service.findAllRows("PaymentSetting", includeArr, queryObjects, offset, limit, field, order)
                 .then(function(paymentSetting) {
 					var paymentSettings = paymentSetting.rows;
