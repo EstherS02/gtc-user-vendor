@@ -501,7 +501,7 @@
 											<label class="label-control">Product Name
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" class="form-control-customized form-control-sm" name="product_name" required>
+											<input type="text" class="form-control-customized form-control-sm" name="product_name" value="{{editProduct.product_name}}" required>
 										</div>
 									</div>
 									<div class="row col-lg-12">
@@ -524,7 +524,11 @@
 												<label class="label-control">Type</label>
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="marketplace_type_id"
 												 id="marketplace_type_id">
-													<option disabled selected>Select Category...</option>
+												   {{#if editProduct.marketplace_type_id}}
+														<option value="{{editProduct.marketplace_type_id}}" disabled selected>{{editProduct.MarketplaceType.name}}</option>
+													{{else}}
+														<option disabled selected>Select Category...</option>
+													{{/if}}
 													{{#each marketplaceType}}
 														<option value="{{this.id}}">{{ Titlecase this.name}}</option>
 													{{/each}}
@@ -561,7 +565,11 @@
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_category_id"
 												 id="category" required>
-													<option disabled selected>Select Category...</option>
+												   {{#if editProduct.product_category_id}}
+												   		<option value="{{editProduct.product_category_id}}" disabled selected>{{editProduct.Category.name}}</option>
+													{{else}}
+														<option disabled selected>Select Category...</option>
+													{{/if}}	
 													{{#each categories}}
 														<option value="{{this.id}}">{{ Titlecase this.name}}</option>
 													{{/each}}
@@ -577,7 +585,11 @@
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="sub_category_id" id="sub_category"
 												 required>
+												   {{#if editProduct.sub_category_id}}
+														<option value="{{editProduct.sub_category_id}}" disabled selected>{{editProduct.SubCategory.name}}</option>
+													{{else}}
 													<option disabled selected>Select Sub Category...</option>
+													{{/if}}	
 												</select>
 											</div>
 										</div>
@@ -590,7 +602,11 @@
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="product_location" id="country"
 												 required>
+												 {{#if editProduct.product_location}}
+													<option value="{{editProduct.product_location}}" disabled selected>{{editProduct.Country.name}}</option>
+												 {{else}}
 													<option disabled selected>Select Country...</option>
+												 {{/if}}
 													{{#each country}}
 														<option value="{{this.id}}">{{ this.name}}</option>
 													{{/each}}
@@ -604,7 +620,11 @@
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state_id" id="state"
 												 value="">
-													<option disabled selected>Select State...</option>
+												  	{{#if editProduct.state_id}}
+													  	<option value="{{editProduct.state_id}}">{{editProduct.State.name}}</option>
+													{{else}}
+														<option disabled selected>Select State...</option>
+													{{/if}}
 												</select>
 											</div>
 										</div>
@@ -612,7 +632,7 @@
 									<div class="col-lg-4">
 										<div class="form-group">
 											<label class="label-control">City</label>
-											<input type="text" class="form-control-customized form-control-sm" name="city">
+											<input type="text" class="form-control-customized form-control-sm" name="city" value="{{editProduct.city}}">
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -620,14 +640,14 @@
 											<label class="label-control">SKU
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" required>
+											<input type="text" class="form-control-customized form-control-sm" placeholder="Stock keep unit" name="sku" value="{{editProduct.sku}}" required>
 										</div>
 									</div>
 									<div class="col-lg-4 priceDiv">
 										<div class="form-group">
 											<label class="label-control">Price
 											</label>
-											<input type="text" name="price" id="price" class="form-control-customized form-control-sm">
+											<input type="text" name="price" id="price" class="form-control-customized form-control-sm" value="{{editProduct.price}}">
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -635,7 +655,7 @@
 											<label class="label-control">Quantity Available
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" required>
+											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" value="{{editProduct.quantity_available}}" required>
 										</div>
 									</div>
 									{{#ifCond this.type '==' 'wholesale'}}
@@ -644,20 +664,20 @@
 											<label class="label-control">MOQ
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" class="form-control-customized form-control-sm" name="moq" id="moq" placeholder="Minimum order Quantity">
+											<input type="text" class="form-control-customized form-control-sm" name="moq" id="moq" value="{{editProduct.moq}}" placeholder="Minimum order Quantity">
 										</div>
 									</div>
 									{{/ifCond}}
 									<div class="col-lg-4 shippingDiv">
 										<div class="form-group">
 											<label class="label-control">Shipping Cost</label>
-											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost">
+											<input type="text" class="form-control-customized form-control-sm" name="shipping_cost" id="shipping_cost" value="{{editProduct.shipping_cost}}">
 										</div>
 									</div>
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">Description</label>
-											<textarea class="form-control-customized" name="description" rows="3"></textarea>
+											<textarea class="form-control-customized" name="description" rows="3">{{editProduct.description}}</textarea>
 										</div>
 									</div>
 									<div class="col-lg-8">
