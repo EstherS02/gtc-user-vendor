@@ -30,10 +30,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="gtc-mail/sent?limit=10">10</a>
-												<a href="gtc-mail/sent?limit=25">25</a>
-												<a href="gtc-mail/sent?limit=100">100</a>
-												<a href="gtc-mail/sent">All</a>
+												<a href="gtc-mail/sent?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="gtc-mail/sent?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="gtc-mail/sent?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="gtc-mail/sent?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>

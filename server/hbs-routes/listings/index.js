@@ -13,7 +13,9 @@ var addProductCtrl   = require('./add-product/add-product.controller');
 
 router.get('/:type',  auth.isAuthenticated(), viewListingsCtrl.viewListings);
 router.get('/:type/add-product',  auth.isAuthenticated(), addProductCtrl.addProduct);
-router.get('/:type/:product_slug', auth.isAuthenticated(), editListingCtrl.editListing);
+router.get('/:type/edit-product/:id',  auth.isAuthenticated(), addProductCtrl.addProduct);
+
+// router.get('/:type/:product_slug', auth.isAuthenticated(), editListingCtrl.editListing);
 
 
 module.exports = router;
