@@ -34,7 +34,7 @@ export function reviews(req, res) {
 
 	var order = "desc"; //"asc"
 	var offset = 0;
-	var limit = 1;
+	var limit;
 	
 	vendorId = req.query.vendor_id;
 	var rating_limit = 120;
@@ -48,11 +48,13 @@ export function reviews(req, res) {
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	queryPaginationObj['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
@@ -101,8 +103,8 @@ export function reviews(req, res) {
 						model: model['User']
 					}]
 				}).then(function(Reviews) {
-					maxSize = Reviews.count / limit;
-					console.log('max', maxSize);
+					// maxSize = Reviews.count / limit;
+					// console.log('max', maxSize);
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -110,73 +112,10 @@ export function reviews(req, res) {
 				});
 			},
 			Rating: function(callback) {
-				var total = 0;
-				var star5 = 0;
-				var star4 = 0;
-				var star3 = 0;
-				var star2 = 0
-				var star1 = 0;
-				model['VendorRating'].findAndCountAll({
-					where: queryObj,
-					limit: rating_limit,
-					order: [
-						[field, order]
-					],
-					attributes: ['rating'],
-					raw: true
-				}).then(function(Rating) {
-					var productRating = [{
-						starCount: 7,
-						ratingCount: 0
-					}, {
-						starCount: 6,
-						ratingCount: 0
-					},{
-						starCount: 5,
-						ratingCount: 0
-					}, {
-						starCount: 4,
-						ratingCount: 0
-					}, {
-						starCount: 3,
-						ratingCount: 0
-					}, {
-						starCount: 2,
-						ratingCount: 0
-					}, {
-						starCount: 1,
-						ratingCount: 0
-					}];
-
-					var total = 0;
-					var rating = Rating.rows;;
-
-					for (let key in rating) {
-						total = total + rating[key].rating;
-						if (rating[key].rating <= 7)
-							productRating[7 - rating[key].rating].ratingCount = productRating[7 - rating[key].rating].ratingCount + 1;
-					}
-					var avgRating = (total > 0) ? (total / rating.length).toFixed(1) : 0;
-					Rating.productRating = productRating;
-					Rating.avgRating = avgRating;
-
-					// productRating = productRating
-					return callback(null, Rating);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			},
-			userReviews: function(callback){
 				model['Review'].findAndCountAll({
 					where: queryObj,
-					offset: offset,
-					limit: limit,
-					order: [
-						[field, order]
-					],
 					attributes: [
-				'rating','title','comment', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+				'rating','title','comment','created_on','id' ,[sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
 			],
 			group: ['Review.rating']
 
@@ -219,14 +158,36 @@ export function reviews(req, res) {
 					Reviews.avgRating = (total > 0) ? (total / responseRatings.length).toFixed(1) : 0;
 					var counts = JSON.parse(JSON.stringify(Reviews.count));
 					var count = 0;
-					if(counts>0){
+
+					if(counts.length > 0){
 						for(var a=0;a<counts.length;a++){
-							console.log("-------",counts[a].count)
 							count = count+counts[a].count;
 						}
 					}
 					Reviews.totalCount = count;
-					maxSize = Reviews.count.length / limit;
+					queryPaginationObj['maxSize'] = count/limit;
+					queryPaginationObj['count'] = count;
+					return callback(null, Reviews);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+			},
+			userReviews: function(callback){
+				model['Review'].findAndCountAll({
+					where: queryObj,
+					include:[{
+					model:model['User'],
+					attributes: {
+						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+					}
+					}],
+					offset: offset,
+					limit: limit,
+					order: [
+						[field, order]
+					]
+				}).then(function(Reviews) {
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -236,20 +197,19 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				console.log("===========================",results.userReviews)
+				console.log("queryPaginationObj----------------------",queryPaginationObj)
 				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
-					Ratings: results.userReviews.productRating,
-					ratingCount: results.userReviews.totalCount,
-					avgRating: results.userReviews.avgRating,
+					Ratings: results.Rating.productRating,
+					ratingCount: results.Rating.totalCount,
+					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					cartheader: results.cartCounts,
                     bottomCategory: bottomCategory,
 					// pagination
 					page: page,
-					maxSize: maxSize,
 					pageSize: limit,
 					queryPaginationObj: queryPaginationObj,
 					collectionSize: results.Reviews.count,
