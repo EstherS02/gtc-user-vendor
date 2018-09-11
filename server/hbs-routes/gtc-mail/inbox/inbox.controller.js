@@ -14,9 +14,8 @@ const vendorPlan = require('../../../config/gtc-plan');
 const mailStatus = require('../../../config/mail-status');
 
 export function inbox(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var offset, limit, field, order, page, includeArray = [];
+	var LoggedInUser = {}, queryURI = {}, bottomCategory = {}, queryPaginationObj = {};
+	var offset, limit, field, order, page, maxSize, includeArray = [];
 
 	offset = 0;
 	limit = null;
@@ -25,13 +24,18 @@ export function inbox(req, res) {
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
-	delete req.query.limit;
-
-	page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['offset'] = offset;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    queryPaginationObj['limit'] = limit;
+    delete req.query.limit;
+    order = req.query.order ? req.query.order : "desc";
+    queryPaginationObj['order'] = order;
+    delete req.query.order;
+    page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['page'] = page;
 	delete req.query.page;
-
+	
 	offset = (page - 1) * limit;
 
 
@@ -107,6 +111,12 @@ export function inbox(req, res) {
 		}
 	},
 		function (err, results) {
+			maxSize = results.inboxMail.count / limit;
+            if (results.inboxMail.count % limit)
+				maxSize++;
+
+			queryPaginationObj['maxSize'] = maxSize;
+
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -124,7 +134,9 @@ export function inbox(req, res) {
 					maxSize: 5,
 					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
-					dropDownUrl: dropDownUrl
+					dropDownUrl: dropDownUrl,
+					queryPaginationObj: queryPaginationObj,
+					queryURI: queryURI
 				});
 			} else {
 				res.render('gtc-mail/inbox', err);
