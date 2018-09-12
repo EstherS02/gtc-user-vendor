@@ -4,6 +4,7 @@ const async = require('async');
 const sequelize = require('sequelize');
 
 const service = require('../../api/service');
+const vendorService=require('../../api/vendor/vendor-service')
 const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
@@ -13,7 +14,6 @@ const config = require('../../config/environment');
 export function index(req, res) {
 	var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
-
 	var selectedLocation = 0;
 	var selectedMarketPlace = 0;
 
@@ -120,17 +120,23 @@ export function index(req, res) {
 		locations: function(callback) {
 			var result = {};
 			var locationQueryObj = {};
-			var vendorCountQueryParames = {};
+			var vendorCountQueryParams = {};
+			var vendorMarketPlaceQueryParams={};
 
 			locationQueryObj['status'] = status["ACTIVE"];
 
-			vendorCountQueryParames['status'] = status["ACTIVE"];
+			vendorCountQueryParams['status'] = status["ACTIVE"];
+
+			vendorMarketPlaceQueryParams['status'] = status["ACTIVE"];
+			if (selectedMarketPlaceID) {
+				vendorMarketPlaceQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+			}
 
 			model['Country'].findAll({
 				where: locationQueryObj,
 				include: [{
 					model: model['Vendor'],
-					where: vendorCountQueryParames,
+					where: vendorCountQueryParams,
 					attributes: ['id', 'base_location'],
 					required: false
 				}],
@@ -139,8 +145,8 @@ export function index(req, res) {
 			}).then(function(results) {
 
 				if (results.length > 0) {
-					model['Vendor'].count({
-						where: vendorCountQueryParames
+					model['VendorUserProduct'].count({
+						where: vendorMarketPlaceQueryParams
 					}).then(function(count) {
 						result.count = count;
 						result.rows = JSON.parse(JSON.stringify(results));
@@ -159,6 +165,34 @@ export function index(req, res) {
 				console.log('Error:::', error);
 				return callback(error, null);
 			});
+		},
+		vendorCountByCountry: function(callback)
+		{
+			var result={};
+			var countryCountParams=[];
+			if (selectedMarketPlaceID) {
+				countryCountParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+			}
+			if(countryCountParams.marketplace_id){
+				vendorService.vendorCountByCountry(countryCountParams)
+				.then((response) => {
+					result.rows=JSON.parse(JSON.stringify(response));
+					return callback(null, result);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(error,null);
+				});
+			}else{
+				vendorService.vendorCountByCountryForHome()
+				.then((response) => {
+					result.rows=JSON.parse(JSON.stringify(response));
+					return callback(null, result);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(error,null);
+				});
+			}
+			
 		},
 		vendors: function(callback) {
 			service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
@@ -180,7 +214,19 @@ export function index(req, res) {
 					return callback(error, null);
 				});
 		},
+		allMarkerPlace:function(callback){
+			var result={};
+			model['Marketplace'].findAll({
+
+			}).then(function(results){
+				result.rows=JSON.parse(JSON.stringify(results));
+				return callback(null, result);
+			}).catch(function(error){
+				return callback(error, null);
+			});
+		},
 	}, function(error, results) {
+		console.log("**************************************************88",results.allMarkerPlace);
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('vendor-search', {
@@ -190,13 +236,15 @@ export function index(req, res) {
 				queryURI: queryURI,
 				queryPaginationObj: queryPaginationObj,
 				locations: results.locations,
+				VendorCountByCountry:results.vendorCountByCountry,
 				vendors: results.vendors,
 				cartheader: results.cartCounts,
 				selectedMarketPlace: results.selectedMarketPlace,
 				LoggedInUser: LoggedInUser,
 				marketplaceURl: marketplaceURl,
 				selectedLocation: selectedLocation,
-				layout_type: layout
+				layout_type: layout,
+				allMarkerPlace:results.allMarkerPlace
 			})
 		}
 	});
