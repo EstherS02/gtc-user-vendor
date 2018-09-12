@@ -190,36 +190,36 @@
 			var marketplace_type_id = $('#marketplace_type_id').val();
 
 			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
-	{
-		$(".priceDiv").hide();
-		$('#price').removeAttr('value');
-	}
+			{
+				$(".priceDiv").hide();
+				$('#price').removeAttr('value');
+			}
             else {
-		$(".priceDiv").show();
-		$("price").attr('value');
-	}
-	if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-		$(".shippingDiv").hide();
-		$('#shipping_cost').removeAttr('value');
-	}
-            else {
-		$(".shippingDiv").show();
-		$("shipping_cost").attr('value');
-	}
+					$(".priceDiv").show();
+					$("price").attr('value');
+				}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".shippingDiv").hide();
+				$('#shipping_cost').removeAttr('value');
+			}
+			else {
+				$(".shippingDiv").show();
+				$("shipping_cost").attr('value');
+			}
 
-	if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-		$(".exchangingProductDiv").show();
-		$(".exchangingProductQuantityDiv").show();
-		$("exchanging_product").attr('value');
-		$("exchanging_product_quantity").attr('value');
-	}
-            else {
-		$(".exchangingProductDiv").hide();
-		$(".exchangingProductQuantityDiv").hide();
-		$('#exchanging_product').removeAttr('value');
-		$('#exchanging_product_quantity').removeAttr('value');
-	}        
-        });
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+				$(".exchangingProductDiv").show();
+				$(".exchangingProductQuantityDiv").show();
+				$("exchanging_product").attr('value');
+				$("exchanging_product_quantity").attr('value');
+			}
+					else {
+				$(".exchangingProductDiv").hide();
+				$(".exchangingProductQuantityDiv").hide();
+				$('#exchanging_product').removeAttr('value');
+				$('#exchanging_product_quantity').removeAttr('value');
+			}        
+				});
 
 	$("#category").change(function() {
 		var category_id = $('#category').val();
@@ -246,7 +246,7 @@
 			url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
 			type: 'GET',
 			success: function(result) {
-				$(".attributeDiv").empty();
+				$("#attributeDiv").empty();
 				var attributeRow;
 				attributeRow= '<tr></tr>';
 				for (var i = 0; i < result.rows.length; i++) {
@@ -262,7 +262,7 @@
 										'<th class="shop_list_title"><b>Attribute</b></th><th class="shop_list_title">'+
 										'<b>Value</b></th></tr></thead><tbody>'+attributeRow+'</tbody></table></div></div></div></div>'
 
-                $('.attributeDiv').append(attributeSection);		    							
+                $('#attributeDiv').append(attributeSection);		    							
 			},
 			error: function(error) {
 				console.log("Error", error);
@@ -356,14 +356,27 @@
 	}, "You must include two decimal places");
 
 	$("#productForm").submit(function(e) {
-		e.preventDefault();
-		var imageURLsArr = []
+
+    	e.preventDefault();
+		var imageURLsArr = [], attrArr;
 
 		let input = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
-		$.ajaxSetup({ async: false });
+		var attributeArr = $('#attributeDiv :input').filter(function(index, element) {
+			return $(element).val() != '';
+		}).serializeArray();
+
+		console.log("------------------------",typeof(attributeArr));
+
+		console.log("-**************************-",attributeArr);
+	
+	   /* attributeArr.forEach(function(element){
+             console.log("===================================")
+		})*/
+
+	/*	$.ajaxSetup({ async: false });
 
 		if ($('#baseImage')[0].files.length > 0) {
 			var form1 = new FormData();
@@ -436,7 +449,9 @@
 			obj.data = null;
 			addProduct(obj, input);
 		}
-		$.ajaxSetup({ async: true });
+		$.ajaxSetup({ async: true });*/
+
+
 
 	});
 
@@ -691,7 +706,10 @@
 										</div>
 									</div>
 
-									<div class="col-lg-8 attributeDiv"></div>
+									<div class="col-lg-8">
+										<section id="attributeDiv"></section>
+									</div>
+									
 									<div class="col-lg-8">
 										<div class="form-group">
 											<label class="label-control">Upload product base image</label>
