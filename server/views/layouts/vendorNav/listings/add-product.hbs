@@ -36,8 +36,7 @@
 		if ($('#productForm').valid()) {
 			obj.attributeArr = JSON.stringify(attributeArr);
 
-			console.log("---------------------------------------", obj);
-			/*$.ajax({
+			$.ajax({
 				type: 'POST',
 				url: '/api/product/add-product?' + input,
 				data: obj,
@@ -66,19 +65,16 @@
 					$('.base_image').empty();
 					$("#productForm")[0].reset();
 				}
-			})*/
+			})
 		}
 	}
 
 	function remove(e, index) {
-		console.log("=================================================", e);
-		console.log("********************************************", index);
 		allFiles.splice(index, 1);
 		$(e).parents(".pip").remove();
 		if (allFiles.length < 6) {
 			$("#productImage").show();
 		}
-		console.log("--------------------------------------", allFiles.length);
 	}
 
 	$(document).ready(function() {
@@ -447,20 +443,7 @@
 		}
 		$.ajaxSetup({ async: true });
 
-
-
 	});
-
-	/*$("#attributeForm").submit(function(e) {
-
-		e.preventDefault();
-
-		attributeArr = $("#attributeForm :input").filter(function(index, element) {
-			return $(element).val() != '';
-		}).serializeArray();
-
-		$('#exampleModal').modal('hide');
-	});*/
 
 	$("#reset").click(function() {
 		$('.pip').empty();
