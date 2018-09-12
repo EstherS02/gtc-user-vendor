@@ -35,7 +35,9 @@
 
 		if ($('#productForm').valid()) {
 			obj.attributeArr = JSON.stringify(attributeArr);
-			$.ajax({
+
+			console.log("---------------------------------------", obj);
+			/*$.ajax({
 				type: 'POST',
 				url: '/api/product/add-product?' + input,
 				data: obj,
@@ -48,7 +50,7 @@
 					});
 					$('.pip').empty();
 					$('.base_image').empty();
-					$("#productForm")[0].reset();
+					//$("#productForm")[0].reset();
 					setTimeout(function() {
 						location.reload(true);
 					}, 1000);
@@ -64,7 +66,7 @@
 					$('.base_image').empty();
 					$("#productForm")[0].reset();
 				}
-			})
+			})*/
 		}
 	}
 
@@ -289,6 +291,7 @@
 				digits: true
 			},
 			city: {
+				required: true,
 				lettersonly: true
 			},
 			shipping_cost: {
@@ -335,6 +338,7 @@
 				digits: "Please enter valid available quantity"
 			},
 			city: {
+				required: "Please enter product origin city",
 				lettersonly: "Please enter vaild city name"
 			},
 			shipping_cost: {
@@ -358,25 +362,17 @@
 	$("#productForm").submit(function(e) {
 
     	e.preventDefault();
-		var imageURLsArr = [], attrArr;
-
+		var imageURLsArr = []; 
+		
 		let input = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
-		var attributeArr = $('#attributeDiv :input').filter(function(index, element) {
+		attributeArr = $('#attributeDiv :input').filter(function(index, element) {
 			return $(element).val() != '';
 		}).serializeArray();
 
-		console.log("------------------------",typeof(attributeArr));
-
-		console.log("-**************************-",attributeArr);
-	
-	   /* attributeArr.forEach(function(element){
-             console.log("===================================")
-		})*/
-
-	/*	$.ajaxSetup({ async: false });
+		$.ajaxSetup({ async: false });
 
 		if ($('#baseImage')[0].files.length > 0) {
 			var form1 = new FormData();
@@ -449,13 +445,13 @@
 			obj.data = null;
 			addProduct(obj, input);
 		}
-		$.ajaxSetup({ async: true });*/
+		$.ajaxSetup({ async: true });
 
 
 
 	});
 
-	$("#attributeForm").submit(function(e) {
+	/*$("#attributeForm").submit(function(e) {
 
 		e.preventDefault();
 
@@ -464,7 +460,7 @@
 		}).serializeArray();
 
 		$('#exampleModal').modal('hide');
-	});
+	});*/
 
 	$("#reset").click(function() {
 		$('.pip').empty();
@@ -654,7 +650,9 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">City</label>
+											<label class="label-control">City
+												<span class="text-danger">*</span>
+											</label>
 											<input type="text" class="form-control-customized form-control-sm" name="city" value="{{editProduct.city}}">
 										</div>
 									</div>
