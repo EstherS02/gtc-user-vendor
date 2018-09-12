@@ -35,6 +35,7 @@
 
 		if ($('#productForm').valid()) {
 			obj.attributeArr = JSON.stringify(attributeArr);
+
 			$.ajax({
 				type: 'POST',
 				url: '/api/product/add-product?' + input,
@@ -48,7 +49,7 @@
 					});
 					$('.pip').empty();
 					$('.base_image').empty();
-					$("#productForm")[0].reset();
+					//$("#productForm")[0].reset();
 					setTimeout(function() {
 						location.reload(true);
 					}, 1000);
@@ -69,14 +70,11 @@
 	}
 
 	function remove(e, index) {
-		console.log("=================================================", e);
-		console.log("********************************************", index);
 		allFiles.splice(index, 1);
 		$(e).parents(".pip").remove();
 		if (allFiles.length < 6) {
 			$("#productImage").show();
 		}
-		console.log("--------------------------------------", allFiles.length);
 	}
 
 	$(document).ready(function() {
@@ -190,36 +188,36 @@
 			var marketplace_type_id = $('#marketplace_type_id').val();
 
 			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
-	{
-		$(".priceDiv").hide();
-		$('#price').removeAttr('value');
-	}
+			{
+				$(".priceDiv").hide();
+				$('#price').removeAttr('value');
+			}
             else {
-		$(".priceDiv").show();
-		$("price").attr('value');
-	}
-	if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-		$(".shippingDiv").hide();
-		$('#shipping_cost').removeAttr('value');
-	}
-            else {
-		$(".shippingDiv").show();
-		$("shipping_cost").attr('value');
-	}
+					$(".priceDiv").show();
+					$("price").attr('value');
+				}
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+				$(".shippingDiv").hide();
+				$('#shipping_cost').removeAttr('value');
+			}
+			else {
+				$(".shippingDiv").show();
+				$("shipping_cost").attr('value');
+			}
 
-	if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-		$(".exchangingProductDiv").show();
-		$(".exchangingProductQuantityDiv").show();
-		$("exchanging_product").attr('value');
-		$("exchanging_product_quantity").attr('value');
-	}
-            else {
-		$(".exchangingProductDiv").hide();
-		$(".exchangingProductQuantityDiv").hide();
-		$('#exchanging_product').removeAttr('value');
-		$('#exchanging_product_quantity').removeAttr('value');
-	}        
-        });
+			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+				$(".exchangingProductDiv").show();
+				$(".exchangingProductQuantityDiv").show();
+				$("exchanging_product").attr('value');
+				$("exchanging_product_quantity").attr('value');
+			}
+					else {
+				$(".exchangingProductDiv").hide();
+				$(".exchangingProductQuantityDiv").hide();
+				$('#exchanging_product').removeAttr('value');
+				$('#exchanging_product_quantity').removeAttr('value');
+			}        
+				});
 
 	$("#category").change(function() {
 		var category_id = $('#category').val();
@@ -246,7 +244,7 @@
 			url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
 			type: 'GET',
 			success: function(result) {
-				$(".attributeDiv").empty();
+				$("#attributeDiv").empty();
 				var attributeRow;
 				attributeRow= '<tr></tr>';
 				for (var i = 0; i < result.rows.length; i++) {
@@ -262,7 +260,7 @@
 										'<th class="shop_list_title"><b>Attribute</b></th><th class="shop_list_title">'+
 										'<b>Value</b></th></tr></thead><tbody>'+attributeRow+'</tbody></table></div></div></div></div>'
 
-                $('.attributeDiv').append(attributeSection);		    							
+                $('#attributeDiv').append(attributeSection);		    							
 			},
 			error: function(error) {
 				console.log("Error", error);
@@ -289,6 +287,7 @@
 				digits: true
 			},
 			city: {
+				required: true,
 				lettersonly: true
 			},
 			shipping_cost: {
@@ -335,6 +334,7 @@
 				digits: "Please enter valid available quantity"
 			},
 			city: {
+				required: "Please enter product origin city",
 				lettersonly: "Please enter vaild city name"
 			},
 			shipping_cost: {
@@ -356,12 +356,17 @@
 	}, "You must include two decimal places");
 
 	$("#productForm").submit(function(e) {
-		e.preventDefault();
-		var imageURLsArr = []
 
+    	e.preventDefault();
+		var imageURLsArr = []; 
+		
 		let input = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
+
+		attributeArr = $('#attributeDiv :input').filter(function(index, element) {
+			return $(element).val() != '';
+		}).serializeArray();
 
 		$.ajaxSetup({ async: false });
 
@@ -416,6 +421,7 @@
 
 						imageURLobj.status = 1;
 						imageURLobj.type = 1;
+						imageURLobj.base_image = 0;
 						imageURLobj.url = imageURLs[i];
 
 						imageURLsArr.push(imageURLobj);
@@ -438,17 +444,6 @@
 		}
 		$.ajaxSetup({ async: true });
 
-	});
-
-	$("#attributeForm").submit(function(e) {
-
-		e.preventDefault();
-
-		attributeArr = $("#attributeForm :input").filter(function(index, element) {
-			return $(element).val() != '';
-		}).serializeArray();
-
-		$('#exampleModal').modal('hide');
 	});
 
 	$("#reset").click(function() {
@@ -639,7 +634,9 @@
 									</div>
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">City</label>
+											<label class="label-control">City
+												<span class="text-danger">*</span>
+											</label>
 											<input type="text" class="form-control-customized form-control-sm" name="city" value="{{editProduct.city}}">
 										</div>
 									</div>
@@ -691,7 +688,10 @@
 										</div>
 									</div>
 
-									<div class="col-lg-8 attributeDiv"></div>
+									<div class="col-lg-8">
+										<section id="attributeDiv"></section>
+									</div>
+									
 									<div class="col-lg-8">
 										<div class="form-group">
 											<label class="label-control">Upload product base image</label>
@@ -738,3 +738,4 @@
 		</div>
 	</div>
 </div>
+{{> footer/bottom-footer}}

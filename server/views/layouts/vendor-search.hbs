@@ -1,5 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
+		{{{DisplayJSON VendorCountByCountry}}}
 	function sortSearch(e) {
 		var url = window.location.href;
 		var uri = updateQueryStringParameter(url, 'field', e.value);
@@ -66,7 +67,7 @@ $(document).ready(function() {
 			</div>
 			<div class="row m-t-sm">
 				<div class="col-md-8">
-					<h3>Showing <b>{{SUMFloat queryPaginationObj.offset 1}}-{{#ifCond locations.count '<' queryPaginationObj.limit}} {{locations.count}} {{else}} {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}</b> of <b>{{locations.count}} Vendors</b> matching {{#if selectedMarketPlace}}in the <b>{{selectedMarketPlace.name}}</b>{{/if}}</h3>
+					<h3>Showing <b>{{SUMFloat queryPaginationObj.offset 1}}-{{#ifCond locations.count '<' queryPaginationObj.limit}} {{locations.count}} {{else}} {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}</b> of <b>{{locations.count}} Vendors</b> matching {{#if selectedMarketPlace}}in the <b>{{selectedMarketPlace.name}}</b>{{else if marketplaceURl}}<b>{{marketplaceURl}}</b>{{/if}}</h3>
 				</div>
 				<div class="col-md-2">
 					<div class="alignright">
@@ -119,14 +120,29 @@ $(document).ready(function() {
 					<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
 					<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{locations.count}})</p>
 					<ul class="right-list-view category-fixed">
-						{{#each locations.rows}}
+						{{#each VendorCountByCountry.rows}}
 							<li>
 								<a {{#ifCond ../queryURI.location "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
-									<span>{{this.name}} ({{this.vendor_count}})</span>
+									<span>{{name}} ({{vendor_count}})</span>
 								</a>
 							</li>
 						{{/each}}
 					</ul>
+
+					{{#ifCond marketplaceURl "==" 'sellers'}}
+						<h5 class="right-header-sm" style="margin-top:10px">FILTER BY MARKETPLACE</h5>
+						<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
+						<ul class="right-list-view category-fixed">
+							{{#each allMarkerPlace.rows}}
+									<li>
+										<a {{#ifCond ../queryURI.location "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
+											<span>{{name}}</span>
+										</a>
+									</li>
+							{{/each}}
+						</ul>
+					{{/ifCond}}
+
 				</div>
 				<div class="col-md-9">
 					<div class="search-sm-header">

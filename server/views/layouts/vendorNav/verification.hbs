@@ -270,7 +270,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf">
 											{{#if verification.personal_id_verification_file_link }}
-												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
+												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;overflow:hidden" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
 											{{else}}
 												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Browse</label>
 											{{/if}}
@@ -322,7 +322,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.personal_address_verification_file_link }}
-												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
+												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
 											{{else}}
 												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Browse</label>
 											{{/if}}
@@ -381,7 +381,7 @@
 											<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
 
 											{{#if verification.business_verification_file_link }}
-												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
+												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="businessIdProof">{{verification.business_verification_file_link}}</label>
 											{{else}}
 												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Browse</label>
 
@@ -435,7 +435,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.business_address_verification_file_link }}
-												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
+												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
 											{{else}}
 												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Browse</label>
 											{{/if}}
