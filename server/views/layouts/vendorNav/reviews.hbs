@@ -15,22 +15,13 @@
 									<h2>My Reviews</h2>
 								</div>
 								<div class="content-body">
-									<p>Sort by
-										{{#ifCond queryPaginationObj.field '==' 'rating' }}
-											<span class="text_blue_color">
-												<a href="/reviews?sort=mostRecent">Most Recent</a>
-											</span>
-											<span class="text_blue_color">
-												<a href="/reviews?sort=rating" class="review-sort ">Star Rating</a>
-											</span>
-											{{else}}
-												<span class="text_blue_color">
-													<a href="/reviews?sort=mostRecent" class="review-sort">Most Recent</a>
-												</span>
-												<span class="text_blue_color">
-													<a href="/reviews?sort=rating">Star Rating</a>
-												</span>
-										{{/ifCond}}
+									<p style="font-size:10px"><span class="text_gray_color">Sort by</span>
+										<span class="text_blue_color">
+											<a href="/reviews?sort=mostRecent" class="{{#ifCond queryPaginationObj.field '==' 'mostRecent' }}text_black_color review-sort {{/ifCond}}">Most Recent</a>
+										</span>&nbsp;
+										<span >
+											<a href="/reviews?sort=rating" class="{{#ifCond queryPaginationObj.field '==' 'rating' }}text_black_color review-sort {{/ifCond}}  ">Star Rating</a>
+										</span>
 									</p>
 									<div id="Recent" class="tabcontent review-bottom">
 										{{!-- <hr class="review-hr"> --}}
@@ -42,8 +33,8 @@
 												</div>
 												<div class="col-md-7">
 													<p style="font-size: small;margin-bottom: 0rem;">
-														<span class="text_blue_color">{{this.User.first_name}}</span> reviewed {{../LoggedInUser.Vendor.vendor_name}} - {{this.rating}}&nbsp;star</p>
-													<p style="padding-left: 7px;font-size: small;">{{formatTime this.created_on "MMMM DD, YYYY"}} {{this.id}}
+														<span class="{{!-- text_blue_color --}}"><strong>{{Titlecase this.User.first_name}}</strong></span><span class="text_gray_color"> reviewed {{../LoggedInUser.Vendor.vendor_name}} for </span><a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a> - {{this.rating}}&nbsp;star</p>
+													<p style="padding-left: 5px;font-size: small;" class="text_gray_color">{{formatTime this.created_on "MMMM DD, YYYY"}}
 													</p>
 												</div>
 												<div class="col-md-2">
@@ -64,7 +55,7 @@
 									<div class="row rating-row">
 										{{#each Ratings}}
 											<div class="side">
-												<div> {{this.starCount}} star</div>
+												<div> {{this.rating}} star</div>
 											</div>
 											<div class="middle">
 												<div class="bar-container">

@@ -1913,3 +1913,9 @@ display: inline-block;
     background: #55b82e;
     color: #FFFFFF;
 }
+.text_gray_color {
+    color: gray;
+}
+.text_black_color {
+    color: #000;
+}

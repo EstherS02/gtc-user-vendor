@@ -109,6 +109,7 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 
 Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
 	 var amt = parseInt(quantity) * parseFloat(price);
+     console.log("=--------------------------",numeral(amt).format(symbol + '0,0.00'));
      return numeral(amt).format(symbol + '0,0.00');
 });
 

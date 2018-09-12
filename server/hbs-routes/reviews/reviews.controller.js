@@ -29,7 +29,7 @@ export function reviews(req, res) {
 		queryPaginationObj["field"] = field;
 	} else {
 		var field = 'id';
-		queryPaginationObj["field"] = field;
+		queryPaginationObj["field"] = req.query.sort;
 	}
 
 	var order = "desc"; //"asc"
@@ -114,6 +114,8 @@ export function reviews(req, res) {
 			Rating: function(callback) {
 				model['Review'].findAndCountAll({
 					where: queryObj,
+					// offset:0,
+					// limit:3,
 					attributes: [
 				'rating','title','comment','created_on','id' ,[sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
 			],
@@ -143,19 +145,26 @@ export function reviews(req, res) {
 						"userCount": 0
 					}];
 					var total = 0;
+					var totalAmt = 0;
 					var responseRatings = JSON.parse(JSON.stringify(Reviews.rows));
 					if (responseRatings.length > 0) {
 						for (var i = 0; i < productRating.length; i++) {
 							for (var j = 0; j < responseRatings.length; j++) {
 								if (productRating[i].rating == responseRatings[j].rating) {
 									total = total+responseRatings[j].userCount;
+									totalAmt = totalAmt+(responseRatings[j].userCount+responseRatings[j].rating)
+										console.log("==============responseRatings.length",responseRatings[j].userCount)
+										console.log("---------responseRatings.length",total)
+
+
 									productRating[i].userCount = responseRatings[j].userCount;
 								}
 							}
 						}
 					}
+					console.log("responseRatings.length",responseRatings.length)
 					Reviews.productRating = productRating;
-					Reviews.avgRating = (total > 0) ? (total / responseRatings.length).toFixed(1) : 0;
+					Reviews.avgRating = (totalAmt > 0) ? (totalAmt / total).toFixed(1) : 0;
 					var counts = JSON.parse(JSON.stringify(Reviews.count));
 					var count = 0;
 
@@ -181,6 +190,8 @@ export function reviews(req, res) {
 					attributes: {
 						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 					}
+					},{
+						model:model['Product']
 					}],
 					offset: offset,
 					limit: limit,
@@ -197,7 +208,7 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				console.log("queryPaginationObj----------------------",queryPaginationObj)
+				console.log("queryPaginationObj----------------------",results.userReviews.rows)
 				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,
