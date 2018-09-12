@@ -31,10 +31,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="gtc-mail/deleted?limit=10">10</a>
-												<a href="gtc-mail/deleted?limit=25">25</a>
-												<a href="gtc-mail/deleted?limit=100">100</a>
-												<a href="gtc-mail/deleted">All</a>
+												<a href="gtc-mail/deleted?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
+												<a href="gtc-mail/deleted?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
+												<a href="gtc-mail/deleted?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
+												<a href="gtc-mail/deleted?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -71,23 +71,23 @@
 									</table>
 								</div>
 								{{#pagination collectionSize page pageSize maxSize}}
-								<nav aria-label="Page navigation example">
-									<ul class="pagination justify-content-center">
-										{{#unless startFromFirstPage}}
-										<li class="page-item">
-											<a class="page-link" href="gtc-mail/deleted?page={{DiffFloat ../page 1}}&limit={{../pageSize}}">Previous</a>
-										</li>
-										{{/unless}} {{#each pages}}
-										<li class="page-item {{#if isCurrent}} active {{/if}}">
-											<a class="page-link" href="gtc-mail/deleted?page={{page}}&limit={{../../pageSize}}">{{page}}</a>
-										</li>
-										{{/each}} {{#unless endAtLastPage}}
-										<li class="page-item">
-											<a class="page-link" href="gtc-mail/deleted?page={{SUMFloat ../page 1}}&limit={{../pageSize}}">Next</a>
-										</li>
-										{{/unless}}
-									</ul>
-								</nav>
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/deleted?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="gtc-mail/deleted?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="gtc-mail/deleted?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+												</li>
+												{{/unless}}
+											</ul>
+										</nav>
 								{{/pagination}}
 							</div>
 						</div>

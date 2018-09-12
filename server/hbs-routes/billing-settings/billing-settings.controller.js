@@ -26,14 +26,13 @@ export function billingSettings(req, res) {
     var categoryModel = "Category";
     var paymentSettingModel = "PaymentSetting";
     var billingAddressModel = "Address";
-    let payPalOAuthUrl;
 
     if (req.user)
         LoggedInUser = req.user;
 
     let user_id = LoggedInUser.id;
 
-    payPalOAuthUrl = openIdConnect.authorizeUrl({
+    let payPalOAuthUrl = openIdConnect.authorizeUrl({
         'scope': config.payPalOAuth.scope,
         'state': user_id
     });

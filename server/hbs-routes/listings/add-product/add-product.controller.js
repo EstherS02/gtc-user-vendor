@@ -15,33 +15,38 @@ var url = require('url');
 
 export function addProduct(req, res) {
 
-    var categoryModel = "Category";
-    var countryModel = "Country";
-    var marketplaceTypeModel = "MarketplaceType";
+	var categoryModel, countryModel, marketplaceTypeModel, productModel, editProductId;
+	var queryObj = {}, LoggedInUser = {}, bottomCategory = {}, productIncludeArr = [];;
+	var offset, limit, field, order, type;
 
-    var offset, limit, field, order;
-    var queryObj = {},
-        LoggedInUser = {};
-    var bottomCategory = {};
 
-    var type = req.params.type;
+    categoryModel = "Category";
+    countryModel = "Country";
+	marketplaceTypeModel = "MarketplaceType";
+	productModel = "Product";
+
+    type = req.params.type;
 
     offset = 0;
     limit = null;
     field = "id";
     order = "asc";
 
-    var LoggedInUser = {};
+    LoggedInUser = {};
 
     if (req.user)
-        LoggedInUser = req.user;
-
+		LoggedInUser = req.user;
+		
+	if (req.params.id)
+		editProductId = req.params.id;
 
     queryObj['status'] = status["ACTIVE"];
 
     var queryObjCategory = {
         status: status['ACTIVE']
-    };
+	};
+
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute');
 
     async.series({
         cartCounts: function(callback) {
@@ -92,7 +97,17 @@ export function addProduct(req, res) {
                     console.log('Error :::', error);
                     return callback(null);
                 });
-        }
+		},
+		editProduct: function(callback){
+			service.findIdRow(productModel, editProductId, productIncludeArr)
+				.then(function(editProduct) {
+					return callback(null, editProduct);
+
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		}
     }, function(err, results) {
         var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -108,7 +123,8 @@ export function addProduct(req, res) {
                 cartheader:results.cartCounts,
                 vendorPlan: vendorPlan,
                 type: type,
-                dropDownUrl: dropDownUrl,
+				dropDownUrl: dropDownUrl,
+				editProduct: results.editProduct,
             });
         } else {
             res.render('vendorNav/listings/add-product', err);

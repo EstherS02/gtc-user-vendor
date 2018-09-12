@@ -742,7 +742,7 @@ export function editProduct(req, res) {
 		}
 	}).then(function(row) {
 		if (row) {
-			res.status(200).send("Created");
+			res.status(200).send("Updated");
 		} else {
 			res.status(500).send("Internal server error");
 		}

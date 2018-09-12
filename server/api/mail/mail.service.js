@@ -121,7 +121,7 @@ export function deleteMail(queryObj) {
 			.then(function(exists){
 				if (exists) {
 					return service.updateRecord(userMailModelName, {
-						mail_status: mailStatus['READ']
+						mail_status: mailStatus['DELETED']
 					}, queryObj)
 				} else {
 					return Promise.resolve(null);

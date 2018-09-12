@@ -27,14 +27,6 @@
 				if (formInput != '') {
 					window.location.href = 'order-history?' + formInput;
 				}
-					//else{
-					//	$("#gtc-form-alert").show();
-					 //   $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-					  //  $('#gtc-form-alert .form-message').text("Please Choose the option");
-					   // $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-					   // $("#gtc-form-alert").slideUp(500);
-					   // });
-					//}
 				});
 
 			$("#searchOrderhistory1").submit(function (e) {
@@ -223,7 +215,6 @@
 
 														<option disabled selected>Status</option>
 														{{#each orderStatus}}
-														{{!-- <option value = "{{@key}}">{{@key}}</option> --}}
 														<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
 														{{/each}}
 														{{/select}}
@@ -283,13 +274,9 @@
 													</th>
 													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
-													{{!-- <th scope="col">Vendor</th>
-													<th scope="col">Type</th> --}}
 													<th scope="col">Date</th>
 													<th scope="col">Method</th>
 													<th colspan="4">Status</th>
-													{{!-- <th scope="col"></th>
-													<th scope="col"></th> --}}
 													<th scope="col">Amount</th>
 												</tr>
 											</thead>
@@ -300,9 +287,6 @@
 													<td ><input type="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
-									  				{{!-- <td class="text_blue_color"><a href="/vendor/{{this.Products.Vendor.id}}">{{this.Products.Vendor.vendor_name}}</a></td>
-									  				<td>{{objectKey  ../marketPlace this.Products.marketplace_id }}
-									  				</td> --}}
 									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 									  				<td>Stripe</td>
 									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>

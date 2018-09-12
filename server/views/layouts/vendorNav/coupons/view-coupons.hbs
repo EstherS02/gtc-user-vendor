@@ -18,35 +18,35 @@
 	}
 
 	function changeStatus(e) {
-		// window.location.href = '/coupons?status=' + e.value;
-		console.log(e.value)
-		var chkArray = [];
-		$(':checkbox:checked').each(function (i) {
-				if ($(this).val() != 'on') {
-					chkArray.push($(this).val());
-				}
-		});
-		var selected;
-		selected = chkArray.join(',');
-		var data = {};
-		 data.status = e.value;
-		 data.ids = JSON.stringify(chkArray);
-		 if(chkArray.length>0){
-			$.ajax({
-				type: 'PUT',
-				data:data,
-				url: '/api/coupon/update-status',
-				success: function (data) {
-					console.log(data);
-					location.reload();
-				},
-				error: function (error) {
-	                console.log(error);
-				}
-	        })
-		}else{
-			ouputErrorPopup("Select Atleast One Coupon");
-		}
+		window.location.href = '/coupons?status=' + e.value;
+		// console.log(e.value)
+		// var chkArray = [];
+		// $(':checkbox:checked').each(function (i) {
+		// 		if ($(this).val() != 'on') {
+		// 			chkArray.push($(this).val());
+		// 		}
+		// });
+		// var selected;
+		// selected = chkArray.join(',');
+		// var data = {};
+		//  data.status = e.value;
+		//  data.ids = JSON.stringify(chkArray);
+		//  if(chkArray.length>0){
+		// 	$.ajax({
+		// 		type: 'PUT',
+		// 		data:data,
+		// 		url: '/api/coupon/update-status',
+		// 		success: function (data) {
+		// 			console.log(data);
+		// 			location.reload();
+		// 		},
+		// 		error: function (error) {
+	 //                console.log(error);
+		// 		}
+	 //        })
+		// }else{
+		// 	ouputErrorPopup("Select Atleast One Coupon");
+		// }
 
 	}
 
@@ -116,10 +116,12 @@
 										<div class="form-group mx-sm-3 mb-2">
 											<div class="select-container">
 												<select class="form-control-customized form-control-sm" onChange="changeStatus(this);">
+													{{#select queryURI.status}}
 													<option disabled selected>CHANGE STATUS</option>
 													<option value="ACTIVE">Active</option>
 													<option value="SUSPENDED">Suspended</option>
 													<option value="SOLDOUT">Sold Out</option>
+													{{/select}}
 												</select>
 											</div>
 										</div>
@@ -140,6 +142,7 @@
 											</div>
 										</div>
 									</form>
+
 								</div></div>
 									<div class="row">
 										<div class="col-sm-12">
@@ -156,10 +159,10 @@
 												<div class="alignright cart-top-right">
 													<span class="m-r-sm text-muted">
 													Entries per page : 
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}"> All </a>
+														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
+														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
+														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
+														<a href="/coupons?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
 													</span>
 												</div>
 												<div style="clear: both;"></div>
@@ -192,15 +195,15 @@
 															</td>
 															<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
 															<td>{{this.code}}</td>
-															<td>{{formatTime this.publish_date "MMM D YY"}}</td>
-															<td>{{formatTime this.expiry_date "MMM D YY"}}</td>
+															<td>{{formatTime this.publish_date "MMM D, YYYY"}}</td>
+															<td>{{formatTime this.expiry_date "MMM D, YYYY"}}</td>
 															{{!-- DiscountType --}} {{#ifCond this.discount_type "==" ../discountType.Percentage}}
 															<td>Percentage</td>
 															{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 															<td>Fixed Price</td>
 															{{/ifCond}} {{!--End DiscountType --}}
-															<td class="text_blue_color">{{this.sales_count}}</td>
-															<td style="text-align:center">{{#ifCond this.discount_type "==" ../discountType.Percentage}}
+															<td class="text_blue_color">{{#if this.sales_count}} {{this.sales_count}}{{else}} 0 {{/if}}</td>
+															<td >{{#ifCond this.discount_type "==" ../discountType.Percentage}}
 															{{decimalFixed this.discount_value}}&nbsp;%
 															{{else ifCond this.discount_type "==" ../discountType.FixedPrice}}
 															{{currency this.discount_value '$'}}&nbsp;<small>CAD</small>{{/ifCond}}

@@ -7,7 +7,6 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
-const statusCode = require('../../config/status');
 const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
@@ -34,6 +33,7 @@ export function coupons(req, res) {
 	var couponModel = 'Coupon';
 	var categoryModel = "Category";
 
+
 	if (typeof req.query.limit !== 'undefined') {
 		limit = req.query.limit;
 		limit = parseInt(limit);
@@ -42,6 +42,7 @@ export function coupons(req, res) {
 		var statusNew = '';
 		if (statusNew = status[req.query.status])
 			queryObj['status'] = parseInt(statusNew);
+		queryURI['status'] = req.query.status;
 	}
 	if (typeof req.query.name !== 'undefined') {
 		queryObj['coupon_name'] = {
@@ -124,6 +125,7 @@ export function coupons(req, res) {
 
 		},
 		function(err, results) {
+			console.log("-----------------=============",queryURI);
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
             if (results.Coupons.count % limit)
@@ -131,9 +133,9 @@ export function coupons(req, res) {
             queryPaginationObj['maxSize'] = maxSize;
 				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
-				Coupons: results.Coupons.rows,
+					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
-					statusCode: status,
+					statusCode : status,
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
@@ -164,7 +166,6 @@ export function addCoupon(req, res) {
 
 	var productModel = "Product";
 	var categoryModel = "Category";
-
 
 	var offset, limit, field, order;
 	var productQueryObj = {};
@@ -256,7 +257,7 @@ export function editCoupons(req, res) {
 
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = req.user.Vendor.id;
-	queryObj['status'] = status["ACTIVE"];
+	// queryObj['status'] = status["ACTIVE"];
 	var coupon_id = 0;
 
 	field = "id";
@@ -288,6 +289,7 @@ export function editCoupons(req, res) {
 			var productModel = "Product";
 
 			productQueryObj['status'] = status["ACTIVE"];
+			productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 			service.findAllRows(productModel, includeArr, productQueryObj, offset, limit, field, order)
 				.then(function(products) {
@@ -305,7 +307,7 @@ export function editCoupons(req, res) {
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = status["ACTIVE"];
 
 			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 				.then(function(category) {
@@ -428,6 +430,7 @@ export function editCoupons(req, res) {
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
+				statusCode : status,
 				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,

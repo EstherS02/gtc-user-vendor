@@ -40,6 +40,7 @@ export default function(app) {
     app.use('/api/shipping-setting', require('./api/shipping-setting'));
     app.use('/api/reports', require('./api/reports'));
     app.use('/api/export-csv', require('./api/export-csv'));
+    app.use('/api/paypal', require('./api/paypal'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
 

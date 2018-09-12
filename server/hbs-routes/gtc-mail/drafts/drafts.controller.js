@@ -15,9 +15,8 @@ const mailStatus = require('../../../config/mail-status');
 
 
 export function drafts(req, res) {
-	var LoggedInUser = {};
-	var bottomCategory = {};
-	var offset, limit, field, order, page, includeArray=[];
+	var LoggedInUser = {}, bottomCategory = {}, queryURI = {}, queryPaginationObj = {};
+	var offset, limit, field, order, page, maxSize, includeArray=[];
 
 	offset = 0;
 	limit = null;
@@ -26,13 +25,18 @@ export function drafts(req, res) {
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : config.paginationLimit;
-	delete req.query.limit;
-
-	page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['offset'] = offset;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    queryPaginationObj['limit'] = limit;
+    delete req.query.limit;
+    order = req.query.order ? req.query.order : "desc";
+    queryPaginationObj['order'] = order;
+    delete req.query.order;
+    page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['page'] = page;
 	delete req.query.page;
-
+	
 	offset = (page - 1) * limit;
 
 	
@@ -105,6 +109,12 @@ export function drafts(req, res) {
 			}
 		},
 		function(err, results) {
+			maxSize = results.draftMail.count / limit;
+            if (results.draftMail.count % limit)
+				maxSize++;
+
+			queryPaginationObj['maxSize'] = maxSize;
+
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -121,7 +131,9 @@ export function drafts(req, res) {
 					maxSize: 5,
 					selectedPage: 'drafts',
 					vendorPlan:vendorPlan,
-					dropDownUrl : dropDownUrl
+					dropDownUrl : dropDownUrl,
+					queryPaginationObj: queryPaginationObj,
+					queryURI: queryURI
 				});
 			} else {
 				res.render('gtc-mail/draft', err);

@@ -325,6 +325,10 @@
 				})
 			};
 		});
+
+		$('#userCancelBtn').click(function(e){
+			window.location.href = '/user/my-profile';
+		})
 	});	
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -646,7 +650,6 @@
 												</div>
 											</div>
 										</div>
-
 									</div>
 								</div>
 

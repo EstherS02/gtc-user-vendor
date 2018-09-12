@@ -1,4 +1,5 @@
 <script type="text/javascript"> 
+   
 	$(function() {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -32,6 +33,18 @@
 			}
 		}
 	}
+
+	function selectval()
+	{
+		var el, i = 0;
+var total = 0;
+while(el = document.getElementsByName("chk")[i++]) {
+if(el.checked) { total= total + Number(el.value);}
+}
+console.log(total);
+$("#total_refund").val(total);
+
+	}
 	function selectDatefun() {
 		var val = $("#selectDate option:selected").val();
 		if (val) {
@@ -42,13 +55,14 @@
 	}
 	$(function() {
 		$("#gtc-form-alert").hide();
+		$("#refundSelection").hide();
 		$("#searchSaleshistory").submit(function(e) {
 			e.preventDefault();
 			let formInput = $("#searchSaleshistory :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = 'my-order/order?' + formInput;
+				window.location.href = ' reporting/sales-history?' + formInput;
 			}else{
 				$("#gtc-form-alert").show();
 			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -64,7 +78,7 @@
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = 'my-order/order?' + formInput;
+				window.location.href = ' reporting/sales-history?' + formInput;
 			}
 		});
 	});
@@ -86,70 +100,110 @@
 
 					for (var i = 0; i < result.OrderItems.length; i++) {
 
-						orderItems = "<tr><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+						orderItems = "<tr><td><input type='checkbox' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
 							+ result.OrderItems[i].quantity + "</td><td>"
 							+ result.OrderItems[i].final_price + "</td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td><td>"
-							+ "<input type='text' min='1' class='shop_qty_num all-quantity-cart-items refund_amount' style='width:auto;'></td></tr>";
+							+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
+							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
+							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].final_price+" disabled style='width:auto;'></td></tr>";
 
 						$("#issueRefund").append(orderItems);
 					}
-					totalTag = "<tr><td colspan='3'></td><td><b>TOTAL REFUND :</b></td><td>"
-						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>";
+					totalTag = "<tr><td colspan='4'></td><td><b>TOTAL REFUND :</b></td><td>"
+						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' disabled style='width:auto;'></td></tr>";
 
 					$("#issueRefund").append(totalTag);
 				},
 				error: function(error) {
 					console.log(error);
-				}
+				}	
 			})
 		});
 
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
-
-			$('#issueRefundModal').modal('hide');
-			$('#conform-modal').modal('show');
-
-			var total_refund = $('#total_refund').val();
-			var order_id = $("#order_id").html();
-
-			$("#orderId").html(order_id);
+              	   
+		  	 var bulksave = [];
+			
+				$(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					bulksave.push($(this).attr("id"));
+				}
+			});
+		    if(bulksave !='')
+			 {
+           $('#issueRefundModal').modal('hide');
+		   $('#conform-modal').modal('show');
+		   var total_refund = $('#total_refund').val();
+		   console.log("total_refund:::"+total_refund);
+		   var order_id = $("#order_id").html();
+		    $("#orderId").html(order_id);
 			$("#refund_amount").html(total_refund);
+			//$("#orderItemid").val(orderItemId);
+			//$("#order_refund_amount").val(refund_amount);
+			}
+			else
+			{
+                $("#refundSelection").show();
+			    $('#refundSelection').removeClass('alert-success').addClass('alert-danger');
+			    $('#refundSelection .form-message').text("Please Select the Product Name");
+			    $("#refundSelection").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#refundSelection").slideUp(500);
+			    });
+			}
+			
 		
 		});
 
 		$('#refundConformForm').submit(function(e){
+			 var bulksave = [];
+			 $(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					bulksave.push($(this).attr("id"));
+				}
+			});
+			console.log("bulksave:::"+bulksave);
 			e.preventDefault();
-
-			var totalRefund = $("#refund_amount").html();
+            var totalRefund = $("#refund_amount").html();
 			var refund_order_id = $("#orderId").html();
-
+			var checkRefundItems= JSON.stringify(bulksave);
 			var refundObj = {};
-
 			refundObj = {
-				total_refund: totalRefund
+				total_refund: totalRefund,
+				refundOrderItems:checkRefundItems
+				
 			}
-
-            $.ajax({
+			console.log("totalRefund:::"+totalRefund);
+			console.log("refundonj:::"+refundObj);
+		    $.ajax({
 				url: '/api/payment/refund-order/' + refund_order_id,
 				type: 'POST',
 				data: refundObj,
 				success: function(result) {
                     $('#conform-modal').modal('hide');
 					$('#success-modal').modal('show');
+
 				},
 				error: function(error) {
 					console.log(error);
 				}
 			})
+			 
+		
 		})
 	});
 
+	
+
+		
 	$(document).on("change", ".refund_amount", function() {
 		var sum = 0;
 		$(".refund_amount").each(function() {
 			sum += +$(this).val();
+		    var currentval=$(this).val();
+			 var id = $(this).attr('id');
+			 $('#orderItemID'+id).val(currentval);
+			
 		});
 		$("#total_refund").val(sum);
 	});
@@ -199,7 +253,10 @@
 				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
 			    $("#gtc-form-alert").slideUp(500);
 			});
-			}		    
+			}
+           
+		    
+		  
 	  }
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -212,14 +269,16 @@
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
-							<h2>My Orders</h2>
+							<h2>My orders
+							<span class="pull-right" style="font-size:12px"><a href="reporting/sales-history">Clear All</a></span>
+							</h2>
 						</div>
 						<div class="alert" id="gtc-form-alert">
 							<button type="button" class="close" data-dismiss="alert">
 								<span aria-hidden="true">&times;</span>
 							</button>
 							<span class="form-message"></span>
-						</div>
+						</div><br/>
 						<div class="content-body">
 							<div class="row">
 								<div class="col-md-7">
@@ -267,7 +326,7 @@
 												</select>
 											</div>
 										</div>
-										<input type="submit" value="Search" class="btn btn-sm btn-success" style="margin-top: -8px;">
+										<input type="submit" value="SEARCH" class="ladda-button btn btn-small btn-muted" style="margin-top: -8px;">
 									</form>
 								</div>
 								<div class="col-md-5">
@@ -304,10 +363,10 @@
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -350,9 +409,16 @@
 															<a href="/order-track/{{this.id}}">Track Order</a>
 														</td>
 														<td class="text_blue_color">
+															{{#ifCond this.order_status '!=' "6" }}
 															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
+																{{else}}
+																<p    style="cursor:pointer">
+																
+																 Refund Issued</p>
+															
+																{{/ifCond}}
 														</td>
 														<td class="text_blue_color">
 															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
@@ -362,7 +428,7 @@
 													</tr>
 												{{/each}}
 												<tr>
-													<td colspan="7"></td>
+													<td colspan="8"></td>
 													<td class="text_blue_color">Total Transaction</td>
 													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>
@@ -387,17 +453,17 @@
 															<ul class="pagination justify-content-center">
 																{{#unless startFromFirstPage}}
 																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 																	</li>
 																{{/unless}}
 																{{#each pages}}
 																	<li class="page-item {{#if isCurrent}} active {{/if}}">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
 																	</li>
 																{{/each}}
 																{{#unless endAtLastPage}}
 																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+																		<a class="page-link" href="../my-order/order?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 																	</li>
 																{{/unless}}
 															</ul>
@@ -429,10 +495,19 @@
 			</div>
 			<form id="issueRefundForm" class="form">
 				<div class="modal-body">
+						<div class="alert" id="refundSelection">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div><br/>
 					<div class="container">
 						<table class="table table-hover">
 							<thead>
 								<tr>
+									<th>
+										<input type="hidden">
+									</th>
 									<th class="shop_list_title">
 										<b>Product</b>
 									</th>
@@ -479,7 +554,7 @@
 					<p>Are you sure you want to process a refund of $
 						<span id='refund_amount'></span> for the order #
 						<span id="orderId"></span>?</p>
-				</div>
+						</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
@@ -506,7 +581,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/reporting/sales-history'">
 					<b>Ok</button>
 			</div>
 		</div>

@@ -9,7 +9,7 @@ const status = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
 const ADDRESS_TYPE = require('../../../config/address');
-
+const cartObj = require('../../../api/cart/cart.controller');
 const querystring = require('querystring');
 
 function processCheckout(req, res, callback) {

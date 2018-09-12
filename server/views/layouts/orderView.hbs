@@ -328,7 +328,7 @@
 											<td>
 												<div class="row">
 													<div class="col-md-12">
-														<p class="shop_price_doller">${{quantityPrice orderItems.quantity orderItems.Product.price}}</p>
+														<p class="shop_price_doller">{{quantityPrice orderItems.quantity orderItems.Product.price '$'}}</p>
 														{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
                                                 <a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
 													<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">CANCEL</p>

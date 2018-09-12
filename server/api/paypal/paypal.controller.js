@@ -17,38 +17,49 @@ paypal.configure({
 
 export function paypalVerifyEmailOAuth(req, res) {
     if (!req.query.code) {
-        return "error Occurred in verifying paypal email";
+        return errorResponse({
+            error: 'invalid Paypal Email'
+        });
     }
     let userId = req.query.state;
     openIdConnect.tokeninfo.create(req.query.code, function(error, tokeninfo) {
         if (error) {
-            console.log(error);
+            return errorResponse(error);
         } else {
             openIdConnect.userinfo.get(tokeninfo.access_token, function(error, userinfo) {
                 if (error) {
-                    console.log(error);
+                    return errorResponse(error);
                 } else {
                     let updatePayPalId = {
                         'vendor_payout_paypal_email': 'test@gmail.com'
                         //'vendor_payout_paypal_email': userinfo.email
                     }
-                    console.log(tokeninfo);
-                    console.log(userinfo);
                     return service.updateRow("Vendor", updatePayPalId, userId)
                         .then(function(response) {
-                            res.render('twitterCallbackClose', {
+                            return res.render('window-popup-close', {
                                 layout: false,
-                                twitterResponseData: 'test'
+                                popupResponseData: {
+                                    message: "SUCCESS",
+                                    messageDetails: "Paypal Email id is successfully connected"
+                                }
                             });
                         }).catch(function(err) {
-                            console.log(err);
+                            return errorResponse(err);
                         });
 
                 }
             });
         }
     });
+}
 
-
-
+function errorResponse(error) {
+    return res.render('window-popup-close', {
+        layout: false,
+        popupResponseData: {
+            message: "ERROR",
+            messageDetails: 'Failed to connect Paypal Email Id',
+            errorDetails: error
+        }
+    });
 }
