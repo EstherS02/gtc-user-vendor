@@ -1,5 +1,5 @@
 <script type="text/javascript"> 
-    var bulksave=[];
+   
 	$(function() {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -33,6 +33,18 @@
 			}
 		}
 	}
+
+	function selectval()
+	{
+		var el, i = 0;
+var total = 0;
+while(el = document.getElementsByName("chk")[i++]) {
+if(el.checked) { total= total + Number(el.value);}
+}
+console.log(total);
+$("#total_refund").val(total);
+
+	}
 	function selectDatefun() {
 		var val = $("#selectDate option:selected").val();
 		if (val) {
@@ -43,6 +55,7 @@
 	}
 	$(function() {
 		$("#gtc-form-alert").hide();
+		$("#refundSelection").hide();
 		$("#searchSaleshistory").submit(function(e) {
 			e.preventDefault();
 			let formInput = $("#searchSaleshistory :input").filter(function(index, element) {
@@ -87,17 +100,17 @@
 
 					for (var i = 0; i < result.OrderItems.length; i++) {
 
-						orderItems = "<tr><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+						orderItems = "<tr><td><input type='checkbox' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
 							+ result.OrderItems[i].quantity + "</td><td>"
 							+ result.OrderItems[i].final_price + "</td><td>"
-							+ "<input type='text' name='' quantity='' orderid='' class='orderItems' id=orderItemID"+result.OrderItems[i].id+" value=''>"
-							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" style='width:auto;'></td><td>"
-							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" style='width:auto;'></td></tr>";
+							+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
+							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
+							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].final_price+" disabled style='width:auto;'></td></tr>";
 
 						$("#issueRefund").append(orderItems);
 					}
-					totalTag = "<tr><td colspan='3'></td><td><b>TOTAL REFUND :</b></td><td>"
-						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>";
+					totalTag = "<tr><td colspan='4'></td><td><b>TOTAL REFUND :</b></td><td>"
+						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' disabled style='width:auto;'></td></tr>";
 
 					$("#issueRefund").append(totalTag);
 				},
@@ -109,38 +122,59 @@
 
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
-           $("input[class=orderItems]").each(function() {
-           var ids = $(this).attr("orderid");
-		   var refund_quantity = $(this).attr("quantity");
-           var refundamt = $(this).val();
-           item = {}
-           item ["order_id"] = ids;
-           item ["refund_quantity"] = refund_quantity;
-           item["refund_amount"]=refundamt;
-           bulksave.push(item);
-           });
+              	   
+		  	 var bulksave = [];
+			
+				$(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					bulksave.push($(this).attr("id"));
+				}
+			});
+		    if(bulksave !='')
+			 {
            $('#issueRefundModal').modal('hide');
 		   $('#conform-modal').modal('show');
 		   var total_refund = $('#total_refund').val();
+		   console.log("total_refund:::"+total_refund);
 		   var order_id = $("#order_id").html();
 		    $("#orderId").html(order_id);
 			$("#refund_amount").html(total_refund);
 			//$("#orderItemid").val(orderItemId);
 			//$("#order_refund_amount").val(refund_amount);
+			}
+			else
+			{
+                $("#refundSelection").show();
+			    $('#refundSelection').removeClass('alert-success').addClass('alert-danger');
+			    $('#refundSelection .form-message').text("Please Select the Product Name");
+			    $("#refundSelection").fadeTo(2000, 500).slideUp(500, function () {
+			    $("#refundSelection").slideUp(500);
+			    });
+			}
 			
 		
 		});
 
 		$('#refundConformForm').submit(function(e){
+			 var bulksave = [];
+			 $(':checkbox:checked').each(function(i) {
+				if ($(this).val() != 'on') {
+					bulksave.push($(this).attr("id"));
+				}
+			});
+			console.log("bulksave:::"+bulksave);
 			e.preventDefault();
             var totalRefund = $("#refund_amount").html();
 			var refund_order_id = $("#orderId").html();
+			var checkRefundItems= JSON.stringify(bulksave);
 			var refundObj = {};
 			refundObj = {
 				total_refund: totalRefund,
-				orderItems:JSON.stringify(bulksave)
+				refundOrderItems:checkRefundItems
 				
 			}
+			console.log("totalRefund:::"+totalRefund);
+			console.log("refundonj:::"+refundObj);
 		    $.ajax({
 				url: '/api/payment/refund-order/' + refund_order_id,
 				type: 'POST',
@@ -148,29 +182,20 @@
 				success: function(result) {
                     $('#conform-modal').modal('hide');
 					$('#success-modal').modal('show');
+
 				},
 				error: function(error) {
 					console.log(error);
 				}
 			})
+			 
+		
 		})
 	});
 
 	
 
-		$(document).on("change", ".refund_quantity", function() {
 		
-		var sum = 0;
-		$(".refund_quantity").each(function() {
-			sum += +$(this).val();
-			var currentquantity=$(this).val();
-			var orderid = $(this).attr('id');
-			var id = $(this).attr('id');
-			$('#orderItemID'+id).attr( "quantity", currentquantity);
-			$('#orderItemID'+id).attr( "orderid", orderid);
-     	});
-      });
-
 	$(document).on("change", ".refund_amount", function() {
 		var sum = 0;
 		$(".refund_amount").each(function() {
@@ -384,9 +409,16 @@
 															<a href="/order-track/{{this.id}}">Track Order</a>
 														</td>
 														<td class="text_blue_color">
+															{{#ifCond this.order_status '!=' "6" }}
 															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
 																<i class="fas fa-credit-card"></i>
 																Issue Refund</p>
+																{{else}}
+																<p    style="cursor:pointer">
+																
+																 Refund Issued</p>
+															
+																{{/ifCond}}
 														</td>
 														<td class="text_blue_color">
 															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
@@ -463,10 +495,19 @@
 			</div>
 			<form id="issueRefundForm" class="form">
 				<div class="modal-body">
+						<div class="alert" id="refundSelection">
+							<button type="button" class="close" data-dismiss="alert">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span class="form-message"></span>
+						</div><br/>
 					<div class="container">
 						<table class="table table-hover">
 							<thead>
 								<tr>
+									<th>
+										<input type="hidden">
+									</th>
 									<th class="shop_list_title">
 										<b>Product</b>
 									</th>
@@ -513,9 +554,7 @@
 					<p>Are you sure you want to process a refund of $
 						<span id='refund_amount'></span> for the order #
 						<span id="orderId"></span>?</p>
-						<input type="text" name="orderItemid" value="" id="orderItemid">
-						<input type="text" name="order_refund_amount" value="" id="order_refund_amount">
- 				</div>
+						</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
@@ -542,7 +581,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/reporting/sales-history'">
 					<b>Ok</button>
 			</div>
 		</div>

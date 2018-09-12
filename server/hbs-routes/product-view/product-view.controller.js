@@ -157,13 +157,7 @@ export function product(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-			// service.findAllRows(productModel, includeArr, queryObj, 0, 9, field, order)
-			// 	.then(function(RelatedProducts) {
-			// 		return callback(null, RelatedProducts);
-			// 	}).catch(function(error) {
-			// 		console.log('Error :::', error);
-			// 		return callback(null);
-			// 	});
+
 		},
 		VendorDetail: function(callback) {
 			var vendorIncludeArr = [{

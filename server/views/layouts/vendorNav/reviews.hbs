@@ -40,18 +40,18 @@
 												<div class="col-md-1">
 													<img class="responsive" src="{{this.User.user_pic_url}}" alt="img" style=" width: 100%;height: auto;" />{{!-- "../../img/signup-feature-1.png" --}}
 												</div>
-												<div class="col-md-4">
+												<div class="col-md-7">
 													<p style="font-size: small;margin-bottom: 0rem;">
-														<span class="text_blue_color">{{../LoggedInUser.Vendor.vendor_name}}</span> reviewed {{../LoggedInUser.Vendor.vendor_name}} - {{this.rating}}&nbsp;star</p>
-													<p style="padding-left: 7px;font-size: small;">{{formatTime this.created_on "MMMM DD, YYYY"}}
+														<span class="text_blue_color">{{this.User.first_name}}</span> reviewed {{../LoggedInUser.Vendor.vendor_name}} - {{this.rating}}&nbsp;star</p>
+													<p style="padding-left: 7px;font-size: small;">{{formatTime this.created_on "MMMM DD, YYYY"}} {{this.id}}
 													</p>
 												</div>
-												<div class="col-md-3">
+												<div class="col-md-2">
 													<p style="font-size: 11px;">{{starCount this.rating}}</p>
 												</div>
 											</div>
-											<p class="text_blue_color" style="font-size: 12px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</p>
-											<p style="font-size: smaller;text-align:justify;">{{this.comment}}</p>
+											<div class="text_blue_color" style="font-size: 12px;font-weight:bold;text-transform:uppercase;margin-top:0.5rem;">{{this.title}}</div>
+											<div style="font-size: smaller;text-align:justify;">{{this.comment}}</div>
 										{{/each}}
 									</div>
 								</div>
@@ -68,11 +68,11 @@
 											</div>
 											<div class="middle">
 												<div class="bar-container">
-													<div style="width: {{progressBar this.ratingCount ../ratingCount}}%" class="bar-select"></div>
+													<div style="width: {{progressBar this.userCount ../ratingCount}}%" class="bar-select"></div>
 												</div>
 											</div>
 											<div class="side right">
-												<div>{{this.ratingCount}}</div>
+												<div>{{this.userCount}}</div>
 											</div>
 										{{/each}}
 									</div>
@@ -86,7 +86,28 @@
 		{{!-- Pagination starts --}}
 			<div class="row">
 				<div style="margin:0 auto;width:100px;">
-					{{#pagination collectionSize page pageSize maxSize}}
+				{{#pagination queryPaginationObj.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+						<nav aria-label="Page navigation example">
+							<ul class="pagination justify-content-center">
+								{{#unless startFromFirstPage}}
+									 <li class="page-item">
+										<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+									</li>
+								{{/unless}} 
+								{{#each pages}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="../reviews?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+									</li>
+								{{/each}}
+								{{#unless endAtLastPage}}
+									<li class="page-item">
+										<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+									</li>
+								{{/unless}}
+							</ul>
+						</nav>
+					{{/pagination}}
+{{!-- 					{{#pagination collectionSize page pageSize maxSize}}
 						<nav aria-label="Page navigation example">
 							<ul class="pagination justify-content-center">
 								{{#each pages}}
@@ -96,7 +117,7 @@
 								{{/each}}
 							</ul>
 						</nav>
-					{{/pagination}}
+					{{/pagination}} --}}
 				</div>
 			</div>
 						{{!-- Pagination Ends --}}
