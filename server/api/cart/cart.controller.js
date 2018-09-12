@@ -585,22 +585,26 @@ var checkApplyCoupon = function(req, res, callback) {
 					"model": model['CouponCategory'],
 					where: {
 						status: status["ACTIVE"]
-					}
+					},
+					required:false
 				}, {
 					"model": model['CouponProduct'],
 					where: {
 						status: status["ACTIVE"]
-					}
+					},
+					required:false
 				}, {
 					"model": model['CouponExcludedCategory'],
 					where: {
 						status: status["ACTIVE"]
-					}
+					},
+					required:false
 				}, {
 					"model": model['CouponExcludedProduct'],
 					where: {
 						status: status["ACTIVE"]
-					}
+					},
+					required:false
 				}],
 				where: searchObj
 			}).then(function(couponRow) {
@@ -1027,7 +1031,6 @@ function plainTextResponse(response) {
 }
 
 function validateCouponProduct(arrayObj1, arrayObj2, key1, key2) {
-	var return_val = false;
 	var return_val = false;
 	for (let value of arrayObj1) {
 		var id = value['Product'][key1];

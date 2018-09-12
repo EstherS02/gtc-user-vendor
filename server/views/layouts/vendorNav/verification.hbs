@@ -188,14 +188,14 @@
 					<div class="ibox-content">
 						<div class="content-body">
 							<form role="form" id="verificationForm">
-								<h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;">GTC Store verification</h5>
+								<h5 class="gtc-title" style="padding-top: 20px;padding-left: 5px; float: left;font-size:23px">GTC Store Verification</h5>
 								<p class="verification-incomplete">
 									{{#if verification.vendor_verified_status}}
 										{{#ifCond verificationStatus.APPROVED "==" verification.vendor_verified_status}}
 											<span class="id-verified">
 												<i class="fas fa-check-circle"></i>
 											</span>
-											<b>Your Document verification request is approved</b>
+											Your Document verification request is approved
 											{{else ifCond verificationStatus.WAITING "==" verification.vendor_verified_status}}
 											<span class="exclamation">
 												<i class="fas fa-exclamation-circle"></i>
@@ -223,7 +223,7 @@
 								</p>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;"> Personal ID Verification</h5>
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;font-size:23px"> Personal ID Verification</h5>
 									<p class="verification-incomplete">
 										{{#if verification.personal_id_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.personal_id_verification_file_status }}
@@ -235,7 +235,7 @@
 												<span class="id-verified">
 													<i class="fas fa-check-circle"></i>
 												</span>
-												<b>Your Id verification request is approved</b>
+												Your Id verification request is approved
 											{{/ifCond}}
 											{{#ifCond verificationStatus.REJECTED '==' verification.personal_id_verification_file_status }}
 												<span class="id-verified">
@@ -270,7 +270,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalIdProof" name="personalIdProof" accept=".jpeg, .jpg, .png, .pdf">
 											{{#if verification.personal_id_verification_file_link }}
-												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
+												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;overflow:hidden" for="personalIdProof">{{verification.personal_id_verification_file_link}}</label>
 											{{else}}
 												<label name="pId" class="custom-file-label customized-file-label clrlbl" style="margin: auto 8px;" for="personalIdProof">Browse</label>
 											{{/if}}
@@ -288,7 +288,7 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload Bill With Personal Address</h5>
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;font-size:23px">Upload Bill With Personal Address</h5>
 									<p class="verification-incomplete">
 										{{#if verification.personal_address_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.personal_address_verification_file_status}}
@@ -300,7 +300,7 @@
 												<span class="id-verified">
 													<i class="fas fa-check-circle"></i>
 												</span>
-												<b>Your Id verification request is approved</b>
+												Your Id verification request is approved
 											{{/ifCond}}
 											{{#ifCond verificationStatus.REJECTED '==' verification.personal_address_verification_file_status}}
 												<span class="id-verified">
@@ -322,7 +322,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="personalAddressProof" name="personalAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.personal_address_verification_file_link }}
-												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
+												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="personalAddressProof">{{verification.personal_address_verification_file_link}}</label>
 											{{else}}
 												<label name="pAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="personalAddressProof">Browse</label>
 											{{/if}}
@@ -344,7 +344,7 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;font-size:23px">
 										Business License / Articles Of Incorporation
 									</h5>
 									<p class="verification-incomplete">
@@ -358,7 +358,7 @@
 												<span class="id-verified">
 													<i class="fas fa-check-circle"></i>
 												</span>
-												<b>Your Id verification request is approved </b>
+												Your Id verification request is approved
 											{{/ifCond}}
 											{{#ifCond verificationStatus.REJECTED '==' verification.business_verification_file_status}}
 												<span class="id-verified">
@@ -381,7 +381,7 @@
 											<input type="file" class="custom-file-input" id="businessIdProof" name="businessIdProof" accept=".jpg, .png, .pdf">
 
 											{{#if verification.business_verification_file_link }}
-												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">{{verification.business_verification_file_link}}</label>
+												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="businessIdProof">{{verification.business_verification_file_link}}</label>
 											{{else}}
 												<label name="bId" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessIdProof">Browse</label>
 
@@ -402,7 +402,7 @@
 								</div>
 								<hr style="margin-top: 25px;">
 								<div class="row">
-									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;">Upload bill with address</h5>
+									<h5 class="gtc-title" style="padding-top: 20px; padding-left: 20px; float: left;font-size:23px">Upload bill with address</h5>
 									<p class="verification-incomplete">
 										{{#if verification.business_address_verification_file_status}}
 											{{#ifCond verificationStatus.WAITING '==' verification.business_address_verification_file_status }}
@@ -414,7 +414,7 @@
 												<span class="id-verified">
 													<i class="fas fa-check-circle"></i>
 												</span>
-												<b>Your Id verification request is approved</b>
+												Your Id verification request is approved
 											{{/ifCond}}
 											{{#ifCond verificationStatus.REJECTED '==' verification.business_address_verification_file_status }}
 												<span class="id-verified">
@@ -435,7 +435,7 @@
 										<div class="custom-file custom_error_message">
 											<input type="file" class="custom-file-input" id="businessAddressProof" name="businessAddressProof" accept=".jpg, .png, .pdf">
 											{{#if verification.business_address_verification_file_link }}
-												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
+												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;overflow:hidden" for="businessAddressProof">{{verification.business_address_verification_file_link}}</label>
 											{{else}}
 												<label name="bAddress" class="custom-file-label customized-file-label" style="margin: auto 8px;" for="businessAddressProof">Browse</label>
 											{{/if}}

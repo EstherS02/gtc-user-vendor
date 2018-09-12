@@ -101,8 +101,11 @@ let sqlQueries = {
 	    return query;
 	},
 	countryCountForVendor:function(params){
-		let query=`SELECT vendorplan.id,vendorplan.name,vendorplan.code, COUNT(vendor_user_product.origin_id) as vendorCount 
-		FROM country as vendorplan INNER join  vendor_user_product on vendor_user_product.origin_id=vendorplan.id where vendorplan.status=1 and vendor_user_product.status=1 GROUP by vendorplan.id`;
+		let query=`SELECT country.id,country.name,country.code,COUNT(vendor_user_product.origin_id) as vendor_count from country LEFT OUTER JOIN vendor_user_product on country.id= vendor_user_product.origin_id and vendor_user_product.status = 1 and vendor_user_product.marketplace_id=(` + params.marketplace_id + `)  GROUP BY country.name`;
+		return query;
+	},
+	countryCountForVendorHomepage:function(){
+		let query=`SELECT country.id,country.name,country.code,COUNT(vendor_user_product.origin_id) as vendor_count from country LEFT OUTER JOIN vendor_user_product on country.id= vendor_user_product.origin_id and vendor_user_product.status = 1 GROUP BY country.name`;
 		return query;
 	}
 };

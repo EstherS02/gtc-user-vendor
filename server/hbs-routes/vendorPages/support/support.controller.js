@@ -22,7 +22,7 @@ export function vendorSupport(req, res) {
 	var queryObj = {};
 	var modelName = 'TermsAndCond';
 	let user_id = LoggedInUser.id;
-	var vendor_id = 28;//req.params.id;
+	var vendor_id = req.params.id;
 
 	queryObj['vendor_id'] = vendor_id
 	queryObj['status'] = status['ACTIVE'];
