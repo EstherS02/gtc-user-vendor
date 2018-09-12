@@ -35,18 +35,18 @@ export function addProduct(req, res) {
     LoggedInUser = {};
 
     if (req.user)
-        LoggedInUser = req.user;
+		LoggedInUser = req.user;
+		
+	if (req.params.id)
+		editProductId = req.params.id;
 
     queryObj['status'] = status["ACTIVE"];
 
     var queryObjCategory = {
         status: status['ACTIVE']
 	};
-	
-	if(req.params.id)
-		editProductId = req.params.id;
 
-		productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute');
 
     async.series({
         cartCounts: function(callback) {
@@ -101,7 +101,6 @@ export function addProduct(req, res) {
 		editProduct: function(callback){
 			service.findIdRow(productModel, editProductId, productIncludeArr)
 				.then(function(editProduct) {
-					console.log("========================================",editProduct)
 					return callback(null, editProduct);
 
 				}).catch(function(error) {
@@ -125,7 +124,7 @@ export function addProduct(req, res) {
                 vendorPlan: vendorPlan,
                 type: type,
 				dropDownUrl: dropDownUrl,
-				editProduct: results.editProduct
+				editProduct: results.editProduct,
             });
         } else {
             res.render('vendorNav/listings/add-product', err);
