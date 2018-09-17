@@ -10,7 +10,7 @@ const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
-export function vendorCountByCountry(params) {
+export async function vendorCountByCountry(params) {
 	return new Promise((resolve, reject) => {
 		if (params) {
 			Sequelize_Instance.query(RawQueries.countryCountForVendor(params), {
@@ -27,9 +27,21 @@ export function vendorCountByCountry(params) {
 	});
 }
 
-export function vendorCountByCountryForHome() {
+export async function vendorCountByMarketplace() {
 	return new Promise((resolve, reject) => {
-		// if (params) {
+		Sequelize_Instance.query(RawQueries.vendorCountByMarkerplace(), {
+			model: model['Marketplace'],
+			type: Sequelize_Instance.QueryTypes.SELECT
+		}).then((results) => {
+			resolve(results)
+		}).catch(function(error) {
+			reject(error);
+		});
+	});
+}
+
+export async function vendorCountByCountryForHome() {
+	return new Promise((resolve, reject) => {
 			Sequelize_Instance.query(RawQueries.countryCountForVendorHomepage(), {
 				model: model['Country'],
 				type: Sequelize_Instance.QueryTypes.SELECT
@@ -38,8 +50,5 @@ export function vendorCountByCountryForHome() {
 			}).catch(function(error) {
 				reject(error);
 			});
-		// } else {
-		// 	resolve()
-		// }
 	});
 }

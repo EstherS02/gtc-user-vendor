@@ -90,8 +90,8 @@ export function featureMany(req, res) {
 		arr.push(obj);
 	}
 	model["FeaturedProduct"].bulkCreate(arr, {
-			ignoreDuplicates: true
-		})
+		ignoreDuplicates: true
+	})
 		.then(function(row) {
 			res.status(201).send("Created");
 			return;
@@ -702,39 +702,58 @@ function updateProductMedia(arrayEle, product_id) {
 }
 
 function updateProductAttribute(attributeEle, product_id) {
-	var i = 0;
-	async.mapSeries(attributeEle, function(attributeElement, callback) {
 
-		attributeElement.product_id = product_id;
-		attributeElement.attribute_id = attributeEle[i].name;
-		attributeElement.status = 1;
-		delete attributeElement.name;
+	var queryObj = {
+		product_id: product_id
+	}
 
-		service.createRow('ProductAttribute', attributeElement)
-			.then(function(result) {
-				return callback(null, result);
-			})
-			.catch(function(error) {
-				console.log('Error:::', error);
-				return callback(null);
-			});
-		i++;
-	}, function(err, results) {
-		return;
-	});
+	model['ProductAttribute'].destroy({
+		where: queryObj
+	}).then(function(row) {
+		async.mapSeries(attributeEle, function(attributeElement, callback) {
+
+			attributeElement.product_id = product_id;
+			attributeElement.attribute_id = attributeElement.name;
+			attributeElement.status = 1;
+			delete attributeElement.name;
+	
+			service.createRow('ProductAttribute', attributeElement)
+				.then(function(result) {
+					return callback(null, result);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		}, function(err, results) {
+			if(!err){
+				return Promise.resolve(results);
+			}
+			else{
+				return Promise.reject(err);
+			}
+			
+		});
+	}).catch(function(error) {
+		console.log("Error::", error);
+		return Promise.reject(error);
+	})
 }
 
 export function editProduct(req, res) {
 
 	var id = req.query.product_id;
 
-	if (req.body.status) {
-		var productStatus = req.body.status;
-		delete req.body.status;
-		req.body.status = status[productStatus]
+	if (req.query.status) {
+		var productStatus = req.query.status;
+		delete req.query.status;
+		req.query.status = status[productStatus]
 	}
 
-	var bodyParams = req.body;
+	req.query.last_updated_on = new Date();
+	req.query.last_updated_by = req.user.Vendor.vendor_name;
+
+	var bodyParams = req.query;
 
 	model["Product"].update(bodyParams, {
 		where: {
@@ -742,7 +761,19 @@ export function editProduct(req, res) {
 		}
 	}).then(function(row) {
 		if (row) {
-			res.status(200).send("Updated");
+			if (req.body.attributeArr) {
+
+				var attributePromises = [];
+				var attributeEle = JSON.parse(req.body.attributeArr);
+
+				attributePromises.push(updateProductAttribute(attributeEle, id));
+
+				return Promise.all(attributePromises).then(result => {
+					return res.status(201).send('Updated Successfully');
+				}).catch(error => {
+					return res.status(500).send(err);
+				});
+			}
 		} else {
 			res.status(500).send("Internal server error");
 		}
