@@ -616,6 +616,7 @@ export function featureOne(req, res) {
 }
 
 export function addProduct(req, res) {
+
 	if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
 
@@ -731,8 +732,7 @@ function updateProductAttribute(attributeEle, product_id) {
 			}
 			else{
 				return Promise.reject(err);
-			}
-			
+			}			
 		});
 	}).catch(function(error) {
 		console.log("Error::", error);
@@ -750,6 +750,7 @@ export function editProduct(req, res) {
 		req.query.status = status[productStatus]
 	}
 
+	req.query.product_slug = string_to_slug(req.body.product_name);
 	req.query.last_updated_on = new Date();
 	req.query.last_updated_by = req.user.Vendor.vendor_name;
 
