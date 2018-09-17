@@ -29,8 +29,10 @@
 	}
 </style>
 <script>
+	var ProductMedia = {{{ DisplayJSON editProduct.ProductMedia }}}
 
 	var allFiles = [], UploadedImageArr= [], attributeArr = [];
+
 	function addProduct(obj, productinput) {
 
 		if ($('#productForm').valid()) {
@@ -74,6 +76,7 @@
 		var obj = {};
 		obj.attributeArr = JSON.stringify(attributeArr);
 
+		if ($('#productForm').valid()) {
 		$.ajax({
 				type: 'POST',
 				url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
@@ -104,6 +107,7 @@
 					//$("#productForm")[0].reset();
 				}
 			})
+		}
 	}
 
 	function remove(e, imageIndex) {
@@ -136,7 +140,7 @@
 
 	$(document).ready(function() {
 
-		var test;
+       	var test;
 
 		$("#gtc-cart-alert").hide();
 
@@ -416,7 +420,9 @@
 		e.preventDefault();
 		var imageURLsArr = [];
 
-		let productInput = $("#productForm :input").filter(function(index, element) {
+		console.log("=================================================",ProductMedia.length);
+
+	/*	let productInput = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
 
@@ -506,7 +512,7 @@
 		}
 		else{
 			updateProduct(product_id,productInput)
-		}
+		}*/
 	});
 
 	$("#reset").click(function() {
