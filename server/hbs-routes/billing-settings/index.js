@@ -10,7 +10,7 @@ var auth = require('../../auth/auth.service');
 /* Handlebars routes */
 var controller = require('./billing-settings.controller');
 
-router.get('/',auth.isAuthenticated(), controller.billingSettings);
+router.get('/', auth.isAuthenticated(), controller.billingSettings);
 
 
 module.exports = router;

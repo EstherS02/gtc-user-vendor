@@ -29,12 +29,21 @@
 	}
 </style>
 <script>
+	var ProductMedia = {{{ DisplayJSON editProduct.ProductMedia }}}
 
-	var allFiles = [], attributeArr = [];
+	var allFiles = [], UploadedImageArr= [], attributeArr = [], discountArr = [];
+
 	function addProduct(obj, productinput) {
 
 		if ($('#productForm').valid()) {
+
+			if(attributeArr.length > 0)
 			obj.attributeArr = JSON.stringify(attributeArr);
+
+			if(discountArr.length > 0 )
+			obj.discountArr = JSON.stringify(discountArr);
+
+			console.log("--------------------------------------Comming----------------------------")
 
 			$.ajax({
 				type: 'POST',
@@ -74,6 +83,7 @@
 		var obj = {};
 		obj.attributeArr = JSON.stringify(attributeArr);
 
+		if ($('#productForm').valid()) {
 		$.ajax({
 				type: 'POST',
 				url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
@@ -104,19 +114,40 @@
 					//$("#productForm")[0].reset();
 				}
 			})
+		}
 	}
 
-	function remove(e, index) {
-		allFiles.splice(index, 1);
+	function remove(e, imageIndex) {
+
+		allFiles.splice(imageIndex, 1);
 		$(e).parents(".pip").remove();
-		if (allFiles.length < 6) {
-			$("#productImage").show();
-		}
+
+		appendImage();
+	}
+
+	function appendImage(){
+		$(".preview" ).empty();
+
+		for (var i = 0; i < allFiles.length; i++) {
+			var domElement;
+
+			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + allFiles[i].UploadedImage + "\"/>" +
+						"<i class='fa fa-times productRemoveIcon' onclick='remove(this,"+i+")' aria-hidden='true'></i></span>"
+
+			$(".preview").append(domElement);
+
+			}
+
+			if (allFiles.length >= 6) {
+				$("#productImage").hide();
+			}else{
+				$("#productImage").show();
+			}
 	}
 
 	$(document).ready(function() {
 
-		var test;
+       	var test;
 
 		$("#gtc-cart-alert").hide();
 
@@ -135,7 +166,7 @@
 		});
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}; var index = 0, baseImageFileDetails;
+		var fileDetails = {}, baseImageFileDetails;
 
 		$('#crop-product-image').click(function() {
 
@@ -152,28 +183,19 @@
 				$('#profile-picture-modal').modal('hide');
 
 			} else {
-
-				cropper.getCroppedCanvas().toBlob(function(blob) {
+					
+					cropper.getCroppedCanvas().toBlob(function(blob) {
 					var fileTempHold = {};
 					fileTempHold['cropperOutputImage'] = blob;
 					fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-					fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+					fileTempHold['fileName'] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+					fileTempHold['UploadedImage'] = cropper.getCroppedCanvas().toDataURL();
+
 					allFiles.push(fileTempHold);
-					if (allFiles.length >= 6) {
-						$("#productImage").hide();
-					}
+					appendImage();
 				});
-
-				var UploadedImage = cropper.getCroppedCanvas().toDataURL();
-
-				var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\"/>" +
-					"<i class='fa fa-times productRemoveIcon' onclick='remove(this," + index + ")' aria-hidden='true'></i>	</span>"
-
-				$(domElement).insertAfter(".preview");
-
+			
 				$('#profile-picture-modal').modal('hide');
-				index++;
-
 			}
 		});
 
@@ -405,6 +427,40 @@
 		e.preventDefault();
 		var imageURLsArr = [];
 
+			var temp1 = $.map($('.quantity'), function(el) {
+			  		return el.value;
+		     	});
+
+				var quantArr = temp1.filter(function(v) { return v !== '' });
+
+				var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
+					return el.value;
+				});
+
+				var temp2 = $.map($('.discount_amount'), function(el) {
+					return el.value;
+				});
+ 
+				var amtArr = temp2.filter(function(v) { return v !== '' });
+
+				var j = 0; 
+				quantArr.forEach(function(element) {
+
+					let discount = {};
+					discount.status = 1;
+					discount.quantity = quantArr[j];
+					if (typeArr[j] == 'percentage_discount') {
+						discount.type = 1;
+						discount.percent_discount = amtArr[j];
+					}
+					else {
+						discount.type = 2;
+						discount.value_discount = amtArr[j];
+					}
+					discountArr.push(discount);
+					j++;
+				});
+
 		let productInput = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
 		}).serialize();
@@ -480,7 +536,7 @@
 						dataFormate.data = JSON.stringify(imageURLsArr);
 
 
-						addProduct(dataFormate, input);
+						addProduct(dataFormate, productInput);
 					},
 					error: function(error) {
 						console.log('error', error);
@@ -502,8 +558,43 @@
 		$('.pip').empty();
 		$('.base_image').empty();
 		$("#productForm")[0].reset();
-	})
+	});
+
+	var count =0;
+
+	$("#editdiscount").click(function(e) {
+
+		if (count < 3) {
+
+			var domElement = '<br/><div class="row"><div class="col-lg-1"><label  class="label-control">For</label></div><div class="col-lg-2">' +
+				'<input type="text" class="form-control-customized form-control-sm quantity" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"></div>' +
+				'<div class="col-lg-2"><label  class="label-control">user receives</label></div>' +
+				'<div class="col-lg-6"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"' +
+				'name="discount_type' + count + '" value="percentage_discount" checked onclick=testPercent(' + count + ');> Total Percent Discount&nbsp; &nbsp;' +
+				'<input class="list_place_21 discount_amount percent_discount_amount' + count + '" type="text" name="percent_discount_amount' + count + '" placeholder="20%" onclick=testPercent(' + count + ');></div>' +
+				'<div class="row edit-listing-dis"><input type="radio" class="discount_type" id="value_discount' + count + '" name="discount_type' + count + '"' +
+				'value="value_discount" onclick=testValue(' + count + ')> Total Value Discount &nbsp;&nbsp;<input class="list_place_21 discount_amount value_discount_amount' + count + '"' +
+				'type="text" name="value_discount_amount' + count + '" placeholder="20$" style="display:none" /></div></div></div>'
+
+			$('#discountAppend').append(domElement);
+
+			count = count + 1;
+			if (count == 3) {
+				$(".discount_tier").hide();
+			}
+		}
+	});
  });
+
+function testValue(count) {
+	$(".value_discount_amount" + count).show();
+	$(".percent_discount_amount" + count).hide();
+}
+
+function testPercent(count) {
+	$(".value_discount_amount" + count).hide();
+	$(".percent_discount_amount" + count).show();
+}
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
@@ -752,6 +843,19 @@
 											<textarea class="form-control-customized" name="description" rows="6">{{editProduct.description}}</textarea>
 										</div>
 									</div>
+									{{#ifCond this.type '==' 'wholesale'}}
+										<div class="col-lg-8">
+											<div class="form-group">
+												<label class="label-control">Add bulk order discount tier.</label>
+												<div class="input-group">
+													<div class="custom-file">
+														<i class='fas fa-plus' id="editdiscount"></i>
+													</div>
+												</div>
+												<section id="discountAppend"></section>
+											</div>
+										</div>
+									{{/ifCond}}
 
 									<div class="col-lg-8" id="attributeDiv">
 										{{#if editProduct.ProductAttributes}}
@@ -800,8 +904,6 @@
 											</div>
 										</div>
 										<div class="base_image">
-											{{!-- {{#if }}
-											<img style="width:200px; height:200px;" src=""> --}}
 										</div>
 									</div>
 								</div>
