@@ -104,7 +104,6 @@ export function reviews(req, res) {
 					}]
 				}).then(function(Reviews) {
 					// maxSize = Reviews.count / limit;
-					// console.log('max', maxSize);
 					return callback(null, Reviews);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -153,16 +152,11 @@ export function reviews(req, res) {
 								if (productRating[i].rating == responseRatings[j].rating) {
 									total = total+responseRatings[j].userCount;
 									totalAmt = totalAmt+(responseRatings[j].userCount+responseRatings[j].rating)
-										console.log("==============responseRatings.length",responseRatings[j].userCount)
-										console.log("---------responseRatings.length",total)
-
-
 									productRating[i].userCount = responseRatings[j].userCount;
 								}
 							}
 						}
 					}
-					console.log("responseRatings.length",responseRatings.length)
 					Reviews.productRating = productRating;
 					Reviews.avgRating = (totalAmt > 0) ? (totalAmt / total).toFixed(1) : 0;
 					var counts = JSON.parse(JSON.stringify(Reviews.count));
@@ -208,7 +202,6 @@ export function reviews(req, res) {
 		},
 		function(err, results) {
 			if (!err) {
-				console.log("queryPaginationObj----------------------",results.userReviews.rows)
 				res.render('vendorNav/reviews', {
 					title: "Global Trade Connect",
 					Reviews: results.Reviews.rows,

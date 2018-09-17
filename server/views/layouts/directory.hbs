@@ -15,7 +15,7 @@
             let formInput = $("#searchForm :input").filter(function (index, element) {
                 return $(element).val() != '';
             }).serialize();
-            window.location.href = '/directory/search?' + formInput;
+            window.location.href = '/directories/search?' + formInput;
         });
     });
 </script>
@@ -89,7 +89,7 @@
                                                 </td>
                                                 <td class="col-3">
                                                     <div class="product-left-col">
-                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
                                                     </div>
                                                 </td>
                                                 <td class="col-7">
@@ -152,7 +152,7 @@
                                             </td>
                                             <td class="col-3">
                                                 <div class="product-left-col">
-                                                    <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                    <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
                                                 </div>
                                             </td>
                                             <td class="col-7">
@@ -222,7 +222,7 @@
                                                     </td>
                                                     <td class="col-3">
                                                         <div class="product-left-col">
-                                                            <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                            <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
                                                         </div>
                                                     </td>
                                                     <td class="col-7">
@@ -284,7 +284,7 @@
                                                 </td>
                                                 <td class="col-3">
                                                     <div class="product-left-col">
-                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+                                                        <img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
                                                     </div>
                                                 </td>
                                                 <td class="col-7">

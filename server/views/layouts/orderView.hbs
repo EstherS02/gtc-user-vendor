@@ -174,7 +174,7 @@
 				<div class="col-md-6">
 					<p class="logged_in_username">You're logged in as
 						<span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span>
-						<a href="#" class="span_swichaccount">SWITCH ACCOUNT</a>
+						<a href="javascript:;" onclick="gtcLogout()" class="span_swichaccount">SWITCH ACCOUNT</a>
 					</p>
 				</div>
 			</div>
@@ -219,7 +219,9 @@
 											<td>
 												<div class="row">
 													<div class="col-md-3">
-														<img src="{{orderItems.Product.ProductMedia.[0].url}}" style="width: 60px; height: 70px;">
+														<a href="/products/{{orderItems.Product.product_slug}}/{{orderItems.Product.id}}">
+														<img src="{{orderItems.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 60px; height: 70px;">
+														</a>
 													</div>
 													<div class="col-md-9">
 														<div class="row common_padding">
