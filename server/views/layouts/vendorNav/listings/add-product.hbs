@@ -30,7 +30,7 @@
 </style>
 <script>
 
-	var allFiles = [], attributeArr = [];
+	var allFiles = [], UploadedImageArr= [], attributeArr = [];
 	function addProduct(obj, productinput) {
 
 		if ($('#productForm').valid()) {
@@ -106,12 +106,32 @@
 			})
 	}
 
-	function remove(e, index) {
-		allFiles.splice(index, 1);
+	function remove(e, imageIndex) {
+
+		allFiles.splice(imageIndex, 1);
 		$(e).parents(".pip").remove();
-		if (allFiles.length < 6) {
-			$("#productImage").show();
-		}
+
+		appendImage();
+	}
+
+	function appendImage(){
+		$(".preview" ).empty();
+
+		for (var i = 0; i < allFiles.length; i++) {
+			var domElement;
+
+			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + allFiles[i].UploadedImage + "\"/>" +
+						"<i class='fa fa-times productRemoveIcon' onclick='remove(this,"+i+")' aria-hidden='true'></i></span>"
+
+			$(".preview").append(domElement);
+
+			}
+
+			if (allFiles.length >= 6) {
+				$("#productImage").hide();
+			}else{
+				$("#productImage").show();
+			}
 	}
 
 	$(document).ready(function() {
@@ -135,7 +155,7 @@
 		});
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}; var index = 0, baseImageFileDetails;
+		var fileDetails = {}, baseImageFileDetails;
 
 		$('#crop-product-image').click(function() {
 
@@ -152,28 +172,19 @@
 				$('#profile-picture-modal').modal('hide');
 
 			} else {
-
-				cropper.getCroppedCanvas().toBlob(function(blob) {
+					
+					cropper.getCroppedCanvas().toBlob(function(blob) {
 					var fileTempHold = {};
 					fileTempHold['cropperOutputImage'] = blob;
 					fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-					fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+					fileTempHold['fileName'] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+					fileTempHold['UploadedImage'] = cropper.getCroppedCanvas().toDataURL();
+
 					allFiles.push(fileTempHold);
-					if (allFiles.length >= 6) {
-						$("#productImage").hide();
-					}
+					appendImage();
 				});
-
-				var UploadedImage = cropper.getCroppedCanvas().toDataURL();
-
-				var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\"/>" +
-					"<i class='fa fa-times productRemoveIcon' onclick='remove(this," + index + ")' aria-hidden='true'></i>	</span>"
-
-				$(domElement).insertAfter(".preview");
-
+			
 				$('#profile-picture-modal').modal('hide');
-				index++;
-
 			}
 		});
 
@@ -480,7 +491,7 @@
 						dataFormate.data = JSON.stringify(imageURLsArr);
 
 
-						addProduct(dataFormate, input);
+						addProduct(dataFormate, productInput);
 					},
 					error: function(error) {
 						console.log('error', error);
@@ -800,8 +811,6 @@
 											</div>
 										</div>
 										<div class="base_image">
-											{{!-- {{#if }}
-											<img style="width:200px; height:200px;" src=""> --}}
 										</div>
 									</div>
 								</div>

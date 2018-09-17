@@ -1,0 +1,9 @@
+<script>
+	var popupResponse = {{{ DisplayJSON popupResponseData }}};
+	try {
+		window.opener.onPayPalPopupClose(popupResponse);
+	} catch (error) {
+		console.log(error);
+	}
+	window.close();
+</script>
