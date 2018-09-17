@@ -750,7 +750,7 @@ export function editProduct(req, res) {
 		req.query.status = status[productStatus]
 	}
 
-	req.query.product_slug = string_to_slug(req.body.product_name);
+	req.query.product_slug = string_to_slug(req.query.product_name);
 	req.query.last_updated_on = new Date();
 	req.query.last_updated_by = req.user.Vendor.vendor_name;
 
