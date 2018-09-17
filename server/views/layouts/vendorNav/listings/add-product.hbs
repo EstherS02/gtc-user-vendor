@@ -31,12 +31,19 @@
 <script>
 	var ProductMedia = {{{ DisplayJSON editProduct.ProductMedia }}}
 
-	var allFiles = [], UploadedImageArr= [], attributeArr = [];
+	var allFiles = [], UploadedImageArr= [], attributeArr = [], discountArr = [];
 
 	function addProduct(obj, productinput) {
 
 		if ($('#productForm').valid()) {
+
+			if(attributeArr.length > 0)
 			obj.attributeArr = JSON.stringify(attributeArr);
+
+			if(discountArr.length > 0 )
+			obj.discountArr = JSON.stringify(discountArr);
+
+			console.log("--------------------------------------Comming----------------------------")
 
 			$.ajax({
 				type: 'POST',
@@ -419,6 +426,40 @@
 
 		e.preventDefault();
 		var imageURLsArr = [];
+
+			var temp1 = $.map($('.quantity'), function(el) {
+			  		return el.value;
+		     	});
+
+				var quantArr = temp1.filter(function(v) { return v !== '' });
+
+				var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
+					return el.value;
+				});
+
+				var temp2 = $.map($('.discount_amount'), function(el) {
+					return el.value;
+				});
+ 
+				var amtArr = temp2.filter(function(v) { return v !== '' });
+
+				var j = 0; 
+				quantArr.forEach(function(element) {
+
+					let discount = {};
+					discount.status = 1;
+					discount.quantity = quantArr[j];
+					if (typeArr[j] == 'percentage_discount') {
+						discount.type = 1;
+						discount.percent_discount = amtArr[j];
+					}
+					else {
+						discount.type = 2;
+						discount.value_discount = amtArr[j];
+					}
+					discountArr.push(discount);
+					j++;
+				});
 
 		let productInput = $("#productForm :input").filter(function(index, element) {
 			return $(element).val() != '';
