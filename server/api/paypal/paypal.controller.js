@@ -17,22 +17,22 @@ paypal.configure({
 
 export function paypalVerifyEmailOAuth(req, res) {
     if (!req.query.code) {
-        return errorResponse({
+        return errorResponse(res, {
             error: 'invalid Paypal Email'
         });
     }
     let vendorId = req.user.Vendor.id;
     openIdConnect.tokeninfo.create(req.query.code, function(error, tokeninfo) {
         if (error) {
-            return errorResponse(error);
+            return errorResponse(res, error);
         } else {
             openIdConnect.userinfo.get(tokeninfo.access_token, function(error, userinfo) {
                 if (error) {
-                    return errorResponse(error);
+                    return errorResponse(res, error);
                 } else {
+                    console.log(userinfo)
                     let updatePayPalId = {
-                        'vendor_payout_paypal_email': 'test@gmail.com'
-                        //'vendor_payout_paypal_email': userinfo.email
+                        'vendor_payout_paypal_email': userinfo.email
                     }
                     return service.updateRow("Vendor", updatePayPalId, vendorId)
                         .then(function(response) {
@@ -44,7 +44,7 @@ export function paypalVerifyEmailOAuth(req, res) {
                                 }
                             });
                         }).catch(function(err) {
-                            return errorResponse(err);
+                            return errorResponse(res, err);
                         });
 
                 }
@@ -72,11 +72,16 @@ export function payPalEmailDisconnect(req, res) {
                     "errorDescription": err
                 });
             });
+    } else {
+        return res.status(400).send({
+            "message": "ERROR",
+            "messageDetails": "Bad Request, Not authorized to disconnect"
+        });
     }
 
 }
 
-function errorResponse(error) {
+function errorResponse(res, error) {
     return res.render('paypal-callback-close', {
         layout: false,
         popupResponseData: {

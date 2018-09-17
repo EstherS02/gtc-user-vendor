@@ -172,7 +172,7 @@ var all = {
         clientSecret: process.env.PAYPAL_SECRET_KEY,
         redirectUrl: process.env.PAYPAL_REDIRECT_URL,
         payPalMode: process.env.PAYPAL_MODE,
-        scope: 'openid profile'
+        scope: 'openid profile email'
     },
 
     amazonImportConfig: {
