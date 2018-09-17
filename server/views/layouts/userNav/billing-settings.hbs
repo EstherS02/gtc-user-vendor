@@ -38,27 +38,32 @@
 											</div>
 										</div>
 									{{/each}}
-
-									<div style="border: 1px solid #eee;padding: 0 10px 10px 10px;margin-top: 10px;">
-										<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i> Add Card</p>
-
+									<p style="padding-top: 15px;"><i class="fas fa-plus-circle text_orange_color"></i>
+										<a href="javascript:;" onclick="toggleAddCard();">Add another card</a></p>
+									<div style="display:none;border: 1px solid #eee;padding: 20px 10px 20px 10px;" id="add_new_card_content" class="pyt_group">
 										<div class="row">
 											<div class="col-md-8" style="margin-left: 15px">
 												<form id="add-card-form">
 													<div class="row">
-														<div class="col-md-2"><label for="card-name">Name</label></div>
-														<div class="col-md-10"><input type="text" class="name vend_edit_lists_textstyle1" id="card-name"
-															 placeholder="Jane Doe" style="width: 100%;" /></div>
+														<div class="col-md-2">
+															<label for="card-name" style="padding-top:10px;">Name</label>
+														</div>
+														<div class="col-md-10 pyt_group">
+															<input type="text" class="name vend_edit_lists_textstyle1 custom_card_placeholder" id="card-name"
+															 placeholder="Card Holder Name" style="width: 100%;background-color: #fff;" />
+														</div>
 													</div>
 													<div class="row" style="padding:14px 0">
-														<div class="col-md-2"><label for="card-element">Card</label></div>
-														<div class="col-md-10">
+														<div class="col-md-2">
+															<label for="card-element" style="padding-top:10px;">Card</label>
+														</div>
+														<div class="col-md-10 pyt_group">
 															<div id="card-element" style="margin-top:3px"></div>
 														</div>
 													</div>
 													<div id="stripe-error-validation" class="alert alert-warning" style="display:none;"></div>
 													<div class="row" style="margin-left: 0;">
-														<button type="submit" class="list_butt_2">Submit</button>
+														<button type="submit" class="list_butt_2" style="cursor:pointer;">Submit</button>
 														<span id="add-card-form-error" class="error" style="margin:3px 0 0 5px"></span>
 													</div>
 												</form>
@@ -67,12 +72,18 @@
 									</div>
 									<p style="font-size: 10px;padding-top: 15px;">Connect Paypal</p>
 									<p style="padding-top: 10px;">
-										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px;" />
-										&nbsp;&nbsp; <input type="text" placeholder="Enter Your Paypal Email" class="vend_edit_lists_textstyle1"
-										 style="width: 50%;" />
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="list_butt_2" style="cursor:pointer;" type="submit" onclick="paypalVerifyEmail()"
-										 value="CONNECT" />
+										<img src="../../img/payment-paypal.png" alt="paypal" style="width: 15%;margin-top: -2px; margin-right: 10px;" />
+										{{#if LoggedInUser.Vendor.vendor_payout_paypal_email}}
+											<input type="email" placeholder="Enter Your Paypal Email" class="vend_edit_lists_textstyle1" disabled style="width: 50%;margin-right:20px;cursor:not-allowed;"
+											 value="{{LoggedInUser.Vendor.vendor_payout_paypal_email}}" />
+											<input id="paypal_disconnect" class="list_butt_2" style="cursor:pointer;" type="button" onclick="paypalDisconnectEmail()"
+											 value="DISCONNECT" />
+										{{else}}
+											<input id="paypal_connect" class="list_butt_2" style="cursor:pointer;" type="button" onclick="paypalVerifyEmail()"
+											 value="CONNECT" />
+										{{/if}}
 									</p>
+									<label id="paypal_connect_error" class="error" style="display:none"></label>
 								</div>
 							</div>
 							<hr />
@@ -202,10 +213,41 @@
 			clearInterval(paypalCheckConnect);
 		}, 100);
 
-		window.onTwitterAuthClose = function(data) {
-			console.log("============", data)
+		window.onPayPalPopupClose = function(result) {
+			if (result.message === "SUCCESS") {
+				window.location.reload();
+			} else {
+				$('#paypal_connect_error').text(result.messageDetails);
+				$('#paypal_connect_error').css('display', 'block');
+			}
 		}
+	}
 
+	function paypalDisconnectEmail() {
+		let paypalDisconnectId = `{{LoggedInUser.id}}`
+		$('#paypal_disconnect').prop('disabled', true);
+		$('#paypal_disconnect').css('cursor', 'not-allowed');
+		$.ajax({
+			url: '/api/paypal/disconnect',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({ userId: paypalDisconnectId }),
+			success: function(data) {
+				window.location.reload();
+			},
+			error: function(error) {
+				console.log(error)
+				$('#paypal_disconnect').prop('disabled', false);
+				$('#paypal_disconnect').css('cursor', 'pointer');
+				$('#paypal_connect_error').text(error.responseJSON.messageDetails);
+				$('#paypal_connect_error').css('display', 'block');
+			}
+		});
+	}
+
+	function toggleAddCard() {
+		$('#add_new_card_content').css('display', 'block');
 	}
 
 

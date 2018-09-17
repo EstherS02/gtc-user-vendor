@@ -33,8 +33,7 @@ export function billingSettings(req, res) {
     let user_id = LoggedInUser.id;
 
     let payPalOAuthUrl = openIdConnect.authorizeUrl({
-        'scope': config.payPalOAuth.scope,
-        'state': user_id
+        'scope': config.payPalOAuth.scope
     });
     var queryObjCategory = {
         status: statusCode['ACTIVE']

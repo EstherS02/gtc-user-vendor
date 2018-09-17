@@ -7,6 +7,7 @@ var permission = require('../../config/permission');
 
 var router = express.Router();
 
-router.get('/', controller.paypalVerifyEmailOAuth);
+router.get('/', auth.isAuthenticated(), controller.paypalVerifyEmailOAuth);
+router.post('/disconnect', auth.isAuthenticated(), controller.payPalEmailDisconnect);
 
 module.exports = router;

@@ -21,7 +21,7 @@ export function paypalVerifyEmailOAuth(req, res) {
             error: 'invalid Paypal Email'
         });
     }
-    let userId = req.query.state;
+    let vendorId = req.user.Vendor.id;
     openIdConnect.tokeninfo.create(req.query.code, function(error, tokeninfo) {
         if (error) {
             return errorResponse(error);
@@ -34,9 +34,9 @@ export function paypalVerifyEmailOAuth(req, res) {
                         'vendor_payout_paypal_email': 'test@gmail.com'
                         //'vendor_payout_paypal_email': userinfo.email
                     }
-                    return service.updateRow("Vendor", updatePayPalId, userId)
+                    return service.updateRow("Vendor", updatePayPalId, vendorId)
                         .then(function(response) {
-                            return res.render('window-popup-close', {
+                            return res.render('paypal-callback-close', {
                                 layout: false,
                                 popupResponseData: {
                                     message: "SUCCESS",
@@ -53,8 +53,31 @@ export function paypalVerifyEmailOAuth(req, res) {
     });
 }
 
+export function payPalEmailDisconnect(req, res) {
+    if (req.body.userId == req.user.id) {
+        let vendorId = req.user.Vendor.id;
+        let updatePayPalId = {
+            'vendor_payout_paypal_email': null
+        }
+        return service.updateRow("Vendor", updatePayPalId, vendorId)
+            .then(function(response) {
+                return res.status(200).send({
+                    "message": "SUCCESS",
+                    "messageDetails": "PayPal Email Disconnected Successfully"
+                });
+            }).catch(function(err) {
+                return res.status(500).send({
+                    "message": "ERROR",
+                    "messageDetails": "PayPal Email Disconnect UnSuccessfull with errors",
+                    "errorDescription": err
+                });
+            });
+    }
+
+}
+
 function errorResponse(error) {
-    return res.render('window-popup-close', {
+    return res.render('paypal-callback-close', {
         layout: false,
         popupResponseData: {
             message: "ERROR",
