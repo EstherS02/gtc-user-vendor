@@ -276,9 +276,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
-									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
 									<hr style="margin-top: 10px" />
-									<div class="row">
+
+									{{!-- <div class="row">
 
 										<div class="col-md-2">
 
@@ -295,9 +296,22 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 												<span class="ladda-spinner"></span>
 											</button>
 										</div>
-										</div>
+										</div> --}}
+										<div class="row">
+									<div class="col-md-12">
+											{{!-- <input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/> --}}
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">UPGRADE</span>
+											
+										<span class="ladda-spinner"></span></button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											
+										<span class="ladda-spinner"></span></button>
+									</div>
+					    </div>
 										</form>
-						</div>
+						              </div>
 							
 							 {{else}}
 							 	<form id="userPlandetails" name="userPlandetails">
@@ -377,11 +391,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 									<input type="hidden" name="amount" value="{{userShowplanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="0">
-									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}"
+									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
 						{{/if}}
-						<hr style="margin-top: 10px" />
-						<div class="row">
 							{{#if LoggedInUser.Vendor.id}}
+					
 								{{!-- <div class="col-md-2" >
                                      
                                         <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" data-toggle="modal" data-target="#myModal">
@@ -398,6 +411,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
                                         </button>
                                     </div> --}}
 							{{else}}
+								<hr style="margin-top: 10px" />
+						{{!-- <div class="row">
+						
 								<div class="col-md-2">
 									<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
 
@@ -415,11 +431,24 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									</button>
 								</div>
 
-							{{/if}}
+						
 							<div class="col-md-8">
 							</div>
-						</div>
-
+						</div> --}}
+						<div class="row">
+									<div class="col-md-12">
+											<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
+										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
+											<span class="ladda-label">UPGRADE</span>
+											
+										<span class="ladda-spinner"></span></button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											
+										<span class="ladda-spinner"></span></button>
+									</div>
+					    </div>
+                         	{{/if}}
 						</form>
 					</div>
 				</div>
