@@ -114,7 +114,7 @@ export function reviews(req, res) {
 				model['Review'].findAndCountAll({
 					where: queryObj,
 					// offset:0,
-					// limit:3,
+					// limit:4,
 					attributes: [
 				'rating','title','comment','created_on','id' ,[sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
 			],
@@ -151,7 +151,7 @@ export function reviews(req, res) {
 							for (var j = 0; j < responseRatings.length; j++) {
 								if (productRating[i].rating == responseRatings[j].rating) {
 									total = total+responseRatings[j].userCount;
-									totalAmt = totalAmt+(responseRatings[j].userCount+responseRatings[j].rating)
+									totalAmt = totalAmt+(responseRatings[j].userCount*responseRatings[j].rating)
 									productRating[i].userCount = responseRatings[j].userCount;
 								}
 							}

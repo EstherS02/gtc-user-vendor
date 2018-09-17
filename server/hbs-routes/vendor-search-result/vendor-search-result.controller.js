@@ -77,6 +77,11 @@ export function index(req, res) {
 		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
 	}
 	
+	if(req.query.marketplace){
+		queryParameters['marketplace_id']=req.query.marketplace;
+		queryURI['selected_marketplace']=req.query.marketplace;
+	}
+
 	if (req.query.location) {
 		selectedLocation = req.query.location;
 		queryURI['location'] = req.query.location;
@@ -214,19 +219,18 @@ export function index(req, res) {
 					return callback(error, null);
 				});
 		},
-		allMarkerPlace:function(callback){
+		vendorCountByMarketplace:function(callback){
 			var result={};
-			model['Marketplace'].findAll({
-
-			}).then(function(results){
-				result.rows=JSON.parse(JSON.stringify(results));
-				return callback(null, result);
-			}).catch(function(error){
-				return callback(error, null);
-			});
-		},
+			vendorService.vendorCountByMarketplace()
+				.then((response) => {
+					result.rows=JSON.parse(JSON.stringify(response));
+					return callback(null, result);
+				}).catch((error) => {
+					console.log('Error :::', error);
+					return callback(error,null);
+				});
+		}
 	}, function(error, results) {
-		console.log("**************************************************88",results.allMarkerPlace);
 		queryPaginationObj['maxSize'] = 5;
 		if (!error) {
 			res.render('vendor-search', {
@@ -244,7 +248,7 @@ export function index(req, res) {
 				marketplaceURl: marketplaceURl,
 				selectedLocation: selectedLocation,
 				layout_type: layout,
-				allMarkerPlace:results.allMarkerPlace
+				allMarkerPlace:results.vendorCountByMarketplace
 			})
 		}
 	});

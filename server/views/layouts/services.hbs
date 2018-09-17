@@ -59,7 +59,9 @@
 												</td>
 												<td class="col-3">
 													<div class="product-left-col">
-														<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+														<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
+															<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+														</a>
 													</div>
 												</td>
 												<td class="col-7">
@@ -118,7 +120,9 @@
 												<tr class="d-flex">
 													<td class="col-3">
 														<div class="product-left-col">
-															<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+															<a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+																<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+															</a>
 														</div>
 													</td>
 													<td class="col-9">
@@ -206,7 +210,9 @@
 										<tr class="d-flex">
 											<td class="col-2">
 												<div class="product-left-col">
-													<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+													<a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+														<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+													</a>
 												</div>
 											</td>
 											<td class="col-7">

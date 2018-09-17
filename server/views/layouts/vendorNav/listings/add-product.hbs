@@ -63,17 +63,21 @@
 					});
 					$('.pip').empty();
 					$('.base_image').empty();
-					$("#productForm")[0].reset();
+					//$("#productForm")[0].reset();
 				}
 			})
 		}
 	}
 
 	function updateProduct(product_id,productInput){
+
+		var obj = {};
+		obj.attributeArr = JSON.stringify(attributeArr);
+
 		$.ajax({
 				type: 'POST',
-				url: '/api/product/edit-product?product_id=' + product_id,
-				data: productInput,
+				url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
+				data: obj,
 				success: function(data) {
 
 					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
@@ -97,7 +101,7 @@
 					});
 					$('.pip').empty();
 					$('.base_image').empty();
-					$("#productForm")[0].reset();
+					//$("#productForm")[0].reset();
 				}
 			})
 	}
@@ -178,6 +182,7 @@
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1364,
+				viewMode:1,
 				ready: function() { }
 			});
 		}).on('hidden.bs.modal', function() {
@@ -410,8 +415,6 @@
 		}).serializeArray();
 
 		var product_id = $('#edit_product_id').val();
-
-		console.log("-----------------------",product_id);
 
 		if(!product_id){
 			
