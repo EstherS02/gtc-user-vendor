@@ -72,16 +72,15 @@ select {
     padding: .375rem .75rem;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 100%;
+    color: #495057;
     background-color: #f3f3f2;
     opacity: 1;
+    border-color: #f49d3f;
     box-shadow: none;
     background-clip: padding-box;
 }
 
 .form-control-customized:focus {
-    color: #495057;
-    background-color: #f3f3f2;
-    border-color: #f49d3f;
     outline: 0;
     box-shadow: 0 0 0 0.1rem rgb(244, 157, 63);
 }
@@ -2200,19 +2199,22 @@ p.summary-info span {
     color: #a4bfda;
 }
 
-.btn-success {
-    background: #14497f !important;
-    border-color: #14497f !important;
+.btn-success, .btn-success:not(:disabled):not(.disabled):active {
+    background: #2775c3;
+    border-color: #2775c3;
 }
-
 .btn-success:hover {
-    background-color: #71a1db;
+    background: #154a7f;
+    border-color: #154a7f;
 }
-
+.btn-muted {
+    background-color: #d1dade;
+    color: #5e5e5e;
+}
 .btn-muted:hover {
-    background-color: #919daa;
+    background-color: #bec8cc;
+    color: #4a4949;
 }
-
 .update-btn:hover {
     background-color: #2560ab;
 }
