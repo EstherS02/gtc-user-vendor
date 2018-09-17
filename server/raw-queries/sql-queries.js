@@ -107,6 +107,10 @@ let sqlQueries = {
 	countryCountForVendorHomepage:function(){
 		let query=`SELECT country.id,country.name,country.code,COUNT(vendor_user_product.origin_id) as vendor_count from country LEFT OUTER JOIN vendor_user_product on country.id= vendor_user_product.origin_id and vendor_user_product.status = 1 GROUP BY country.name`;
 		return query;
+	},
+	vendorCountByMarkerplace:function(){
+		let query=`SELECT marketplace.id,marketplace.name,COUNT(vendor_user_product.marketplace_id) as vendor_count from marketplace LEFT OUTER JOIN vendor_user_product on marketplace.id= vendor_user_product.marketplace_id and vendor_user_product.status = 1 GROUP BY marketplace.id`;
+		return query;
 	}
 };
 

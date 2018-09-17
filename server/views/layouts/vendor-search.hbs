@@ -135,8 +135,8 @@ $(document).ready(function() {
 						<ul class="right-list-view category-fixed">
 							{{#each allMarkerPlace.rows}}
 									<li>
-										<a {{#ifCond ../queryURI.location "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 location=this.id) 'null'}}">
-											<span>{{name}}</span>
+										<a {{#ifCond ../queryURI.selected_marketplace "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=this.id) 'null'}}">
+											<span>{{name}} ({{vendor_count}})</span>
 										</a>
 									</li>
 							{{/each}}
