@@ -788,7 +788,7 @@ function updateDiscount(discountArr, product_id) {
 
 export function editProduct(req, res) {
 
-	var id = req.query.product_id;
+	var product_id = req.query.product_id;
 
 	if (req.query.status) {
 		var productStatus = req.query.status;
@@ -804,28 +804,28 @@ export function editProduct(req, res) {
 
 	model["Product"].update(bodyParams, {
 		where: {
-			id: id
+			id: product_id
 		}
 	}).then(function(row) {
 		if (row) {
 			if (req.body.attributeArr) {
-
-				var attributePromises = [];
 				var attributeEle = JSON.parse(req.body.attributeArr);
-
-				attributePromises.push(updateProductAttribute(attributeEle, id));
-
-				return Promise.all(attributePromises).then(result => {
-					return res.status(201).send('Updated Successfully');
-				}).catch(error => {
-					return res.status(500).send(err);
-				});
+				updateProductAttribute(attributeEle, product_id);
 			}
+			if (req.body.discountArr) {
+				var discountArr = JSON.parse(req.body.discountArr);
+				updateDiscount(discountArr, product_id);
+			}
+
+			return res.status(200).send(row);
+
 		} else {
 			res.status(500).send("Internal server error");
 		}
 	}).catch(function(error) {
-		res.status(500).send(error);
+		console.log('Error:::', error);
+		res.status(500).send("Internal server error");
+		return;
 	})
 }
 

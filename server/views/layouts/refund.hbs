@@ -32,6 +32,7 @@
 
 			returnInput.reason_for_return = $('#reason_for_return').val();
 			var item_id = $('#item_id').val();
+			returnInput.order_id = $('#orderId').val();
 
 			$.ajax({
 				url: '/api/order-history/return-request/' + item_id,
@@ -94,6 +95,7 @@
 									</div>
 									<div class="col-md-7">
 										<p class="shop_subtotal">{{order.id}}</p>
+										<input type="hidden" name="orderId" id="orderId" value="{{order.id}}"/>
 									</div>
 									<div class="col-md-5">
 										<p class="shop_subtotal">

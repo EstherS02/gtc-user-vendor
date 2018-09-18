@@ -8,6 +8,7 @@
 		$("#blog_img").hide();
 		$(".comment-image").hide();
 
+
 		var cropBoxData, canvasData, cropper, cropperInputImage;
 		var cropperOutputImage;
 		var fileDetails = {};
@@ -25,10 +26,10 @@
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1264,
-				zoomable: false,
-				scalable: false,
+				viewMode:1,
+				// zoomable: false,
+				// scalable: false,
 				ready: function() {
-					//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
 				}
 			});
 		}).on('hidden.bs.modal', function() {

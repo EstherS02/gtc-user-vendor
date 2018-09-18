@@ -39,13 +39,15 @@ export default function(app) {
     app.use('/api/payment', require('./api/payment'));
     app.use('/api/shipping-setting', require('./api/shipping-setting'));
     app.use('/api/reports', require('./api/reports'));
-    app.use('/api/export-csv', require('./api/export-csv'));
+	app.use('/api/export-csv', require('./api/export-csv'));
+	app.use('/api/stripe', require('./api/stripe'));
     app.use('/api/paypal', require('./api/paypal'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
 
     /* Handlerbars routes */
     app.use('/', require('./hbs-routes/homePage'));
+    //app.use('/advertisement', require('./hbs-routes/advertisement'));
     app.use('/cart', require('./hbs-routes/cart'));
     app.use('/directory', require('./hbs-routes/directory'));
     app.use('/wholesale', require('./hbs-routes/wholesale'));
@@ -88,8 +90,7 @@ export default function(app) {
     app.use('/order-checkout', require('./hbs-routes/checkout'));
     app.use('/user-join', require('./hbs-routes/user-join'));
 
-    app.use('/:vendorType(sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
-
+    app.use('/:vendorType(directories|sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
     //should be last route
     app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/product-view'));
     app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/search-result'));

@@ -37,7 +37,9 @@
 					{{#each geoLocateObj}}
 						<div class="row">
 							<div class="col-md-3 col-2" style="text-align: center;">
-								<img src="{{this.product_media_base_image}}" style="width: 75px; height: 70px;">
+								<a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}">
+									<img src="{{this.product_media_base_image}}" onerror="imgError(this)" style="width: 75px; height: 70px;">
+								</a>
 							</div>
 							<div class="col-md-9 col-10">
 								<div class="row common_padding">
@@ -84,7 +86,9 @@
 									</div>
 									<div class="col-md-4 col-3">
 										<p style="font-size: 9px;">
-											{{starCount this.product_rating}}
+											<a href="/{{MarketPlaceURL this.marketplace_id}}/{{this.product_slug}}/{{this.product_id}}">
+												{{starCount this.product_rating}}
+											</a>
 										</p>
 									</div>
 								</div>

@@ -61,7 +61,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 												</td>
 												<td class="col-3">
 													<div class="product-left-col">
-														<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+														<a href="/vendor/{{this.id}}" title="{{this.vendor_name}}">
+															<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" onError="UserImgError(this)" title="{{this.vendor_name}}">
+														</a>
 													</div>
 												</td>
 												<td class="col-7">
@@ -120,7 +122,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 												<tr class="d-flex">
 													<td class="col-3">
 														<div class="product-left-col">
-															<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+															<a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+																<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+															</a>
 														</div>
 													</td>
 													<td class="col-9">
@@ -140,7 +144,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 																	<span>Category</span>
 																</div>
 																<div class="col-md-8 col-8 no-padding overflow-txt">
-																	<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+																	<a class="text-500" href="javascript:;" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Seller Rating</span>
@@ -207,8 +211,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									<tbody>
 										<tr class="d-flex">
 											<td class="col-2">
-												<div class="product-left-col">
-													<img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+												<div class="product-left-col">	
+													<a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+														<img class="object-fit" onError="imgError(this)" src="{{this.product_base_image}}" alt="{{this.product_name}}" title="{{this.product_name}}">
+													</a>
 												</div>
 											</td>
 											<td class="col-7">
@@ -227,7 +233,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 															<span>Category</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+															<a class="text-500" href="javascript:;" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
 														</div>
 														<div class="col-md-4 col-4 no-padding">
 															<span>Seller</span>

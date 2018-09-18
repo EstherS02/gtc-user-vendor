@@ -8,6 +8,7 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const service = require('../../api/service');
+const productService = require('../../api/product/product.service');
 
 const async = require('async');
 import series from 'async/series';
@@ -62,21 +63,19 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			limit = null;
 			queryObj['featured_position'] = position.ShopLanding;
-			queryObj['is_featured_product'] = 1;
-
-			console.log("queryObj", queryObj);
-
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(featuredProducts) {
-					console.log("featuredProducts", featuredProducts);
-					return callback(null, featuredProducts.rows);
-
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
+            queryObj['is_featured_product'] = 1;
+            limit = 6;
+            var order = [
+                sequelize.fn('RAND'),
+            ];
+            productService.RandomProducts(productModel, queryObj, limit, order)
+                .then(function(response) {
+                    return callback(null, response.rows);
+                }).catch(function(error) {
+                    console.log('Error::', error);
+                    return callback(null);
+                });
 		},
 		publicMarketplace: function(callback) {
 			const includeArr = [];

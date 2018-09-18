@@ -79,7 +79,13 @@
 	function updateProduct(product_id,productInput){
 
 		var obj = {};
-		obj.attributeArr = JSON.stringify(attributeArr);
+
+		if(attributeArr.length > 0)
+			obj.attributeArr = JSON.stringify(attributeArr);
+
+		if(discountArr.length > 0 )
+			obj.discountArr = JSON.stringify(discountArr);
+
 
 		if ($('#productForm').valid()) {
 		$.ajax({
@@ -115,7 +121,11 @@
 		}
 	}
 
-	function remove(e, imageIndex) {
+	function removeDiscount(e){
+		$(e).parents(".discountRow").remove();
+	}
+
+	function removeImage(e, imageIndex) {
 
 		allFiles.splice(imageIndex, 1);
 		$(e).parents(".pip").remove();
@@ -130,7 +140,7 @@
 			var domElement;
 
 			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + allFiles[i].UploadedImage + "\"/>" +
-						"<i class='fa fa-times productRemoveIcon' onclick='remove(this,"+i+")' aria-hidden='true'></i></span>"
+						"<i class='fa fa-times productRemoveIcon' onclick='removeImage(this,"+i+")' aria-hidden='true'></i></span>"
 
 			$(".preview").append(domElement);
 
@@ -145,7 +155,18 @@
 
 	$(document).ready(function() {
 
-       	var test;
+       	var test, count;
+
+		var product_id = $('#edit_product_id').val();
+
+		if(product_id){
+			var discountLength = {{editProduct.Discounts.length}}
+			
+			count = discountLength;
+		}
+		else{
+			count =0;
+		}
 
 		$("#gtc-cart-alert").hide();
 
@@ -202,6 +223,7 @@
 				aspectRatio: 16 / 16,
 				minCropBoxHeight: 280,
 				minCropBoxWidth: 1364,
+				viewMode:1,
 				ready: function() { }
 			});
 		}).on('hidden.bs.modal', function() {
@@ -425,7 +447,7 @@
 		e.preventDefault();
 		var imageURLsArr = [];
 
-			var temp1 = $.map($('.quantity'), function(el) {
+				var temp1 = $.map($('.quantity'), function(el) {
 			  		return el.value;
 		     	});
 
@@ -466,8 +488,6 @@
 		attributeArr = $('#attributeDiv :input').filter(function(index, element) {
 			return $(element).val() != '';
 		}).serializeArray();
-
-		var product_id = $('#edit_product_id').val();
 
 		if(!product_id){
 			
@@ -558,21 +578,21 @@
 		$("#productForm")[0].reset();
 	});
 
-	var count =0;
-
 	$("#editdiscount").click(function(e) {
 
 		if (count < 3) {
 
-			var domElement = '<br/><div class="row"><div class="col-lg-1"><label  class="label-control">For</label></div><div class="col-lg-2">' +
+			var domElement = '<br/><div class="row discountRow"><div class="col-lg-1"><label  class="label-control">For</label></div><div class="col-lg-2">' +
 				'<input type="text" class="form-control-customized form-control-sm quantity" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"></div>' +
 				'<div class="col-lg-2"><label  class="label-control">user receives</label></div>' +
-				'<div class="col-lg-6"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"' +
+				'<div class="col-lg-3"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"' +
 				'name="discount_type' + count + '" value="percentage_discount" checked onclick=testPercent(' + count + ');> Total Percent Discount&nbsp; &nbsp;' +
-				'<input class="list_place_21 discount_amount percent_discount_amount' + count + '" type="text" name="percent_discount_amount' + count + '" placeholder="20%" onclick=testPercent(' + count + ');></div>' +
+				'<input class="list_place_21 discount_amount percent_discount_amount' + count + '" type="text" name="percent_discount_amount' + count + '" placeholder="20%"></div>' +
 				'<div class="row edit-listing-dis"><input type="radio" class="discount_type" id="value_discount' + count + '" name="discount_type' + count + '"' +
 				'value="value_discount" onclick=testValue(' + count + ')> Total Value Discount &nbsp;&nbsp;<input class="list_place_21 discount_amount value_discount_amount' + count + '"' +
-				'type="text" name="value_discount_amount' + count + '" placeholder="20$" style="display:none" /></div></div></div>'
+				'type="text" name="value_discount_amount' + count + '" placeholder="20$" style="display:none" /></div></div>'+
+				'<div class="col-lg-1" style="float:right"><a href="javascript:;"  onclick="removeDiscount(this)"><small>Remove</small></a>'+
+				'</div></div>'
 
 			$('#discountAppend').append(domElement);
 
@@ -847,10 +867,45 @@ function testPercent(count) {
 												<label class="label-control">Add bulk order discount tier.</label>
 												<div class="input-group">
 													<div class="custom-file">
-														<i class='fas fa-plus' id="editdiscount"></i>
+														 {{#ifCond editProduct.Discounts.length '<' 3}}
+														<i class='fas fa-plus discount_tier' id="editdiscount"></i>
+														{{/ifCond}}
+														{{#ifCond editProduct.Discounts.length '==' null}}	
+														<i class='fas fa-plus discount_tier' id="editdiscount"></i>
+														{{/ifCond}}
 													</div>
 												</div>
-												<section id="discountAppend"></section>
+												<section id="discountAppend">
+													{{#if editProduct.Discounts}}
+														{{#each editProduct.Discounts}}
+														{{#ifCond @index '>' 0}}<br/> {{/ifCond}}
+															<div class="row discountRow">
+																<div class="col-lg-1">
+																	<label  class="label-control">For</label>
+																</div>
+																<div class="col-lg-2">
+																	<input type="text" class="form-control-customized form-control-sm quantity" value="{{this.quantity}}" name="discount_quantity{{@index}}" id="discount_quantity{{@index}}" placeholder="20">
+																</div>
+																<div class="col-lg-2">
+																	<label  class="label-control">user receives</label>
+																</div>
+																<div class="col-lg-3">
+																	<div class="row edit-listing-dis">
+																		<input type="radio" class="discount_type" id="percentage_discount{{@index}}" name="discount_type{{@index}}" value="percentage_discount" {{#ifCond this.type '==' 1}} checked {{/ifCond}} onclick=testPercent('{{@index}}');> Total Percent Discount&nbsp; &nbsp;
+																		<input class="list_place_21 discount_amount percent_discount_amount{{@index}}" type="text" name="percent_discount_amount{{@index}}" placeholder="20%" value="{{this.percent_discount}}" {{#ifCond this.type '==' 2}} style="display:none" {{/ifCond}} >
+																	</div>
+																	<div class="row edit-listing-dis">
+																		<input type="radio" class="discount_type" id="value_discount{{@index}}" name="discount_type{{@index}}" value="value_discount" {{#ifCond this.type '==' 2}} checked {{/ifCond}} onclick=testValue('{{@index}}');> Total Value Discount &nbsp;&nbsp;
+																		<input class="list_place_21 discount_amount value_discount_amount{{@index}}" type="text" name="value_discount_amount{{@index}}" value="{{this.value_discount}}" placeholder="20$" {{#ifCond this.type '==' 1}} style="display:none" {{/ifCond}}/>
+																	</div>
+																</div>
+																<div class="col-lg-1" style="float:right">
+																	<a href="javascript:;"  onclick="removeDiscount(this)"><small>Remove</small></a>
+																</div>
+															</div>
+														{{/each}}
+													{{/if}}
+												</section>
 											</div>
 										</div>
 									{{/ifCond}}
@@ -923,11 +978,18 @@ function testPercent(count) {
 									</div>
 								</div>
 								<br/>
-								<br/>
+								<br/><hr/>
+
 								<div class="row">
-									<div class="col-lg-12">
-										<button type="submit" class="btn btn-primary btn-sm">{{#if editProduct.id}}UPDATE{{else}}SUBMIT{{/if}}</button>
-										<button type="reset" id="reset" class="btn btn-gray btn-sm">CANCEL</button>
+									<div class="col-md-12">
+										<button class="ladda-button btn {{#if editProduct.id}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
+											<span class="ladda-label">{{#if editProduct.id}}UPDATE{{else}}SUBMIT{{/if}}</span>
+											<span class="ladda-spinner"></span>
+										</button>
+										<button class="ladda-button btn btn-small btn-muted" type="reset" id="reset" data-style="expand-left">
+											<span class="ladda-label">CANCEL</span>
+											<span class="ladda-spinner"></span>
+										</button>
 									</div>
 								</div>
 							</form>
