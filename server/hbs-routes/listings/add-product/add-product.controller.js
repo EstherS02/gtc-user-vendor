@@ -46,7 +46,7 @@ export function addProduct(req, res) {
         status: status['ACTIVE']
 	};
 
-	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute');
+	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute,Discount');
 
     async.series({
         cartCounts: function(callback) {
@@ -101,6 +101,7 @@ export function addProduct(req, res) {
 		editProduct: function(callback){
 			service.findIdRow(productModel, editProductId, productIncludeArr)
 				.then(function(editProduct) {
+					console.log("=================================================",editProduct.Discount);
 					return callback(null, editProduct);
 
 				}).catch(function(error) {

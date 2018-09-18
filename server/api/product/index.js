@@ -13,7 +13,6 @@ router.get('/import-ebay', auth.hasRole(roles['VENDOR']), controller.importEbay)
 router.get('/:id', controller.productView);
 router.get('/:id/reviews', controller.productReviews);
 router.get('/:id/rating-counts', controller.productRatingsCount);
-router.post('/discount/:product_id', controller.discount);
 router.post('/import-woocommerce', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importWoocommerce);
 router.post('/import-aliexpress', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAliExpress);
 router.post('/import-amazon', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAmazon);
