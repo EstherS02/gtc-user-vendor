@@ -89,8 +89,7 @@ export default function(app) {
     app.use('/order-checkout', require('./hbs-routes/checkout'));
     app.use('/user-join', require('./hbs-routes/user-join'));
 
-    app.use('/:vendorType(sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
-
+    app.use('/:vendorType(directories|sellers|wholesalers|retailers|services-providers|subscription-providers)', require('./hbs-routes/vendor-search-result'));
     //should be last route
     app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/product-view'));
     app.use('/:marketPlaceType(directory|shop|wholesale|services|lifestyle|products)', require('./hbs-routes/search-result'));

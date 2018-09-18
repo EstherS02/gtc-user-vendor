@@ -11,6 +11,11 @@
             image.src = "/gtc-assets/images/no-product-image.jpg";
             return true;
         }
+        function UserImgError(image) {
+            image.onerror = "";
+            image.src = "img/avatar.png";
+            return true;
+        }
         
     </script>
     <script type="text/javascript">
