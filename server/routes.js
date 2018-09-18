@@ -47,7 +47,7 @@ export default function(app) {
 
     /* Handlerbars routes */
     app.use('/', require('./hbs-routes/homePage'));
-    app.use('/advertisement', require('./hbs-routes/advertisement'));
+    //app.use('/advertisement', require('./hbs-routes/advertisement'));
     app.use('/cart', require('./hbs-routes/cart'));
     app.use('/directory', require('./hbs-routes/directory'));
     app.use('/wholesale', require('./hbs-routes/wholesale'));
