@@ -9,7 +9,7 @@ const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
 const service = require('../../api/service');
 const async = require('async');
-
+const productService = require('../../api/product/product.service');
 
 export function services(req, res) {
 	var categoryModel = "Category";
@@ -61,16 +61,19 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			limit = null;
 			queryObj['featured_position'] = position.ServiceLanding;
-			queryObj['is_featured_product'] = 1;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(featuredService) {
-					return callback(null, featuredService.rows);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
+            queryObj['is_featured_product'] = 1;
+            limit = 6;
+            var order = [
+                sequelize.fn('RAND'),
+            ];
+            productService.RandomProducts(productModel, queryObj, limit, order)
+                .then(function(response) {
+                    return callback(null, response.rows);
+                }).catch(function(error) {
+                    console.log('Error::', error);
+                    return callback(null);
+                });
 		},
 		serviceProduct: function(callback) {
 			const includeArr = [];
