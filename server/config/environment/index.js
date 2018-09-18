@@ -79,8 +79,8 @@ var all = {
             stripeConnectEmail: 'STRIPE-CONNECT-MAIL',
             payoutMail: 'PAYOUT-MAIL',
             askToVendor: 'ASK-TO-VENDOR',
-			returnRequest: 'USER-RETURN-REQUEST'
-			returnRequest: 'USER-RETURN-REQUEST'
+			returnRequest: 'USER-RETURN-REQUEST',
+			refundRequest: 'VENDOR-TO-REFUND'
         }
     },
     jobs: {
