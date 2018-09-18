@@ -228,7 +228,9 @@
 														<tr>
 															<td class="d-flex">
 																<div class="col-4 product-left-col">
-																	<img class="object-fit" onError="imgError(this)" src="{{cartItem.Product.ProductMedia.[0].url}}">
+																	<a href="../products/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" >
+																		<img class="object-fit" onError="imgError(this)" src="{{cartItem.Product.ProductMedia.[0].url}}">
+																	</a>
 																</div>
 																<div class="col-8">
 																	<div class="product-middle-col">

@@ -192,8 +192,11 @@
 												{{#each products}}
 												<tr>
 													<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
-													<td scope="row"><img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
-														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">{{this.product_name}}</a></td>
+													<td scope="row">
+														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
+														<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
+														{{this.product_name}}</a>
+														</td>
 														<td scope="row">{{ prettifyDate this.publish_date }}</td>
 														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 														<td>{{currency this.product_price '$'}} CAD</td>

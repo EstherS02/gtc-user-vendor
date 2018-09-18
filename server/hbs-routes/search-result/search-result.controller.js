@@ -12,6 +12,7 @@ const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
 const config = require('../../config/environment');
 const durationConfig = require('../../config/duration');
+const productService = require('../../api/product/product.service');
 
 export function index(req, res) {
 	var LoggedInUser = {};
@@ -225,19 +226,19 @@ export function index(req, res) {
 				});
 		},
 		topProducts: function(callback) {
-			var topOffset = 0;
+            productQueryParams['is_featured_product'] = 1;
 			var topLimit = 3;
-
-			productQueryParams['is_featured_product'] = 1;
-
-			service.findAllRows(productModel, [], productQueryParams, topOffset, topLimit, field, order)
-				.then(function(results) {
-					return callback(null, results);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(error, null);
-				});
+            var order = [
+                sequelize.fn('RAND'),
+            ];
+            productService.RandomProducts(productModel, productQueryParams, topLimit, order)
+                .then(function(response) {
+                	console.log("----------------------response",response)
+                    return callback(null, response);
+                }).catch(function(error) {
+                    console.log('Error::', error);
+                    return callback(null);
+                });
 		},
 		productsCountBasedOnMarketplaceTypes: function(callback) {
 			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)

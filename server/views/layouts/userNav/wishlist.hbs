@@ -178,8 +178,9 @@
 																<input type="checkbox" value="{{this.id}}">
 															</td>
 															<td class="text_blue_color">
-																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 15px;" />
-																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">{{this.Product.product_name}}</a>
+																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 30px;" />
+																{{this.Product.product_name}}</a>
 															</td>
 															<td class="text_blue_color">
 																<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.User.first_name}} {{this.Product.Vendor.User.last_name}}</a>

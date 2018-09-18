@@ -137,21 +137,27 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist text-center">
 									{{#if compareProducts.[0]}}
-										<img src="{{compareProducts.[0].url}}" class="img-fluid">
+										<a href="/products/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}">
+											<img src="{{compareProducts.[0].url}}" onerror="imgError(this)" class="img-fluid">
+										</a>
 									{{/if}}
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist text-center">
 									{{#if compareProducts.[1]}}
-										<img src="{{compareProducts.[1].url}}" class="img-fluid">
+										<a href="/products/{{compareProducts.[1].product_slug}}/{{compareProducts.[0].id}}">
+											<img src="{{compareProducts.[1].url}}" onerror="imgError(this)" class="img-fluid">
+										</a>
 									{{/if}}
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist text-center">
 									{{#if compareProducts.[2]}}
-										<img src="{{compareProducts.[2].url}}" class="img-fluid">
+										<a href="/products/{{compareProducts.[2].product_slug}}/{{compareProducts.[0].id}}">
+											<img src="{{compareProducts.[2].url}}" onerror="imgError(this)" class="img-fluid">
+										</a>
 									{{/if}}
 								</div>
 							</div>

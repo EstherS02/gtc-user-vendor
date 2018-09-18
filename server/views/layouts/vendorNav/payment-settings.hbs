@@ -1,11 +1,13 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <script>
+	var connectUrl = {{{ DisplayJSON connectUrl }}}
+
 	$(document).ready(function () {
 
 		$("#gtc-payment-setting-alert").hide();
 
-		$("#stripeConnect").click(function () {
-			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://gtc.ibcpods.com/payment-settings'
+		$("#stripeConnect").click(function (e) {
+			window.location.href = connectUrl;
 		});
 
 		$('#paymentSettingForm').submit(function (e) {
@@ -49,6 +51,51 @@
 			  }
 		  });
 	});
+
+	function paypalDisconnectEmail() {
+		let paypalDisconnectId = `{{LoggedInUser.id}}`
+		$('#paypal_disconnect').prop('disabled', true);
+		$('#paypal_disconnect').css('cursor', 'not-allowed');
+		$.ajax({
+			url: '/api/paypal/disconnect',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({ userId: paypalDisconnectId }),
+			success: function(data) {
+				window.location.reload();
+			},
+			error: function(error) {
+				console.log(error)
+				$('#paypal_disconnect').prop('disabled', false);
+				$('#paypal_disconnect').css('cursor', 'pointer');
+				$('#paypal_connect_error').text(error.responseJSON.messageDetails);
+				$('#paypal_connect_error').css('display', 'block');
+			}
+		});
+	}
+
+	var paypalCheckConnect, paypalOAuthWin;
+
+	function paypalVerifyEmail() {
+		var paypalOAuthURL = '{{{payPalOAuthUrl}}}';
+		paypalOAuthWin = window.open(paypalOAuthURL, 'PaypalOAuthPopup', 'location=0,status=0,width=800,height=700');
+
+		paypalCheckConnect = setInterval(function() {
+			if (!paypalOAuthWin || !paypalOAuthWin.closed) return;
+			clearInterval(paypalCheckConnect);
+		}, 100);
+
+		window.onPayPalPopupClose = function(result) {
+			if (result.message === "SUCCESS") {
+				window.location.reload();
+			} else {
+				$('#paypal_connect_error').text(result.messageDetails);
+				$('#paypal_connect_error').css('display', 'block');
+			}
+		}
+	}
+	
 </script>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
@@ -123,12 +170,12 @@
 										</div>
 										<br/>
 										<div class="row">
-											<div class="col-6">
-												<input type="button" value="CONNECTED PAYPAL EMAIL :" class="btn btn-small" style="cursor:default" />
-											</div>
-											<div class="col-6">
+											<div class="col-8">
 												<input type="text" placeholder="Paypal email" name="vendor_payout_paypal_email" value="{{vendorPaymentInfo.vendor_payout_paypal_email}}"
 												 class="form-control-customized form-control-sm" />
+											</div>
+											<div class="col-4">
+												<input type="button" value="DISCONNECT" class="btn btn-small" onclick="paypalDisconnectEmail()"/>
 											</div>
 										</div>
 										{{else}}
@@ -141,8 +188,7 @@
 										</div>
 										<div class="row">
 											<div class="col-12">
-												<input type="text" placeholder="Enter Your Paypal Email" name="vendor_payout_paypal_email" class="form-control-customized form-control-sm"
-												/>
+												<input class="btn btn-small" style="width:100%;background-color: #dddddd;color:#000" value="CONNECT" onclick="paypalVerifyEmail()" readonly>
 											</div>
 										</div>
 										<div class="row">

@@ -653,6 +653,13 @@ export function addProduct(req, res) {
 				var attributeEle = JSON.parse(req.body.attributeArr);
 				updateProductAttribute(attributeEle, product_id);
 			}
+
+			if (req.body.discountArr) {
+				var discountArr = JSON.parse(req.body.discountArr);
+				updateDiscount(discountArr, product_id);
+			}
+
+
 			return res.status(200).send(row);
 		}).catch(function(error) {
 			console.log('Error:::', error);
@@ -740,6 +747,45 @@ function updateProductAttribute(attributeEle, product_id) {
 	})
 }
 
+function updateDiscount(discountArr, product_id) {
+
+	var queryObj = {
+		product_id: product_id
+	}
+
+	model['Discount'].destroy({
+		where: queryObj
+	}).then(function(row) {
+
+		async.mapSeries(discountArr, function(discountElement, callback) {
+
+			discountElement.product_id = product_id;
+			discountElement.created_on = new Date();
+			
+			service.createRow('Discount', discountElement)
+				.then(function(result) {
+					return callback(null, result);
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return callback(null);
+				});
+		}, function(err, results) {
+			if(!err){
+				return Promise.resolve(results);
+			}
+			else{
+				console.log("Error::",err);
+				return Promise.reject(err);
+			}			
+		});
+
+	}).catch(function(error) {
+		console.log("Error::", error);
+		return Promise.reject(error);
+	})
+}
+
 export function editProduct(req, res) {
 
 	var id = req.query.product_id;
@@ -781,34 +827,6 @@ export function editProduct(req, res) {
 	}).catch(function(error) {
 		res.status(500).send(error);
 	})
-}
-
-export function discount(req, res) {
-	var discountArrayEle = JSON.parse(req.body.data);
-
-	var queryObj = {
-		product_id: req.params.product_id
-	}
-
-	model['Discount'].destroy({
-		where: queryObj
-	}).then(function(row) {
-		discountArrayEle.forEach(function(element) {
-
-			service.createRow('Discount', element)
-				.then(function(discount) {
-					return;
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return;
-				})
-		});
-	}).catch(function(error) {
-		console.log("Error::", error);
-	})
-
-	return res.status(201).send("discount updated");
 }
 
 function string_to_slug(str) {
