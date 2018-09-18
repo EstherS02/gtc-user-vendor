@@ -13,60 +13,9 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function paymentSettings(req, res) {
 
-    if(!req.query.code){
-        paymentSettingFunction(req,res);
-    }else{
-
-        var bodyParams = {}, queryObj = {};
-            var vendorModel = 'Vendor';
-    
-            var data = {
-                client_secret: 'sk_test_5zda4q0XHsYdJLjbulqoCVpl',
-                code: req.query.code,
-                grant_type: "authorization_code"
-            }
-    
-            request.post({
-                "headers": { "content-type": "application/json" },
-                "url": 'https://connect.stripe.com/oauth/token',
-                body: JSON.stringify(data)
-            }, (error, response, body) => {
-                if (error) {
-                    console.log("Error::", error);
-                } else {
-                    queryObj = {
-                        user_id: req.user.id
-                    }
-
-                    var stripeBody = JSON.parse(body);
-
-                    var stripeId = stripeBody.stripe_user_id;
-
-                    	bodyParams = {
-                            vendor_payout_stripe_id: stripeId
-                        }
-                        service.updateRecord(vendorModel, bodyParams, queryObj)
-                            .then(function (row) {
-                                if (row) {
-                                    console.log("row:",row)
-                                } else {
-                                }
-                            }).catch(function (error) {
-                                if (error) {
-                                    console.log("error:",error);
-                                }
-                            })
-                }
-            });  
-            paymentSettingFunction(req,res);
-    }   
-}
-
-function paymentSettingFunction(req,res){
-
     var LoggedInUser = {}, bottomCategory = {}, vendorQueryObj = {};
     var vendorIncludeArr = [];
-    var offset, limit, field, order;
+    var offset, limit, field, order, connectUrl;
 
     offset = 0;
     field = "id";
@@ -88,7 +37,9 @@ function paymentSettingFunction(req,res){
             "model": model['Currency'],
             atrribute: ['id', 'name']
         }
-    ]
+	]
+	
+	connectUrl = config.stripeConfig.connectUrl;
    
     async.series({
         cartCounts: function (callback) {
@@ -154,7 +105,8 @@ function paymentSettingFunction(req,res){
                     cartheader: results.cartCounts,
                     vendorPlan: vendorPlan,
                     currency: results.currency,
-                    vendorPaymentInfo: results.vendorPaymentInfo
+					vendorPaymentInfo: results.vendorPaymentInfo,
+					connectUrl: connectUrl
                 });
             } else {
                 res.render('vendorNav/payment-settings', err);

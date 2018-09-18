@@ -1,11 +1,13 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <script>
+	var connectUrl = {{{ DisplayJSON connectUrl }}}
+
 	$(document).ready(function () {
 
 		$("#gtc-payment-setting-alert").hide();
 
-		$("#stripeConnect").click(function () {
-			window.location.href = 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://gtc.ibcpods.com/payment-settings'
+		$("#stripeConnect").click(function (e) {
+			window.location.href = connectUrl;
 		});
 
 		$('#paymentSettingForm').submit(function (e) {
