@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         discount_value: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'discount_value',
             allowNull: false
         },
@@ -61,12 +61,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         minimum_spend: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'minimum_spend',
             allowNull: true
         },
         maximum_spend: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'maximum_spend',
             allowNull: true
         },

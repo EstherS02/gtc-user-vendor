@@ -84,7 +84,13 @@ select {
     outline: 0;
     box-shadow: 0 0 0 0.1rem rgb(244, 157, 63);
 }
-
+.form-control-customized:disabled, .form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+.form-control-customized:disabled {
+    cursor: not-allowed;
+}
 .form-control,
 .single-line {
     background-color: #FFFFFF;
@@ -1161,7 +1167,22 @@ label {
     position: absolute;
     margin-top: 25px;
 }
-
+.vendor-alert {
+    font-size: 0.813em;
+    font-weight: 500;
+    height: 25px;
+    line-height: 1.8;
+    position: relative;
+    color: #FFFFFF;
+}
+.alert-success {
+    background: #154a7f;
+    outline: 0;
+}
+.alert-danger {
+    background: #ec4758;
+    outline: 0;
+}
 .error {
     font-size: 0.813em;
 }
@@ -1920,7 +1941,10 @@ p.summary-info span {
     border-top: 1px solid #c3c3c3;
     height: 1px;
 }
-
+.hr-line {
+    border-top: 1px solid #e7eaec;
+    height: 1px;
+}
 .add-bag-btn {
     display: inline-block;
 }
