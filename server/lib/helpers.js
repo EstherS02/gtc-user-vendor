@@ -586,3 +586,4 @@ Handlebars.registerHelper('sizeInKB', function(value) {
 	var valueInKB = value/1000;
 	return valueInKB.toFixed(2);
 });
+// s = s.replace(/([A-Z])/g, ' $1').trim()
