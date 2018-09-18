@@ -1,6 +1,5 @@
 'use strict';
 
-const request = require('request');
 const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
@@ -10,6 +9,16 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const paypal = require('paypal-rest-sdk');
+
+let openIdConnect = paypal.openIdConnect;
+
+paypal.configure({
+    'mode': config.payPalOAuth.payPalMode,
+    'openid_client_id': config.payPalOAuth.clientId,
+    'openid_client_secret': config.payPalOAuth.clientSecret,
+    'openid_redirect_uri': config.payPalOAuth.redirectUrl
+});
 
 export function paymentSettings(req, res) {
 
@@ -40,6 +49,9 @@ export function paymentSettings(req, res) {
 	]
 	
 	connectUrl = config.stripeConfig.connectUrl;
+	let payPalOAuthUrl = openIdConnect.authorizeUrl({
+        'scope': config.payPalOAuth.scope
+    });
    
     async.series({
         cartCounts: function (callback) {
@@ -106,7 +118,8 @@ export function paymentSettings(req, res) {
                     vendorPlan: vendorPlan,
                     currency: results.currency,
 					vendorPaymentInfo: results.vendorPaymentInfo,
-					connectUrl: connectUrl
+					connectUrl: connectUrl,
+					payPalOAuthUrl: payPalOAuthUrl
                 });
             } else {
                 res.render('vendorNav/payment-settings', err);
