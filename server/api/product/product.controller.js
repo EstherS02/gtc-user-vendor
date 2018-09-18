@@ -687,13 +687,13 @@ export function importProduct(req, res) {
 			res.status(500).send("Internal server error");
 			return
 		});
-
 }
 
 function updateProductMedia(arrayEle, product_id) {
 	arrayEle.forEach(function(element) {
 		element.product_id = product_id;
-		console.log(element);
+		//element.created_by =
+		element.created_on = new Date();
 
 		service.createRow('ProductMedia', element)
 			.then(function(result) {
@@ -782,7 +782,6 @@ export function editProduct(req, res) {
 		res.status(500).send(error);
 	})
 }
-
 
 export function discount(req, res) {
 	var discountArrayEle = JSON.parse(req.body.data);
