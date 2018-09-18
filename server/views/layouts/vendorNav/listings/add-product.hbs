@@ -43,8 +43,6 @@
 			if(discountArr.length > 0 )
 			obj.discountArr = JSON.stringify(discountArr);
 
-			console.log("--------------------------------------Comming----------------------------")
-
 			$.ajax({
 				type: 'POST',
 				url: '/api/product/add-product?' + productinput,
