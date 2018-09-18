@@ -684,21 +684,22 @@ export function makeplanPayment(req, res) {
 
 
 export function refundOrder(req, res) {
-	console.log("refundsOrderitems:::"+req.body.refundOrderItems)
-	 var refundsOrderitems=JSON.parse(req.body.refundOrderItems);
-	 for (var i = 0; i < refundsOrderitems.length; i++) {
-		console.log("order_id::"+refundsOrderitems[i]);
-		}
+	var userdetails = req.user;
+	var refundOrderitemsID=[];
+	var refundsOrderitems=JSON.parse(req.body.refundOrderItems);
+	for (var i = 0; i < refundsOrderitems.length; i++) {
+		refundOrderitemsID.push(refundsOrderitems[i]);
+	}
+	
+	
 	var order_id, paymentObj, refundObj, refundAmt,order;
-
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
-
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
 	let orderPaymentQueryObj = {
-		order_id: order_id,
-		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
+	order_id: order_id,
+	order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
 	        }
 	return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray)
 	.then(paymentRow => {
@@ -719,9 +720,13 @@ export function refundOrder(req, res) {
 			created_on: new Date()
 		};
 		return service.createRow('Payment', paymentModel);
+		
+		
 	})
 	.then(createdPaymentRow => {
-
+		console.log("enterrrlooops"+parseFloat(createdPaymentRow.refund_amount).toFixed(2));
+		var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
+		sendRefundOrderMail(refundOrderitemsID, req.user,refundamt);
 		let orderPaymentModel = {
 			order_id: order_id,
 			payment_id: createdPaymentRow.id,
@@ -785,3 +790,47 @@ export function refundOrder(req, res) {
 		return res.status(500).send(error);
 	});
 }
+export function sendRefundOrderMail(refundOrderitemsID, user,refundamount) {
+	var orderItemid=refundOrderitemsID;
+	var includeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User,Order');
+	var queryObj = {
+		id: orderItemid
+	}
+	var field = 'created_on';
+	var order = "asc";
+	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
+		if (OrderRefundList) {
+			var orderRefundList = OrderRefundList.rows;
+			var vendor_email = user.email;
+			var orderNew = [];
+			var queryObjEmailTemplate = {};
+			var emailTemplateModel = 'EmailTemplate';
+			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
+			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+			.then(function(response) {
+				var email = vendor_email;
+				var subject = response.subject.replace('%ORDER_TYPE%', 'Refund Order');
+				var body;
+				body = response.body.replace('%VENDOR_NAME%', user.first_name);
+				body = response.body.replace('%refundamount%', refundamount);
+				_.forOwn(orderRefundList, function(orders) {
+				    body = body.replace('%ORDER_NUMBER%',orders.Order.id);
+					orderNew.push(orders);
+				});
+				var template = Handlebars.compile(body);
+						var data = {
+							order: orderNew
+						};
+						var result = template(data);
+			   	sendEmail({
+					to: email,
+					subject: subject,
+					html: result
+				});
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return;
+			})
+		}
+	})
+}	
