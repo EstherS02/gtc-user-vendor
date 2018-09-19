@@ -87,17 +87,21 @@
 	}
 
 	function updateProduct(product_id,productInput){
+		console.log("----------------comming to edit product-------------")
 
 		var obj = {};
 
 		if(attributeArr.length > 0)
 			obj.attributeArr = JSON.stringify(attributeArr);
 
-		if(discountArr.length > 0 )
+		if(discountArr.length > 0 ){
+
+			console.log("===================================================",discountArr.length );
+			console.log("========**********************************==================",discountArr);
 			obj.discountArr = JSON.stringify(discountArr);
-
-
-		if ($('#productForm').valid()) {
+		}
+			
+	if ($('#productForm').valid()) {
 		$.ajax({
 				type: 'POST',
 				url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
@@ -135,6 +139,8 @@
 	
 		$(e).parents(".discountRow").remove();
 		count = count-1;
+
+		console.log("==================count after remove=============",count)
 
 		if (count < 3) {
 			$(".discount_tier").show();
@@ -564,7 +570,7 @@
 							i++;
 						});
 						var dataFormate = {};
-						dataFormate.data = JSON.stringify(imageURLsArr);
+						dataFormate.imageArr = JSON.stringify(imageURLsArr);
 						addProduct(dataFormate, productInput);
 					},
 					error: function(error) {
@@ -574,9 +580,9 @@
 			} else {
 
 				var dataFormate = {};
-				dataFormate.data = JSON.stringify(imageURLsArr);
+				dataFormate.imageArr = JSON.stringify(imageURLsArr);
 				addProduct(dataFormate, productInput);
-				
+
 			}
 			$.ajaxSetup({ async: true });
 		}
@@ -968,11 +974,9 @@ function testPercent(count) {
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												{{!-- <div class="custom-file"> --}}
-													<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
-													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
-												</div>
-											{{!-- </div> --}}
+												<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
+												<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
+											</div>
 										</div>
 										<div class="base_image">
 										</div>

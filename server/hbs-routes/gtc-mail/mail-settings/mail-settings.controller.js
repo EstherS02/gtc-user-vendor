@@ -82,17 +82,18 @@ export function mailSettings(req, res) {
 		}
 		}, function(err, results) {
 			if (!err) {
+				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 				res.render('gtc-mail/mail-settings', {
 					title: "Global Trade Connect",
-					title: "Global Trade Connect",
-					// count: results.notifications.count,
 					notification: results.notifications.rows,
 					categories: results.categories,
                     bottomCategory: bottomCategory,
                     cartheader:results.cartCounts,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'mail-settings',
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					dropDownUrl: dropDownUrl
 				});
 			} else {
 				res.render('gtc-mail/mail-settings', err);
