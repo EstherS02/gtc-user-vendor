@@ -671,6 +671,8 @@ function resMessage(message, messageDetails) {
 
 export function addProduct(req, res) {
 
+	var product_id;
+
 	if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
 
@@ -696,7 +698,7 @@ export function addProduct(req, res) {
 
 	service.createRow('Product', req.query)
 		.then(function(row) {
-			var product_id = row.id;
+			product_id = row.id;
 
 			if (req.body.imageArr) {
 				var imagePromise = []; 

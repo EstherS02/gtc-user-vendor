@@ -87,7 +87,6 @@
 	}
 
 	function updateProduct(product_id,productInput){
-		console.log("----------------comming to edit product-------------")
 
 		var obj = {};
 
@@ -95,9 +94,6 @@
 			obj.attributeArr = JSON.stringify(attributeArr);
 
 		if(discountArr.length > 0 ){
-
-			console.log("===================================================",discountArr.length );
-			console.log("========**********************************==================",discountArr);
 			obj.discountArr = JSON.stringify(discountArr);
 		}
 			
@@ -139,8 +135,6 @@
 	
 		$(e).parents(".discountRow").remove();
 		count = count-1;
-
-		console.log("==================count after remove=============",count)
 
 		if (count < 3) {
 			$(".discount_tier").show();
