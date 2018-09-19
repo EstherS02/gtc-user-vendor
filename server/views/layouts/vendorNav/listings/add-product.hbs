@@ -955,6 +955,12 @@ function testPercent(count) {
 													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
 												</div>
 											</div>
+											{{#each editProduct.ProductMedia}}
+												{{#ifCond this.base_image "==" 1}}
+													<div class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
+													<a class="btn btn-small" style="background-color:gray">change base image???</a></div>
+													{{/ifCond}}
+												{{/each}}
 										</div>
 										<div class="base_image">
 										</div>
@@ -974,7 +980,13 @@ function testPercent(count) {
 										</div>
 									</div>
 									<div class="col-lg-12">
-										<div class="preview"></div>
+									{{#each editProduct.ProductMedia}}
+									{{#ifCond this.base_image "!=" 1}}
+										<span class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
+										<i class='fa fa-times productRemoveIcon' onclick='delete({{this.id}})' aria-hidden='true'></i></span>
+										{{/ifCond}}
+									{{/each}}
+									<span class="preview"></span>
 									</div>
 								</div>
 								<br/>
