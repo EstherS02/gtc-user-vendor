@@ -51,3 +51,58 @@ export function stripeConnect(req,res){
                 }
             }); 
 }
+
+export function stripeDisconnect(req,res){
+
+	var vendorId, vendorModel;
+	var updatestripeId = {}, disconnectBodyParam = {};
+
+	if (req.body.userId == req.user.id) {
+
+		vendorId = req.user.Vendor.id;
+		vendorModel = "Vendor";
+		updatestripeId = {
+			'vendor_payout_stripe_id': null
+		}
+
+		disconnectBodyParam = {
+			client_secret: config.stripeConfig.keySecret,
+			client_id: config.stripeConfig.clientId,
+			stripe_user_id: req.body.stripeId
+		}
+
+		request.post({
+			"headers": { "content-type": "application/json" },
+			"url": config.stripeConfig.disconnectUrl,
+			body: JSON.stringify(disconnectBodyParam)
+		}, (error, response, body) => {
+			if (error) {
+				return res.status(500).send({
+					"message": "ERROR",
+					"messageDetails": "Stripe Disconnect UnSuccessfull with errors",
+					"errorDescription": err
+				});
+			} else {
+
+				return service.updateRow(vendorModel, updatestripeId, vendorId)
+					.then(function(response) {	
+						return res.status(200).send({
+							"message": "SUCCESS",
+							"messageDetails": "Stripe Disconnected Successfully"
+						});
+					}).catch(function(err) {
+						return res.status(500).send({
+							"message": "ERROR",
+							"messageDetails": "Stripe Disconnect UnSuccessfull with errors",
+							"errorDescription": err
+						});
+					});
+				}
+			}); 		
+	} else {
+		return res.status(400).send({
+			"message": "ERROR",
+			"messageDetails": "Bad Request, Not authorized to disconnect"
+		});
+	}          
+}

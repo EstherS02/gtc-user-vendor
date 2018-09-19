@@ -160,8 +160,10 @@ var all = {
     stripeConfig: {
         keyPublishable: process.env.STRIPE_PUBLISHABLE_KEY,
 		keySecret: process.env.STRIPE_SECRET_KEY,
+		clientId: 'ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW',
 		connectUrl: 'https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_DS4VHi3XvDMfSgJv5SOH7YHzwmYuLAUW&scope=read_write&redirect_uri=https://gtc.ibcpods.com/api/stripe/connect',
-		OAuthUrl: 'https://connect.stripe.com/oauth/token'
+		OAuthUrl: 'https://connect.stripe.com/oauth/token',
+		disconnectUrl: 'https://connect.stripe.com/oauth/deauthorize'
     },
 
     payPalConfig: {
