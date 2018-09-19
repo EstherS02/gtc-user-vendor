@@ -756,16 +756,16 @@ export function refundOrder(req, res) {
 		let includeArr=[];
 		  refundObj={
 		  order_id:order_id,
-		  order_item_status :1
+		  order_item_status :{
+			$ne: 1
+		},
 		};
 	    var field = 'created_on';
 	    var order = "asc";
 		return service.findAllRows('OrderItem', includeArr,refundObj,0, null, field, order);
    
 	}).then(successPromise =>{
-		
-		console.log(successPromise.count);
-		if(successPromise.count=="1")
+		if(successPromise.count=="0")
 		{
 			let OrderItem = {
 				reason_for_cancellation: req.body.reason_for_cancellation,

@@ -214,8 +214,7 @@ export function returnRequest(req, res) {
 
 	var currentUser, item_id, itemModel, emailTemplateModel, subject, mailBody;
 	var mailObj = {}, emailTemplateQueryObj = {}, itemBodyParam = {}, itemIncludeArr = [];
-
-	itemModel = 'OrderItem';
+   	itemModel = 'OrderItem';
 	itemIncludeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User');
 
 	emailTemplateModel = "EmailTemplate";
@@ -225,6 +224,8 @@ export function returnRequest(req, res) {
 	if (req.params.id)
 		item_id = req.params.id
 
+		
+
 	itemBodyParam['order_item_status'] = orderItemStatus.RETURN_IN_REVIEW;
 	itemBodyParam['reason_for_return'] = req.body.reason_for_return;
 	itemBodyParam['return_requested_on'] = new Date();
@@ -232,11 +233,35 @@ export function returnRequest(req, res) {
 	service.findIdRow(itemModel, item_id, itemIncludeArr)
 		.then(function (item) {
 
-			service.updateRow(itemModel, itemBodyParam, item_id)
+		service.updateRow(itemModel, itemBodyParam, item_id)
 				.then(function (updatedRow) {
-
-					var item_name, order_id, vendor_name, quantity, user_name, reason_for_return, email;
-
+					let includeArr=[];
+					var refundObj={
+					order_id:req.body.order_id,
+					order_item_status :{
+						$ne: 4
+					},
+				  };
+				  var field = 'created_on';
+				  var order = "asc";
+			service.findAllRows(itemModel, includeArr,refundObj,0, null, field, order)
+					.then(function (orderItemsList) {	
+						if(orderItemsList.count=="0")
+						{
+							let OrderItem = {
+								reason_for_cancellation: req.body.reason_for_return,
+								cancelled_on: new Date(),
+								order_status: orderStaus['CANCELLEDORDER'],
+								last_updated_by: req.user.first_name,
+								last_updated_on: new Date()
+							};
+							var refundObj={
+								id:req.body.order_id
+							};
+						  service.updateRecord('Order', OrderItem,refundObj);
+						 
+						}
+     				var item_name, order_id, vendor_name, quantity, user_name, reason_for_return, email;
 					item_name = item.Product.product_name;
 					order_id = item.order_id;
 					vendor_name = item.Product.Vendor.vendor_name;
@@ -267,6 +292,8 @@ export function returnRequest(req, res) {
 							return res.status(500).send(error);
 						});
 				})
+			})
+			
 		}).catch(function (error) {
 			return res.status(500).send(error);
 		})
