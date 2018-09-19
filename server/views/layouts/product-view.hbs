@@ -231,9 +231,7 @@ function mailVendor(){
                             					{{#each product.ProductMedia}}
                             					{{#if @first}} 
                             					{{else}} 
-                            					{{!-- {{#ifCond @index '<' 4}} --}}
                             					<a href="{{this.url}}" ><img src="{{this.url}}" onError="imgError(this)" width="75" class="img-fluid" height="75"></a>
-                            					{{!-- {{/ifCond}} --}}
                             					{{/if}}
                             					{{/each}}
                             				</div>
