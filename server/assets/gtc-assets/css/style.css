@@ -2218,7 +2218,9 @@ p.summary-info span {
     font-family: 'Roboto', sans-serif;
     text-shadow: none;
 }
-
+.select2-selection__choice, .select2-results__option {
+    font-size: 0.813em;
+}
 .header-lg-text .see-all:hover {
     color: #a4bfda;
 }

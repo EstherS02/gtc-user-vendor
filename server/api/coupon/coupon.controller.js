@@ -170,6 +170,7 @@ export async function saveCoupon(req, res) {
 	req.checkBody('code', 'Missing Query Param').notEmpty();
 	req.checkBody('discount_type', 'Missing Query Param').notEmpty();
 	req.checkBody('discount_value', 'Missing Query Param').notEmpty();
+	req.checkBody('expiry_date', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
@@ -196,7 +197,7 @@ export async function saveCoupon(req, res) {
 	bodyParams['discount_value'] = parseFloat(req.body.discount_value);
 	bodyParams['individual_use_only'] = parseFloat(req.body.individual_use_only);
 	bodyParams['excluse_sale_item'] = parseFloat(req.body.excluse_sale_item);
-	bodyParams['expiry_date'] = req.body.expiry_date ? req.body.expiry_date : null;
+	bodyParams['expiry_date'] = req.body.expiry_date;
 	bodyParams['minimum_spend'] = req.body.minimum_spend ? parseFloat(req.body.minimum_spend) : null;
 	bodyParams['maximum_spend'] = req.body.maximum_spend ? parseFloat(req.body.maximum_spend) : null;
 	bodyParams['usage_limit'] = req.body.usage_limit ? parseInt(req.body.usage_limit) : null;
@@ -206,12 +207,10 @@ export async function saveCoupon(req, res) {
 	bodyParams['vendor_id'] = req.user.Vendor.id;
 	bodyParams['status'] = status['ACTIVE'];
 
-	if (bodyParams['expiry_date']) {
-		const currentDate = moment().format('YYYY-MM-DD');
-		const expiryDate = moment(bodyParams['expiry_date']).format('YYYY-MM-DD');
-		if (expiryDate < currentDate) {
-			return res.status(400).send('Invalid expiry date');
-		}
+	const currentDate = moment().format('YYYY-MM-DD');
+	const expiryDate = moment(bodyParams['expiry_date']).format('YYYY-MM-DD');
+	if (expiryDate < currentDate) {
+		return res.status(400).send('Invalid expiry date');
 	}
 
 	try {
