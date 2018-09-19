@@ -1137,3 +1137,32 @@ button.update-btn1{
 	font-weight:bold;
 	padding-left:5px
 }
+
+.imageThumb {
+	height: 150px;
+	width: 150px;
+	border: 2px solid;
+	padding: 1px;
+	cursor: pointer;
+}
+
+.pip {
+	display: inline-block;
+	margin: 10px 10px 0 0;
+	position: relative;
+}
+
+.fas {
+	cursor: pointer;
+}
+
+.productRemoveIcon {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	padding: 2px 2px 2px 2px;
+	background-color: #dbdadc;
+	color: #383434;
+	font-size: 15px;
+	cursor: pointer;
+}
