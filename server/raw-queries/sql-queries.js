@@ -111,6 +111,26 @@ let sqlQueries = {
 	vendorCountByMarkerplace:function(){
 		let query=`SELECT marketplace.id,marketplace.name,COUNT(vendor_user_product.marketplace_id) as vendor_count from marketplace LEFT OUTER JOIN vendor_user_product on marketplace.id= vendor_user_product.marketplace_id and vendor_user_product.status = 1 GROUP BY marketplace.id`;
 		return query;
+	},
+	productCountBasedCategory:function(productCountQueryParams){
+		if(productCountQueryParams.marketplace_type_id){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.marketplace_type_id = (` + productCountQueryParams.marketplace_type_id + `) and product.status = (` + productCountQueryParams.status + `)
+			GROUP BY sub_category.name ORDER by category.name`;
+			return query;
+		}else{
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `) and product.status = (` + productCountQueryParams.status + `)
+			GROUP BY sub_category.name ORDER by category.name`;
+			return query;
+		}
+		// let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+		// category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+		// LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + params.marketplace_id + `)  and product.marketplace_type_id = (` + params.marketplace_type_id + `) and product.status = (` + params.status + `)
+		// GROUP BY sub_category.name ORDER by category.name`;
+		// return query;
 	}
 };
 

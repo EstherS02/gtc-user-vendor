@@ -3,6 +3,7 @@
 const async = require('async');
 const sequelize = require('sequelize');
 const moment = require('moment');
+var _ = require('lodash');
 
 const service = require('../../api/service');
 const searchResultService = require('../../api/service/search-result.service');
@@ -266,6 +267,33 @@ export function index(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		productCount: function(callback) {
+			var resultObj = {};
+			searchResultService.productCountForCategoryAndSubcategory(productCountQueryParams)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
@@ -288,7 +316,8 @@ export function index(req, res) {
 				marketPlaceTypes: results.productsCountBasedOnMarketplaceTypes,
 				marketplaceURl: currentMarketPlace,
 				durations: durationConfig,
-				layout_type: layout
+				layout_type: layout,
+				productCount:results.productCount
 			});
 		} else {
 			res.render('search', error);
