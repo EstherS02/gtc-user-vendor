@@ -1,4 +1,34 @@
-<script>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		$(':input[id="inputBtnApplyCoupon"]').prop('disabled', true);
+		$('input[id="inputCouponCode"]').keyup(function() {
+			if ($(this).val() != '') {
+				$(':input[id="inputBtnApplyCoupon"]').prop('disabled', false);
+			}
+		});
+	});
+
+	function applyGTCCoupon() {
+		console.log('inputCouponCode', $('#inputCouponCode').val());
+		$.ajax({
+			url: '/api/cart/apply-coupon',
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				code: $('#inputCouponCode').val()
+			}),
+			processData: false,
+			success: function(data, statusText, xhr) {
+				console.log('data', data);
+			},
+			error: function(request, status, error) {
+				console.log('request', request);
+				console.log('status', status);
+				console.log('error', error);
+			}
+		});
+	}
 
 	var cartItems = {{{ DisplayJSON cartItems }}}
 
@@ -125,7 +155,7 @@
 		}
 	}
 
-	function applyGTCCoupon() {
+	function applyGTCCouponOld() {
 		var cartInfo = {};
 		cartInfo.coupon_code = $("#coupon-input-code").val();
 		if (!cartInfo.coupon_code) {
@@ -380,13 +410,11 @@
 								<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
 							</div>
 							<div class="m-t-sm">
-								<label class="m-b-xs">
-									<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
-								{{!-- <input type="text" class="promo-text-control"> --}}
+								<label class="m-b-xs"><strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
 								<div class="input-group mb-3" id="gtc-coupon-alert">
-									<input type="text" class="form-control text-control" id="coupon-input-code" placeholder="Search">
+									<input type="text" name="coupon_code" class="form-control text-control" id="inputCouponCode">
 									<div class="input-group-append">
-										<button class="btn" type="submit" onclick="applyGTCCoupon()"><i class="fas fa-caret-right"></i></button>
+										<button class="btn btn-sm" type="button" id="inputBtnApplyCoupon" onclick="applyGTCCoupon()"><i class="fas fa-caret-right"></i></button>
 									</div>
 								</div>
 							</div>

@@ -419,44 +419,44 @@ export function updateCart(req, res) {
 									console.log("order_qty", order_qty)
 									console.log("cartResult", cartResult.quantity)
 
-								
-										var cartUpdateObj = {};
-										cartUpdateObj['quantity'] = order_qty;
-										cartUpdateObj['last_updated_by'] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
-										cartUpdateObj['last_updated_on'] = new Date();
-										cartUpdateObj['status'] = status["ACTIVE"];
 
-										return model["Cart"].update(cartUpdateObj, {
-											where: {
-												id: cartResult.id,
-												status: status["ACTIVE"]
-											}
-										}).then(function(updatedCartResult) {
-											if (updatedCartResult) {
-												return cb(null, {
-													statusCode: 200,
-													message: "SUCCESS",
-													message_details: "Product already in cart, Product quantity updated to " + cartUpdateObj['quantity'],
-													cart_item_id: cart_item_id
-												})
-											} else {
+									var cartUpdateObj = {};
+									cartUpdateObj['quantity'] = order_qty;
+									cartUpdateObj['last_updated_by'] = LoggedInUser.first_name + " " + LoggedInUser.last_name;
+									cartUpdateObj['last_updated_on'] = new Date();
+									cartUpdateObj['status'] = status["ACTIVE"];
 
-												return cb({
-													statusCode: 500,
-													message: "ERROR",
-													message_details: "Internal Server Error, Unable to add to cart.",
-													cart_item_id: cart_item_id
-												})
-											}
-										}).catch(function(error) {
-											console.log('Error:::', error);
+									return model["Cart"].update(cartUpdateObj, {
+										where: {
+											id: cartResult.id,
+											status: status["ACTIVE"]
+										}
+									}).then(function(updatedCartResult) {
+										if (updatedCartResult) {
+											return cb(null, {
+												statusCode: 200,
+												message: "SUCCESS",
+												message_details: "Product already in cart, Product quantity updated to " + cartUpdateObj['quantity'],
+												cart_item_id: cart_item_id
+											})
+										} else {
+
 											return cb({
 												statusCode: 500,
 												message: "ERROR",
 												message_details: "Internal Server Error, Unable to add to cart.",
 												cart_item_id: cart_item_id
 											})
+										}
+									}).catch(function(error) {
+										console.log('Error:::', error);
+										return cb({
+											statusCode: 500,
+											message: "ERROR",
+											message_details: "Internal Server Error, Unable to add to cart.",
+											cart_item_id: cart_item_id
 										})
+									})
 
 								} else {
 
@@ -586,25 +586,25 @@ var checkApplyCoupon = function(req, res, callback) {
 					where: {
 						status: status["ACTIVE"]
 					},
-					required:false
+					required: false
 				}, {
 					"model": model['CouponProduct'],
 					where: {
 						status: status["ACTIVE"]
 					},
-					required:false
+					required: false
 				}, {
 					"model": model['CouponExcludedCategory'],
 					where: {
 						status: status["ACTIVE"]
 					},
-					required:false
+					required: false
 				}, {
 					"model": model['CouponExcludedProduct'],
 					where: {
 						status: status["ACTIVE"]
 					},
-					required:false
+					required: false
 				}],
 				where: searchObj
 			}).then(function(couponRow) {
@@ -1013,7 +1013,126 @@ var checkApplyCoupon = function(req, res, callback) {
 
 };
 
-export function applyCoupon(req, res) {
+export async function applyCoupon(req, res) {
+	var queryObj = {};
+	var appliedProducts = [];
+	//var appliedCategories = [];
+	const orderModelName = "Order";
+	const couponModelName = "Coupon";
+	const productModelName = "Product";
+	const categoryModelName = "Category";
+	//const couponProductModelName = "CouponProduct";
+	//const couponCategoryModelName = "CouponCategory";
+	//const couponExcludedProductModelName = "CouponExcludedProduct";
+	//const couponExcludedCategoryModelName = "CouponExcludedCategory";
+
+	req.checkBody('code', 'Missing Query Param').notEmpty();
+
+	var errors = req.validationErrors();
+	if (errors) {
+		res.status(400).send('Missing Query Params');
+		return;
+	}
+
+	queryObj['code'] = req.body.code;
+
+	try {
+		const includeArray = await [{
+			model: model['CouponProduct'],
+			where: {
+				status: status['ACTIVE']
+			},
+			required: false
+		}, {
+			model: model['CouponCategory'],
+			where: {
+				status: status['ACTIVE']
+			},
+			required: false
+		}, {
+			model: model['CouponExcludedProduct'],
+			where: {
+				status: status['ACTIVE']
+			},
+			required: false
+		}, {
+			model: model['CouponExcludedCategory'],
+			where: {
+				status: status['ACTIVE']
+			},
+			required: false
+		}];
+		const coupon = await service.findOneRow(couponModelName, queryObj, includeArray);
+
+		if (coupon) {
+			const currentDate = moment().format('YYYY-MM-DD');
+			const expiryDate = moment(coupon.expiry_date).format('YYYY-MM-DD');
+
+			if (currentDate <= expiryDate) {
+				if (coupon.usage_limit) {
+					const existingCount = await service.countRows(orderModelName, {
+						coupon_id: coupon.id
+					});
+					if (existingCount > coupon.usage_limit) {
+						return res.status(400).send("Promo code limit exceeded.");
+					}
+				}
+				if (coupon.usage_limit_per_user) {
+					const existingCount = await service.countRows(orderModelName, {
+						coupon_id: coupon.id,
+						user_id: req.user.id
+					});
+					if (existingCount > coupon.usage_limit_per_user) {
+						return res.status(400).send("You are already used this promo code.");
+					}
+				}
+
+				const productsResponse = await service.findAllRows(productModelName, [], {
+					vendor_id: coupon.vendor_id,
+					status: status['ACTIVE']
+				}, 0, null, 'id', 'asc');
+				var products = await productsResponse.rows;
+
+				const categories = await service.findAllRows(categoryModelName, [], {
+					status: status['ACTIVE']
+				}, 0, null, 'id', 'asc');
+
+				if (coupon.CouponProducts.length == 0 && coupon.CouponExcludedProducts.length > 0) {
+					await Promise.all(coupon.CouponExcludedProducts.map(async (excludeCouponProduct) => {
+						products.splice(products.findIndex((product) => product.id === excludeCouponProduct.product_id), 1);
+					}));
+					appliedProducts = await products;
+				} else if (coupon.CouponProducts.length > 0) {
+					await Promise.all(coupon.CouponProducts.map(async (couponProduct) => {
+						const index = await products.findIndex((product) => product.id === couponProduct.product_id);
+						appliedProducts.push(products[index]);
+					}));
+				} else {
+					appliedProducts = products;
+				}
+
+				if (coupon.CouponCategories.length == 0 && coupon.CouponExcludedCategories.length > 0) {
+					await Promise.all(coupon.CouponExcludedCategories.map(async (excludeCouponCategory) => {
+						products.splice(products.findIndex((product) => product.product_category_id === excludeCouponProduct.category_id), 1);
+					}));
+				} else if (coupon.CouponCategories.length > 0) {
+
+				} else {
+
+				}
+			} else {
+				return res.status(400).send("Promo code expired.");
+			}
+		} else {
+			return res.status(404).send("Invalid promo code.");
+		}
+	} catch (error) {
+		console.log("applyCoupon Error:::", error);
+		return res.status(500).send('Internal server error.');
+	}
+}
+
+export function applyCouponOld(req, res) {
 	function callback(return_val) {
 		return res.send(return_val);
 	}

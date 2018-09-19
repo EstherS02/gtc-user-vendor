@@ -281,15 +281,20 @@ export function upsertRecord(modelName, bodyParams, queryObj) {
     });
 }
 
-export function upsertRow(modelName, data) {
-    return new Promise((resolve, reject) => {
-        model[modelName].upsert(data)
-            .then(function(row) {
-                resolve(row);
-            }).catch(function(error) {
-                reject(error);
-            })
-    })
+export function upsertRow(modelName, bodyParams, queryObj, audit) {
+	return model[modelName].findOne({
+		where: queryObj
+	}).then((exists) => {
+		if (exists) {
+			bodyParams['last_updated_by'] = audit ? audit : 'Administrator';
+			bodyParams['last_updated_on'] = new Date();
+			return exists.update(bodyParams);
+		} else {
+			bodyParams['created_by'] = audit ? audit : 'Administrator';
+			bodyParams['created_on'] = new Date();
+			return model[modelName].create(bodyParams);
+		}
+	});
 }
 
 export function destroyRecord(modelName, id) {
