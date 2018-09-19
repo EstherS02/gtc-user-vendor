@@ -95,6 +95,32 @@
 			}
 		}
 	}
+
+	function stripeDisconnect(stripe_id){
+		let stripeDisconnectUserId = `{{LoggedInUser.id}}`;
+		let stripeId = stripe_id;
+
+		$('#stripe_disconnect').prop('disabled', true);
+		$('#stripe_disconnect').css('cursor', 'not-allowed');
+		$.ajax({
+			url: '/api/stripe/disconnect',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({ userId: stripeDisconnectUserId,
+									stripeId: stripeId }),
+			success: function(data) {
+				window.location.reload();
+			},
+			error: function(error) {
+				console.log(error)
+				$('#stripe_disconnect').prop('disabled', false);
+				$('#stripe_disconnect').css('cursor', 'pointer');
+				$('#stripe_connect_error').text(error.responseJSON.messageDetails);
+				$('#stripe_connect_error').css('display', 'block');
+			}
+		});
+	}
 	
 </script>
 <div class="wrapper-content bg-gray">
@@ -175,9 +201,10 @@
 												 class="form-control-customized form-control-sm" />
 											</div>
 											<div class="col-4">
-												<input type="button" value="DISCONNECT" class="btn btn-small" onclick="paypalDisconnectEmail()"/>
+												<input type="button" id="paypal_disconnect" value="DISCONNECT" class="btn btn-small" onclick="paypalDisconnectEmail()"/>
 											</div>
 										</div>
+										<label id="paypal_connect_error" class="error" style="display:none">hello</label>
 										{{else}}
 										<div class="row">
 											<div class="col-12 text-center" style="padding-top:2px;">
@@ -218,14 +245,15 @@
 										</div>
 										<br/>
 										<div class="row">
-											<div class="col-5">
-												<input type="button" value="CONNECTED STRIPE ID :" class="btn btn-small" style="cursor:default" />
-											</div>
-											<div class="col-7">
+											<div class="col-8">
 												<input type="text" placeholder="StripeId" value="{{vendorPaymentInfo.vendor_payout_stripe_id}}" class="form-control-customized form-control-sm"
 												 readonly />
 											</div>
+											<div class="col-4">
+												<input type="button" id="stripe_disconnect" value="DISCONNECT" class="btn btn-small" onclick="stripeDisconnect('{{vendorPaymentInfo.vendor_payout_stripe_id}}')"/>
+											</div>
 										</div>
+										<label id="stripe_connect_error" class="error" style="display:none"></label>
 										{{else}}
 										<div class="row">
 											<div class="col-12 text-center" style="padding-top:2px;">
