@@ -369,7 +369,6 @@
 			product_location: "required",
 			sku: {
 				required: true,
-				digits: true
 			},
 			price: {
 				number: true,
@@ -408,6 +407,10 @@
 					} else { return false; }
 				}
 			},
+			baseImage:{
+				required: true,
+                accept:"jpg,png,jpeg,gif"
+			}
 		},
 		messages: {
 			product_name: "Please enter the product name",
@@ -416,8 +419,7 @@
 			marketplace_type_id: "Please select Type",
 			product_location: "Please select product origin",
 			sku: {
-				required: "Please enter Stock Keeping Unit",
-				digits: "Please enter valid Stock Keeping Unit"
+				required: "Please enter Stock Keeping Unit"
 			},
 			price: {
 				number: "Please enter valid product price",
@@ -437,7 +439,11 @@
 			},
 			exchanging_product: "Please enter the exchanging product name",
 			exchanging_product_quantity: "Please enter exchanging product quantity",
-			moq: "Please enter minimum order quantity"
+			moq: "Please enter minimum order quantity",
+			baseImage:{
+				required: "Please select base Image",
+                accept: "Only image type jpg/png/jpeg/gif is allowed"
+			}
 		}
 	});
 
@@ -559,8 +565,6 @@
 						});
 						var dataFormate = {};
 						dataFormate.data = JSON.stringify(imageURLsArr);
-
-
 						addProduct(dataFormate, productInput);
 					},
 					error: function(error) {
@@ -568,9 +572,11 @@
 					}
 				});
 			} else {
-				var obj = {};
-				obj.data = null;
-				addProduct(obj, productInput);
+
+				var dataFormate = {};
+				dataFormate.data = JSON.stringify(imageURLsArr);
+				addProduct(dataFormate, productInput);
+				
 			}
 			$.ajaxSetup({ async: true });
 		}
@@ -958,13 +964,15 @@ function testPercent(count) {
 
 									<div class="col-lg-8">
 										<div class="form-group">
-											<label class="label-control">Upload product base image</label>
+											<label class="label-control">Upload product base image
+												<span class="text-danger">*</span>
+											</label>
 											<div class="input-group">
-												<div class="custom-file">
+												{{!-- <div class="custom-file"> --}}
 													<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
 													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
 												</div>
-											</div>
+											{{!-- </div> --}}
 										</div>
 										<div class="base_image">
 										</div>
