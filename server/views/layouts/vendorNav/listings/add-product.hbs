@@ -13,7 +13,7 @@
 	}
 
 
-	function addProduct(obj, productinput) {
+	function addProduct(obj, productInput) {
 
 		if ($('#productForm').valid()) {
 
@@ -25,7 +25,7 @@
 
 			$.ajax({
 				type: 'POST',
-				url: '/api/product/add-product?' + productinput,
+				url: '/api/product/add-product?' + productInput,
 				data: obj,
 				success: function(data) {
 
@@ -429,7 +429,7 @@
 		$.validator.addMethod("dollarsscents", function(value, element) {
 			return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
 		}, "You must include two decimal places");
-		
+
 
 		$("#productForm").submit(function(e) {
 
@@ -934,25 +934,10 @@
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-{{!-- <<<<<<< HEAD
-												{{!-- <div class="custom-file"> --}}
-													<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
-													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
-												</div>
-											</div>
-											{{#each editProduct.ProductMedia}}
-												{{#ifCond this.base_image "==" 1}}
-													<div class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
-													<a class="btn btn-small" style="background-color:gray">change base image???</a></div>
-													{{/ifCond}}
-												{{/each}}
-											</div>
-======= --}}
 												<input type="file" class="custom-file-input" id="baseImage" value="{{editProduct.ProductMedia.[0].url}}" name="baseImage">
 												<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
 											</div>
 										</div>
-{{!-- >>>>>>> 743e7a55e35e327769c1e6b6859559f5e14ed0d0 --}}
 										<div class="base_image">
 										</div>
 									</div>
@@ -971,8 +956,10 @@
 										</div>
 									</div>
 									<div class="col-lg-12">
+										{{editProduct.id}}
 									{{#each editProduct.ProductMedia}}
-									{{#ifCond this.base_image "!=" 1}}
+									
+									{{#ifCond this.base_image "==" 1}}
 										<span class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
 										<i class='fa fa-times productRemoveIcon' onclick='delete({{this.id}})' aria-hidden='true'></i></span>
 										{{/ifCond}}
