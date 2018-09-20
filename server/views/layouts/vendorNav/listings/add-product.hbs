@@ -122,7 +122,7 @@
 		for (var i = 0; i < imageFiles.length; i++) {
 			var domElement;
 
-			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + imageFiles[i].UploadedImage + "\"/>" +
+			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + imageFiles[i].uploadedImage + "\"/>" +
 						"<i class='fa fa-times productRemoveIcon' onclick='removeImage(this,"+i+")' aria-hidden='true'></i></span>"
 
 			$(".preview").append(domElement);
@@ -135,10 +135,13 @@
 		}
 	}
 
-	function appendBaseImage(uploadedBaseImage){
+	function appendBaseImage(){
 
-		var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', uploadedBaseImage);
-		$('div.base_image').html(temp);
+		for (var i = 0; i < productBaseImage.length; i++) {
+			var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', 
+			productBaseImage[i].uploadedBaseImage);
+			$('div.base_image').html(temp);
+		}		
 	}
 
 	function testValue(count) {
@@ -179,13 +182,16 @@
 			if (test == 'div.base_image') {
 				cropper.getCroppedCanvas().toBlob(function(blob) {
 
-					cropperOutputImage = blob;
+					fileDetails['cropperOutputImage'] = blob;
 					fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-					fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-				});
+					fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"];
+					fileDetails['uploadedBaseImage'] = cropper.getCroppedCanvas().toDataURL();
+					fileDetails['existing'] = 'no';
 
-				var uploadedBaseImage = cropper.getCroppedCanvas().toDataURL();
-                appendBaseImage(uploadedBaseImage);
+					productBaseImage.length = 0;
+					productBaseImage.push(fileDetails);
+					appendBaseImage();                  
+				});
 
 				$('#profile-picture-modal').modal('hide');
 
@@ -196,7 +202,7 @@
 					fileTempHold['cropperOutputImage'] = blob;
 					fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
 					fileTempHold['fileName'] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
-					fileTempHold['UploadedImage'] = cropper.getCroppedCanvas().toDataURL();
+					fileTempHold['uploadedImage'] = cropper.getCroppedCanvas().toDataURL();
 					fileTempHold['existing'] = 'no';
 
 					imageFiles.push(fileTempHold);
@@ -478,98 +484,107 @@
 					return $(element).val() != '';
 				}).serializeArray();
 					
-					$.ajaxSetup({ async: false });
+				$.ajaxSetup({ async: false });
 
-					var form1 = new FormData();
+				var form1 = new FormData();
 
-					form1.append("file", cropperOutputImage, fileDetails["fileName"]);
-						$.ajax({
-							type: 'POST',
-							url: '/api/prod/upload',
-							data: form1,
-							cache: false,
-							dataType: 'json',
-							processData: false,
-							contentType: false,
-							success: function(data) {
+				$.each(productBaseImage, function(i, file) {
 
-								var imageObj = {};
+					if(productBaseImage[i].existing == 'no'){
+						form1.append("file[" + i + "]", productBaseImage[i].cropperOutputImage, productBaseImage[i].fileName);
+					}
+					else if(productBaseImage[i].existing == 'yes'){
 
-								imageObj.status = 1;
-								imageObj.type = 1;
-								imageObj.base_image = 1;
-								imageObj.url = data.imageURL;
+						var imageObj = {};
 
-								imageArr.push(imageObj);
-							},
-							error: function(error) {
-								console.log("Error", error);
-							}
-						})
-
-						var form2 = new FormData();
-
-						$.each(imageFiles, function(i, file) {
-
-							if(imageFiles[i].existing == 'no'){
-								form2.append("file[" + i + "]", imageFiles[i].cropperOutputImage, imageFiles[i].fileName);
-
-							}
+						imageObj.status = 1;
+						imageObj.type = 1;
+						imageObj.base_image = 0;
+						imageObj.url = productBaseImage[i].uploadedBaseImage;
 								
-							else if(imageFiles[i].existing == 'yes'){
+						imageArr.push(imageObj);
+					}
+				});
 
-								var imageObj = {};
+				if( form1 && form1 !== 'null' && form1 !== 'undefined' ){
 
-								imageObj.status = 1;
-								imageObj.type = 1;
-								imageObj.base_image = 0;
-								imageObj.url = imageFiles[i].UploadedImage;
-								
-								imageArr.push(imageObj);
-							}
-						});
+					$.ajax({
+						type: 'POST',
+						url: '/api/prod/multiple',
+						data: form1,
+						cache: false,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						success: function(data) {
 
-						$.ajax({
-							type: 'POST',
-							url: '/api/prod/multiple',
-							data: form2,
-							cache: false,
-							dataType: 'json',
-							processData: false,
-							contentType: false,
-							success: function(data) {
-								var imageURLs = data.imageURLs, i = 0;
+							var imageURLs = data.imageURLs, i = 0;
+							imageURLs.forEach(function(element) {
+								var imageobj = {};
+								imageobj.status = 1;
+								imageobj.type = 1;
+								imageobj.base_image = 1;
+								imageobj.url = imageURLs[i];
+								imageArr.push(imageobj);
+								i++;
+							});	
+						},
+						error: function(error) {
+							console.log("Error", error);
+						}
+					})
+				}
 
-								imageURLs.forEach(function(element) {
+				var form2 = new FormData();
+				$.each(imageFiles, function(i, file) {
+					if(imageFiles[i].existing == 'no'){
+						form2.append("file[" + i + "]", imageFiles[i].cropperOutputImage, imageFiles[i].fileName);
+					}
+					else if(imageFiles[i].existing == 'yes'){
+						var imageObj = {};
+						imageObj.status = 1;
+						imageObj.type = 1;
+						imageObj.base_image = 0;
+						imageObj.url = imageFiles[i].uploadedImage;
+						imageArr.push(imageObj);
+					}
+				});
 
-									var imageobj = {};
+				if( form2 && form2 !== 'null' && form2 !== 'undefined' ){
+							
+					$.ajax({
+						type: 'POST',
+						url: '/api/prod/multiple',
+						data: form2,
+						cache: false,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						success: function(data) {
+							var imageURLs = data.imageURLs, i = 0;
+							imageURLs.forEach(function(element) {
+								var imageobj = {};
+								imageobj.status = 1;
+								imageobj.type = 1;
+								imageobj.base_image = 0;
+								imageobj.url = imageURLs[i];
 
-									imageobj.status = 1;
-									imageobj.type = 1;
-									imageobj.base_image = 0;
-									imageobj.url = imageURLs[i];
-
-									imageArr.push(imageobj);
+								imageArr.push(imageobj);
 									i++;
-								});
-								if(!product_id)
-									addProduct(productInput);
-								else
-									updateProduct(product_id,productInput)
-							},
-							error: function(error) {
-								console.log('error', error);
-							}
-						});
-					/*} else {
-						if(!product_id)
-							addProduct(productInput);
-						else
-							updateProduct(product_id,productInput)
+								});									
+						},
+						error: function(error) {
+							console.log('error', error);
+						}
+					});
+				}
 
-					}*/
-					$.ajaxSetup({ async: true });	
+				if(!product_id)
+					addProduct(productInput);
+				else
+					updateProduct(product_id,productInput)
 
+				$.ajaxSetup({ async: true });	
 			}		
 		});
 
@@ -585,7 +600,7 @@
 
 				var domElement = '&nbsp;<div class="row discountRow"><div class="col-lg-1"><label  class="label-control">For</label></div><div class="col-lg-2">' +
 					'<input type="text" class="form-control-customized form-control-sm quantity" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"></div>' +
-					'<div class="col-lg-2"><label  class="label-control">user receives</label></div>' +
+					'<div class="col-lg-2"><label  class="label-control">product user receives</label></div>' +
 					'<div class="col-lg-3"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"' +
 					'name="discount_type' + count + '" value="percentage_discount" checked onclick=testPercent(' + count + ');> Total Percent Discount&nbsp; &nbsp;' +
 					'<input class="list_place_21 discount_amount percent_discount_amount' + count + '" type="text" name="percent_discount_amount' + count + '" placeholder="20%"></div>' +
@@ -607,13 +622,8 @@
 		if(imageFiles && (imageFiles.length > 0))
 			appendImage();
 
-		if(productBaseImage && (productBaseImage.length > 0)){
-			
-
-			for (var i = 0; i < productBaseImage.length; i++) {
-				appendBaseImage(productBaseImage[i].UploadedBaseImage);
-			}
-		}			
+		if(productBaseImage && (productBaseImage.length > 0))
+			appendBaseImage();		
  	});
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -890,7 +900,7 @@
 																	<input type="text" class="form-control-customized form-control-sm quantity" value="{{this.quantity}}" name="discount_quantity{{@index}}" id="discount_quantity{{@index}}" placeholder="20">
 																</div>
 																<div class="col-lg-2">
-																	<label  class="label-control">user receives</label>
+																	<label  class="label-control">product user receives</label>
 																</div>
 																<div class="col-lg-3">
 																	<div class="row edit-listing-dis">
