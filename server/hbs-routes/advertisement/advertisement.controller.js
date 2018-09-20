@@ -13,17 +13,46 @@ export function adList(req,res){
 	var LoggedInUser = {};
     var bottomCategory = {};
     var queryObj = {};
+    var queryURI={};
+    var queryPaginationObj={};
     var categoryModel = "Category";
     var countryModel = "Country";
     var adsModel = "ProductAdsSetting";
      if (req.user)
         LoggedInUser = req.user;
     var includeArrAds = [{
-    	model:model['Country'],
-    	include:[{
-    		model:model['State']
-    	}]
+    	model:model['Country']
+    },{
+    	model:model['State']
     }];
+    var  offset,limit,order,page,field;
+    offset = req.query.offset ? parseInt(req.query.offset) : 0;
+    queryPaginationObj['offset'] = offset;
+    delete req.query.offset;
+    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    queryPaginationObj['limit'] = limit;
+    delete req.query.limit;
+    order = req.query.order ? req.query.order : "desc";
+    queryPaginationObj['order'] = order;
+    delete req.query.order;
+    page = req.query.page ? parseInt(req.query.page) : 1;
+    queryPaginationObj['page'] = page;
+	delete req.query.page;
+	field = req.query.field ? parseInt(req.query.field) : 'created_on';
+    queryPaginationObj['field'] = field;
+	delete req.query.page;
+	if (req.query.status) {
+		queryURI['status'] = req.query.status;
+		queryObj['status'] = statusCode[req.query.status]
+	}
+	if (req.query.keyword) {
+		queryURI['keyword'] = req.query.keyword;
+		queryObj['product_name'] = {
+			like: '%' + req.query.keyword + '%'
+		};
+	}
+	queryObj['vendor_id'] = LoggedInUser.Vendor.id;
+
     let user_id = LoggedInUser.id;
     async.series({
         cartCounts: function(callback) {
@@ -56,7 +85,7 @@ export function adList(req,res){
                 });
         },
         ads: function(callback) {
-			service.findAllRows(adsModel,includeArrAds , {}, 0, 15, 'created_on', 'desc')
+			service.findAllRows(adsModel,includeArrAds , queryObj, offset, limit, field, 'desc')
                 .then(function(response) {
                     return callback(null, response);
                 }).catch(function(error) {
@@ -72,6 +101,7 @@ export function adList(req,res){
                 categories: results.categories,
                 ads:results.ads,
                 statusCode:statusCode,
+                queryPaginationObj:queryPaginationObj,
                 bottomCategory: bottomCategory,
                 cartheader: results.cartCounts,
                 selectedPage: 'ad-form',
@@ -89,9 +119,22 @@ export function adForm(req, res) {
     var queryObj = {};
     var categoryModel = "Category";
     var countryModel = "Country";
+    var adsModel = "ProductAdsSetting";
      if (req.user)
         LoggedInUser = req.user;
     let user_id = LoggedInUser.id;
+    var includeArrAds = [{
+    	model:model['Country']
+    },{
+    	model:model['State']
+    }];
+    var queryObjAds = {};
+    if(req.params.id){
+    	queryObjAds['id'] =  req.params.id;
+    }
+    else{
+    	queryObjAds['id'] =  '';
+    }
     async.series({
         cartCounts: function(callback) {
             service.cartHeader(LoggedInUser).then(function(response) {
@@ -122,6 +165,19 @@ export function adForm(req, res) {
                     return callback(null);
                 });
         },
+        ads: function(callback) {
+			service.findRow(adsModel, queryObjAds,includeArrAds)
+                .then(function(response) {
+                	if(response){
+                    return callback(null, response);
+                	}else{
+                		return callback(null);
+                	}
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
+		},
         country: function(callback) {
 			const countryField = 'name';
 			const countryOrder = 'ASC';
@@ -137,6 +193,7 @@ export function adForm(req, res) {
 
     }, function(err, results) {
         if (!err) {
+        	console.log("==========================",results.ads)
             res.render('vendorNav/advertisement/ad-form', {
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser,
@@ -144,6 +201,7 @@ export function adForm(req, res) {
                 bottomCategory: bottomCategory,
                 cartheader: results.cartCounts,
 				country: results.country,
+				ads:results.ads,
                 selectedPage: 'ad-form',
                 Position:Position,
                 vendorPlan: vendorPlan,

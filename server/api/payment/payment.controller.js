@@ -147,6 +147,7 @@ function createOrder(orderWithItems) {
 		var orderItemsPromises = [];
 		for (var i = 0; i < orderItems.length; i++) {
 			orderItems[i].order_id = orderResult.id;
+			orderItems[i].order_item_status = 0;
 			orderItemsPromises.push(createOrderItem(orderItems[i]));
 		}
 		return Promise.all(orderItemsPromises).then(itemsResults => {
@@ -456,8 +457,38 @@ export function cancelOrder(req, res) {
 				last_updated_on: new Date()
 			}
 			return service.updateRow('OrderItem', updateOrderItem, orderItem.id);
-		}).then(successPromise => {
-			return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+		}).then(updatestatusRow => {
+			let includeArr=[];
+			  refundObj={
+			  order_id:orderItem.order_id,
+			  order_item_status :{
+				$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
+			},
+			};
+			var field = 'created_on';
+			var order = "asc";
+			return service.findAllRows('OrderItem', includeArr,refundObj,0, null, field, order);
+	   		}).then(successPromise => {
+			if(successPromise.count=="0")
+			{
+				let OrderItemRefund = {
+			 		reason_for_cancellation: req.body.reason_for_cancellation,
+					cancelled_on: new Date(),
+					order_status: orderStatus['CANCELLEDORDER'],
+			 		last_updated_by: req.user.first_name,
+			 		last_updated_on: new Date()
+			 	};
+			 	 refundObj={
+			 		id:orderItem.order_id
+			 	};
+			    service.updateRecord('Order', OrderItemRefund,refundObj);
+			   return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+			
+			}
+			else
+			{
+				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+			}
 		}).catch(error => {
 			console.log("Error", error)
 			return res.status(500).send(error);

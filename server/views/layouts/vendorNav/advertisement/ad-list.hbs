@@ -34,7 +34,7 @@
 		var product_id = chkArray.join(',');
 
 		if (chkArray.length == 1) {
-			window.location.href = '/listings/' + e.name + '/edit-product/'+product_id;
+			window.location.href = '/advertisement/add/'+product_id;
 		}
 		else {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
@@ -83,7 +83,7 @@
 											</div>
 										</div>
 										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted"  onclick="edit(this);">EDIT/FEATURE</button>
+											<button class="btn btn-small btn-muted"  onclick="edit();">EDIT/FEATURE</button>
 										</div>
 										</div>
 								</div>
@@ -145,7 +145,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												{{#if ads}}
+												{{#if ads.rows}}
 												{{#each ads.rows}}
 												<tr>
 													<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
@@ -157,7 +157,7 @@
 														<td scope="row">{{prettifyDate this.end_date }}</td>
 														<td scope="row">{{target_url}}</td>
 														<td scope="row">{{this.Country.name}}</td>
-														<td scope="row">{{this.Country.State.name}}</td>
+														<td scope="row">{{this.State.name}}</td>
 														<td scope="row">{{this.city}}</td>
 
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
