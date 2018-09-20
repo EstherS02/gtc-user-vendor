@@ -31,6 +31,7 @@
  			var from = new Date(startDate);
  			if(from < currentUTCDate){
  				$('#startDate').val("");
+ 				// $("#endDate").hide();
  				$("#startDate").datepicker("destroy" );
  				 $("#startDate").datepicker();
  				outputPopupError("Start Date should not less than Current Date");
@@ -75,38 +76,30 @@
  		});
  	});
  	 $("#adForm").submit(function(e) {
+ 	 	console.log("hai")
  	 	e.preventDefault();
-        e.preventDefault();
-        var form = new FormData();
-            form.append("file",image_url.files[0]);
-            // let inputForm = $("#adForm :input");
-            let inputForm = {};
-            inputForm.name = $('#name').val();
-            inputForm.position = $('#position').val();
-            inputForm.startDate = $('#startDate').val();
-            inputForm.endDate = $('#endDate').val();
-            inputForm.country = $('#country').val();
-            inputForm.state = $('#state').val();
-            inputForm.city = $('#city').val();
-            let formInput = JSON.stringify(inputForm);
-            form.append("data",formInput);
-
+ 	 	var form = new FormData();
+            form.append("file",file.files[0]);
+            let inputForm = $("#vendorForm :input").filter(function(index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            let formInput = inputForm;
 
             if ($('#adForm').valid()) {
                 $.ajax({
-                    url: '/api/advertisement',
+                    url: '/api/advertisement/',
                     type: 'POST',
                     data: form,
                     cache: false,
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
+	                dataType: 'json',
+	                processData: false,
+	                contentType: false,
                     success: function(result) {
                         // window.location.href = '/dashboard-vendor-connect';
                     },
                     error: function(error) {
                         $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-                        $('#gtc-form-alert .form-message').text("error");
+                        $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
                         $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
                             $("#gtc-form-alert").slideUp(500);
                         });
@@ -141,7 +134,7 @@
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Ad Name <span class="text-danger">*</span></label>
-                                            <input type="text" name="name" id="name" placeholder="Ad Name" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="name" placeholder="Ad Name" class="form-control-customized form-control-sm" required="true">
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +167,7 @@
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Target URL <span class="text-danger">*</span></label>
-                                            <input type="text" name="target_url" id="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true">
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +215,7 @@
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-control">City<span class="text-danger">*</span></label>
-                                            <input type="text" name="city" id="city" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="city" class="form-control-customized form-control-sm" required="true">
                                         </div>
                                     </div>
                                 </div>
