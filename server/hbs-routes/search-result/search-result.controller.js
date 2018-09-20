@@ -29,6 +29,7 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var productQueryParams = {};
 	var productCountQueryParams = {};
+	var productCountCategory = {};
 
 	var categoryModel = "Category";
 	var marketPlaceModel = "Marketplace";
@@ -84,23 +85,27 @@ export function index(req, res) {
 
 	productQueryParams['status'] = status['ACTIVE'];
 	productCountQueryParams['status'] = status['ACTIVE'];
+	productCountCategory['status'] = status['ACTIVE'];
 
 	if (selectedMarketPlaceID) {
 		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
 		productQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
 		productCountQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+		productCountCategory['marketplace_id'] = parseInt(selectedMarketPlaceID);
 	}
 
 	if (selectedMarketPlaceTypeID) {
 		queryURI['marketplace_type'] = parseInt(selectedMarketPlaceTypeID);
 		productQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
 		productCountQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
+		productCountCategory['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
 	}
 
 	if (req.query.is_featured_product) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
 	if (req.query.category) {
@@ -270,7 +275,7 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-			searchResultService.productCountForCategoryAndSubcategory(productCountQueryParams)
+			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
 					_.each(char, function(o) {
