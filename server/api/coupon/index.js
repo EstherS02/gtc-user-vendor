@@ -3,15 +3,13 @@
 var express = require('express');
 var auth = require('../../auth/auth.service');
 var controller = require('./coupon.controller');
-//var middleware = require('../../middleware');
 var permission = require('../../config/permission');
+const roles = require('../../config/roles');
 
 var router = express.Router();
 
+router.post('/save', auth.hasRole(roles['VENDOR']), controller.saveCoupon);
+router.put('/update-status', controller.updateStatus);
 router.put('/update', controller.updateCoupon);
-router.put('/update-status',controller.updateStatus);
-// router.put('/update-product-coupon', controller.updateProductCoupon);
-// router.put('/update-category-coupon',controller.updateCategoryCoupon);
-router.post('/save',controller.saveCoupon);
 
 module.exports = router;

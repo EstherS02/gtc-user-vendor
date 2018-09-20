@@ -45,11 +45,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: true
         },
-        order_status: {
-            type: DataTypes.INTEGER,
-            field: 'order_status',
-            allowNull: true
-        },
         expected_delivery_date: {
             type: DataTypes.DATEONLY,
             field: 'expected_delivery_date',
@@ -68,6 +63,11 @@ module.exports = (sequelize, DataTypes) => {
         delivered_on: {
             type: DataTypes.DATE,
             field: 'delivered_on',
+            allowNull: true
+        },
+        returned_on: {
+            type: DataTypes.DATEONLY,
+            field: 'returned_on',
             allowNull: true
         },
         shipping_id: {
@@ -90,6 +90,27 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10, 4),
             field: 'gtc_fees',
             allowNull: false
+        },
+        coupon_id: {
+            type: DataTypes.BIGINT,
+            field: 'coupon_id',
+            allowNull: true,
+            references: {
+                model: 'coupon',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
+        coupon_amount: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'coupon_amount',
+            allowNull: true
+        },
+        coupon_applied_on: {
+            type: DataTypes.DATEONLY,
+            field: 'coupon_applied_on',
+            allowNull: true
         },
         tracking_id: {
             type: DataTypes.INTEGER,
@@ -117,6 +138,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+        },
+        order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -160,8 +186,8 @@ module.exports.initRelations = () => {
     const User = model.User;
     const Shipping = model.Shipping;
     const Address = model.Address;
-    const Product = model.Product;
     const Coupon = model.Coupon;
+    const Product = model.Product;
     const Tax = model.Tax;
     const Payment = model.Payment;
 
@@ -196,15 +222,21 @@ module.exports.initRelations = () => {
     });
 
     Order.belongsTo(Address, {
-        as: "shippingAddress",
+		as: "shippingAddress",
         foreignKey: 'shipping_address_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
 
     Order.belongsTo(Address, {
-        as: "billingAddress",
+		as: "billingAddress",
         foreignKey: 'billing_address_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Order.belongsTo(Coupon, {
+        foreignKey: 'coupon_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

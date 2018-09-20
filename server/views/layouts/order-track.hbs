@@ -1,3 +1,6 @@
+<script>
+	var ordertrack = {{{ DisplayJSON orderTrack }}}
+</script>
  {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
 <div class="wrapper-content bg-gray">
@@ -15,10 +18,43 @@
 						{{#if orderTrack}}
 						<div> {{orderTrack.OrderItems.[0].Product.[0].ProductMedia.id}} </div>
 						<div class="content-body">
-							<img src="{{orderTrack.OrderItems.[0].Product.ProductMedia.[0].url}}" alt="iphone" style="width:5%;margin-bottom: 10px;margin-left:16px"
-							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{#ifCond orderTrack.order_status
+						{{#each .}}
+						{{#OrderItems}}
+						 <div class="row">
+						   {{#Product}}
+						   {{#ProductMedia}}
+						     {{#ifCond this.base_image '==' 1 }}
+							 <div class="col-md-3">
+
+						     	<img src="{{this.url}}" alt="iphone" style="width:25%;margin-bottom: 10px;margin-left:16px"
+							       />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							 </div>
+							 {{/ifCond}}
+								 {{/ProductMedia}}
+										  <div class="col-md-5">
+                                   <p style="font-size:12px">{{this.product_name}} </p>
+							
+							 
+										 {{/Product}}
+										 	<p style="font-size:12px">{{this.quantity}} </p>
+								<p style="font-size:12px">{{this.final_price}} </p> 
+								 </div> 
+										 </div>
+								    {{/OrderItems}}
+						
+						
+							 {{/each}}
+							{{!-- <img src="{{orderTrack.OrderItems.[0].Product.ProductMedia.[0].url}}" alt="iphone" style="width:5%;margin-bottom: 10px;margin-left:16px"
+							/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --}}
+								{{!-- <p style="font-size:12px">{{orderTrack.OrderItems.[0].Product.product_name}} </p><br>
+								<p style="font-size:12px">{{orderTrack.OrderItems.[0].quantity}} </p><br>
+								<p style="font-size:12px">{{orderTrack.OrderItems.[0].final_price}} </p>  --}}
+                            <div class="row">
+								<div class="col-md-3">
+								
+							{{#ifCond orderTrack.order_status
 							'==' orderStatus.NEWORDER}}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
+							<span class="text_	blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
@@ -34,11 +70,15 @@
 							{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
 							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
 							{{/ifCond}}
-                            <div class="row">
+
+								</div>
 								<div class="col-md-9">
 									<p class="text_blue_color float-right" style="margin: 10px">
-										{{orderTrack.shippingAddress.address_line1}} {{orderTrack.shippingAddress.address_line2}},{{orderTrack.shippingAddress.city}}
-										, {{orderTrack.shippingAddress.State.name}} ,{{orderTrack.shippingAddress.Country.name}}.
+										{{orderTrack.shippingAddress.address_line1}}<br>
+										 {{orderTrack.shippingAddress.address_line2}},<br>
+										 {{orderTrack.shippingAddress.city}},<br>
+										 {{orderTrack.shippingAddress.State.name}} ,<br>
+										 {{orderTrack.shippingAddress.Country.name}}.
 									</p>
 								</div>
 							</div>
