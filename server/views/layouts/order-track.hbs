@@ -27,7 +27,7 @@
 						     {{#ifCond this.base_image '==' 1 }}
 							 <div class="col-md-2">
 
-						     	<img src="{{this.url}}" alt="iphone" style="width:45%;margin-bottom: 10px;margin-left:16px"
+						     	<img src="{{this.url}}" alt="iphone" style="width:50%;margin-bottom: 10px;margin-left:61px"
 							       />
 							 </div>
 							 {{/ifCond}}
@@ -38,7 +38,7 @@
 							 
 										 {{/Product}}
 										 	<p style="font-size:12px;line-height:11px"><b>Qty :</b> {{this.quantity}} </p>
-								<p style="font-size:12px;line-height:11px"> <b>Price :</b> {{this.final_price}} </p> 
+								<p style="font-size:12px;line-height:11px"> <b>Price :</b> {{currency this.final_price '$'}} CAD </p> 
 								 </div> 
 										 </div>
 								    {{/OrderItems}}
@@ -74,11 +74,11 @@
 
 								</div>
 								<div class="col-md-9">
-									<p class="text_blue_color float-right" style="margin: 10px">
-										{{orderTrack.shippingAddress.address_line1}}<br>
-										 {{orderTrack.shippingAddress.address_line2}},<br>
-										 {{orderTrack.shippingAddress.city}},<br>
-										 {{orderTrack.shippingAddress.State.name}} ,<br>
+									<p class="text_blue_color float-right text-nowrap" style="margin: 10px">
+										{{orderTrack.shippingAddress.address_line1}}
+										 {{orderTrack.shippingAddress.address_line2}},
+										 {{orderTrack.shippingAddress.city}},
+										 {{orderTrack.shippingAddress.State.name}} ,
 										 {{orderTrack.shippingAddress.Country.name}}.
 									</p>
 								</div>
