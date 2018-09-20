@@ -101,6 +101,7 @@ export function addProduct(req, res) {
 		editProduct: function(callback){
 			service.findIdRow(productModel, editProductId, productIncludeArr)
 				.then(function(editProduct) {
+					console.log("====================================",editProduct.ProductMedia);
 					return callback(null, editProduct);
 
 				}).catch(function(error) {

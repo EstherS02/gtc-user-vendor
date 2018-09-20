@@ -289,7 +289,15 @@
 													<td style="display:none">{{this.purchase_order_id}}</td>
 									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 									  				<td>Stripe</td>
-									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+													  {{#ifCond this.order_status '==' 6}}
+									  				<td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													  {{else ifCond this.order_status '==' 7}}
+													  <td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													    {{else ifCond this.order_status '==' 8}}
+													  <td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													    {{else ifCond this.order_status '!=' ''}}
+													  <td class="text_green_color">{{objectKey ../orderStatus  this.order_status}}</td>
+													  {{/ifCond}}
 									  				<td><a href="/order-track/{{this.id}}">Track Order</a></td>
 									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}">
 													  <i class="fas fa-credit-card"></i> Request Refund</a></td>
