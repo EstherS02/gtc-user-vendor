@@ -1,8 +1,10 @@
 <script>
-	var ProductMedia = {{{ DisplayJSON editProduct.ProductMedia }}}
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
 
-	var allFiles = [], UploadedImageArr= [], attributeArr = [], discountArr = [], count;
+	var imageFiles = [], imageArr = [], attributeArr = [], discountArr = [], count, test;
+	
+	imageFiles = {{{DisplayJSON productImages}}}
+	productBaseImage = {{{DisplayJSON productBaseImage}}}
 
 	if(discountLength){
 		var discountLength = {{editProduct.Discounts.length}}
@@ -12,48 +14,46 @@
 		count =0;
 	}
 
+	function addProduct(productInput) {
 
-	function addProduct(obj, productInput) {
+		var obj = {};
 
-		if ($('#productForm').valid()) {
-
-			if(attributeArr.length > 0)
+		if(attributeArr.length > 0)
 			obj.attributeArr = JSON.stringify(attributeArr);
 
-			if(discountArr.length > 0 )
+		if(discountArr.length > 0 )
 			obj.discountArr = JSON.stringify(discountArr);
 
-			$.ajax({
-				type: 'POST',
-				url: '/api/product/add-product?' + productInput,
-				data: obj,
-				success: function(data) {
+		if(imageArr.length > 0 )
+			obj.imageArr = JSON.stringify(imageArr);
 
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-					setTimeout(function() {
-						location.reload(true);
-					}, 1500);
-				},
-				error: function(error) {
-
-					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-				}
-			})
-		}
+		$.ajax({
+			type: 'POST',
+			url: '/api/product/add-product?' + productInput,
+			data: obj,
+			success: function(data) {
+				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
+				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+					$("#gtc-cart-alert").slideUp(500);
+				});
+				$('.pip').empty();
+				$('.base_image').empty();
+				setTimeout(function() {
+					location.reload(true);
+				}, 1500);
+			},
+			error: function(error) {
+				$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+				$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+					$("#gtc-cart-alert").slideUp(500);
+				});
+				$('.pip').empty();
+				$('.base_image').empty();
+			}
+		})		
 	}
-
 
 	function updateProduct(product_id,productInput){
 
@@ -65,38 +65,36 @@
 		if(discountArr.length > 0 ){
 			obj.discountArr = JSON.stringify(discountArr);
 		}
-			
-		if ($('#productForm').valid()) {
-			$.ajax({
-					type: 'POST',
-					url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
-					data: obj,
-					success: function(data) {
 
-						$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-						$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-cart-alert").slideUp(500);
-						});
-						$('.pip').empty();
-						$('.base_image').empty();
-						setTimeout(function() {
-							location.reload(true);
-						}, 1500);
-					},
-					error: function(error) {
+		if(imageArr.length > 0 )
+			obj.imageArr = JSON.stringify(imageArr);
 
-						$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-						$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
-						$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-cart-alert").slideUp(500);
-						});
-						$('.pip').empty();
-						$('.base_image').empty();
-						//$("#productForm")[0].reset();
-					}
-				})
+		$.ajax({
+			type: 'POST',
+			url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
+			data: obj,
+			success: function(data) {
+				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+				$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
+				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+					$("#gtc-cart-alert").slideUp(500);
+				});
+				$('.pip').empty();
+				$('.base_image').empty();
+				setTimeout(function() {
+					location.reload(true);
+				}, 1500);
+			},
+			error: function(error) {
+				$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
+				$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+				$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+					$("#gtc-cart-alert").slideUp(500);
+				});
+				$('.pip').empty();
+				$('.base_image').empty();
 			}
+		})
 	}
 
 	function removeDiscount(e){
@@ -111,29 +109,36 @@
 
 	function removeImage(e, imageIndex) {
 
-		allFiles.splice(imageIndex, 1);
+		imageFiles.splice(imageIndex, 1);
 		$(e).parents(".pip").remove();
 
 		appendImage();
 	}
 
 	function appendImage(){
+
 		$(".preview" ).empty();
 
-		for (var i = 0; i < allFiles.length; i++) {
+		for (var i = 0; i < imageFiles.length; i++) {
 			var domElement;
 
-			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + allFiles[i].UploadedImage + "\"/>" +
+			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + imageFiles[i].UploadedImage + "\"/>" +
 						"<i class='fa fa-times productRemoveIcon' onclick='removeImage(this,"+i+")' aria-hidden='true'></i></span>"
 
 			$(".preview").append(domElement);
 		}
 
-		if (allFiles.length >= 6) {
+		if (imageFiles.length >= 6) {
 			$("#productImage").hide();
 		}else{
 			$("#productImage").show();
 		}
+	}
+
+	function appendBaseImage(uploadedBaseImage){
+
+		var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', uploadedBaseImage);
+		$('div.base_image').html(temp);
 	}
 
 	function testValue(count) {
@@ -148,7 +153,7 @@
 
 	$(document).ready(function() {
 
-       	var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, test;
+       	var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {}, baseImageFileDetails;
 
 		var product_id = $('#edit_product_id').val();
@@ -168,7 +173,7 @@
 			test = 'div.base_image';
 			fasterPreview(this);
 		});
-
+		
 		$('#crop-product-image').click(function() {
 
 			if (test == 'div.base_image') {
@@ -178,20 +183,23 @@
 					fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 					fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
 				});
-				var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
-				$(test).html(temp);
+
+				var uploadedBaseImage = cropper.getCroppedCanvas().toDataURL();
+                appendBaseImage(uploadedBaseImage);
+
 				$('#profile-picture-modal').modal('hide');
 
 			} else {
 					
-					cropper.getCroppedCanvas().toBlob(function(blob) {
+				cropper.getCroppedCanvas().toBlob(function(blob) {
 					var fileTempHold = {};
 					fileTempHold['cropperOutputImage'] = blob;
 					fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
 					fileTempHold['fileName'] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
 					fileTempHold['UploadedImage'] = cropper.getCroppedCanvas().toDataURL();
+					fileTempHold['existing'] = 'no';
 
-					allFiles.push(fileTempHold);
+					imageFiles.push(fileTempHold);
 					appendImage();
 				});
 			
@@ -381,10 +389,6 @@
 							return true;
 						} else { return false; }
 					}
-				},
-				baseImage:{
-					required: true,
-					accept:"jpg,png,jpeg,gif"
 				}
 			},
 			messages: {
@@ -414,11 +418,7 @@
 				},
 				exchanging_product: "Please enter the exchanging product name",
 				exchanging_product_quantity: "Please enter exchanging product quantity",
-				moq: "Please enter minimum order quantity",
-				baseImage:{
-					required: "Please select base Image",
-					accept: "Only image type jpg/png/jpeg/gif is allowed"
-				}
+				moq: "Please enter minimum order quantity"
 			}
 		});
 
@@ -432,133 +432,145 @@
 
 
 		$("#productForm").submit(function(e) {
-
 			e.preventDefault();
-			var imageURLsArr = [];
 
-					var temp1 = $.map($('.quantity'), function(el) {
-						return el.value;
-					});
+			if($('#productForm').valid()){
+			
+				var temp1 = $.map($('.quantity'), function(el) {
+					return el.value;
+				});
 
-					var quantArr = temp1.filter(function(v) { return v !== '' });
+				var quantArr = temp1.filter(function(v) { return v !== '' });
 
-					var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
-						return el.value;
-					});
+				var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
+					return el.value;
+				});
 
-					var temp2 = $.map($('.discount_amount'), function(el) {
-						return el.value;
-					});
-	
-					var amtArr = temp2.filter(function(v) { return v !== '' });
+				var temp2 = $.map($('.discount_amount'), function(el) {
+					return el.value;
+				});
+		
+				var amtArr = temp2.filter(function(v) { return v !== '' });
 
-					var j = 0; 
-					quantArr.forEach(function(element) {
+				var j = 0; 
+				quantArr.forEach(function(element) {
 
-						let discount = {};
-						discount.status = 1;
-						discount.quantity = quantArr[j];
-						if (typeArr[j] == 'percentage_discount') {
-							discount.type = 1;
-							discount.percent_discount = amtArr[j];
-						}
-						else {
-							discount.type = 2;
-							discount.value_discount = amtArr[j];
-						}
-						discountArr.push(discount);
-						j++;
-					});
+					let discount = {};
+					discount.status = 1;
+					discount.quantity = quantArr[j];
+					if (typeArr[j] == 'percentage_discount') {
+						discount.type = 1;
+						discount.percent_discount = amtArr[j];
+					}
+					else {
+						discount.type = 2;
+						discount.value_discount = amtArr[j];
+					}
+					discountArr.push(discount);
+					j++;
+				});
 
-			let productInput = $("#productForm :input").filter(function(index, element) {
-				return $(element).val() != '';
-			}).serialize();
+				let productInput = $("#productForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
 
-			attributeArr = $('#attributeDiv :input').filter(function(index, element) {
-				return $(element).val() != '';
-			}).serializeArray();
+				attributeArr = $('#attributeDiv :input').filter(function(index, element) {
+					return $(element).val() != '';
+				}).serializeArray();
+					
+					$.ajaxSetup({ async: false });
 
-			if(!product_id){
-				
-				$.ajaxSetup({ async: false });
-
-				if ($('#baseImage')[0].files.length > 0) {
 					var form1 = new FormData();
 
 					form1.append("file", cropperOutputImage, fileDetails["fileName"]);
-					$.ajax({
-						type: 'POST',
-						url: '/api/prod/upload',
-						data: form1,
-						cache: false,
-						dataType: 'json',
-						processData: false,
-						contentType: false,
-						success: function(data) {
+						$.ajax({
+							type: 'POST',
+							url: '/api/prod/upload',
+							data: form1,
+							cache: false,
+							dataType: 'json',
+							processData: false,
+							contentType: false,
+							success: function(data) {
 
-							var imageURLobj = {};
+								var imageObj = {};
 
-							imageURLobj.status = 1;
-							imageURLobj.type = 1;
-							imageURLobj.base_image = 1;
-							imageURLobj.url = data.imageURL;
+								imageObj.status = 1;
+								imageObj.type = 1;
+								imageObj.base_image = 1;
+								imageObj.url = data.imageURL;
 
-							imageURLsArr.push(imageURLobj);
-						},
-						error: function(error) {
-							console.log("Error", error);
-						}
-					})
-				}
-				if ($("#imageUpload")[0].files.length > 0) {
-					var form2 = new FormData();
+								imageArr.push(imageObj);
+							},
+							error: function(error) {
+								console.log("Error", error);
+							}
+						})
 
-					$.each(allFiles, function(i, file) {
-						form2.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
-					});
+						var form2 = new FormData();
 
-					$.ajax({
-						type: 'POST',
-						url: '/api/prod/multiple',
-						data: form2,
-						cache: false,
-						dataType: 'json',
-						processData: false,
-						contentType: false,
-						success: function(data) {
-							var imageURLs = data.imageURLs, i = 0;
+						$.each(imageFiles, function(i, file) {
 
-							imageURLs.forEach(function(element) {
-								var imageURLobj = {};
+							if(imageFiles[i].existing == 'no'){
+								form2.append("file[" + i + "]", imageFiles[i].cropperOutputImage, imageFiles[i].fileName);
 
-								imageURLobj.status = 1;
-								imageURLobj.type = 1;
-								imageURLobj.base_image = 0;
-								imageURLobj.url = imageURLs[i];
+							}
+								
+							else if(imageFiles[i].existing == 'yes'){
 
-								imageURLsArr.push(imageURLobj);
-								i++;
-							});
-							var dataFormate = {};
-							dataFormate.imageArr = JSON.stringify(imageURLsArr);
-							addProduct(dataFormate, productInput);
-						},
-						error: function(error) {
-							console.log('error', error);
-						}
-					});
-				} else {
+								var imageObj = {};
 
-					var dataFormate = {};
-					dataFormate.imageArr = JSON.stringify(imageURLsArr);
-					addProduct(dataFormate, productInput);
+								imageObj.status = 1;
+								imageObj.type = 1;
+								imageObj.base_image = 0;
+								imageObj.url = imageFiles[i].UploadedImage;
+								
+								imageArr.push(imageObj);
+							}
+						});
 
-				}
-				$.ajaxSetup({ async: true });
-			}
-			else{
-				updateProduct(product_id,productInput)
-			}
+						$.ajax({
+							type: 'POST',
+							url: '/api/prod/multiple',
+							data: form2,
+							cache: false,
+							dataType: 'json',
+							processData: false,
+							contentType: false,
+							success: function(data) {
+								var imageURLs = data.imageURLs, i = 0;
+
+								imageURLs.forEach(function(element) {
+
+									var imageobj = {};
+
+									imageobj.status = 1;
+									imageobj.type = 1;
+									imageobj.base_image = 0;
+									imageobj.url = imageURLs[i];
+
+									imageArr.push(imageobj);
+									i++;
+								});
+								if(!product_id)
+									addProduct(productInput);
+								else
+									updateProduct(product_id,productInput)
+							},
+							error: function(error) {
+								console.log('error', error);
+							}
+						});
+					/*} else {
+						if(!product_id)
+							addProduct(productInput);
+						else
+							updateProduct(product_id,productInput)
+
+					}*/
+					$.ajaxSetup({ async: true });	
+
+			}		
 		});
 
 		$("#reset").click(function() {
@@ -591,6 +603,17 @@
 				}
 			}
 		});
+
+		if(imageFiles && (imageFiles.length > 0))
+			appendImage();
+
+		if(productBaseImage && (productBaseImage.length > 0)){
+			
+
+			for (var i = 0; i < productBaseImage.length; i++) {
+				appendBaseImage(productBaseImage[i].UploadedBaseImage);
+			}
+		}			
  	});
 </script>
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -934,7 +957,7 @@
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												<input type="file" class="custom-file-input" id="baseImage" value="{{editProduct.ProductMedia.[0].url}}" name="baseImage">
+												<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
 												<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
 											</div>
 										</div>
@@ -956,14 +979,6 @@
 										</div>
 									</div>
 									<div class="col-lg-12">
-										{{editProduct.id}}
-									{{#each editProduct.ProductMedia}}
-									
-									{{#ifCond this.base_image "==" 1}}
-										<span class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
-										<i class='fa fa-times productRemoveIcon' onclick='delete({{this.id}})' aria-hidden='true'></i></span>
-										{{/ifCond}}
-									{{/each}}
 									<span class="preview"></span>
 									</div>
 								</div>
