@@ -26,18 +26,18 @@
 						     {{#ifCond this.base_image '==' 1 }}
 							 <div class="col-md-3">
 
-						     	<img src="{{this.url}}" alt="iphone" style="width:25%;margin-bottom: 10px;margin-left:16px"
+						     	<img src="{{this.url}}" alt="iphone" style="width:35%;margin-bottom: 10px;margin-left:16px"
 							       />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							 </div>
 							 {{/ifCond}}
 								 {{/ProductMedia}}
 										  <div class="col-md-5">
-                                   <p style="font-size:12px">{{this.product_name}} </p>
+                                   <p style="font-size:12px;line-height:11px">Name : {{this.product_name}} </p>
 							
 							 
 										 {{/Product}}
-										 	<p style="font-size:12px">{{this.quantity}} </p>
-								<p style="font-size:12px">{{this.final_price}} </p> 
+										 	<p style="font-size:12px;line-height:11px">Qty : {{this.quantity}} </p>
+								<p style="font-size:12px;line-height:11px"> Price : {{this.final_price}} </p> 
 								 </div> 
 										 </div>
 								    {{/OrderItems}}
