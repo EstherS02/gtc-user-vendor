@@ -118,13 +118,13 @@ export function addProduct(req, res) {
 				for(let i=0; i<results.editProduct.ProductMedia.length; i++){
 					if(results.editProduct.ProductMedia[i].base_image != 1){
 						productImages.push({
-							UploadedImage: results.editProduct.ProductMedia[i].url,
+							uploadedImage: results.editProduct.ProductMedia[i].url,
 							fileName : 'ProductImage.png',
 							existing : 'yes'
 						})
 					}else if(results.editProduct.ProductMedia[i].base_image == 1){
 						productBaseImage.push({
-							UploadedBaseImage: results.editProduct.ProductMedia[i].url,
+							uploadedBaseImage: results.editProduct.ProductMedia[i].url,
 							fileName : 'ProductImage.png',
 							existing : 'yes'
 						})
