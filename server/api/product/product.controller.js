@@ -752,16 +752,21 @@ export function editProduct(req, res) {
 		where: {
 			id: product_id
 		}
-
 	}).then(function(row) {
-		if (row) {
-			if (req.body.attributeArr) {
-
-				var attributePromise = []; 
-				var attributeArr = JSON.parse(req.body.attributeArr);
-				attributePromise.push(updateProductAttribute(attributeArr, product_id));
-				return Promise.all(attributePromise);
+			if (req.body.imageArr) {
+				var imagePromise = []; 
+				var imageArr = JSON.parse(req.body.imageArr);
+				imagePromise.push(updateProductMedia(imageArr, product_id));
+				return Promise.all(imagePromise);
 			}
+		
+	}).then(function(){
+		if (req.body.attributeArr) {
+
+			var attributePromise = []; 
+			var attributeArr = JSON.parse(req.body.attributeArr);
+			attributePromise.push(updateProductAttribute(attributeArr, product_id));
+			return Promise.all(attributePromise);
 		}
 	}).then(function(updatedAttribute){
 		if (req.body.discountArr) {
@@ -783,28 +788,33 @@ export function editProduct(req, res) {
 }
 
 function updateProductMedia(imageArr, product_id) {
+
+	var queryObj = {
+		product_id: product_id
+	}
+
+	model['ProductMedia'].destroy({
+		where: queryObj
+	}).then(function(delectedProductMedia) {
+
+		var mediaCreatePromise = [];
+		
+		_.forOwn(imageArr, function(imageElement) {
+
+			imageElement.product_id = product_id;
+			imageElement.created_on = new Date();
+
+			mediaCreatePromise.push(createProductMedia(imageElement));
+		})
+		return Promise.all(mediaCreatePromise);
 	
-	async.mapSeries(imageArr, function(imageElement, callback) {
-
-		imageElement.product_id = product_id;
-		imageElement.created_on = new Date();
-
-		service.createRow('ProductMedia', imageElement)
-			.then(function(result) {
-				return callback(null, result);
-			})
-			.catch(function(error) {
-				console.log('Error:::', error);
-				return callback(null);
-			});
-	}, function(err, results) {
-		if(!err){
-			return Promise.resolve(results);
-		}
-		else{
-			return Promise.reject(err);
-		}			
-	});
+	}).then(function(response){
+		return Promise.resolve(response);
+	
+	}).catch(function(error){
+		console.log("Error::",error);
+		return Promise.reject(error);
+	})
 }
 
 function updateProductAttribute(attributeArr, product_id){
@@ -864,6 +874,10 @@ function updateDiscount(discountArr, product_id){
 		console.log("Error::",error);
 		return Promise.reject(error);
 	})
+}
+
+function createProductMedia(imageElement) {
+	return service.createRow('ProductMedia', imageElement);
 }
 
 function createProductAttribute(attributeElement) {
