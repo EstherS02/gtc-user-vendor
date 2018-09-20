@@ -1015,17 +1015,17 @@ var checkApplyCoupon = function(req, res, callback) {
 
 export async function applyCoupon(req, res) {
 	var queryObj = {};
+	var products = [];
+	var finalProducts = [];
 	var appliedProducts = [];
-	//var appliedCategories = [];
+	var appliedCategoryProducts = [];
+	const cartModelName = "Cart";
 	const orderModelName = "Order";
 	const couponModelName = "Coupon";
 	const productModelName = "Product";
 	const categoryModelName = "Category";
-	//const couponProductModelName = "CouponProduct";
-	//const couponCategoryModelName = "CouponCategory";
-	//const couponExcludedProductModelName = "CouponExcludedProduct";
-	//const couponExcludedCategoryModelName = "CouponExcludedCategory";
 
+	res.clearCookie('applied_coupon');
 	req.checkBody('code', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
@@ -1037,7 +1037,7 @@ export async function applyCoupon(req, res) {
 	queryObj['code'] = req.body.code;
 
 	try {
-		const includeArray = await [{
+		const couponIncludeArray = await [{
 			model: model['CouponProduct'],
 			where: {
 				status: status['ACTIVE']
@@ -1062,69 +1062,130 @@ export async function applyCoupon(req, res) {
 			},
 			required: false
 		}];
-		const coupon = await service.findOneRow(couponModelName, queryObj, includeArray);
 
-		if (coupon) {
-			const currentDate = moment().format('YYYY-MM-DD');
-			const expiryDate = moment(coupon.expiry_date).format('YYYY-MM-DD');
+		const cartCount = await service.countRows(cartModelName, {
+			user_id: req.user.id,
+			status: status['ACTIVE']
+		});
 
-			if (currentDate <= expiryDate) {
-				if (coupon.usage_limit) {
-					const existingCount = await service.countRows(orderModelName, {
-						coupon_id: coupon.id
-					});
-					if (existingCount > coupon.usage_limit) {
-						return res.status(400).send("Promo code limit exceeded.");
+		if (cartCount > 0) {
+			const coupon = await service.findOneRow(couponModelName, queryObj, couponIncludeArray);
+
+			if (coupon) {
+				const cartIncludeArray = await [{
+					model: model['Product'],
+					where: {
+						vendor_id: coupon.vendor_id
 					}
-				}
-				if (coupon.usage_limit_per_user) {
-					const existingCount = await service.countRows(orderModelName, {
-						coupon_id: coupon.id,
-						user_id: req.user.id
-					});
-					if (existingCount > coupon.usage_limit_per_user) {
-						return res.status(400).send("You are already used this promo code.");
-					}
-				}
-
-				const productsResponse = await service.findAllRows(productModelName, [], {
-					vendor_id: coupon.vendor_id,
-					status: status['ACTIVE']
-				}, 0, null, 'id', 'asc');
-				var products = await productsResponse.rows;
-
-				const categories = await service.findAllRows(categoryModelName, [], {
+				}];
+				const cartVendorProductResponse = await service.findAllRows(cartModelName, cartIncludeArray, {
+					user_id: req.user.id,
 					status: status['ACTIVE']
 				}, 0, null, 'id', 'asc');
 
-				if (coupon.CouponProducts.length == 0 && coupon.CouponExcludedProducts.length > 0) {
-					await Promise.all(coupon.CouponExcludedProducts.map(async (excludeCouponProduct) => {
-						products.splice(products.findIndex((product) => product.id === excludeCouponProduct.product_id), 1);
-					}));
-					appliedProducts = await products;
-				} else if (coupon.CouponProducts.length > 0) {
-					await Promise.all(coupon.CouponProducts.map(async (couponProduct) => {
-						const index = await products.findIndex((product) => product.id === couponProduct.product_id);
-						appliedProducts.push(products[index]);
-					}));
+				if (cartVendorProductResponse.count > 0) {
+					const vendorProductsInCart = await cartVendorProductResponse.rows;
+					const currentDate = moment().format('YYYY-MM-DD');
+					const expiryDate = moment(coupon.expiry_date).format('YYYY-MM-DD');
+
+					if (currentDate <= expiryDate) {
+						if (coupon.usage_limit) {
+							const existingCount = await service.countRows(orderModelName, {
+								coupon_id: coupon.id
+							});
+							if (existingCount > coupon.usage_limit) {
+								return res.status(400).send("Promo code limit exceeded.");
+							}
+						}
+						if (coupon.usage_limit_per_user) {
+							const existingCount = await service.countRows(orderModelName, {
+								coupon_id: coupon.id,
+								user_id: req.user.id
+							});
+							if (existingCount > coupon.usage_limit_per_user) {
+								return res.status(400).send("You are already used this promo code.");
+							}
+						}
+
+						const productResponse = await service.findAllRows(productModelName, [], {
+							vendor_id: coupon.vendor_id,
+							status: status['ACTIVE']
+						}, 0, null, 'id', 'asc');
+						products = await productResponse.rows;
+
+						const categories = await service.findAllRows(categoryModelName, [], {
+							status: status['ACTIVE']
+						}, 0, null, 'id', 'asc');
+
+						if (coupon.CouponProducts.length == 0 && coupon.CouponExcludedProducts.length > 0) {
+							var couponExcludedProducts = await _.map(coupon.CouponExcludedProducts, 'product_id');
+							appliedProducts = await _.filter(products, function(excludeProduct) {
+								return couponExcludedProducts.indexOf(excludeProduct.id) === -1;
+							});
+						} else if (coupon.CouponProducts.length > 0) {
+							var couponProducts = await _.map(coupon.CouponProducts, 'product_id');
+							appliedProducts = await _.filter(products, function(product) {
+								return couponProducts.indexOf(product.id) > -1;
+							});
+						} else {
+							appliedProducts = await products;
+						}
+
+						if (coupon.CouponCategories.length == 0 && coupon.CouponExcludedCategories.length > 0) {
+							var couponExcludedCategoryProducts = await _.map(coupon.CouponExcludedCategories, 'category_id');
+							appliedCategoryProducts = await _.filter(products, function(excludeProduct) {
+								return couponExcludedCategoryProducts.indexOf(excludeProduct.product_category_id) === -1;
+							});
+						} else if (coupon.CouponCategories.length > 0) {
+							var couponCategoryProducts = await _.map(coupon.CouponCategories, 'category_id');
+							appliedCategoryProducts = await _.filter(products, function(product) {
+								return couponCategoryProducts.indexOf(product.product_category_id) > -1;
+							});
+						} else {
+							appliedCategoryProducts = await products;
+						}
+
+						if (appliedProducts > appliedCategoryProducts) {
+							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
+							finalProducts = await _.filter(appliedProducts, function(product) {
+								return tmpProducts.indexOf(product.id) == -1;
+							});
+						}
+
+						if (appliedCategoryProducts > appliedProducts) {
+							var tmpProducts = await _.map(appliedProducts, 'id');
+							finalProducts = await _.filter(appliedCategoryProducts, function(product) {
+								return tmpProducts.indexOf(product.id) == -1;
+							});
+						}
+
+						var totalAmount = 0;
+
+						await Promise.all(finalProducts.map(async (product) => {
+							const cartProduct = await vendorProductsInCart.find((obj) => obj.product_id == product.id);
+							if (cartProduct) {
+								totalAmount = await cartProduct.Product.price * cartProduct.quantity;
+							}
+						}));
+						if (totalAmount < coupon.minimum_spend) {
+							return res.status(400).send("This promo code not applicable. Minimum spend " + coupon.minimum_spend);
+						} else if (totalAmount > coupon.maximum_spend) {
+							return res.status(400).send("This promo code not applicable. Maximum spend " + coupon.maximum_spend);
+						} else {
+							res.cookie("applied_coupon", coupon.id);
+							return res.status(200).send("Promo code applied successfully.");
+						}
+					} else {
+						return res.status(400).send("Promo code expired.");
+					}
 				} else {
-					appliedProducts = products;
-				}
-
-				if (coupon.CouponCategories.length == 0 && coupon.CouponExcludedCategories.length > 0) {
-					await Promise.all(coupon.CouponExcludedCategories.map(async (excludeCouponCategory) => {
-						products.splice(products.findIndex((product) => product.product_category_id === excludeCouponProduct.category_id), 1);
-					}));
-				} else if (coupon.CouponCategories.length > 0) {
-
-				} else {
-
+					return res.status(400).send("This promo code not applicable");
 				}
 			} else {
-				return res.status(400).send("Promo code expired.");
+				return res.status(404).send("Invalid promo code.");
 			}
 		} else {
-			return res.status(404).send("Invalid promo code.");
+			return res.status(404).send("Your cart is empty.");
 		}
 	} catch (error) {
 		console.log("applyCoupon Error:::", error);

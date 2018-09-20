@@ -20,12 +20,10 @@
 			}),
 			processData: false,
 			success: function(data, statusText, xhr) {
-				console.log('data', data);
+				auth.alertService(xhr.status, data);
 			},
 			error: function(request, status, error) {
-				console.log('request', request);
-				console.log('status', status);
-				console.log('error', error);
+				auth.alertService(request.status, request.responseText);
 			}
 		});
 	}
@@ -198,6 +196,7 @@
 	});
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
+<div id="vendorAlert" tabindex="1"><div class="gtc-container"></div></div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">

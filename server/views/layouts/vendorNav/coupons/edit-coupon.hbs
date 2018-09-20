@@ -48,9 +48,7 @@
 						auth.alertService(xhr.status, data);
 					},
 					error: function(request, status, error) {
-						console.log('request', request);
-						console.log('status', status);
-						console.log('error', error);
+						auth.alertService(request.status, request.responseText);
 					}
 				});
 			}
