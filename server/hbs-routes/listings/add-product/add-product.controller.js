@@ -101,7 +101,6 @@ export function addProduct(req, res) {
 		editProduct: function(callback){
 			service.findIdRow(productModel, editProductId, productIncludeArr)
 				.then(function(editProduct) {
-					console.log("====================================",editProduct.ProductMedia);
 					return callback(null, editProduct);
 
 				}).catch(function(error) {
@@ -111,7 +110,20 @@ export function addProduct(req, res) {
 		}
     }, function(err, results) {
         var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-        var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
+		
+			let productImages = [];
+
+			for(let i=0; i<results.editProduct.ProductMedia.length; i++){
+				if(results.editProduct.ProductMedia[i].base_image != 1){
+					productImages.push({
+						UploadedImage: results.editProduct.ProductMedia[i].url,
+						fileName : 'ProductImage.png',
+						existing : 'yes'
+					})
+				}
+			}
+
         if (!err) {
             res.render('vendorNav/listings/add-product', {
                 title: "Global Trade Connect",
@@ -126,6 +138,7 @@ export function addProduct(req, res) {
                 type: type,
 				dropDownUrl: dropDownUrl,
 				editProduct: results.editProduct,
+				productImages: productImages
             });
         } else {
             res.render('vendorNav/listings/add-product', err);
