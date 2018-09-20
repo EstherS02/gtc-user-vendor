@@ -33,7 +33,7 @@
 							 {{/ifCond}}
 								 {{/ProductMedia}}
 										  <div class="col-md-3">
-                                   <p style="font-size:12px;line-height:11px"><b>Name :</b> {{this.product_name}} </p>
+                                   <p style="font-size:12px;line-height:11px"><b>Name :</b> <a href="/wholesale/{{this.product_name}}/{{this.id}}">{{this.product_name}}</a> </p>
 							
 							 
 										 {{/Product}}
@@ -74,7 +74,7 @@
 
 								</div>
 								<div class="col-md-9">
-									<p class="float-right text-nowrap" style="margin: 10px;color:#A9A9A9">
+									<p class="float-right text-nowrap" style="margin: 10px;color:#A9A9A9;font-size: small">
 										{{orderTrack.shippingAddress.address_line1}}
 										 {{orderTrack.shippingAddress.address_line2}},
 										 {{orderTrack.shippingAddress.city}},

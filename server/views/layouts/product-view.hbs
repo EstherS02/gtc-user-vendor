@@ -12,8 +12,8 @@ $(document).ready(function() {
 	 // Configure/customize these variables. start
     var showChar = 100;  // How many characters are shown by default
     var ellipsestext = "...";
-    var moretext = "See more >";
-    var lesstext = "See less";
+    var moretext = "(See more...)";
+    var lesstext = "(See less)";
     
 
     $('.p-description').each(function() {
@@ -537,7 +537,7 @@ function mailVendor(){
                             			</div>
                             			<div id="productAlert"></div>
                             			{{#if product.description}}
-                            			<div class="p-description">
+                            			<div class="p-description" style="font-size:small">
                             				{{{product.description}}}
                             			</div>
 										{{!-- {{#limit product.description}} --}}
