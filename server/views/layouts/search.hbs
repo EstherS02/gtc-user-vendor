@@ -146,7 +146,7 @@ function redirectBack() {
 			<h5 class="right-header-sm" style="margin-top:10px">FILTER BY CATEGORY</h5>
 			<p class="right-header-xs bg{{queryURI.marketplace}}">ALL CATEGORIES ({{categoriesWithCount.count}})</p>
 			<ul class="right-list-view category-fixed">
-				{{#each categoriesWithCount.rows}}
+				{{!-- {{#each categoriesWithCount.rows}}
 				<li>
 					<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="{{#ifCond ../queryURI.category "!=" this.id}} collapsed {{/ifCond}}coll" href="#list{{this.name}}"></a><a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 category=this.id) 'null'}}">{{this.name}} ({{this.product_count}})</a>
 					<ul class="inner-list-view collapse {{#ifCond ../queryURI.category '==' this.id}}show{{/ifCond}}" id="list{{this.name}}">
@@ -159,7 +159,26 @@ function redirectBack() {
 						{{/each}}
 					</ul>
 				</li>
+				{{/each}} --}}
+
+
+				{{#each productCount}}
+					<li>
+						<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="{{#ifCond ../queryURI.category "!=" this.categoryID}} collapsed {{/ifCond}}coll"
+						href="#list{{this.categoryName}}"></a>
+						<a href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 category=this.categoryID) 'null'}}">{{this.categoryName}} ({{this.count}})</a>
+						<ul class="inner-list-view collapse {{#ifCond ../queryURI.category '==' this.categoryID}}show{{/ifCond}}" id="list{{this.categoryName}}">
+							{{#each this.subCategory}}
+								<li>
+									<a {{#ifCond ../../queryURI.sub_category "==" this.subCategoryId}} class="active" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 category=../this.categoryID sub_category=this.subCategoryId) 'null'}}">
+										<span>{{this.subCategoryName}} ({{this.count}})</span>
+									</a>
+								</li>
+							{{/each}}
+						</ul>
+					</li>
 				{{/each}}
+
 			</ul>
 
 			{{#ifCond marketplaceURl "==" "wholesale"}}
@@ -251,7 +270,7 @@ function redirectBack() {
 						<p class="text-primary text-center no-margins">No featured products available.</p>
 					</div>
 					{{/ifCond}}
- --}}					{{#ifCond layout_type "==" 'grid'}}
+ --}}				{{#ifCond layout_type "==" 'grid'}}
 					{{#each topFeaturedProducts.rows}}
 					<div class="col-md-4">
 						<div class="product-body">

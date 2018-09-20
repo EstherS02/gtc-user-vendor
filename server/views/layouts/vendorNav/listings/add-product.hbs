@@ -13,7 +13,7 @@
 	}
 
 
-	function addProduct(obj, productinput) {
+	function addProduct(obj, productInput) {
 
 		if ($('#productForm').valid()) {
 
@@ -25,7 +25,7 @@
 
 			$.ajax({
 				type: 'POST',
-				url: '/api/product/add-product?' + productinput,
+				url: '/api/product/add-product?' + productInput,
 				data: obj,
 				success: function(data) {
 
@@ -429,7 +429,7 @@
 		$.validator.addMethod("dollarsscents", function(value, element) {
 			return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
 		}, "You must include two decimal places");
-		
+
 
 		$("#productForm").submit(function(e) {
 
@@ -956,7 +956,15 @@
 										</div>
 									</div>
 									<div class="col-lg-12">
-										<div class="preview"></div>
+										{{editProduct.id}}
+									{{#each editProduct.ProductMedia}}
+									
+									{{#ifCond this.base_image "==" 1}}
+										<span class="pip" id="remove{{this.id}}"><img class="imageThumb" src="{{this.url}}"/>
+										<i class='fa fa-times productRemoveIcon' onclick='delete({{this.id}})' aria-hidden='true'></i></span>
+										{{/ifCond}}
+									{{/each}}
+									<span class="preview"></span>
 									</div>
 								</div>
 								<br/>

@@ -48,11 +48,9 @@ export function editListing(req, res) {
             });
         },
 		product: function(callback) {
-
 			service.findOneRow(productModel, searchObj, productIncludeArr)
 				.then(function(product) {
 					return callback(null, product);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);

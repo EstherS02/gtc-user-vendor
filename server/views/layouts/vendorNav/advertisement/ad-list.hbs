@@ -1,0 +1,209 @@
+ <script>
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
+	$(document).ready(function() {
+		$("#gtc-cart-alert").hide();
+	})
+	function changeStatus(e) {
+		window.location.href = '/advertisement?status=' + e.value;
+	}
+	function search(e) {
+		window.location.href = '/advertisement?keyword=' + e.value;
+	}
+
+	function edit() {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+		
+		var product_id = chkArray.join(',');
+
+		if (chkArray.length == 1) {
+			window.location.href = '/advertisement/add/'+product_id;
+		}
+		else {
+			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text('Select one product to edit')
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-cart-alert").slideUp(500);
+			});
+		}
+	}
+
+	function add() {
+		window.location.href = '/advertisement/add';
+	}
+// }
+
+</script>{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="content-body">
+							{{!-- <p class="content-txt"></p> --}}
+							<div class="row">
+								<div class="col-md-7">
+										<div class="form-inline">
+										<div class="form-group mb-2">
+											<button class="btn btn-small btn-muted" onclick="add();">CREATE AD</button>
+										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<div class="select-container">
+												<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+													{{#select queryURI.status}}
+													<option disabled selected>CHANGE STATUS</option>
+													<option value="ACTIVE">Active</option>
+													<option value="INACTIVE">InActive</option>
+													<option value="SUSPENDED">Suspended</option>
+													<option value="SOLDOUT">Sold Out</option>
+													{{/select}}
+												</select>
+											</div>
+										</div>
+										<div class="form-group mb-2">
+											<button class="btn btn-small btn-muted"  onclick="edit();">EDIT/FEATURE</button>
+										</div>
+										</div>
+								</div>
+								<div class="col-md-5">
+									<div class="form-inline ml-auto pull-right">
+										<div class="form-group mx-sm-3 mb-2 form-inline">
+										</div>
+										<div class="form-group mb-2">
+											<div class="input-group gtc-rounded">
+												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);" {{#if queryURI.keyword}}
+												value={{queryURI.keyword}}{{/if}}>
+												<button type="submit" class="btn btn-sm btn-gtc">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="alert" id="gtc-cart-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="cart-message"></span>
+									</div>
+									<div class="cart-top-header">
+										<div class="alignleft cart-top-left">
+											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+										</div>
+										<div class="alignright cart-top-right">
+											<span class="m-r-sm text-muted">
+												Entries per page : 
+												<a href="listings/{{this.type}}?"> 10</a>
+												<a href="listings/{{this.type}}?"> 25</a>
+												<a href="listings/{{this.type}}?"> 100</a>
+												<a href="listings/{{this.type}}?"> All </a>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th scope="col">
+														<input type="checkbox" onclick="selectAll(this);">
+													</th>
+													<th scope="col">Name</th>
+													<th scope="col">Start Date</th>
+													<th scope="col">End Date</th>
+													<th scope="col">Target URl</th>
+													<th scope="col">Country</th>
+													<th scope="col">Province</th>
+													<th scope="col">City</th>
+													<th scope="col">Status</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{#if ads.rows}}
+												{{#each ads.rows}}
+												<tr>
+													<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
+													<td scope="row">
+														<img src="{{this.image_url}}" onError="imgError(this)" style="width: 30px;" />
+														{{this.name}}
+														</td>
+														<td scope="row">{{prettifyDate this.start_date }}</td>
+														<td scope="row">{{prettifyDate this.end_date }}</td>
+														<td scope="row">{{target_url}}</td>
+														<td scope="row">{{this.Country.name}}</td>
+														<td scope="row">{{this.State.name}}</td>
+														<td scope="row">{{this.city}}</td>
+
+														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+															<td class="text_green_color">Active</td>
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+															<td class="text_red_color">InActive</td>
+															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+															<td class="text_orange_color">Suspended</td>
+															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+															<td class="text_red_color">Sold Out</td>
+														{{/ifCond}}
+													</tr>
+													{{/each}}
+													{{else}}
+													<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
+													{{/if}}
+												</tbody>
+											</table>
+										</div>
+										{{!-- {{#pagination collectionSize page pageSize maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+												</li>
+												{{/unless}} {{#each pages}}
+												<li class="page-item {{#if isCurrent}} active {{/if}}">
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+												</li>
+												{{/each}} {{#unless endAtLastPage}}
+												<li class="page-item">
+													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+												</li>
+												{{/unless}}
+											</ul>
+										</nav>
+										{{/pagination}} --}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}

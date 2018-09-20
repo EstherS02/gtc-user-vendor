@@ -519,8 +519,8 @@ export function GetProductReview(req, res) {
 					where: {
 						status: status['ACTIVE']
 					},
-					limit: 1,
-					offset: 0,
+					// limit: 1,
+					// offset: 0,
 					attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status']
 				}, {
 					model: model['Review'],
