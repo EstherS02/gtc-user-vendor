@@ -1145,14 +1145,14 @@ export async function applyCoupon(req, res) {
 							appliedCategoryProducts = await products;
 						}
 
-						if (appliedProducts > appliedCategoryProducts) {
+						if (appliedProducts.length === appliedCategoryProducts.length) {
+							finalProducts = appliedProducts;
+						} else if (appliedProducts.length > appliedCategoryProducts.length) {
 							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 							finalProducts = await _.filter(appliedProducts, function(product) {
 								return tmpProducts.indexOf(product.id) == -1;
 							});
-						}
-
-						if (appliedCategoryProducts > appliedProducts) {
+						} else {
 							var tmpProducts = await _.map(appliedProducts, 'id');
 							finalProducts = await _.filter(appliedCategoryProducts, function(product) {
 								return tmpProducts.indexOf(product.id) == -1;

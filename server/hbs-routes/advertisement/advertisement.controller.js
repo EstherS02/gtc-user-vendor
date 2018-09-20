@@ -87,6 +87,7 @@ export function adList(req,res){
         ads: function(callback) {
 			service.findAllRows(adsModel,includeArrAds , queryObj, offset, limit, field, 'desc')
                 .then(function(response) {
+                	console.log(response);
                     return callback(null, response);
                 }).catch(function(error) {
                     console.log('Error :::', error);
