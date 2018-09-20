@@ -134,11 +134,17 @@ module.exports.initRelations = () => {
     const model = require('../index');
     const ProductAdsSetting = model.ProductAdsSetting;
     const Product = model.Product;
+    const Vendor = model.Vendor;
     const Country = model.Country;
     const State = model.State;
 
     ProductAdsSetting.belongsTo(Product, {
         foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    ProductAdsSetting.belongsTo(Vendor, {
+        foreignKey: 'vendor_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });

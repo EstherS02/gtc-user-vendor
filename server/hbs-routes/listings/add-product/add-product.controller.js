@@ -112,15 +112,23 @@ export function addProduct(req, res) {
         var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
 		
-			let productImages = [];
+			let productImages = [], productBaseImage=[];
 
-			for(let i=0; i<results.editProduct.ProductMedia.length; i++){
-				if(results.editProduct.ProductMedia[i].base_image != 1){
-					productImages.push({
-						UploadedImage: results.editProduct.ProductMedia[i].url,
-						fileName : 'ProductImage.png',
-						existing : 'yes'
-					})
+			if(results.editProduct){
+				for(let i=0; i<results.editProduct.ProductMedia.length; i++){
+					if(results.editProduct.ProductMedia[i].base_image != 1){
+						productImages.push({
+							uploadedImage: results.editProduct.ProductMedia[i].url,
+							fileName : 'ProductImage.png',
+							existing : 'yes'
+						})
+					}else if(results.editProduct.ProductMedia[i].base_image == 1){
+						productBaseImage.push({
+							uploadedBaseImage: results.editProduct.ProductMedia[i].url,
+							fileName : 'ProductImage.png',
+							existing : 'yes'
+						})
+					}
 				}
 			}
 
@@ -138,7 +146,8 @@ export function addProduct(req, res) {
                 type: type,
 				dropDownUrl: dropDownUrl,
 				editProduct: results.editProduct,
-				productImages: productImages
+				productImages: productImages,
+				productBaseImage: productBaseImage
             });
         } else {
             res.render('vendorNav/listings/add-product', err);

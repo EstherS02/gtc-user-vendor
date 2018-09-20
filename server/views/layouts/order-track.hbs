@@ -15,6 +15,7 @@
 						<div class="ibox-title">
 							<h2>Track Your Order</h2>
 						</div>
+						<div class="row">&nbsp;</div>
 						{{#if orderTrack}}
 						<div> {{orderTrack.OrderItems.[0].Product.[0].ProductMedia.id}} </div>
 						<div class="content-body">
@@ -24,20 +25,20 @@
 						   {{#Product}}
 						   {{#ProductMedia}}
 						     {{#ifCond this.base_image '==' 1 }}
-							 <div class="col-md-3">
+							 <div class="col-md-2">
 
-						     	<img src="{{this.url}}" alt="iphone" style="width:35%;margin-bottom: 10px;margin-left:16px"
-							       />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						     	<img src="{{this.url}}" alt="iphone" style="width:50%;margin-bottom: 10px;margin-left:61px"
+							       />
 							 </div>
 							 {{/ifCond}}
 								 {{/ProductMedia}}
-										  <div class="col-md-5">
-                                   <p style="font-size:12px;line-height:11px">Name : {{this.product_name}} </p>
+										  <div class="col-md-3">
+                                   <p style="font-size:12px;line-height:11px"><b>Name :</b> {{this.product_name}} </p>
 							
 							 
 										 {{/Product}}
-										 	<p style="font-size:12px;line-height:11px">Qty : {{this.quantity}} </p>
-								<p style="font-size:12px;line-height:11px"> Price : {{this.final_price}} </p> 
+										 	<p style="font-size:12px;line-height:11px"><b>Qty :</b> {{this.quantity}} </p>
+								<p style="font-size:12px;line-height:11px"> <b>Price :</b> {{currency this.final_price '$'}} CAD </p> 
 								 </div> 
 										 </div>
 								    {{/OrderItems}}
@@ -56,28 +57,28 @@
 							'==' orderStatus.NEWORDER}}
 							<span class="text_	blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order not yet confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been confirmed by vendor</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been confirmed by vendor</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been proccessed</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been proccessed</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been dispatched</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been dispatched</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been delivered</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been delivered</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;">Your order has been cancelled</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been cancelled</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.RETURNEDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been returned</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;"> Your order has been returned</span>
 							{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
-							<span class="text_blue_color" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
+							<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
 							{{/ifCond}}
 
 								</div>
 								<div class="col-md-9">
-									<p class="text_blue_color float-right" style="margin: 10px">
-										{{orderTrack.shippingAddress.address_line1}}<br>
-										 {{orderTrack.shippingAddress.address_line2}},<br>
-										 {{orderTrack.shippingAddress.city}},<br>
-										 {{orderTrack.shippingAddress.State.name}} ,<br>
+									<p class="float-right text-nowrap" style="margin: 10px;color:#A9A9A9">
+										{{orderTrack.shippingAddress.address_line1}}
+										 {{orderTrack.shippingAddress.address_line2}},
+										 {{orderTrack.shippingAddress.city}},
+										 {{orderTrack.shippingAddress.State.name}} ,
 										 {{orderTrack.shippingAddress.Country.name}}.
 									</p>
 								</div>
@@ -198,8 +199,8 @@
 															<div class="col-md-8">
 																<p class="">
 																	<a href="{{ objectKey trackingUrl orderTrack.Shipping.provider_name}}/{{orderTrack.Shipping.tracking_id}}">
-                                                                    <b><small>
-																		Carrier Tracking</small></b>
+                                                                    <b><small>Carrier Tracking</small></b>
+																		
 																	</a>
 																	
 																</p>
