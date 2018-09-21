@@ -170,7 +170,7 @@
                                 	 <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="label-control">Ad Position <span class="text-danger">*</span></label>
-                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">
+                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">{{ads.posotion}}
                                                 {{#select ads.posotion}}
                                                     <option disabled selected>Select Location...</option>
                                                     {{#each Position}}
@@ -182,7 +182,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="label-control">Ad Image <span class="text-danger">*</span></label>
+                                            <label class="label-control">Ad Image {{ads.image_url}}<span class="text-danger">*</span></label>
                                             {{!-- <input type="file" name="file" class="form-control-customized form-control-sm" required="true"> --}}
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
@@ -196,7 +196,7 @@
                                 <div class="row">
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Target URL <span class="text-danger">*</span></label>
+                                            <label class="label-control">Target URL {{ads.target_url}} <span class="text-danger">*</span></label>
                                             <input type="text" value="{{ads.target_url}}" name="target_url" id="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true" >
                                         </div>
                                     </div>
@@ -221,16 +221,16 @@
 
                                 <div class="row">
                                 	 <div class="col-lg-6">
-                                        <label class="label-control">Start Date <span class="text-danger">*</span></label>
+                                        <label class="label-control">Start Date {{ads.startDate}} <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" value="{{ads.startDate}}"aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" value="{{ads.startDate}}" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
 										</div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <label class="label-control">End Date <span class="text-danger">*</span></label>
+                                        <label class="label-control">End Date {{ads.endDate}} <span class="text-danger">*</span></label>
                                         <div class="input-group ">
 										  <input type="text" class="form-control-customized" style="width:90%" placeholder="Recipient's username" value="{{ads.endDate}}" aria-label="Recipient's username" id="endDate" name="endDate" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
