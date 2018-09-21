@@ -4,6 +4,7 @@
 	function redirectionURl(id)
 	{
 		var productname=$('#productname'+id).val();
+		console.log("sad"+productname)
 		var productid = id;
 		var marketplaceid =$('#marketplace'+id).val();
 		console.log(marketplaceid);
@@ -59,7 +60,7 @@
 								 {{/ProductMedia}}
 										  <div class="col-md-3">
                                    <p style="font-size:12px;line-height:11px"><b>Name :</b> <a href="javascript:redirectionURl({{this.id}})">{{this.product_name}}</a> </p>
-							                <input type="hidden" id="productname{{this.id}}" name="product_name" value="{{this.product_name}}">
+							                <input type="hidden" id="productname{{this.id}}" name="product_name" value="{{this.product_slug}}">
 											<input type="hidden" id="marketplace{{this.id}}" name="product_name" value="{{this.marketplace_id}}">
 																              
 										 {{/Product}}
@@ -115,13 +116,13 @@
 										{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
 										<div class="progress-bar" style="width:5%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
-										<div class="progress-bar" style="width:10%;"></div>
+										<div class="progress-bar" style="width:10%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
-										<div class="progress-bar" style="width:10%;"></div>
+										<div class="progress-bar" style="width:10%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
 										<div class="progress-bar" style="width:25%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
-										<div class="progress-bar" style="width:100%;"></div>
+										<div class="progress-bar" style="width:100%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
 										<div class="progress-bar" style="width:100%; background-color:red"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
