@@ -140,8 +140,7 @@ let sqlQueries = {
 			GROUP BY sub_category.id ORDER by category.name`;
 			return query;
 		}else{
-			console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55",productCountQueryParams)
-			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount, COUNT(*) as totalcount FROM 
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=1
 			GROUP BY sub_category.id ORDER by RAND()`;
