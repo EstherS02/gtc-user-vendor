@@ -68,6 +68,7 @@ function redirectBack() {
 	location.href = url.replace(new RegExp(key + "=\\w+"), "").replace("?&", "?").replace("&&", "&").replace("& ", "");
 }
 </script>
+
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="gtc-container">
 	<div class="search-list-header">
@@ -112,7 +113,7 @@ function redirectBack() {
 		<div class="row m-t-sm">
 			<div class="col-md-8">
 			
-				<h3>{{#if products.count}} Showing  <b>{{SUMFloat queryPaginationObj.offset 1}}-{{#ifCond products.count '<' queryPaginationObj.limit}} {{products.count}} {{else}} {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}</b> of {{/if}}<b>{{products.count}} Products</b> matching {{#if queryPaginationObj.keyword}} <b>"{{queryPaginationObj.keyword}}"</b> {{/if}} <strong>{{#if queryURI.category}}"{{searchCategory categoriesWithCount.rows queryURI.category}}"{{/if}}</strong> {{#if selectedMarketPlace}}in the <b>{{selectedMarketPlace.name}}</b>{{/if}}</h3>
+				<h3>{{#if products.count}} Showing  <b>{{SUMFloat queryPaginationObj.offset 1}}-{{#ifCond products.count '<' queryPaginationObj.limit}} {{products.count}} {{else}} {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}</b> of {{/if}}<b>{{products.count}} Products</b> matching {{#if queryPaginationObj.keyword}} <b>"{{queryPaginationObj.keyword}}"</b> {{/if}} <strong>{{#if queryURI.category}}"{{searchCategory categoriesWithCount.rows queryURI.category}}"{{/if}}</strong> {{#if selectedMarketPlace}}in the <b class="bg-text-{{queryURI.marketplace}}">{{selectedMarketPlace.name}}</b>{{/if}}</h3>
 			</div>
 			<div class="col-md-2">
 				<div class="alignright">
