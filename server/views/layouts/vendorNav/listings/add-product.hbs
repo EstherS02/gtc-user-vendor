@@ -849,6 +849,27 @@
 											 required>
 										</div>
 									</div>
+									{{#if editProduct}}
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Product Status</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
+												 id="status">
+												{{#if editProduct.status}}
+												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
+												{{else}}
+												<option disabled selected>Change Status...</option>
+												{{/if}}
+												<option value="ACTIVE">Active</option>
+												<option value="INACTIVE">InActive</option>
+												<option value="SUSPENDED">Suspended</option>
+												<option value="SOLDOUT">Sold Out</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									{{/if}}
 									{{#ifCond this.type '==' 'wholesale'}}
 										<div class="col-lg-4">
 											<div class="form-group">
@@ -995,8 +1016,8 @@
 
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn {{#if editProduct.id}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
-											<span class="ladda-label">{{#if editProduct.id}}UPDATE{{else}}SUBMIT{{/if}}</span>
+										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
+											<span class="ladda-label">{{#if editProduct}}UPDATE{{else}}SUBMIT{{/if}}</span>
 											<span class="ladda-spinner"></span>
 										</button>
 										<button class="ladda-button btn btn-small btn-muted" type="reset" id="reset" data-style="expand-left">
