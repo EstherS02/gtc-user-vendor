@@ -499,7 +499,7 @@
 
 						imageObj.status = 1;
 						imageObj.type = 1;
-						imageObj.base_image = 0;
+						imageObj.base_image = 1;
 						imageObj.url = productBaseImage[i].uploadedBaseImage;
 								
 						imageArr.push(imageObj);
@@ -589,9 +589,7 @@
 		});
 
 		$("#reset").click(function() {
-			$('.pip').empty();
-			$('.base_image').empty();
-			$("#productForm")[0].reset();
+			location.reload(true);
 		});
 
 		$("#editdiscount").click(function(e) {
