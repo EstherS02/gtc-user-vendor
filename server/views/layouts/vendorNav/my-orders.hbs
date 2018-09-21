@@ -366,7 +366,7 @@ $("#total_refund").val(total);
 												<a  href="../my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
 												<a  href="../my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
 												<a  href="../my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
-												<a  href="../my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
+												<a  href="../my-order/order?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}}> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -528,9 +528,9 @@ $("#total_refund").val(total);
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-						<b>Cancel</button>
+						<b>CANCEL</button>
 					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-						<b>Continue</b>
+						<b>CONTINUE</b>
 					</button>
 				</div>
 			</form>
@@ -554,9 +554,9 @@ $("#total_refund").val(total);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-					<b>Cancel</button>
+					<b>CANCEL</button>
 				<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-					<b>Yes</b>
+					<b>YES</b>
 				</button>
 			</div>
 			</form>

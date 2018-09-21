@@ -8,15 +8,15 @@
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 	$("body").on("click", "#followVendor", function() {
-		if(userInfo.email){
-			var  dataItem = {};
+		if (userInfo.email) {
+			var dataItem = {};
 			dataItem.vendor_id = vendorInfo.id;
 			$.ajax({
 				type: "PUT",
 				url: "/api/users/user-vendor-follow",
 				data: dataItem,
 				success: function(result) {
-					if (result){
+					if (result) {
 						location.reload();
 					}
 					// console.log(result);
@@ -24,7 +24,7 @@
 				}
 			});
 
-		}else{
+		} else {
 			location.href = "/login";
 		}
 	});
@@ -35,12 +35,12 @@
 	var marketPlaceType = {{{DisplayJSON queryURI}}}
 	var selectedPage = {{{ DisplayJSON selectedPage }}}
 	
-	if(selectedPage == 'wholesale' ||selectedPage == 'shop' ||selectedPage == 'services' ||selectedPage == 'lifestyle'){
+	if (selectedPage == 'wholesale' || selectedPage == 'shop' || selectedPage == 'services' || selectedPage == 'lifestyle') {
 		selectedPageURL = selectedPage;
-	}else{
-		selectedPageURL="products";
+	} else {
+		selectedPageURL = "products";
 	}
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$("#vendorSearchForm").submit(function(e) {
 			e.preventDefault();
 			let formInput = $("#vendorSearchForm :input").filter(function(index, element) {
@@ -52,22 +52,23 @@
 		});
 
 		/*Start cover picture crop functions*/
-        $("#imageUpload").change(function () {
-            fasterPreview(this);
-        });
+		$("#imageUpload").change(function() {
+			fasterPreview(this);
+		});
 
-        var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, vendor_cover_pic_url;
-        var fileDetails = {}; var dataURLFileName, index= 0;
+		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, vendor_cover_pic_url;
+		var fileDetails = {};
+		var dataURLFileName, index = 0;
 
-        $('#crop-profile-cover-image').click(function () {
-            
-            cropper.getCroppedCanvas().toBlob(function (blob) {
-                var fileTempHold = {};
+		$('#crop-profile-cover-image').click(function() {
+
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				var fileTempHold = {};
 				cropperOutputImage = blob;
-                fileTempHold['cropperOutputImage'] = blob;
-                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold ["croppedExtension"];
-                dataURLFileName = fileTempHold["fileName"];
+				fileTempHold['cropperOutputImage'] = blob;
+				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+				dataURLFileName = fileTempHold["fileName"];
 				// allFiles.push(fileTempHold);
 
 				var image = $("#imageUpload")[0].files[0];
@@ -76,7 +77,9 @@
 				var form = new FormData();
 				form.append("file", cropperOutputImage, fileTempHold["fileName"]);
 
-				$.ajaxSetup({ async: false });
+				$.ajaxSetup({
+					async: false
+				});
 				if (image) {
 					$.ajax({
 						type: 'POST',
@@ -86,90 +89,93 @@
 						dataType: 'json',
 						processData: false,
 						contentType: false,
-						success: function (data) {
+						success: function(data) {
 							vendor_cover_pic_url = data.imageURL;
 							$.ajax({
 								type: "PUT",
 								url: "/api/vendor/" + vendor_ids,
-								data: {vendor_cover_pic_url: vendor_cover_pic_url},
+								data: {
+									vendor_cover_pic_url: vendor_cover_pic_url
+								},
 								success: function(result) {
 									if (result)
 										location.reload();
 								}
 							});
 						},
-						error: function (error) {
+						error: function(error) {
 							console.log("Error", error);
 						}
 					})
 				}
-            });
+			});
 
-        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
-                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
+			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+				"<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this," + index + ")' aria-hidden='true'></i></span></span>"
 
-            $(domElement).insertAfter(".preview");
+			$(domElement).insertAfter(".preview");
 
-            $('#profile-cover-picture-modal').modal('hide');
-        index++;
-        });
+			$('#profile-cover-picture-modal').modal('hide');
+			index++;
+		});
 
-        $('#profile-cover-picture-modal').on('shown.bs.modal', function () {
-            cropper = new Cropper(cropperInputImage, {
-                aspectRatio: 40 / 16,
-                minCropBoxHeight: 280,
-                minCropBoxWidth: 1364,
-				viewMode:1,
-                ready: function () { }
-            });
-        }).on('hidden.bs.modal', function () {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
-        });
+		$('#profile-cover-picture-modal').on('shown.bs.modal', function() {
+			cropper = new Cropper(cropperInputImage, {
+				aspectRatio: 40 / 16,
+				minCropBoxHeight: 280,
+				minCropBoxWidth: 1364,
+				viewMode: 1,
+				ready: function() {}
+			});
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
 
-        function fasterPreview(uploader) {
-            if (uploader.files && uploader.files[0]) {
-                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+		function fasterPreview(uploader) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
-                console.log('fileDetails, uploader.files[0].name', fileDetails, uploader.files[0].File)
-                $('#UploadedImage').attr('src',
-                    window.URL.createObjectURL(uploader.files[0]));
-                $('#uploaded-profile-cover-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-cover-picture');
-                $('#profile-cover-picture-modal').modal('show');
-            }
-        }
-        /*End cover picture crop functions*/
+				console.log('fileDetails, uploader.files[0].name', fileDetails, uploader.files[0].File)
+				$('#UploadedImage').attr('src',
+					window.URL.createObjectURL(uploader.files[0]));
+				$('#uploaded-profile-cover-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-cover-picture');
+				$('#profile-cover-picture-modal').modal('show');
+			}
+		}
+		/*End cover picture crop functions*/
 		$('.crop_edit_icon').hide();
 		if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
 			$('.crop_edit_icon').show();
-			$('#editPicture').click(function(){
+			$('#editPicture').click(function() {
 				$('.edit_picture').click();
 			});
 		}
 
-		/* Start profile picture crop functions */ 
-	    $("#profileimageupload").change(function () {
-            fasterPreviews(this);
-        });
+		/* Start profile picture crop functions */
+		$("#profileimageupload").change(function() {
+			fasterPreviews(this);
+		});
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage, vendor_profile_pic_url;
-        var fileDetails = {}; var dataURLFileName, index= 0;
+		var fileDetails = {};
+		var dataURLFileName, index = 0;
 
-        $('#crop-profile-image').click(function () {
-            
-            cropper.getCroppedCanvas().toBlob(function (blob) {
-                var fileTempHold = {};
+		$('#crop-profile-image').click(function() {
+
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				var fileTempHold = {};
 				cropperOutputImage = blob;
-                fileTempHold['cropperOutputImage'] = blob;
-                fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-                fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold ["croppedExtension"];
-                dataURLFileName = fileTempHold["fileName"];
-                // allFiles.push(fileTempHold);
+				fileTempHold['cropperOutputImage'] = blob;
+				fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
+				fileTempHold["fileName"] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
+				dataURLFileName = fileTempHold["fileName"];
+				// allFiles.push(fileTempHold);
 
 				var image = $("#profileimageupload")[0].files[0];
 				var user_pic_url;
@@ -177,7 +183,9 @@
 				var form = new FormData();
 				form.append("file", cropperOutputImage, fileTempHold["fileName"]);
 
-				$.ajaxSetup({ async: false });
+				$.ajaxSetup({
+					async: false
+				});
 				if (image) {
 					$.ajax({
 						type: 'POST',
@@ -187,78 +195,79 @@
 						dataType: 'json',
 						processData: false,
 						contentType: false,
-						success: function (data) {
+						success: function(data) {
 							vendor_profile_pic_url = data.imageURL;
 							$.ajax({
 								type: "PUT",
 								url: "/api/vendor/" + vendor_ids,
-								data: {vendor_profile_pic_url: vendor_profile_pic_url},
+								data: {
+									vendor_profile_pic_url: vendor_profile_pic_url
+								},
 								success: function(result) {
 									if (result)
 										location.reload();
 								}
 							});
 						},
-						error: function (error) {
+						error: function(error) {
 							console.log("Error", error);
 						}
 					})
 				}
 
-            });
+			});
 
-        var UploadedImage = cropper.getCroppedCanvas().toDataURL();
+			var UploadedImage = cropper.getCroppedCanvas().toDataURL();
 
-        var domElement = "<span class=\"pip\">" +"<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
-                "<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this,"+index+")' aria-hidden='true'></i></span></span>"
+			var domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + UploadedImage + "\" title=\"" + dataURLFileName + "\"/>" +
+				"<br/><span class=\"imgBlock\"></i><input type='radio' class='' name='base_image'>Base Image<i class='fa fa-times float-right' onclick='remove(this," + index + ")' aria-hidden='true'></i></span></span>"
 
-            $(domElement).insertAfter(".preview");
+			$(domElement).insertAfter(".preview");
 
-            $('#profile-picture-modal').modal('hide');
-        index++;
-        });
+			$('#profile-picture-modal').modal('hide');
+			index++;
+		});
 
-        $('#profile-picture-modal').on('shown.bs.modal', function () {
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
-                aspectRatio: 16 / 16,
-                minCropBoxHeight: 280,
-                minCropBoxWidth: 1364,
-				viewMode:1,
-                ready: function () { }
-            });
-        }).on('hidden.bs.modal', function () {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
-        });
+				aspectRatio: 16 / 16,
+				minCropBoxHeight: 280,
+				minCropBoxWidth: 1364,
+				viewMode: 1,
+				ready: function() {}
+			});
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
+	function fasterPreviews(uploader) {
+		if (uploader.files && uploader.files[0]) {
+			fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+			fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
 
-        function fasterPreviews(uploader) {
-            if (uploader.files && uploader.files[0]) {
-                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-
-                console.log(fileDetails, uploader.files[0])
-                $('#UploadedImage').attr('src',
-                    window.URL.createObjectURL(uploader.files[0]));
-                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-picture');
-                $('#profile-picture-modal').modal('show');
-            }
-        }
-		$('.hide_edit').hide();
-		if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
-			$('.hide_edit').show();
-			$('#editProfileImg').click(function(){
-				$('.profilepicedit').click();
-			}); 
+			console.log(fileDetails, uploader.files[0])
+			$('#UploadedImage').attr('src',
+				window.URL.createObjectURL(uploader.files[0]));
+			$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+			cropperInputImage = document.getElementById('uploaded-profile-picture');
+			$('#profile-picture-modal').modal('show');
 		}
-		/* End profile picture crop functions */ 
+	}
+	$('.hide_edit').hide(); 
+	if (userInfo && userInfo.Vendor && (userInfo.Vendor.id == vendorInfo.id)) {
+		$('.hide_edit').show();
+		$('#editProfileImg').click(function() {
+			$('.profilepicedit').click();
+		});
+	}
+	/* End profile picture crop functions */
 
-		$('#loginToViewVendorDetails').click(function() {
-			if (userInfo.email) { } else {
-				$('#myModal').modal('show');
-			}
-		})
+	$('#loginToViewVendorDetails').click(function() {
+		if (userInfo.email) {} else {
+			$('#myModal').modal('show');
+		}
+	})
 	});
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
@@ -573,7 +582,7 @@
                                                                 <div class="form-group" style="padding:4px">
                                                                     <p class="modal_sign">Already have a Account?</p>
                                                                     <button type="submit" onclick="window.location.href='/login'" id="btnLogin" class="btn btn-small btn-success">
-                                                                        <strong>Login</strong>
+                                                                        <strong>LOGIN</strong>
                                                                     </button>
                                                                 </div>
                                                             </li>

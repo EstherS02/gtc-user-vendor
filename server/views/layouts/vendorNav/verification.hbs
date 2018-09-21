@@ -121,7 +121,7 @@
 					$("#img4").show();
 				});
 			} else {
-				ouputPopup("Please select image to upload");
+				ouputPopupError("Please select image to upload");
 			}
 		});
 		// End upload Bussiness address proof image
@@ -148,6 +148,14 @@
 		function ouputPopup(data) {
 			$('#gtc-add-to-cart').prop('disabled', false);
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text(data);
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+				$("#gtc-cart-alert").slideUp(500);
+			});
+		}
+		function ouputPopupError(data) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
 			$('#gtc-cart-alert .cart-message').text(data);
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);

@@ -5568,16 +5568,21 @@ color: #2d4373; }
         border: 1px solid #249123; }
         .jssocials-share-whatsapp .jssocials-share-link:hover {
           background: #1f7d1e; }
-      
-      
- 
-       
-          
-          
-          
-         
-         
-                  
-                
           
 /* jssocial css ends */
+
+/* marketplace search starts */
+.bg-text-3{
+	color: #55b82e
+}
+.bg-text-4{
+	color: #cb2f2a
+}
+.bg-text-1{
+	color: #d78636
+}
+.bg-text-2{
+	
+	color: #0f478c
+}
+/*  marketplace search ends */

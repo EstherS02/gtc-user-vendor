@@ -255,10 +255,10 @@
 											<div class="alignright cart-top-right">
 												<span class="m-r-sm text-muted">
 													Entries per page : 
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}} > 10</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}} > 25</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}} > 100</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}} > All </a>
 												</span>
 											</div>
 											<div style="clear: both;"></div>

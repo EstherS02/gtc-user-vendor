@@ -496,10 +496,7 @@
 					return $(element).val() != '';
 				}).serialize();
 
-				console.log("========================================",productInput);
-
-
-			/*	attributeArr = $('#attributeDiv :input').filter(function(index, element) {
+				attributeArr = $('#attributeDiv :input').filter(function(index, element) {
 					return $(element).val() != '';
 				}).serializeArray();
 					
@@ -596,7 +593,7 @@
 							console.log('error', error);
 						}
 					});
-				}*/
+				}
 
 				if(!product_id)
 					addProduct(productInput);
