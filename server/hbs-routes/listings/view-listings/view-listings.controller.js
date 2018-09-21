@@ -23,8 +23,9 @@ export function viewListings(req, res) {
     queryPaginationObj['offset'] = offset;
     delete req.query.offset;
     limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    queryPaginationObj['limit'] = limit;
-    delete req.query.limit;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
+	delete req.query.limit;
     order = req.query.order ? req.query.order : "desc";
     queryPaginationObj['order'] = order;
     delete req.query.order;
@@ -65,7 +66,7 @@ export function viewListings(req, res) {
 	}else{
         queryParams['status'] = statusCode["ACTIVE"];
 	}
-	
+
 	var queryObjCategory = {
 		status: statusCode['ACTIVE']
 	};
