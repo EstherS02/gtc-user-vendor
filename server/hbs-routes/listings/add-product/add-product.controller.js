@@ -5,7 +5,7 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
-const status = require('../../../config/status');
+const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const marketplaceTypeCode = require('../../../config/marketplace_type');
 const populate = require('../../../utilities/populate');
@@ -40,10 +40,10 @@ export function addProduct(req, res) {
 	if (req.params.id)
 		editProductId = req.params.id;
 
-    queryObj['status'] = status["ACTIVE"];
+    queryObj['status'] = statusCode["ACTIVE"];
 
     var queryObjCategory = {
-        status: status['ACTIVE']
+        status: statusCode['ACTIVE']
 	};
 
 	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute,Discount');
@@ -65,7 +65,7 @@ export function addProduct(req, res) {
             const categoryOrder = "asc";
             const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = status["ACTIVE"];
+            categoryQueryObj['status'] = statusCode["ACTIVE"];
 
             service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
                 .then(function(category) {
@@ -147,7 +147,8 @@ export function addProduct(req, res) {
 				dropDownUrl: dropDownUrl,
 				editProduct: results.editProduct,
 				productImages: productImages,
-				productBaseImage: productBaseImage
+				productBaseImage: productBaseImage,
+				statusCode: statusCode
             });
         } else {
             res.render('vendorNav/listings/add-product', err);

@@ -101,12 +101,21 @@ export function makePayment(req, res) {
 			}
 			return Promise.all(statusPromises);
 		}).then(orderUpdatedRows => {
+			let quantityPromises = [];
+			for (var i=0; i< createdOrders.length; i++){
+
+				for (var j=0; j< createdOrders[i].items.length; j++){
+					quantityPromises.push(updateQuantity(createdOrders[i].items[j].product_id,createdOrders[i].items[j].quantity));
+				}			
+			}
+			return Promise.all(quantityPromises);
+		}).then(productQuantityUpdatedRow =>{
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
 				clearCart.push(allCartItems[j].id)
 			}
-			sendOrderMail(orderIdStore, req.user);
+			sendOrderMail(orderIdStore, req.user);			
 			service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
 				if (!(_.isNull(clearedCartRow))) {
 					return res.status(200).send({
@@ -114,6 +123,7 @@ export function makePayment(req, res) {
 					});
 				} else return res.status(500).send(err);
 			});
+		
 		}).catch(err => {
 			console.log("err3", err);
 			if (createdOrders && createdOrders.length > 0) {
@@ -165,6 +175,29 @@ function createOrder(orderWithItems) {
 
 function createOrderItem(orderItem) {
 	return service.createRow('OrderItem', orderItem);
+}
+
+function updateQuantity( productId, placedQuantity) {
+	return service.findIdRow('Product',productId)
+		.then(product=>{
+			let quantityUpdate = {};
+			let currentQuantity = product.quantity_available - placedQuantity;
+			
+			quantityUpdate.quantity_available = currentQuantity;
+
+			if (currentQuantity == 0){
+				quantityUpdate.status = status['SOLDOUT'];
+			}
+
+			return service.updateRow('Product', quantityUpdate, productId )
+				.then(upadtedRow=>{
+					return Promise.resolve(upadtedRow);
+				}).catch(err=>{
+					return Promise.reject(err);
+				})		
+		}).catch(err =>{
+			return Promise.reject(err);
+		})
 }
 
 function processCheckout(req) {
@@ -569,6 +602,7 @@ export function sendOrderMail(orderIdStore, user) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
+
 			vendorMail(OrderList, user);
 			var user_email = user.email;
 			var orderNew = [];
@@ -624,6 +658,7 @@ export function vendorMail(OrderList, user) {
 	return Promise.all(orderNew);
 }
 function sendVendorEmail(order, user) {
+
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
@@ -655,8 +690,8 @@ function sendVendorEmail(order, user) {
 			console.log('Error :::', error);
 			return;
 		})
-
 }
+
 // plan payment method starts//
 export function makeplanPayment(req, res) {
 	var desc = "GTC ORDER";

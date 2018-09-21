@@ -190,7 +190,6 @@ export function notifications(req, res){
 
 			service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
 				.then(function (mail) {
-					console.log("********************************mail*********", JSON.parse(JSON.stringify(mail)));
 					return callback(null, mail);
 
 				}).catch(function (error) {
