@@ -4,6 +4,7 @@
 	function redirectionURl(id)
 	{
 		var productname=$('#productname'+id).val();
+		console.log("sad"+productname)
 		var productid = id;
 		var marketplaceid =$('#marketplace'+id).val();
 		console.log(marketplaceid);
@@ -59,7 +60,7 @@
 								 {{/ProductMedia}}
 										  <div class="col-md-3">
                                    <p style="font-size:12px;line-height:11px"><b>Name :</b> <a href="javascript:redirectionURl({{this.id}})">{{this.product_name}}</a> </p>
-							                <input type="hidden" id="productname{{this.id}}" name="product_name" value="{{this.product_name}}">
+							                <input type="hidden" id="productname{{this.id}}" name="product_name" value="{{this.product_slug}}">
 											<input type="hidden" id="marketplace{{this.id}}" name="product_name" value="{{this.marketplace_id}}">
 																              
 										 {{/Product}}
