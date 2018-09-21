@@ -139,6 +139,18 @@ let sqlQueries = {
             LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND product.status = 1 and featured_product.status=(`+productCountQueryParams.is_featured_product+`)
 			GROUP BY sub_category.id ORDER by category.name`;
 			return query;
+		}else if(productCountQueryParams.product_category_id){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.product_category_id=(`+productCountQueryParams.product_category_id+`)
+			GROUP BY sub_category.id ORDER by category.name`
+			return query;
+		}else if(productCountQueryParams.product_category_id && productCountQueryParams.sub_category_id){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.product_category_id=(`+productCountQueryParams.product_category_id+`) and product.sub_category_id=(`+productCountQueryParams.sub_category_id+`)
+			GROUP BY sub_category.id ORDER by category.name`
+			return query;
 		}else{
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
