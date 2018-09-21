@@ -17,7 +17,14 @@ export function cart(req, res) {
 	var bottomCategory = {};
 	var bottomCategory = {};
 	var categoryModel = "Category";
-
+	var couponModel = "Coupon"
+	var includeArrCoupon = [];
+	var queryObjCoupon ={};
+	if(req.cookies.applied_coupon){
+		queryObjCoupon.id = req.cookies.applied_coupon;
+	}else{
+		queryObjCoupon.id = '';
+	}
 	if (req.user)
 		LoggedInUser = req.user;
 
@@ -82,6 +89,19 @@ export function cart(req, res) {
 				console.log('Error:::', error);
 				return cb(error);
 			});
+		},
+		Coupons: function(callback) {
+			service.findRow(couponModel, queryObjCoupon,includeArrCoupon)
+                .then(function(response) {
+                	if(response){
+                    return callback(null, response);
+                	}else{
+                		return callback(null);
+                	}
+                }).catch(function(error) {
+                    console.log('Error :::', error);
+                    return callback(null);
+                });
 		},
 		marketPlace: function(cb) {
 			var searchObj = {};
@@ -182,6 +202,7 @@ export function cart(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				cartheader: results.cartCounts,
+				existCoupons: results.Coupons,
 				isCartEmpty: isCartEmpty,
 				couponData: [],
 				couponUpdateError: "",
