@@ -31,8 +31,6 @@ export function addOrRemoveWishlist(req, res) {
 				// Item not found, create a new one
 				return model[modelName].create(data)
 					.then(function(response) {
-
-						console.log("create", response)
 						return res.status(200).status(200).json({
 							type: "wish"
 						});
@@ -63,7 +61,6 @@ export function vendorQuestion(req, res) {
 
 	if (req.user)
 		LoggedInUser = req.user;
-	console.log(req.body);
 	req.checkBody('subject', 'Missing Subject Value').notEmpty();
 	req.checkBody('message', 'Missing Message Value').notEmpty();
 	var errors = req.validationErrors();
@@ -127,7 +124,6 @@ export function AddToCompare(req, res) {
 		}
 	}
 	req.session['compare'] = compare;
-	console.log("req.session.compare", req.session['compare']);
 	return res.status(200).json(result);
 } 
 
@@ -145,7 +141,6 @@ export function removeFromCompare(req,res) {
 	  compare.splice(index, 1);
 	}
 	req.session['compare'] = compare;
-	console.log("req.session.compare", req.session['compare']);
 	return res.status(200).json({
 						message : "SUCCESS",
 						message_details : "The One Product remove from your compare list",

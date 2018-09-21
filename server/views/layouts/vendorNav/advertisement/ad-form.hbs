@@ -84,6 +84,14 @@
             inputForm.name = $('#name').val();
             inputForm.position = $('#position').val();
             inputForm.startDate = $('#startDate').val();
+            inputForm.target_url = $('#target_url').val(); 
+
+            if($("#inputStatus").val()){
+                inputForm.id = $("#id").val();
+                inputForm.status = $("#inputStatus").val();
+            }else{
+                inputForm.status = 1;
+            }
             inputForm.endDate = $('#endDate').val();
             inputForm.country_id = $('#country').val();
             inputForm.state_id = $('#state').val();
@@ -91,6 +99,7 @@
 
 
             if ($('#adForm').valid()) {
+                if()
             $.ajax({
                 type: 'POST',
                 url: '/api/vendors/upload',
@@ -101,7 +110,14 @@
                 contentType: false,
                 success: function(data) {
                     inputForm.image_url = data.imageURL;
-                    $.ajax({
+                       
+                },
+                error: function(error) {
+                    console.log("Error", error);
+                }
+                });
+
+              $.ajax({
                     url: '/api/advertisement',
                     type: 'POST',
                     data: inputForm,
@@ -115,12 +131,7 @@
                             $("#gtc-form-alert").slideUp(500);
                         });
                     }
-                });      
-                },
-                error: function(error) {
-                    console.log("Error", error);
-                }
-                })
+                }); 
             }
  	 });
  });
@@ -136,7 +147,8 @@
                 <div class="ibox">
                     <div class="ibox-content">
                         <div class="ibox-title">
-                            <h2>Advertisement Form</h2>
+                            <h2>{{#if ads}}Edit {{/if}}Advertisement Form</h2>
+                             <input type="hidden" name="id" id="id" value="{{ads.id}}">
                         </div>
                         <div class="alert" id="gtc-form-alert">
                             <button type="button" class="close" data-dismiss="alert">
@@ -150,7 +162,7 @@
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Ad Name <span class="text-danger">*</span></label>
-                                            <input type="text" name="name" id="name" placeholder="Ad Name" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="name" id="name" placeholder="Ad Name" class="form-control-customized form-control-sm" required="true" value="{{ads.name}}" >
                                         </div>
                                     </div>
                                 </div>
@@ -158,11 +170,13 @@
                                 	 <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="label-control">Ad Position <span class="text-danger">*</span></label>
-                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required>
+                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">
+                                                {{#select ads.posotion}}
                                                     <option disabled selected>Select Location...</option>
                                                     {{#each Position}}
                                                     <option value="{{this}}">{{@key}}</option>
                                                     {{/each}}
+                                                {{/select}}
                                                 </select>
                                         </div>
                                     </div>
@@ -172,7 +186,7 @@
                                             {{!-- <input type="file" name="file" class="form-control-customized form-control-sm" required="true"> --}}
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
-                                                    <input type="file" class="custom-file-input" id="image_url" name="image_url" required>
+                                                    <input type="file" class="custom-file-input" id="image_url" name="image_url" >
                                                     <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
                                                 </div>
                                             </div>
@@ -183,15 +197,33 @@
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
                                             <label class="label-control">Target URL <span class="text-danger">*</span></label>
-                                            <input type="text" name="target_url" id="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" value="{{ads.target_url}}" name="target_url" id="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true" >
                                         </div>
                                     </div>
+                                {{#if ads.id }}
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label class="label-control">Status <span class="text-danger">*</span></label>
+                                            <div class="select-container">
+                                                <select name="discount_type" id="inputStatus" class="form-control-customized form-control-sm" required="true">
+                                                    <option disabled="true" selected="true">Change Status</option>
+                                                    {{#select ads.status}}
+                                                    <option value="{{statusCode.ACTIVE}}">Active</option>
+                                                    <option value="{{statusCode.SUSPENDED}}">Suspended</option>
+                                                    <option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+                                                    {{/select}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/if}}
                                 </div>
+
                                 <div class="row">
                                 	 <div class="col-lg-6">
                                         <label class="label-control">Start Date <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" value="{{ads.startDate}}"aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
@@ -200,7 +232,7 @@
                                     <div class="col-lg-6">
                                         <label class="label-control">End Date <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" id="endDate" name="endDate" aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" style="width:90%" placeholder="Recipient's username" value="{{ads.endDate}}" aria-label="Recipient's username" id="endDate" name="endDate" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
@@ -213,10 +245,13 @@
                                         <div class="form-group input-append date form_datetime">
                                             <label class="label-control">Country <span class="text-danger">*</span></label>
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country" id="country" required>
-                                                    <option disabled selected>Select Location...</option>
-                                                    {{#each country}}
-                                                    <option value="{{this.id}}">{{this.name}}</option>
-                                                    {{/each}}
+                                                    {{#select ads.country_id}} 
+                                                        <option disabled selected>Select Location...</option>
+
+                                                        {{#each country}}
+                                                        <option value="{{this.id}}">{{this.name}}</option>
+                                                        {{/each}}
+                                                    {{/select}}
                                                 </select>
                                         </div>
                                     </div>
@@ -224,14 +259,16 @@
                                         <div class="form-group">
                                             <label class="label-control">Province<span class="text-danger">*</span></label>
                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state" id="state" required>
+                                                {{#select ads.country_id}} 
                                                     <option disabled selected>Select Province...</option>
+                                                {{/select}}
                                                 </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-control">City<span class="text-danger">*</span></label>
-                                            <input type="text" name="city" id="city" class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="city" id="city" value={{ads.city}} class="form-control-customized form-control-sm" required="true">
                                         </div>
                                     </div>
                                 </div>
