@@ -690,7 +690,17 @@ export function addProduct(req, res) {
 	if (req.user.role === roles['VENDOR']) {
 		req.query.vendor_id = req.user.Vendor.id;
 	}
-	req.query.status = status['ACTIVE'];
+
+	console.log("====================================", req.query)
+
+	console.log("====================================", req.query.status)
+	
+	if (req.query.status) {
+		var productStatus = req.query.status;
+		delete req.query.status;
+		req.query.status = status[productStatus]
+	}
+
 	req.query.publish_date = new Date();
 	req.query.product_slug = string_to_slug(req.query.product_name);
 	req.query.created_on = new Date();
