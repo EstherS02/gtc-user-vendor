@@ -113,7 +113,10 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 			attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 			include: [{
 				model: model['Product'],
-				where: productQueryObj,
+				// where: productQueryObj,
+				where:{
+					status:1,
+				},
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {

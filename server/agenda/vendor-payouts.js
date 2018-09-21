@@ -83,7 +83,7 @@ export function vendorPayouts(job, done) {
 
 function checkpaymentEscrow(order) {
 
-    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder;
+    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder, orderTotal, gtcFees, stripeOrPaypalFees;
     var orderPaymentEscrowModel = 'OrderPaymentEscrow';
     var payoutVendorPromises = [];
 
@@ -97,7 +97,13 @@ function checkpaymentEscrow(order) {
             if (row) {
                 return;
             } else {
-                payoutAmount = order.Order.total_price - order.Order.gtc_fees;
+				orderTotal = order.Order.total_price;
+				gtcFees =  order.Order.gtc_fees;
+				stripeOrPaypalFees = orderTotal* 0.1;
+			
+				payoutAmount = orderTotal - gtcFees;
+				payoutAmount = payoutAmount - stripeOrPaypalFees;
+
                 payoutVendor = order.Order.Products[0].Vendor.id;
                 payoutOrder = order.order_id;
 

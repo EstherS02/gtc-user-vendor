@@ -119,7 +119,8 @@ export function salesHistory(req, res) {
     queryPaginationObj['offset'] = offset;
     delete req.query.offset;
     limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    queryPaginationObj['limit'] = limit;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
     delete req.query.limit;
     order = req.query.order ? req.query.order : "desc";
     queryPaginationObj['order'] = order;
