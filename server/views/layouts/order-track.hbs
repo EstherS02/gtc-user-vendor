@@ -116,13 +116,13 @@
 										{{#ifCond orderTrack.order_status '==' orderStatus.NEWORDER}}
 										<div class="progress-bar" style="width:5%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CONFIRMEDORDER }}
-										<div class="progress-bar" style="width:10%;"></div>
+										<div class="progress-bar" style="width:10%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.PROCESSINGORDER }}
-										<div class="progress-bar" style="width:10%;"></div>
+										<div class="progress-bar" style="width:10%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DISPATCHEDORDER }}
 										<div class="progress-bar" style="width:25%;"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.DELIVEREDORDER }}
-										<div class="progress-bar" style="width:100%;"></div>
+										<div class="progress-bar" style="width:100%;background-color:green"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
 										<div class="progress-bar" style="width:100%; background-color:red"></div>
 										{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
