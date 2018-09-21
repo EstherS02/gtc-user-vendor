@@ -156,6 +156,7 @@ export function upgradeplan(req, res) {
 				cartheader:results.cartCounts,
 				carddetails:results.cards,
 				LoggedInUser: LoggedInUser,
+				vendorPlan: vendorPlan,
 				selectedPage: 'upgradeplan'
 				
 			});

@@ -198,7 +198,7 @@ $(document).ready(function () {
 										<div class ="col-lg-3">
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" size="15" name="addedCountry" id="removeCountry">
 												{{#if vendorCountry.count}}
-												<option value="All">All </option>
+												{{!-- <option value="All">All </option> --}}
 												{{#if vendorCountry.vendorCountriesID}} {{{vendorSelectedcountry Countries.rows vendorCountry.vendorCountriesID}}} {{else}}
 												{{#each Countries}}
 												<option value={{this.id}}>{{this.name}}</option>
