@@ -154,6 +154,20 @@
 		$(".percent_discount_amount" + count).show();
 	}
 
+	$(function(){
+		$('#quantity_available').change(function(){
+
+			if($('#quantity_available').val() == '0'){
+				$('#product_status option').removeAttr('selected').filter('[value=SOLDOUT]').attr('selected', true);
+				$("#product_status").prop("disabled", true);
+			}else{
+				$("#product_status").prop("disabled", false);
+			}
+     		  
+  	 	 }).change()
+
+	})
+
 	$(document).ready(function() {
 
        	var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
@@ -845,7 +859,7 @@
 											<label class="label-control">Quantity Available
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" value="{{editProduct.quantity_available}}"
+											<input type="text" id="quantity_available" name="quantity_available" class="form-control-customized form-control-sm" value="{{editProduct.quantity_available}}"
 											 required>
 										</div>
 									</div>
@@ -855,7 +869,7 @@
 											<label class="label-control">Product Status</label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
-												 id="status">
+												 id="product_status">
 												{{#if editProduct.status}}
 												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
 												{{else}}
