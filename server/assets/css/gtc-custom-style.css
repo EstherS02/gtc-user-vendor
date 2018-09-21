@@ -1166,3 +1166,7 @@ button.update-btn1{
 	font-size: 15px;
 	cursor: pointer;
 }
+
+.clickable-row {
+	cursor: pointer;
+}

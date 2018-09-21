@@ -569,6 +569,8 @@ export function sendOrderMail(orderIdStore, user) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
+
+			console.log("=====================Comming1=============================")
 			vendorMail(OrderList, user);
 			var user_email = user.email;
 			var orderNew = [];
@@ -617,6 +619,7 @@ export function sendOrderMail(orderIdStore, user) {
 	});
 }
 export function vendorMail(OrderList, user) {
+	console.log("====================Comming2===============================================");
 	var orderNew = [];
 	_.forOwn(OrderList.rows, function(orders) {
 		orderNew.push(sendVendorEmail(orders, user));
@@ -624,6 +627,9 @@ export function vendorMail(OrderList, user) {
 	return Promise.all(orderNew);
 }
 function sendVendorEmail(order, user) {
+
+	console.log("====================Comming3===============================================");
+
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;

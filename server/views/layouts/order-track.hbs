@@ -1,5 +1,30 @@
 <script>
 	var ordertrack = {{{ DisplayJSON orderTrack }}}
+
+	function redirectionURl(id)
+	{
+		var productname=$('#productname'+id).val();
+		var productid = id;
+		var marketplaceid =$('#marketplace'+id).val();
+		console.log(marketplaceid);
+		if (marketplaceid == "1")
+		{
+			var marketplacetype = "wholesale";
+		}
+		else if (marketplaceid == "2")
+		{
+			var marketplacetype = "shop";
+		}
+		else if (marketplaceid == "3")
+		{
+            var marketplacetype = "services";
+		}
+		else if(marketplaceid == "4")
+		{
+           var marketplacetype = "lifestyle";
+		}
+		window.location.href = "/"+marketplacetype+"/"+productname+"/"+productid;
+	}
 </script>
  {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 
@@ -27,15 +52,16 @@
 						     {{#ifCond this.base_image '==' 1 }}
 							 <div class="col-md-2">
 
-						     	<img src="{{this.url}}" alt="iphone" style="width:50%;margin-bottom: 10px;margin-left:61px"
-							       />
+						    <a href="javascript:redirectionURl({{this.product_id}})"><img  src="{{this.url}}" alt="iphone" style="width:50%;margin-bottom: 10px;margin-left:61px"
+							       /></a>
 							 </div>
 							 {{/ifCond}}
 								 {{/ProductMedia}}
 										  <div class="col-md-3">
-                                   <p style="font-size:12px;line-height:11px"><b>Name :</b> {{this.product_name}} </p>
-							
-							 
+                                   <p style="font-size:12px;line-height:11px"><b>Name :</b> <a href="javascript:redirectionURl({{this.id}})">{{this.product_name}}</a> </p>
+							                <input type="hidden" id="productname{{this.id}}" name="product_name" value="{{this.product_name}}">
+											<input type="hidden" id="marketplace{{this.id}}" name="product_name" value="{{this.marketplace_id}}">
+																              
 										 {{/Product}}
 										 	<p style="font-size:12px;line-height:11px"><b>Qty :</b> {{this.quantity}} </p>
 								<p style="font-size:12px;line-height:11px"> <b>Price :</b> {{currency this.final_price '$'}} CAD </p> 
@@ -74,7 +100,7 @@
 
 								</div>
 								<div class="col-md-9">
-									<p class="float-right text-nowrap" style="margin: 10px;color:#A9A9A9">
+									<p class="float-right text-nowrap" style="margin: 10px;color:#A9A9A9;font-size: small">
 										{{orderTrack.shippingAddress.address_line1}}
 										 {{orderTrack.shippingAddress.address_line2}},
 										 {{orderTrack.shippingAddress.city}},

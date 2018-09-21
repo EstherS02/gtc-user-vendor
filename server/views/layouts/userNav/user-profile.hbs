@@ -381,7 +381,7 @@
 										<div class="row">
 											<div class="col-md-8 text-center">
 												{{#if user.user_pic_url}}
-												<img id="UploadedImage" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
+												<img id="UploadedImage" onError="imgError(this)" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
 												<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
 												<p id="profileImage" class="text_blue_color">Change Avatar</p>
 												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" style="display:none" capture>

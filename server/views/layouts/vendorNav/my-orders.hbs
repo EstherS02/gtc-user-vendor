@@ -62,7 +62,7 @@ $("#total_refund").val(total);
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = ' reporting/sales-history?' + formInput;
+				window.location.href = 'my-order/order?' + formInput;
 			}else{
 				$("#gtc-form-alert").show();
 			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -78,7 +78,7 @@ $("#total_refund").val(total);
 				return $(element).val() != '';
 			}).serialize();
 			if (formInput != '') {
-				window.location.href = ' reporting/sales-history?' + formInput;
+				window.location.href = 'my-order/order?' + formInput;
 			}
 		});
 	});
@@ -270,7 +270,7 @@ $("#total_refund").val(total);
 					<div class="ibox-content">
 						<div class="ibox-title">
 							<h2>My orders
-							<span class="pull-right" style="font-size:12px"><a href="reporting/sales-history">Clear All</a></span>
+							<span class="pull-right" style="font-size:12px"><a href="my-order/order">Clear All</a></span>
 							</h2>
 						</div>
 						<div class="alert" id="gtc-form-alert">
@@ -398,7 +398,7 @@ $("#total_refund").val(total);
 															<input type="checkbox" value="{{this.id}}">
 														</td>
 														<td>
-															<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
+															<a href="/my-order/order/{{this.id}}">{{this.id}}</a>
 														</td>
 														<td style="display:none">{{this.purchase_order_id}}</td>
 														<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
@@ -433,7 +433,7 @@ $("#total_refund").val(total);
 													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>
 												{{else}}
-												<tr><td colspan="7" style="text-align:center;">No Orders Found</td></tr>
+												<tr><td colspan="10" style="text-align:center;">No Orders Found</td></tr>
 												{{/if}}
 											</tbody>
 										</table>
@@ -577,7 +577,7 @@ $("#total_refund").val(total);
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/reporting/sales-history'">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/my-order/order'">
 					<b>Ok</button>
 			</div>
 		</div>
