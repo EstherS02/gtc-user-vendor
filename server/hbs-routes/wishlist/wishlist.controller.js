@@ -30,6 +30,7 @@ export function wishlist(req, res) {
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	queryPaginationObj['field'] = field;

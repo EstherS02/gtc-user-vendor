@@ -36,6 +36,7 @@ export function workingHours(req,res){
 				});
 			} else {
 				service.createRow(modelName,data).then(function(response){
+					res.status(200).send(response);
 			});
 		}
 	}).catch(function(error) {
