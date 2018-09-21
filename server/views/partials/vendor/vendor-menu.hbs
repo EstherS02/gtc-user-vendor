@@ -16,11 +16,22 @@
                 </button>
                 <div class="navbar-collapse collapse" id="vendorNavBar">
                     <ul class="navbar-nav vendor-nav">
-                        {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
+						<li class="nav-item">
+							<a href="javascript:;" class="nav-link" style="cursor:default">
+								{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}} Starter  
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}} Service Provider 
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}}	Lifestyle Provider
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler 
+								{{/ifCond}}
+							</a>
+						</li>
+                        {{!-- {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
                             <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
                         {{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
                             <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
-                        {{/ifCond}}
+                        {{/ifCond}} --}}
 						<li class="nav-item"><a href="/gtc-mail/inbox" class="nav-link">Inbox
                         <div  class="messages UnreadMessages"></div></a></li>
                         <li class="nav-item"><a href="/messages" class="nav-link">Messages <strong><small id="msg-count"></small></strong>
@@ -28,11 +39,7 @@
                         <li class="nav-item"><a href="/notifications" class="nav-link">Notifications</a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promote Your Store</a></li>
                         <li class="nav-item"><a href="/dashboard-vendor-connect" class="nav-link">Build Your Store</a></li>
-						{{!-- <li class="nav-item">
-							<a href="/vendor/support/{{this.LoggedInUser.Vendor.id}}" class="nav-link">Support</a>
-						</li> --}}
-                    </ul>
-					
+                    </ul>	
                     <a href="/vendor/support/{{this.LoggedInUser.Vendor.id}}"><span class="support">Support</span></a>
                 </div>
             </nav>
