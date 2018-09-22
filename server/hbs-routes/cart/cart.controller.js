@@ -10,8 +10,6 @@ const service = require('../../api/service');
 const cartObj = require('../../api/cart/cart.controller');
 const populate = require('../../utilities/populate');
 
-
-
 export function cart(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
@@ -19,10 +17,10 @@ export function cart(req, res) {
 	var categoryModel = "Category";
 	var couponModel = "Coupon"
 	var includeArrCoupon = [];
-	var queryObjCoupon ={};
-	if(req.cookies.applied_coupon){
+	var queryObjCoupon = {};
+	if (req.cookies.applied_coupon) {
 		queryObjCoupon.id = req.cookies.applied_coupon;
-	}else{
+	} else {
 		queryObjCoupon.id = '';
 	}
 	if (req.user)
@@ -91,17 +89,17 @@ export function cart(req, res) {
 			});
 		},
 		Coupons: function(callback) {
-			service.findRow(couponModel, queryObjCoupon,includeArrCoupon)
-                .then(function(response) {
-                	if(response){
-                    return callback(null, response);
-                	}else{
-                		return callback(null);
-                	}
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+			service.findRow(couponModel, queryObjCoupon, includeArrCoupon)
+				.then(function(response) {
+					if (response) {
+						return callback(null, response);
+					} else {
+						return callback(null);
+					}
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		},
 		marketPlace: function(cb) {
 			var searchObj = {};
@@ -148,10 +146,9 @@ export function cart(req, res) {
 			var defaultShipping = 0;
 			totalPrice['grandTotal'] = 0;
 			var totalItems = results.cartItems.rows;
-			console.log(JSON.stringify(totalItems));
 			var allMarketPlaces = results.marketPlace.rows;
 			var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-			
+
 			_.forOwn(seperatedItems, function(itemsValue, itemsKey) {
 				totalPrice[itemsKey] = {};
 				totalPrice[itemsKey]['price'] = 0;
