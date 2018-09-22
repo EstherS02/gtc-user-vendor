@@ -93,9 +93,6 @@ function primaryCardDetails(vendorPlan){
 			if(cardDetails){
 
 				var desc = "GTC Plan Payment";
-				var currentDate = moment();
-				var start_date =  new Date(currentDate);
-				var end_date = moment().add(30, 'd').toDate();
 
 				return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, vendorPlan.Plan.cost, desc, CURRENCY)
 					.then(function(paymentDetails){
@@ -105,7 +102,7 @@ function primaryCardDetails(vendorPlan){
 								paid_date: new Date(paymentDetails.created),
 								paid_amount: paymentDetails.amount / 100.0,
 								payment_method: paymentMethod['STRIPE'],
-								status: status['ACTIVE'],
+								status: statusCode['ACTIVE'],
 								payment_response: JSON.stringify(paymentDetails)
 							}
 							return service.createRow('Payment', paymentObj);
@@ -132,7 +129,7 @@ function primaryCardDetails(vendorPlan){
 				var planUpdateObj = {
 					status: statusCode['INACTIVE']
 				}
-				return service.updateRow( vendorModel, planUpdateObj,planId)
+				return service.updateRow( vendorModel, planUpdateObj,vendorPlan.Plan.id)
 					.then(function(planRow){
 						updatePrimaryCardMail(vendorPlan);
 						return Promise.resolve(planRow);
