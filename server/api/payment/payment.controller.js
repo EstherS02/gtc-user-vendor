@@ -695,6 +695,9 @@ function sendVendorEmail(order, user) {
 // plan payment method starts//
 export function makeplanPayment(req, res) {
 	var desc = "GTC ORDER";
+	var convertMoment = moment();
+	var start_date =  new Date(convertMoment);
+	var end_date = moment().add(30, 'd').toDate();
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
         then(function (response) {
             if (response.paid = "true") {
@@ -711,11 +714,15 @@ export function makeplanPayment(req, res) {
 				{
                
                 var vendorplanModel = {
-                  plan_id : req.body.plan_id
+				  plan_id : req.body.plan_id,
+				  start_date:start_date,
+				  end_date:end_date
                   
-                };
-                var queryObj={
-                    vendor_id:req.body.vendor_id
+				};
+				
+				var queryObj={
+					vendor_id:req.body.vendor_id,
+					
                 };
                 service.updateRecord('VendorPlan', vendorplanModel,queryObj);
                  return res.status(200).json({
@@ -728,8 +735,9 @@ export function makeplanPayment(req, res) {
 				user_id: req.body.user_id,
 				plan_id: req.body.plan_id,
 				status: status['ACTIVE'],
-				start_date:new Date(),
-				end_date:new Date()
+				start_date:start_date,
+				end_date:end_date
+
 			};
 			service.createRow('UserPlan', userplanModel);
 			return res.status(200).json({
