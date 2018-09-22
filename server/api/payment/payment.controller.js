@@ -715,6 +715,7 @@ export function makeplanPayment(req, res) {
                
                 var vendorplanModel = {
 				  plan_id : req.body.plan_id,
+				  status: status['ACTIVE'],
 				  start_date:start_date,
 				  end_date:end_date
                   
