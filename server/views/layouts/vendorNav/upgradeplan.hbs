@@ -63,6 +63,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	  $("#plandetailsform").submit(function(e) {
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
+		var planstatus=$('#plan_status').val();
+		if(planstatus==0)
+		{
+		if ($('#plandetailsform').valid()) { 
             var plan_id = document.getElementById("selectplan").value;
             $.ajax({
 			url: '/api/upgrade-plan/selectplan',
@@ -91,6 +95,12 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			
 		    	
      		}
+		}
+		else
+		{
+			 $('#myModal2').modal('show');
+		}
+		}		 
 			 
        });
 	   $("#userPlandetails").submit(function(e) {
@@ -277,6 +287,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
+									<input type="hidden" name="plan_status" value="{{PlanDetails.[0].status}}">
 									<hr style="margin-top: 10px" />
 
 									{{!-- <div class="row">
