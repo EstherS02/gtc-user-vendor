@@ -17,6 +17,10 @@
 	}
 	$(document).ready(function() {
 		$("#gtc-cart-alert").hide();
+		$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
+
 	})
 	function changeStatus(e) {
 		window.location.href = '/listings/' + e.name + '?status=' + e.value;
@@ -182,7 +186,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Product Name</th>
 													<th scope="col">Publish Date</th>
@@ -196,7 +200,7 @@
 												{{#if products}}
 												{{#each products}}
 												<tr>
-													<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
+													<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
 													<td scope="row">
 														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
 														<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />

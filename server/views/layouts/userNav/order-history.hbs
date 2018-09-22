@@ -19,6 +19,9 @@
 		});
 		$(function () {
 			$("#gtc-form-alert").hide();
+			$(".checkbox").change(function(e) {
+   				$('#checkbox').prop('checked', false);
+			});
 			$("#searchOrderhistory").submit(function (e) {
 				e.preventDefault();
 				let formInput = $("#searchOrderhistory :input").filter(function (index, element) {
@@ -270,7 +273,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -284,7 +287,7 @@
 												{{#if Order}}
 												{{#each Order}}
 												<tr>
-													<td ><input type="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
+													<td ><input type="checkbox" class="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
 									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>

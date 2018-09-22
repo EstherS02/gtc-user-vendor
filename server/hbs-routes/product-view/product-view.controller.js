@@ -257,7 +257,7 @@ export function product(req, res) {
 		},
 		talkThreads: function(callback) {
 			var includeArr = [];
-			console.log("****************VENDOR ID", vendorID);
+			// console.log("****************VENDOR ID", vendorID);
 			if (LoggedInUser.id != null && LoggedInUser.role == 3) {
 				service.findOneRow('Vendor', vendorID, includeArr)
 					.then(function(response) {
@@ -367,7 +367,7 @@ export function product(req, res) {
 						return callback(null);
 					})
 			} else {
-				console.log("****Disable Chat******");
+				// console.log("****Disable Chat******");
 				return callback(null);
 			}
 		},

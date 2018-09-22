@@ -17,6 +17,9 @@
 	}
 	$(document).ready(function() {
 		$("#gtc-cart-alert").hide();
+		$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
 	})
 	function changeStatus(e) {
 		window.location.href = '/advertisement?status=' + e.value;
@@ -131,7 +134,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Name</th>
 													<th scope="col">Start Date</th>
@@ -147,7 +150,7 @@
 												{{#if ads.rows}}
 												{{#each ads.rows}}
 												<tr>
-													<td scope="row"><input type="checkbox" name="selected" value={{this.id}}></td>
+													<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
 													<td scope="row">
 														<img src="{{this.image_url}}" onError="imgError(this)" style="width: 30px;" />
 														{{this.name}}
