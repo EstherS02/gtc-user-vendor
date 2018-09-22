@@ -12,7 +12,8 @@ const Position = require('../../config/position');
 var gtc = require('../../api/gtc/gtc.controller')
 
 
-export function storeForm(req,res){
+export function createAd(req,res){
+
 	var bodyParam= req.body;
 	var modelName = "ProductAdsSetting";
 
@@ -30,7 +31,7 @@ export function storeForm(req,res){
 	}else{
 
 		service.createRow(modelName,bodyParam).then(function(response){
-			res.status(200).send("Advertisement added successfully");
+			res.status(200).send("Advertisement Created successfully");
 		});
 	}
 
