@@ -334,7 +334,7 @@ function mailVendor(){
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 {{#if product.moq }} value="{{product.moq}}" {{else}} value="1"{{/if}} min="1" max="{{product.moq}}">
+														{{#ifCond product.marketplace_id '==' 1}} {{#if product.moq }} value="{{product.moq}}" {{else}} value="1"{{/if}} {{else ifCond product.marketplace_id '!=' 1 }} value="1" {{/ifCond}} min="1" max="{{product.moq}}">
 														  <input type="hidden" value="{{product.MarketplaceType.code}}" id="typecode" name="typecode"/>
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
