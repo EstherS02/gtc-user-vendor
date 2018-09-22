@@ -83,6 +83,16 @@ var all = {
 			refundRequest: 'VENDOR-TO-REFUND'
         }
     },
+    //Notification
+    notification: {
+        templates: {
+            vendorNewOrder: 'NEW-ORDER',
+            productReview: 'PRODUCT-REVIEW',
+            likesComments: 'LIKE-AND-COMMENT',
+            newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
+            orderCancelled: 'ORDER-CANCELLED'
+        }
+    },
     jobs: {
         'email': 'email-notification',
         "couponExpiry": "couponExpiry",
