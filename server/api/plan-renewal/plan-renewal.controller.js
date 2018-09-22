@@ -128,23 +128,24 @@ function primaryCardDetails(vendorPlan){
 					})
 			}
 			else{
-				planDeactivate(vendorPlan.id);
-				updatePrimaryCardMail(vendorPlan);
-				return;
+				var vendorModel = 'VendorPlan';
+				var planUpdateObj = {
+					status: statusCode['INACTIVE']
+				}
+				return service.updateRow( vendorModel, planUpdateObj,planId)
+					.then(function(planRow){
+						updatePrimaryCardMail(vendorPlan);
+						return Promise.resolve(planRow);
+
+					}).catch(function(error){
+						console.log("Error::",error);
+						return Promise.reject(error);
+					})
 			}
 		}).catch(function(error){
 			console.log("Error::",error);
 			return Promise.reject(error);
 		})	
-}
-
-function planDeactivate(planId){
-
-	var vendorModel = 'VendorPlan';
-	var planUpdateObj = {
-		status: statusCode['INACTIVE']
-	}
-	return service.updateRow( vendorModel, planUpdateObj,planId);
 }
 
 function updatePrimaryCardMail(vendorPlan) {
