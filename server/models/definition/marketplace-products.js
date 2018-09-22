@@ -164,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         vendor_profile_pic_url: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.TEXT,
             field: 'vendor_profile_pic_url',
             allowNull: false
         },
