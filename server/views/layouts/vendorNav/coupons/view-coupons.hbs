@@ -79,6 +79,10 @@
   }
   $(document).ready(function(){
   	$('#gtc-coupon-alert').hide();
+  	$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
+
 	   $("#coupenListing").submit(function(e) {
             e.preventDefault();
             let formInput = $("#coupenListing :input").filter(function(index, element) {
@@ -174,7 +178,7 @@
 													<thead>
 														<tr>
 															<th>
-																<input type="checkbox" onclick="selectAll(this);">
+																<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 															</th>
 															<th>Coupon Name</th>
 															<th>Coupon Code</th>
@@ -191,7 +195,7 @@
 														{{#each Coupons}}
 														<tr>
 															<td>
-																<input type="checkbox" value="{{this.id}}">
+																<input type="checkbox" class="checkbox" value="{{this.id}}">
 															</td>
 															<td class="text_blue_color"><a href="/coupons/edit-coupons?id={{this.id}}">{{this.coupon_name}}</a></td>
 															<td>{{this.code}}</td>

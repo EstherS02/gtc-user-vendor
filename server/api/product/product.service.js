@@ -53,7 +53,7 @@ export function productView(productID) {
 				where: {
 					status: status['ACTIVE']
 				},
-				limit: 6,
+				limit: 7,
 				offset: 0,
 				attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status'],
 				required: false
