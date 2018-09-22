@@ -168,9 +168,9 @@ export function adForm(req, res) {
         },
         ads: function(callback) {
 			service.findRow(adsModel, queryObjAds,includeArrAds)
-                .then(function(response) {
-                	if(response){
-                    return callback(null, response);
+                .then(function(ad) {
+                	if(ad){
+                    return callback(null, ad);
                 	}else{
                 		return callback(null);
                 	}
@@ -193,8 +193,8 @@ export function adForm(req, res) {
 		},
 
     }, function(err, results) {
+
         if (!err) {
-        	console.log("==========================",results.ads)
             res.render('vendorNav/advertisement/ad-form', {
                 title: "Global Trade Connect",
                 LoggedInUser: LoggedInUser,

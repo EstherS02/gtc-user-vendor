@@ -389,6 +389,7 @@
 					number: true,
 					dollarsscents: true
 				},
+				status: "required",
 				moq: {
 					required: function() {
 						if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
@@ -436,6 +437,7 @@
 					number: "Please enter valid shipping cost",
 					dollarsscents: "Only two decimal values accepted"
 				},
+				status: "Please select product status",
 				exchanging_product: "Please enter the exchanging product name",
 				exchanging_product_quantity: "Please enter exchanging product quantity",
 				moq: "Please enter minimum order quantity"
@@ -455,6 +457,8 @@
 			e.preventDefault();
 
 			if($('#productForm').valid()){
+
+				$("#product_status").prop("disabled", false);
 			
 				var temp1 = $.map($('.quantity'), function(el) {
 					return el.value;
@@ -576,7 +580,7 @@
 						contentType: false,
 						success: function(data) {
 							var imageURLs = data.imageURLs, i = 0;
-							imageURLs.forEach(function(element) {
+							imageURLs.forEach(function(element) {	
 								var imageobj = {};
 								imageobj.status = 1;
 								imageobj.type = 1;
@@ -863,17 +867,18 @@
 											 required>
 										</div>
 									</div>
-									{{#if editProduct}}
 									<div class="col-lg-4">
 										<div class="form-group">
-											<label class="label-control">Product Status</label>
+											<label class="label-control">Product Status
+												<span class="text-danger">*</span>
+											</label>
 											<div class="input-group">
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
 												 id="product_status">
 												{{#if editProduct.status}}
 												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
 												{{else}}
-												<option disabled selected>Change Status...</option>
+												<option disabled selected>Select Status</option>
 												{{/if}}
 												<option value="ACTIVE">Active</option>
 												<option value="INACTIVE">InActive</option>
@@ -883,7 +888,6 @@
 											</div>
 										</div>
 									</div>
-									{{/if}}
 									{{#ifCond this.type '==' 'wholesale'}}
 										<div class="col-lg-4">
 											<div class="form-group">

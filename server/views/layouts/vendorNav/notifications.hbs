@@ -65,7 +65,7 @@
 											{{#each notifications}}
 											<tr class="{{#ifCond this.is_read '==' 1}}inbox-tr-unread{{else}}inbox-tr{{/ifCond}} clickable-row" data-name="{{this.name}}" data-id={{this.id}} id = "{{this.id}}" data-message="{{this.description}}" href="#gtc-modal">
 												<td scope="row ">{{this.name}}</td>
-												<td scope="row">{{dotdotdot this.description}}</td>
+												<td scope="row">{{{dotdotdot this.description}}}</td>
 												<td scope="row">{{formatTime this.Mail.created_on "MMM D, YYYY"}}</td>
 											</tr>
 											{{/each}}

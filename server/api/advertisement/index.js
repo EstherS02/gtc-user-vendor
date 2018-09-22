@@ -10,6 +10,6 @@ var auth = require('../../auth/auth.service');
 /* Handlebars routes */
 var controller = require('./advertisement.controller');
 
-router.post('/', auth.isAuthenticated(), controller.storeForm);
+router.post('/', auth.isAuthenticated(), controller.createAd);
 
 module.exports = router;

@@ -99,7 +99,7 @@
 
 
             if ($('#adForm').valid()) {
-                if()
+                
             $.ajax({
                 type: 'POST',
                 url: '/api/vendors/upload',
@@ -122,7 +122,14 @@
                     type: 'POST',
                     data: inputForm,
                     success: function(result) {
-                        // window.location.href = '/advertisement';
+                        $('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-form-alert .form-message').text("Advertisement Created successfully")
+						$("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-form-alert").slideUp(500);
+						});
+						setTimeout(function() {
+							location.reload(true);
+						}, 1500);
                     },
                     error: function(error) {
                         $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
@@ -170,7 +177,7 @@
                                 	 <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="label-control">Ad Position <span class="text-danger">*</span></label>
-                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">
+                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required="true">{{ads.posotion}}
                                                 {{#select ads.posotion}}
                                                     <option disabled selected>Select Location...</option>
                                                     {{#each Position}}
@@ -182,8 +189,12 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
+<<<<<<< HEAD
                                             <label class="label-control">Ad Image <span class="text-danger">*</span></label>
+=======
+                                            <label class="label-control">Ad Image {{ads.image_url}}<span class="text-danger">*</span></label>
                                             {{!-- <input type="file" name="file" class="form-control-customized form-control-sm" required="true"> --}}
+>>>>>>> 5d595929d08b797e7f5e6888d2ed361fb2b41942
                                             <div class="input-group">
                                                 <div class="custom-file custom_error_message">
                                                     <input type="file" class="custom-file-input" id="image_url" name="image_url" >
@@ -196,7 +207,7 @@
                                 <div class="row">
                                 	 <div class="col-lg-8">
                                         <div class="form-group">
-                                            <label class="label-control">Target URL <span class="text-danger">*</span></label>
+                                            <label class="label-control">Target URL {{ads.target_url}} <span class="text-danger">*</span></label>
                                             <input type="text" value="{{ads.target_url}}" name="target_url" id="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true" >
                                         </div>
                                     </div>
@@ -204,53 +215,53 @@
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label class="label-control">Status <span class="text-danger">*</span></label>
-                                            <div class="select-container">
-                                                <select name="discount_type" id="inputStatus" class="form-control-customized form-control-sm" required="true">
-                                                    <option disabled="true" selected="true">Change Status</option>
-                                                    {{#select ads.status}}
-                                                    <option value="{{statusCode.ACTIVE}}">Active</option>
-                                                    <option value="{{statusCode.SUSPENDED}}">Suspended</option>
-                                                    <option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
+												 id="inputStatus">
+													{{#select ads.status}}
+                                                  	  <option value="{{statusCode.ACTIVE}}">Active</option>
+                                                   	  <option value="{{statusCode.INACTIVE}}">In Active</option>
                                                     {{/select}}
-                                                </select>
-                                            </div>
+												</select>
+											</div>
                                         </div>
                                     </div>
                                 {{/if}}
                                 </div>
-
-                                <div class="row">
+								<div class="row">
                                 	 <div class="col-lg-6">
-                                        <label class="label-control">Start Date <span class="text-danger">*</span></label>
+                                        <label class="label-control">Start Date {{ads.startDate}} <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" value="{{ads.startDate}}"aria-describedby="basic-addon2">
+<<<<<<< HEAD
+										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" value="{{ads.startDate}}"aria-describedby="basic-addon2">
+=======
+										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" value="{{ads.startDate}}" aria-describedby="basic-addon2">
+>>>>>>> 5d595929d08b797e7f5e6888d2ed361fb2b41942
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
 										</div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <label class="label-control">End Date <span class="text-danger">*</span></label>
+                                        <label class="label-control">End Date {{ads.endDate}} <span class="text-danger">*</span></label>
                                         <div class="input-group ">
-										  <input type="text" class="form-control-customized" style="width:90%" placeholder="Recipient's username" value="{{ads.endDate}}" aria-label="Recipient's username" id="endDate" name="endDate" aria-describedby="basic-addon2">
+										  <input type="text" class="form-control-customized" style="width:90%" value="{{ads.endDate}}" id="endDate" name="endDate" aria-describedby="basic-addon2">
 										  <div class="input-group-append">
 										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
 										  </div>
 										</div>
                                     </div>
                                 </div>
-                                 
-                                <div class="row">
+                                 <div class="row">
                                 	 <div class="col-lg-4">
                                         <div class="form-group input-append date form_datetime">
                                             <label class="label-control">Country <span class="text-danger">*</span></label>
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country" id="country" required>
                                                     {{#select ads.country_id}} 
                                                         <option disabled selected>Select Location...</option>
-
-                                                        {{#each country}}
-                                                        <option value="{{this.id}}">{{this.name}}</option>
-                                                        {{/each}}
+															{{#each country}}
+                                                        		<option value="{{this.id}}">{{this.name}}</option>
+                                                        	{{/each}}
                                                     {{/select}}
                                                 </select>
                                         </div>
@@ -259,16 +270,18 @@
                                         <div class="form-group">
                                             <label class="label-control">Province<span class="text-danger">*</span></label>
                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state" id="state" required>
-                                                {{#select ads.country_id}} 
-                                                    <option disabled selected>Select Province...</option>
-                                                {{/select}}
+                            					{{#if ads.state_id}}
+													<option value="{{ads.state_id}}">{{ads.State.name}}</option>
+												{{else}}
+													<option disabled selected>Select State...</option>
+												{{/if}}
                                                 </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-group">
                                             <label class="label-control">City<span class="text-danger">*</span></label>
-                                            <input type="text" name="city" id="city" value={{ads.city}} class="form-control-customized form-control-sm" required="true">
+                                            <input type="text" name="city" id="city" value="{{ads.city}}" class="form-control-customized form-control-sm" required="true">
                                         </div>
                                     </div>
                                 </div>

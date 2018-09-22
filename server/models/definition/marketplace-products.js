@@ -163,6 +163,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'vendor_name',
             allowNull: false
         },
+        vendor_profile_pic_url: {
+            type: DataTypes.TEXT,
+            field: 'vendor_profile_pic_url',
+            allowNull: false
+        },
 		user_id: {
 			type: DataTypes.BIGINT,
 			field: 'user_id',
