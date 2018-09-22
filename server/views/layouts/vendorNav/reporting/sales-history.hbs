@@ -83,6 +83,9 @@ $("#total_refund").val(total);
 		});
 	});
 	$(document).ready(function() {
+		$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
 
 		var orderItems, totalTag;
 
@@ -378,7 +381,7 @@ $("#total_refund").val(total);
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -395,7 +398,7 @@ $("#total_refund").val(total);
 												{{#each Order}}
 													<tr>
 														<td>
-															<input type="checkbox" value="{{this.id}}">
+															<input type="checkbox" class="checkbox" value="{{this.id}}">
 														</td>
 														<td>
 															<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
