@@ -694,7 +694,7 @@ function sendVendorEmail(order, user) {
 
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-	var desc = "GTC ORDER";
+	var desc = "GTC Plan";
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
         then(function (response) {
             if (response.paid = "true") {
