@@ -9,7 +9,9 @@ const sendEmail = require('../../agenda/send-email');
 const populate = require('../../utilities/populate');
 const paymentMethod = require('../../config/payment-method');
 const gtcPlan = require('../../config/gtc-plan');
+const moment = require('moment');
 
+const CURRENCY = 'usd';
 var currentDate = new Date();
 
 export function planRenewal(req, res) {
@@ -24,7 +26,7 @@ export function planRenewal(req, res) {
 	var planQueryObj = {}, planIncludeArr = [];
 	var vendorModel = 'VendorPlan';
 
-	planQueryObj['status'] = statusCode['ACTIVE'];
+	//planQueryObj['status'] = statusCode['ACTIVE'];
 	planQueryObj['end_date'] = {
 		'$lt': currentDate
 	}
@@ -90,46 +92,46 @@ function primaryCardDetails(vendorPlan){
 		.then(function(cardDetails){
 			if(cardDetails){
 
-				planCharge(cardDetails);
 				var desc = "GTC Plan Payment";
 				var currentDate = moment();
 				var start_date =  new Date(currentDate);
 				var end_date = moment().add(30, 'd').toDate();
 
 				return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, vendorPlan.Plan.cost, desc, CURRENCY)
+					.then(function(paymentDetails){
+						if (paymentDetails.paid = "true"){
+							chargedAmount = paymentDetails.amount / 100.0;
+							var paymentObj = {
+								paid_date: new Date(paymentDetails.created),
+								paid_amount: paymentDetails.amount / 100.0,
+								payment_method: paymentMethod['STRIPE'],
+								status: status['ACTIVE'],
+								payment_response: JSON.stringify(paymentDetails)
+							}
+							return service.createRow('Payment', paymentObj);
+						}
+					}).then(function(paymentRow){
+						if(paymentRow){
+							var vendorPlanModel = 'VendorPlan';
+							var planUpdateObj = {
+								status: statusCode['ACTIVE'],
+								end_date: moment().add(30, 'd').toDate()
+							}
+							autoRenewalMail(vendorPlan, chargedAmount);
+							return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.Plan.id);
+						}						
+					}).then(function(planRow){
+						return Promise.resolve(planRow);
+					}).catch(function(error){
+						console.log("Error::",error);
+						return Promise.reject(error);
+					})
 			}
 			else{
 				planDeactivate(vendorPlan.id);
 				updatePrimaryCardMail(vendorPlan);
 				return;
 			}
-
-		}).then(function(paymentDetails){
-
-			if (paymentDetails.paid = "true"){
-				chargedAmount = paymentDetails.amount / 100.0;
-				var paymentObj = {
-					paid_date: new Date(paymentDetails.created),
-                    paid_amount: paymentDetails.amount / 100.0,
-                    payment_method: paymentMethod['STRIPE'],
-                    status: status['ACTIVE'],
-                    payment_response: JSON.stringify(paymentDetails)
-				}
-				return service.createRow('Payment', paymentObj);
-			}
-		}).then(function(paymentRow){
-			if(paymentRow){
-				var vendorPlanModel = 'VendorPlan';
-				var planUpdateObj = {
-					status: statusCode['ACTIVE'],
-					end_date: moment().add(30, 'd').toDate()
-				}
-				autoRenewalMail(vendorPlan, chargedAmount);
-				return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.Plan.id);
-			}
-		}).then(function(planRow){
-			return Promise.resolve(planRow);
-
 		}).catch(function(error){
 			console.log("Error::",error);
 			return Promise.reject(error);
