@@ -1,9 +1,12 @@
 'use strict';
 
 const async = require('async');
+const sequelize = require('sequelize');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 const config = require('../../config/environment');
+const RawQueries = require('../../raw-queries/sql-queries');
+const Sequelize_Instance = require('../../sqldb/index');
 
 export async function categoriesWithProductCount(queryObj, productQueryObj) {
 	var results = {};
@@ -32,4 +35,21 @@ export async function categoriesWithProductCount(queryObj, productQueryObj) {
 	} catch (error) {
 		return error;
 	}
+}
+
+export async function productViewCategoryProductCount(queryObj, productQueryObj){
+	return new Promise((resolve, reject) => {
+		if (queryObj && productQueryObj ) {
+			Sequelize_Instance.query(RawQueries.productViewAndReviewCategoryCount(queryObj, productQueryObj), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
 }

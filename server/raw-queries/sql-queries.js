@@ -119,6 +119,12 @@ let sqlQueries = {
 			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.marketplace_type_id = (` + productCountQueryParams.marketplace_type_id + `) and product.status = (` + productCountQueryParams.status + `)
 			GROUP BY sub_category.id ORDER by category.name`;
 			return query;
+		}else if( productCountQueryParams.marketplace_id && productCountQueryParams.keyword){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.product_name LIKE "%`+ productCountQueryParams.keyword+`%" and product.status=(`+productCountQueryParams.status+`)
+			GROUP BY sub_category.id ORDER by category.name`;
+			return query;
 		}else if(productCountQueryParams.marketplace_id && productCountQueryParams.is_featured_product){
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(featured_product.product_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
@@ -156,6 +162,15 @@ let sqlQueries = {
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=1
 			GROUP BY sub_category.id ORDER by RAND()`;
+			return query;
+		}
+	},
+	productViewAndReviewCategoryCount:function(queryObj, productQueryObj){
+		if(queryObj.status && productQueryObj.vendor_id){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.id) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.status=(`+queryObj.status+`) and product.vendor_id=(`+productQueryObj.vendor_id+`)
+			GROUP BY sub_category.id ORDER by category.id`;
 			return query;
 		}
 	}

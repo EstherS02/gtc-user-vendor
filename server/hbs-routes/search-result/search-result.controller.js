@@ -137,6 +137,7 @@ export function index(req, res) {
 		productCountQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
+		productCountCategory['keyword'] = req.query.keyword;
 	}
 
 	if (req.query.origin) {

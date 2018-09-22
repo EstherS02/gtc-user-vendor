@@ -210,12 +210,49 @@ export function product(req, res) {
 			if (vendorID) {
 				productQueryObj['vendor_id'] = vendorID;
 			}
-
+			// productQueryObj['marketplace_id'] = 1;
 			categoryService.categoriesWithProductCount(queryObj, productQueryObj)
 				.then((response) => {
 					return callback(null, response);
 				}).catch((error) => {
 					console.log("categoriesWithProductCount Error:::", error);
+					return callback(null);
+				});
+		},
+		categoryWithProductCount:function(callback){
+			var queryObj = {};
+			var productQueryObj = {};
+
+			queryObj['status'] = status['ACTIVE'];
+			productQueryObj['status'] = status['ACTIVE'];
+
+			if (vendorID) {
+				productQueryObj['vendor_id'] = vendorID;
+			}
+			
+			var resultObj = {};
+			categoryService.productViewCategoryProductCount(queryObj, productQueryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
@@ -424,7 +461,8 @@ export function product(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage: selectedPage,
 				Plan: Plan,
-				VendorAvgRating:results.VendorAvgRating
+				VendorAvgRating:results.VendorAvgRating,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('product-view', {

@@ -80,7 +80,9 @@ var all = {
             payoutMail: 'PAYOUT-MAIL',
             askToVendor: 'ASK-TO-VENDOR',
 			returnRequest: 'USER-RETURN-REQUEST',
-			refundRequest: 'VENDOR-TO-REFUND'
+			refundRequest: 'VENDOR-TO-REFUND',
+			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
+			planAutoRenewal : 'PLAN-AUTO-RENEWAL'
         }
     },
     //Notification
