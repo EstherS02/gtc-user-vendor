@@ -457,6 +457,8 @@
 			e.preventDefault();
 
 			if($('#productForm').valid()){
+
+				$("#product_status").prop("disabled", false);
 			
 				var temp1 = $.map($('.quantity'), function(el) {
 					return el.value;
