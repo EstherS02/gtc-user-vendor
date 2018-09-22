@@ -272,7 +272,10 @@ function mailVendor(){
                             				</a>
                             				<div class="row">
                             					{{#each product.ProductMedia}}
+                            					{{#if @first}} 
+                            					{{else}} 
                             					<a href="{{this.url}}" ><img src="{{this.url}}" onError="imgError(this)" width="75" class="img-fluid" height="75"></a>
+                            					{{/if}}
                             					{{/each}}
                             				</div>
                             			</div>
