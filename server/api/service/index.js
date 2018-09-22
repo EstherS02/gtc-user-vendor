@@ -127,6 +127,7 @@ export function findOneRow(modelName, queryObj, includeArr) {
 }
 
 export function createRow(modelName, bodyParams) {
+    console.log("modelName-----------------",modelName,"bodyParams==========================",bodyParams)
     return new Promise((resolve, reject) => {
         model[modelName].create(bodyParams)
             .then(function(row) {

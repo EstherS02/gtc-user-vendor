@@ -15,6 +15,7 @@ const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
+var notificationService = require('../../api/notification/notification.service')
 
 
 const stripe = require('../../payment/stripe.payment');
@@ -581,7 +582,7 @@ export function sendOrderMail(orderIdStore, user) {
 				attributes: ['id'],
 				include: [{
 					model: model['User'],
-					attributes: ['email'],
+					attributes: ['id','email'],
 				}]
 			}],
 		}]
@@ -652,10 +653,12 @@ export function sendOrderMail(orderIdStore, user) {
 }
 export function vendorMail(OrderList, user) {
 	var orderNew = [];
+	var notification =[];
 	_.forOwn(OrderList.rows, function(orders) {
 		orderNew.push(sendVendorEmail(orders, user));
+		notification.push(notifications(orders));
 	});
-	return Promise.all(orderNew);
+	return Promise.all(orderNew,notification);
 }
 function sendVendorEmail(order, user) {
 
@@ -690,6 +693,24 @@ function sendVendorEmail(order, user) {
 			console.log('Error :::', error);
 			return;
 		})
+}
+
+function notifications(order){
+	var queryObjNotification = {};
+	var NotificationTemplateModel = 'NotificationSetting';
+	queryObjNotification['code'] = config.notification.templates.vendorNewOrder;
+	service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		.then(function(response) {
+			var bodyParams={};
+			bodyParams.user_id = order.OrderItems[0].Product.Vendor.User.id;
+			bodyParams.description = response.description.replace('%#Order%', '/my-order/order/'+order.id);
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			service.createRow("Notification", bodyParams);
+		});
 }
 
 // plan payment method starts//

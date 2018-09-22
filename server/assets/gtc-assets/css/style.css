@@ -1176,7 +1176,7 @@ label {
     color: #FFFFFF;
 }
 .alert-success {
-    background: #154a7f;
+    /*background: #154a7f;*/
     outline: 0;
 }
 .alert-danger {
