@@ -7,6 +7,7 @@ const _ = require('lodash');
 const sendEmail = require('./send-email');
 const gtcPlan = require('../config/gtc-plan');
 
+var currentDate = new Date();
 var vendorPlanModel = 'VendorPlan';
 
 export function starterPlanExpire(job, done) {

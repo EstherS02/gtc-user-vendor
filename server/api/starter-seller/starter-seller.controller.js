@@ -8,6 +8,7 @@ const sendEmail = require('../../agenda/send-email');
 const gtcPlan = require('../../config/gtc-plan');
 
 var vendorPlanModel = 'VendorPlan';
+var currentDate = new Date();
 
 export function starterSellerExpires(req, res) {
 
@@ -94,6 +95,10 @@ function planExpiredMail(eachVendor){
 				var body = response.body;
 				body = body.replace('%USERNAME%', vendor.vendor_name);
 				body = body.replace('%EXPIRED_DATE%', eachVendor.end_date);
+
+				console.log("==========email================", email);
+				console.log("==========subject================", subject);
+				console.log("==========body================", body);
 
                 sendEmail({
                     to: email,
