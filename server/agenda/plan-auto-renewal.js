@@ -118,7 +118,7 @@ function primaryCardDetails(vendorPlan){
 								end_date: moment().add(30, 'd').toDate()
 							}
 							autoRenewalMail(vendorPlan, chargedAmount);
-							return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.Plan.id);
+							return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.id);
 						}						
 					}).then(function(planRow){
 						return Promise.resolve(planRow);
@@ -128,11 +128,11 @@ function primaryCardDetails(vendorPlan){
 					})
 			}
 			else{
-				var vendorModel = 'VendorPlan';
+				var vendorPlanModel = 'VendorPlan';
 				var planUpdateObj = {
 					status: statusCode['INACTIVE']
 				}
-				return service.updateRow( vendorModel, planUpdateObj,vendorPlan.Plan.id)
+				return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.id)
 					.then(function(planRow){
 						updatePrimaryCardMail(vendorPlan);
 						return Promise.resolve(planRow);
