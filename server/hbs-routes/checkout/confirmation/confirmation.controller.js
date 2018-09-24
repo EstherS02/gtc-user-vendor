@@ -10,10 +10,14 @@ const cartService = require('../../../api/cart/cart.service');
 
 export function confirmation(req, res) {
 	var LoggedInUser = {};
-
-	if (req.user)
-		LoggedInUser = req.user;
 	var bottomCategory = {};
+
+	console.log(req.params.id)
+
+	if (req.user) {
+		LoggedInUser = req.user;
+	}
+	var vendorID = JSON.parse(req.params.id);
 	let user_id = LoggedInUser.id;
 
 	async.series({
@@ -49,6 +53,29 @@ export function confirmation(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			vendors: function(callback) {
+				// var vendorModel = "Vendor";
+				// var includeArr=[];
+				// var queryObj = {};
+				var vendorIncludeArr = [{
+					model: model['VendorFollower'],
+					where: {
+						user_id: req.user.id,
+						status: 1
+					},
+					required: false
+				}];
+				var queryObj = {
+					id: vendorID
+				};
+				service.findRows('Vendor', queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
+					.then(function(response) {
+						return callback(null, response);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 			}
 		},
 		function(err, results) {
@@ -57,6 +84,7 @@ export function confirmation(req, res) {
 					title: "Global Trade Connect",
 					categories: results.categories,
 					bottomCategory: bottomCategory,
+					vendors: results.vendors,
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser

@@ -295,7 +295,7 @@ $(document).ready(function() {
                                         <td class="col-2">
                                             <div class="product-left-col">
                                             <a href="wholesale/{{this.product_slug}}/{{this.id}}">
-                                                <img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
                                             </a>
                                             </div>
                                         </td>
@@ -327,20 +327,31 @@ $(document).ready(function() {
                                                         <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
+                                                     <div class="col-md-5 col-5 no-padding">
+                                                        <span>Seller Rating</span>
+                                                    </div>
+                                                    <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                        <a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                        {{starCount product_rating}}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 <h4>MOQ : {{this.minimum_order_quantity}}</h4>
-                                                <div class="prc-bottom">
-                                                    <p>Seller Rating</p>
+                                                {{!-- <div class="prc-bottom"> --}}
+                                                    {{!-- <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
                                                         <a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
                                                         {{starCount product_rating}}
                                                         </a>
-                                                    </div>
-                                                </div>
+                                                    </div> --}}
+                                                    <a href="wholesale/{{this.product_slug}}/{{this.id}}">
+                                                        <img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+                                                    </a>
+                                                {{!-- </div> --}}
                                             </div>
                                         </td>
                                     </tr>
@@ -367,7 +378,7 @@ $(document).ready(function() {
                                         <td class="col-2">
                                             <div class="product-left-col">
                                             <a href="wholesale/{{this.product_slug}}/{{this.id}}">
-                                                <img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+                                                <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
                                             </a>
                                             </div>
                                         </td>
@@ -399,20 +410,31 @@ $(document).ready(function() {
                                                         <a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
                                                     {{/if}}
                                                     </div>
+                                                    <div class="col-md-5 col-5 no-padding">
+                                                        <span>Seller Rating</span>
+                                                    </div>
+                                                    <div class="col-md-7 col-7 no-padding overflow-txt">
+                                                        <a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+                                                        {{starCount product_rating}}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="col-3">
                                             <div class="product-right-col">
                                                 <h4>MOQ : {{this.minimum_order_quantity}}</h4>
-                                                <div class="prc-bottom">
+                                                {{!-- <div class="prc-bottom">
                                                     <p>Seller Rating</p>
                                                     <div class="p-rating pull-right">
                                                         <a href="wholesale/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
                                                         {{starCount product_rating}}
                                                         </a>
                                                     </div>
-                                                </div>
+                                                </div> --}}
+                                                 <a href="wholesale/{{this.product_slug}}/{{this.id}}">
+                                                        <img class="object-fit" src="{{this.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+                                                    </a>
                                             </div>
                                         </td>
                                     </tr>
