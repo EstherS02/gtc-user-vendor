@@ -2,6 +2,7 @@
 
 var async = require('async');
 const config = require('../../config/environment');
+const vendorPlan = require('../../config/gtc-plan');
 
 export function vendorLanding(req, res) {
 	var LoggedInUser = {};
@@ -13,7 +14,8 @@ export function vendorLanding(req, res) {
 			res.render('vendorNav/vendor-landing', {
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser,
-				AmazonDeveloperID: config.amazonImportConfig.developerId
+				AmazonDeveloperID: config.amazonImportConfig.developerId,
+				vendorPlan: vendorPlan
 			});
 		} else {
 			res.render('vendorNav/vendor-landing', err);
