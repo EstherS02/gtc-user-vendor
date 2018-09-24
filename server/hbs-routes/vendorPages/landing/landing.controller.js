@@ -8,6 +8,7 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
@@ -34,13 +35,17 @@ export function vendor(req, res) {
 	queryObj['vendor_id'] = vendor_id;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -157,7 +162,9 @@ export function vendor(req, res) {
 
 			model['ProductRatings'].findAll({
 				where: vendorAvgRating,
-				attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+				attributes: [
+					[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+				],
 			}).then(function(data) {
 				var result = JSON.parse(JSON.stringify(data));
 				return callback(null, result);
@@ -176,17 +183,15 @@ export function vendor(req, res) {
 				featuredProducts: results.featuredProducts,
 				topSelling: results.topSelling,
 				topRating: results.topRating,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				LoggedInUser: LoggedInUser,
 				Plan: Plan,
-				VendorAvgRating:results.VendorAvgRating
+				VendorAvgRating: results.VendorAvgRating
 				// selectedPage:'shop'
 			});
 		} else {
 			res.render('vendor', err);
 		}
 	});
-
-
-
 }

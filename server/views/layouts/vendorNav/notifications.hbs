@@ -6,18 +6,19 @@
 <script>
 	$(document).ready(function() {
 		$('.clickable-row').click(function() {
+			var id = $(this).data('id');
+			$('#'+id).hide();
 			document.getElementById("Subject").innerHTML = $(this).data('name');
 			document.getElementById("Message").innerHTML = $(this).data('message');
-
+			var id = $(this).data('id');
 			if ($(this).hasClass("inbox-tr-unread")) {
 				$(this).removeClass("inbox-tr-unread").addClass("inbox-tr");
-				var id = $(this).data('id');
 				$.ajax({
 					url: 'api/notification/read/' +id,
 					type: 'GET',
 					success: function(data) {
 						console.log(data);
-						$("#"+id).hide();
+						// $("#"+id).hide();
 						
 					},
 					error: function(error) {
@@ -73,6 +74,7 @@
 									</table>
 								</div>
 								{{#if notifications}}
+								<div id="pagination">
 								{{#pagination collectionSize page pageSize maxSize}}
 								<nav aria-label="Page navigation example">
 									<ul class="pagination justify-content-center">
@@ -92,6 +94,7 @@
 									</ul>
 								</nav>
 								{{/pagination}}
+								</div>
 								{{else}}
 								<div> No notification received </div>
 								{{/if}}

@@ -6,12 +6,18 @@ const statusCode = require('../../../config/status');
 const marketPlaceType = require('../../../config/marketplace');
 const service = require('../../../api/service');
 const vendorPlan = require('../../../config/gtc-plan');
+const cartService = require('../../../api/cart/cart.service');
+const marketplace = require('../../../config/marketplace');
 const url = require('url');
 
 export function viewListings(req, res) {
 
 	var offset, limit, field, order, page, type, maxSize;;
-	var queryParams = {}, LoggedInUser = {}, bottomCategory = {}, queryURI = {}, queryPaginationObj = {};
+	var queryParams = {},
+		LoggedInUser = {},
+		bottomCategory = {},
+		queryURI = {},
+		queryPaginationObj = {};
 
 	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
@@ -20,26 +26,26 @@ export function viewListings(req, res) {
 	offset = 0;
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-    queryPaginationObj['offset'] = offset;
-    delete req.query.offset;
-    limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
 	queryURI['limit'] = limit;
 	delete req.query.limit;
-    order = req.query.order ? req.query.order : "desc";
-    queryPaginationObj['order'] = order;
-    delete req.query.order;
-    page = req.query.page ? parseInt(req.query.page) : 1;
-    queryPaginationObj['page'] = page;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
 	delete req.query.page;
-	
+
 	offset = (page - 1) * limit;
 
 	if (req.user)
 		LoggedInUser = req.user;
 
 	queryParams['vendor_id'] = LoggedInUser.Vendor.id;
-    type = req.params.type;
+	type = req.params.type;
 
 	if (req.params.type == 'wholesale') {
 		queryParams["marketplace_id"] = marketPlaceType['WHOLESALE'];
@@ -63,16 +69,25 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
+<<<<<<< HEAD
+=======
+	} else {
+		queryParams['status'] = statusCode["ACTIVE"];
+>>>>>>> f3dc0382beb6c528f7dbddff43cb77f7c28c4f4c
 	}
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		products: function(callback) {
 
@@ -108,11 +123,11 @@ export function viewListings(req, res) {
 		},
 	}, function(err, results) {
 		maxSize = results.products.count / limit;
-            if (results.products.count % limit)
-				maxSize++;
+		if (results.products.count % limit)
+			maxSize++;
 
 		queryPaginationObj['maxSize'] = maxSize;
-				
+
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 
@@ -122,7 +137,8 @@ export function viewListings(req, res) {
 				products: results.products.rows,
 				collectionSize: results.products.count,
 				categories: results.categories,
-				cartheader: results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				statusCode: statusCode,
 				page: page,
 				bottomCategory: bottomCategory,

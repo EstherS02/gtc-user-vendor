@@ -238,8 +238,8 @@
 												<div class="form-group mb-2">
 													<div class="input-group gtc-rounded">
 														
-														<input type="text"  name="keyword" {{#if queryURI.keyword}}
-														value={{queryURI.keyword}}{{/if}} class="form-control form-control-sm" placeholder="Search Order#" />
+														<input type="text"  name="keyword"
+														value="{{queryURI.keyword}}" class="form-control form-control-sm" placeholder="Search Order#" />
 														<button type="submit" class="btn btn-sm btn-gtc">
 															<i class="fa fa-search"></i>
 														</button>
@@ -253,7 +253,7 @@
 									<div class="col-sm-12">
 										<div class="cart-top-header">
 											<div class="alignleft cart-top-left">
-												<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+												<span class="m-r-sm text-muted">{{count}}  items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
 											</div>
 											<div class="alignright cart-top-right">
 												<span class="m-r-sm text-muted">

@@ -1,4 +1,5 @@
-	'use strict';
+'use strict';
+
 const sequelize = require('sequelize');
 const populate = require('../../utilities/populate')
 const config = require('../../config/environment');
@@ -8,6 +9,7 @@ const status = require('../../config/status');
 const position = require('../../config/position');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
+const cartService = require('../../api/cart/cart.service');
 const marketplace_type = require('../../config/marketplace_type');
 const productService = require('../../api/product/product.service');
 
@@ -79,13 +81,17 @@ export function wholesale(req, res) {
 					return callback(null);
 				});
 		},
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		wantToSell: function(callback) {
 			queryObj['marketplace_type_id'] = 1;
@@ -130,20 +136,20 @@ export function wholesale(req, res) {
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_type_id'];
 			queryObj['featured_position'] = position.WholesaleLanding;
-            queryObj['is_featured_product'] = 1;
+			queryObj['is_featured_product'] = 1;
 			queryObj['marketplace_id'] = 1;
 
-            limit = 6;
-            var order = [
-                sequelize.fn('RAND'),
-            ];
-            productService.RandomProducts(productModel, queryObj, limit, order)
-                .then(function(response) {
-                    return callback(null, response.rows);
-                }).catch(function(error) {
-                    console.log('Error::', error);
-                    return callback(null);
-                });
+			limit = 6;
+			var order = [
+				sequelize.fn('RAND'),
+			];
+			productService.RandomProducts(productModel, queryObj, limit, order)
+				.then(function(response) {
+					return callback(null, response.rows);
+				}).catch(function(error) {
+					console.log('Error::', error);
+					return callback(null);
+				});
 		},
 		country: function(callback) {
 			delete queryObj['marketplace_id'];
@@ -184,7 +190,9 @@ export function wholesale(req, res) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
 						model['ProductRatings'].findOne({
 							where: vendorAvgRating,
-							attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
 						}).then(function(data) {
 							var ratingObj = JSON.parse(JSON.stringify(data))
 							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
@@ -219,7 +227,7 @@ export function wholesale(req, res) {
 				featuredProducts: results.featuredProducts,
 				wholesalers: results.wholesalers,
 				country: results.country,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				type: results.type,
 				LoggedInUser: LoggedInUser
 			});

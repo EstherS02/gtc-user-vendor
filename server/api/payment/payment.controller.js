@@ -715,6 +715,7 @@ function notifications(order){
 
 // plan payment method starts//
 export function makeplanPayment(req, res) {
+	console.log("plan:::"+req.user);
 	var desc = "GTC Plan Payment";
 	var convertMoment = moment();
 	var start_date =  new Date(convertMoment);

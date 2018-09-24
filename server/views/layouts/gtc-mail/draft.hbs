@@ -58,7 +58,7 @@
 										<tbody>
 											{{#each draftMail}}
 											<tr>
-												<td scope="row"><input type="checkbox" name="selected" value={{this.id}}>
+												<td scope="row"><input type="checkbox" name="selected" value="{{this.id}}">
 												</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{this.Mail.toUser.first_name}}</td>
 												<td class='clickable-row' scope="row" data-href='gtc-mail/drafts/{{this.Mail.id}}'>{{this.Mail.subject}}</td>

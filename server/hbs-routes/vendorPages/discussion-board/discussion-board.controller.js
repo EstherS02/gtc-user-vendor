@@ -8,6 +8,7 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
@@ -78,28 +79,20 @@ export function vendorDiscussion(req, res) {
 			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 		},
 	}];
-	// var includeArr1 = [{
-	// 	model: model['DiscussionBoardPostLike'],
-	// 	where: {
-	// 		status: status['ACTIVE']
-	// 	},
-	// 	attributes: [
-	// 		[sequelize.fn('count', sequelize.col('DiscussionBoardPostLikes.id')), 'count']
-	// 	],
-	// 	group: ['DiscussionBoardPostLikes.discussion_board_post_id'],
-	// 	required: false,
-	// 	[sequelize.fn('COUNT', 'Post.id'), 'PostCount']
-	// }];
 
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		discussion: function(callback) {
 			model['DiscussionBoardPost'].findAll({
@@ -133,15 +126,15 @@ export function vendorDiscussion(req, res) {
 				return callback(null);
 			});
 		},
-		mostPopular: function(callback){
+		mostPopular: function(callback) {
 			model['DiscussionBoardPost'].findAll({
 				where: queryObj,
 				include: [{
-						model: model['DiscussionBoardPostLike'],
-						where: {
-							status: status['ACTIVE']
-						},
-					}],
+					model: model['DiscussionBoardPostLike'],
+					where: {
+						status: status['ACTIVE']
+					},
+				}],
 				offset: 0,
 				limit: 5,
 				order: [
@@ -214,18 +207,11 @@ export function vendorDiscussion(req, res) {
 				});
 		},
 	}, function(err, results) {
-		// console.log(results.discussion, queryObj)
-
 		if (!err) {
-			// var mostPopular = _.groupBy(results.discussion, 'DiscussionBoardPostLike');
-			// console.log("------------==================-----------",results.discussion.count)
 			if (results.discussion) {
-				var maxSize = 5; //results.discussion.count / limit;
-				// if (results.discussion.count % limit)
-				// maxSize++;
+				var maxSize = 5;
 				queryPaginationObj['maxSize'] = maxSize;
 			}
-
 			res.render('vendorPages/vendor-discussion', {
 				title: "Global Trade Connect",
 				discussionBoard: results.discussion,
@@ -234,12 +220,11 @@ export function vendorDiscussion(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
-				cartheader: results.cartCounts,
+				cart: results.cartInfo,
 				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
 				publicShop: results.publicShop,
 				mostPopular: results.mostPopular,
-				// categories: results.categories,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'discussion-board',
 				Plan: Plan,

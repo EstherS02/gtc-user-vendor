@@ -133,6 +133,17 @@ $(document).ready(function() {
 </div>
 <script src="https://js.stripe.com/v3/"></script>
 <script>
+var vendorArray =[];
+var vendorArray1;
+$(document).ready(function(){
+var cartItems = {{{DisplayJSON cartItems}}}
+_.forOwn(cartItems, function(element) {
+	vendorArray.push(element.Product.Vendor.id);
+});
+vendorArray = _.uniq(vendorArray);
+vendorArray1 = JSON.stringify(vendorArray);
+});
+
 var stripe = Stripe('{{stripePublishableKey}}');
 var elements = stripe.elements({
 	fonts: [{
@@ -246,7 +257,7 @@ function makePayment(paymentSettingId) {
 			errorElement.removeClass('alert-danger').addClass('alert-success');
 
 			setTimeout(function() {
-				window.location = '/order-checkout/confirmation';
+				window.location = '/order-checkout/confirmation/'+vendorArray1;
 			}, 1000);
 		},
 		error: function(error) {
