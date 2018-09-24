@@ -1,15 +1,18 @@
 const sequelize = require('sequelize');
-const model = require('../../sqldb/model-connect');
-const config = require('../../config/environment');
-const statusCode = require('../../config/status');
-const service = require('../service');
+const model = require('../sqldb/model-connect');
+const config = require('../config/environment');
+const statusCode = require('../config/status');
+const service = require('../api/service');
 const _ = require('lodash');
-const sendEmail = require('../../agenda/send-email');
-const gtcPlan = require('../../config/gtc-plan');
+const sendEmail = require('./send-email');
+const gtcPlan = require('../config/gtc-plan');
 
 var vendorPlanModel = 'VendorPlan';
 
-export function starterSellerExpires(req, res) {
+export function starterPlanExpire(job, done) {
+
+	console.log("**********JOBS CALLED")
+    console.log('agenda for plan-auto-renewal..');
 
 	var offset, limit, field, order;
 
@@ -57,11 +60,11 @@ export function starterSellerExpires(req, res) {
 			return Promise.all(starterPromise);
 
 		}).then(function(upadtedRows){
-			return res.status(200).send(upadtedRows);
+			done();
 
 		}).catch(function(error){
 			console.log("Error::", error);
-			return res.status(400).send(error);
+			done();
 		});
 }
 
