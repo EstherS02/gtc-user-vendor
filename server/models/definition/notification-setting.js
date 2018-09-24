@@ -55,15 +55,6 @@ module.exports = (sequelize, DataTypes) => {
     });
 };
 module.exports.initRelations = () => {
-    // delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
-    // const model = require('../index');
-    // const Notification = model.Notification;
-    // const User = model.User;
-
-    // Notification.belongsTo(User, {
-    //     foreignKey: 'user_id',
-    //     onDelete: 'NO ACTION',
-    //     onUpdate: 'NO ACTION'
-    // });
+    delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
 };

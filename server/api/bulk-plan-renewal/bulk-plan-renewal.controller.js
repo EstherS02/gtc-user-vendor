@@ -9,10 +9,12 @@ const sendEmail = require('../../agenda/send-email');
 const populate = require('../../utilities/populate');
 const paymentMethod = require('../../config/payment-method');
 const gtcPlan = require('../../config/gtc-plan');
+const moment = require('moment');
 
+const CURRENCY = 'usd';
 var currentDate = new Date();
 
-export function planRenewal(req, res) {
+export function bulkPlanRenewal(req, res) {
 
 	var offset, limit, field, order;
 
@@ -22,54 +24,42 @@ export function planRenewal(req, res) {
 	order = 'asc';
 
 	var planQueryObj = {}, planIncludeArr = [];
-	var vendorModel = 'VendorPlan';
+	var userPlanModel = 'UserPlan';
 
-	planQueryObj['status'] = statusCode['ACTIVE'];
+	//planQueryObj['status'] = statusCode['ACTIVE'];
 	planQueryObj['end_date'] = {
 		'$lt': currentDate
 	}
 
 	planIncludeArr = [
 		{
-			model: model['Vendor'],
+			model: model['User'],
 			where: {
 				status: statusCode['ACTIVE']
 			},
-			attribute: ['id', 'user_id'],
-			include: [
-				{ 
-					model: model['User'],
-					where: {
-						status: statusCode['ACTIVE']
-					},
-					attribute: ['id','email']
-				}
-			]		
+			attribute: ['id','name','email']	
 		},
 		{
 			model: model['Plan'],
 			where: {
-				status: statusCode['ACTIVE'],
-				id: {
-					'$ne': gtcPlan['STARTER_SELLER']
-				}
+				status: statusCode['ACTIVE'],				
 			},
 			attribute:['id','name', 'cost']
 		}
 	]
 
-	service.findAllRows(vendorModel, planIncludeArr, planQueryObj, offset, limit, field, order)
+	service.findAllRows(userPlanModel, planIncludeArr, planQueryObj, offset, limit, field, order)
 		.then(function(plans){
 
 			var primaryCardPromise = [];
-			_.forOwn(plans.rows, function (vendorPlan) {
+			_.forOwn(plans.rows, function (userPlan) {
 
-				primaryCardPromise.push(primaryCardDetails(vendorPlan));
+				primaryCardPromise.push(primaryCardDetails(userPlan));
 			});
 			return Promise.all(primaryCardPromise);
-			
+
 		}).then(function(primaryCard){
-			return res.status(200).send(primaryCard);
+			return res.status(200).send(plans);
 
 		}).catch(function(error){
 			console.log("Error::", error);
@@ -77,77 +67,73 @@ export function planRenewal(req, res) {
 		})
 }
 
-function primaryCardDetails(vendorPlan){
+function primaryCardDetails(userPlan){
 	
 	var cardQueryObj={}, chargedAmount;
 	var paymentSettingModel = 'PaymentSetting';
 
 	cardQueryObj['status'] = statusCode['ACTIVE'];
 	cardQueryObj['is_primary'] = 1;
-	cardQueryObj['user_id'] =  vendorPlan.Vendor.user_id;
+	cardQueryObj['user_id'] =  userPlan.user_id;
 
 	return service.findRow(paymentSettingModel, cardQueryObj, [])
 		.then(function(cardDetails){
 			if(cardDetails){
 
-				planCharge(cardDetails);
 				var desc = "GTC Plan Payment";
-				var currentDate = moment();
-				var start_date =  new Date(currentDate);
-				var end_date = moment().add(30, 'd').toDate();
 
-				return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, vendorPlan.Plan.cost, desc, CURRENCY)
+				return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, userPlan.Plan.cost, desc, CURRENCY)
+					.then(function(paymentDetails){
+						if (paymentDetails.paid = "true"){
+							chargedAmount = paymentDetails.amount / 100.0;
+							var paymentObj = {
+								paid_date: new Date(paymentDetails.created),
+								paid_amount: paymentDetails.amount / 100.0,
+								payment_method: paymentMethod['STRIPE'],
+								status: statusCode['ACTIVE'],
+								payment_response: JSON.stringify(paymentDetails)
+							}
+							return service.createRow('Payment', paymentObj);
+						}
+					}).then(function(paymentRow){
+						if(paymentRow){
+							var userPlanModel = 'UserPlan';
+							var planUpdateObj = {
+								status: statusCode['ACTIVE'],
+								end_date: moment().add(30, 'd').toDate()
+							}
+							autoRenewalMail(userPlan, chargedAmount);
+							return service.updateRow( userPlanModel, planUpdateObj,userPlan.id);
+						}						
+					}).then(function(planRow){
+						return Promise.resolve(planRow);
+					}).catch(function(error){
+						console.log("Error::",error);
+						return Promise.reject(error);
+					})
 			}
 			else{
-				planDeactivate(vendorPlan.id);
-				updatePrimaryCardMail(vendorPlan);
-				return;
-			}
-
-		}).then(function(paymentDetails){
-
-			if (paymentDetails.paid = "true"){
-				chargedAmount = paymentDetails.amount / 100.0;
-				var paymentObj = {
-					paid_date: new Date(paymentDetails.created),
-                    paid_amount: paymentDetails.amount / 100.0,
-                    payment_method: paymentMethod['STRIPE'],
-                    status: status['ACTIVE'],
-                    payment_response: JSON.stringify(paymentDetails)
-				}
-				return service.createRow('Payment', paymentObj);
-			}
-		}).then(function(paymentRow){
-			if(paymentRow){
-				var vendorPlanModel = 'VendorPlan';
+				var userPlanModel = 'UserPlan';
 				var planUpdateObj = {
-					status: statusCode['ACTIVE'],
-					end_date: moment().add(30, 'd').toDate()
+					status: statusCode['INACTIVE']
 				}
-				autoRenewalMail(vendorPlan, chargedAmount);
-				return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.Plan.id);
-			}
-		}).then(function(planRow){
-			return Promise.resolve(planRow);
+				return service.updateRow( userPlanModel, planUpdateObj,userPlan.id)
+					.then(function(planRow){
+						updatePrimaryCardMail(userPlan);
+						return Promise.resolve(planRow);
 
+					}).catch(function(error){
+						console.log("Error::",error);
+						return Promise.reject(error);
+					})
+			}
 		}).catch(function(error){
 			console.log("Error::",error);
 			return Promise.reject(error);
 		})	
 }
 
-function planDeactivate(planId){
-
-	var vendorModel = 'VendorPlan';
-	var planUpdateObj = {
-		status: statusCode['INACTIVE']
-	}
-	return service.updateRow( vendorModel, planUpdateObj,planId);
-}
-
-function updatePrimaryCardMail(vendorPlan) {
-
-	var vendor = vendorPlan.Vendor;
+function updatePrimaryCardMail(userPlan) {
 	
 	var emailTemplateQueryObj = {};
     var emailTemplateModel = "EmailTemplate";
@@ -157,13 +143,13 @@ function updatePrimaryCardMail(vendorPlan) {
         .then(function (response) {
             if (response) {
 
-                var email = vendor.User.email;
+                var email = userPlan.User.email;
 
                 var subject = response.subject;
 				var body = response.body;
-				body = body.replace('%USERNAME%', vendor.vendor_name);
-				body = body.replace('%PLAN_NAME%', vendorPlan.Plan.name);
-				body = body.replace('%EXPIRED_DATE%', vendorPlan.end_date);
+				body = body.replace('%USERNAME%', userPlan.User.first_name);
+				body = body.replace('%PLAN_NAME%', userPlan.Plan.name);
+				body = body.replace('%EXPIRED_DATE%', userPlan.end_date);
 
                 sendEmail({
                     to: email,
@@ -181,9 +167,7 @@ function updatePrimaryCardMail(vendorPlan) {
         });
 }
 
-function autoRenewalMail(vendorPlan, chargedAmount){
-
-	var vendor = vendorPlan.Vendor;
+function autoRenewalMail(userPlan, chargedAmount){
 	
 	var emailTemplateQueryObj = {};
     var emailTemplateModel = "EmailTemplate";
@@ -197,9 +181,9 @@ function autoRenewalMail(vendorPlan, chargedAmount){
 
                 var subject = response.subject;
 				var body = response.body;
-				body = body.replace('%USERNAME%', vendor.vendor_name);
-				body = body.replace('%PLAN_NAME%', vendorPlan.Plan.name);
-				body = body.replace('%EXPIRED_DATE%', vendorPlan.end_date);
+				body = body.replace('%USERNAME%', userPlan.User.first_name);
+				body = body.replace('%PLAN_NAME%', userPlan.Plan.name);
+				body = body.replace('%EXPIRED_DATE%', userPlan.end_date);
 				body = body.replace('%CURRENT_DATE%', currentDate);
 				body = body.replace('%AMOUNT%', chargedAmount);
 

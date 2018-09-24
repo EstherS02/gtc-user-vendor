@@ -82,7 +82,8 @@ var all = {
 			returnRequest: 'USER-RETURN-REQUEST',
 			refundRequest: 'VENDOR-TO-REFUND',
 			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
-			planAutoRenewal : 'PLAN-AUTO-RENEWAL'
+			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
+			starterPlanExpire : 'STARTER-SELLER-EXPIRE'
         }
     },
     //Notification
