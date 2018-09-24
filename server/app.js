@@ -39,7 +39,7 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 agenda.on('ready', function() {
 	agenda.every('0 0 * * *', 'couponExpiry');
 	agenda.every('8 hours', 'vendorPayouts');
-	agenda.every('12 hours', 'planRenewal');
+	//agenda.every('12 hours', 'planRenewal');
 	agenda.start();
 });
 
