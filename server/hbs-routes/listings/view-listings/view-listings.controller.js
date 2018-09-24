@@ -69,12 +69,7 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
-<<<<<<< HEAD
-=======
-	} else {
-		queryParams['status'] = statusCode["ACTIVE"];
->>>>>>> f3dc0382beb6c528f7dbddff43cb77f7c28c4f4c
-	}
+	} 
 
 	async.series({
 		cartInfo: function(callback) {
