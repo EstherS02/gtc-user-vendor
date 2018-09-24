@@ -7,6 +7,7 @@ const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
@@ -24,7 +25,7 @@ export function vendorServices(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
 	var bottomCategory = {};
@@ -61,13 +62,17 @@ export function vendorServices(req, res) {
 
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		publicService: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -85,14 +90,14 @@ export function vendorServices(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					// vendor_verified_status: status['ACTIVE']
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 
 			}, {
 				model: model['VendorFollower'],
@@ -101,7 +106,7 @@ export function vendorServices(req, res) {
 					status: 1
 				},
 				required: false
-			},{
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
@@ -170,11 +175,11 @@ export function vendorServices(req, res) {
 				publicService: results.publicService,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
-				page:page,
+				page: page,
 				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services',
 				Plan: Plan,
@@ -183,6 +188,4 @@ export function vendorServices(req, res) {
 			res.render('vendor-services', err);
 		}
 	});
-
-
 }

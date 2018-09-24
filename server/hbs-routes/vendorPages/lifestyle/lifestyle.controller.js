@@ -8,6 +8,7 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
@@ -64,14 +65,19 @@ export function vendorLifestyle(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
+
 		publicLifestyle: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
@@ -88,14 +94,14 @@ export function vendorLifestyle(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					// vendor_verified_status: status['ACTIVE']
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 
 			}, {
 				model: model['VendorFollower'],
@@ -104,7 +110,7 @@ export function vendorLifestyle(req, res) {
 					status: 1
 				},
 				required: false
-			},{
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
@@ -177,7 +183,7 @@ export function vendorLifestyle(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle',
 				Plan: Plan,
@@ -186,7 +192,4 @@ export function vendorLifestyle(req, res) {
 			res.render('vendor-lifestyle', err);
 		}
 	});
-
-
-
 }

@@ -7,6 +7,7 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const position = require('../../config/position');
 const marketplace = require('../../config/marketplace');
+const cartService = require('../../api/cart/cart.service');
 const service = require('../../api/service');
 const async = require('async');
 const productService = require('../../api/product/product.service');
@@ -31,13 +32,17 @@ export function services(req, res) {
 	queryObj['marketplace_id'] = 3;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -62,18 +67,18 @@ export function services(req, res) {
 		},
 		featuredService: function(callback) {
 			queryObj['featured_position'] = position.ServiceLanding;
-            queryObj['is_featured_product'] = 1;
-            limit = 6;
-            var order = [
-                sequelize.fn('RAND'),
-            ];
-            productService.RandomProducts(productModel, queryObj, limit, order)
-                .then(function(response) {
-                    return callback(null, response.rows);
-                }).catch(function(error) {
-                    console.log('Error::', error);
-                    return callback(null);
-                });
+			queryObj['is_featured_product'] = 1;
+			limit = 6;
+			var order = [
+				sequelize.fn('RAND'),
+			];
+			productService.RandomProducts(productModel, queryObj, limit, order)
+				.then(function(response) {
+					return callback(null, response.rows);
+				}).catch(function(error) {
+					console.log('Error::', error);
+					return callback(null);
+				});
 		},
 		serviceProduct: function(callback) {
 			const includeArr = [];
@@ -109,7 +114,9 @@ export function services(req, res) {
 						vendorAvgRating['vendor_id'] = aVendor.id;
 						model['ProductRatings'].findOne({
 							where: vendorAvgRating,
-							attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
 						}).then(function(data) {
 							var ratingObj = JSON.parse(JSON.stringify(data))
 							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
@@ -138,7 +145,7 @@ export function services(req, res) {
 				featuredService: results.featuredService,
 				serviceProduct: results.serviceProduct,
 				servicesProviders: results.servicesProviders,
-				cartheader: results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

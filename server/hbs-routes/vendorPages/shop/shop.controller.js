@@ -9,6 +9,7 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const cartService = require('../../../api/cart/cart.service');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
@@ -60,13 +61,17 @@ export function vendorShop(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		publicShop: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -84,13 +89,13 @@ export function vendorShop(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 			}, {
 				model: model['VendorFollower'],
 				where: {
@@ -158,7 +163,6 @@ export function vendorShop(req, res) {
 		},
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
-		console.log(results.VendorDetail)
 		if (!err) {
 			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",
@@ -173,7 +177,7 @@ export function vendorShop(req, res) {
 				bottomCategory: bottomCategory,
 				categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				selectedPage: 'shop',
 				Plan: Plan,
 			});
@@ -181,7 +185,4 @@ export function vendorShop(req, res) {
 			res.render('vendor-shop', err);
 		}
 	});
-
-
-
 }

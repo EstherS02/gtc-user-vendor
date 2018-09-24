@@ -8,6 +8,8 @@ const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const async = require('async');
+const marketplace = require('../../config/marketplace');
+const cartService = require('../../api/cart/cart.service');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function wishlist(req, res) {
@@ -18,13 +20,13 @@ export function wishlist(req, res) {
 	var queryURI = {};
 	if (req.user)
 		LoggedInUser = req.user;
-	var queryPaginationObj={};
+	var queryPaginationObj = {};
 	let user_id = LoggedInUser.id;
 
 	var field = 'created_on';
 	var order = "desc";
 	// var offset = 0;
-	var limit,offset,page;
+	var limit, offset, page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
 	delete req.query.offset;
@@ -47,7 +49,7 @@ export function wishlist(req, res) {
 	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	// var field = "id";
-	 offset = (page - 1) * limit;
+	offset = (page - 1) * limit;
 	queryPaginationObj['offset'] = offset;
 	var maxSize;
 	// var vendor_id = req.user.Vendor.id;
@@ -63,7 +65,7 @@ export function wishlist(req, res) {
 	queryObj = {
 		user_id: req.user.id,
 		status: 1
-	}; 
+	};
 	var wishModel = 'WishList';
 	var includeArr = [{
 		model: model['Product'],
@@ -82,14 +84,18 @@ export function wishlist(req, res) {
 		}]
 	}];
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
+					return callback(null);
+				}
+			},
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
@@ -107,9 +113,9 @@ export function wishlist(req, res) {
 				const categoryField = "id";
 				const categoryOrder = "asc";
 				const categoryQueryObj = {};
-	
+
 				categoryQueryObj['status'] = statusCode["ACTIVE"];
-	
+
 				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
 						var categories = category.rows;
@@ -123,15 +129,14 @@ export function wishlist(req, res) {
 			},
 		},
 		function(err, results) {
-			
+
 			if (!err) {
-				if(results.wishlist){
-				var maxSize = results.wishlist.count / limit;
-				if (results.wishlist.count % limit)
-					maxSize++;
-				queryPaginationObj['maxSize'] = maxSize;
-				}
-				else{
+				if (results.wishlist) {
+					var maxSize = results.wishlist.count / limit;
+					if (results.wishlist.count % limit)
+						maxSize++;
+					queryPaginationObj['maxSize'] = maxSize;
+				} else {
 					queryPaginationObj['maxSize'] = 2;
 				}
 				res.render('userNav/wishlist', {
@@ -139,10 +144,11 @@ export function wishlist(req, res) {
 					wishlist: results.wishlist.rows,
 					count: results.wishlist.count,
 					categories: results.categories,
-				    bottomCategory: bottomCategory,
-				    cartheader: results.cartCounts,
+					bottomCategory: bottomCategory,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
-					vendorPlan:vendorPlan,
+					vendorPlan: vendorPlan,
 					queryURI: queryURI,
 					queryPaginationObj: queryPaginationObj,
 					selectedPage: "wishlist",
