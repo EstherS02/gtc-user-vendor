@@ -63,13 +63,8 @@ export function viewListings(req, res) {
 	if (req.query.status) {
 		queryURI['status'] = req.query.status;
 		queryParams['status'] = statusCode[req.query.status]
-	}else{
-        queryParams['status'] = statusCode["ACTIVE"];
 	}
 
-	var queryObjCategory = {
-		status: statusCode['ACTIVE']
-	};
 	async.series({
 		cartCounts: function(callback) {
 			service.cartHeader(LoggedInUser).then(function(response) {
