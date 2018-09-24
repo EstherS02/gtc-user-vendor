@@ -33,7 +33,7 @@ export async function cartCalculation(userID, promoCode) {
 		where: {
 			status: status['ACTIVE']
 		},
-		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price'],
+		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq'],
 		include: [{
 			model: model['Vendor'],
 			attributes: ['id', 'vendor_name']

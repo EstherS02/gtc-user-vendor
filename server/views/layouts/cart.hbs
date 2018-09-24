@@ -166,22 +166,14 @@
 			type: 'POST',
 			data: cartInfo,
 			success: function(updateData) {
-				// $('#gtc-coupon-alert').prop('disabled', false);
-				// $('#gtc-coupon-alert').removeClass('alert-danger').addClass('alert-success');
-				// $('#gtc-coupon-alert .coupon-message').text(updateData.message_details);
-				// $("#gtc-coupon-alert").fadeTo(2000, 500).slideUp(500, function() {
-				// });
-				// 	$("#gtc-coupon-alert").slideUp(500);
 				if (updateData.status == 'error') {
 					$('#gtc-coupon-alert').notify(updateData.message_details, "error");
 				} else {
 					$('#gtc-coupon-alert').notify("Success", "success");
 					$("#coupon-input-code").val('');
 				}
-
 			},
 			error: function(error) {
-				console.log("Error occured while updating", error);
 				$('#gtc-coupon-alert').notify(error.responseJSON.message_details, "error");
 			}
 		});
@@ -191,13 +183,13 @@
 		location.href = "/order-checkout/customer-information";
 	}
 	$(document).ready(function() {
-		// $('#gtc-coupon-alert').hide();
 		$('#gtc-cart-alert').hide();
 		$('#gtc-cart-alert1').hide();
 	});
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
-<div id="vendorAlert" tabindex="1"><div class="gtc-container"></div></div>
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
+<div id="vendorAlert" tabindex="1">
+	<div class="gtc-container"></div>
+</div>
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">
@@ -225,164 +217,317 @@
 			<div class="row no-margins">
 				<div class="col-sm-9half no-padding bg-white">
 					<div class="header-left header-lg gtc-p-l-r">
-						<h2 class="header-lg-text alignleft text-white">MY SHOPPING CART</h2><span class="header-lg-span text-white">({{cartItemsCount}}
-							Items Total)</span>
+						<h2 class="header-lg-text alignleft text-white">MY SHOPPING CART</h2>
+						<span class="header-lg-span text-white">({{cart.total_items}} Items Total)</span>
 					</div>
-					{{#if isCartEmpty}}
-						<div class="gtc-p-l-r">
-							<h3 class="empty-msg text-primary">Your Shopping Cart is empty.</h3>
-						</div>
-					{{else}}
-						<div class="alert" id="gtc-cart-alert1">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="cart-message"></span>
-						</div>
-						{{#each marketPlaces as |marketPlace|}}
-							{{#each ../seperatedItemsList}}
-								{{#ifCond marketPlace.code '==' @key}}
-									<div class="mini-header bg{{marketPlace.id}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</div>
-									<div class="m-cart-body">
-										<table class="table cart-inner-table m-b-none">
-											<thead>
+					{{#if cart.total_items}}
+						{{#each cart.marketplace_products}}
+							{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+								<div class="mini-header bg{{@key}}">WHOLESALE ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Price</th>
+												<th width="15%">QTY</th>
+												<th width="15%" class="text-right">Total Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
 												<tr>
-													<th width="45%">Product</th>
-													<th width="25%">Price</th>
-													<th width="15%">QTY</th>
-													<th width="15%" class="text-right">Total Price</th>
-												</tr>
-											</thead>
-											<tbody>
-												{{#each ../../cartItems as |cartItem|}} {{#ifCond marketPlace.id '===' cartItem.Product.Marketplace.id }}
-														<tr>
-															<td class="d-flex">
-																<div class="col-4 product-left-col">
-																	<a href="../products/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" >
-																		<img class="object-fit" onError="imgError(this)" src="{{cartItem.Product.ProductMedia.[0].url}}">
-																	</a>
-																</div>
-																<div class="col-8">
-																	<div class="product-middle-col">
-																		{{#ifCond marketPlace.id '==' 1}}
-																			<h3 class="m-cart-title">
-																				<a href="../wholesale/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}"
-																				 class="text-black">{{cartItem.Product.product_name}}</a>
-																			</h3>
-																		{{/ifCond}}
-																		{{#ifCond marketPlace.id '==' 2}}
-																			<h3 class="m-cart-title">
-																				<a href="../shop/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}"
-																				 class="text-black">{{cartItem.Product.product_name}}</a>
-																			</h3>
-																		{{/ifCond}}
-																		{{#ifCond marketPlace.id '==' 3}}
-																			<h3 class="m-cart-title">
-																				<a href="../services/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}"
-																				 class="text-black">{{cartItem.Product.product_name}}</a>
-																			</h3>
-																		{{/ifCond}}
-																		{{#ifCond marketPlace.id '==' 4}}
-																			<h3 class="m-cart-title">
-																				<a href="../lifestyle/{{cartItem.Product.product_slug}}/{{cartItem.Product.id}}" title="{{cartItem.Product.product_name}}"
-																				 class="text-black">{{cartItem.Product.product_name}}</a>
-																			</h3>
-																		{{/ifCond}}
-																		<div class="row no-margins">
-																			<div class="col-md-4 col-4 no-padding">
-																				<span>Origin</span>
-																			</div>
-																			<div class="col-md-8 col-8 no-padding overflow-txt">
-																				<span class="text-500">{{cartItem.Product.Country.name}}</span>
-																			</div>
-																			<div class="col-md-4 col-4 no-padding">
-																				<span>Category</span>
-																			</div>
-																			{{#ifCond marketPlace.id '==' 1}}
-																				<div class="col-md-8 col-8 no-padding overflow-txt">
-																					<a class="text-500" href="../wholesale/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}"
-																					 title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
-																				</div>
-																			{{/ifCond}}
-																			{{#ifCond marketPlace.id '==' 2}}
-																				<div class="col-md-8 col-8 no-padding overflow-txt">
-																					<a class="text-500" href="../shop/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}"
-																					 title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
-																				</div>
-																			{{/ifCond}}
-																			{{#ifCond marketPlace.id '==' 3}}
-																				<div class="col-md-8 col-8 no-padding overflow-txt">
-																					<a class="text-500" href="../services/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}"
-																					 title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
-																				</div>
-																			{{/ifCond}}
-																			{{#ifCond marketPlace.id '==' 4}}
-																				<div class="col-md-8 col-8 no-padding overflow-txt">
-																					<a class="text-500" href="../lifestyle/search?category={{cartItem.Product.Category.id}}&sub_category={{cartItem.Product.SubCategory.id}}"
-																					 title="{{cartItem.Product.Category.name}} > {{cartItem.Product.SubCategory.name}}">{{cartItem.Product.Category.name}}>{{cartItem.Product.SubCategory.name}}</a>
-																				</div>
-																			{{/ifCond}}
-																			<div class="col-md-4 col-4 no-padding">
-																				<span>Seller</span>
-																			</div>
-																			<div class="col-md-8 col-8 no-padding overflow-txt">
-																				{{#if ../../../LoggedInUser.email}}
-																					<a class="text-500" title="{{cartItem.Product.Vendor.vendor_name}}" href="/vendor/{{cartItem.Product.vendor_id}}">{{cartItem.Product.Vendor.vendor_name}}</a>
-																				{{else}}
-																					<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
-																				{{/if}}
-																			</div>
-																		</div>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																		class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Seller</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		{{#if @root.LoggedInUser.id}}
+																			<a class="text-500" title="{{this.Product.Vendor.vendor_name}}" href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+																		{{else}}
+																			<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+																		{{/if}}
 																	</div>
 																</div>
-															</td>
-															<td>
-																<span class="price-tag d-block text-blue">{{currency cartItem.Product.price '$'}}</span>
-																{{#if cartItem.Product.moq}}
-																	<small class="m-qty">Minimum Order Quantity: {{cartItem.Product.moq}}</small>
-																{{/if}}
-															</td>
-															<td>
-																{{#if cartItem.quantity}}
-																	<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.quantity}}
-																	 class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-																{{else}}
-																	<input id="inputQty{{cartItem.id}}" type="number" placeholder="1" min="1" value={{cartItem.Product.moq}}
-																	 class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-																{{/if}}
-																<a href="javascript:;" onclick="UpdateGtcCart(`{{cartItem.Product.id}}`,`{{cartItem.id}}`,`{{cartItem.Product.moq}}`,`{{cartItem.Product.product_name}}`)"
-																 class="text-xs m-l-xs">
-																	<small>Update</small>
-																</a>
-															</td>
-															<td class="text-right">
-																{{#if cartItem.quantity}}
-																	<span class="price-tag m-b-xs d-block">{{quantityPrice cartItem.quantity cartItem.Product.price '$'}}</span>
-																	<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;"
-																	 class="btn btn-sm btn-primary">REMOVE</button>
-																{{else}}
-																	<span class="price-tag m-b-xs d-block">{{quantityPrice cartItem.Product.moq cartItem.Product.price '$'}}</span>
-																	<button type="button" id="remove-cart-{{cartItem.id}}" onclick="removeGtcCart(`{{cartItem.id}}`)" href="javascript:;"
-																	 class="btn btn-sm btn-primary">REMOVE</button>
-																{{/if}}
-															</td>
-														</tr>
-													{{/ifCond}} {{/each}}
-											<tbody>
-										</table>
-									</div>
-								{{/ifCond}}
-							{{/each}}
+															</div>
+														</div>
+													</td>
+													<td>
+														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+													</td>
+													<td>
+														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+														<a href="javascript:;" class="text-xs m-l-xs">
+															<small>Update</small>
+														</a>
+													</td>
+													<td class="text-right">
+														{{#if this.quantity}}
+															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+														{{/if}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+								<div class="mini-header bg{{@key}}">SHOP ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Price</th>
+												<th width="15%">QTY</th>
+												<th width="15%" class="text-right">Total Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																		class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Seller</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		{{#if @root.LoggedInUser.id}}
+																			<a class="text-500" title="{{this.Product.Vendor.vendor_name}}" href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+																		{{else}}
+																			<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+																		{{/if}}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+													</td>
+													<td>
+														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+														<a href="javascript:;" class="text-xs m-l-xs">
+															<small>Update</small>
+														</a>
+													</td>
+													<td class="text-right">
+														{{#if this.quantity}}
+															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+														{{/if}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+								<div class="mini-header bg{{@key}}">SERVICE ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Price</th>
+												<th width="15%">QTY</th>
+												<th width="15%" class="text-right">Total Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../services/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																		class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../services/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Seller</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		{{#if @root.LoggedInUser.id}}
+																			<a class="text-500" title="{{this.Product.Vendor.vendor_name}}" href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+																		{{else}}
+																			<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+																		{{/if}}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+													</td>
+													<td>
+														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+														<a href="javascript:;" class="text-xs m-l-xs">
+															<small>Update</small>
+														</a>
+													</td>
+													<td class="text-right">
+														{{#if this.quantity}}
+															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+														{{/if}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
+							{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+								<div class="mini-header bg{{@key}}">LIFESTYLE SUBSCRIPTION ITEMS ({{this.count}})</div>
+								<div class="m-cart-body">
+									<table class="table cart-inner-table m-b-none">
+										<thead>
+											<tr>
+												<th width="45%">Product</th>
+												<th width="25%">Price</th>
+												<th width="15%">QTY</th>
+												<th width="15%" class="text-right">Total Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{#each this.products}}
+												<tr>
+													<td class="d-flex">
+														<div class="col-4 product-left-col">
+															<a href="../lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img class="object-fit" onError="imgError(this)" src="{{this.Product.ProductMedia.[0].url}}">
+															</a>
+														</div>
+														<div class="col-8">
+															<div class="product-middle-col">
+																<h3 class="m-cart-title">
+																	<a href="../lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
+																		class="text-black">{{this.Product.product_name}}</a>
+																</h3>
+																<div class="row no-margins">
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Origin</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<span class="text-500">{{this.Product.Country.name}}</span>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Category</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		<a class="text-500" href="../lifestyle/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
+																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																	</div>
+																	<div class="col-md-4 col-4 no-padding">
+																		<span>Seller</span>
+																	</div>
+																	<div class="col-md-8 col-8 no-padding overflow-txt">
+																		{{#if @root.LoggedInUser.id}}
+																			<a class="text-500" title="{{this.Product.Vendor.vendor_name}}" href="/vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+																		{{else}}
+																			<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
+																		{{/if}}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+													</td>
+													<td>
+														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
+														<a href="javascript:;" class="text-xs m-l-xs">
+															<small>Update</small>
+														</a>
+													</td>
+													<td class="text-right">
+														{{#if this.quantity}}
+															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+														{{/if}}
+													</td>
+												</tr>
+											{{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/ifCond}}
 						{{/each}}
-						<button class="btn btn-md btn-success m-t-sm" onclick="location.href = '/'">CONTINUE SHOPPING</button>
-						<button class="btn btn-md btn-primary m-t-sm m-r-xll alignright" id="UpdateTalks" onclick="UpdateAllCartItems()">UPDATE
-							CART</button>
-						<div class="alert" id="gtc-cart-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="cart-message"></span>
-						</div>
+					{{else}}
 					{{/if}}
 				</div>
 				<div class="col-sm-3half no-padding">
@@ -390,54 +535,88 @@
 						<h2 class="header-lg-text">YOUR ORDER</h2>
 					</div>
 					<div class="cart-summary">
-						{{#ifCond isCartEmpty '!=' true}}
-							{{#each marketPlaces as |marketplace|}}
-								{{#each ../totalPriceList as |totalPrice|}}
-									{{#ifCond marketplace.code '==' @key}}
-										<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
-										<div class="cart-hr-line"></div>
-										<div class="summary-m-total">
-											<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
-											<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
-										</div>
-										<div class="cart-hr-line"></div>
-										<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}}
-											TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
-									{{/ifCond}}
-								{{/each}}
+						{{#if cart.total_items}}
+							{{#each cart.marketplace_summary}}
+								{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">WHOLESALE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Shop Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SHOP TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Service Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SERVICE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Subscription Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SUBSCRIPTION TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
 							{{/each}}
 							<div class="grand-total">
-								<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
+								<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL
+									<span>{{currency cart.grant_total_with_discounted_amount '$'}}</span>
+								</p>
 							</div>
-							{{#if existCoupons}}
-							<div class="m-t-sm" style="text-align:center">
-								<label class="m-b-xs">Promo Code #{{existCoupons.code}} Applied</label>
-								<p ><strong class="text-black" > - {{#ifCond existCoupons.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed existCoupons.discount_value}} {{#ifCond existCoupons.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
-							</div>
-							{{else}}
-							<div class="m-t-sm">
-								<label class="m-b-xs"><strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
-								<div class="input-group mb-3" id="gtc-coupon-alert">
-									<input type="text" name="coupon_code" class="form-control text-control" id="inputCouponCode">
-									<div class="input-group-append">
-										<button class="btn btn-sm" type="button" id="inputBtnApplyCoupon" onclick="applyGTCCoupon()"><i class="fas fa-caret-right"></i></button>
-									</div>
-								</div>
-							</div>
-							{{/if}}
-							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left"
-							 style="background: #e62345;">
+							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
 								<span class="ladda-spinner"></span>
 							</button>
 							<img src="../img/payment-methods.jpg" class="img-fluid w-100">
+						{{/if}}
 					</div>
-					{{/ifCond}}
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-</div>
 </div>
 {{> footer/bottom-footer}}
