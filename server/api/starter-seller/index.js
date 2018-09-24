@@ -3,10 +3,8 @@
 var express = require('express');
 var router = express.Router();
 
-var controller = require('./plan-renewal.controller');
+var controller = require('./starter-seller.controller');
 
-router.get('/', controller.planRenewal);
+router.get('/', controller.starterSellerExpires);
 
 module.exports = router;
-
-

@@ -42,11 +42,8 @@ export default function(app) {
 	app.use('/api/export-csv', require('./api/export-csv'));
 	app.use('/api/stripe', require('./api/stripe'));
 	app.use('/api/paypal', require('./api/paypal'));
-	
-	app.use('/api/plan-renewal', require('./api/plan-renewal'));
-
-
-    app.use('/api/advertisement', require('./api/advertisement'));
+	app.use('/api/advertisement', require('./api/advertisement'));
+	app.use('/api/starter-seller', require('./api/starter-seller'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
 
