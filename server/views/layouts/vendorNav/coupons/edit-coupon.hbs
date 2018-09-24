@@ -170,7 +170,7 @@
 								<div class="row">
 									<div class="col-4">
 										<div class="form-group">
-											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{coupon.discount_value}}" placeholder="Discount value" required="true">
+											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.discount_value}}" placeholder="Discount value" required="true">
 										</div>
 									</div>
 								</div>
@@ -205,7 +205,7 @@
 								<div class="row">
 									<div class="col-4">
 										<div class="form-group">
-											<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{coupon.minimum_spend}}" placeholder="Minimum Spend">
+											<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.minimum_spend}}" placeholder="Minimum Spend">
 										</div>
 									</div>
 									<div class="col-6 no-padding">
@@ -215,7 +215,7 @@
 								<div class="row">
 									<div class="col-4">
 										<div class="form-group">
-											<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{coupon.maximum_spend}}" placeholder="Maximum Spend">
+											<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.maximum_spend}}" placeholder="Maximum Spend">
 										</div>
 									</div>
 									<div class="col-6 no-padding">
