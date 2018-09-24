@@ -282,7 +282,7 @@ function CartPage() {
 												<div class="col">
 													{{#if LoggedInUser.first_name}}
 													<div class="form-group">
-														<input type="text" name="billing_first_name" value={{LoggedInUser.first_name}} class="form-control form-control-sm input-rounded-border" placeholder="First name" required="required">
+														<input type="text" name="billing_first_name" value="{{LoggedInUser.first_name}}" class="form-control form-control-sm input-rounded-border" placeholder="First name" required="required">
 													</div>
 													{{else}}
 													<div class="form-group">
@@ -293,7 +293,7 @@ function CartPage() {
 												<div class="col">
 													{{#if LoggedInUser.last_name}}
 													<div class="form-group">
-														<input type="text" name="billing_last_name" value={{LoggedInUser.last_name}} class="form-control form-control-sm input-rounded-border" placeholder="Last name">
+														<input type="text" name="billing_last_name" value="{{LoggedInUser.last_name}}" class="form-control form-control-sm input-rounded-border" placeholder="Last name">
 													</div>
 													{{else}}
 													<div class="form-group">
