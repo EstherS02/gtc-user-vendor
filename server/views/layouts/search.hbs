@@ -265,12 +265,12 @@ function redirectBack() {
 			{{#ifCond queryURI.is_featured_product "!=" 1}}
 			<div class="search-list-body">
 				<div class="row">
-					{{!-- {{#ifCond topFeaturedProducts.count '==' 0}}
+					{{#ifCond topFeaturedProducts.count '==' 0}}
 					<div class="col-md-12">
 						<p class="text-primary text-center no-margins">No featured products available.</p>
 					</div>
 					{{/ifCond}}
- --}}				{{#ifCond layout_type "==" 'grid'}}
+				{{#ifCond layout_type "==" 'grid'}}
 					{{#each topFeaturedProducts.rows}}
 					<div class="col-md-4">
 						<div class="product-body">
