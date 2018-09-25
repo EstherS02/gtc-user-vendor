@@ -77,17 +77,17 @@
 		fn.alertService = function(statusCode, responseText) {
 			$("#vendorAlert .gtc-container").empty();
 			if (statusCode == 200 || statusCode == 201) {
-				$("#vendorAlert").addClass("vendor-alert alert-success");
+				$("#vendorAlert").addClass("vendor-alert msg-success");
 				$("#vendorAlert .gtc-container").append("<span>" + responseText + "</span>");
 				$("#vendorAlert").focus();
 			} else if (statusCode == 400 || statusCode == 500 || statusCode == 404) {
-				$("#vendorAlert").addClass("vendor-alert alert-danger");
+				$("#vendorAlert").addClass("vendor-alert msg-danger");
 				$("#vendorAlert .gtc-container").append("<span>" + responseText + "</span>");
 				$("#vendorAlert").focus();
 			}
 			setTimeout(function() {
 				$("#vendorAlert .gtc-container").empty();
-				$("#vendorAlert").removeClass("vendor-alert alert-success");
+				$("#vendorAlert").removeClass("vendor-alert msg-success");
 			}, 10000);
 		}
 	}

@@ -19,7 +19,6 @@
 			}),
 			processData: false,
 			success: function(data, statusText, xhr) {
-				auth.alertService(xhr.status, data);
 				location.reload();
 			},
 			error: function(request, status, error) {
@@ -144,34 +143,10 @@
 		}
 	}
 
-	function applyGTCCouponOld() {
-		var cartInfo = {};
-		cartInfo.coupon_code = $("#coupon-input-code").val();
-		if (!cartInfo.coupon_code) {
-			alert('Please enter promo code to apply coupon code');
-			return false;
-		}
-		$.ajax({
-			url: '/api/cart/apply-coupon',
-			type: 'POST',
-			data: cartInfo,
-			success: function(updateData) {
-				if (updateData.status == 'error') {
-					$('#gtc-coupon-alert').notify(updateData.message_details, "error");
-				} else {
-					$('#gtc-coupon-alert').notify("Success", "success");
-					$("#coupon-input-code").val('');
-				}
-			},
-			error: function(error) {
-				$('#gtc-coupon-alert').notify(error.responseJSON.message_details, "error");
-			}
-		});
-	}
-
 	function orderCheckout() {
 		location.href = "/order-checkout/customer-information";
 	}
+
 	$(document).ready(function() {
 		$('#gtc-cart-alert').hide();
 		$('#gtc-cart-alert1').hide();
