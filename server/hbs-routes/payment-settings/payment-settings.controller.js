@@ -126,7 +126,8 @@ export function paymentSettings(req, res) {
 					currency: results.currency,
 					vendorPaymentInfo: results.vendorPaymentInfo,
 					connectUrl: connectUrl,
-					payPalOAuthUrl: payPalOAuthUrl
+					payPalOAuthUrl: payPalOAuthUrl,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/payment-settings', err);

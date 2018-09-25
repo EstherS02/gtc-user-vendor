@@ -159,18 +159,37 @@
 								<div class="row">
 									<div class="col-4">
 										<div class="form-group">
-											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.discount_value}}" placeholder="Discount value" required="true">
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-4">
-											<div class="form-group">
-												<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{coupon.discount_value}}" placeholder="Discount value" required="true">
+											<div class="select-container">
+												<select name="discount_type" id="inputDiscountType" class="form-control-customized form-control-sm" required="true">
+													{{#select coupon.discount_type}}
+														<option value='' selected disabled="true">Discount Type</option>
+														<option value="1">Percentage</option>
+														<option value="2">Fixed Price</option>
+														{{/select}}
+												</select>
 											</div>
 										</div>
 									</div>
-									{{#if coupon.id }}
-										<div class="row">
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<div class="form-group">
+											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.discount_value}}" placeholder="Discount value" required="true">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<div class="form-group">
+											<input type="text" name="expiry_date" id="inputExpiryDate" class="form-control-customized form-control-sm" value="{{coupon.expiry_date}}" placeholder="YYYY-MM-DD" required="false">
+										</div>
+									</div>
+									<div class="col-2 no-padding">
+										<label class="label-control vend_edit_list_spanstyle">Expiry date</label>
+									</div>
+								</div>
+								{{#if coupon.id }}
+									<div class="row">
 										<div class="col-4">
 											<div class="form-group">
 												<div class="select-container">
@@ -186,42 +205,11 @@
 											</div>
 										</div>
 									</div>
-<<<<<<< HEAD
 									{{/if}}
 									<div class="row">
 										<div class="col-4">
 											<div class="form-group">
-												<input type="text" name="expiry_date" id="inputExpiryDate" class="form-control-customized form-control-sm" value="{{coupon.expiry_date}}" placeholder="YYYY-MM-DD" required="false">
-											</div>
-										</div>
-										<div class="col-2 no-padding">
-											<label class="label-control vend_edit_list_spanstyle">Expiry date</label>
-=======
-									<div class="col-2 no-padding">
-										<label class="label-control vend_edit_list_spanstyle">Expiry date</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.minimum_spend}}" placeholder="Minimum Spend">
-										</div>
-									</div>
-									<div class="col-6 no-padding">
-										<label class="label-control vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allowed to use the coupon</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.maximum_spend}}" placeholder="Maximum Spend">
->>>>>>> f3dc0382beb6c528f7dbddff43cb77f7c28c4f4c
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-4">
-											<div class="form-group">
-												<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{coupon.minimum_spend}}" placeholder="Minimum Spend">
+												<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.minimum_spend}}" placeholder="Minimum Spend">
 											</div>
 										</div>
 										<div class="col-6 no-padding">
@@ -231,7 +219,7 @@
 									<div class="row">
 										<div class="col-4">
 											<div class="form-group">
-												<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{coupon.maximum_spend}}" placeholder="Maximum Spend">
+												<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.maximum_spend}}" placeholder="Maximum Spend">
 											</div>
 										</div>
 										<div class="col-6 no-padding">

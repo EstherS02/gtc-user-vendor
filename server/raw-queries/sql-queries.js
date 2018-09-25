@@ -92,12 +92,12 @@ let sqlQueries = {
 		return query;
 	},
 	compareProductQuery: function(params) {
-	    let query = `SELECT product.id, product.product_name,product.marketplace_type_id,product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, vendor.user_id, vendor.vendor_name, product_media.url,users.first_name, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id LEFT JOIN users on users.id=vendor.user_id  WHERE product.id IN(` + params + `) GROUP BY product.id`;
+	    let query = `SELECT product.id, product.product_name,product.marketplace_type_id,product.marketplace_id,product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, vendor.user_id, vendor.vendor_name, product_media.url,users.first_name, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id LEFT JOIN users on users.id=vendor.user_id  WHERE product.id IN(` + params + `) GROUP BY product.id`;
 	    return query;
     },
     
     planDetailsQuery: function(params) {
-	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
+	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,vendorplan.status,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
 	    return query;
 	},
 	countryCountForVendor:function(params){

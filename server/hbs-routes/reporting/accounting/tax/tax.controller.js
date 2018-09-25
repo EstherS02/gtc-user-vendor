@@ -75,7 +75,8 @@ export function tax(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
-					dropDownUrl: dropDownUrl
+					dropDownUrl: dropDownUrl,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reporting/tax', err);

@@ -108,7 +108,8 @@ export function shippingSettings(req, res) {
 					marketPlace: marketplace,
 					vendorCountry: results.vendorCountries,
 					selectedPage: "shipping-settings",
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/shipping-settings', err);

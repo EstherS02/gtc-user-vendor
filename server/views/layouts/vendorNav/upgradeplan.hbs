@@ -15,10 +15,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				}
 
 			}
-
 		});
-
-
 	});
 	function paymentSuccess() {
 		window.location = '/upgradeplan';
@@ -64,7 +61,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
 		var planstatus=$('#plan_status').val();
-		if(planstatus==2)
+		console.log("planstatus::"+planstatus);
+		if(planstatus=="2")
 		{
 		if ($('#plandetailsform').valid()) { 
             var plan_id = document.getElementById("selectplan").value;
@@ -88,12 +86,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 					'cursor': "pointer"
 				});
 			}
-		});
-
-             //
-
-			
-		    	
+		});		    	
      		}
 		}
 		else
@@ -174,10 +167,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			}
 		});
 	}
-
-
-
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray" id="planHide">
 	<div class="gtc-container">
 		<div class="row">
@@ -214,9 +205,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										</div>
 
 									</div>
-
-									
-										<div class="row">
+									<div class="row">
 											<div class="col-md-2 social_face" style="font-size:14px">
 												Select Plan
 											</div>
@@ -265,9 +254,6 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 
 										</div>
-									
-
-
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Select card details
@@ -306,10 +292,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
-									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
-									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
-									<input type="hidden" name="plan_status" value="{{PlanDetails.[0].status}}">
+									<input type="hidden" name="amount" id="amount" value="{{PlanDetails.[0].cost}}">
+									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
+									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.[0].status}}">
 									<hr style="margin-top: 10px" />
 
 									{{!-- <div class="row">
