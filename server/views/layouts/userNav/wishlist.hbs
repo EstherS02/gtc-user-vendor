@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var wishlist = {{{ DisplayJSON wishlist}}}
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -28,21 +29,21 @@
 		dataInfo.cart_item_id = 0;
 		allCartInfo['cartUpdateArray'].push(dataInfo);
 		if (quantity) {
-			$.ajax({
-				type: 'POST',
-				url: '/api/cart/update-cart',
-				data: JSON.stringify(allCartInfo),
-				contentType: "application/json",
-				success: function(data, text) {
-					console.log("data", data.message_details)
-					console.log("text", text)
-					window.location.href = "/cart";
-				},
-				error: function(request, status, error) {
-					console.log('status', status);
-					console.log('error', error);
-				}
-			});
+			// $.ajax({
+			// 	type: 'POST',
+			// 	url: '/api/cart/update-cart',
+			// 	data: JSON.stringify(allCartInfo),
+			// 	contentType: "application/json",
+			// 	success: function(data, text) {
+			// 		console.log("data", data.message_details)
+			// 		console.log("text", text)
+			// 		window.location.href = "/cart";
+			// 	},
+			// 	error: function(request, status, error) {
+			// 		console.log('status', status);
+			// 		console.log('error', error);
+			// 	}
+			// });
 		} else {
 			alert("Please enter the Quantity.")
 		}
@@ -181,6 +182,7 @@
 																<input type="checkbox" class="checkbox" value="{{this.id}}">
 															</td>
 															<td class="text_blue_color">
+																<input type="hidden" name="marketplace_id" id="mar">
 																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
 																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 30px;" />
 																{{this.Product.product_name}}</a>

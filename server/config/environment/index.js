@@ -81,6 +81,7 @@ var all = {
             askToVendor: 'ASK-TO-VENDOR',
 			returnRequest: 'USER-RETURN-REQUEST',
 			refundRequest: 'VENDOR-TO-REFUND',
+			upgradeplan:'UPGRADE_PLAN',
 			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
 			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
 			starterPlanExpire : 'STARTER-SELLER-EXPIRE'
