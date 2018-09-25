@@ -143,7 +143,6 @@ export function notifications(req, res) {
 					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count + results.notifications.count,
 					notifications: results.notifications.rows,
-					statusCode: statusCode,
 					page: page,
 					pageSize: limit,
 					maxSize: 5,
