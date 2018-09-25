@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const async = require('async');
 
+const model = require('../../../sqldb/model-connect');
 const status = require('../../../config/status');
 const marketplace = require('../../../config/marketplace');
 const service = require('../../../api/service');
@@ -55,9 +56,7 @@ export function confirmation(req, res) {
 					});
 			},
 			vendors: function(callback) {
-				// var vendorModel = "Vendor";
-				// var includeArr=[];
-				// var queryObj = {};
+				var vendorModel = "Vendor";
 				var vendorIncludeArr = [{
 					model: model['VendorFollower'],
 					where: {
@@ -69,7 +68,7 @@ export function confirmation(req, res) {
 				var queryObj = {
 					id: vendorID
 				};
-				service.findRows('Vendor', queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
+				service.findRows(vendorModel, queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
 					.then(function(response) {
 						return callback(null, response);
 					}).catch(function(error) {
