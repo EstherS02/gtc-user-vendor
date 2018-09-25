@@ -722,8 +722,7 @@ export function makeplanPayment(req, res) {
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
         then(function (response) {
             if (response.paid = "true") {
-				
-                var paymentModel = {
+	            var paymentModel = {
                     paid_date: new Date(response.created),
                     paid_amount: response.amount / 100.0,
                     payment_method: paymentMethod['STRIPE'],
@@ -753,8 +752,17 @@ export function makeplanPayment(req, res) {
                 });
 			}
 			else
-		  {
-			var userplanModel = {
+		    {
+     		   var includeArray=[];
+               let userPlanModel = {
+	            user_id: req.body.user_id
+	            }
+	        service.findRow('UserPlan', userPlanModel, includeArray)
+	        .then(userplandetails => {
+			  if(userplandetails == null)
+			 {
+				sendUpgrademail(req.body.plan_id,req.user);
+			  var userplanModel = {
 				user_id: req.body.user_id,
 				plan_id: req.body.plan_id,
 				status: status['ACTIVE'],
@@ -763,18 +771,40 @@ export function makeplanPayment(req, res) {
 
 			};
 			service.createRow('UserPlan', userplanModel);
-			sendUpgrademail(req.body.plan_id,req.user);
 			return res.status(200).json({
 				data: response
 			});
+			
+		}
+		else
+		{
+			sendUpgrademail(req.body.plan_id,req.user);
+			var userplanModel = {
+				plan_id: req.body.plan_id,
+				status: status['ACTIVE'],
+				start_date:start_date,
+				end_date:end_date
+
+			};
+			var queryObj={
+				user_id: req.body.user_id,
+				
+			};
+			service.updateRecord('UserPlan', userplanModel,queryObj);
+			return res.status(200).json({
+				data: response
+			});
+			
+		}
+		}); 
 		   }
    
 		}
-		   else {
-                return res.status(500).json({
-                    data: err
-                });
-            }
+	   else {
+              return res.status(500).json({
+                data: err
+             });
+         }
 
         });
 }
