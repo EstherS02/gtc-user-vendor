@@ -8,6 +8,8 @@ const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
+const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const ADDRESS_TYPE = require('../../../config/address');
 const cartObj = require('../../../api/cart/cart.controller');
 const querystring = require('querystring');
@@ -22,13 +24,17 @@ function processCheckout(req, res, callback) {
 	let user_id = LoggedInUser.id;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		address: function(cb) {
 			let searchObj = {};
@@ -94,73 +100,6 @@ function processCheckout(req, res, callback) {
 					return cb(error);
 				});
 		},
-		cartItems: function(cb) {
-			var queryObj = {};
-			let includeArr = [];
-
-			queryObj['user_id'] = user_id;
-			queryObj['status'] = {
-				'$eq': status["ACTIVE"]
-			}
-
-			return model["Cart"].findAndCountAll({
-				where: queryObj,
-				include: [{
-					model: model["User"],
-					attributes: {
-						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-					}
-				}, {
-					model: model["Product"],
-					include: [{
-						model: model["Vendor"]
-					}, {
-						model: model["Category"]
-					}, {
-						model: model["SubCategory"]
-					}, {
-						model: model["Marketplace"]
-					}, {
-						model: model["MarketplaceType"]
-					}, {
-						model: model["Country"]
-					}, {
-						model: model["State"]
-					}, {
-						model: model["ProductMedia"],
-						where: {
-							base_image: 1,
-							status: {
-								'$eq': status["ACTIVE"]
-							}
-						}
-					}]
-				}]
-			}).then(function(data) {
-				var result = JSON.parse(JSON.stringify(data));
-				return cb(null, result)
-			}).catch(function(error) {
-				console.log('Error:::', error);
-				return cb(error);
-			});
-		},
-		marketPlace: function(cb) {
-			var searchObj = {};
-			let includeArr = [];
-
-			searchObj['status'] = {
-				'$eq': status["ACTIVE"]
-			}
-
-			return service.findRows('Marketplace', searchObj, null, null, 'created_on', "asc", includeArr)
-				.then(function(marketPlaceData) {
-					marketPlaceData = JSON.parse(JSON.stringify(marketPlaceData));
-					return cb(null, marketPlaceData)
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return cb(error);
-				});
-		},
 		categories: function(cb) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -203,57 +142,6 @@ function processCheckout(req, res, callback) {
 		}
 	}, function(err, results) {
 		if (!err) {
-			var totalItems = results.cartItems.rows;
-			var allMarketPlaces = results.marketPlace.rows;
-			var totalPrice = {};
-			var defaultShipping = 0;
-
-			totalPrice['grandTotal'] = 0;
-
-			var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
-
-
-			_.forOwn(seperatedItems, function(itemsValue, itemsKey) {
-				totalPrice[itemsKey] = {};
-				totalPrice[itemsKey]['price'] = 0;
-				totalPrice[itemsKey]['shipping'] = 0;
-				totalPrice[itemsKey]['total'] = 0;
-
-				for (var i = 0; i < itemsValue.length; i++) {
-
-					if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-
-						if (itemsValue[i].quantity) {
-							var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
-
-							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-						} else {
-							var calulatedSum = (itemsValue[i].Product.moq * itemsValue[i].Product.price);
-
-							totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-							totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + defaultShipping;
-							totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-						}
-					}
-				}
-				totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
-			});
-
-			var coupon_data = [];
-			if (typeof(req.cookies.check_promo_code) != 'undefined') {
-				let default_promo_obj = req.cookies.check_promo_code;
-				var obj_key = -1;
-				for (let key in default_promo_obj) {
-					if (default_promo_obj[key].user_id == user_id) {
-						obj_key = key;
-					}
-				}
-				if (obj_key > -1) {
-					coupon_data.push(req.cookies.check_promo_code[obj_key]);
-				}
-			}
 
 			let billing_address = [],
 				shipping_address = [];
@@ -293,54 +181,22 @@ function processCheckout(req, res, callback) {
 			var result_obj = {
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				billing_address: billing_address,
 				shipping_address: shipping_address,
 				state: results.state,
 				country: results.country,
-				cartItems: results.cartItems.rows,
-				cartItemsCount: results.cartItems.count,
-				marketPlaces: results.marketPlace.rows,
-				seperatedItemsList: seperatedItems,
-				totalPriceList: totalPrice,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				cartheader: results.cartCounts,
-				couponData: [],
-				couponUpdateError: "",
-				couponUpdateErrorMessage: "",
 				selected_billing_address: selected_billing_address,
 				selected_shipping_address: selected_shipping_address,
 				query_params: querystring.stringify(req.query),
 				cards: results.cards,
 				stripePublishableKey: config.stripeConfig.keyPublishable
 			};
-
-			if (coupon_data.length > 0) {
-				var original_price = coupon_data[0].original_price;
-				if (parseFloat(totalPrice['grandTotal']) != parseFloat(original_price)) {
-					req.body.coupon_code = coupon_data[0].coupon_code;
-					cartObj.callApplyCoupon(req, res, function(return_val) {
-						if (typeof(return_val.message) != 'undefined' && return_val.message == 'PROMO_CODE_APPLIED') {
-
-							result_obj['couponData'] = [return_val.coupon_data];
-							callback(result_obj);
-						} else {
-
-							result_obj['couponUpdateError'] = return_val.message;
-							result_obj['couponUpdateErrorMessage'] = return_val.message_details;
-							callback(result_obj);
-						}
-					})
-				} else {
-					result_obj['couponData'] = coupon_data;
-					callback(result_obj);
-				}
-			} else {
-				callback(result_obj);
-			}
-
+			callback(result_obj);
 		} else {
-			console.log(err)
 			callback(null, err);
 		}
 	});
@@ -351,7 +207,7 @@ export function customerInformation(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			if (obj.cartItemsCount > 0) {
+			if (obj.cart.total_items > 0) {
 				return showPage(res, 200, 'checkout/customer-information', obj);
 			} else {
 				return res.redirect('/cart');
@@ -365,7 +221,7 @@ export function shippingMethod(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			if (obj.cartItemsCount > 0) {
+			if (obj.cart.total_items > 0) {
 				if ((req.query.selected_billing_address_id && (Object.keys(obj.selected_billing_address).length > 0)) && (req.query.selected_shipping_address_id && (Object.keys(obj.selected_shipping_address).length > 0))) {
 					return showPage(res, 200, 'checkout/shipping-method', obj);
 				} else {
@@ -383,7 +239,7 @@ export function paymentMethod(req, res) {
 		if (err) {
 			return res.status(500).render(err);
 		} else {
-			if (obj.cartItemsCount > 0) {
+			if (obj.cart.total_items > 0) {
 				if ((req.query.selected_billing_address_id && (Object.keys(obj.selected_billing_address).length > 0)) && (req.query.selected_shipping_address_id && (Object.keys(obj.selected_shipping_address).length > 0))) {
 					return showPage(res, 200, 'checkout/payment-method', obj);
 				} else {
