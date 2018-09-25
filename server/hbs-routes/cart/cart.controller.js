@@ -1,14 +1,8 @@
 'use strict';
 
 const async = require('async');
-const _ = require('lodash');
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
-const cartObj = require('../../api/cart/cart.controller');
-const populate = require('../../utilities/populate');
 const marketplace = require('../../config/marketplace');
 const cartService = require('../../api/cart/cart.service');
 
@@ -56,7 +50,7 @@ export function cart(req, res) {
 				});
 		}
 	}, function(err, results) {
-		if (!err) {
+		if (!err && results) {
 			return res.render('cart', {
 				title: "Global Trade Connect",
 				categories: results.categories,
