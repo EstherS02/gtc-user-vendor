@@ -159,6 +159,21 @@
 								<div class="row">
 									<div class="col-4">
 										<div class="form-group">
+											<div class="select-container">
+												<select name="discount_type" id="inputDiscountType" class="form-control-customized form-control-sm" required="true">
+													{{#select coupon.discount_type}}
+														<option value='' selected disabled="true">Discount Type</option>
+														<option value="1">Percentage</option>
+														<option value="2">Fixed Price</option>
+														{{/select}}
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<div class="form-group">
 											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.discount_value}}" placeholder="Discount value" required="true">
 										</div>
 									</div>
