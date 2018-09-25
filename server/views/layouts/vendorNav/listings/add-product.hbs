@@ -639,9 +639,42 @@
 			appendImage();
 
 		if(productBaseImage && (productBaseImage.length > 0))
-			appendBaseImage();		
+			appendBaseImage();	
+
+		$('input:checkbox:not("#feature_indefinitely")').change(function () {
+			recalculate();
+		});
+
+		function recalculate() {
+			var sum = 0;
+				$("input:checkbox:not('#feature_indefinitely'):checked").each(function () {
+					sum += parseInt($(this).val());
+				});
+			$('#totalFees').html(sum);
+		}	
+
+		$('.data-value').click(function() {
+
+			var feature_product = $(this).data('id');
+			$("#feature_product").val(feature_product);;
+
+		})
+
+		$('#featureForm').submit(function(e) {
+			e.preventDefault();
+			$('#featureModal').modal('hide');
+		   	$('#featurePaymentModal').modal('show');
+		})
+
+		$('#featurePaymentForm').submit(function(e) {
+			e.preventDefault();
+			$('#featurePaymentModal').modal('hide');
+		   	$('#feature-success-modal').modal('show');
+		});
  	});
+
 </script>
+
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -1012,6 +1045,17 @@
 										<div class="base_image">
 										</div>
 									</div>
+									<div class="col-lg-3">
+										<div class="form-group">
+											<label class="label-control">Feature this Product:</label>
+											<div class="input-group">
+												<div class="custom-file">
+													<i class='fas fa-plus' data-id="{{editProduct.product_name}}" class="data-value" 
+													data-toggle="modal" data-target="#featureModal" data-whatever="@mdo"></i>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 								<br/>
 								<div class="row">
@@ -1031,8 +1075,8 @@
 									</div>
 								</div>
 								<br/>
-								<br/><hr/>
-
+								<br/>
+								<hr/>
 								<div class="row">
 									<div class="col-md-12">
 										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
@@ -1057,3 +1101,150 @@
 	</div>
 </div>
 {{> footer/bottom-footer}}
+
+
+<div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">FEATURE THIS PRODUCT</h5>
+			</div>
+			<form id="featureForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Product Name:</label>
+								<input type="text" id="feature_product" readonly class="form-control-customized form-control-sm"
+								 required/>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="form-group">
+								<label class="label-control">Status:</label>
+								<div class="input-group">
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" >
+										<option value="ACTIVE">Active</option>
+										<option value="INACTIVE">InActive</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Duration:</label>
+								<div class="input-group">
+									<input class="form-control-customized form-control-sm"
+									 type="text"  placeholder="mm/dd/yyyy"> to
+									 <input class="form-control-customized form-control-sm"
+									 type="text" placeholder="mm/dd/yyyy">
+
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+									<input type="checkbox"> <label class="label-control">Feature this product indefinitely</label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<label class="label-control">Feature this product:</label>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input type="checkbox" value="0"> <label class="label-control">My Profile Page Only (Free)</label><br/>
+								<input type="checkbox" value="50"> <label class="label-control">In Search Results(+$50/mo)</label><br/>
+								{{#ifCond this.type '==' 'wholesale'}}
+								<input type="checkbox" value="150"> <label class="label-control">Wholesale Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'shop'}}
+								<input type="checkbox" value="150"> <label class="label-control">Shop Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'services'}}
+								<input type="checkbox" value="150"> <label class="label-control">Services Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'lifestyle'}}
+								<input type="checkbox" value="150"> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
+								 {{/ifCond}}
+								<input type="checkbox" value="250"> <label class="label-control">GTC Homepage(+$250/mo)</label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control"><b>TOTAL:</b></label>
+								<label class="label-control"><b>$<span id="totalFees"></span></b></label>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</button>
+					<button type="submit" class="btn btn-small btn-primary">
+						<b>CONTINUE</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="featurePaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Payment:</h5>
+			</div>
+			<form id="featurePaymentForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Total Amount:</label>
+								<input type="text" id="feature_total" readonly class="form-control-customized form-control-sm"
+								 required/>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label class="label-control">Status:</label>
+								<div class="input-group">
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" >
+										<option value='' disabled='disabled' selected>Select Payment Method...</option>
+											{{#each cardDetails}}
+												<option value='{{this.id}}'>{{this.card_type}} **** **** **** {{json this.card_details 'last4'}}</option>
+											{{/each}}
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</button>
+					<button type="submit" class="btn btn-small btn-primary">
+						<b>FEATURE</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="feature-success-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Success:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>Your Product featured Successfully!.</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
