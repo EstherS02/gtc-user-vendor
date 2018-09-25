@@ -89,7 +89,7 @@ export function verification(req, res) {
 					title: "Global Trade Connect",
 					verification: results.verification,
 					LoggedInUser: LoggedInUser,
-					status: statusCode,
+					statusCode: statusCode,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
 					verificationStatus: verificationStatus,

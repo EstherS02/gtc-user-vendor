@@ -135,7 +135,8 @@ export function performance(req, res) {
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl,
 					cart: results.cartInfo,
-					performance: results.performance
+					performance: results.performance,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reporting/performance', err);

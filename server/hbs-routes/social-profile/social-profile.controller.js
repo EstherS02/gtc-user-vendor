@@ -82,7 +82,8 @@ export function socialProfile(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				selectedPage: 'social-profile',
-				vendorPlan: vendorPlan
+				vendorPlan: vendorPlan,
+				statusCode: statusCode
 			});
 		} else {
 			res.render('vendorNav/social-profile', err);

@@ -88,7 +88,8 @@ export function termsAndCond(req, res) {
 					marketPlace: marketplace,
 					selectedPage: 'terms-and-cond',
 					vendorPlan: vendorPlan,
-					termsAndCond: results.termsAndCond
+					termsAndCond: results.termsAndCond,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);

@@ -99,7 +99,8 @@ export function notificationSettings(req, res) {
 					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					selectedPage: 'notifications_settings',
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					statusCode:statusCode
 				});
 			} else {
 				res.render('notifications', err);
@@ -227,7 +228,8 @@ export function notifications(req, res) {
 					maxSize: 5,
 					selectedPage: 'notifications',
 					vendorPlan: vendorPlan,
-					dropDownUrl: dropDownUrl
+					dropDownUrl: dropDownUrl,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/notifications', err);

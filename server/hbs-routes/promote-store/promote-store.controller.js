@@ -71,7 +71,8 @@ export function promoteStore(req, res) {
 					cart: results.cartInfo,
 					marketPlace: marketplace,
 					selectedPage: 'promote-store',
-					vendorPlan: vendorPlan
+					vendorPlan: vendorPlan,
+					statusCode:statusCode
 				});
 			} else {
 				res.render('promote-store', err);

@@ -137,7 +137,8 @@ export function reporting(req, res) {
 					topProducts: results.topProducts,
 					topMarketPlace: results.topMarketPlace,
 					revenueChanges: results.revenueChanges,
-					revenueCounts: results.revenueCounts
+					revenueCounts: results.revenueCounts,
+					statusCode:statusCode
 				});
 			} else {
 				res.render('vendorNav/reporting/reporting', err);

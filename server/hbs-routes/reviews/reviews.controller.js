@@ -230,6 +230,7 @@ export function reviews(req, res) {
 					queryURI: queryURI,
 					userReviews: results.userReviews,
 					userCollectionSize: results.userReviews.count,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reviews', err);

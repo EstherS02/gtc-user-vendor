@@ -110,7 +110,8 @@ export function talk(req, res) {
 				selectedPage: 'gtc-talk',
 				cart: results.cartInfo,
 				marketPlace: marketplace,
-				vendorPlan: vendorPlan
+				vendorPlan: vendorPlan,
+				statusCode:statusCode
 			});
 		} else {
 			res.render('vendorNav/talk', error);
