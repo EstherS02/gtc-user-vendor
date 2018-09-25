@@ -16,18 +16,16 @@ var url = require('url');
 
 export function addProduct(req, res) {
 
-	var categoryModel, countryModel, marketplaceTypeModel, productModel, editProductId;
-	var queryObj = {},
-		LoggedInUser = {},
-		bottomCategory = {},
-		productIncludeArr = [];;
+	var categoryModel, countryModel, marketplaceTypeModel, productModel, paymentSettingModel, editProductId;
+	var queryObj = {}, LoggedInUser = {}, bottomCategory = {}, cardQueryObj, productIncludeArr = [];
+
 	var offset, limit, field, order, type;
 
-
-	categoryModel = "Category";
-	countryModel = "Country";
-	marketplaceTypeModel = "MarketplaceType";
-	productModel = "Product";
+	categoryModel = 'Category';
+	countryModel = 'Country';
+	marketplaceTypeModel = 'MarketplaceType';
+	productModel = 'Product';
+	paymentSettingModel = 'PaymentSetting';
 
 	type = req.params.type;
 
@@ -46,9 +44,10 @@ export function addProduct(req, res) {
 
 	queryObj['status'] = statusCode["ACTIVE"];
 
-	var queryObjCategory = {
-		status: statusCode['ACTIVE']
-	};
+	cardQueryObj = {
+		status : statusCode["ACTIVE"],
+		user_id : LoggedInUser.id
+	}
 
 	productIncludeArr = populate.populateData('Marketplace,ProductMedia,Category,SubCategory,MarketplaceType,Discount,ProductAttribute,Category.CategoryAttribute,Category.CategoryAttribute.Attribute,Country,State,ProductAttribute.Attribute,Discount');
 
@@ -115,7 +114,19 @@ export function addProduct(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		cardDetails: function(callback){
+			
+			service.findAllRows(paymentSettingModel, [], cardQueryObj, offset, limit, field, order)
+				.then(function(paymentSetting) {
+
+					return callback(null, paymentSetting.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
+
 	}, function(err, results) {
 		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -154,6 +165,7 @@ export function addProduct(req, res) {
 				marketPlace: marketplace,
 				vendorPlan: vendorPlan,
 				type: type,
+				cardDetails : results.cardDetails,
 				dropDownUrl: dropDownUrl,
 				editProduct: results.editProduct,
 				productImages: productImages,
