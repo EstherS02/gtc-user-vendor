@@ -61,7 +61,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
 		var planstatus=$('#plan_status').val();
-		if(planstatus==2)
+		console.log("planstatus::"+planstatus);
+		if(planstatus=="2")
 		{
 		if ($('#plandetailsform').valid()) { 
             var plan_id = document.getElementById("selectplan").value;
@@ -291,10 +292,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" value="{{PlanDetails.[0].cost}}">
-									<input type="hidden" name="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
-									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
-									<input type="hidden" name="plan_status" value="{{PlanDetails.[0].status}}">
+									<input type="hidden" name="amount" id="amount" value="{{PlanDetails.[0].cost}}">
+									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
+									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.[0].status}}">
 									<hr style="margin-top: 10px" />
 
 									{{!-- <div class="row">
