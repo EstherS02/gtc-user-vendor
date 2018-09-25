@@ -97,7 +97,7 @@ let sqlQueries = {
     },
     
     planDetailsQuery: function(params) {
-	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
+	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,vendorplan.status,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
 	    return query;
 	},
 	countryCountForVendor:function(params){

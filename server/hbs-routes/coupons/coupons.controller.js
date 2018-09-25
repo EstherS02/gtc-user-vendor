@@ -7,6 +7,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+// const statusCode = require('../../config/status');
 const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
@@ -235,6 +236,7 @@ export function addCoupon(req, res) {
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
+				statusCode: status,
 				marketPlace: marketplace,
 				vendorPlan: vendorPlan,
 				selectedPage: 'coupons',
