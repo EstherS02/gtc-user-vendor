@@ -75,7 +75,8 @@ export function accounting(req, res) {
 					LoggedInUser: LoggedInUser,
 					dropDownUrl: dropDownUrl,
 					cart: results.cartInfo,
-					marketPlace: marketplace
+					marketPlace: marketplace,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reporting/accounting', err);
