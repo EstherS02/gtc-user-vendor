@@ -7,6 +7,8 @@ const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const Plan = require('../../../config/gtc-plan');
+const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
@@ -20,23 +22,26 @@ export function vendorAbout(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 
-
 	if (req.user)
 		LoggedInUser = req.user;
 
 	let user_id = LoggedInUser.id;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		VendorDetail: function(callback) {
-		var vendorIncludeArr = [{
+			var vendorIncludeArr = [{
 				model: model['Country']
 
 			}, {
@@ -67,9 +72,7 @@ export function vendorAbout(req, res) {
 			}];
 			service.findIdRow('Vendor', vendor_id, vendorIncludeArr)
 				.then(function(response) {
-					// console.log(response);
 					return callback(null, response);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -121,7 +124,6 @@ export function vendorAbout(req, res) {
 				});
 		}
 	}, function(err, results) {
-		// console.log(LoggedInUser);
 		if (!err) {
 			res.render('vendorPages/vendor-about', {
 				categories: results.categories,
@@ -129,13 +131,13 @@ export function vendorAbout(req, res) {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
 				follower: results.Follower,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'about',
 				Plan: Plan,
 			});
 		} else {
-
 			res.render('vendor-about', err);
 		}
 	});

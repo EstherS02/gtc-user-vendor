@@ -1,29 +1,37 @@
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
-const config = require('../../../config/environment');
-const model = require('../../../sqldb/model-connect');
-const reference = require('../../../config/model-reference');
+const async = require('async');
+
 const status = require('../../../config/status');
+const marketplace = require('../../../config/marketplace');
 const service = require('../../../api/service');
-const populate = require('../../../utilities/populate');
+const cartService = require('../../../api/cart/cart.service');
 
 export function confirmation(req, res) {
 	var LoggedInUser = {};
+	var bottomCategory = {};
 
-	if (req.user)
+	console.log(req.params.id)
+
+	if (req.user) {
 		LoggedInUser = req.user;
-		var bottomCategory = {};
-		let user_id = LoggedInUser.id;
-		async.series({
-			cartCounts: function(callback) {
-				service.cartHeader(LoggedInUser).then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+	}
+	var vendorID = JSON.parse(req.params.id);
+	let user_id = LoggedInUser.id;
+
+	async.series({
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
+				}
 			},
 			categories: function(callback) {
 				var categoryModel = "Category";
@@ -45,8 +53,30 @@ export function confirmation(req, res) {
 						console.log('Error :::', error);
 						return callback(null);
 					});
+			},
+			vendors: function(callback) {
+				// var vendorModel = "Vendor";
+				// var includeArr=[];
+				// var queryObj = {};
+				var vendorIncludeArr = [{
+					model: model['VendorFollower'],
+					where: {
+						user_id: req.user.id,
+						status: 1
+					},
+					required: false
+				}];
+				var queryObj = {
+					id: vendorID
+				};
+				service.findRows('Vendor', queryObj, 0, null, 'created_on', 'asc', vendorIncludeArr)
+					.then(function(response) {
+						return callback(null, response);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 			}
-
 		},
 		function(err, results) {
 			if (!err) {
@@ -54,12 +84,13 @@ export function confirmation(req, res) {
 					title: "Global Trade Connect",
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader:results.cartCounts,
-					LoggedInUser:LoggedInUser
+					vendors: results.vendors,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
+					LoggedInUser: LoggedInUser
 				});
 			} else {
 				res.render('checkout/confirmation', err);
 			}
 		});
-
 }

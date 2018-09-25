@@ -8,6 +8,7 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
@@ -55,13 +56,17 @@ export function vendorWholesale(req, res) {
 	// order = "asc";
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		wantToSell: function(callback) {
 
@@ -238,7 +243,7 @@ export function vendorWholesale(req, res) {
 				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'wholesale',
 				Plan: Plan,

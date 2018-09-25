@@ -131,7 +131,7 @@ export function index(req, res) {
 
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
-		queryURI['keyword'] = req.query.keyword;
+		queryURI['searchKeyword'] = req.query.keyword;
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};

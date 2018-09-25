@@ -203,7 +203,7 @@ export async function indexOld(req, res) {
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {
 				if (cart['marketplace_summary'].hasOwnProperty(key)) {
-					cart['grant_total'] += await cart['marketplace_summary'][key].total;
+					cart['grant_total'] += cart['marketplace_summary'][key].total;
 				}
 			}));
 			cart['grant_total_with_discounted_amount'] = (cart['grant_total'] - cart['discount_amount']).toFixed(2);

@@ -105,153 +105,158 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="content-body">
-							<div class="row">
-								<div class="col-md-12">
-									<p class="content-txt">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature products, or import and syncronize them with an outside source. To administer specific details of products, click on the product name or SKU to go to the full edit details page for that specific products.</p>
-									<span class="pull-right" style="font-size:12px"><a href="listings/{{this.type}}">Clear All</a></span>
+            {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-12">
+										<p class="content-txt">This is where you manage all of your wholesale products on the Global Trade Connect. You can activate, suspend or feature products, or import and syncronize them with an outside source. To administer specific details of products, click on the product name or SKU to go to the full edit details page for that specific products.</p>
+										<span class="pull-right" style="font-size:12px"><a href="listings/{{this.type}}">Clear All</a></span>
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-7">
-										<div class="form-inline">
-										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="add(this);">ADD PRODUCT</button>
-										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
-													{{#select queryURI.status}}
-													<option disabled selected>CHANGE STATUS</option>
-													<option value="ACTIVE">Active</option>
-													<option value="INACTIVE">InActive</option>
-													<option value="SUSPENDED">Suspended</option>
-													<option value="SOLDOUT">Sold Out</option>
-													{{/select}}
-												</select>
+								<div class="row">
+									<div class="col-md-7">
+											<div class="form-inline">
+											<div class="form-group mb-2">
+												<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="add(this);">ADD PRODUCT</button>
+											</div>
+											<div class="form-group mx-sm-3 mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+														{{#select queryURI.status}}
+														<option disabled selected>CHANGE STATUS</option>
+														<option value="ACTIVE">Active</option>
+														<option value="INACTIVE">InActive</option>
+														<option value="SUSPENDED">Suspended</option>
+														<option value="SOLDOUT">Sold Out</option>
+														{{/select}}
+													</select>
+												</div>
+											</div>
+											<div class="form-group mb-2">
+												<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
+											</div>
+											</div>
+									</div>
+									<div class="col-md-5">
+										<div class="form-inline ml-auto pull-right">
+											<div class="form-group mx-sm-3 mb-2 form-inline">
+												<button class="btn btn-small btn-muted" type="button" onclick="location.href='/dashboard-vendor-connect'">IMPORT</button>
+												{{!-- <button type="button" id="changePwd" class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
+											</div>
+											<div class="form-group mb-2">
+												<div class="input-group gtc-rounded">
+													<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);" {{#if queryURI.keyword}}
+													value={{queryURI.keyword}}{{/if}}>
+													<button type="submit" class="btn btn-sm btn-gtc">
+														<i class="fa fa-search"></i>
+													</button>
+												</div>
 											</div>
 										</div>
-										<div class="form-group mb-2">
-											<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
-										</div>
-										</div>
+									</div>
 								</div>
-								<div class="col-md-5">
-									<div class="form-inline ml-auto pull-right">
-										<div class="form-group mx-sm-3 mb-2 form-inline">
-											<button class="btn btn-small btn-muted" type="button" onclick="location.href='/dashboard-vendor-connect'">IMPORT</button>
-											{{!-- <button type="button" id="changePwd" class="btn btn-small btn-muted" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" novalidate="novalidate">IMPORT</button> --}}
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="alert" id="gtc-cart-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="cart-message"></span>
 										</div>
-										<div class="form-group mb-2">
-											<div class="input-group gtc-rounded">
-												<input type="search" class="form-control form-control-sm" placeholder="Search products" name="{{this.type}}" onChange="search(this);" {{#if queryURI.keyword}}
-												value={{queryURI.keyword}}{{/if}}>
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
+										<div class="cart-top-header">
+											<div class="alignleft cart-top-left">
+												<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+											</div>
+											<div class="alignright cart-top-right">
+												<span class="m-r-sm text-muted">
+													Entries per page : 
+													<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
+													<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
+													<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
+													<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
+												</span>
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="alert" id="gtc-cart-alert">
-										<button type="button" class="close" data-dismiss="alert">
-											<span aria-hidden="true">&times;</span>
-										</button>
-										<span class="cart-message"></span>
-									</div>
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
-										</div>
-										<div class="alignright cart-top-right">
-											<span class="m-r-sm text-muted">
-												Entries per page : 
-												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}}> 10</a>
-												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
-												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
-												<a href="listings/{{this.type}}?{{QueryParams queryURI (FrameObject page=1 limit=1000) 'null'}}" {{#ifCond queryURI.limit '==' 1000 }} class="active" {{/ifCond}}> All </a>
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<table class="table table-hover">
-											<thead>
-												<tr>
-													<th scope="col">
-														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
-													</th>
-													<th scope="col">Product Name</th>
-													<th scope="col">Publish Date</th>
-													<th scope="col">Sales</th>
-													<th scope="col">Price</th>
-													<th scope="col">Status</th>
-													<th scope="col">SKU</th>
-												</tr>
-											</thead>
-											<tbody>
-												{{#if products}}
-												{{#each products}}
-												<tr>
-													<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
-													<td scope="row">
-														<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
-														<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
-														{{this.product_name}}</a>
-														</td>
-														<td scope="row">{{ prettifyDate this.publish_date }}</td>
-														<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
-														<td>{{currency this.product_price '$'}} CAD</td>
-														{{#ifCond this.status '==' ../statusCode.ACTIVE}}
-															<td class="text_green_color">Active</td>
-															{{else ifCond this.status '==' ../statusCode.INACTIVE}}
-															<td class="text_red_color">InActive</td>
-															{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
-															<td class="text_orange_color">Suspended</td>
-															{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
-															<td class="text_red_color">Sold Out</td>
-														{{/ifCond}}
-														<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+									<div class="col-md-12">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th scope="col">
+															<input type="checkbox" id="checkbox" onclick="selectAll(this);">
+														</th>
+														<th scope="col">Product Name</th>
+														<th scope="col">Publish Date</th>
+														<th scope="col">Sales</th>
+														<th scope="col">Price</th>
+														<th scope="col">Status</th>
+														<th scope="col">SKU</th>
 													</tr>
-													{{/each}}
-													{{else}}
-													<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
-													{{/if}}
-												</tbody>
-											</table>
+												</thead>
+												<tbody>
+													{{#if products}}
+													{{#each products}}
+													<tr>
+														<td scope="row"><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
+														<td scope="row">
+															<a href="{{../this.type}}/{{this.product_slug}}/{{this.id}}">
+															<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
+															{{this.product_name}}</a>
+															</td>
+															<td scope="row">{{ prettifyDate this.publish_date }}</td>
+															<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
+															<td>{{currency this.product_price '$'}} CAD</td>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}
+																<td class="text_green_color">Active</td>
+																{{else ifCond this.status '==' ../statusCode.INACTIVE}}
+																<td class="text_red_color">InActive</td>
+																{{else ifCond this.status '==' ../statusCode.SUSPENDED}}
+																<td class="text_orange_color">Suspended</td>
+																{{else ifCond this.status '==' ../statusCode.SOLDOUT}}
+																<td class="text_red_color">Sold Out</td>
+															{{/ifCond}}
+															<td class="text_blue_color">{{this.stock_keep_unit}}</td>
+														</tr>
+														{{/each}}
+														{{else}}
+														<tr><td colspan="7" style="text-align:center;">No Product Found</td></tr>
+														{{/if}}
+													</tbody>
+												</table>
+											</div>
+											{{#pagination collectionSize page pageSize maxSize}}
+											<nav aria-label="Page navigation example">
+												<ul class="pagination justify-content-center">
+													{{#unless startFromFirstPage}}
+													<li class="page-item">
+														<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+													</li>
+													{{/unless}} {{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+													</li>
+													{{/each}} {{#unless endAtLastPage}}
+													<li class="page-item">
+														<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+													</li>
+													{{/unless}}
+												</ul>
+											</nav>
+											{{/pagination}}
 										</div>
-										{{#pagination collectionSize page pageSize maxSize}}
-										<nav aria-label="Page navigation example">
-											<ul class="pagination justify-content-center">
-												{{#unless startFromFirstPage}}
-												<li class="page-item">
-													<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-												</li>
-												{{/unless}} {{#each pages}}
-												<li class="page-item {{#if isCurrent}} active {{/if}}">
-													<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-												</li>
-												{{/each}} {{#unless endAtLastPage}}
-												<li class="page-item">
-													<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-												</li>
-												{{/unless}}
-											</ul>
-										</nav>
-										{{/pagination}}
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
+					</div> 
+				{{else}}
+					{{> plan-inactive}}
+				{{/ifCond}}
+
 			</div>
 		</div>
 	</div>

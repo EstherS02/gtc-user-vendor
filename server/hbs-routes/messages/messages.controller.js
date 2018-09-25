@@ -5,6 +5,8 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
 var async = require('async');
 const Op = sequelize.Op
@@ -19,42 +21,48 @@ export function messages(req, res) {
 	let user_id = LoggedInUser.id;
 	var threads = [];
 	var threadsUnRead = [];
-	var field ="created_on";
+	var field = "created_on";
 	var order = "desc";
 	async.series({
-			cartCounts: function(callback) {
-				service.cartHeader(LoggedInUser).then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
+				}
 			},
-			messages_count: function(callback){
+			messages_count: function(callback) {
 				model['TalkThreadUsers'].findAll({
 					where: {
 						user_id: LoggedInUser.id
 					},
-				}).then(function(instances){
+				}).then(function(instances) {
 					console.log("instances***********************", instances);
 					for (var i = 0, iLen = instances.length; i < iLen; i++) {
 						threadsUnRead.push(instances[i].thread_id);
-					}	
-				}).then(function(results){
+					}
+				}).then(function(results) {
 					model['Talk'].findAll({
 						raw: true,
 						where: {
 							from_id: {
 								$ne: LoggedInUser.id
 							},
-							talk_thread_id: {$in: threadsUnRead}, 
+							talk_thread_id: {
+								$in: threadsUnRead
+							},
 							is_read: 0
 						},
-						attributes: ['talk_thread_id',[sequelize.fn('count', 1), 'count']],
+						attributes: ['talk_thread_id', [sequelize.fn('count', 1), 'count']],
 						group: ['talk_thread_id']
 					}).then(function(results1) {
 						console.log("**********************************************results1", results1);
-			 			return callback(null,results1);
+						return callback(null, results1);
 					});
 				})
 			},
@@ -88,11 +96,11 @@ export function messages(req, res) {
 						}],
 						order: [
 							[field, order],
-							[model['TalkThread'],model['Talk'], "id", "desc"]
+							[model['TalkThread'], model['Talk'], "id", "desc"]
 						]
 					}).then(function(results1) {
 						//console.log("**********************************************results1", results1);
-			 			return callback(null,results1);
+						return callback(null, results1);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -124,15 +132,14 @@ export function messages(req, res) {
 		function(err, results) {
 
 			if (!err) {
-				console.log("MESSAGES&******************",JSON.stringify(results.messages));
-				console.log("MESSAGES COUNT=========================", results.messages_count);
 				res.render('vendorNav/messages', {
 					title: "Global Trade Connect",
 					messenger: results.messages,
 					messages_count: results.messages_count,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					// vendorPlan: vendorPlan,
 				});

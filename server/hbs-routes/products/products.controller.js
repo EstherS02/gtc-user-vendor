@@ -6,8 +6,8 @@ const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
 const marketplace = require('../../config/marketplace');
+const cartService = require('../../api/cart/cart.service');
 const async = require('async');
-
 
 export function products(req, res) {
 	var productModel = "MarketplaceProduct";
@@ -31,13 +31,17 @@ export function products(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -146,7 +150,8 @@ export function products(req, res) {
 				subscriptions: results.subscriptions,
 				subCategory: results.subCategory,
 				country: results.country,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				depart: results.depart,
 				LoggedInUser: LoggedInUser
 			});
