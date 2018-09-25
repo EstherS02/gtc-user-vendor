@@ -715,7 +715,6 @@ function notifications(order){
 
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-	console.log("plan:::"+JSON.stringify(req.user));
 	var desc = "GTC Plan Payment";
 	var convertMoment = moment();
 	var start_date =  new Date(convertMoment);
@@ -748,7 +747,7 @@ export function makeplanPayment(req, res) {
 					
                 };
 				service.updateRecord('VendorPlan', vendorplanModel,queryObj);
-				//sendUpgrademail(req.body.plan_id,req.user);
+				sendUpgrademail(req.body.plan_id,req.user);
                  return res.status(200).json({
                     data: response
                 });
@@ -764,6 +763,7 @@ export function makeplanPayment(req, res) {
 
 			};
 			service.createRow('UserPlan', userplanModel);
+			sendUpgrademail(req.body.plan_id,req.user);
 			return res.status(200).json({
 				data: response
 			});
@@ -784,38 +784,29 @@ export function makeplanPayment(req, res) {
 //plan upgrade email starts//
 function sendUpgrademail(plan_id,user)
 {
-  console.log("vendor_id:::"+plan_id);
-  console.log("plan:::"+JSON.stringify(user));
-  console.log("enter the looopsss");
   var includeArray=[];
   let upgradePlanModel = {
 	id: plan_id
 	 }
 	return service.findRow('Plan', upgradePlanModel, includeArray)
 	.then(upgradeplandetails => {
-		console.log("upgradeplandetais:::"+upgradeplandetails);
 		var upgradeplanobj = upgradeplandetails;
-		console.log("upgradeplanobj:::"+JSON.stringify((upgradeplanobj)));
 		var queryObjEmailTemplate = {};
 		var emailTemplateModel = 'EmailTemplate';
 		queryObjEmailTemplate['name'] = config.email.templates.upgradeplan;
 		service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(response) {
-			var email = "nagavenkatv@gmail.com";
-			console.log("userplanobjname::"+upgradeplanobj.name);
-			console.log("userplan::"+user.first_name);
-			var subject = "upgrade_plan";
+			var email = user.email;
+			var subject = response.subject;
 			var body;
-			body = response.body.replace('%first_name%',user.first_name);
-			body = response.body.replace('%name%',upgradeplanobj.name);
-			body = response.body.replace('%cost%', upgradeplanobj.cost);
-			var template = Handlebars.compile(body);
-			var result = template(template);
-			console.log("body:::"+result);
-		   sendEmail({
+			var body = response.body;
+			body = body.replace('%first_name%', user.first_name);
+			body = body.replace('%name%', upgradeplanobj.name);
+			body = body.replace('%cost%', upgradeplanobj.cost);
+			 sendEmail({
 				to: email,
 				subject: subject,
-				html: result
+				html: body
 			});
 		}).catch(function(error) {
 			console.log('Error :::', error);
@@ -824,7 +815,6 @@ function sendUpgrademail(plan_id,user)
 
 		
 	})
-
 
 }
 //plan upgrade email ends//
