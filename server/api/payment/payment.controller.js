@@ -386,11 +386,14 @@ export function createCard(req, res) {
 			.then(customer => {
 				user.stripe_customer_id = customer.id;
 				let card = customer.sources.data[0];
+				//console.log(card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(paymentSettingRes => {
+				//console.log(paymentSetting);
 				paymentSetting = paymentSettingRes;
 				return service.updateRow('User', user, user.id);
 			}).then(result => {
+				//console.log(result);
 				return res.status(200).send(paymentSetting);
 			}).catch(err => {
 				console.log(err);
@@ -399,8 +402,10 @@ export function createCard(req, res) {
 	} else {
 		stripe.addCard(user.stripe_customer_id, req.body.token.id, req.body.isPrimary)
 			.then(card => {
+				//console.log("card", card);
 				return savePaymentSetting(user, card, req.body.isPrimary);
 			}).then(result => {
+				//console.log("result", result);
 				paymentSetting = result;
 				return res.status(200).send(paymentSetting);
 			}).catch(err => {
@@ -550,6 +555,7 @@ export function deleteCard(req, res) {
 			id: req.body.paymentSettingId
 		}, [])
 		.then(paymentSetting => {
+			console.log("paymentSetting", paymentSetting);
 			if (paymentSetting && paymentSetting.user_id === req.user.id) {
 				return service.destroyRow('PaymentSetting', req.body.paymentSettingId);
 			} else {
@@ -707,7 +713,6 @@ function notifications(order) {
 
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-	console.log("plan:::" + JSON.stringify(req.user));
 	var desc = "GTC Plan Payment";
 	var convertMoment = moment();
 	var start_date = new Date(convertMoment);
@@ -715,7 +720,6 @@ export function makeplanPayment(req, res) {
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
 	then(function(response) {
 		if (response.paid = "true") {
-
 			var paymentModel = {
 				paid_date: new Date(response.created),
 				paid_amount: response.amount / 100.0,
@@ -744,26 +748,52 @@ export function makeplanPayment(req, res) {
 					data: response
 				});
 			} else {
-				var userplanModel = {
-					user_id: req.body.user_id,
-					plan_id: req.body.plan_id,
-					status: status['ACTIVE'],
-					start_date: start_date,
-					end_date: end_date
+				var includeArray = [];
+				let userPlanModel = {
+					user_id: req.body.user_id
+				}
+				service.findRow('UserPlan', userPlanModel, includeArray)
+					.then(userplandetails => {
+						if (userplandetails == null) {
+							sendUpgrademail(req.body.plan_id, req.user);
+							var userplanModel = {
+								user_id: req.body.user_id,
+								plan_id: req.body.plan_id,
+								status: status['ACTIVE'],
+								start_date: start_date,
+								end_date: end_date
 
-				};
-				service.createRow('UserPlan', userplanModel);
-				return res.status(200).json({
-					data: response
-				});
+							};
+							service.createRow('UserPlan', userplanModel);
+							return res.status(200).json({
+								data: response
+							});
+
+						} else {
+							sendUpgrademail(req.body.plan_id, req.user);
+							var userplanModel = {
+								plan_id: req.body.plan_id,
+								status: status['ACTIVE'],
+								start_date: start_date,
+								end_date: end_date
+
+							};
+							var queryObj = {
+								user_id: req.body.user_id,
+
+							};
+							service.updateRecord('UserPlan', userplanModel, queryObj);
+							return res.status(200).json({
+								data: response
+							});
+						}
+					});
 			}
-
 		} else {
 			return res.status(500).json({
 				data: err
 			});
 		}
-
 	});
 }
 //plan payment method ends//

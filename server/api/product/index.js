@@ -22,5 +22,6 @@ router.post('/edit-product', auth.isAuthenticated(), controller.editProduct);
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
+router.post('/feature-payment', auth.isAuthenticated(), controller.featureProductPayment);
 
 module.exports = router;

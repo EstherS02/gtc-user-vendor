@@ -653,23 +653,41 @@
 			$('#totalFees').html(sum);
 		}	
 
-		$('.data-value').click(function() {
-
-			var feature_product = $(this).data('id');
-			$("#feature_product").val(feature_product);;
-
-		})
-
 		$('#featureForm').submit(function(e) {
 			e.preventDefault();
+
+			var totalFees = $("#totalFees").html();
+			$("#feature_total").html(totalFees);
+			
 			$('#featureModal').modal('hide');
 		   	$('#featurePaymentModal').modal('show');
-		})
+		});
 
 		$('#featurePaymentForm').submit(function(e) {
 			e.preventDefault();
 			$('#featurePaymentModal').modal('hide');
 		   	$('#feature-success-modal').modal('show');
+
+			var feature_amount = $("#feature_total").html()
+
+			let featurePaymentInput = $("#featurePaymentForm :input").filter(function(index, element) {
+											return $(element).val() != '';
+										}).serialize();
+
+			featurePaymentInput = featurePaymentInput +'&feature_amount='+feature_amount;
+
+			$.ajax({
+				url: '/api/product/feature-payment',
+				type: 'POST',
+				data: featurePaymentInput,
+				success: function(data) {
+					console.log("=======================================",data);
+				},
+				error: function(error){
+					console.log("=======================================",error);
+				}
+			})
+
 		});
  	});
 
@@ -1045,17 +1063,19 @@
 										<div class="base_image">
 										</div>
 									</div>
+									{{#if editProduct}}
 									<div class="col-lg-3">
 										<div class="form-group">
 											<label class="label-control">Feature this Product:</label>
 											<div class="input-group">
 												<div class="custom-file">
-													<i class='fas fa-plus' data-id="{{editProduct.product_name}}" class="data-value" 
+													<i class='fas fa-plus' 
 													data-toggle="modal" data-target="#featureModal" data-whatever="@mdo"></i>
 												</div>
 											</div>
 										</div>
 									</div>
+									{{/if}}
 								</div>
 								<br/>
 								<div class="row">
@@ -1115,7 +1135,7 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control">Product Name:</label>
-								<input type="text" id="feature_product" readonly class="form-control-customized form-control-sm"
+								<input type="text" name="product_id" value="{{editProduct.product_name}}" readonly class="form-control-customized form-control-sm"
 								 required/>
 							</div>
 						</div>
@@ -1123,7 +1143,7 @@
 							<div class="form-group">
 								<label class="label-control">Status:</label>
 								<div class="input-group">
-									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" >
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position">
 										<option value="ACTIVE">Active</option>
 										<option value="INACTIVE">InActive</option>
 									</select>
@@ -1134,9 +1154,9 @@
 							<div class="form-group">
 								<label class="label-control">Duration:</label>
 								<div class="input-group">
-									<input class="form-control-customized form-control-sm"
+									<input class="form-control-customized form-control-sm" name="start_date"
 									 type="text"  placeholder="mm/dd/yyyy"> to
-									 <input class="form-control-customized form-control-sm"
+									 <input class="form-control-customized form-control-sm" name="end_date"
 									 type="text" placeholder="mm/dd/yyyy">
 
 								</div>
@@ -1198,17 +1218,15 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<label class="label-control">Total Amount:</label>
-								<input type="text" id="feature_total" readonly class="form-control-customized form-control-sm"
-								 required/>
+								<label class="label-control">Total Amount: <b>$<span id="feature_total"></span></b></label>
 							</div>
 						</div>
 						<div class="col-lg-6">
 							<div class="form-group">
-								<label class="label-control">Status:</label>
+								<label class="label-control">Payment Method:</label>
 								<div class="input-group">
-									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" >
-										<option value='' disabled='disabled' selected>Select Payment Method...</option>
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="payment_details" >
+										<option disabled='disabled' selected>Select Payment Method...</option>
 											{{#each cardDetails}}
 												<option value='{{this.id}}'>{{this.card_type}} **** **** **** {{json this.card_details 'last4'}}</option>
 											{{/each}}
@@ -1238,7 +1256,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="container">
-					<p>Your Product featured Successfully!.</p>
+					<p>Your Product featured Successfully!</p>
 				</div>
 			</div>
 			<div class="modal-footer">
