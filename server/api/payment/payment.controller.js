@@ -715,7 +715,6 @@ function notifications(order){
 
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-	console.log("plan:::"+JSON.stringify(req.user));
 	var desc = "GTC Plan Payment";
 	var convertMoment = moment();
 	var start_date =  new Date(convertMoment);
@@ -764,6 +763,7 @@ export function makeplanPayment(req, res) {
 
 			};
 			service.createRow('UserPlan', userplanModel);
+			sendUpgrademail(req.body.plan_id,req.user);
 			return res.status(200).json({
 				data: response
 			});
