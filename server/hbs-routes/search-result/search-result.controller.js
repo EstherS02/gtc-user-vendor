@@ -30,6 +30,7 @@ export function index(req, res) {
 	var productQueryParams = {};
 	var productCountQueryParams = {};
 	var productCountCategory = {};
+	var vendorDetailsQueryParams = {};
 
 	var categoryModel = "Category";
 	var marketPlaceModel = "Marketplace";
@@ -168,6 +169,8 @@ export function index(req, res) {
 		queryURI['vendor_id'] = req.query.vendor_id;
 		productQueryParams['vendor_id'] = req.query.vendor_id;
 		productCountQueryParams['vendor_id'] = req.query.vendor_id;
+		productCountCategory['vendor_id'] = req.query.vendor_id;
+		vendorDetailsQueryParams['vendor_id'] = req.query.vendor_id;
 	}
 
 	async.series({
@@ -278,6 +281,7 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
+			console.log("******************************************************",productCountCategory)
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
@@ -302,7 +306,18 @@ export function index(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		}
+		},
+		// vendorDetails:function(callback){
+		// 	console.log("****************************************888",vendorDetailsQueryParams)
+		// 	model['Vendor'].findAll({
+		// 		where:vendorDetailsQueryParams
+		// 	}).then(function(response){
+		// 		console.log("%%%%%%%%%%%%%%%%%%%%%%%%werwefsd",response)
+		// 		return callback(null,response);
+		// 	}).catch(function(error){
+		// 		return callback(null)
+		// 	})	
+		// }
 	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!error && results) {
