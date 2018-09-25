@@ -592,18 +592,25 @@
 									<span>{{currency cart.grant_total_with_discounted_amount '$'}}</span>
 								</p>
 							</div>
-							<div class="m-t-sm">
-								<label class="m-b-xs">
-									<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
-								<div class="input-group mb-3" id="gtc-coupon-alert">
-									<input type="text" name="coupon_code" class="form-control text-control" id="inputCouponCode">
-									<div class="input-group-append">
-										<button class="btn btn-sm" type="button" id="inputBtnApplyCoupon" onclick="applyGTCCoupon()">
-											<i class="fas fa-caret-right"></i>
-										</button>
+							{{#if cart.coupon_applied}}
+								<div class="m-t-sm text-center">
+									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
+									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+								</div>
+							{{else}}
+								<div class="m-t-sm">
+									<label class="m-b-xs">
+										<strong class="text-black">Have A Promo Code?</strong> Enter it here</label>
+									<div class="input-group mb-3" id="gtc-coupon-alert">
+										<input type="text" name="coupon_code" class="form-control text-control" id="inputCouponCode">
+										<div class="input-group-append">
+											<button class="btn btn-sm" type="button" id="inputBtnApplyCoupon" onclick="applyGTCCoupon()">
+												<i class="fas fa-caret-right"></i>
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
+							{{/if}}
 							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
 								<span class="ladda-spinner"></span>

@@ -54,7 +54,7 @@ export function addProduct(req, res) {
 	async.series({
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id)
+				cartService.cartCalculation(LoggedInUser.id, req)
 					.then((cartResult) => {
 						return callback(null, cartResult);
 					}).catch((error) => {

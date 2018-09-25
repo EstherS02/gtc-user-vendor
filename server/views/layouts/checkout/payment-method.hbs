@@ -183,6 +183,12 @@
 									<span>{{currency cart.grant_total_with_discounted_amount '$'}}</span>
 								</p>
 							</div>
+							{{#if cart.coupon_applied}}
+								<div class="m-t-sm text-center">
+									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
+									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+								</div>
+							{{/if}}
 						{{/if}}
 					</div>
 				</div>
