@@ -107,11 +107,33 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		e.preventDefault();
 		if ($('#userPlandetails').valid()) { 
 			
-			if($('#userplanStatus').val()=='')
+			if(($('#userplanStatus').val()=='0')||($('#userplanStatus').val()=='2'))
 			{
-              $('#myModal').modal('show');
+                   var plan_id = document.getElementById("selectplan").value;
+            $.ajax({
+			url: '/api/upgrade-plan/selectplan',
+			type: 'POST',
+			contentType: 'application/json',
+			dataType: "json",
+			data: JSON.stringify({
+				id:plan_id
+			}),
+			success: function(data) {
+				
+				$('#Plan_cost').html("you have charged " + data.data.cost);
+				$('#useramount').val(data.data.cost);
+				$('#myModal').modal('show');
+				
+			},
+			error: function(error) {
+				$('#complete-order-submit').prop('disabled', false);
+				$('#complete-order-submit').css({
+					'cursor': "pointer"
+				});
 			}
-			else
+		});
+			}
+			else if($('#userplanStatus').val()=='1')
 			{
 				
 				$('#myModal2').modal('show');
@@ -400,7 +422,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" value="{{userShowplanDetails.[0].cost}}">
+									<input type="hidden" name="amount" id="useramount" value="{{userShowplanDetails.[0].cost}}">
 									<input type="hidden" name="vendor_id" value="0">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
 						{{/if}}
@@ -483,7 +505,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			    {{#if PlanDetails.[0].cost}}
 				<p id="Plan_cost"></p>
 				{{else}}
-				<p>You have charged 99.0000</p>
+		       	<p id="Plan_cost"></p>
 				{{/if}}
 			</div>
 			<div class="modal-footer">
