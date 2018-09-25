@@ -10,6 +10,7 @@ const marketplace = require('../../config/marketplace');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const productService = require('../../api/product/product.service');
+const Plan = require('../../config/gtc-plan');
 
 export function compare(req, res) {
 	var LoggedInUser = {};
@@ -146,7 +147,8 @@ export function compare(req, res) {
 				RelatedProducts: results.RelatedProducts,
 				uniqueAttribute: newAttributes,
 				productAttributes: results.productAttributes.rows,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				Plan: Plan
 			});
 		} else {
 			res.render('compare', err);
