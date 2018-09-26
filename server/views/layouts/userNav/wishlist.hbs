@@ -18,16 +18,12 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 		}
 	}
 	function CartUpdate(e) {
-		let allCartInfo = {};
-
-		allCartInfo["cartUpdateArray"] = [];
-
 		var dataInfo = {};
 		var quantity = 0;
 		dataInfo.product_id = $("#product_id" + e).val();
 		dataInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
 		dataInfo.cart_item_id = 0;
-		allCartInfo['cartUpdateArray'].push(dataInfo);
+		$("#marketplace_id"+e)
 		if (quantity) {
 			// $.ajax({
 			// 	type: 'POST',
@@ -182,7 +178,7 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 																<input type="checkbox" class="checkbox" value="{{this.id}}">
 															</td>
 															<td class="text_blue_color">
-																<input type="hidden" name="marketplace_id" id="mar">
+																<input type="hidden" name="marketplace_id" id="marketplace_id{{this.id}}" value={{this.Product.marketPlace_id}}>
 																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
 																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 30px;" />
 																{{this.Product.product_name}}</a>

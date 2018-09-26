@@ -23,6 +23,7 @@ const stripe = require('../../payment/stripe.payment');
 const CURRENCY = 'usd';
 
 export function makePayment(req, res) {
+	res.clearCookie('applied_coupon');
 	let user = req.user;
 	let paymentSettingId = req.body.paymentSettingId;
 
