@@ -38,7 +38,7 @@ export function createStarterSeller(req, res) {
     bodyParams['user_id'] = req.user.id;
     bodyParams['status'] = status['ACTIVE'];
 	bodyParams['created_on'] = new Date();
-	bodyParams['auto_renewal_mail'] = req.body.autoRenewalMail;
+	bodyParams['auto_renewal_mail'] = status['ACTIVE'];
 
     queryObj['user_id'] = req.user.id;
 
