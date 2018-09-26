@@ -39,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+		},
+		feature_status: {
+            type: DataTypes.INTEGER,
+            field: 'feature_status',
+            allowNull: false
         },
         impression: {
             type: DataTypes.INTEGER,

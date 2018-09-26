@@ -43,7 +43,6 @@ export default function(app) {
 	app.use('/api/stripe', require('./api/stripe'));
 	app.use('/api/paypal', require('./api/paypal'));
 	app.use('/api/advertisement', require('./api/advertisement'));
-	app.use('/api/bulk-plan-renewal', require('./api/bulk-plan-renewal'));
     app.use('/api', require('./api/gtc'));
     app.post('/auth/google', controller.googleLogin);
 
