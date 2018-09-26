@@ -400,6 +400,7 @@ export async function applyCoupon(req, res) {
 	}
 
 	queryObj['code'] = req.body.code;
+	queryObj['status'] = status['ACTIVE'];
 
 	try {
 		const couponIncludeArray = await [{

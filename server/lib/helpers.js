@@ -108,8 +108,8 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 });
 
 Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
-	 var amt = parseInt(quantity) * parseFloat(price);
-     return numeral(amt).format(symbol + '0,0.00');
+	var amt = parseInt(quantity) * parseFloat(price);
+	return numeral(amt).format(symbol + '0,0.00');
 });
 
 Handlebars.registerHelper('cartPageClass', function(marketPlace, classType, options) {
@@ -541,48 +541,49 @@ Handlebars.registerHelper('Location', function(id, arrayEle, options) {
 	});
 	return name;
 });
-Handlebars.registerHelper('searchCategory', function(element,id) {
-    var name = '';
-    for (var i = 0, len = element.length; i < len; i++) {
-        if (element[i].id == id) {
-            name = element[i].name;
-            return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
-        }
-    }
-    return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
+Handlebars.registerHelper('searchCategory', function(element, id) {
+	var name = '';
+	for (var i = 0, len = element.length; i < len; i++) {
+		if (element[i].id == id) {
+			name = element[i].name;
+			return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
+		}
+	}
+	return name.charAt(0).toUpperCase() + name.substr(1).toLowerCase();
 });
 
-Handlebars.registerHelper('searchSubCategory', function(element, sub_cat,cat) {
-    var name = '';
-    var sub_name = '';
-    for (var i = 0, len = element.length; i < len; i++) {
-        if (element[i].id == cat) {
-            name = element[i].SubCategories;
-            for (var j = 0, sub_len = name.length; j < sub_len; j++) {
-             if(name[j].id == sub_cat){
-                sub_name =name[j].name;
-                return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
-                }
-            }
-        }
-    }
-    return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
+Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
+	var name = '';
+	var sub_name = '';
+	for (var i = 0, len = element.length; i < len; i++) {
+		if (element[i].id == cat) {
+			name = element[i].SubCategories;
+			for (var j = 0, sub_len = name.length; j < sub_len; j++) {
+				if (name[j].id == sub_cat) {
+					sub_name = name[j].name;
+					return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
+				}
+			}
+		}
+	}
+	return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
 Handlebars.registerHelper('dotdotdot', function(str) {
-  if (str.length > 100)
-    return str.substring(0,100) + '...';
-  return str;
+	if (str.length > 100)
+		return str.substring(0, 100) + '...';
+	return str;
 });
 Handlebars.registerHelper('decimalFixed', function(distance) {
-  return parseFloat(distance).toFixed(0);
+	let parsedValue = distance ? parseFloat(distance).toFixed(0) : null;
+	return parsedValue;
 });
 Handlebars.registerHelper('decimalFixedOne', function(distance) {
 	var rating = Math.ceil(distance);
 	return rating;
-  });
+});
 
 Handlebars.registerHelper('sizeInKB', function(value) {
-	var valueInKB = value/1000;
+	var valueInKB = value / 1000;
 	return valueInKB.toFixed(2);
 });
 // s = s.replace(/([A-Z])/g, ' $1').trim()
