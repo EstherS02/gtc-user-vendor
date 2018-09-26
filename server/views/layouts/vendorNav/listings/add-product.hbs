@@ -1,3 +1,21 @@
+<style>
+  .datepicker{z-index:1151 !important;}
+</style>
+    <script>
+      $(document).on("click", "#featureModal", function () {
+       // $("#start_date").datepicker({
+       // 	dateFormat: 'yy-mm-dd'
+       // })
+       $('[data-toggle="datepicker"]').datepicker({
+			dateFormat: 'yy-mm-dd'
+		}).on("input change", function (e) {
+			alert(e)
+    // console.log("Date changed: ", e.target.value);
+});
+
+          });  
+    </script>
+
 <script>
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
 
@@ -7,7 +25,7 @@
 	productBaseImage = {{{DisplayJSON productBaseImage}}}
 
 	if(discountLength){
-		var discountLength = {{editProduct.Discounts.length}}
+		// var discountLength = discountLength;
 		count = discountLength;
 	}
 	else{
@@ -162,11 +180,16 @@
 				$("#product_status").prop("disabled", true);
 			}else{
 				$("#product_status").prop("disabled", false);
-			}
-     		  
-  	 	 }).change()
-
+			}    		  
+  	 	}).change()
 	})
+
+	$(function() {
+		$('[data-toggle="datepicker"]').datepicker({
+			// autoHide: true,
+			// zIndex: 2048,
+		});
+	});
 
 	$(document).ready(function() {
 
@@ -176,6 +199,7 @@
 		var product_id = $('#edit_product_id').val();
 
 		$("#gtc-cart-alert").hide();
+		$('#gtc-feature-form-alert').hide();
 
 		$("#productImage").click(function(e) {
 			$("#imageUpload").click();
@@ -641,54 +665,166 @@
 		if(productBaseImage && (productBaseImage.length > 0))
 			appendBaseImage();	
 
+//FEATURING THE PRODUCT FUNCTIONALITIES
+
 		$('input:checkbox:not("#feature_indefinitely")').change(function () {
 			recalculate();
 		});
-
+		
 		function recalculate() {
 			var sum = 0;
-				$("input:checkbox:not('#feature_indefinitely'):checked").each(function () {
+				$("input[name='positions[]']:checkbox:checked").each(function () {
 					sum += parseInt($(this).val());
 				});
 			$('#totalFees').html(sum);
 		}	
 
+		$("#featureForm").validate({
+			rules: {
+				start_date:"required",
+				end_date: {
+					required: "#feature_indefinitely:unchecked"
+				}
+			},
+			messages: {
+				start_date: "Select start date",
+				end_date: "Select end date"
+			}
+		});
+
 		$('#featureForm').submit(function(e) {
 			e.preventDefault();
 
-			var totalFees = $("#totalFees").html();
-			$("#feature_total").html(totalFees);
-			
-			$('#featureModal').modal('hide');
-		   	$('#featurePaymentModal').modal('show');
+			var featurePosition = $('[name="positions[]"]');
+			var featurePositionCount = 0;
+
+            for(var i=0,l=featurePosition.length;i<l;i++)
+				{
+					if(featurePosition[i].checked)
+					{
+						featurePositionCount = featurePositionCount + 1;
+					}
+				}
+
+			if (featurePositionCount<1){
+				console.log("================================Comming========================");
+				return;				
+			}
+			alert("hai");
+			if($('#featureForm').valid()){
+				let featureProductInput = $("#featureForm :input").filter(function(index, element) {
+						return $(element).val() != '';
+					}).serialize();
+
+				var totalFees = $("#totalFees").html();
+				$("#feature_total").html(totalFees);
+				
+				$('#featureModal').modal('hide');
+				$('#featurePaymentModal').modal('show');
+
+			}
+		});
+
+		$("#featurePaymentForm").validate({
+			rules: {
+				payment_details:"required"
+			},
+			messages: {
+				payment_details: "Please select payment method"
+			}
 		});
 
 		$('#featurePaymentForm').submit(function(e) {
 			e.preventDefault();
-			$('#featurePaymentModal').modal('hide');
-		   	$('#feature-success-modal').modal('show');
 
-			var feature_amount = $("#feature_total").html()
+			if($('#featurePaymentForm').valid()){
 
-			let featurePaymentInput = $("#featurePaymentForm :input").filter(function(index, element) {
-											return $(element).val() != '';
-										}).serialize();
+				$('#featurePaymentModal').modal('hide');
+				var feature_amount = $("#feature_total").html()
 
-			featurePaymentInput = featurePaymentInput +'&feature_amount='+feature_amount;
+				let featurePaymentInput = $("#featurePaymentForm :input").filter(function(index, element) {
+												return $(element).val() != '';
+											}).serialize();
 
-			$.ajax({
-				url: '/api/product/feature-payment',
-				type: 'POST',
-				data: featurePaymentInput,
-				success: function(data) {
-					console.log("=======================================",data);
-				},
-				error: function(error){
-					console.log("=======================================",error);
-				}
-			})
+				featurePaymentInput = featurePaymentInput +'&feature_amount='+feature_amount;
 
+				$.ajax({
+					url: '/api/product/feature-payment',
+					type: 'POST',
+					data: featurePaymentInput,
+					success: function(data) {
+						$('#feature-success-modal').modal('show');
+						console.log("=======================================",data);
+					},
+					error: function(error){
+						console.log("=======================================",error);
+					}
+				});
+			}
 		});
+
+		$('#feature_indefinitely').change(function() {
+        	if($(this).is(":checked")) {
+            	$('#end_date').val('');  
+        	}        	      
+   		});
+		
+		$('#end_date').change(function() {
+        	$("#feature_indefinitely").prop("checked", false);        	      
+   		});
+
+		$("#start_date").change(function(){
+			var startDate = $('#start_date').val();
+			let currentUTCDate = new Date();
+				var from = new Date(startDate);
+				if(from < currentUTCDate){
+					$('#start_date').val("");
+					$("#start_date").datepicker("destroy" );
+					$("#start_date").datepicker();
+					outputPopupError("Start Date should not less than Current Date");
+				}
+		});
+
+		$("#end_date").change(function(){
+			var start_date = $('#start_date').val();
+			if(start_date){
+				var end_date = new Date($('#end_date').val());
+				var from = new Date(start_date);
+				if(from > end_date){
+					$('#end_date').val("");
+					$("#end_date").datepicker( "destroy" );
+					$("#end_date").datepicker();
+					outputPopupError("End date should not less than start date");
+				}
+			} else{
+				outputPopupError("Please select start date");
+			}
+		});
+
+		function outputPopupError(data){
+			$('#gtc-feature-form-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-feature-form-alert .form-message').text(data);
+			$("#gtc-feature-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+				$("#gtc-feature-form-alert").slideUp(500);
+			});
+		}
+
+		function valthisform(){
+
+				var featurePosition = $('[name="positions[]"]');
+				var okay=false;
+				for(var i=0,l=featurePosition.length;i<l;i++)
+				{
+					if(featurePosition[i].checked)
+					{
+						console.log("=================yes===================================")
+						//okay=true;
+						//break;
+					}
+				}
+				//if(okay)alert("Thank you for checking a checkbox");
+				//else alert("Please check a checkbox");
+		}
  	});
 
 </script>
@@ -1069,7 +1205,7 @@
 											<label class="label-control">Feature this Product:</label>
 											<div class="input-group">
 												<div class="custom-file">
-													<i class='fas fa-plus' 
+													<i class='fas fa-plus data-value' 
 													data-toggle="modal" data-target="#featureModal" data-whatever="@mdo"></i>
 												</div>
 											</div>
@@ -1122,7 +1258,6 @@
 </div>
 {{> footer/bottom-footer}}
 
-
 <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -1134,56 +1269,66 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="form-group">
-								<label class="label-control">Product Name:</label>
+								<label class="label-control"><b>Product Name:</b></label>
 								<input type="text" name="product_id" value="{{editProduct.product_name}}" readonly class="form-control-customized form-control-sm"
 								 required/>
 							</div>
 						</div>
-						<div class="col-lg-4">
-							<div class="form-group">
-								<label class="label-control">Status:</label>
-								<div class="input-group">
-									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position">
-										<option value="ACTIVE">Active</option>
-										<option value="INACTIVE">InActive</option>
-									</select>
+					</div><br/>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row">
+								<div class="col-lg-2">
+									<label class="label-control"><b>Status:</b></label>
+								</div>
+								<div class="col-lg-5">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='status'>
+											<option value="ACTIVE">Active</option>
+											<option value="INACTIVE">InActive</option>
+										</select>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
-								<label class="label-control">Duration:</label>
-								<div class="input-group">
-									<input class="form-control-customized form-control-sm" name="start_date"
-									 type="text"  placeholder="mm/dd/yyyy"> to
-									 <input class="form-control-customized form-control-sm" name="end_date"
-									 type="text" placeholder="mm/dd/yyyy">
-
+								<label class="label-control"><b>Duration:</b></label>
+								<div class="row">
+									<div class="col-lg-4">
+										<input class="form-control-customized form-control-sm" name="start_date" id="start_date" type="text"  placeholder="mm/dd/yyyy">
+									</div>
+									<div class="col-lg-1">
+										<label class="label-control">to:</label>
+									</div>
+									<div class="col-lg-4">
+										<input class="form-control-customized form-control-sm" name="end_date" id='end_date' data-toggle="datepicker" type="text" placeholder="mm/dd/yyyy">
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
-									<input type="checkbox"> <label class="label-control">Feature this product indefinitely</label>
+									<input type="checkbox" id='feature_indefinitely' name='feature_indefinitely'> <label class="label-control">Feature this product indefinitely</label>
 							</div>
 						</div>
 						<div class="col-lg-12">
-							<label class="label-control">Feature this product:</label>
+							<label class="label-control"><b>Feature this product:</b></label>
 						</div>
-						<div class="col-lg-12">
-							<div class="form-group">
-								<input type="checkbox" value="0"> <label class="label-control">My Profile Page Only (Free)</label><br/>
-								<input type="checkbox" value="50"> <label class="label-control">In Search Results(+$50/mo)</label><br/>
+						<div class="col-lg-12" >
+							<div class="form-group" >
+								<input type="checkbox" value="0" name="positions[]"> <label class="label-control ">My Profile Page Only (Free)</label><br/>
+								<input type="checkbox" value="50" name="positions[]"> <label class="label-control calculate">In Search Results(+$50/mo)</label><br/>
 								{{#ifCond this.type '==' 'wholesale'}}
-								<input type="checkbox" value="150"> <label class="label-control">Wholesale Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="150" name="positions[]"> <label class="label-control ">Wholesale Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'shop'}}
-								<input type="checkbox" value="150"> <label class="label-control">Shop Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="150" name="positions[]"> <label class="label-control ">Shop Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'services'}}
-								<input type="checkbox" value="150"> <label class="label-control">Services Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="150" name="positions[]"> <label class="label-control ">Services Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'lifestyle'}}
-								<input type="checkbox" value="150"> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="150" name="positions[]"> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
 								 {{/ifCond}}
-								<input type="checkbox" value="250"> <label class="label-control">GTC Homepage(+$250/mo)</label>
+								<input type="checkbox" value="250" name="positions[]"> <label class="label-control calculate">GTC Homepage(+$250/mo)</label>
 							</div>
 						</div>
 						<div class="col-lg-12">
@@ -1213,6 +1358,12 @@
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">Payment:</h5>
 			</div>
+			<div class="alert" id="gtc-feature-form-alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="form-message"></span>
+            </div>
 			<form id="featurePaymentForm" class="form">
 				<div class="modal-body">
 					<div class="row">

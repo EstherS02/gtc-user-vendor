@@ -13,7 +13,7 @@ var vendorPlanModel = 'VendorPlan';
 export function starterPlanExpire(job, done) {
 
 	console.log("**********JOBS CALLED")
-    console.log('agenda for plan-auto-renewal..');
+    console.log('agenda for starter-plan-expire..');
 
 	var offset, limit, field, order;
 
