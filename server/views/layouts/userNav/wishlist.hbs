@@ -1,5 +1,8 @@
 <script type="text/javascript">
+var userInfo = {{{ DisplayJSON LoggedInUser}}}
 var wishlist = {{{ DisplayJSON wishlist}}}
+
+var Plan = {{{ DisplayJSON vendorPlan }}}
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -20,31 +23,51 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 	function CartUpdate(e) {
 		var dataInfo = {};
 		var quantity = 0;
+		var marketplace_id = $("#marketplaceId" + e).val();
+		console.log("marketplace_id",marketplace_id)
 		dataInfo.product_id = $("#product_id" + e).val();
 		dataInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
 		dataInfo.cart_item_id = 0;
-		$("#marketplace_id"+e)
+		dataInfo.marketplace_id = marketplace_id;
+		var vendor_id=$("#vendorId" + e).val();
+		var vendor_name = $("#vendorName" + e).val();
 		if (quantity) {
-			// $.ajax({
-			// 	type: 'POST',
-			// 	url: '/api/cart/update-cart',
-			// 	data: JSON.stringify(allCartInfo),
-			// 	contentType: "application/json",
-			// 	success: function(data, text) {
-			// 		console.log("data", data.message_details)
-			// 		console.log("text", text)
-			// 		window.location.href = "/cart";
-			// 	},
-			// 	error: function(request, status, error) {
-			// 		console.log('status', status);
-			// 		console.log('error', error);
-			// 	}
-			// });
+			if (marketplace_id == 1 && userInfo.Vendor.vedorPlans) {\
+				console.log("------------=====MI=======-----------")
+				if (userInfo.Vendor.VendorPlans[0].id == Plan.WHOLESALER || userInfo.Vendor.VendorPlans[0].id == Plan.BULK_BUYER) {
+					if (($('#typecode' + e).val() == 1)) {
+						cartAPI(cartInfo, e);
+					} else {
+						window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
+					}
+				} else {
+					window.location.href = "/upgradeplan";
+				}
+			} else {
+				console.log("------------=====elseMI=======-----------")
+				if (marketplace_id != 1) {
+					cartAPI(cartInfo, e);
+				} else {
+					window.location.href = "/upgradeplan";
+				}
+			}
 		} else {
 			alert("Please enter the Quantity.")
 		}
 	}
-
+function cartAPI(cartInfo) {
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
+					location.reload();
+				},
+				error: function(error) {
+					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+				}
+			});
+		}
 	function remove(e) {
 		var chkArray = [];
 		$(':checkbox:checked').each(function(i) {
@@ -123,7 +146,7 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 									 disabled="true" {{/ifCond}} />
 								</div>
 								<div class="col-md-6">
-									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small btn-muted float-right bg4" {{#ifCond wishlist.length "==" 0}}
+									<input type="submit" onclick="deleteAll(this)" value="DELETE ALL" class="btn btn-small float-right bg4" {{#ifCond wishlist.length "==" 0}}
 									 disabled="true" {{/ifCond}} />
 								</div>
 							</div>
@@ -156,18 +179,18 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 										<table class="table table-hover">
 											<thead>
 												<tr>
-													<th>
+													<th width="2%">
 														{{#ifCond wishlist.length "!=" 0}}
 															<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 														{{/ifCond}}
 													</th>
-													<th>Product Name</th>
-													<th>Store Name</th>
-													<th>Available</th>
-													<th>Type</th>
-													<th>price</th>
-													<th>Add to Cart</th>
-													<th></th>
+													<th width="30%">Product Name</th>
+													<th width="20%">Store Name</th>
+													<th width="3%">Available</th>
+													<th width="10%">Type</th>
+													<th width="12%">price</th>
+													<th width="10%">Add to Cart</th>
+													<th width="13%"></th>
 												</tr>
 											</thead>
 											<tbody>
@@ -178,13 +201,16 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 																<input type="checkbox" class="checkbox" value="{{this.id}}">
 															</td>
 															<td class="text_blue_color">
-																<input type="hidden" name="marketplace_id" id="marketplace_id{{this.id}}" value={{this.Product.marketPlace_id}}>
+																<input type="hidden" name="marketplace_id" id="marketplaceId{{this.id}}" value={{this.Product.marketplace_id}}>
+																<input type="hidden" name="marketplace_type_id" id="typecode{{this.id}}" value={{this.Product.marketplace_type_id}}>
 																<a href="/products/{{this.Product.product_slug}}/{{this.Product.id}}">
 																<img src="{{this.Product.ProductMedia.[0].url}}" style="width: 30px;" />
 																{{this.Product.product_name}}</a>
 															</td>
 															<td class="text_blue_color">
-																<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.User.first_name}} {{this.Product.Vendor.User.last_name}}</a>
+																<a href="vendor/{{this.Product.Vendor.id}}">{{this.Product.Vendor.vendor_name}}</a>
+																<input type="hidden" name="vendor_id" id="vendorId{{this.id}}" value={{this.Product.Vendor.id}}>
+																<input type="hidden" name="vendor_id" id="vendorName{{this.id}}" value={{this.Product.Vendor.User.first_name}}>
 															</td>
 															{{#if this.Product.quantity_available}}
 																<td class="text_green_color" style="font-size: 20px;">
@@ -208,7 +234,7 @@ var wishlist = {{{ DisplayJSON wishlist}}}
 															<input type="hidden" id="product_id{{this.id}}" name="product_id" value="{{this.product_id}}">{{!--
 															<input type="hidden" name="quantity_available" value="{{this.Product.quantity_available}}" id="quantity_available"> --}}
 															<td class="text_blue_color">
-																<input type="number" name="product_quantity" id="inputQuantity{{this.id}}" min="1" max="{{this.Product.quantity_available}}"
+																<input type="number" style ="width:50%" name="product_quantity" id="inputQuantity{{this.id}}" min="1" max="{{this.Product.quantity_available}}"
 																 placeholder="1" onchange="quantityCheck(this)">{{!-- <a href="#"> --}}
 																{{!-- Update </a> --}}
 															</td>
