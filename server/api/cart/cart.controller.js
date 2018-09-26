@@ -523,7 +523,7 @@ export async function applyCoupon(req, res) {
 						} else {
 							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 							finalProducts = await _.filter(appliedProducts, function(product) {
-								return tmpProducts.indexOf(product.id) == -1;
+								return tmpProducts.indexOf(product.id) > -1;
 							});
 						}
 
@@ -561,6 +561,10 @@ export async function applyCoupon(req, res) {
 	}
 }
 
+export function cancelCoupon(req,res){
+	res.clearCookie('applied_coupon');
+	return res.status(200).send('Coupon Removed Successfully.');
+}
 function plainTextResponse(response) {
 	return response.get({
 		plain: true
