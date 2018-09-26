@@ -15,10 +15,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				}
 
 			}
-
 		});
-
-
 	});
 	function paymentSuccess() {
 		window.location = '/upgradeplan';
@@ -89,12 +86,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 					'cursor': "pointer"
 				});
 			}
-		});
-
-             //
-
-			
-		    	
+		});		    	
      		}
 		}
 		else
@@ -175,10 +167,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			}
 		});
 	}
-
-
-
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray" id="planHide">
 	<div class="gtc-container">
 		<div class="row">
@@ -215,9 +205,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										</div>
 
 									</div>
-
-									
-										<div class="row">
+									<div class="row">
 											<div class="col-md-2 social_face" style="font-size:14px">
 												Select Plan
 											</div>
@@ -266,9 +254,6 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 
 										</div>
-									
-
-
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Select card details

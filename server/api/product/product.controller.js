@@ -20,6 +20,8 @@ const status = require('../../config/status');
 const roles = require('../../config/roles');
 const mws = require('mws-advanced');
 const _ = require('lodash');
+const stripe = require('../../payment/stripe.payment');
+const paymentMethod = require('../../config/payment-method');
 
 export function productView(req, res) {
 	var productID = req.params.id;
@@ -691,10 +693,6 @@ export function addProduct(req, res) {
 		req.query.vendor_id = req.user.Vendor.id;
 	}
 
-	console.log("====================================", req.query)
-
-	console.log("====================================", req.query.status)
-	
 	if (req.query.status) {
 		var productStatus = req.query.status;
 		delete req.query.status;
@@ -896,4 +894,48 @@ function createProductAttribute(attributeElement) {
 
 function createDiscount(discountElement, product_id) {
 	return service.createRow('Discount', discountElement);
+}
+
+export function featureProductPayment(req,res){
+	
+	service.findIdRow('PaymentSetting',req.body.payment_details,[])
+		.then(function(cardDetails){
+
+		   return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, 
+											req.body.feature_amount, 'Payment for Featuring Product', 'usd');
+		}).then(function(paymentDetails){
+			
+			if(paymentDetails.paid) {
+
+				var paymentObj={
+					paid_date:  new Date(paymentDetails.created),
+					paid_amount: paymentDetails.amount / 100.0,
+                    payment_method: paymentMethod['STRIPE'],
+                    status: status['ACTIVE'],
+					payment_response: JSON.stringify(paymentDetails),
+					created_by: req.user.Vendor.vendor_name,
+					created_on: new Date()
+				}
+				service.createRow('Payment', paymentObj)
+					.then(function(paymentRow){
+
+						
+
+
+					}).catch(function(error){
+						console.log("Error:::",error);
+					})
+			}else{
+				return res.status(500).send({
+                    "message": "ERROR",
+                    "messageDetails": "Featuring Product UnSuccessfull with Payment Error"
+                });
+			}
+		}).catch(function(error){
+			return res.status(500).send({
+				"message": "ERROR",
+				"messageDetails": "Featuring Product UnSuccessfull with Error",
+				"errorDescription": error
+			});
+		})
 }

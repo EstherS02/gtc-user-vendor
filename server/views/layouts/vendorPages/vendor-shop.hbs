@@ -1,7 +1,8 @@
 <script type="text/javascript">
 
-    var queryURI = {{{DisplayJSON queryURI}}}
-
+    var queryURI = {{{DisplayJSON queryURI}}} 
+	var test={{{DisplayJSON categoryWithProductCount}}}
+	console.log(test)
     function updateQueryStringParameter(uri, key, value) {
       var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
       var separator = uri.indexOf('?') !== -1 ? "&" : "?";

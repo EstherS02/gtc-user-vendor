@@ -9,11 +9,13 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
+const shopService=require('../../../api/vendor/vendor-service')
 const Plan = require('../../../config/gtc-plan');
 const marketplace_type = require('../../../config/marketplace_type');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+var _ = require('lodash');
 
 export function vendorWholesale(req, res) {
 	var LoggedInUser = {};
@@ -23,6 +25,7 @@ export function vendorWholesale(req, res) {
 
 	let user_id = LoggedInUser.id;
 	var bottomCategory = {};
+	var vendorProductCategoryCount = {};
 
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
@@ -30,12 +33,16 @@ export function vendorWholesale(req, res) {
 	var offset, limit, field, order, page;
 	var queryObj = {};
 	var vendor_id;
+	queryObj['status'] = status['ACTIVE'];
 	queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+	vendorProductCategoryCount['marketplace_id'] = marketplace['WHOLESALE'];
 	if (req.params.id) {
 		queryObj['vendor_id'] = req.params.id;
+		vendorProductCategoryCount['vendor_id'] = req.params.id;
 		vendor_id = req.params.id;
 	} else if (req.query.vendor_id) {
 		queryObj['vendor_id'] = req.query.vendor_id;
+		vendorProductCategoryCount['vendor_id'] = req.params.id;
 		vendor_id = req.query.vendor_id;
 	} else {
 		vendor_id = 0;
@@ -58,7 +65,7 @@ export function vendorWholesale(req, res) {
 	async.series({
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id)
+				cartService.cartCalculation(LoggedInUser.id, req)
 					.then((cartResult) => {
 						return callback(null, cartResult);
 					}).catch((error) => {
@@ -225,9 +232,35 @@ export function vendorWholesale(req, res) {
 					return callback(null);
 				});
 
-		}
+		},
+		categoryWithProductCount: function(callback) {
+			var resultObj = {};
+			shopService.vendorProductCountForFilter(queryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
-		console.log((results.marketPlaceTypes))
 		if (!err) {
 			res.render('vendorPages/vendor-wholesale', {
 				title: "Global Trade Connect",
@@ -247,6 +280,7 @@ export function vendorWholesale(req, res) {
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'wholesale',
 				Plan: Plan,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-wholesale', err);

@@ -46,7 +46,7 @@ export function vendorSupport(req, res) {
 		},
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id)
+				cartService.cartCalculation(LoggedInUser.id, req)
 					.then((cartResult) => {
 						return callback(null, cartResult);
 					}).catch((error) => {

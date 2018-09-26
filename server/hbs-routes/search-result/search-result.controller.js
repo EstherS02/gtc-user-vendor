@@ -11,6 +11,7 @@ const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
+const cartService = require('../../api/cart/cart.service');
 const config = require('../../config/environment');
 const durationConfig = require('../../config/duration');
 const productService = require('../../api/product/product.service');
@@ -174,13 +175,17 @@ export function index(req, res) {
 	}
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			const categoryOffset = 0;
@@ -238,19 +243,18 @@ export function index(req, res) {
 				});
 		},
 		topProducts: function(callback) {
-            productQueryParams['is_featured_product'] = 1;
+			productQueryParams['is_featured_product'] = 1;
 			var topLimit = 3;
-            var order = [
-                sequelize.fn('RAND'),
-            ];
-            productService.RandomProducts(productModel, productQueryParams, topLimit, order)
-                .then(function(response) {
-                	console.log("----------------------response",response)
-                    return callback(null, response);
-                }).catch(function(error) {
-                    console.log('Error::', error);
-                    return callback(null);
-                });
+			var order = [
+				sequelize.fn('RAND'),
+			];
+			productService.RandomProducts(productModel, productQueryParams, topLimit, order)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error::', error);
+					return callback(null);
+				});
 		},
 		productsCountBasedOnMarketplaceTypes: function(callback) {
 			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
@@ -281,7 +285,6 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-			console.log("******************************************************",productCountCategory)
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
@@ -306,23 +309,14 @@ export function index(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-		},
-		// vendorDetails:function(callback){
-		// 	console.log("****************************************888",vendorDetailsQueryParams)
-		// 	model['Vendor'].findAll({
-		// 		where:vendorDetailsQueryParams
-		// 	}).then(function(response){
-		// 		console.log("%%%%%%%%%%%%%%%%%%%%%%%%werwefsd",response)
-		// 		return callback(null,response);
-		// 	}).catch(function(error){
-		// 		return callback(null)
-		// 	})	
-		// }
+		}
 	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!error && results) {
 			res.render('search', {
 				title: "Global Trade Connect",
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				queryPaginationObj: queryPaginationObj,
@@ -340,7 +334,7 @@ export function index(req, res) {
 				marketplaceURl: currentMarketPlace,
 				durations: durationConfig,
 				layout_type: layout,
-				productCount:results.productCount
+				productCount: results.productCount
 			});
 		} else {
 			res.render('search', error);

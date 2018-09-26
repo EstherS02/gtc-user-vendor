@@ -1,12 +1,12 @@
 'use strict';
 
 const moment = require('moment');
-
+var _ = require('lodash');
 const service = require('../service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 
-export async function cartCalculation(userID, promoCode) {
+export async function cartCalculation(userID, req) {
 	var cart = {};
 	var queryObj = {};
 	var order = "desc";
@@ -14,6 +14,7 @@ export async function cartCalculation(userID, promoCode) {
 	const field = "created_on";
 	const cartModelName = "Cart";
 	const couponModelName = "Coupon";
+	var promoCode = req.cookies.applied_coupon ? req.cookies.applied_coupon : null;
 
 	var products = [];
 	var appliedProducts = [];
@@ -22,6 +23,7 @@ export async function cartCalculation(userID, promoCode) {
 	const productModelName = "Product";
 
 	cart['total_items'] = 0;
+	cart['coupon_applied'] = false;
 	cart['marketplace_summary'] = {};
 	cart['marketplace_products'] = {};
 	cart['grant_total'] = 0;
@@ -33,7 +35,7 @@ export async function cartCalculation(userID, promoCode) {
 		where: {
 			status: status['ACTIVE']
 		},
-		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price'],
+		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq'],
 		include: [{
 			model: model['Vendor'],
 			attributes: ['id', 'vendor_name']
@@ -58,7 +60,7 @@ export async function cartCalculation(userID, promoCode) {
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['user_id'] = userID;
 
-	couponQueryObj['id'] = promoCode;
+	couponQueryObj['code'] = promoCode;
 
 	try {
 		const cartResonse = await service.findAllRows(cartModelName, includeArray, queryObj, 0, null, field, order);
@@ -94,6 +96,11 @@ export async function cartCalculation(userID, promoCode) {
 
 			const coupon = await service.findOneRow(couponModelName, couponQueryObj, couponIncludeArray);
 			if (coupon) {
+				cart['coupon_applied'] = true;
+				cart['coupon_code'] = coupon.code;
+				cart['discount_type'] = coupon.discount_type;
+				cart['discount_value'] = coupon.discount_value;
+
 				const currentDate = moment().format('YYYY-MM-DD');
 				const expiryDate = moment(coupon.expiry_date).format('YYYY-MM-DD');
 

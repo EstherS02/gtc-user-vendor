@@ -10,10 +10,12 @@ const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
 const cartService = require('../../../api/cart/cart.service');
+const shopService=require('../../../api/vendor/vendor-service')
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+var _ = require('lodash');
 const populate = require('../../../utilities/populate');
 
 
@@ -37,6 +39,7 @@ export function vendorShop(req, res) {
 	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryURI['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
+	queryObj['status'] = status['ACTIVE'];
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -63,7 +66,7 @@ export function vendorShop(req, res) {
 	async.series({
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id)
+				cartService.cartCalculation(LoggedInUser.id, req)
 					.then((cartResult) => {
 						return callback(null, cartResult);
 					}).catch((error) => {
@@ -161,6 +164,33 @@ export function vendorShop(req, res) {
 					return callback(null);
 				});
 		},
+		categoryWithProductCount: function(callback) {
+			var resultObj = {};
+			shopService.vendorProductCountForFilter(queryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!err) {
@@ -180,6 +210,7 @@ export function vendorShop(req, res) {
 				cart: results.cartInfo,
 				selectedPage: 'shop',
 				Plan: Plan,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-shop', err);

@@ -1175,11 +1175,11 @@ label {
     position: relative;
     color: #FFFFFF;
 }
-.alert-success {
-    /*background: #154a7f;*/
+.msg-success {
+    background: #154a7f;
     outline: 0;
 }
-.alert-danger {
+.msg-danger {
     background: #ec4758;
     outline: 0;
 }

@@ -1,8 +1,9 @@
 <script type="text/javascript">
+
 $(document).ready(function() {
-	var state = {{{DisplayJSON state}}};
-	var shippingAddress = {{{DisplayJSON shipping_address}}};
-	var billingAddress = {{{DisplayJSON billing_address}}};
+	var state = {{{ DisplayJSON state }}};
+	var shippingAddress = {{{ DisplayJSON shipping_address }}};
+	var billingAddress = {{{ DisplayJSON billing_address }}};
 	var customerInformationObj = {};
 
 	if ($('#inputBillingAddressId').val()) {
@@ -100,7 +101,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		customerInformationObj['rules'] = {};
 		customerInformationObj['messages'] = {};
-		
+
 		if (!$('#inputBillingAddressId').val() && !$('#billingAddressSelectId').val()) {
 			customerInformationObj['rules'].billing_first_name = "required";
 			customerInformationObj['rules'].billing_addressline1 = "required";
@@ -171,33 +172,32 @@ $(document).ready(function() {
 	});
 });
 
-function editBillingAddressButton() {
-	$('#display-billing-address').hide();
-	$('#edit-billing-address').show();
-	$('#show-billing-address').remove();
-	$('input[name="billing_address_id"]').val('');
-}
+	function editBillingAddressButton() {
+		$('#display-billing-address').hide();
+		$('#edit-billing-address').show();
+		$('#show-billing-address').remove();
+		$('input[name="billing_address_id"]').val('');
+	}
 
-function CartPage() {
-	window.location.href = "/cart";
-}
+	function CartPage() {
+		window.location.href = "/cart";
+	}
 </script>
 <script type="text/javascript">
-$(document).ready(function() {
-	$("#shippingMethodLink").click(function(e) {
-		e.preventDefault();
-		window.location.href = "/order-checkout/shipping-method" + window.location.search;
+	$(document).ready(function() {
+		$("#shippingMethodLink").click(function(e) {
+			e.preventDefault();
+			window.location.href = "/order-checkout/shipping-method" + window.location.search;
+		});
+		$("#paymentMethodLink").click(function(e) {
+			e.preventDefault();
+			window.location.href = "/order-checkout/payment-method" + window.location.search;
+		});
 	});
-	$("#paymentMethodLink").click(function(e) {
-		e.preventDefault();
-		window.location.href = "/order-checkout/payment-method" + window.location.search;
-	});
-});
-function CartPage() {
-	window.location.href = "/cart";
-}
-</script>
-{{> header/top-header LoggedInUser = LoggedInUser}}
+	function CartPage() {
+		window.location.href = "/cart";
+	}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="wrapper-content">
 	<div class="container-sm">
 		<div class="title-header-1 gtc-p-l-r">
@@ -219,245 +219,152 @@ function CartPage() {
 			</div>
 			<div class="alignright">
 				{{#if LoggedInUser.id}}
-				<span class="text-sm">You're logged in as </span>
-				<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
-				<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+					<span class="text-sm">You're logged in as </span>
+					<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+					<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
 				{{else}}
-				<span class="text-sm"><a href="/login">LOGIN</a> to see seller information</span>
+					<span class="text-sm">
+						<a href="/login">LOGIN</a> to see seller information</span>
 				{{/if}}
-				</div>
-				<div style="clear: both;"></div>
 			</div>
-			<div class="bulk-error-block" tabindex="1" id="blukErrorBlock"></div>
-			<div class="body-content-1">
-				<form id="customer-information" method="post">
-					<div class="row no-margins">
-						<div class="col-sm-9half no-padding bg-white">
-							<div class="header-left header-lg gtc-p-l-r">
-								<h2 class="header-lg-text alignleft text-white">Customer Information</h2>
-							</div>
-							<div class="m-cart-body-1 bg-white">
-								<div class="row">
-									<div class="col-md-3 col-12">
-										<label class="label-control text-sm text-black">
-											<strong>Customer Information</strong>
-										</label>
-									</div>
-									<div class="col-md-8 col-12">
-										<div class="row" id="show-billing-address">
-											<div class="col-12">
-												<div class="form-group">
-													<div class="address-content" id="display-billing-address">
-														<input type="hidden" id="inputBillingAddressId" name="billing_address_id" value="{{billing_address.[0].id}}">
-														<h3>{{LoggedInUser.first_name}}
-															<a class="m-l-xs text-sm" href="javascript:;" title="Edit..." onclick="editBillingAddressButton()">
-																<i class="fa fa-edit"></i>
-															</a>
-														</h3>
-														<p>{{billing_address.[0].address_line1}}</p>
-														<p>{{billing_address.[0].address_line2}}</p>
-														<p>{{billing_address.[0].city}}</p>
-														<p>{{billing_address.[0].State.name}}</p>
-														<p>{{billing_address.[0].Country.name}}</p>
-														<p>{{billing_address.[0].postal_code}}</p>
-														<p>{{billing_address.[0].phone}}</p>
-													</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div class="bulk-error-block" tabindex="1" id="blukErrorBlock"></div>
+		<div class="body-content-1">
+			<form id="customer-information" method="post">
+				<div class="row no-margins">
+					<div class="col-sm-9half no-padding bg-white">
+						<div class="header-left header-lg gtc-p-l-r">
+							<h2 class="header-lg-text alignleft text-white">Customer Information</h2>
+						</div>
+						<div class="m-cart-body-1 bg-white">
+							<div class="row">
+								<div class="col-md-3 col-12">
+									<label class="label-control text-sm text-black">
+										<strong>Customer Information</strong>
+									</label>
+								</div>
+								<div class="col-md-8 col-12">
+									<div class="row" id="show-billing-address">
+										<div class="col-12">
+											<div class="form-group">
+												<div class="address-content" id="display-billing-address">
+													<input type="hidden" id="inputBillingAddressId" name="billing_address_id" value="{{billing_address.[0].id}}">
+													<h3>{{LoggedInUser.first_name}}
+														<a class="m-l-xs text-sm" href="javascript:;" title="Edit..." onclick="editBillingAddressButton()">
+															<i class="fa fa-edit"></i>
+														</a>
+													</h3>
+													<p>{{billing_address.[0].address_line1}}</p>
+													<p>{{billing_address.[0].address_line2}}</p>
+													<p>{{billing_address.[0].city}}</p>
+													<p>{{billing_address.[0].State.name}}</p>
+													<p>{{billing_address.[0].Country.name}}</p>
+													<p>{{billing_address.[0].postal_code}}</p>
+													<p>{{billing_address.[0].phone}}</p>
 												</div>
 											</div>
 										</div>
-										<div class="row" id="edit-billing-address">
-											<div class="col-12">
-												<div class="form-group">
-													<div class="select-container">
-														<select id="billingAddressSelectId" name="billing_address_select_id" class="form-control-customized form-control-sm input-rounded-border">
-															<option value='' selected="true">Choose Address...</option>
-														</select>
-													</div>
+									</div>
+									<div class="row" id="edit-billing-address">
+										<div class="col-12">
+											<div class="form-group">
+												<div class="select-container">
+													<select id="billingAddressSelectId" name="billing_address_select_id" class="form-control-customized form-control-sm input-rounded-border">
+														<option value='' selected="true">Choose Address...</option>
+													</select>
 												</div>
 											</div>
-											<div class="row col no-padding no-margins" id="enableManuelBillingAddress">
-												<div class="col-12">
-													<h2 class="horizontal-divider-line"><span>OR</span></h2>
-												</div>
-												<div class="col">
-													{{#if LoggedInUser.first_name}}
+										</div>
+										<div class="row col no-padding no-margins" id="enableManuelBillingAddress">
+											<div class="col-12">
+												<h2 class="horizontal-divider-line">
+													<span>OR</span>
+												</h2>
+											</div>
+											<div class="col">
+												{{#if LoggedInUser.first_name}}
 													<div class="form-group">
-														<input type="text" name="billing_first_name" value="{{LoggedInUser.first_name}}" class="form-control form-control-sm input-rounded-border" placeholder="First name" required="required">
+														<input type="text" name="billing_first_name" value="{{LoggedInUser.first_name}}" class="form-control form-control-sm input-rounded-border"
+														 placeholder="First name" required="required">
 													</div>
-													{{else}}
+												{{else}}
 													<div class="form-group">
-														<input type="text" name="billing_first_name" class="form-control form-control-sm input-rounded-border" placeholder="First name" required="required">
+														<input type="text" name="billing_first_name" class="form-control form-control-sm input-rounded-border" placeholder="First name"
+														 required="required">
 													</div>
-													{{/if}}
-												</div>
-												<div class="col">
-													{{#if LoggedInUser.last_name}}
+												{{/if}}
+											</div>
+											<div class="col">
+												{{#if LoggedInUser.last_name}}
 													<div class="form-group">
-														<input type="text" name="billing_last_name" value="{{LoggedInUser.last_name}}" class="form-control form-control-sm input-rounded-border" placeholder="Last name">
+														<input type="text" name="billing_last_name" value="{{LoggedInUser.last_name}}" class="form-control form-control-sm input-rounded-border"
+														 placeholder="Last name">
 													</div>
-													{{else}}
+												{{else}}
 													<div class="form-group">
 														<input type="text" name="billing_last_name" class="form-control form-control-sm input-rounded-border" placeholder="Last name">
 													</div>
-													{{/if}}
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="billing_company" value="{{billing_address.[0].company_name}}" class="form-control form-control-sm input-rounded-border" placeholder="Company (optional)">
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="billing_addressline1" value="{{billing_address.[0].address_line1}}" class="form-control form-control-sm input-rounded-border" placeholder="Address" required="required">
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="billing_addressline2" value="{{billing_address.[0].address_line2}}" class="form-control form-control-sm input-rounded-border" placeholder="App, Suite">
-													</div>
-												</div>
-												<div class="col-4 p-n-r">
-													<div class="form-group">
-														<div class="select-container">
-															<select required="required" id="billing-select-country" name="billing_country" class="form-control-customized form-control-sm input-rounded-border">
-																<option disabled selected>Choose Country...</option>
-																{{#each country}}
-																<option value="{{this.id}}">{{this.name}}</option>
-																{{/each}}
-															</select>
-														</div>
-													</div>
-												</div>
-												<div class="col-4 p-n-r">
-													<div class="form-group">
-														<div class="select-container">
-															<select required="required" id="billing-select-state" name="billing_state" class="form-control-customized form-control-sm input-rounded-border">
-																<option disabled selected >Choose Province...</option>
-																{{#each state}}
-																<option value="{{this.id}}">{{this.name}}</option>
-																{{/each}}
-															</select>
-														</div>
-													</div>
-												</div>
-												<div class="col-4">
-													<div class="form-group">
-														<input type="text" name="billing_city" value="{{billing_address.[0].city}}" class="form-control form-control-sm input-rounded-border" placeholder="City" required="required">
-													</div>
-												</div>
-												<div class="col-4">
-													<div class="form-group">
-														<input type="text" name="billing_postal" value="{{billing_address.[0].postal_code}}" class="form-control form-control-sm input-rounded-border" placeholder="Postal">
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="form-group">
-														<input type="text" name="billing_phone" value="{{billing_address.[0].phone}}" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
-													</div>
-												</div>
+												{{/if}}
 											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="cart-hr-line"></div>
-							<div class="m-cart-body-1 bg-white">
-								<div class="row">
-									<div class="col-md-3 col-12">
-										<label class="label-control text-sm text-black">
-											<strong>Shipping Address</strong>
-										</label>
-									</div>
-									<div class="col-md-8 col-12">
-										<div class="row">
 											<div class="col-12">
 												<div class="form-group">
-													<div class="customCheckbox">
-														<input id="different_shipping_address" class="customCheckboxInput" name="different_shipping_address" type="checkbox" checked="checked">
-														<label for="different_shipping_address"></label>
-														<small class="m-l-sm text-black">Shipping Address is different than my billing address above</small>
-													</div>
+													<input type="text" name="billing_company" value="{{billing_address.[0].company_name}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="Company (optional)">
 												</div>
 											</div>
-										</div>
-										<div class="row" id="shipping-method-submission">
 											<div class="col-12">
+												<div class="form-group">
+													<input type="text" name="billing_addressline1" value="{{billing_address.[0].address_line1}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="Address" required="required">
+												</div>
+											</div>
+											<div class="col-12">
+												<div class="form-group">
+													<input type="text" name="billing_addressline2" value="{{billing_address.[0].address_line2}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="App, Suite">
+												</div>
+											</div>
+											<div class="col-4 p-n-r">
 												<div class="form-group">
 													<div class="select-container">
-														<select id="shippingAddressSelectId" name="shipping_address_select_id" class="form-control-customized form-control-sm input-rounded-border">
-															<option value="" selected="true">Choose Address...</option>
+														<select required="required" id="billing-select-country" name="billing_country" class="form-control-customized form-control-sm input-rounded-border">
+															<option disabled selected>Choose Country...</option>
+															{{#each country}}
+																<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
 														</select>
 													</div>
 												</div>
 											</div>
-											<div class="row col no-padding no-margins" id="enableManuelShippingAddress">
-												<div class="col-12">
-													<h2 class="horizontal-divider-line"><span>OR</span></h2>
-												</div>
-												<div class="col">
-													<input type="hidden" id="inputShippingAddressId" name="shipping_address_id" value="{{shipping_address.[0].id}}"/>
-													<div class="form-group">
-														<input type="text" name="shipping_first_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.first_name}}" placeholder="First name" required="required">
-													</div>
-												</div>
-												<div class="col">
-													<div class="form-group">
-														<input type="text" name="shipping_last_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.last_name}}" placeholder="Last name">
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="shipping_company" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].company_name}}" placeholder="Company (optional)">
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line1}}" placeholder="Address" required="required">
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group">
-														<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line2}}" placeholder="App, Suite">
-													</div>
-												</div>
-												<div class="col-4 p-n-r">
-													<div class="form-group">
-														<div class="select-container">
-															<select id="shipping-select-country" name="shipping_country" class="form-control-customized form-control-sm input-rounded-border" required="required">
-																<option disabled selected>Choose Country...</option>
-																{{#each country}}
+											<div class="col-4 p-n-r">
+												<div class="form-group">
+													<div class="select-container">
+														<select required="required" id="billing-select-state" name="billing_state" class="form-control-customized form-control-sm input-rounded-border">
+															<option disabled selected>Choose Province...</option>
+															{{#each state}}
 																<option value="{{this.id}}">{{this.name}}</option>
-																{{/each}}
-															</select>
-														</div>
+															{{/each}}
+														</select>
 													</div>
 												</div>
-												<div class="col-4 p-n-r">
-													<div class="form-group">
-														<div class="select-container">
-															<select id="shipping-select-state" name="shipping_state" class="form-control-customized form-control-sm input-rounded-border" required="required">
-																<option disabled selected>Choose Province...</option>
-																{{#each state}}
-																<option value="{{this.id}}">{{this.name}}</option>
-																{{/each}}
-															</select>
-														</div>
-													</div>
+											</div>
+											<div class="col-4">
+												<div class="form-group">
+													<input type="text" name="billing_city" value="{{billing_address.[0].city}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="City" required="required">
 												</div>
-												<div class="col-4">
-													<div class="form-group">
-														<input type="text" name="shipping_city" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].city}}" placeholder="City" required="required">
-													</div>
+											</div>
+											<div class="col-4">
+												<div class="form-group">
+													<input type="text" name="billing_postal" value="{{billing_address.[0].postal_code}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="Postal">
 												</div>
-												<div class="col-4">
-													<div class="form-group">
-														<input name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].postal_code}}" placeholder="Postal">
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="form-group">
-														<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
-													</div>
+											</div>
+											<div class="col-6">
+												<div class="form-group">
+													<input type="text" name="billing_phone" value="{{billing_address.[0].phone}}" class="form-control form-control-sm input-rounded-border"
+													 placeholder="Phone" required="required">
 												</div>
 											</div>
 										</div>
@@ -465,48 +372,224 @@ function CartPage() {
 								</div>
 							</div>
 						</div>
-						<div class="col-sm-3half no-padding">
-							<div class="header-left header-lg gtc-p-l-r">
-								<h2 class="header-lg-text alignleft text-white">Your Order</h2>
-							</div>
-							<div class="cart-summary">
-								{{#ifCond isCartEmpty '!=' true}}
-								{{#each marketPlaces as |marketplace|}}
-								{{#each ../totalPriceList as |totalPrice|}}
-								{{#ifCond marketplace.code '==' @key}}
-								<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
-								<div class="cart-hr-line"></div>
-								<div class="summary-m-total">
-									<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
-									<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
+						<div class="cart-hr-line"></div>
+						<div class="m-cart-body-1 bg-white">
+							<div class="row">
+								<div class="col-md-3 col-12">
+									<label class="label-control text-sm text-black">
+										<strong>Shipping Address</strong>
+									</label>
 								</div>
-								<div class="cart-hr-line"></div>
-								<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
-								{{/ifCond}}
-								{{/each}}
-								{{/each}}
-								<div class="grand-total">
-									<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
-								</div>
-								{{/ifCond}}
-							</div>
-							</div>
-						</div>
-						<div class="row no-margins">
-							<div class="col-sm-9half no-padding">
-								<div class="m-cart-body-bottom bg-white">
-									<button type="button" onclick="CartPage()" class="ladda-button btn btn-md btn-success">
-										<span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span>
-									</button>
-									<button type="submit" id="continue" class="ladda-button btn btn-md btn-primary alignright">
-										<span class="ladda-label">CONTINUE TO SHIPPING METHOD</span><span class="ladda-spinner"></span>
-									</button>
+								<div class="col-md-8 col-12">
+									<div class="row">
+										<div class="col-12">
+											<div class="form-group">
+												<div class="customCheckbox">
+													<input id="different_shipping_address" class="customCheckboxInput" name="different_shipping_address" type="checkbox" checked="checked">
+													<label for="different_shipping_address"></label>
+													<small class="m-l-sm text-black">Shipping Address is different than my billing address above</small>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row" id="shipping-method-submission">
+										<div class="col-12">
+											<div class="form-group">
+												<div class="select-container">
+													<select id="shippingAddressSelectId" name="shipping_address_select_id" class="form-control-customized form-control-sm input-rounded-border">
+														<option value="" selected="true">Choose Address...</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="row col no-padding no-margins" id="enableManuelShippingAddress">
+											<div class="col-12">
+												<h2 class="horizontal-divider-line">
+													<span>OR</span>
+												</h2>
+											</div>
+											<div class="col">
+												<input type="hidden" id="inputShippingAddressId" name="shipping_address_id" value="{{shipping_address.[0].id}}" />
+												<div class="form-group">
+													<input type="text" name="shipping_first_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.first_name}}"
+													 placeholder="First name" required="required">
+												</div>
+											</div>
+											<div class="col">
+												<div class="form-group">
+													<input type="text" name="shipping_last_name" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].User.last_name}}"
+													 placeholder="Last name">
+												</div>
+											</div>
+											<div class="col-12">
+												<div class="form-group">
+													<input type="text" name="shipping_company" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].company_name}}"
+													 placeholder="Company (optional)">
+												</div>
+											</div>
+											<div class="col-12">
+												<div class="form-group">
+													<input type="text" name="shipping_addressline1" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line1}}"
+													 placeholder="Address" required="required">
+												</div>
+											</div>
+											<div class="col-12">
+												<div class="form-group">
+													<input type="text" name="shipping_addressline2" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].address_line2}}"
+													 placeholder="App, Suite">
+												</div>
+											</div>
+											<div class="col-4 p-n-r">
+												<div class="form-group">
+													<div class="select-container">
+														<select id="shipping-select-country" name="shipping_country" class="form-control-customized form-control-sm input-rounded-border"
+														 required="required">
+															<option disabled selected>Choose Country...</option>
+															{{#each country}}
+																<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="col-4 p-n-r">
+												<div class="form-group">
+													<div class="select-container">
+														<select id="shipping-select-state" name="shipping_state" class="form-control-customized form-control-sm input-rounded-border"
+														 required="required">
+															<option disabled selected>Choose Province...</option>
+															{{#each state}}
+																<option value="{{this.id}}">{{this.name}}</option>
+															{{/each}}
+														</select>
+													</div>
+												</div>
+											</div>
+											<div class="col-4">
+												<div class="form-group">
+													<input type="text" name="shipping_city" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].city}}"
+													 placeholder="City" required="required">
+												</div>
+											</div>
+											<div class="col-4">
+												<div class="form-group">
+													<input name="shipping_postal" type="text" class="form-control form-control-sm input-rounded-border" value="{{shipping_address.[0].postal_code}}"
+													 placeholder="Postal">
+												</div>
+											</div>
+											<div class="col-6">
+												<div class="form-group">
+													<input type="text" name="shipping_phone" class="form-control form-control-sm input-rounded-border" placeholder="Phone" required="required">
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</form>
-			</div>
+					<div class="col-sm-3half no-padding">
+						<div class="header-left header-lg gtc-p-l-r">
+							<h2 class="header-lg-text alignleft text-white">Your Order</h2>
+						</div>
+						<div class="cart-summary">
+							{{#if cart.total_items}}
+								{{#each cart.marketplace_summary}}
+									{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+										<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>
+										<div class="cart-hr-line"></div>
+										<div class="summary-m-total">
+											<p class="summary-info">Subtotal
+												<span>{{currency this.sub_total '$'}}</span>
+											</p>
+											<p class="summary-info">Shipping Ground
+												<span>{{currency this.shipping_ground '$'}}</span>
+											</p>
+										</div>
+										<div class="cart-hr-line"></div>
+										<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">WHOLESALE TOTAL
+											<span>{{currency this.total '$'}}</span>
+										</p>
+									{{/ifCond}}
+									{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+										<h2 class="text-marketplace-{{@key}}">Shop Summary</h2>
+										<div class="cart-hr-line"></div>
+										<div class="summary-m-total">
+											<p class="summary-info">Subtotal
+												<span>{{currency this.sub_total '$'}}</span>
+											</p>
+											<p class="summary-info">Shipping Ground
+												<span>{{currency this.shipping_ground '$'}}</span>
+											</p>
+										</div>
+										<div class="cart-hr-line"></div>
+										<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SHOP TOTAL
+											<span>{{currency this.total '$'}}</span>
+										</p>
+									{{/ifCond}}
+									{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+										<h2 class="text-marketplace-{{@key}}">Service Summary</h2>
+										<div class="cart-hr-line"></div>
+										<div class="summary-m-total">
+											<p class="summary-info">Subtotal
+												<span>{{currency this.sub_total '$'}}</span>
+											</p>
+											<p class="summary-info">Shipping Ground
+												<span>{{currency this.shipping_ground '$'}}</span>
+											</p>
+										</div>
+										<div class="cart-hr-line"></div>
+										<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SERVICE TOTAL
+											<span>{{currency this.total '$'}}</span>
+										</p>
+									{{/ifCond}}
+									{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+										<h2 class="text-marketplace-{{@key}}">Subscription Summary</h2>
+										<div class="cart-hr-line"></div>
+										<div class="summary-m-total">
+											<p class="summary-info">Subtotal
+												<span>{{currency this.sub_total '$'}}</span>
+											</p>
+											<p class="summary-info">Shipping Ground
+												<span>{{currency this.shipping_ground '$'}}</span>
+											</p>
+										</div>
+										<div class="cart-hr-line"></div>
+										<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SUBSCRIPTION TOTAL
+											<span>{{currency this.total '$'}}</span>
+										</p>
+									{{/ifCond}}
+								{{/each}}
+								<div class="grand-total">
+									<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL
+										<span>{{currency cart.grant_total_with_discounted_amount '$'}}</span>
+									</p>
+								</div>
+								{{#if cart.coupon_applied}}
+									<div class="m-t-sm text-center">
+										<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
+										<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+									</div>
+								{{/if}}
+							{{/if}}
+						</div>
+					</div>
+				</div>
+				<div class="row no-margins">
+					<div class="col-sm-9half no-padding">
+						<div class="m-cart-body-bottom bg-white">
+							<button type="button" onclick="CartPage()" class="ladda-button btn btn-md btn-success">
+								<span class="ladda-label">RETURN TO CART</span>
+								<span class="ladda-spinner"></span>
+							</button>
+							<button type="submit" id="continue" class="ladda-button btn btn-md btn-primary alignright">
+								<span class="ladda-label">CONTINUE TO SHIPPING METHOD</span>
+								<span class="ladda-spinner"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
