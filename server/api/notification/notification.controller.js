@@ -58,3 +58,20 @@ export function readNotification(req,res){
 	})
 
 }
+export function NotificationCount(req,res){
+	var modelName = "Notification";
+	var queryObj = {
+		user_id : req.user.id,
+		is_read : 1
+	};
+	service.countRows(modelName,queryObj).then(function (NotificationCount) {
+		NotificationCount = {
+			NotificationCount: NotificationCount
+		}
+		res.status(200).send(NotificationCount);
+		return;
+	}).catch(function (error) {
+		res.status(500).send("Internal server error");
+		return;
+	});
+}

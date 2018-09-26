@@ -152,3 +152,18 @@ export function blogPost(req, res) {
 		return res.status(200).send(response);
 	});
 }
+export function upsert(req,res){
+	var bodyParams = req.body;
+	bodyParams["last_updated_on"] = new Date();
+	var queryObj = {
+		vendor_id : req.body.vendor_id
+	}
+	service.upsertRow("TermsAndCond", bodyParams,queryObj)
+		.then(function(result) {
+			return res.status(201).send("Updated Successfully");
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			res.status(500).send("Internal server error");
+			return
+		});
+}

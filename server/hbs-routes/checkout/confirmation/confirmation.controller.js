@@ -13,12 +13,14 @@ export function confirmation(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 
-	console.log(req.params.id)
 
 	if (req.user) {
 		LoggedInUser = req.user;
 	}
-	var vendorID = JSON.parse(req.params.id);
+	// var array = JSON.parse("[" + req.query.key+ "]");
+	var string = req.query.key;
+	var array = string.split(",").map(Number);
+	var vendorID = array; 
 	let user_id = LoggedInUser.id;
 
 	async.series({

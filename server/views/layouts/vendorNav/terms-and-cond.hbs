@@ -1,7 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <script>
-    var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id }}};
-
+var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
     function validate() {
 
         if ($('#terms_of_use').val().length > 0 ||
@@ -28,10 +27,9 @@
             }).serialize();
 
             var termsAndCondInput = input + '&vendor_id=' + vendor_id + '&status=' + 1;
-
             $.ajax({
                 type: 'PUT',
-                url: '/api/terms-and-cond/upsert',
+                url: '/api/vendor-props/upsert',
                 data: termsAndCondInput,
                 success: function (data) {
                     $('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
@@ -72,6 +70,8 @@
                             <span class="cart-message"></span>
                         </div>
 						<br/>
+                        <input type="hidden" name="id" id="id" value={{termsAndCond.id}}>
+                        <input type="hidden" name="vendor_id" id="vendorid" value={{termsAndCond.vendor_id}}>
                         <div class="content-body">
 							<p>
 								<small>Please enter your stores, return policy, shipping policy and terms of use to be displayed on

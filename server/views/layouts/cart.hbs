@@ -411,7 +411,7 @@
 							</div>
 							{{#if existCoupons}}
 							<div class="m-t-sm" style="text-align:center">
-								<label class="m-b-xs">Promo Code #{{existCoupons.code}} Applied</label>
+								<label class="m-b-xs">Promo Code #{{existCoupons.code}} Applied</label> <span><i class="fas fa-pencil-alt"> change Coupon</i></span>
 								<p ><strong class="text-black" > - {{#ifCond existCoupons.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed existCoupons.discount_value}} {{#ifCond existCoupons.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
 							</div>
 							{{else}}
