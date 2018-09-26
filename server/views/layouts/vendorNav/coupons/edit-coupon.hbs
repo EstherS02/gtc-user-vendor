@@ -113,6 +113,10 @@
 		});
 		$(".multiSelect").trigger('change');
 	});
+
+	function cancelCoupon() {
+		window.location.href = "/coupons";
+	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
 <div id="vendorAlert" tabindex="1"><div class="gtc-container"></div></div>
 <div class="wrapper-content bg-gray">
@@ -358,7 +362,7 @@
 										<div class="col-12">
 											<div class="form-group">
 												<button class="btn btn-md btn-success m-t" type="submit">SUBMIT</button>
-												<button class="btn btn-md btn-muted m-t" type="button">CANCEL</button>
+												<button class="btn btn-md btn-muted m-t" onclick="cancelCoupon()" type="button">CANCEL</button>
 											</div>
 										</div>
 									</div>
