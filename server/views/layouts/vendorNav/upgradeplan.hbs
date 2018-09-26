@@ -141,6 +141,11 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 	function makePayment() {
 		var plan_id = document.getElementById("selectplan").value;
+		  if($('[type="checkbox"]').is(":checked")){
+				 var autoRenewalMail = 1;
+                 }else{
+                  var autoRenewalMail = 2;
+                }
 		$.ajax({
 			url: '/api/payment/planpay',
 			type: 'POST',
@@ -152,7 +157,8 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 				carddetailsid: $('input[name="carddetailsid"]').val(),
 				plan_id: plan_id,
 				user_id :$('input[name="user_id"]').val(),
-				vendor_id: $('input[name="vendor_id"]').val()
+				vendor_id: $('input[name="vendor_id"]').val(),
+				autoRenewalMail:autoRenewalMail
 			}),
 			success: function(data) {
 				setTimeout(function() {
@@ -287,6 +293,19 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 											</div>
 										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+											Auto-Renewal
+										</div>
+										<div class="col-md-4">
+											<div class="input-group mb-3">
+												<div class="input-group-prepend">
+												</div>
+												<span style="font-size:12px"><input type="checkbox" name="autorenewalmail"></span>
+											</div>
+										</div>
+
+									</div>
 									{{#each carddetails}}
 										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
@@ -402,6 +421,18 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 									<a href="/billing-settings">Add Card</a>
 								</div>
 							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+								Auto-Renewal
+							</div>
+						<div class="col-md-4">
+						<div class="input-group mb-3">
+    					<div class="input-group-prepend">
+						</div>
+						  <span style="font-size:12px"><input type="checkbox" name="autorenewalmail"></span>
+						</div>
+						</div>
 						</div>
 							{{#each carddetails}}
 										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
