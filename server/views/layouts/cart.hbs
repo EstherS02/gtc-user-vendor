@@ -143,6 +143,19 @@
 		}
 	}
 
+	function editCoupon(){
+		$.ajax({
+			url: '/api/cart/cancel-coupon',
+			type: 'GET',
+			success: function(data, statusText, xhr) {
+				location.reload();
+			},
+			error: function(request, status, error) {
+				auth.alertService(request.status, request.responseText);
+			}
+		})
+	}
+
 	function orderCheckout() {
 		location.href = "/order-checkout/customer-information";
 	}
@@ -595,7 +608,8 @@
 							{{#if cart.coupon_applied}}
 								<div class="m-t-sm text-center">
 									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
-									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+									<div><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></div>
+									<a href="javascript:;" style="font-size: small" onclick="editCoupon()"><i class="fas fa-pencil-alt">coupon</i></a>
 								</div>
 							{{else}}
 								<div class="m-t-sm">
