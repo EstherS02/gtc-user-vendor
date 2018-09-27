@@ -104,7 +104,11 @@ var all = {
         "vendorPayouts": "vendorPayouts",
         "aliExpressScrape": "aliexpress-scrape",
         "ebayInventory": "ebay-inventory",
-        "amazonImportJob": "amazonImportJob"
+		"amazonImportJob": "amazonImportJob",
+		"starterPlanExpire": "starterPlanExpire",
+		"featureProductExpire": "featureProductExpire",
+		"planRenewal": "planRenewal",
+		"bulkUserPlanRenewal":"bulkUserPlanRenewal"
     },
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,
