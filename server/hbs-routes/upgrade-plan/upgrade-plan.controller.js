@@ -5,6 +5,7 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const productService = require('../../api/product/product.service');
+const populate = require('../../utilities/populate');
 const service = require('../../api/service');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
@@ -92,8 +93,8 @@ export function upgradeplan(req, res) {
 					return callback(null);
 				});
 		},
-		userplanDetails: function(callback) {
-			var includeArr = [];
+		userplanDetails: function(callback) { 
+			/*var includeArr = [];
 
 			var queryObjs = {};
 			queryObjs = {
@@ -109,7 +110,34 @@ export function upgradeplan(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
+				});*/
+			
+			const currentDate = moment().format('YYYY-MM-DD');
+			var includeArr = populate.populateData('Plan');
+	        var queryObj = {
+				user_id: user_id,
+				  start_date:{
+				    '$lte': currentDate
+				  },
+				  end_date:{
+				  '$gte': currentDate,
+				  }
+
+	              }
+	              var field = 'created_on';
+                  var order = "asc";
+	               service.findAllRows('UserPlan', includeArr, queryObj, 0, null, field, order).
+					then(function(userplanDetails) {
+					var userplanDetails = userplanDetails;
+					return callback(null, userplanDetails);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
+					
+
+			
+
 		},
 		userShowplanDetails: function(callback) {
 			var includeArr = [];
@@ -129,24 +157,37 @@ export function upgradeplan(req, res) {
 				});
 		},
 		planDetails: function(callback) {
-			productService.planDetails(vendor_id)
-				.then((response) => {
-					return callback(null, response);
-				}).catch((error) => {
+			const currentDate = moment().format('YYYY-MM-DD');
+			var includeArr = populate.populateData('Plan');
+	        var queryObj = {
+				  vendor_id: vendor_id,
+				  start_date:{
+				    '$lte': currentDate
+				  },
+				  end_date:{
+				  '$gte': currentDate,
+				  }
+
+	              }
+	              var field = 'created_on';
+                  var order = "asc";
+	               service.findAllRows('VendorPlan', includeArr, queryObj, 0, null, field, order).
+					then(function(planDetails) {
+					var planDetails = planDetails;
+					return callback(null, planDetails);
+				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+					
+
+		
 		}
 	}, function(err, results) {
-		if (results.userplanDetails != null) {
-			var userplandetails = results.userplanDetails.status;
-		} else {
-			var userplandetails = "0";
-		}
 		if (!err) {
-			res.render('vendorNav/upgradeplan', {
+			    res.render('vendorNav/upgradeplan', {
 				title: "Global Trade Connect",
-				userplanDetails: userplandetails,
+				userplanDetails: results.userplanDetails,
 				PlanDetails: results.planDetails,
 				cart: results.cartInfo,
 				marketPlace: marketplace,
