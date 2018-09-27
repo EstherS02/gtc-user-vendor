@@ -224,7 +224,8 @@ export function create(req, res) {
             return;
         } else {
             bodyParams["status"] = status["ACTIVE"];
-            bodyParams["role"] = roles["VENDOR"];
+			bodyParams["role"] = roles["VENDOR"];
+			bodyParams["contact_email"] = req.body.email;
             model['User'].create(bodyParams)
                 .then(function(user) {
                     if (user) {
