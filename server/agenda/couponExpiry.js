@@ -1,6 +1,3 @@
-
-
-
 const service = require('../api/service');
 const sequelize = require('sequelize');
 const model = require('../sqldb/model-connect');

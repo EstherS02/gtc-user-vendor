@@ -10,7 +10,9 @@ const gtcPlan = require('../config/gtc-plan');
 var currentDate = new Date();
 var vendorPlanModel = 'VendorPlan';
 
-export function starterPlanExpire(job, done) {
+console.log("HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLOoooooooooooooo")
+
+module.exports = function (job, done) {
 
 	console.log("**********JOBS CALLED")
     console.log('agenda for starter-plan-expire..');
