@@ -85,7 +85,8 @@ var all = {
 			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
 			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
 			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
-			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE'
+			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
+			planExpired : "PLAN-EXPIRED"
         }
     },
     //Notification
@@ -104,7 +105,11 @@ var all = {
         "vendorPayouts": "vendorPayouts",
         "aliExpressScrape": "aliexpress-scrape",
         "ebayInventory": "ebay-inventory",
-        "amazonImportJob": "amazonImportJob"
+		"amazonImportJob": "amazonImportJob",
+		"starterPlanExpire": "starterPlanExpire",
+		"featureProductExpire": "featureProductExpire",
+		"planRenewal": "planRenewal",
+		"bulkUserPlanRenewal":"bulkUserPlanRenewal"
     },
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,

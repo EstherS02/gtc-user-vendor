@@ -95,11 +95,7 @@ let sqlQueries = {
 	    let query = `SELECT product.id, product.product_name,product.marketplace_type_id,product.marketplace_id,product.sku, product.product_slug, product.vendor_id, product.status,product.sub_category_id, product.publish_date, product.quantity_available, product.price, product.description, product.moq, vendor.user_id, vendor.vendor_name, product_media.url,users.first_name, COALESCE(COUNT(reviews.user_id), 0) AS 'user_count', COALESCE(AVG(reviews.rating), 0) AS 'product_rating' FROM product LEFT JOIN vendor ON vendor.id = product.vendor_id LEFT JOIN product_media ON product_media.product_id = product.id LEFT JOIN reviews ON reviews.product_id = product.id LEFT JOIN users on users.id=vendor.user_id  WHERE product.id IN(` + params + `) GROUP BY product.id`;
 	    return query;
     },
-    
-    planDetailsQuery: function(params) {
-	    let query = `SELECT vendorplan.id,vendorplan.vendor_id,vendorplan.plan_id,vendorplan.status,plan.name,plan.cost FROM vendor_plan as vendorplan left join plan on plan.id=vendorplan.plan_id where vendorplan.vendor_id=(` + params + `)`;
-	    return query;
-	},
+      
 	countryCountForVendor:function(params){
 		let query=`SELECT country.id,country.name,country.code,COUNT(vendor_user_product.origin_id) as vendor_count from country LEFT OUTER JOIN vendor_user_product on country.id= vendor_user_product.origin_id and vendor_user_product.status = 1 and vendor_user_product.marketplace_id=(` + params.marketplace_id + `)  GROUP BY country.name`;
 		return query;

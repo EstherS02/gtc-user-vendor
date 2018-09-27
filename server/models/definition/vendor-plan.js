@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 		auto_renewal_mail: {
             type: DataTypes.INTEGER,
             field: 'auto_renewal_mail',
-            allowNull: false
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

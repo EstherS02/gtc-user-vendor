@@ -95,6 +95,7 @@ export function create(req, res) {
             res.status(409).send("Email address already exists");
             return;
         } else {
+			bodyParams['contact_email'] = req.body.email;
             bodyParams['created_on'] = new Date();
             bodyParams["role"] = roles["USER"];
             bodyParams["status"] = status["ACTIVE"];
