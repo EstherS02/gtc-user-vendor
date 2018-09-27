@@ -46,10 +46,10 @@ agenda.on('ready', function() {
 	console.log('agenda onReady')
 	agenda.every('0 0 * * *', 'couponExpiry');
 	agenda.every('8 hours', 'vendorPayouts');
-	agenda.every('1 minute', 'planRenewal');
-	agenda.every('1 minute', 'bulkUserPlanRenewal');
-	agenda.every('1 minute', 'starterPlanExpire');
-	agenda.every('1 minute', 'featureProductExpire');
+	agenda.every('12 hours', 'planRenewal');
+	agenda.every('12 hours', 'bulkUserPlanRenewal');
+	agenda.every('12 hours', 'starterPlanExpire');
+	agenda.every('12 hours', 'featureProductExpire');
 	agenda.start();
 });
 
