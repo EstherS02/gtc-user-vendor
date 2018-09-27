@@ -37,7 +37,8 @@ export function createStarterSeller(req, res) {
     bodyParams = req.body;
     bodyParams['user_id'] = req.user.id;
     bodyParams['status'] = status['ACTIVE'];
-    bodyParams['created_on'] = new Date();
+	bodyParams['created_on'] = new Date();
+	bodyParams['auto_renewal_mail'] = status['ACTIVE'];
 
     queryObj['user_id'] = req.user.id;
 
@@ -68,7 +69,8 @@ export function createStarterSeller(req, res) {
                                                 var verndorPlanObj = {};
                                                 verndorPlanObj['vendor_id'] = vendorRow.id;
                                                 verndorPlanObj['plan_id'] = planRow.id;
-                                                verndorPlanObj['status'] = status['ACTIVE'];
+												verndorPlanObj['status'] = status['ACTIVE'];
+												verndorPlanObj['auto_renewal_mail']=bodyParams['auto_renewal_mail'];
                                                 verndorPlanObj['start_date'] = new Date();
                                                 if (planRow.duration_unit == durationUnit['DAYS']) {
                                                     verndorPlanObj['end_date'] = moment().add(planRow.duration, 'days').format('YYYY-MM-DD');

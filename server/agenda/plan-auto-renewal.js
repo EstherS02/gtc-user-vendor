@@ -40,14 +40,14 @@ export function planRenewal(job, done) {
 			where: {
 				status: statusCode['ACTIVE']
 			},
-			attribute: ['id', 'user_id'],
+			attributes: ['id', 'user_id'],
 			include: [
 				{ 
 					model: model['User'],
 					where: {
 						status: statusCode['ACTIVE']
 					},
-					attribute: ['id','email']
+					attributes: ['id','email']
 				}
 			]		
 		},
@@ -59,7 +59,7 @@ export function planRenewal(job, done) {
 					'$ne': gtcPlan['STARTER_SELLER']
 				}
 			},
-			attribute:['id','name', 'cost']
+			attributes:['id','name', 'cost']
 		}
 	]
 

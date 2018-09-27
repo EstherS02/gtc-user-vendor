@@ -18,7 +18,7 @@ var currentDate = new Date();
 export function bulkUserPlanRenewal(job, done) {
 
 	console.log("**********JOBS CALLED")
-    console.log('agenda for plan-auto-renewal..');
+    console.log('agenda for user-bulk-plan-auto-renewal..');
 
 	var offset, limit, field, order;
 
@@ -41,7 +41,7 @@ export function bulkUserPlanRenewal(job, done) {
 			where: {
 				status: statusCode['ACTIVE']
 			},
-			attribute: ['id','name','email']	
+			attribute: ['id','first_name','email']	
 		},
 		{
 			model: model['Plan'],
@@ -63,11 +63,11 @@ export function bulkUserPlanRenewal(job, done) {
 			return Promise.all(primaryCardPromise);
 
 		}).then(function(primaryCard){
-			return res.status(200).send(plans);
+			done();
 
 		}).catch(function(error){
 			console.log("Error::", error);
-      		return res.status(400).send(error);
+			done();
 		})
 }
 
@@ -82,6 +82,7 @@ function primaryCardDetails(userPlan){
 
 	return service.findRow(paymentSettingModel, cardQueryObj, [])
 		.then(function(cardDetails){
+
 			if(cardDetails){
 
 				var desc = "GTC Plan Payment";
@@ -181,7 +182,7 @@ function autoRenewalMail(userPlan, chargedAmount){
         .then(function (response) {
             if (response) {
 
-				var email = vendor.User.email;
+				var email = userPlan.User.email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -206,6 +207,4 @@ function autoRenewalMail(userPlan, chargedAmount){
             return;
         });
 }
-
-
 

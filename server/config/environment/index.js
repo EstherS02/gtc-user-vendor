@@ -84,7 +84,8 @@ var all = {
 			upgradeplan:'UPGRADE-PLAN',
 			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
 			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
-			starterPlanExpire : 'STARTER-SELLER-EXPIRE'
+			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
+			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE'
         }
     },
     //Notification

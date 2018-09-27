@@ -152,7 +152,7 @@ export async function cartCalculation(userID, req) {
 					} else {
 						var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 						couponApplicableProducts = await _.filter(appliedProducts, function(product) {
-							return tmpProducts.indexOf(product.id) == -1;
+							return tmpProducts.indexOf(product.id) > -1;
 						});
 					}
 				}

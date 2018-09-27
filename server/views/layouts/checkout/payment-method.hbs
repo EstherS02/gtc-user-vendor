@@ -210,7 +210,7 @@
 			}
 		}
 		vendorArray = _.uniq(vendorArray);
-		vendorArray1 = JSON.stringify(vendorArray);
+		vendorArray1 = vendorArray.join(',');
 	});
 
 	var stripe = Stripe('{{stripePublishableKey}}');
@@ -326,7 +326,7 @@
 				errorElement.removeClass('alert-danger').addClass('alert-success');
 
 				setTimeout(function() {
-					window.location = '/order-checkout/confirmation/' + vendorArray1;
+					window.location = '/order-checkout/confirmation?key=' + vendorArray1;
 				}, 1000);
 			},
 			error: function(error) {

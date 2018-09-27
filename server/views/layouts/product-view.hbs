@@ -206,6 +206,7 @@ function compareProduct(e) {
 };
 
 function wishUpdate() {
+	
 	if (userInfo.email) {
 		var newObj = {};
 		newObj.product_id = productSpecs.id;
@@ -225,7 +226,7 @@ function wishUpdate() {
 			url: '/api/product-view/addOrRemove',
 			data: newData,
 			success: function(response) {
-				// location.reload();
+				location.reload();
 			},
 			error: function(error) {
 				$('#productAlert').append('<p class="product-alert-msg text-danger text-left m-t-xs">' + JSON.parse(error.responseText).message_details + '</p>');

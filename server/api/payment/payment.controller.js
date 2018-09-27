@@ -734,6 +734,7 @@ export function makeplanPayment(req, res) {
 				var vendorplanModel = {
 					plan_id: req.body.plan_id,
 					status: status['ACTIVE'],
+					auto_renewal_mail:req.body.autoRenewalMail,
 					start_date: start_date,
 					end_date: end_date
 
@@ -760,6 +761,7 @@ export function makeplanPayment(req, res) {
 							var userplanModel = {
 								user_id: req.body.user_id,
 								plan_id: req.body.plan_id,
+								auto_renewal_mail:req.body.autoRenewalMail,
 								status: status['ACTIVE'],
 								start_date: start_date,
 								end_date: end_date
@@ -775,6 +777,7 @@ export function makeplanPayment(req, res) {
 							var userplanModel = {
 								plan_id: req.body.plan_id,
 								status: status['ACTIVE'],
+								auto_renewal_mail:req.body.autoRenewalMail,
 								start_date: start_date,
 								end_date: end_date
 
