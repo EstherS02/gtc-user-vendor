@@ -10,7 +10,7 @@ const sendEmail = require('./send-email');
 var currentDate = new Date();
 var featureProductModel = 'FeaturedProduct';
 
-export function featureProductExpire(req, res) {
+export function featureProductExpire(job, done) {
 
 	console.log("**********JOBS CALLED")
     console.log('agenda for feature-product-expire..');

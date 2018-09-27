@@ -128,6 +128,13 @@ let sqlQueries = {
 			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.product_name LIKE "%`+ productCountQueryParams.keyword+`%" and product.status=(`+productCountQueryParams.status+`)
 			GROUP BY sub_category.id ORDER by category.name`;
 			return query;
+		}
+		else if(productCountQueryParams.keyword){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.product_name LIKE "%`+ productCountQueryParams.keyword+`%" and product.status=(`+productCountQueryParams.status+`)
+			GROUP BY sub_category.id ORDER by category.name`;
+			return query;
 		}else if(productCountQueryParams.marketplace_id && productCountQueryParams.is_featured_product){
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(featured_product.product_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
@@ -148,7 +155,7 @@ let sqlQueries = {
             LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND product.status = 1 and featured_product.status=(`+productCountQueryParams.is_featured_product+`)
 			GROUP BY sub_category.id ORDER by category.name`;
 			return query;
-		}else if(productCountQueryParams.product_category_id && !productCountQueryParams.vendor_id){
+		}else if(productCountQueryParams.product_category_id && !productCountQueryParams.vendor_id && !productCountQueryParams.sub_category_id){
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
 			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.product_category_id=(`+productCountQueryParams.product_category_id+`)
@@ -157,7 +164,14 @@ let sqlQueries = {
 		}else if(productCountQueryParams.product_category_id && productCountQueryParams.sub_category_id && !productCountQueryParams.vendor_id){
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
-			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.product_category_id=(`+productCountQueryParams.product_category_id+`) and product.sub_category_id=(`+productCountQueryParams.sub_category_id+`)
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.product_category_id=(`+productCountQueryParams.product_category_id+`) and product.sub_category_id=(`+productCountQueryParams.sub_category_id+`) and product.status=(`+productCountQueryParams.status+`)
+			GROUP BY sub_category.id ORDER by category.name`
+			return query;
+		}
+		else if(productCountQueryParams.marketplace_id && productCountQueryParams.product_category_id && productCountQueryParams.vendor_id){
+			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+			LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id=(`+productCountQueryParams.marketplace_id+`) and product.product_category_id=(`+productCountQueryParams.product_category_id+`) and product.vendor_id=(`+productCountQueryParams.vendor_id+`) and product.status=(`+productCountQueryParams.status+`)
 			GROUP BY sub_category.id ORDER by category.name`
 			return query;
 		}
@@ -186,6 +200,7 @@ let sqlQueries = {
 		}
 	},
 	vendorFilterCatogoryCount:function(params){
+		console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^666",params)
 		if(params.vendor_id && params.marketplace_id && !params.marketplace_type_id){
 			let query=`SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.vendor_id) as subproductcount FROM 
 			category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id

@@ -59,6 +59,46 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'clicks',
             allowNull: true
+		},
+		feature_status: {
+            type: DataTypes.INTEGER,
+            field: 'feature_status',
+            allowNull: true
+		},
+		position_homepage: {
+            type: DataTypes.INTEGER,
+            field: 'position_homepage',
+            allowNull: true
+		},
+		position_searchresult: {
+            type: DataTypes.INTEGER,
+            field: 'position_searchresult',
+            allowNull: true
+		},
+		position_profilepage: {
+            type: DataTypes.INTEGER,
+            field: 'position_profilepage',
+            allowNull: true
+		},
+		position_wholesale_landing: {
+            type: DataTypes.INTEGER,
+            field: 'position_wholesale_landing',
+            allowNull: true
+		},
+		position_shop_landing: {
+            type: DataTypes.INTEGER,
+            field: 'position_shop_landing',
+            allowNull: true
+		},
+		position_service_landing: {
+            type: DataTypes.INTEGER,
+            field: 'position_service_landing',
+            allowNull: true
+		},
+		position_subscription_landing: {
+            type: DataTypes.INTEGER,
+            field: 'position_subscription_landing',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

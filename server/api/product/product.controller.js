@@ -731,12 +731,17 @@ export function addProduct(req, res) {
 				return Promise.all(discountPromise);
 			}
 		}).then(function(updatedDiscount){
-			return res.status(200).send("Created Successfully");
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "Product Created Successfully"
+			});
 
 		}).catch(function(error) {
 			console.log('Error:::', error);
-			res.status(500).send("Internal server error");
-			return;
+			return res.status(500).send({
+				"message": "Error",
+				"messageDetails": "Internal server error"
+			});
 		})
 }
 
@@ -786,12 +791,16 @@ export function editProduct(req, res) {
 		}
 
 	}).then(function(updatedDiscount){
-		return res.status(200).send("Updated Successfully");
-
+		return res.status(200).send({
+			"message": "Success",
+			"messageDetails": "Product Updated Successfully"
+		});
 	}).catch(function(error) {
 		console.log('Error:::', error);
-		res.status(500).send("Internal server error");
-		return;
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal server error"
+		});
 	})
 }
 
@@ -896,8 +905,20 @@ function createDiscount(discountElement, product_id) {
 	return service.createRow('Discount', discountElement);
 }
 
-export function featureProductPayment(req,res){
+export function featureProductWithPayment(req,res){
+
+	if (req.query.feature_status) {
+		var featureStatus = req.query.feature_status;
+		delete req.query.feature_status;
+		req.query.feature_status = status[featureStatus]
+	}
+
+	var featuredProductBodyParam = req.query;
 	
+	featuredProductBodyParam['status'] = status['ACTIVE'];
+	featuredProductBodyParam['created_by'] = req.user.Vendor.vendor_name;
+	featuredProductBodyParam['created_on'] = new Date();
+
 	service.findIdRow('PaymentSetting',req.body.payment_details,[])
 		.then(function(cardDetails){
 
@@ -919,16 +940,31 @@ export function featureProductPayment(req,res){
 				service.createRow('Payment', paymentObj)
 					.then(function(paymentRow){
 
-						
-
+						service.createRow('FeaturedProduct',featuredProductBodyParam)
+							.then(function(featuredRow){
+								return res.status(200).send({
+									"message": "Success",
+									"messageDetails": "Product Featured Successfully"
+								});
+							}).catch(function(error){
+								return res.status(400).send({
+									"message": "ERROR",
+									"messageDetails": "Featuring Product Unsuccessfull",
+									"errorDescription": error
+								});
+							})
 
 					}).catch(function(error){
-						console.log("Error:::",error);
+						return res.status(400).send({
+							"message": "ERROR",
+							"messageDetails": "Featuring Product Unsuccessfull",
+							"errorDescription": error
+						});
 					})
 			}else{
 				return res.status(500).send({
                     "message": "ERROR",
-                    "messageDetails": "Featuring Product UnSuccessfull with Payment Error"
+                    "messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error"
                 });
 			}
 		}).catch(function(error){

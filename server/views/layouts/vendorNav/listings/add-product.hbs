@@ -1,3 +1,9 @@
+<style type="text/css">
+    #start_date
+    {
+        z-index: 9999999;
+    }
+</style>
 <script>
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
 
@@ -164,13 +170,6 @@
 			}    		  
   	 	}).change()
 	})
-
-	$(function() {
-		$('[data-toggle="datepicker"]').datepicker({
-			autoHide: true,
-			zIndex: 2048,
-		});
-	});
 
 	$(document).ready(function() {
 
@@ -647,14 +646,17 @@
 
 //FEATURING THE PRODUCT FUNCTIONALITIES
 
+		var featureProductInput;
+
 		$('input:checkbox:not("#feature_indefinitely")').change(function () {
 			recalculate();
 		});
 
 		function recalculate() {
 			var sum = 0;
-				$("input:checkbox:checked").each(function () {
-					sum += parseInt($(this).val());
+				$("input[class='positions']:checkbox:checked").each(function () {
+
+					sum += parseInt(this.id);
 				});
 			$('#totalFees').html(sum);
 		}	
@@ -675,7 +677,7 @@
 		$('#featureForm').submit(function(e) {
 			e.preventDefault();
 
-			var featurePosition = $('[name="positions"]');
+			var featurePosition = $('[class="positions"]');
 			var featurePositionCount = 0;
 
             for(var i=0,l=featurePosition.length;i<l;i++)
@@ -693,18 +695,15 @@
 
 			if($('#featureForm').valid()){
 
-				let featureProductInput = $("#featureForm :input").filter(function(index, element) {
+				featureProductInput = $("#featureForm :input").filter(function(index, element) {
 						return $(element).val() != '';
 					}).serialize();
-
-				console.log("=============================================",featureProductInput);
 
 				var totalFees = $("#totalFees").html();
 				$("#feature_total").html(totalFees);
 				
 				$('#featureModal').modal('hide');
 				$('#featurePaymentModal').modal('show');
-
 			}
 		});
 
@@ -732,11 +731,11 @@
 				featurePaymentInput = featurePaymentInput +'&feature_amount='+feature_amount;
 
 				$.ajax({
-					url: '/api/product/feature-payment',
+					url: '/api/product/feature-payment?'+featureProductInput+'&product_id='+product_id,
 					type: 'POST',
 					data: featurePaymentInput,
 					success: function(data) {
-						$('#feature-success-modal').modal('show');
+					//	$('#feature-success-modal').modal('show');
 						console.log("=======================================",data);
 					},
 					error: function(error){
@@ -791,9 +790,42 @@
 				$("#gtc-feature-form-alert").slideUp(500);
 			});
 		}
- 	});
+
+		$( ".date-picker" ).delegate("#start_date", "focus", function() {  
+			console.log("------------------------------comming")
+
+			$("#start_date").datepicker({
+ 				format: 'yyyy-mm-dd',
+ 				autohide: true,
+				beforeShow: function() {$('#start_date').maxZIndex(); },
+ 			});			 
+		});  
+
+		function maxZIndex(){
+				var def = { inc: 10, group: "*" };
+				$.extend(def, opt);
+				var zmax = 0;
+				$(def.group).each(function() {
+					var cur = parseInt($(this).css('z-index'));
+					zmax = cur > zmax ? cur : zmax;
+				});
+				if (!this.jquery)
+					return zmax;
+
+				return this.each(function() {
+					zmax += def.inc;
+					$(this).css("z-index", zmax);
+				});
+					}
+		});
 
 </script>
+<style type="text/css">
+    #start_date
+    {
+        z-index: 9999999;
+    }
+</style>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
@@ -1222,7 +1254,7 @@
 		</div>
 	</div>
 </div>
-{{> footer/bottom-footer}}
+
 
 <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -1242,7 +1274,7 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control"><b>Product Name:</b></label>
-								<input type="text" name="product_id" value="{{editProduct.product_name}}" readonly class="form-control-customized form-control-sm"
+								<input type="text" name="product_name" value="{{editProduct.product_name}}" readonly class="form-control-customized form-control-sm"
 								 required/>
 							</div>
 						</div>
@@ -1255,7 +1287,7 @@
 								</div>
 								<div class="col-lg-5">
 									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='status'>
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='feature_status'>
 											<option value="ACTIVE">Active</option>
 											<option value="INACTIVE">InActive</option>
 										</select>
@@ -1266,16 +1298,16 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control"><b>Duration:</b></label>
-								<div class="row">
+								<div class="row date-picker">
 									<div class="col-lg-4">
-										<input class="form-control-customized form-control-sm" id='start_date' name="start_date" data-toggle="datepicker"
-										type="text"  placeholder="mm/dd/yyyy">
+										<input class="form-control-customized form-control-sm" id='start_date' name="start_date"
+										type="text" placeholder="mm/dd/yyyy">
 									</div>
 									<div class="col-lg-1">
 										<label class="label-control">to:</label>
 									</div>
 									<div class="col-lg-4">
-										<input class="form-control-customized form-control-sm" name="end_date" id='end_date' data-toggle="datepicker"
+										<input class="form-control-customized form-control-sm" name="end_date" id='end_date'
 										type="text" placeholder="mm/dd/yyyy">
 									</div>
 								</div>
@@ -1283,7 +1315,7 @@
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
-									<input type="checkbox" id='feature_indefinitely' name='feature_indefinitely'> <label class="label-control">Feature this product indefinitely</label>
+									<input type="checkbox" id='feature_indefinitely' value="1" name='feature_indefinitely'> <label class="label-control">Feature this product indefinitely</label>
 							</div>
 						</div>
 						<div class="col-lg-12">
@@ -1291,18 +1323,18 @@
 						</div>
 						<div class="col-lg-12">
 							<div class="form-group">
-								<input type="checkbox" value="0" name="positions" id='0'> <label class="label-control">My Profile Page Only (Free)</label><br/>
-								<input type="checkbox" value="50" name="positions" id='50'> <label class="label-control">In Search Results(+$50/mo)</label><br/>
+								<input type="checkbox" value="1" class="positions" name="position_profilepage" id='0'> <label class="label-control">My Profile Page Only (Free)</label><br/>
+								<input type="checkbox" value="1" class="positions" name="position_searchresult" id='50'> <label class="label-control">In Search Results(+$50/mo)</label><br/>
 								{{#ifCond this.type '==' 'wholesale'}}
-									<input type="checkbox" value="150" name="positions" id='150'> <label class="label-control">Wholesale Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="1" class="positions" name="position_wholesale_landing" id='150'> <label class="label-control">Wholesale Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'shop'}}
-									<input type="checkbox" value="150" name="positions" id='150'> <label class="label-control">Shop Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="1" class="positions" name="position_shop_landing" id='150'> <label class="label-control">Shop Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'services'}}
-									<input type="checkbox" value="150" name="positions" id='150'> <label class="label-control">Services Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="1" class="positions" name="position_service_landing"  id='150'> <label class="label-control">Services Landing(+$150/mo)</label><br/>
 								{{else ifCond this.type '==' 'lifestyle'}}
-									<input type="checkbox" value="150" name="positions" id='150'> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
+									<input type="checkbox" value="1" class="positions" name="position_subscription_landing"  id='150'> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
 								 {{/ifCond}}
-								<input type="checkbox" value="250" name="positions" id='250'> <label class="label-control">GTC Homepage(+$250/mo)</label>
+								<input type="checkbox" value="1" class="positions" id='250' name="position_homepage"> <label class="label-control">GTC Homepage(+$250/mo)</label>
 							</div>
 						</div>
 						<div class="col-lg-12">
@@ -1385,3 +1417,5 @@
 		</div>
 	</div>
 </div>
+
+{{> footer/bottom-footer}}
