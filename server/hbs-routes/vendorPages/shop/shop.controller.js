@@ -50,7 +50,7 @@ export function vendorShop(req, res) {
 	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	queryURI['order'] = order;
 	delete req.query.order;
