@@ -19,7 +19,6 @@ export function compare(req, res) {
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
-
 	var field = 'id';
 	var order = 'asc';
 	var includeArr = [];

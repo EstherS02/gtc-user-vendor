@@ -4,6 +4,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const providersCode = require('../../config/providers');
 const addressCode = require('../../config/address');
 const service = require('../../api/service');
 const async = require('async');
@@ -143,7 +144,8 @@ export function userProfile(req, res) {
 				cart: results.cartInfo,
 				marketPlace: marketplace,
 				bottomCategory: bottomCategory,
-				categories: results.categories
+				categories: results.categories,
+				providersCode: providersCode
 			});
 		} else {
 			res.render('userNav/user-profile', err);

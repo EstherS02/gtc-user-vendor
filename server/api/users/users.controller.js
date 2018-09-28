@@ -395,16 +395,6 @@ export function userProfile(req, res) {
                 addressUpdatePromises.push(addressUpdate(user_id, shipping_address_type, shippingUpdate));
                 return Promise.all(addressUpdatePromises);
             }
-        }).then(function(shippingUpdatedRow){
-            if (req.user.Vendor) {
-                var vendorId, vendorUpdatePromises = [];
-
-                var vendorUpdate = JSON.parse(req.body.vendorUpdate);
-                vendorId = req.user.Vendor.id;
-
-                vendorUpdatePromises.push(updateVendor(vendorUpdate, vendorId));
-                return Promise.all(vendorUpdatePromises);
-            }            
         }).then(function(response){
             return res.status(200).send("Updated Successfully");
         })

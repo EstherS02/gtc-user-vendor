@@ -1170,3 +1170,7 @@ button.update-btn1{
 .clickable-row {
 	cursor: pointer;
 }
+
+#profileImage, #userUpdateBtn, #userCancelBtn, #changePwdBtn {
+	cursor: pointer;
+}

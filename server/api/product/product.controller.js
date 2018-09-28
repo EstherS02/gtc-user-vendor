@@ -907,71 +907,95 @@ function createDiscount(discountElement, product_id) {
 
 export function featureProductWithPayment(req,res){
 
-	if (req.query.feature_status) {
-		var featureStatus = req.query.feature_status;
-		delete req.query.feature_status;
-		req.query.feature_status = status[featureStatus]
-	}
+	if(req.query.product_id){
+		
+		var featureQueryObj = {
+			product_id: req.query.product_id
+		}
 
-	var featuredProductBodyParam = req.query;
-	
-	featuredProductBodyParam['status'] = status['ACTIVE'];
-	featuredProductBodyParam['created_by'] = req.user.Vendor.vendor_name;
-	featuredProductBodyParam['created_on'] = new Date();
+		service.findOneRow('FeaturedProduct', featureQueryObj)
+			.then(function(row){
+				if(!row){
 
-	service.findIdRow('PaymentSetting',req.body.payment_details,[])
-		.then(function(cardDetails){
-
-		   return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, 
-											req.body.feature_amount, 'Payment for Featuring Product', 'usd');
-		}).then(function(paymentDetails){
-			
-			if(paymentDetails.paid) {
-
-				var paymentObj={
-					paid_date:  new Date(paymentDetails.created),
-					paid_amount: paymentDetails.amount / 100.0,
-                    payment_method: paymentMethod['STRIPE'],
-                    status: status['ACTIVE'],
-					payment_response: JSON.stringify(paymentDetails),
-					created_by: req.user.Vendor.vendor_name,
-					created_on: new Date()
-				}
-				service.createRow('Payment', paymentObj)
-					.then(function(paymentRow){
-
-						service.createRow('FeaturedProduct',featuredProductBodyParam)
-							.then(function(featuredRow){
-								return res.status(200).send({
-									"message": "Success",
-									"messageDetails": "Product Featured Successfully"
-								});
-							}).catch(function(error){
-								return res.status(400).send({
+					if (req.query.feature_status) {
+						var featureStatus = req.query.feature_status;
+						delete req.query.feature_status;
+						req.query.feature_status = status[featureStatus]
+					}
+				
+					var featuredProductBodyParam = req.query;
+					
+					featuredProductBodyParam['status'] = status['ACTIVE'];
+					featuredProductBodyParam['created_by'] = req.user.Vendor.vendor_name;
+					featuredProductBodyParam['created_on'] = new Date();
+				
+					service.findIdRow('PaymentSetting',req.body.payment_details,[])
+						.then(function(cardDetails){
+				
+						   return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, 
+															req.body.feature_amount, 'Payment for Featuring Product', 'usd');
+						}).then(function(paymentDetails){
+							
+							if(paymentDetails.paid) {
+				
+								var paymentObj={
+									paid_date:  new Date(paymentDetails.created),
+									paid_amount: paymentDetails.amount / 100.0,
+									payment_method: paymentMethod['STRIPE'],
+									status: status['ACTIVE'],
+									payment_response: JSON.stringify(paymentDetails),
+									created_by: req.user.Vendor.vendor_name,
+									created_on: new Date()
+								}
+								service.createRow('Payment', paymentObj)
+									.then(function(paymentRow){
+				
+										service.createRow('FeaturedProduct',featuredProductBodyParam)
+											.then(function(featuredRow){
+												return res.status(200).send({
+													"message": "SUCCESS",
+													"messageDetails": "Product Featured Successfully"
+												});
+											}).catch(function(error){
+												return res.status(400).send({
+													"message": "ERROR",
+													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+													"errorDescription": error
+												});
+											})							
+									}).catch(function(error){
+										return res.status(400).send({
+											"message": "ERROR",
+											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+											"errorDescription": error
+										});
+									})
+							}else{
+								return res.status(500).send({
 									"message": "ERROR",
-									"messageDetails": "Featuring Product Unsuccessfull",
-									"errorDescription": error
+									"messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error. Please try after sometimes"
 								});
-							})
-
-					}).catch(function(error){
-						return res.status(400).send({
-							"message": "ERROR",
-							"messageDetails": "Featuring Product Unsuccessfull",
-							"errorDescription": error
-						});
-					})
-			}else{
+							}
+						}).catch(function(error){
+							return res.status(500).send({
+								"message": "ERROR",
+								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+								"errorDescription": error
+							});
+						})		
+				}else{
+					return res.status(200).send({
+						"message": "MESSAGE",
+						"messageDetails": "You have already featured this product."
+					});
+				}
+			}).catch(function(error){
 				return res.status(500).send({
-                    "message": "ERROR",
-                    "messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error"
-                });
-			}
-		}).catch(function(error){
-			return res.status(500).send({
-				"message": "ERROR",
-				"messageDetails": "Featuring Product UnSuccessfull with Error",
-				"errorDescription": error
-			});
-		})
+					"message": "ERROR",
+					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"errorDescription": error
+				});
+			})
+
+	}	
 }

@@ -24,6 +24,7 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 		var dataInfo = {};
 		var quantity = 0;
 		var marketplace_id = $("#marketplaceId" + e).val();
+		var typecode = $('#typecode' + e).val();
 		console.log("marketplace_id",marketplace_id)
 		dataInfo.product_id = $("#product_id" + e).val();
 		dataInfo.product_quantity = quantity = $("#inputQuantity" + e).val();
@@ -32,24 +33,14 @@ var Plan = {{{ DisplayJSON vendorPlan }}}
 		var vendor_id=$("#vendorId" + e).val();
 		var vendor_name = $("#vendorName" + e).val();
 		if (quantity) {
-			if (marketplace_id == 1 && userInfo.Vendor.vedorPlans) {\
-				console.log("------------=====MI=======-----------")
-				if (userInfo.Vendor.VendorPlans[0].id == Plan.WHOLESALER || userInfo.Vendor.VendorPlans[0].id == Plan.BULK_BUYER) {
-					if (($('#typecode' + e).val() == 1)) {
-						cartAPI(cartInfo, e);
-					} else {
-						window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
-					}
+			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
+					cartAPI(cartInfo);
 				} else {
-					window.location.href = "/upgradeplan";
+					window.location.href = 'gtc-mail/compose?id=' + vendor_id + '&text=' + vendor_name;
 				}
 			} else {
-				console.log("------------=====elseMI=======-----------")
-				if (marketplace_id != 1) {
-					cartAPI(cartInfo, e);
-				} else {
-					window.location.href = "/upgradeplan";
-				}
+				window.location.href = "/upgradeplan";
 			}
 		} else {
 			alert("Please enter the Quantity.")
@@ -125,6 +116,7 @@ function cartAPI(cartInfo) {
 	})
 
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">

@@ -569,9 +569,12 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
 	return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
 Handlebars.registerHelper('dotdotdot', function(str) {
-	if (str.length > 100)
-		return str.substring(0, 100) + '...';
-	return str;
+  if (str.length > 100){
+        var newStr = str.split(". ");
+        return newStr[0]+ '...';
+    }
+
+  return str;
 });
 Handlebars.registerHelper('decimalFixed', function(distance) {
 	let parsedValue = distance ? parseFloat(distance).toFixed(0) : null;

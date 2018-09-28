@@ -644,6 +644,7 @@ export function sendOrderMail(orderIdStore, user) {
 						return;
 					});
 			}
+			return;
 		}
 
 	}).catch(function(error) {
@@ -668,28 +669,31 @@ function sendVendorEmail(order, user) {
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
 	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(response) {
-			var email = order.OrderItems[0].Product.Vendor.User.email;
-			var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
-			var body;
-			body = response.body.replace('%ORDER_TYPE%', 'New Order');
-			body = body.replace('%ORDER_NUMBER%', order.id);
-			body = body.replace('%PLACED_BY%', user.first_name);
-			body = body.replace('%COMPANY_NAME%', order.shippingAddress.company_name ? order.shippingAddress.company_name : '');
-			body = body.replace('%ADDRESS_LINE_1%', order.shippingAddress.address_line1 ? order.shippingAddress.address_line1 : '');
-			body = body.replace('%ADDRESS_LINE_2%', order.shippingAddressaddress_line2 ? order.shippingAddress.address_line2 : '');
-			body = body.replace('%CITY%', order.shippingAddress.city ? order.shippingAddress.city : '');
-			body = body.replace('%STATE%', order.shippingAddress.State.name ? order.shippingAddress.State.name : '');
-			body = body.replace('%COUNTRY%', order.shippingAddress.Country.name ? order.shippingAddress.Country.name : '');
-			var template = Handlebars.compile(body);
-			var data = {
-				order: order
-			};
-			var result = template(data);
-			sendEmail({
-				to: email,
-				subject: subject,
-				html: result
-			});
+			if(order.OrderItems[0].Product.Vendor.User.user_contact_email){
+				var email = order.OrderItems[0].Product.Vendor.User.user_contact_email;
+				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
+				var body;
+				body = response.body.replace('%ORDER_TYPE%', 'New Order');
+				body = body.replace('%ORDER_NUMBER%', order.id);
+				body = body.replace('%PLACED_BY%', user.first_name);
+				body = body.replace('%COMPANY_NAME%', order.shippingAddress.company_name ? order.shippingAddress.company_name : '');
+				body = body.replace('%ADDRESS_LINE_1%', order.shippingAddress.address_line1 ? order.shippingAddress.address_line1 : '');
+				body = body.replace('%ADDRESS_LINE_2%', order.shippingAddressaddress_line2 ? order.shippingAddress.address_line2 : '');
+				body = body.replace('%CITY%', order.shippingAddress.city ? order.shippingAddress.city : '');
+				body = body.replace('%STATE%', order.shippingAddress.State.name ? order.shippingAddress.State.name : '');
+				body = body.replace('%COUNTRY%', order.shippingAddress.Country.name ? order.shippingAddress.Country.name : '');
+				var template = Handlebars.compile(body);
+				var data = {
+					order: order
+				};
+				var result = template(data);
+				sendEmail({
+					to: email,
+					subject: subject,
+					html: result
+				});
+			}
+			return;
 		}).catch(function(error) {
 			console.log('Error :::', error);
 			return;
@@ -806,8 +810,6 @@ function sendUpgrademail(plan_id, user) {
 					console.log('Error :::', error);
 					return;
 				})
-
-
 		})
 
 }

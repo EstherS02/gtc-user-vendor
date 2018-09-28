@@ -1,11 +1,3 @@
-<style>
-    #profileImage,
-	#userUpdateBtn,
-	#userCancelBtn,
-	#changePwd {
-		cursor: pointer;
-	}
-</style>
 <script>
 	$(document).ready(function () {
 
@@ -73,9 +65,11 @@
 				$('#profile-picture-modal').modal('show');
 			}
 		}
+
 		$("#imageUpload").change(function () {
 			fasterPreview(this);
 		});
+
 		$("#b_country").change(function () {
 			var country_id = $('#b_country').val();
 			$.ajax({
@@ -135,13 +129,8 @@
 			var userUpdate = {}, data = {};
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
-
-		
-			var vendorUpdate = {}
-			vendorUpdate.contact_email = $('#contact_email').val();
-			data.vendorUpdate = JSON.stringify(vendorUpdate);
+			userUpdate.user_contact_email = $('#user_contact_email').val();
 			
-
 			if ($('#b_address1').val()) {
 				var billingUpdate = {};
 				billingUpdate.address_type = 1;
@@ -176,6 +165,7 @@
 					shippingUpdate.province_id = $('#s_state').val();
 					shippingUpdate.city = $('#s_city').val();
 					shippingUpdate.postal_code = $('#s_postal_code').val();
+					shippingUpdate.same_shipping_address = null;
 
 					data.shippingUpdate = JSON.stringify(shippingUpdate);
 				}
@@ -242,7 +232,7 @@
 					number: true,
 					maxlength: 6
 				},
-				contact_email: {
+				user_contact_email: {
 					email: true
 				}
 			},
@@ -256,7 +246,7 @@
 					number: "Please enter a valid postal code",
 					maxlength: "Please enter a valid postal code"
 				},
-				contact_email: {
+				user_contact_email: {
 					email: "Please enter valid email address"
 				}
 			},
@@ -330,49 +320,11 @@
 		$('#userCancelBtn').click(function(e){
 			window.location.href = '/user/my-profile';
 		});
-
-		$('#contactEmailForm').validate({
-			rules: {
-				user_contact_email: {
-						required: true,
-						email: true
-					}
-			},
-			messages:{
-				user_contact_email: {
-						required: "Please enter contact email",
-						email: "Please enter valid email"
-					}
-			}
-		})
-
-		$('#contactEmailBtn').click(function(e){
-
-			e.preventDefault();
-
-			var user_id = {{LoggedInUser.id}};
-
-			if($('#contactEmailForm').valid()){
-				var contactObj = {
-					contact_email: $('#user_contact_email').val(),
-					userId: user_id
-				};
-
-				$.ajax({
-					url: 'api/users/contact-email',
-					type: 'PUT',
-					data: contactObj,
-					success: function (data) {
-						$('#contact_email_alert').hide();
-					},
-					error:function(error){
-						console.log("Error::",error)
-					}
-				});
-			}
-		});
 	});	
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -403,29 +355,6 @@
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			<div class="col-sm-10">
-               {{#if LoggedInUser.user_contact_email}}
-			   {{else}}
-				<div class="alert" id="contact_email_alert" style="background:white">
-					<button type="button" class="close" data-dismiss="alert">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<form id="contactEmailForm" class="form">
-						<div class="row">
-							<div class="col-lg-4">
-								<label>Please update your contact email:
-									<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="In which you will receive all kind of notifications from GTC!" aria-hidden="true"></i>
-								</label>
-							</div>
-							<div class="col-lg-4">
-								<input type="text" id="user_contact_email" name="user_contact_email" class="form-control-customized form-control-sm"/>
-							</div>
-							<div class="col-lg-4">
-								<button class="btn btn-small btn-muted" id="contactEmailBtn" type="submit">UPDATE </button>
-							</div>
-						</div>
-					</form>
-				</div>
-				{{/if}}
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
@@ -437,16 +366,17 @@
 							</button>
 							<span class="profile-message"></span>
 						</div>
-
-						<div class="content-body">
+`						<div class="content-body">
 							<form id="userForm" class="form">
 								<div class="row">
 									<div class="col-lg-6">
 										<div class="row">
 											<div class="col-md-8 text-center">
 												{{#if user.user_pic_url}}
-												<img id="UploadedImage" onError="imgError(this)" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />{{else}}
-												<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> {{/if}}
+													<img id="UploadedImage" onError="imgError(this)" src="{{user.user_pic_url}}" style="width: 70%; " alt="avt" />
+												{{else}}
+													<img id="UploadedImage" src="img/avatar.png" style="width: 70%; " alt="avt" /> 
+												{{/if}}
 												<p id="profileImage" class="text_blue_color">Change Avatar</p>
 												<input id="imageUpload" type="file" name="file" onclick="this.value=null;" placeholder="Photo" style="display:none" capture>
 											</div>
@@ -476,42 +406,41 @@
 												</div>
 											</div>
 										</div>
-										{{#if LoggedInUser.Vendor}}
 										<div class="row">
 											<div class="col-lg-4">
 												<p></p>
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<input type="text" id="contact_email" name="contact_email" placeholder="Contact Email" value="{{vendor.contact_email}}" class="form-control-customized form-control-sm"
-													/>
-												</div>
-											</div>
-										</div>{{/if}}
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<input type="text" readonly id="email" placeholder="Email" value="{{user.email}}" class="form-control-customized form-control-sm"
+													<input type="text" id="user_contact_email" name="user_contact_email" placeholder="Contact Email" value="{{user.user_contact_email}}" class="form-control-customized form-control-sm"
 													/>
 												</div>
 											</div>
 										</div>
-
-										<div class="row">
-											<div class="col-lg-4">
-												<p></p>
-											</div>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<button type="button" class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal"
-													 data-whatever="@mdo">Change Password</button>
+										{{#ifCond LoggedInUser.provider '==' providersCode.OWN}}
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-8">
+													<div class="form-group">
+														<input type="text" readonly id="email" placeholder="Email" value="{{user.email}}" class="form-control-customized form-control-sm"
+														/>
+													</div>
 												</div>
 											</div>
-										</div>
-
+											<div class="row">
+												<div class="col-lg-4">
+													<p></p>
+												</div>
+												<div class="col-lg-8">
+													<div class="form-group">
+														<button type="button" id='changePwdBtn' class="form-control-customized form-control-sm" data-toggle="modal" data-target="#exampleModal"
+														data-whatever="@mdo">Change Password</button>
+													</div>
+												</div>
+											</div>
+										{{/ifCond}}
 									</div>
 									<div class="col-md-6">
 										<div class="row">
@@ -716,7 +645,6 @@
 										</div>
 									</div>
 								</div>
-
 								<hr/>
 								<div class="row">
 									<div class="col-md-12">
@@ -738,7 +666,6 @@
 		</div>
 	</div>
 </div>
-
 {{> footer/bottom-footer}}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
