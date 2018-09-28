@@ -717,7 +717,7 @@ export function makeplanPayment(req, res) {
 	var desc = "GTC Plan Payment";
 	var convertMoment = moment();
 	var start_date = new Date(convertMoment);
-	var end_date = moment().add(30, 'd').toDate();
+	var end_date = moment().add(28, 'd').toDate();
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
 	then(function(response) {
 		if (response.paid = "true") {
@@ -732,6 +732,7 @@ export function makeplanPayment(req, res) {
 			if (req.body.vendor_id != 0) {
 
 				var vendorplanModel = {
+					vendor_id: req.body.vendor_id,
 					plan_id: req.body.plan_id,
 					status: status['ACTIVE'],
 					auto_renewal_mail:req.body.autoRenewalMail,
@@ -739,60 +740,26 @@ export function makeplanPayment(req, res) {
 					end_date: end_date
 
 				};
-
-				var queryObj = {
-					vendor_id: req.body.vendor_id,
-
-				};
-				service.updateRecord('VendorPlan', vendorplanModel, queryObj);
+				service.createRow('VendorPlan', vendorplanModel);
 				sendUpgrademail(req.body.plan_id, req.user);
 				return res.status(200).json({
 					data: response
 				});
 			} else {
-				var includeArray = [];
-				let userPlanModel = {
-					user_id: req.body.user_id
-				}
-				service.findRow('UserPlan', userPlanModel, includeArray)
-					.then(userplandetails => {
-						if (userplandetails == null) {
-							sendUpgrademail(req.body.plan_id, req.user);
-							var userplanModel = {
-								user_id: req.body.user_id,
-								plan_id: req.body.plan_id,
-								auto_renewal_mail:req.body.autoRenewalMail,
-								status: status['ACTIVE'],
-								start_date: start_date,
-								end_date: end_date
-
-							};
-							service.createRow('UserPlan', userplanModel);
-							return res.status(200).json({
-								data: response
-							});
-
-						} else {
-							sendUpgrademail(req.body.plan_id, req.user);
-							var userplanModel = {
-								plan_id: req.body.plan_id,
-								status: status['ACTIVE'],
-								auto_renewal_mail:req.body.autoRenewalMail,
-								start_date: start_date,
-								end_date: end_date
-
-							};
-							var queryObj = {
-								user_id: req.body.user_id,
-
-							};
-							service.updateRecord('UserPlan', userplanModel, queryObj);
-							return res.status(200).json({
-								data: response
-							});
-						}
+					sendUpgrademail(req.body.plan_id, req.user);
+					var userplanModel = {
+					user_id: req.body.user_id,
+					plan_id: req.body.plan_id,
+					auto_renewal_mail:req.body.autoRenewalMail,
+					status: status['ACTIVE'],
+					start_date: start_date,
+					end_date: end_date
+					};
+					service.createRow('UserPlan', userplanModel);
+					return res.status(200).json({
+					data: response
 					});
-			}
+                   }
 		} else {
 			return res.status(500).json({
 				data: err

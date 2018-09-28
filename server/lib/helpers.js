@@ -12,7 +12,7 @@ Handlebars.registerHelper('starCount', function(rating, color) {
 	var colorless = "",
 		tag1, tag2;
 
-	tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+	tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #ffa700;"></i>';
 	tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
 
 	for (var i = 0; i <= rating - 1; i++) {
