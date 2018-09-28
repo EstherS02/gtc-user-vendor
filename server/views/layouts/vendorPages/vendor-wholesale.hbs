@@ -34,7 +34,7 @@
                 <div class="header-lg bg-wholesale">
                 <h2 class="header-lg-text">PRIVATE WHOLESALE MARKETPLACE</h2>
                 </div>
-                <div class="row no-margins">
+                <div class="row no-margins ibox-content no-padding">
                     <div class="col-md-9 no-padding">
                     <div class="col-md-12 no-padding">
                       <div class="wts-header-bg">
@@ -110,10 +110,14 @@
                                         </div>
                                     </div>
                                     {{/each}}
-                                  <div class="col-md-12 no-padding">
+                                  
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-md-12 no-padding">
                                     <div class="wtb-header-bg">
                                       <h4 class="header-md-text">
-                                        <b>WTS</b> - Want To Sell <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
+                                        <b>WTS</b> - Want To Buy <a href="/wholesale/search?marketplace_type={{marketPlaceType.WTB}}">SEE ALL</a>
                                       </h4>
                                     </div>
                                   </div>
@@ -323,9 +327,6 @@
                                         </div>
                                     </div>
                                     {{/each}}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-md-3 no-padding">
                         {{> vendor/vendor-category }}

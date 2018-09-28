@@ -150,6 +150,7 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const User = model.User;
+    const UserPlan = model.UserPlan;
     const Address = model.Address;
     const Admin = model.Admin;
     const Cart = model.Cart;
@@ -314,6 +315,11 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(Notification, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    User.hasMany(UserPlan, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

@@ -10,34 +10,33 @@ const service = require('../service');
 
 export function blogLike(req, res) {
 	var discussion_board_post_id = req.body.id;
-	var type = '';
+	var type = 'Unlike';
+	var newStatus;
 	var queryObj = {
 		user_id: req.user.id,
 		discussion_board_post_id: discussion_board_post_id
 	};
-	req.body.discussion_board_post_id = req.body.id; 
+	req.body.discussion_board_post_id = req.body.id;
 	var modelName = "DiscussionBoardPostLike";
 	req.body.modelName = "DiscussionBoardPostLike";
-	model[modelName].findOne({
-		where: queryObj
-	}).then(function(result) {
+	var bodyParam = {};
+	bodyParam.user_id = req.user.id;
+	bodyParam.discussion_board_post_id = req.body.id;
+	bodyParam.status = 1;
+
+	service.findOneRow(modelName,queryObj,[]).then(function(result) {
 		if (result) {
-			var newStatus;
 			if (result.status == status['ACTIVE']) {
 				newStatus = 0;
 				type = 'Like';
 			} else {
+				notification(req,null);
 				newStatus = 1;
 				type = 'Unlike';
 			}
-			model[modelName].update({
-					status: newStatus,
-					last_updated_on: new Date()
-				}, {
-					where: {
-						id: result.id
-					}
-				})
+			bodyParam.last_updated_on = new Date();
+			bodyParam.status= newStatus;
+			service.updateRow(modelName,bodyParam,result.id)
 				.then(function(response) {
 					LikeCount(req, res, function(err, obj) {
 						if (err) {
@@ -55,13 +54,10 @@ export function blogLike(req, res) {
 					return;
 				});
 		} else {
-			var bodyParam = {};
-			bodyParam.discussion_board_post_id = req.body.id;
-			bodyParam.user_id = req.user.id;
-			bodyParam.status = 1;
 			bodyParam.created_on = new Date();
 			service.createRow(modelName, bodyParam).then(function(response) {
-				// res.status(200).send(response);
+				discussion_board_post_id= response.discussion_board_post_id;
+				notification(req,null);
 				LikeCount(req, res, function(err, obj) {
 					if (err) {
 						return res.status(500).json({
@@ -78,30 +74,79 @@ export function blogLike(req, res) {
 				});
 				return;
 			});
-			// console.log(i, "not in db")
 		}
 	});
 
 }
 
+function notification (req,postId){
+
+	var modelName = "DiscussionBoardPost";
+	var TemplateModel = 'NotificationSetting';
+	var queryObj={};
+	var includeArr = [{
+		model:model['Vendor'],
+		include:[{
+			model:model['User'],
+			attributes:['id','first_name','last_name']
+		}]
+	}];
+	var post_id=0;
+	if(req.body.discussion_board_post_id){
+		post_id = req.body.discussion_board_post_id;postId;
+		queryObj['code'] = config.notification.templates.likesComments;
+	}else{
+		post_id = postId;
+		queryObj['code'] = config.notification.templates.newPostFromBuyerOnYourDB;
+	}
+
+	service.findIdRow(modelName,post_id,includeArr).then(function(response1){
+		if(response1){
+			service.findOneRow(TemplateModel, queryObj)
+			.then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = response1.Vendor.User.id;
+			var description = response.description;
+			description = description.replace('%VendorFirstname%',response1.Vendor.User.first_name);
+			description = description.replace('%PostId%', '/vendor/discussion-board/' +response1.Vendor.id);
+			description = description.replace('%VendorLastName%',response1.Vendor.User.last_name); 
+			description = description.replace('%User%',req.user.first_name); 
+			bodyParams.description = description;
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			service.createRow("Notification", bodyParams).then(function(response){
+				return;
+			});
+		});
+			return;
+		}
+		else{
+			return;
+		}
+	})
+}
 function LikeCount(req, res, callback) {
 	var modelName = req.body.modelName;
 	var queryObj = {
 		discussion_board_post_id: req.body.discussion_board_post_id,
 		status: status['ACTIVE']
 	};
-	console.log(queryObj, modelName)
+
+
 	model[modelName].findAndCountAll({
 		where: queryObj,
-		include:[{
+		include: [{
 			model: model["User"],
-				attributes: {
-					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-				},
+			attributes: {
+				exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+			},
 		}],
 		order: [
-                ['created_on', 'desc']
-            ]
+			['created_on', 'desc']
+		]
 	}).then(function(result) {
 		return callback(null, result)
 	});
@@ -119,8 +164,7 @@ export function blogComment(req, res) {
 	bodyParam.status = 1;
 	bodyParam.created_on = new Date();
 	service.createRow(modelName, bodyParam).then(function(response) {
-		// return res.status(200).send(response);
-
+		notification(req,null);
 		LikeCount(req, res, function(err, obj) {
 			if (err) {
 				return res.status(500).json({
@@ -131,10 +175,7 @@ export function blogComment(req, res) {
 					result: obj,
 				});
 			}
-
 		});
-
-
 	});
 }
 
@@ -149,16 +190,19 @@ export function blogPost(req, res) {
 	bodyParam.status = 1;
 	bodyParam.created_on = new Date();
 	service.createRow(modelName, bodyParam).then(function(response) {
+		if(req.body.vendor_id != req.user.Vendor.id){
+			notification(req,response.id);
+		}
 		return res.status(200).send(response);
 	});
 }
-export function upsert(req,res){
+export function upsert(req, res) {
 	var bodyParams = req.body;
 	bodyParams["last_updated_on"] = new Date();
 	var queryObj = {
-		vendor_id : req.body.vendor_id
+		vendor_id: req.body.vendor_id
 	}
-	service.upsertRow("TermsAndCond", bodyParams,queryObj)
+	service.upsertRow("TermsAndCond", bodyParams, queryObj)
 		.then(function(result) {
 			return res.status(201).send("Updated Successfully");
 		}).catch(function(error) {

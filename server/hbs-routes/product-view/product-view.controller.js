@@ -33,7 +33,6 @@ export function product(req, res) {
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
-
 	async.series({
 			cartInfo: function(callback) {
 				if (LoggedInUser.id) {

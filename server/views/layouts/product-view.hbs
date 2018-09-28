@@ -78,8 +78,13 @@ $(document).ready(function() {
 	});
 
 	$('#reviewSubmit').click(function() {
+		var marketplace_id = $('#marketplaceId').val();
 		if (userInfo.email) {
-			$('#reviewModal').modal('show');
+			if ((marketplace_id == 1 && userInfo.UserPlans)||(($('#typecode').val() == 'WTS') || marketplace_id != 1)) {
+				$('#reviewModal').modal('show');
+			}else{
+				window.location.href = "/upgradeplan";
+			}
 		} else {
 			$('#myModal').modal('show');
 		}
@@ -89,35 +94,26 @@ $(document).ready(function() {
 		$('#myModal').modal('show');
 	});
 
-     $("#gtc-add-to-cart").click(function () {
-		    var cartInfo = {};
-			var marketplace_id = $('#marketplaceId').val();
+	$("#gtc-add-to-cart").click(function() {
+		var cartInfo = {};
+		var marketplace_id = $('#marketplaceId').val();
 
-			cartInfo.product_quantity = $('#quantityInput').val();
-			cartInfo.marketplace_id = marketplace_id;
-			if (userInfo.email) {
-				if (marketplace_id == 1 && userInfo.Vendor) {
-					if (userInfo.Vendor.VendorPlans[0].id == Plan.WHOLESALER || userInfo.Vendor.VendorPlans[0].id == Plan.BULK_BUYER) {
-						if (($('#typecode').val() == 'WTS')) {
-							cartAPI(cartInfo);
-						} else {
-							window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
-						}
-					} else {
-						window.location.href = "/upgradeplan";
-					}
+		cartInfo.product_quantity = $('#quantityInput').val();
+		cartInfo.marketplace_id = marketplace_id;
+		if (userInfo.email) {
+			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
+					cartAPI(cartInfo);
 				} else {
-					if (marketplace_id != 1) {
-						cartAPI(cartInfo);
-					} else {
-						window.location.href = "/upgradeplan";
-
-					}
+					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
 			} else {
-				$('#myModal').modal('show');
+				window.location.href = "/upgradeplan";
 			}
-		});
+		} else {
+			$('#myModal').modal('show');
+		}
+	});
 
 		function cartAPI(cartInfo) {
 			$.ajax({
@@ -148,7 +144,7 @@ $(document).ready(function() {
      $("#AskVendorForm").on("submit", function(){
         if(userInfo.email){
    		var sentInput = {};
-   		sentInput.to = vendorInfo.User.email;
+   		sentInput.to = vendorInfo.User.user_contact_email;
 		sentInput.subject = $('#AskSubject').val();
 		sentInput.message = $('#AskText').val();
 		sentInput.vendor_name = vendorInfo.vendor_name;
