@@ -295,6 +295,8 @@ export function returnRequest(req, res) {
 									}).catch(function(error) {
 										return res.status(400).send(error);
 									});
+							}else{
+								return res.status(201).send("Return Request Email Sent");
 							}
 						}).catch(function(error) {
 							return res.status(400).send(error);
