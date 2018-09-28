@@ -229,7 +229,7 @@ export async function googleLogin(req, res, next) {
 			bodyParams['email_verified'] = 1;
 			bodyParams['role'] = roles['USER'];
 			bodyParams['email'] = profile.email;
-			bodyParams['contact_email'] = profile.contact_email;
+			bodyParams['user_contact_email'] = profile.email;
 			bodyParams['created_on'] = new Date();
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams['provider'] = providers["GOOGLE"];
@@ -296,9 +296,9 @@ export async function facebook(req, res) {
 			const profile = await getPeople(token.access_token, peopleApiUrl);
 			if (!profile.email) {
 				profile['email'] = profile.id + '@facebook.com';
-				bodyParams['contact_email'] = null;
+				bodyParams['user_contact_email'] = null;
 			}else{
-				bodyParams['contact_email'] = profile.email;
+				bodyParams['user_contact_email'] = profile.email;
 			}
 			const existsUser = await service.findOneRow('User', {
 				email: profile.email
@@ -403,9 +403,9 @@ export async function linkedin(req, res) {
 			const profile = await getPeople(token.access_token, peopleApiUrl);
 			if (!profile.emailAddress) {
 				profile['emailAddress'] = profile.id + '@linkedin.com';
-				bodyParams['contact_email'] = null;
+				bodyParams['user_contact_email'] = null;
 			}else{
-				bodyParams['contact_email'] = profile.emailAddress;
+				bodyParams['user_contact_email'] = profile.emailAddress;
 			}
 			const existsUser = await service.findOneRow('User', {
 				email: profile.emailAddress
@@ -501,9 +501,9 @@ export async function twitter(req, res) {
 						const profile = JSON.parse(twitterResponseData);
 						if (!profile.email) {
 							profile['email'] = profile.id + '@twitter.com';
-							bodyParams['contact_email'] = null;
+							bodyParams['user_contact_email'] = null;
 						}else{
-							bodyParams['contact_email'] = profile.email;
+							bodyParams['user_contact_email'] = profile.email;
 						}
 						const existsUser = await service.findOneRow('User', {
 							email: profile.email

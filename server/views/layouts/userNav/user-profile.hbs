@@ -330,47 +330,6 @@
 		$('#userCancelBtn').click(function(e){
 			window.location.href = '/user/my-profile';
 		});
-
-		$('#changePwd').validate({
-			rules: {
-				user_contact_email: {
-						required: true,
-						email: true
-					}
-			},
-			messages:{
-				user_contact_email: {
-						required: "Please enter contact email",
-						email: "Please enter valid email"
-					}
-			}
-		})
-
-		$('#contactEmailBtn').click(function(e){
-
-			e.preventDefault();
-
-			var user_id = {{LoggedInUser.id}};
-
-			//if($('#contactEmailForm').valid()){
-				var contactObj = {
-					contact_email: $('#user_contact_email').val(),
-					userId: user_id
-				};
-
-				$.ajax({
-					url: 'api/users/contact-email',
-					type: 'PUT',
-					data: contactObj,
-					success: function (data) {
-						$('#contact_email_alert').hide();
-					},
-					error:function(error){
-						console.log("Error::",error)
-					}
-				});
-			//}
-		});
 	});	
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
@@ -403,27 +362,6 @@
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			<div class="col-sm-10">
-               {{#if LoggedInUser.user_contact_email}}
-			   {{else}}
-				<div class="alert" id="contact_email_alert" style="background:white">
-					<button type="button" class="close" data-dismiss="alert">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<form id="contactEmailForm" class="form">
-						<div class="row">
-							<div class="col-lg-4">
-								<label>Please update your contact email:</label>
-							</div>
-							<div class="col-lg-4">
-								<input type="text" id="user_contact_email" name="user_contact_email" class="form-control-customized form-control-sm" />
-							</div>
-							<div class="col-lg-4">
-								<button class="btn btn-small btn-muted" id="contactEmailBtn" type="submit">UPDATE </button>
-							</div>
-						</div>
-					</form>
-				</div>
-				{{/if}}
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">

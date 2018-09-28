@@ -95,7 +95,7 @@ export function create(req, res) {
             res.status(409).send("Email address already exists");
             return;
         } else {
-			bodyParams['contact_email'] = req.body.email;
+			bodyParams['user_contact_email'] = req.body.email;
             bodyParams['created_on'] = new Date();
             bodyParams["role"] = roles["USER"];
             bodyParams["status"] = status["ACTIVE"];
@@ -118,7 +118,7 @@ export function create(req, res) {
                             .then(function (response) {
                                 if (response) {
                                     var username = user["first_name"];
-                                    var email = user["email"];
+                                    var email = user["user_contact_email"];
                                     var subject = response.subject.replace('%USERNAME%', username);
                                     var body;
                                     body = response.body.replace('%USERNAME%', username);
@@ -549,20 +549,24 @@ export function forgotPassword(req, res) {
                             service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
                                 .then(function (response) {
                                     if (response) {
-                                        var username = user["first_name"];
-                                        var email = user["email"];
+										if(user.user_contact_email){
+											var username = user["first_name"];
+											var email = user["user_contact_email"];
 
-                                        var subject = response.subject;
-                                        var body;
-                                        body = response.body.replace('%USERNAME%', username);
-                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
+											var subject = response.subject;
+											var body;
+											body = response.body.replace('%USERNAME%', username);
+											body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
 
-                                        sendEmail({
-                                            to: email,
-                                            subject: subject,
-                                            html: body
-                                        });
-                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+											sendEmail({
+												to: email,
+												subject: subject,
+												html: body
+											});
+											return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+										}else{
+											return res.status(201).send("You didn't have contact email to reset your password.");
+										}
                                     } else {
                                         return res.status(404).send("Unable to reset password. Please try later.");
                                     }

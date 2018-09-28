@@ -72,7 +72,9 @@ export function planRenewal(job, done) {
 				if(vendorPlan.auto_renewal_mail == 1){
 					primaryCardPromise.push(primaryCardDetails(vendorPlan));
 				}else{
-					planDeactivated(vendorPlan);
+					if(vendorPlan.Vendor.User.user_contact_email){
+						planDeactivated(vendorPlan);
+					}
 				}
 			});
 			return Promise.all(primaryCardPromise);
@@ -121,7 +123,9 @@ function primaryCardDetails(vendorPlan){
 								status: statusCode['ACTIVE'],
 								end_date: moment().add(30, 'd').toDate()
 							}
-							autoRenewalMail(vendorPlan, chargedAmount);
+							if(vendorPlan.Vendor.User.user_contact_email){
+								autoRenewalMail(vendorPlan, chargedAmount);
+							}
 							return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.id);
 						}						
 					}).then(function(planRow){
@@ -138,7 +142,9 @@ function primaryCardDetails(vendorPlan){
 				}
 				return service.updateRow( vendorPlanModel, planUpdateObj,vendorPlan.id)
 					.then(function(planRow){
-						updatePrimaryCardMail(vendorPlan);
+						if(vendorPlan.Vendor.User.user_contact_email){
+							updatePrimaryCardMail(vendorPlan);
+						}
 						return Promise.resolve(planRow);
 
 					}).catch(function(error){
@@ -164,7 +170,7 @@ function updatePrimaryCardMail(vendorPlan) {
         .then(function (response) {
             if (response) {
 
-                var email = vendor.User.email;
+                var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -200,7 +206,7 @@ function autoRenewalMail(vendorPlan, chargedAmount){
         .then(function (response) {
             if (response) {
 
-				var email = vendor.User.email;
+				var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -238,7 +244,7 @@ function planDeactivated(vendorPlan){
         .then(function (response) {
             if (response) {
 
-				var email = vendor.User.email;
+				var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
