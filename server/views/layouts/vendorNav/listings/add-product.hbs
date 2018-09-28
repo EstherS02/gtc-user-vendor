@@ -735,7 +735,9 @@
 						$('#feature-success-modal').modal('show');						
 					},
 					error: function(error){
-						console.log(error);
+						$('#feature_response_message').html(error.responseJSON.message);
+						$('#feature_response_message_details').html(error.responseJSON.messageDetails);
+						$('#feature-success-modal').modal('show');	
 					}
 				});
 			}
@@ -757,8 +759,6 @@
 				var from = new Date(startDate);
 				if(from < currentUTCDate){
 					$('#start_date').val("");
-					$("#start_date").datepicker("destroy" );
-					$("#start_date").datepicker();
 					outputPopupError("Start Date should not less than Current Date");
 				}
 		});
@@ -770,8 +770,6 @@
 				var from = new Date(start_date);
 				if(from > end_date){
 					$('#end_date').val("");
-					$("#end_date").datepicker( "destroy" );
-					$("#end_date").datepicker();
 					outputPopupError("End date should not less than start date");
 				}
 			} else{
@@ -787,13 +785,11 @@
 			});
 		}
 
-		$( ".date-picker" ).delegate("#start_date, #end_date", "focus", function() {  
-			$("#start_date, #end_date").datepicker({
- 				format: 'yyyy-mm-dd',
- 				autoHide: true,
-				zIndex: 9999
- 			});			 
-		});  
+		$("#start_date, #end_date").datepicker({
+ 			format: 'yyyy-mm-dd',
+ 			autoHide: true,
+			zIndex: 9999
+ 		});			 
 	});
 
 </script>
