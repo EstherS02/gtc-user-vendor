@@ -124,9 +124,10 @@ export function upgradeplan(req, res) {
 				  }
 
 	              }
-	              var field = 'created_on';
-                  var order = "asc";
-	               service.findAllRows('UserPlan', includeArr, queryObj, 0, null, field, order).
+	              var field = 'id';
+				  var order = "desc";
+				  var limit = 1;
+	               service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
 					then(function(userplanDetails) {
 					var userplanDetails = userplanDetails;
 					return callback(null, userplanDetails);
@@ -169,9 +170,10 @@ export function upgradeplan(req, res) {
 				  }
 
 	              }
-	              var field = 'created_on';
-                  var order = "asc";
-	               service.findAllRows('VendorPlan', includeArr, queryObj, 0, null, field, order).
+	              var field = 'id';
+				  var order = "desc";
+				  var limit = 1;
+				   service.findAllRows('VendorPlan', includeArr, queryObj, 0, limit, field, order).
 					then(function(planDetails) {
 					var planDetails = planDetails;
 					return callback(null, planDetails);
