@@ -297,7 +297,7 @@ export async function facebook(req, res) {
 			if (!profile.email) {
 				profile['email'] = profile.id + '@facebook.com';
 				bodyParams['user_contact_email'] = null;
-			}else{
+			} else {
 				bodyParams['user_contact_email'] = profile.email;
 			}
 			const existsUser = await service.findOneRow('User', {
@@ -404,7 +404,7 @@ export async function linkedin(req, res) {
 			if (!profile.emailAddress) {
 				profile['emailAddress'] = profile.id + '@linkedin.com';
 				bodyParams['user_contact_email'] = null;
-			}else{
+			} else {
 				bodyParams['user_contact_email'] = profile.emailAddress;
 			}
 			const existsUser = await service.findOneRow('User', {
@@ -502,7 +502,7 @@ export async function twitter(req, res) {
 						if (!profile.email) {
 							profile['email'] = profile.id + '@twitter.com';
 							bodyParams['user_contact_email'] = null;
-						}else{
+						} else {
 							bodyParams['user_contact_email'] = profile.email;
 						}
 						const existsUser = await service.findOneRow('User', {

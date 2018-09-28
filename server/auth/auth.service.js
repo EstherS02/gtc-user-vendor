@@ -179,6 +179,12 @@ function hasRole(roleRequired) {
 		},
 		attributes: ['id', 'name', 'code', 'currency_id', 'status']
 	}, {
+		model: model["State"],
+		where: {
+			status: status['ACTIVE']
+		},
+		attributes: ['id', 'name', 'code', 'country_id', 'status']
+	}, {
 		model: model["Currency"],
 		where: {
 			status: status['ACTIVE']

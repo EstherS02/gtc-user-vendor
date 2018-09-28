@@ -100,6 +100,12 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    State.hasMany(Vendor, {
+        foreignKey: 'province_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     State.belongsTo(Country, {
         foreignKey: 'country_id',
         onDelete: 'NO ACTION',

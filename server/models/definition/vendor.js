@@ -68,15 +68,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         latitude: {
-			type: DataTypes.DECIMAL,
-			field: 'latitude',
-			allowNull: true
+            type: DataTypes.DECIMAL,
+            field: 'latitude',
+            allowNull: true
         },
         longitude: {
-			type: DataTypes.DECIMAL,
-			field: 'longitude',
-			allowNull: true
-		},
+            type: DataTypes.DECIMAL,
+            field: 'longitude',
+            allowNull: true
+        },
         status: {
             type: DataTypes.INTEGER,
             field: 'status',
@@ -154,7 +154,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'vendor_payout_stripe_id',
             allowNull: true
         },
-        vendor_payout_paypal_email:{
+        vendor_payout_paypal_email: {
             type: DataTypes.STRING(128),
             field: 'vendor_payout_paypal_email',
             allowNull: true
@@ -303,6 +303,7 @@ module.exports.initRelations = () => {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
+
     Vendor.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
@@ -311,6 +312,12 @@ module.exports.initRelations = () => {
 
     Vendor.belongsTo(Country, {
         foreignKey: 'base_location',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Vendor.belongsTo(State, {
+        foreignKey: 'province_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
