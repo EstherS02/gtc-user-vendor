@@ -1,4 +1,5 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">

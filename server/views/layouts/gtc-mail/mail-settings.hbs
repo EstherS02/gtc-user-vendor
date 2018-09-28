@@ -1,3 +1,5 @@
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <script>
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
@@ -85,7 +87,7 @@
 			$('#updateBtn').prop('disabled', false);
 		});
 	});
-</script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+</script> 
 
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">

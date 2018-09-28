@@ -1,4 +1,5 @@
- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
