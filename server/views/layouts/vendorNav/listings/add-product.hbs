@@ -1,9 +1,4 @@
-<style type="text/css">
-    #start_date
-    {
-        z-index: 9999999;
-    }
-</style>
+
 <script>
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
 
@@ -653,10 +648,10 @@
 		});
 
 		function recalculate() {
-			var sum = 0;
+			var sum = 0.00;
 				$("input[class='positions']:checkbox:checked").each(function () {
 
-					sum += parseInt(this.id);
+					sum += parseFloat(this.id);
 				});
 			$('#totalFees').html(sum);
 		}	
@@ -735,11 +730,12 @@
 					type: 'POST',
 					data: featurePaymentInput,
 					success: function(data) {
-					//	$('#feature-success-modal').modal('show');
-						console.log("=======================================",data);
+						$('#feature_response_message').html(data.message);
+						$('#feature_response_message_details').html(data.messageDetails);
+						$('#feature-success-modal').modal('show');						
 					},
 					error: function(error){
-						console.log("=======================================",error);
+						console.log(error);
 					}
 				});
 			}
@@ -791,41 +787,16 @@
 			});
 		}
 
-		$( ".date-picker" ).delegate("#start_date", "focus", function() {  
-			console.log("------------------------------comming")
-
-			$("#start_date").datepicker({
+		$( ".date-picker" ).delegate("#start_date, #end_date", "focus", function() {  
+			$("#start_date, #end_date").datepicker({
  				format: 'yyyy-mm-dd',
- 				autohide: true,
-				beforeShow: function() {$('#start_date').maxZIndex(); },
+ 				autoHide: true,
+				zIndex: 9999
  			});			 
 		});  
-
-		function maxZIndex(){
-				var def = { inc: 10, group: "*" };
-				$.extend(def, opt);
-				var zmax = 0;
-				$(def.group).each(function() {
-					var cur = parseInt($(this).css('z-index'));
-					zmax = cur > zmax ? cur : zmax;
-				});
-				if (!this.jquery)
-					return zmax;
-
-				return this.each(function() {
-					zmax += def.inc;
-					$(this).css("z-index", zmax);
-				});
-					}
-		});
+	});
 
 </script>
-<style type="text/css">
-    #start_date
-    {
-        z-index: 9999999;
-    }
-</style>
 
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
@@ -1340,16 +1311,16 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control"><b>TOTAL:</b></label>
-								<label class="label-control"><b>$<span id="totalFees"></span></b></label>
+								<label class="label-control"><b>$<span id="totalFees">0.00</span></b></label>
 							</div>
 						</div>
 
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" class="btn btn-small btn-primary" id='continue'>
+					<button type="submit" class="btn btn-small btn-primary" id='continue' style="background:green">
 						<b>CONTINUE</b>
 					</button>
 				</div>
@@ -1388,9 +1359,9 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
 						<b>CANCEL</button>
-					<button type="submit" class="btn btn-small btn-primary">
+					<button type="submit" class="btn btn-small btn-primary" style="background:green">
 						<b>FEATURE</b>
 					</button>
 				</div>
@@ -1403,11 +1374,11 @@
 	<div class="modal-dialog modal-dialog-centered modal" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Success:</h5>
+				<h5 class="modal-title"><span id="feature_response_message"></span></h5>
 			</div>
 			<div class="modal-body">
 				<div class="container">
-					<p>Your Product featured Successfully!</p>
+					<p><span id="feature_response_message_details"></span></p>
 				</div>
 			</div>
 			<div class="modal-footer">

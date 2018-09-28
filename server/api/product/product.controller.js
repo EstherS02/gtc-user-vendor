@@ -952,8 +952,7 @@ export function featureProductWithPayment(req,res){
 									"messageDetails": "Featuring Product Unsuccessfull",
 									"errorDescription": error
 								});
-							})
-
+							})							
 					}).catch(function(error){
 						return res.status(400).send({
 							"message": "ERROR",
