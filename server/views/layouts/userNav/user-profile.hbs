@@ -331,7 +331,7 @@
 			window.location.href = '/user/my-profile';
 		});
 
-		$('#changePwd').validate({
+		$('#contactEmailForm').validate({
 			rules: {
 				user_contact_email: {
 						required: true,
@@ -352,7 +352,7 @@
 
 			var user_id = {{LoggedInUser.id}};
 
-			//if($('#contactEmailForm').valid()){
+			if($('#contactEmailForm').valid()){
 				var contactObj = {
 					contact_email: $('#user_contact_email').val(),
 					userId: user_id
@@ -369,7 +369,7 @@
 						console.log("Error::",error)
 					}
 				});
-			//}
+			}
 		});
 	});	
 </script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
@@ -412,10 +412,12 @@
 					<form id="contactEmailForm" class="form">
 						<div class="row">
 							<div class="col-lg-4">
-								<label>Please update your contact email:</label>
+								<label>Please update your contact email:
+									<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="In which you will receive all kind of notifications from GTC!" aria-hidden="true"></i>
+								</label>
 							</div>
 							<div class="col-lg-4">
-								<input type="text" id="user_contact_email" name="user_contact_email" class="form-control-customized form-control-sm" />
+								<input type="text" id="user_contact_email" name="user_contact_email" class="form-control-customized form-control-sm"/>
 							</div>
 							<div class="col-lg-4">
 								<button class="btn btn-small btn-muted" id="contactEmailBtn" type="submit">UPDATE </button>

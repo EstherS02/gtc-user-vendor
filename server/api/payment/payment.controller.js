@@ -601,47 +601,49 @@ export function sendOrderMail(orderIdStore, user) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
+			if(user.user_contact_email){
 
-			vendorMail(OrderList, user);
-			var user_email = user.email;
-			var orderNew = [];
-			var queryObjEmailTemplate = {};
-			var emailTemplateModel = "EmailTemplate";
-			queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
-			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-				.then(function(response) {
-					if (response) {
-						var email = user_email;
-						var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
-						var body;
-						body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-						_.forOwn(OrderList.rows, function(orders) {
-							body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
-							body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
-							body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
-							body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
-							body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
-							body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
-							orderNew.push(orders);
-						});
-						var template = Handlebars.compile(body);
-						var data = {
-							order: orderNew
-						};
-						var result = template(data);
-						sendEmail({
-							to: email,
-							subject: subject,
-							html: result
-						});
+				vendorMail(OrderList, user);
+				var user_email = user.user_contact_email;
+				var orderNew = [];
+				var queryObjEmailTemplate = {};
+				var emailTemplateModel = "EmailTemplate";
+				queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
+				service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+					.then(function(response) {
+						if (response) {
+							var email = user_email;
+							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+							var body;
+							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+							_.forOwn(OrderList.rows, function(orders) {
+								body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
+								body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
+								body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
+								body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
+								body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
+								body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
+								orderNew.push(orders);
+							});
+							var template = Handlebars.compile(body);
+							var data = {
+								order: orderNew
+							};
+							var result = template(data);
+							sendEmail({
+								to: email,
+								subject: subject,
+								html: result
+							});
+							return;
+						} else {
+							return;
+						}
+					}).catch(function(error) {
+						console.log('Error :::', error);
 						return;
-					} else {
-						return;
-					}
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return;
-				});
+					});
+			}
 		}
 
 	}).catch(function(error) {
@@ -741,12 +743,16 @@ export function makeplanPayment(req, res) {
 
 				};
 				service.createRow('VendorPlan', vendorplanModel);
-				sendUpgrademail(req.body.plan_id, req.user);
+					if(req.user.user_contact_email){
+						sendUpgrademail(req.body.plan_id, req.user);
+					}
 				return res.status(200).json({
 					data: response
 				});
 			} else {
+				if(req.user.user_contact_email){
 					sendUpgrademail(req.body.plan_id, req.user);
+				}
 					var userplanModel = {
 					user_id: req.body.user_id,
 					plan_id: req.body.plan_id,
@@ -784,7 +790,7 @@ function sendUpgrademail(plan_id, user) {
 			queryObjEmailTemplate['name'] = config.email.templates.upgradeplan;
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 				.then(function(response) {
-					var email = user.email;
+					var email = user.user_contact_email;
 					var subject = response.subject;
 					var body;
 					var body = response.body;
@@ -851,7 +857,9 @@ export function refundOrder(req, res) {
 		.then(createdPaymentRow => {
 			console.log("enterrrlooops" + parseFloat(createdPaymentRow.refund_amount).toFixed(2));
 			var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
-			sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
+			if(req.user.user_contact_email){
+				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
+			}
 			let orderPaymentModel = {
 				order_id: order_id,
 				payment_id: createdPaymentRow.id,
@@ -923,7 +931,7 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
-			var vendor_email = user.email;
+			var vendor_email = user.user_contact_email;
 			var orderNew = [];
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';

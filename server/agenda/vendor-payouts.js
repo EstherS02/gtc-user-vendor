@@ -145,7 +145,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                     return Promise.all(paypalPromises);
                 }
                 else {
-                    stripeConnectMail(vendor);
+					if(vendor.User.user_contact_email){
+						stripeConnectMail(vendor);
+					}
                     return;
                 }
             } else {
@@ -193,8 +195,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
                     .then(function (orderPaymentEscrowObj) {
-
-                        payoutMail(vendorInfo, payoutOrder, payoutAmount);
+						if(vendorInfo.User.user_contact_email){
+							payoutMail(vendorInfo, payoutOrder, payoutAmount);
+						}
                         return Promise.resolve(orderPaymentEscrowObj);
 
 
@@ -224,7 +227,7 @@ function stripeConnectMail(vendor) {
         .then(function (response) {
             if (response) {
                 var username = vendor.vendor_name;
-                var email = vendor.User.email;
+                var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
                 var body = response.body.replace('%USERNAME%', username);
@@ -255,7 +258,7 @@ function payoutMail(vendor, payoutOrder, payoutAmount) {
         .then(function (response) {
             if (response) {
                 var username = vendor.vendor_name;
-                var email = vendor.User.email;
+                var email = vendor.User.user_contact_email;
                 var date = new Date();
 
                 var subject = response.subject;

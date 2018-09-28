@@ -61,7 +61,9 @@ export function bulkUserPlanRenewal(job, done) {
 				if(userPlan.auto_renewal_mail == 1){
 					primaryCardPromise.push(primaryCardDetails(userPlan));
 				}else{
-					planDeactivated(userPlan);
+					if(userPlan.User.user_contact_email){
+						planDeactivated(userPlan);
+					}
 				}				
 			});
 			return Promise.all(primaryCardPromise);
@@ -111,7 +113,9 @@ function primaryCardDetails(userPlan){
 								status: statusCode['ACTIVE'],
 								end_date: moment().add(30, 'd').toDate()
 							}
-							autoRenewalMail(userPlan, chargedAmount);
+							if(userPlan.User.user_contact_email){
+								autoRenewalMail(userPlan, chargedAmount);
+							}
 							return service.updateRow( userPlanModel, planUpdateObj,userPlan.id);
 						}						
 					}).then(function(planRow){
@@ -128,7 +132,9 @@ function primaryCardDetails(userPlan){
 				}
 				return service.updateRow( userPlanModel, planUpdateObj,userPlan.id)
 					.then(function(planRow){
-						updatePrimaryCardMail(userPlan);
+						if(userPlan.User.user_contact_email){
+							updatePrimaryCardMail(userPlan);
+						}
 						return Promise.resolve(planRow);
 
 					}).catch(function(error){
@@ -152,7 +158,7 @@ function updatePrimaryCardMail(userPlan) {
         .then(function (response) {
             if (response) {
 
-                var email = userPlan.User.email;
+                var email = userPlan.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -186,7 +192,7 @@ function autoRenewalMail(userPlan, chargedAmount){
         .then(function (response) {
             if (response) {
 
-				var email = userPlan.User.email;
+				var email = userPlan.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -222,7 +228,7 @@ function planDeactivated(userPlan){
         .then(function (response) {
             if (response) {
 
-				var email = userPlan.User.email;
+				var email = userPlan.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
