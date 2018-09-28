@@ -399,7 +399,7 @@ aria-hidden="true">
 									{{!-- {{#ifCond LoggedInUser.Vendor.id "==" VendorDetail.id}} --}}
 									<div class="row">
 										<div class="col-md-2  discussion_para_bg">
-											<img style="width: 45px; height:44px " class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
+											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{LoggedInUser.user_pic_url}}">
 										</div>
 										<div class="col-md-10 col-9 discussion_para_bg " >
 											<div class="discussion_text">
@@ -427,7 +427,7 @@ aria-hidden="true">
 									{{#each discussionBoard.rows}}
 									<div class="row">
 										<div class="col-md-2 col-2 discussion_para_bg">
-											<img style="width: 45px; height:44px " class = "img-border-page" src="{{this.User.user_pic_url}}">
+											<img style="width: 45px; height:44px " onError="UserImgError(this)" class = "img-border-page" src="{{this.User.user_pic_url}}">
 										</div>
 										<div class="col-md-10 col-10 discussion_para_bg">
 											<p class="discussion_para" ><span class="discussion_span"><a href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a></span>&nbsp;&nbsp;-&nbsp;{{this.post_message}}&nbsp;-&nbsp; <span style="color: #BDBDBD;">{{FormatDate this.created_on}}</span></p>
@@ -492,7 +492,7 @@ aria-hidden="true">
 											</div>
 											<div class="row">
 												<div class="col-md-2 col-2 ">
-													<img style="width: 40px;height:39px;margin-top: 5px; " class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
+													<img style="width: 40px;height:39px;margin-top: 5px;" onError="UserImgError(this)" class = "img-border-page"src="{{../LoggedInUser.user_pic_url}}">
 												</div>
 												<div class="col-md-10 col-10">
 													<div class="discussion_text">

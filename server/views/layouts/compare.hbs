@@ -17,22 +17,14 @@
 		cartInfo.product_quantity = $('#product-quantity-' + e).val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if (marketplace_id == 1 && userInfo.Vendor.vedorPlans) {
-				if (userInfo.Vendor.VendorPlans[0].id == Plan.WHOLESALER || userInfo.Vendor.VendorPlans[0].id == Plan.BULK_BUYER) {
-					if (($('#typecode' + e).val() == 1)) {
-						cartAPI(cartInfo, e);
-					} else {
-						window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
-					}
+			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 1))) {
+				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
+					cartAPI(cartInfo);
 				} else {
-					window.location.href = "/upgradeplan";
+					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
 			} else {
-				if (marketplace_id != 1) {
-					cartAPI(cartInfo, e);
-				} else {
-					window.location.href = "/upgradeplan";
-				}
+				window.location.href = "/upgradeplan";
 			}
 		} else {
 			$('#myModal').modal('show');
@@ -179,19 +171,19 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}">{{compareProducts.[0].product_name}}</a>
-									<input type="hidden" name="marketplace_id" id = "marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id0" id="marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[1].product_slug}}/{{compareProducts.[1].id}}">{{compareProducts.[1].product_name}}</a>
-									<input type="hidden" name="marketplace_id" id = "marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id1" id = "marketplaceId{{compareProducts.[1].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[2].product_slug}}/{{compareProducts.[2].id}}">{{compareProducts.[2].product_name}}</a>
-									<input type="hidden" name="marketplace_id" id = "marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
+									<input type="hidden" name="marketplace_id2" id = "marketplaceId{{compareProducts.[2].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 						</div>

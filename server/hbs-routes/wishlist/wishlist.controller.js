@@ -99,7 +99,6 @@ export function wishlist(req, res) {
 			wishlist: function(callback) {
 				service.findAllRows(wishModel, includeArr, queryObj, offset, limit, field, order)
 					.then(function(category) {
-						console.log(category.rows)
 						return callback(null, category);
 					}).catch(function(error) {
 						console.log('Error :::', error);
