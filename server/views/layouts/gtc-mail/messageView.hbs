@@ -1,4 +1,6 @@
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <style>
 	.fas {
 		cursor: pointer

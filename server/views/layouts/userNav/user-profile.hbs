@@ -137,9 +137,9 @@
 			userUpdate.last_name = $('#last_name').val();
 
 		
-				var vendorUpdate = {}
-				vendorUpdate.contact_email = $('#contact_email').val();
-				data.vendorUpdate = JSON.stringify(vendorUpdate);
+			var vendorUpdate = {}
+			vendorUpdate.contact_email = $('#contact_email').val();
+			data.vendorUpdate = JSON.stringify(vendorUpdate);
 			
 
 			if ($('#b_address1').val()) {
@@ -329,9 +329,12 @@
 
 		$('#userCancelBtn').click(function(e){
 			window.location.href = '/user/my-profile';
-		})
+		});
 	});	
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> 
+
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -394,7 +397,6 @@
 												<p>Account Settings
 												</p>
 											</div>
-
 											<div class="col-lg-8">
 												<div class="form-group">
 													<input type="text" id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="form-control-customized form-control-sm"

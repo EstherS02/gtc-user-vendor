@@ -32,6 +32,9 @@ export function vendorShop(req, res) {
 	var categoryModel = "Category";
 	var bottomCategory = {};
 	var offset, limit, field, order, page;
+	var start_date;
+	var end_date;
+
 	var queryPaginationObj = {};
 	var queryObj = {};
 	var queryURI = {};
@@ -40,6 +43,20 @@ export function vendorShop(req, res) {
 	queryURI['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
 	queryObj['status'] = status['ACTIVE'];
+
+	end_date = moment().add(0, 'd').toDate();
+	if (req.query.order == "desc") {
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	} 
+	else{
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -50,11 +67,12 @@ export function vendorShop(req, res) {
 	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	queryURI['order'] = order;
 	delete req.query.order;
 
+	
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;

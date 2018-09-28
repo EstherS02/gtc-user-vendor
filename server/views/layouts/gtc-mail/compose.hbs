@@ -1,3 +1,5 @@
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <style>
 	.message-box-input .form-control {
 		border-radius: unset;
@@ -243,7 +245,7 @@ $(function() {
 	});*/
 });
 </script> 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">

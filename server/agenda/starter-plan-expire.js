@@ -76,7 +76,9 @@ function updateStatus(eachVendor){
 	planBodyParam = {
 		status: statusCode['INACTIVE']
 	}
-	planExpiredMail(eachVendor);
+	if(eachVendor.Vendor.User.user_contact_email){
+		planExpiredMail(eachVendor);
+	}
 	return service.updateRow(vendorPlanModel, planBodyParam, eachVendor.id);
 }
 
@@ -92,7 +94,7 @@ function planExpiredMail(eachVendor){
         .then(function (response) {
             if (response) {
 
-				var email = vendor.User.email;
+				var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;

@@ -1,5 +1,6 @@
 <script type="text/javascript">
 var userInfo = {{{ DisplayJSON LoggedInUser }}}
+
 	$(function() {
 		$('#planHide').show();
 		$('#userPlanShow').hide();
@@ -61,7 +62,6 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		e.preventDefault();
 		if ($('#plandetailsform').valid()) { 
 		var planstatus=$('#plan_status').val();
-		console.log("planstatus::"+planstatus);
 		if(planstatus=="2")
 		{
 		if ($('#plandetailsform').valid()) { 
@@ -77,6 +77,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 			success: function(data) {
 				
 				$('#Plan_cost').html("you have charged " + data.data.cost);
+				$('#amount').val(data.data.cost);
 				$('#myModal').modal('show');
 				
 			},
@@ -100,9 +101,9 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		e.preventDefault();
 		if ($('#userPlandetails').valid()) { 
 			
-			if(($('#userplanStatus').val()=='0')||($('#userplanStatus').val()=='2'))
+			if($('#userplanStatus').val()=='2')
 			{
-                   var plan_id = document.getElementById("selectplan").value;
+            var plan_id = document.getElementById("selectplan").value;
             $.ajax({
 			url: '/api/upgrade-plan/selectplan',
 			type: 'POST',
@@ -143,9 +144,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 		var plan_id = document.getElementById("selectplan").value;
 		  if($('[type="checkbox"]').is(":checked")){
 				 var autoRenewalMail = 1;
-                 }else{
-                  var autoRenewalMail = 2;
-                }
+                 }
 		$.ajax({
 			url: '/api/payment/planpay',
 			type: 'POST',
@@ -175,6 +174,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 	}
 </script> 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray" id="planHide">
 	<div class="gtc-container">
 		<div class="row">
@@ -206,7 +206,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 											<div class="input-group mb-3">
 												<div class="input-group-prepend">
 												</div>
-												<span style="font-size:12px">{{PlanDetails.[0].name}}</span>
+												<span style="font-size:12px">{{PlanDetails.rows.[0].Plan.name}}</span>
 											</div>
 										</div>
 
@@ -223,27 +223,27 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
 														  required>
 															<option value='' selected="">Select Plan</option>
-                                                            {{#ifCond PlanDetails.[0].name '==' "STARTER SELLER"}}
+                                                            {{#ifCond PlanDetails.rows.[0].Plan.name '==' "STARTER SELLER"}}
 																<option value="2">Service Provider</option>
 																<option value="3">Lifestyle Provider</option>
 																<option value="4">Public Seller Pricing Guide</option>
 																<option value="6">Wholesale Pricing Guide</option>
 																
 															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '==' "SERVICE PROVIDER"}}
+															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
 																<option value="4">Public Seller Pricing Guide</option>
 																<option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '==' "LIFESTYLE PROVIDER"}}
+															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
 																	<option value="4">Public Seller Pricing Guide</option>
 																<option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '==' "PUBLIC SELLER PRICING PROVIDER"}}
+															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
 																<option value="2">Service Provider</option>
 																<option value="3">Lifestyle Provider</option>
 																<option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}
-															{{#ifCond PlanDetails.[0].name '==' "WHOLESALE PRICING GUIDE"}}
+															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
 															  <option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}
 														</select>
@@ -311,10 +311,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" id="amount" value="{{PlanDetails.[0].cost}}">
-									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{PlanDetails.[0].vendor_id}}">
+									<input type="hidden" name="amount" id="amount" value="">
+									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{LoggedInUser.Vendor.id}}">
 									<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
-									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.[0].status}}">
+									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.rows.[0].status}}">
 									<hr style="margin-top: 10px" />
 
 									{{!-- <div class="row">
@@ -352,73 +352,55 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 						              </div>
 							
 							 {{else}}
-							 	<form id="userPlandetails" name="userPlandetails">
-							 <div class="row">
-                               <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}">
-							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+							<form id="userPlandetails" name="userPlandetails">
+							   <div class="row">
+                               {{!-- <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}"> --}}
+							   <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 								Select Plan
-							</div>
-
-							<div class="col-md-3">
-
-							
-									<div class="form-group">
-
-													<div class="input-group">
-						<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
-													
-														
-															
-										{{#ifCond userplanDetails '==' "1"}}
-											<option value="5">Bulk Buyer</option>
-											{{else}}
-											   	<option disabled="" value='' selected="">Select Plan</option>
-												   <option value="5">Bulk Buyer</option>
-											 {{/ifCond}}
-										
-
-														</select>
-
-													</div>
-												</div>
-							</div>
-							<div class="col-md-1">
-								<div class="text-nowrap" onclick="showDetails()">
-									<a href="javascript:;">Show Details</a>
+							    </div>
+        						<div class="col-md-3">
+								<div class="form-group">
+								<div class="input-group">
+        						<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
+	                            {{#ifCond userplanDetails '==' "1"}}
+								<option value="5">Bulk Buyer</option>
+								{{else}}
+								<option disabled="" value='' selected="">Select Plan</option>
+								<option value="5">Bulk Buyer</option>
+								{{/ifCond}}
+								</select>
 								</div>
-							</div>
-
-						</div>
-						<div class="row" id="usercarddetails">
-							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+								</div>
+    							</div>
+	       						<div class="col-md-1">
+								<div class="text-nowrap" onclick="showDetails()">
+								<a href="javascript:;">Show Details</a>
+			     				</div>
+				     			</div>
+            					</div>
+			         			<div class="row" id="usercarddetails">
+					    		<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 								Select Card Details
-							</div>
-							<div class="col-md-3">
-						
-									<div class="form-group">
-
-													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" 
-														 name="selectcard_details" required>
-															{{#ifCond carddetails '!=' '' }}
-
-															{{#each carddetails}}
-																<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-															{{/each}}
-							                             	{{else}}
-								                        	<option disabled="" selected="">Select card details</option>
-														{{/ifCond}}
-
-														</select>
-
-													</div>
-												</div>
-
-
-							</div>
-							<div class="col-md-1">
+						    	</div>
+							    <div class="col-md-3">
+								<div class="form-group">
+								<div class="input-group">
+								<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" 
+								 name="selectcard_details" required>
+								{{#ifCond carddetails '!=' '' }}
+								{{#each carddetails}}
+								<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+								{{/each}}
+                             	{{else}}
+	                        	<option disabled="" selected="">Select card details</option>
+     							{{/ifCond}}
+								</select>
+								</div>
+     							</div>
+            					</div>
+	    						<div class="col-md-1">
 								<div class="text-nowrap">
-									<a href="/billing-settings">Add Card</a>
+								<a href="/billing-settings">Add Card</a>
 								</div>
 							</div>
 						</div>
@@ -439,7 +421,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
 
-									<input type="hidden" name="amount" id="useramount" value="{{userShowplanDetails.[0].cost}}">
+									<input type="hidden" name="amount" id="useramount" value="">
 									<input type="hidden" name="vendor_id" value="0">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
 						{{/if}}
@@ -485,9 +467,13 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 							<div class="col-md-8">
 							</div>
 						</div> --}}
-						<div class="row">
+						         <div class="row">
 									<div class="col-md-12">
-											<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
+										{{#if userplanDetails}}
+										<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails.rows.[0].status}}"/>
+											{{else}}
+										<input type="hidden" name="userplanStatus" id="userplanStatus" value="1"/>
+										{{/if}}
 										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
 											<span class="ladda-label">UPGRADE</span>
 											
@@ -497,7 +483,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 											
 										<span class="ladda-spinner"></span></button>
 									</div>
-					    </div>
+					          </div>
                          	{{/if}}
 						</form>
 					</div>
@@ -519,11 +505,7 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 
 			</div>
 			<div class="modal-body">
-			    {{#if PlanDetails.[0].cost}}
-				<p id="Plan_cost"></p>
-				{{else}}
-		       	<p id="Plan_cost"></p>
-				{{/if}}
+			    <p id="Plan_cost"></p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">ok</button>

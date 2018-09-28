@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(128),
             field: 'email',
             allowNull: false
+		},
+		user_contact_email: {
+            type: DataTypes.STRING(128),
+            field: 'user_contact_email',
+            allowNull: true
         },
         hashed_pwd: {
             type: DataTypes.TEXT,

@@ -30,7 +30,7 @@ export function bulkUserPlanRenewal(job, done) {
 	var planQueryObj = {}, planIncludeArr = [];
 	var userPlanModel = 'UserPlan';
 
-	//planQueryObj['status'] = statusCode['ACTIVE'];
+	planQueryObj['status'] = statusCode['ACTIVE'];
 	planQueryObj['end_date'] = {
 		'$lt': currentDate
 	}
@@ -58,7 +58,13 @@ export function bulkUserPlanRenewal(job, done) {
 			var primaryCardPromise = [];
 			_.forOwn(plans.rows, function (userPlan) {
 
-				primaryCardPromise.push(primaryCardDetails(userPlan));
+				if(userPlan.auto_renewal_mail == 1){
+					primaryCardPromise.push(primaryCardDetails(userPlan));
+				}else{
+					if(userPlan.User.user_contact_email){
+						planDeactivated(userPlan);
+					}
+				}				
 			});
 			return Promise.all(primaryCardPromise);
 
@@ -107,7 +113,9 @@ function primaryCardDetails(userPlan){
 								status: statusCode['ACTIVE'],
 								end_date: moment().add(30, 'd').toDate()
 							}
-							autoRenewalMail(userPlan, chargedAmount);
+							if(userPlan.User.user_contact_email){
+								autoRenewalMail(userPlan, chargedAmount);
+							}
 							return service.updateRow( userPlanModel, planUpdateObj,userPlan.id);
 						}						
 					}).then(function(planRow){
@@ -124,7 +132,9 @@ function primaryCardDetails(userPlan){
 				}
 				return service.updateRow( userPlanModel, planUpdateObj,userPlan.id)
 					.then(function(planRow){
-						updatePrimaryCardMail(userPlan);
+						if(userPlan.User.user_contact_email){
+							updatePrimaryCardMail(userPlan);
+						}
 						return Promise.resolve(planRow);
 
 					}).catch(function(error){
@@ -148,7 +158,7 @@ function updatePrimaryCardMail(userPlan) {
         .then(function (response) {
             if (response) {
 
-                var email = userPlan.User.email;
+                var email = userPlan.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -182,7 +192,7 @@ function autoRenewalMail(userPlan, chargedAmount){
         .then(function (response) {
             if (response) {
 
-				var email = userPlan.User.email;
+				var email = userPlan.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;
@@ -208,3 +218,36 @@ function autoRenewalMail(userPlan, chargedAmount){
         });
 }
 
+function planDeactivated(userPlan){
+	
+	var emailTemplateQueryObj = {};
+    var emailTemplateModel = "EmailTemplate";
+    emailTemplateQueryObj['name'] = config.email.templates.planExpired;
+
+	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
+        .then(function (response) {
+            if (response) {
+
+				var email = userPlan.User.user_contact_email;
+
+                var subject = response.subject;
+				var body = response.body;
+				body = body.replace('%USERNAME%', userPlan.User.first_name);
+				body = body.replace('%PLAN_NAME%', userPlan.Plan.name);
+				body = body.replace('%EXPIRED_DATE%', userPlan.end_date);
+
+                sendEmail({
+                    to: email,
+                    subject: subject,
+                    html: body
+                });
+                return;
+            } else {
+                return;
+            }
+
+        }).catch(function (error) {
+            console.log("Error::", error);
+            return;
+        });
+}

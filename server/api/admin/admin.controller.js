@@ -99,7 +99,8 @@ export function create(req, res) {
             res.status(409).send("Email address already exists");
             return;
         } else {
-            bodyParams["provider"] = providers["OWN"];
+			bodyParams["provider"] = providers["OWN"];
+			bodyParams["contact_email"] = req.body.email;
             bodyParams["status"] = status["ACTIVE"];
             bodyParams["role"] = roles["ADMIN"];
             bodyParams["email_verified"] = 1;
