@@ -19,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             field: 'email',
             allowNull: false
 		},
-		contact_email: {
+		user_contact_email: {
             type: DataTypes.STRING(128),
-            field: 'contact_email',
-            allowNull: false
+            field: 'user_contact_email',
+            allowNull: true
         },
         hashed_pwd: {
             type: DataTypes.TEXT,
