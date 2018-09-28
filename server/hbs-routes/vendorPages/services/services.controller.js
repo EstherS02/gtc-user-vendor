@@ -30,12 +30,28 @@ export function vendorServices(req, res) {
 	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
+	var start_date;
+	var end_date;
 	var bottomCategory = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['SERVICE'];
 	queryURI['marketplace_id'] = marketplace['SERVICE'];
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['vendor_id'] = vendor_id;
+
+	end_date = moment().add(0, 'd').toDate();
+	if (req.query.order == "desc") {
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}else{
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}
+ 
 
 	var queryPaginationObj = {};
 
