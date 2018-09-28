@@ -51,7 +51,7 @@ export function vendorWholesale(req, res) {
 	queryURI['marketplace_id'] = marketplace['WHOLESALE'];
 	field = req.query.field ? req.query.field : "created_on";
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryURI['order'] = order;
 	delete req.query.order;
 	page = req.query.page ? parseInt(req.query.page) : 1;

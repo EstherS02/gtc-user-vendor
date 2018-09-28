@@ -10,7 +10,7 @@ const sendEmail = require('./send-email');
 var currentDate = new Date();
 var featureProductModel = 'FeaturedProduct';
 
-export function featureProductExpire(req, res) {
+export function featureProductExpire(job, done) {
 
 	console.log("**********JOBS CALLED")
     console.log('agenda for feature-product-expire..');
@@ -84,7 +84,9 @@ function updateFeatureStatus(eachProduct){
 	featureBodyParam = {
 		feature_status: statusCode['INACTIVE']
 	}
-	featurePromotionExpiredMail(eachProduct);
+	if(eachProduct.Product.Vendor.User.user_contact_email){
+		featurePromotionExpiredMail(eachProduct);
+	}
 	return service.updateRow(featureProductModel, featureBodyParam, eachProduct.id);
 }
 
@@ -100,7 +102,7 @@ function featurePromotionExpiredMail(eachProduct){
         .then(function (response) {
             if (response) {
 
-				var email = vendor.User.email;
+				var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
 				var body = response.body;

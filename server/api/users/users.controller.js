@@ -95,6 +95,7 @@ export function create(req, res) {
             res.status(409).send("Email address already exists");
             return;
         } else {
+			bodyParams['user_contact_email'] = req.body.email;
             bodyParams['created_on'] = new Date();
             bodyParams["role"] = roles["USER"];
             bodyParams["status"] = status["ACTIVE"];
@@ -117,7 +118,7 @@ export function create(req, res) {
                             .then(function (response) {
                                 if (response) {
                                     var username = user["first_name"];
-                                    var email = user["email"];
+                                    var email = user["user_contact_email"];
                                     var subject = response.subject.replace('%USERNAME%', username);
                                     var body;
                                     body = response.body.replace('%USERNAME%', username);
@@ -548,20 +549,24 @@ export function forgotPassword(req, res) {
                             service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
                                 .then(function (response) {
                                     if (response) {
-                                        var username = user["first_name"];
-                                        var email = user["email"];
+										if(user.user_contact_email){
+											var username = user["first_name"];
+											var email = user["user_contact_email"];
 
-                                        var subject = response.subject;
-                                        var body;
-                                        body = response.body.replace('%USERNAME%', username);
-                                        body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
+											var subject = response.subject;
+											var body;
+											body = response.body.replace('%USERNAME%', username);
+											body = body.replace('%LINK%', config.baseUrl + '/user/reset-password?email=' + email + "&forgot_password_token=" + forgot_password_token);
 
-                                        sendEmail({
-                                            to: email,
-                                            subject: subject,
-                                            html: body
-                                        });
-                                        return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+											sendEmail({
+												to: email,
+												subject: subject,
+												html: body
+											});
+											return res.status(201).send("Instructions have been sent to your associated email account. Check your email and follow the instructions to reset your password.");
+										}else{
+											return res.status(201).send("You didn't have contact email to reset your password.");
+										}
                                     } else {
                                         return res.status(404).send("Unable to reset password. Please try later.");
                                     }
@@ -585,6 +590,36 @@ export function forgotPassword(req, res) {
             res.status(500).send("Internal server error. Please try later.")
             return;
         })
+}
+
+export function updateContactEmail(req,res){
+
+	if (req.body.userId == req.user.id) {
+        let userId = req.user.id;
+        let contactEmailUpdate = {
+            'user_contact_email': req.body.contact_email
+		}
+		
+        return service.updateRow("User", contactEmailUpdate, userId)
+            .then(function(response) {
+                return res.status(200).send({
+                    "message": "SUCCESS",
+                    "messageDetails": "Contact Email updated Successfully"
+                });
+            }).catch(function(err) {
+                return res.status(500).send({
+                    "message": "ERROR",
+                    "messageDetails": "Contact Email updated UnSuccessfull with errors",
+                    "errorDescription": err
+                });
+            });
+    } else {
+        return res.status(400).send({
+            "message": "ERROR",
+            "messageDetails": "Bad Request, Not authorized to updated"
+        });
+    }
+
 }
 
 export function userOnline(user){

@@ -70,7 +70,7 @@ export function vendorQuestion(req, res) {
 		return;
 	}
 	// res.status(200).send(req.body);
-	 var queryObjEmailTemplate = {};
+	var queryObjEmailTemplate = {};
     var emailTemplateModel = 'EmailTemplate';
     queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
     service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
@@ -92,8 +92,6 @@ export function vendorQuestion(req, res) {
             console.log('Error :::', error);
             return;
         })
-
-
 }
 
 export function AddToCompare(req, res) {

@@ -43,6 +43,7 @@ agenda.define(config.jobs.featureProductExpire, featureProductExpire);
 agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
+	console.log('agenda onReady')
 	agenda.every('0 0 * * *', 'couponExpiry');
 	agenda.every('8 hours', 'vendorPayouts');
 	agenda.every('12 hours', 'planRenewal');
