@@ -536,9 +536,9 @@ export async function applyCoupon(req, res) {
 								totalAmount = await cartProduct.Product.price * cartProduct.quantity;
 							}
 						}));
-						if (totalAmount <= coupon.minimum_spend) {
+						if (totalAmount < coupon.minimum_spend) {
 							return res.status(400).send("This promo code not applicable. Minimum spend " + coupon.minimum_spend);
-						} else if (totalAmount >= coupon.maximum_spend) {
+						} else if (totalAmount > coupon.maximum_spend) {
 							return res.status(400).send("This promo code not applicable. Maximum spend " + coupon.maximum_spend);
 						} else {
 							res.cookie("applied_coupon", coupon.code);
