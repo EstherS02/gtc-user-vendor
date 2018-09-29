@@ -197,6 +197,7 @@ export function salesHistory(req, res) {
             }
         },
         function(err, results) {
+            console.log(req)
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             maxSize = results.orderHistory.count / limit;

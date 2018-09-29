@@ -16,7 +16,7 @@ const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
-
+const numeral = require('numeral');
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -117,7 +117,9 @@ export function makePayment(req, res) {
 			for (let j = 0; j < allCartItems.length; j++) {
 				clearCart.push(allCartItems[j].id)
 			}
-			sendOrderMail(orderIdStore, req.user);
+			if(req.user.user_contact_email){
+			sendOrderMail(orderIdStore, req);
+			}
 			service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
 				if (!(_.isNull(clearedCartRow))) {
 					return res.status(200).send({
@@ -569,7 +571,9 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, user) {
+export function sendOrderMail(orderIdStore,req) {
+	var user = {};
+	user=req.user;
 	var orderIdStore = orderIdStore;
 	var includeArr = [{
 		model: model['OrderItem'],
@@ -582,7 +586,10 @@ export function sendOrderMail(orderIdStore, user) {
 					model: model['User'],
 					attributes: ['id', 'email'],
 				}]
-			}],
+			},{
+			model:model['ProductMedia'],
+			attributes:['url']
+		}],
 		}]
 	}, {
 		model: model['Address'],
@@ -616,13 +623,15 @@ export function sendOrderMail(orderIdStore, user) {
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
+							body = body.replace('%currency%','$');
+							body = body.replace('%UserName%',user.first_name) //+' '+user.last_name
+							if(user.last_name != null || user.last_name != 'null'){
+							body = body.replace('%UserLastName%',user.last_name) //+' '+		
+							}
 							_.forOwn(OrderList.rows, function(orders) {
-								body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
-								body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
-								body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
-								body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
-								body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
-								body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
+								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
+								body = body.replace('%Total_Price%',numeral(orderPayments.total_price).format('$' + '0,0.00'))
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
@@ -800,7 +809,7 @@ function sendUpgrademail(plan_id, user) {
 					var body = response.body;
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
-					body = body.replace('%cost%', upgradeplanobj.cost);
+					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
 					sendEmail({
 						to: email,
 						subject: subject,

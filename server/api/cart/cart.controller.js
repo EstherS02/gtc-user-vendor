@@ -510,21 +510,9 @@ export async function applyCoupon(req, res) {
 							appliedCategoryProducts = await products;
 						}
 
-						if (appliedProducts.length > appliedCategoryProducts.length) {
-							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
-							finalProducts = await _.filter(appliedProducts, function(product) {
-								return tmpProducts.indexOf(product.id) == -1;
-							});
-						} else if (appliedCategoryProducts.length > appliedProducts.length) {
-							var tmpProducts = await _.map(appliedProducts, 'id');
-							finalProducts = await _.filter(appliedCategoryProducts, function(product) {
-								return tmpProducts.indexOf(product.id) == -1;
-							});
-						} else {
-							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
-							finalProducts = await _.filter(appliedProducts, function(product) {
-								return tmpProducts.indexOf(product.id) > -1;
-							});
+						var tmpProducts = await _.union(appliedProducts, appliedCategoryProducts);
+						if (tmpProducts.length > 0) {
+							finalProducts = await _.uniqBy(tmpProducts, 'id');
 						}
 
 						var totalAmount = 0;
@@ -543,6 +531,7 @@ export async function applyCoupon(req, res) {
 							res.cookie("applied_coupon", coupon.code);
 							return res.status(200).send("Promo code applied successfully.");
 						}
+
 					} else {
 						return res.status(400).send("Promo code expired.");
 					}

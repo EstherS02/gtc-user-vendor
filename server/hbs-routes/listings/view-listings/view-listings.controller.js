@@ -117,16 +117,17 @@ export function viewListings(req, res) {
 				});
 		},
 	}, function(err, results) {
-		maxSize = results.products.count / limit;
-		if (results.products.count % limit)
-			maxSize++;
-
-		queryPaginationObj['maxSize'] = maxSize;
-
-		var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-		var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
-
+		
 		if (!err) {
+			maxSize = results.products.count / limit;
+			if (results.products.count % limit)
+				maxSize++;
+
+			queryPaginationObj['maxSize'] = maxSize;
+
+			var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+			var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
+
 			res.render('vendorNav/listings/view-listings', {
 				title: "Global Trade Connect",
 				products: results.products.rows,

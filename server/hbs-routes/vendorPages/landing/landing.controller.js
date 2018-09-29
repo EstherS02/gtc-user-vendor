@@ -81,7 +81,6 @@ export function vendor(req, res) {
 				});
 		},
 		topSelling: function(callback) {
-			delete queryObj['featured_position'];
 			delete queryObj['is_featured_product'];
 
 			queryObj['vendor_id'] = vendor_id;

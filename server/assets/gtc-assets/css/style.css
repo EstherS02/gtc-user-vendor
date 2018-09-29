@@ -2342,3 +2342,357 @@ select.file-uploade:after {
     font-size: 15px;
     font-weight: 400;
 }
+
+/* Reporting new styles */
+
+.reporting_content .reporting_date_range .date_range_group {
+    width: 100px;
+    padding: 0px 8px;
+}
+
+.reporting_content .reporting_date_range .report_date_range_title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 9px;
+    padding-left: 5px;
+}
+
+.reporting_content .reporting_date_range .date_range_picker {
+    height: 22px;
+    border: none;
+    background-color: #EDEDED;
+    font-size: 10px;
+    font-family: 'heebo', sans-serif;
+    padding: 4px;
+    border-radius: 0px;
+    cursor: not-allowed;
+}
+
+.reporting_content .reporting_date_range #date_range_from {
+    border: none;
+    background-color: #a7a7a7a6;
+    color: black;
+    padding: 0px 5px;
+    width: 20px;
+    border-radius: 0px;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_latest_ticket {
+    padding: 10px 15px;
+    background-color: #3bb802;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_latest_refund {
+    padding: 10px 15px;
+    background-color: #c80527;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_active_buyers {
+    padding: 10px 15px;
+    background-color: #4178bb;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_top_selling_cities {
+    padding: 10px 15px;
+    background-color: #d78504;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_block_content_individual .lft_count {
+    color: #d1d1d1;
+    font-size: 36px;
+    margin-top: -5px;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block_content {
+    border: 1px solid #dfdfdf;
+    min-height: 361px;
+    padding-bottom: 0px;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block_content.reporting_bottom_widget_override {
+    min-height: 272px;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .reporting_widget_see_all {
+    text-align: right;
+    background-color: #4178bb;
+    margin-bottom: 0px !important;
+    padding: 5px 8px;
+    font-size: 13px;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .reporting_widget_see_all a {
+    color: #ffffff;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .reporting_subject {
+    font-size: 10px;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    margin-bottom: 3px !important;
+    color: #7f7f7f;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .reporting_subject.reporting_title {
+    color: #6782b5;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .widget-line {
+    margin-top: 5px;
+    margin-bottom: 9px;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_block .no-margin-top {
+    margin-top: 0px !important;
+}
+
+.reporting_content .reporting_stat_widgets .reporting_widget_padding {
+    padding-left: 5px !important;
+    padding-right: 7px !important;
+}
+
+.reporting_content .reporting_top_performing .chart_top_performing_height {
+    min-height: 313px;
+}
+
+.reporting_content .reporting_recent_revenue .chat_revenue_height {
+    min-height: 328px;
+}
+
+.reporting_content .reporting_bottom_stat .stat_title {
+    font-size: 13px;
+    font-weight: 500;
+    padding-bottom: 5px;
+    color: #060606;
+}
+
+.reporting_content .reporting_bottom_stat .stat_price {
+    font-size: 18px;
+    color: #3abd10;
+    padding-bottom: 3px;
+    font-weight: 500;
+}
+
+.reporting_content .reporting_bottom_stat .stat_price.stat_price_red {
+    color: #c8183d;
+}
+
+.reporting_content .reporting_bottom_stat .stat_price_compare {
+    font-size: 10px;
+}
+
+.reporting_content .reporting_bottom_stat .stat_padding {
+    padding: 0px !important;
+    padding-left: 10px !important;
+}
+
+.reporting_content .reporting_bottom_stat .stat_cancel_card_border {
+    border: none;
+}
+
+.reporting_content .reporting_top_performing .chat_top_performing_padding {
+    padding: 10px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_price {
+    font-size: 20px;
+    color: #969393;
+    float: left;
+    margin-bottom: 0px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_price_gain {
+    font-size: 16px;
+    color: #3bb802;
+    float: right;
+    margin-bottom: 0px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_price_versus {
+    float: right;
+    font-size: 11px;
+    clear: both;
+    margin-bottom: 12px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_title {
+    clear: both;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.reporting_content .reporting_top_performing .top_perf_title.top_perf_margin_override {
+    margin-bottom: 9px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_padding_override {
+    padding: 0px !important;
+    font-size: 13px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_no_left_padding {
+    padding-left: 0px !important;
+}
+
+.reporting_content .reporting_top_performing .top_perf_no_right_padding {
+    padding-right: 0px !important;
+}
+
+.reporting_content .reporting_top_performing .top_perf_product_name {
+    font-size: 13px;
+    margin-bottom: 0px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_product_price {
+    font-size: 13px;
+    margin-bottom: 0px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_progress {
+    height: 10px;
+    border-radius: 0px;
+    margin-top: 4px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_progress_bar {
+    width: 100%;
+    background-color: #4178bb;
+    border-radius: 0px;
+    animation: draw 1.5s ease-in-out;
+}
+
+.reporting_content .reporting_top_performing .top_perf_content {
+    margin-bottom: 5px;
+}
+
+.reporting_content .reporting_top_performing .reporting_chart_see_all {
+    text-align: right;
+    background-color: #4178bb;
+    margin-bottom: 0px !important;
+    padding: 5px 8px;
+    font-size: 13px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_marketplace_content {
+    padding: 5px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_marketplace_vertical_chart {
+    padding-left: 20px;
+}
+
+.reporting_content .reporting_top_performing .top_perf_marketplace_chart_price {
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.reporting_content .reporting_top_performing .chart.top_perf_marketplace_vertical_chart {
+    margin-top: 10px;
+    height: 115px;
+}
+
+.reporting_content .reporting_top_performing .chart.top_perf_marketplace_vertical_chart li {
+    height: 115px;
+}
+
+.reporting_content .reporting_recent_revenue .revenue_chart_title {
+    font-size: 15px;
+    font-weight: 750;
+    padding: 0px;
+}
+
+.reporting_content .reporting_date_range #date_range_from {
+    border: none;
+    background-color: #a7a7a7a6;
+    color: black;
+    padding: 0px 5px;
+    width: 20px;
+    border-radius: 0px;
+}
+
+.reporting_content .reporting_date_range #date_range_to {
+    border: none;
+    background-color: #a7a7a7a6;
+    color: black;
+    padding: 0px 5px;
+    width: 20px;
+    border-radius: 0px;
+}
+
+.reporting_content .reporting_date_range #compare_range_from {
+    border: none;
+    background-color: #a7a7a7a6;
+    color: black;
+    padding: 0px 5px;
+    width: 20px;
+    border-radius: 0px;
+}
+
+.reporting_content .reporting_date_range #compare_range_to {
+    border: none;
+    background-color: #a7a7a7a6;
+    color: black;
+    padding: 0px 5px;
+    width: 20px;
+    border-radius: 0px;
+}
+
+.reporting_content .reporting_date_range .report_update_btn_override {
+    background-color: #3bb802;
+    color: #fff;
+    font-size: 10px;
+    padding: 0px 7px;
+    margin: 0px;
+    margin-top: 0px;
+    height: 22px;
+    font-weight: 900;
+}
+
+.reporting_content .reporting_date_range .reporting_range_select_override {
+    padding-left: 5px;
+    background-color: #EDEDED;
+    font-size: 9px;
+    height: 24px !important;
+    width: 85px;
+    padding-right: 25px;
+    padding-top: 4px;
+}
+
+.reporting_content .reporting_date_range .select-container:after {
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 9px solid black;
+    top: -2px;
+    right: 0;
+    margin: 10px;
+    opacity: 0.5;
+}
+
+.reporting_content .no_records_found {
+    padding-top: 120px;
+    color: #7f7f7f;
+    font-size: 10px;
+    text-align: center;
+}
