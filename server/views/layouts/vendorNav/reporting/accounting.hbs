@@ -11,6 +11,122 @@
 			autoHide: true
 		});
 	});
+
+	$(document).ready(function() {
+		if ($("#inputDateRange").val() == 1) {
+			$("#inputFromDate").datepicker("setDate", new Date());
+			$("#inputToDate").datepicker("setDate", new Date());
+		} else if ($("#inputDateRange").val() == 2) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 1);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", startDate);
+		} else if ($("#inputDateRange").val() == 3) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 7);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 4) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 30);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 5) {
+			var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+			var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 6) {
+			var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+			var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else {
+			$("#inputFromDate").val(null);
+			$("#inputToDate").val(null);
+		}
+
+		$('#inputDateRange').on('change', function() {
+			if ($("#inputDateRange").val() == 1) {
+				$("#inputFromDate").datepicker("setDate", new Date());
+				$("#inputToDate").datepicker("setDate", new Date());
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 2) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 1);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", startDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 3) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 7);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 4) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 30);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 5) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 6) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
+			}
+		});
+
+		$("#inputFromDate").on('pick.datepicker', function(e) {
+			if (e.date > new Date()) {
+				e.preventDefault();
+			} else {
+				console.log("--------------", $("#inputFromDate").val());
+				var startDate = new Date(e.date);
+				$("#inputFromDate").datepicker("setDate", startDate);
+				console.log("==============", $("#inputFromDate").val());
+				return;
+			}
+		});
+
+		$("#inputToDate").on('pick.datepicker', function(e) {
+			if (e.date > new Date()) {
+				e.preventDefault();
+			}
+			window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+		});
+	});
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
@@ -61,13 +177,9 @@
 									<div class="form-group m-r">
 										<div class="select-container">
 											<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="date_range">
-												<option value="1">Today</option>
-												<option value="2">Yesterday</option>
-												<option value="3">Last 7 Days</option>
-												<option value="4">Last 30 Days</option>
-												<option value="5">This Month</option>
-												<option value="6">Last Month</option>
-												<option value="7">Custom Range</option>
+												{{#each dateRangeOptions}}
+													<option {{#ifCond @root.queryParams.range '==' this.value}} selected="true" {{/ifCond}} value="{{this.value}}">{{this.column}}</option>
+												{{/each}}
 											</select>
 										</div>
 									</div>
