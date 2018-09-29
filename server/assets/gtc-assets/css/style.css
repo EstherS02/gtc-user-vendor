@@ -117,17 +117,22 @@ select {
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     width: 100%;
 }
-
 .form-control:focus {
     box-shadow: none;
     border: 0;
 }
-
 .form-control-muted {
     background-color: #e9ecef;
     opacity: 1;
 }
-
+.custom-dropdown {
+    background: #c4c3c0;
+    border: 1px solid #c4c3c0;
+}
+.custom-dropdown:focus {
+    box-shadow: none !important;
+    border: 1px solid #f49d3f;
+}
 .header-bg {
     background: url(../img/bg-footer.jpg);
     width: 100%;
@@ -1056,9 +1061,6 @@ ul.vp-nav li.nav-item.active a.nav-link:hover {
     text-decoration: none;
     text-shadow: none;
     text-indent: inherit;
-}
-.content-body.custom {
-    margin-top: .5rem;
 }
 select {
     -webkit-appearance: none;

@@ -87,6 +87,12 @@
 	}
 }
 
+@media (max-width: 767px) {
+	.ibox-title h2 {
+		display: inline-block;
+	}
+}
+
 @media (min-width: 768px) {
 	.container-sm {
 		width: 77.911%;
@@ -120,6 +126,14 @@
 	}
 	.responsive-flex .align-right, .align-right {
 		float: right;
+	}
+	.inline-form {
+		display: flex;
+		-webkit-box-orient: horizontal;
+		-webkit-box-direction: normal;
+		flex-flow: row wrap;
+		-webkit-box-align: center;
+		align-items: center;
 	}
 }
 
