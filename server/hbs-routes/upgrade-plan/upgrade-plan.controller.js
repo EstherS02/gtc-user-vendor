@@ -115,13 +115,13 @@ export function upgradeplan(req, res) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
 	        var queryObj = {
-				user_id: user_id,
-				  start_date:{
-				    '$lte': currentDate
-				  },
-				  end_date:{
-				  '$gte': currentDate,
-				  }
+				user_id: user_id
+				//   start_date:{
+				//     '$lte': currentDate
+				//   },
+				//   end_date:{
+				//   '$gte': currentDate,
+				//   }
 
 	              }
 	              var field = 'id';
@@ -161,13 +161,13 @@ export function upgradeplan(req, res) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
 	        var queryObj = {
-				  vendor_id: vendor_id,
-				  start_date:{
-				    '$lte': currentDate
-				  },
-				  end_date:{
-				  '$gte': currentDate,
-				  }
+				  vendor_id: vendor_id
+				//   start_date:{
+				//     '$lte': currentDate
+				//   },
+				//   end_date:{
+				//   '$gte': currentDate,
+				//   }
 
 	              }
 	              var field = 'id';
