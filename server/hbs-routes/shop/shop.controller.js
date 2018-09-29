@@ -68,7 +68,7 @@ export function shop(req, res) {
 				});
 		},
 		featuredProducts: function(callback) {
-			queryObj['featured_position'] = position.ShopLanding;
+			queryObj['featured_position_shop_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			var order = [

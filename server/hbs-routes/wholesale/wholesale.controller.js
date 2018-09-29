@@ -135,7 +135,7 @@ export function wholesale(req, res) {
 		},
 		featuredProducts: function(callback) {
 			delete queryObj['marketplace_type_id'];
-			queryObj['featured_position'] = position.WholesaleLanding;
+			queryObj['featured_position_wholesale_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
 			queryObj['marketplace_id'] = 1;
 

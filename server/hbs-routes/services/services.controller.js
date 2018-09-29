@@ -66,7 +66,7 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['featured_position'] = position.ServiceLanding;
+			queryObj['featured_position_service_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			var order = [

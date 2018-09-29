@@ -93,11 +93,41 @@ module.exports = (sequelize, DataTypes) => {
 			field: 'is_featured_product',
 			allowNull: false
 		},
-		featured_position: {
-            type: DataTypes.STRING(45),
-            field: 'featured_position',
+		featured_position_homepage: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_homepage',
             allowNull: true
 		},
+		featured_position_searchresult: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_searchresult',
+            allowNull: true
+		},
+		featured_position_profilepage: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_profilepage',
+            allowNull: true
+		},
+		featured_position_wholesale_landing: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_wholesale_landing',
+            allowNull: true
+		},
+		featured_position_shop_landing: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_shop_landing',
+            allowNull: true
+		},
+		featured_position_service_landing: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_service_landing',
+            allowNull: true
+		},
+		featured_position_subscription_landing: {
+            type: DataTypes.INTEGER,
+            field: 'featured_position_subscription_landing',
+            allowNull: true
+        },
 		feature_start_date: {
             type: DataTypes.DATEONLY,
             field: 'feature_start_date',
