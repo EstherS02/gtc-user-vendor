@@ -34,7 +34,7 @@
 				{{#if LoggedInUser.id}}
 					<span class="text-sm">You're logged in as </span>
 					<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
-					<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+					<button type="button" class="btn btn-sm btn-primary" onclick="gtcLogout()">SWITCH ACCOUNT</button>
 				{{else}}
 					<span class="text-sm">
 						<a href="/login">LOGIN</a> to see seller information</span>
@@ -186,7 +186,8 @@
 							{{#if cart.coupon_applied}}
 								<div class="m-t-sm text-center">
 									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
-									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}}
+												% {{/ifCond}}OFF </strong></p>
 								</div>
 							{{/if}}
 						{{/if}}
@@ -200,8 +201,8 @@
 <script>
 	var vendorArray = [];
 	var vendorArray1;
+	var cartItems = {{{ DisplayJSON cart.marketplace_products }}}
 	$(document).ready(function() {
-		var cartItems = {{{ DisplayJSON cart.marketplace_products }}}
 
 		for (var key in cartItems) {
 			var productsArray = cartItems[key].products;
