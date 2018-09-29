@@ -513,12 +513,12 @@ export async function applyCoupon(req, res) {
 						if (appliedProducts.length > appliedCategoryProducts.length) {
 							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 							finalProducts = await _.filter(appliedProducts, function(product) {
-								return tmpProducts.indexOf(product.id) == -1;
+								return tmpProducts.indexOf(product.id) > -1;
 							});
 						} else if (appliedCategoryProducts.length > appliedProducts.length) {
 							var tmpProducts = await _.map(appliedProducts, 'id');
 							finalProducts = await _.filter(appliedCategoryProducts, function(product) {
-								return tmpProducts.indexOf(product.id) == -1;
+								return tmpProducts.indexOf(product.id) > -1;
 							});
 						} else {
 							var tmpProducts = await _.map(appliedCategoryProducts, 'id');
