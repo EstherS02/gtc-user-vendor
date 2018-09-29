@@ -110,13 +110,33 @@ let sqlQueries = {
 	productCountBasedCategory: function(productCountQueryParams) {
 		let baseQuery = "SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id LEFT OUTER JOIN product on sub_category.id = product.sub_category_id";
 		let groupQuery="GROUP BY sub_category.id ORDER by category.name"
-
-		for (var j in productCountQueryParams) {
-			var condition = " AND "+"product."+ j + " = " + productCountQueryParams[j]
-			baseQuery = baseQuery.concat(condition)
+		if(productCountQueryParams.is_featured_product){
+			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(featured_product.product_id) as subproductcount FROM 
+				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id 
+			    LEFT OUTER JOIN featured_product on featured_product.product_id=product.id AND product.marketplace_id =(`+ productCountQueryParams.marketplace_id + `) and product.status = 1 and featured_product.status=(` + productCountQueryParams.is_featured_product + `)
+				GROUP BY sub_category.name ORDER by category.name`;
+				return query;
+		}else if(productCountQueryParams.marketplace_id && productCountQueryParams.keyword){
+			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id  AND product.marketplace_id =(` + productCountQueryParams.marketplace_id + `)  and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
+				GROUP BY sub_category.id ORDER by category.name`;
+				return query;
+		}else if(productCountQueryParams.keyword){
+			let query = `SELECT category.id as categoryid,category.name as categoryname,sub_category.id as subcategoryid ,sub_category.name as subcategoryname ,COUNT(product.product_name) as subproductcount FROM 
+				category RIGHT OUTER JOIN sub_category on category.id = sub_category.category_id
+				LEFT OUTER JOIN product on sub_category.id = product.sub_category_id and product.product_name LIKE "%`+ productCountQueryParams.keyword + `%" and product.status=(` + productCountQueryParams.status + `)
+				GROUP BY sub_category.id ORDER by category.name`;
+				return query;
+		}else{
+			for (var j in productCountQueryParams) {
+				var condition = " AND "+"product."+ j + " = " + productCountQueryParams[j]
+				baseQuery = baseQuery.concat(condition)
+			}
+			let query=baseQuery+" "+groupQuery;
+			return query;
 		}
-		let query=baseQuery+" "+groupQuery;
-		return query;
 	},
 	productViewAndReviewCategoryCount: function(queryObj, productQueryObj) {
 		if (queryObj.status && productQueryObj.vendor_id) {
@@ -144,15 +164,20 @@ let sqlQueries = {
 		}
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
-		let baseQuery="SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location"
-		let groupQuery="GROUP BY country.name ORDER by region.id"
+		let baseQuery = "SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location"
+		let groupQuery = "GROUP BY country.name ORDER by region.id"
 
-		for (var j in productCountQueryParams) {
-			var condition = " AND "+"product."+ j + " = " + productCountQueryParams[j]
-			baseQuery = baseQuery.concat(condition)
+		if (productCountQueryParams.keyword) {
+			let query=`SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" GROUP BY country.name ORDER by region.id`;
+			return query;
+		} else {
+			for (var j in productCountQueryParams) {
+				var condition = " AND " + "product." + j + " = " + productCountQueryParams[j]
+				baseQuery = baseQuery.concat(condition)
+			}
+			let query = baseQuery + " " + groupQuery;
+			return query;
 		}
-		let query=baseQuery+" "+groupQuery;
-		return query;
 	}
 };
 
