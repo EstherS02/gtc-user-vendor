@@ -608,7 +608,6 @@ export function sendOrderMail(orderIdStore,req) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
-			console.log(JSON.stringify(OrderList))
 			if(user.user_contact_email){
 
 				vendorMail(OrderList, user);
