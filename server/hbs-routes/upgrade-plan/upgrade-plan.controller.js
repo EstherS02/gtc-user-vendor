@@ -115,16 +115,16 @@ export function upgradeplan(req, res) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
 	        var queryObj = {
-				user_id: user_id,
-				  start_date:{
-				    '$lte': currentDate
-				  },
-				  end_date:{
-				  '$gte': currentDate,
-				  }
+				user_id: user_id
+				//   start_date:{
+				//     '$lte': currentDate
+				//   },
+				//   end_date:{
+				//   '$gte': currentDate,
+				//   }
 
 	              }
-	              var field = 'id';
+	              var field = "id";
 				  var order = "desc";
 				  var limit = 1;
 	               service.findAllRows('UserPlan', includeArr, queryObj, 0, limit, field, order).
@@ -160,21 +160,21 @@ export function upgradeplan(req, res) {
 		planDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-	        var queryObj = {
-				  vendor_id: vendor_id,
-				  start_date:{
-				    '$lte': currentDate
-				  },
-				  end_date:{
-				  '$gte': currentDate,
-				  }
+	        var queryObjs = {
+				  vendor_id: vendor_id
+				//   start_date:{
+				//     '$lte': currentDate
+				//   },
+				//   end_date:{
+				//   '$gte': currentDate,
+				//   }
 
 	              }
-	              var field = 'id';
+	              var field = "id";
 				  var order = "desc";
 				  var limit = 1;
-				   service.findAllRows('VendorPlan', includeArr, queryObj, 0, limit, field, order).
-					then(function(planDetails) {
+				   service.findAllRows('VendorPlan', includeArr, queryObjs, 0, limit, field, order)
+					.then(function(planDetails) {
 					var planDetails = planDetails;
 					return callback(null, planDetails);
 				}).catch(function(error) {
