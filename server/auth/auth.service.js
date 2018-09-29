@@ -421,6 +421,11 @@ return compose()
 								model: model['Timezone']
 							}, {
 								model: model['VendorPlan'],
+								where: {
+									status: {
+										$eq: status['ACTIVE']
+									}
+								}
 							}, {
 								model: model['VendorVerification'],
 								required: false

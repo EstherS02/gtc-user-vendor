@@ -66,7 +66,7 @@ export function services(req, res) {
 				});
 		},
 		featuredService: function(callback) {
-			queryObj['featured_position'] = position.ServiceLanding;
+			queryObj['featured_position_service_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			var order = [
@@ -86,7 +86,7 @@ export function services(req, res) {
 			const productLimit = 20;
 			const productField = "id";
 			const productOrder = "asc";
-			delete queryObj['featured_position'];
+			delete queryObj['featured_position_service_landing'];
 			delete queryObj['is_featured_product'];
 			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
 				.then(function(serviceProduct) {

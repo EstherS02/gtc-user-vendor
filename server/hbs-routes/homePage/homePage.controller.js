@@ -156,7 +156,7 @@ export function homePage(req, res) {
 		featuredProducts: function(callback) {
 			console.log("featuredProducts", "featuredProducts");
 			delete queryObj['marketplace_id'];
-			queryObj['featured_position'] = position.HomePage;
+			queryObj['featured_position_homepage'] = 1;
 			queryObj['is_featured_product'] = 1;
 			limit = 6;
 			var order = [
@@ -173,7 +173,7 @@ export function homePage(req, res) {
 		topSellers: function(callback) {
 			console.log("testTopSellers", "testTopSellers");
 			var result = {};
-			delete queryObj['featured_position'];
+			delete queryObj['featured_position_homepage'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';
 			order = 'desc';
