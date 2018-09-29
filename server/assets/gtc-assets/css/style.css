@@ -84,13 +84,17 @@ select {
     outline: 0;
     box-shadow: 0 0 0 0.1rem rgb(244, 157, 63);
 }
-.form-control-customized:disabled, .form-control[readonly] {
+
+.form-control-customized:disabled,
+.form-control[readonly] {
     background-color: #e9ecef;
     opacity: 1;
 }
+
 .form-control-customized:disabled {
     cursor: not-allowed;
 }
+
 .form-control,
 .single-line {
     background-color: #FFFFFF;
@@ -1167,6 +1171,7 @@ label {
     position: absolute;
     margin-top: 25px;
 }
+
 .vendor-alert {
     font-size: 0.813em;
     font-weight: 500;
@@ -1175,18 +1180,22 @@ label {
     position: relative;
     color: #FFFFFF;
 }
+
 .msg-success {
     background: #154a7f;
     outline: 0;
 }
+
 .msg-danger {
     background: #ec4758;
     outline: 0;
 }
+
 .msg-warning {
-    background: #f8ac59; 
+    background: #f8ac59;
     outline: 0;
 }
+
 .error {
     font-size: 0.813em;
 }
@@ -1945,10 +1954,12 @@ p.summary-info span {
     border-top: 1px solid #c3c3c3;
     height: 1px;
 }
+
 .hr-line {
     border-top: 1px solid #e7eaec;
     height: 1px;
 }
+
 .add-bag-btn {
     display: inline-block;
 }
@@ -2222,29 +2233,37 @@ p.summary-info span {
     font-family: 'Roboto', sans-serif;
     text-shadow: none;
 }
-.select2-selection__choice, .select2-results__option {
+
+.select2-selection__choice,
+.select2-results__option {
     font-size: 0.813em;
 }
+
 .header-lg-text .see-all:hover {
     color: #a4bfda;
 }
 
-.btn-success, .btn-success:not(:disabled):not(.disabled):active {
+.btn-success,
+.btn-success:not(:disabled):not(.disabled):active {
     background: #2775c3;
     border-color: #2775c3;
 }
+
 .btn-success:hover {
     background: #154a7f;
     border-color: #154a7f;
 }
+
 .btn-muted {
     background-color: #d1dade;
     color: #5e5e5e;
 }
+
 .btn-muted:hover {
     background-color: #bec8cc;
     color: #4a4949;
 }
+
 .update-btn:hover {
     background-color: #2560ab;
 }
@@ -2364,7 +2383,6 @@ select.file-uploade:after {
     font-family: 'heebo', sans-serif;
     padding: 4px;
     border-radius: 0px;
-    cursor: not-allowed;
 }
 
 .reporting_content .reporting_date_range #date_range_from {
@@ -2695,4 +2713,20 @@ select.file-uploade:after {
     color: #7f7f7f;
     font-size: 10px;
     text-align: center;
+}
+
+.reporting_content .reporting_chart_wholesale_color {
+    background: #d78504;
+}
+
+.reporting_content .reporting_chart_shop_color {
+    background: #4178bb;
+}
+
+.reporting_content .reporting_chart_service_color {
+    background: #3bb802;
+}
+
+.reporting_content .reporting_chart_lifestyle_color {
+    background: #ce0227;
 }
