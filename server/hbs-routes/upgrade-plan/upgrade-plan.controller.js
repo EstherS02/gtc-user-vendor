@@ -160,7 +160,7 @@ export function upgradeplan(req, res) {
 		planDetails: function(callback) {
 			const currentDate = moment().format('YYYY-MM-DD');
 			var includeArr = populate.populateData('Plan');
-	        var queryObj = {
+	        var queryObjs = {
 				  vendor_id: vendor_id
 				//   start_date:{
 				//     '$lte': currentDate
@@ -173,8 +173,8 @@ export function upgradeplan(req, res) {
 	              var field = "id";
 				  var order = "desc";
 				  var limit = 1;
-				   service.findAllRows('VendorPlan', includeArr, queryObj, 0, limit, field, order).
-					then(function(planDetails) {
+				   service.findAllRows('VendorPlan', includeArr, queryObjs, 0, limit, field, order)
+					.then(function(planDetails) {
 					var planDetails = planDetails;
 					return callback(null, planDetails);
 				}).catch(function(error) {

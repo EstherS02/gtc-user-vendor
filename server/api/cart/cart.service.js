@@ -96,11 +96,6 @@ export async function cartCalculation(userID, req) {
 
 			const coupon = await service.findOneRow(couponModelName, couponQueryObj, couponIncludeArray);
 			if (coupon) {
-				cart['coupon_applied'] = true;
-				cart['coupon_code'] = coupon.code;
-				cart['discount_type'] = coupon.discount_type;
-				cart['discount_value'] = coupon.discount_value;
-
 				const currentDate = moment().format('YYYY-MM-DD');
 				const expiryDate = moment(coupon.expiry_date).format('YYYY-MM-DD');
 
@@ -142,18 +137,34 @@ export async function cartCalculation(userID, req) {
 					if (appliedProducts.length > appliedCategoryProducts.length) {
 						var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 						couponApplicableProducts = await _.filter(appliedProducts, function(product) {
-							return tmpProducts.indexOf(product.id) == -1;
+							return tmpProducts.indexOf(product.id) > -1;
 						});
 					} else if (appliedCategoryProducts.length > appliedProducts.length) {
 						var tmpProducts = await _.map(appliedProducts, 'id');
 						couponApplicableProducts = await _.filter(appliedCategoryProducts, function(product) {
-							return tmpProducts.indexOf(product.id) == -1;
+							return tmpProducts.indexOf(product.id) > -1;
 						});
 					} else {
 						var tmpProducts = await _.map(appliedCategoryProducts, 'id');
 						couponApplicableProducts = await _.filter(appliedProducts, function(product) {
 							return tmpProducts.indexOf(product.id) > -1;
 						});
+					}
+
+					var totalAmount = 0;
+
+					await Promise.all(couponApplicableProducts.map(async (product) => {
+						const cartProduct = await cartResonse.rows.find((obj) => obj.product_id == product.id);
+						if (cartProduct) {
+							totalAmount = await cartProduct.Product.price * cartProduct.quantity;
+						}
+					}));
+
+					if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
+						cart['coupon_applied'] = true;
+						cart['coupon_code'] = coupon.code;
+						cart['discount_type'] = coupon.discount_type;
+						cart['discount_value'] = coupon.discount_value;
 					}
 				}
 			}
@@ -189,11 +200,11 @@ export async function cartCalculation(userID, req) {
 				cart['marketplace_products'][aCart.Product.marketplace_id].products.push(aCart);
 
 				const discountProduct = couponApplicableProducts.find((obj) => obj.id == aCart.Product.id);
-				if (discountProduct && cart['discount_amount'] == 0) {
+				if (cart['coupon_applied'] && (discountProduct && cart['discount_amount'] == 0)) {
 					if (coupon.discount_type == 1) {
 						cart['discount_amount'] = ((discountProduct.price / 100) * coupon.discount_value).toFixed(2);
-					} else if (coupon.discount_type == 2 && discountProduct.price > coupon.discount_value) {
-						cart['discount_amount'] = discountProduct.price - coupon.discount_value;
+					} else if (coupon.discount_type == 2 && parseFloat(discountProduct.price).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
+						cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 					}
 				}
 			}));
