@@ -433,7 +433,7 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
         let amt = parseFloat(marketPlaceArr[i].amount).toFixed(2);
         var mPlaceClass = mpKeyValue[marketPlaceArr[i].marketplace_name] ? mpKeyValue[marketPlaceArr[i].marketplace_name] : "wholesale";
         option = `<li><p class="top_perf_marketplace_chart_price">$ ${amt}</p>
-		<span class = "` + mPlaceClass + `" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
+		<span class = "` + mPlaceClass + ` reporting_chart_` + mPlaceClass + `_color" style = "height:` + calculatePercentage(totalAmt, marketPlaceArr[i].amount) + `" title = "` + marketPlaceArr[i].marketplace_name + `"></span></li>`
         ret += option;
     }
     return new Handlebars.SafeString(ret);
