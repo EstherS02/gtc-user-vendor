@@ -173,7 +173,7 @@ export function homePage(req, res) {
 		topSellers: function(callback) {
 			console.log("testTopSellers", "testTopSellers");
 			var result = {};
-			delete queryObj['featured_position'];
+			delete queryObj['featured_position_homepage'];
 			delete queryObj['is_featured_product'];
 			field = 'sales_count';
 			order = 'desc';
