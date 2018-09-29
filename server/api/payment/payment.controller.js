@@ -16,7 +16,7 @@ const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
-
+const numeral = require('numeral');
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -569,7 +569,9 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, user) {
+export function sendOrderMail(orderIdStore,user) {
+	var user = {};
+	user.user_contact_email = 'sumiraja28@gmail.com'
 	var orderIdStore = orderIdStore;
 	var includeArr = [{
 		model: model['OrderItem'],
@@ -582,7 +584,10 @@ export function sendOrderMail(orderIdStore, user) {
 					model: model['User'],
 					attributes: ['id', 'email'],
 				}]
-			}],
+			},{
+			model:model['ProductMedia'],
+			attributes:['url']
+		}],
 		}]
 	}, {
 		model: model['Address'],
@@ -601,6 +606,7 @@ export function sendOrderMail(orderIdStore, user) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
+			console.log(JSON.stringify(OrderList))
 			if(user.user_contact_email){
 
 				vendorMail(OrderList, user);
@@ -616,13 +622,12 @@ export function sendOrderMail(orderIdStore, user) {
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
+							body = body.replace('%User%',"Sumithra Rajan")//req.user.first_name+' ' +req.user.last_name
+							body = body.replace('%Total_Price%',numeral(OrderList.rows.total_price).format('$' + '0,0.00'))
+							body = body.replace('%currency%','$');
 							_.forOwn(OrderList.rows, function(orders) {
-								body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
-								body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
-								body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
-								body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
-								body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
-								body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
+								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
