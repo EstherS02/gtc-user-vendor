@@ -3,59 +3,59 @@
 <script type="text/javascript">
 	var type = {{{ DisplayJSON this.type }}}
 
-	$(function () {
+	$(function() {
 		$("#expected_delivery_date").datepicker();
 	});
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$("#gtc-cancel-alert").hide();
 
-		$("#orderStatusChange").submit(function (e) {
+		$("#orderStatusChange").submit(function(e) {
 			e.preventDefault();
-			let statusInput = $("#orderStatusChange :input").filter(function (index, element) {
+			let statusInput = $("#orderStatusChange :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
 
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			        type: 'PUT',
-				    data: statusInput,
+			type: 'PUT',
+				data: statusInput,
 					success: function (result) {
 						location.reload(true);
 					},
-			        error: function (error) {
-				        console.log("error", error);
-			        }
-		        });
-	        }
+			error: function (error) {
+				console.log("error", error);
+			}
+		});
+	}
         });
 
 	$("#orderStatusChange").validate({
 		rules: {
 			order_status: "required",
 			provider_name: {
-				required: function(){
-                            if($("select[name=order_status]").val() == 4){
-                            return true;
-                            } else { return false; }
-                        }
+				required: function() {
+					if ($("select[name=order_status]").val() == 4) {
+						return true;
+					} else { return false; }
+				}
 			},
 			tracking_id: {
-				required: function(){
-                            if($("select[name=order_status]").val() == 4){
-                            return true;
-                            } else { return false; }
-                        },
+				required: function() {
+					if ($("select[name=order_status]").val() == 4) {
+						return true;
+					} else { return false; }
+				},
 				minlength: 8
 			},
-			expected_delivery_date:{
-				required: function(){
-                            if($("select[name=order_status]").val() == 4){
-                            return true;
-                            } else { return false; }
-                        }
+			expected_delivery_date: {
+				required: function() {
+					if ($("select[name=order_status]").val() == 4) {
+						return true;
+					} else { return false; }
+				}
 			}
 		},
 		messages: {
@@ -64,17 +64,17 @@
 				required: "Please select the carrier name"
 			},
 			tracking_id: {
-				required:"Please enter tracking id",
-				minlength:"Please enter valid id( min length 8 char. )"
+				required: "Please enter tracking id",
+				minlength: "Please enter valid id( min length 8 char. )"
 			},
 			expected_delivery_date: {
 				required: "Please enter expected delivery date"
 			},
-			
+
 		}
 	});
 
-	$("#cancelReason").submit(function (e) {
+	$("#cancelReason").submit(function(e) {
 		e.preventDefault();
 		var item_id = $('#item_id').val();
 		var cancelInput = {};
@@ -83,14 +83,14 @@
 		cancelInput.reason_for_cancellation = $("#reason_for_cancellation").val();
 		mailInput.item_id = item_id;
 		mailInput.reason_for_cancellation = $("#reason_for_cancellation").val();
-		
+
 		if ($('#cancelReason').valid()) {
 
 			$.ajax({
 				url: '/api/payment/cancel-order/' + item_id,
 				type: 'POST',
 				data: cancelInput,
-				success: function (result) {
+				success: function(result) {
 					console.log(result);
 
 					location.reload(true);
@@ -99,7 +99,7 @@
 
 						$.ajax({
 							url: '/api/order-history/vendor-cancel/' + {{ order.id }},
-				    	type: 'POST',
+					type: 'POST',
 						data: mailInput,
 							success: function() {
 								console.log(result);
@@ -110,11 +110,11 @@
 				})
 		}
 	},
-		error: function (error) {
+		error: function(error) {
 			console.log("error", error);
 			$('#gtc-cancel-alert').removeClass('alert-success').addClass('alert-danger');
 			$('#gtc-cancel-alert .cancel-message').text('Internal server error.. Please try later.');
-			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-cancel-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cancel-alert").slideUp(500);
 			});
 			$("#cancelReason")[0].reset();
@@ -137,13 +137,13 @@
 			}
 		}
 	});
-	$('.data-value').click(function () {
+	$('.data-value').click(function() {
 		var item_id = $(this).data('id');
 		$(".modal-body #item_id").val(item_id);
 		$('#importModal').modal('show');
 	})
 
-	$('input.required').click(function () {
+	$('input.required').click(function() {
 		var checked = $('input.required:checked').length;
 		if (checked != 0) {
 			$('#submitBtn').removeAttr('disabled');
@@ -174,7 +174,7 @@
 				<div class="col-md-6">
 					<p class="logged_in_username">You're logged in as
 						<span class="span_username text-capitalize">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span>
-						<a href="javascript:;" onclick="gtcLogout()" class="span_swichaccount">SWITCH ACCOUNT</a>
+						<a href="javascript:;" onclick="gtcLogout()" class="span_swichaccount" onclick="gtcLogout()">SWITCH ACCOUNT</a>
 					</p>
 				</div>
 			</div>
@@ -193,293 +193,299 @@
 					<p>
 						<p>
 							{{#each marketPlaces as |marketPlace|}}
-							<div class="row">
-								<div class="col-md-12 common_padding1">
-									{{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}}
-									<p class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</p>
-									{{/ifCond}} {{/each}}
+								<div class="row">
+									<div class="col-md-12 common_padding1">
+										{{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}}
+												<p class="{{cartPageClass marketPlace 'CART-LEFT'}}">{{cartPageClass marketPlace 'LABEL'}} Items ({{this.length}})</p>
+											{{/ifCond}} {{/each}}
+									</div>
 								</div>
-							</div>
-							<div class="container">
-								<table class="table table-hover">
-									{{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}} {{#ifCond @key.length '>' 0}}
-									<thead>
-										<tr>
-											<th class="shop_list_title">Product</th>
-											<th class="shop_list_title">Price</th>
-											<th class="shop_list_title">Qty</th>
-											<th class="shop_list_title">Total Price</th>
+								<div class="container">
+									<table class="table table-hover">
+										{{#each ../seperatedItemsList}} {{#ifCond marketPlace.code '==' @key}} {{#ifCond @key.length '>' 0}}
+													<thead>
+														<tr>
+															<th class="shop_list_title">Product</th>
+															<th class="shop_list_title">Price</th>
+															<th class="shop_list_title">Qty</th>
+															<th class="shop_list_title">Total Price</th>
 
-										</tr>
-									</thead>
-									{{/ifCond}} {{/ifCond}} {{/each}}
-									<tbody>
-										{{#each ../orderItems as |orderItems|}}{{#ifCond marketPlace.id '===' orderItems.Product.Marketplace.id }}
-										<tr>
-											<td>
-												<div class="row">
-													<div class="col-md-3">
-														<a href="/products/{{orderItems.Product.product_slug}}/{{orderItems.Product.id}}">
-														<img src="{{orderItems.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 60px; height: 70px;">
-														</a>
-													</div>
-													<div class="col-md-9">
-														<div class="row common_padding">
-															<div class="col-md-12">
-																<p class="shop_product_title">
-																	<a href="/products/{{orderItems.Product.product_slug}}/{{orderItems.Product.id}}">{{orderItems.Product.product_name}}</a>
+														</tr>
+													</thead>
+												{{/ifCond}} {{/ifCond}} {{/each}}
+										<tbody>
+											{{#each ../orderItems as |orderItems|}}{{#ifCond marketPlace.id '===' orderItems.Product.Marketplace.id }}
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-md-3">
+																	<a href="/products/{{orderItems.Product.product_slug}}/{{orderItems.Product.id}}">
+																		<img src="{{orderItems.Product.ProductMedia.[0].url}}" onError="imgError(this)" style="width: 60px; height: 70px;">
+																	</a>
+																</div>
+																<div class="col-md-9">
+																	<div class="row common_padding">
+																		<div class="col-md-12">
+																			<p class="shop_product_title">
+																				<a href="/products/{{orderItems.Product.product_slug}}/{{orderItems.Product.id}}">{{orderItems.Product.product_name}}</a>
+																			</p>
+																		</div>
+																	</div>
+																	<div class="row common_padding">
+																		<div class="col-md-3">
+																			<p>Origin</p>
+																		</div>
+																		<div class="col-md-9">
+																			<p>{{orderItems.Product.State.name}}</p>
+																		</div>
+																	</div>
+																	<div class="row common_padding">
+																		<div class="col-md-3">
+																			<p>Category</p>
+																		</div>
+																		<div class="col-md-9">
+																			<p style="width: 80%">{{orderItems.Product.Category.name}} > {{orderItems.Product.SubCategory.name}}</p>
+																		</div>
+																	</div>
+																	<div class="row common_padding">
+																		<div class="col-md-3">
+																			<p>Seller</p>
+																		</div>
+																		<div class="col-md-9">
+																			<p>(
+																				<span class="shop_price_handling">
+																					<a href="/vendor/{{orderItems.Product.Vendor.id}}">{{orderItems.Product.Vendor.vendor_name}}</a>
+																				</span>)</p>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</td>
+														{{#if order_item_status}}
+															<td colspan="3">
+																<div class="row">
+																	<div class="col-md-5">
+																		<p class="shop_subtotal">
+																			<b>Status:</b>
+																		</p>
+																	</div>
+																	{{#ifCond orderItems.order_item_status '===' ../../orderItemStatus.ORDER_CANCELLED_AND_REFUND_INITIATED }}
+																		<div class="col-md-7">
+																			<p class="shop_subtotal">
+																				Order has been cancelled and refund initiated.
+																			</p>
+																		</div>
+														{{else ifCond orderItems.order_item_status '===' ../../orderItemStatus.REFUND_FAILED}}
+															<div class="col-md-7">
+																<p class="shop_subtotal">
+																	Refund Failed. Please contact vendor for more info.
 																</p>
 															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Origin</p>
-															</div>
-															<div class="col-md-9">
-																<p>{{orderItems.Product.State.name}}</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Category</p>
-															</div>
-															<div class="col-md-9">
-																<p style="width: 80%">{{orderItems.Product.Category.name}} > {{orderItems.Product.SubCategory.name}}</p>
-															</div>
-														</div>
-														<div class="row common_padding">
-															<div class="col-md-3">
-																<p>Seller</p>
-															</div>
-															<div class="col-md-9">
-																<p>(
-																	<span class="shop_price_handling">
-																		<a href="/vendor/{{orderItems.Product.Vendor.id}}">{{orderItems.Product.Vendor.vendor_name}}</a>
-																	</span>)</p>
-															</div>
-														</div>
-													</div>
-												</div>
-											</td>
-											{{#if order_item_status}}
-											<td colspan="3">
-												<div class="row">
-													<div class="col-md-5">
-														<p class="shop_subtotal">
-															<b>Status:</b>
-														</p>
-													</div>
-													{{#ifCond orderItems.order_item_status '===' ../../orderItemStatus.ORDER_CANCELLED_AND_REFUND_INITIATED }}
-													<div class="col-md-7">
-														<p class="shop_subtotal">
-															Order has been cancelled and refund initiated.
-														</p>
-													</div>
-													{{else ifCond orderItems.order_item_status '===' ../../orderItemStatus.REFUND_FAILED}}
-													<div class="col-md-7">
-														<p class="shop_subtotal">
-															Refund Failed. Please contact vendor for more info.
-														</p>
-													</div>
-													{{/ifCond}}
-													<hr class="common_margin" />
-												</div>
-												<div class="row">
-													<div class="col-md-5">
-														<p class="shop_subtotal">
-															<b>Cancelled On:</b>
-														</p>
-													</div>
-													<div class="col-md-7">
-														<p class="shop_subtotal">
-															{{formatTime orderItems.cancelled_on "MMM D, Y"}}
-														</p>
-													</div>
-													<hr class="common_margin" />
-												</div>
-												<div class="row">
-													<div class="col-md-5">
-														<p class="shop_subtotal">
-															<b>Reason for cancellation:</b>
-														</p>
-													</div>
-													<div class="col-md-7">
-														<p class="shop_subtotal">
-															{{orderItems.reason_for_cancellation}}
-														</p>
-													</div>
-												</div>
+																	{{/ifCond}}
+																	<hr class="common_margin" />
+																</div>
+																<div class="row">
+																	<div class="col-md-5">
+																		<p class="shop_subtotal">
+																			<b>Cancelled On:</b>
+																		</p>
+																	</div>
+																	<div class="col-md-7">
+																		<p class="shop_subtotal">
+																			{{formatTime orderItems.cancelled_on "MMM D, Y"}}
+																		</p>
+																	</div>
+																	<hr class="common_margin" />
+																</div>
+																<div class="row">
+																	<div class="col-md-5">
+																		<p class="shop_subtotal">
+																			<b>Reason for cancellation:</b>
+																		</p>
+																	</div>
+																	<div class="col-md-7">
+																		<p class="shop_subtotal">
+																			{{orderItems.reason_for_cancellation}}
+																		</p>
+																	</div>
+																</div>
 
-											</td>
-											{{else}}
-											<td>
-												<div class="row">
-													<div class="col-md-12">
-														<p class="shop_price_doller">${{orderItems.Product.price}}</p>
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="row">
-													<div class="col-md-6">
-														<input id="quantity-cart-{{orderItems.id}}" type="text" min="1" value="{{orderItems.quantity}}" class="shop_qty_num all-quantity-cart-items"
-														 style="width: 50px;" readonly>
-													</div>
-												</div>
-											</td>
-											<td>
-												<div class="row">
-													<div class="col-md-12">
-														<p class="shop_price_doller">{{quantityPrice orderItems.quantity orderItems.Product.price '$'}}</p>
-														{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
-                                                <a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
-													<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal" data-target="#importModal" data-whatever="@mdo">CANCEL</p>
-												</a>
-                                                 {{/ifCond}}
-                                            </div>
+															</td>
+														{{else}}
+															<td>
+																<div class="row">
+																	<div class="col-md-12">
+																		<p class="shop_price_doller">${{orderItems.Product.price}}</p>
+																	</div>
+																</div>
+															</td>
+															<td>
+																<div class="row">
+																	<div class="col-md-6">
+																		<input id="quantity-cart-{{orderItems.id}}" type="text" min="1" value="{{orderItems.quantity}}" class="shop_qty_num all-quantity-cart-items"
+																		 style="width: 50px;" readonly>
+																	</div>
+																</div>
+															</td>
+															<td>
+																<div class="row">
+																	<div class="col-md-12">
+																		<p class="shop_price_doller">{{quantityPrice orderItems.quantity orderItems.Product.price '$'}}</p>
+																		{{#ifCond ../../order.order_status '<' ../../orderStatus.PROCESSINGORDER }}
+																			<a data-id="{{orderItems.id}}" href="javascript:;" class="data-value">
+																				<p data-id="{{orderItems.id}}" class="shop_total_remove text-center" data-toggle="modal"
+																				 data-target="#importModal" data-whatever="@mdo">CANCEL</p>
+																			</a>
+																		{{/ifCond}}
+																	</div>
+																</div>
+															</td>
+														{{/if}}
+													</tr>
+												{{/ifCond}} {{/each}}
+										</tbody>
+									</table>
+								</div>
+							{{/each}} {{#ifCond this.type '==' 'sales-history'}}
+								<form id="orderStatusChange">
+									<div class="row">
+
+										<div class="col-md-3">
+											<p>
+												<b>Change Order Status:
+													<span class="text-danger">*</span>
+												</b>
+											</p>
 										</div>
-									</td>	
-                                {{/if}}
-                                </tr>
-								{{/ifCond}} {{/each}}
-							</tbody>
-						</table>
-					</div>
-					{{/each}} {{#ifCond this.type '==' 'sales-history'}}
-					<form id="orderStatusChange">
-						<div class="row">
-					
-                            <div class="col-md-3">
-								<p>
-									<b>Change Order Status:
-										<span class="text-danger">*</span>
-									</b>
-								</p>
-							</div>
-							<div class="col-md-5">
-								<div class="form-group">
-									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status" id="inputGroupSelect02">
-											<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
-											{{#each orderStatus}}
-											{{#ifCond this ">=" ../order.order_status}}
-												<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
-												{{/ifCond}}
-											{{/each}}
-										</select>
-									</div>
-								</div>
-							</div>
-                        </div>
-						<div class="row">
-					
-                            <div class="col-md-3">
-								<p>
-									<b>Expected Delivery Date:
-										<span class="text-danger"></span>
-									</b>
-								</p>
-							</div>
-							<div class="col-md-5">
-								<div class="form-group">
-									<div class="input-group">
-										<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date" value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
-										  {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
-									</div>
-								</div>
-							</div>
-                        </div>
-                        <div class="row">
-							<div class="col-md-3">
-								<p>
-									<b>Select Carrier:
-									
-									</b>
-								</p>
-							</div>
-							<div class="col-md-5">
-								<div class="form-group">
-									<div class="input-group">
-										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name" id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
-										   {{#if order.Shipping.provider_name}}
-										   <option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
-										   {{else}}
-										   <option disabled selected>Select Carrier</option>
-										   {{/if}}
-										   	{{#each carriersCode}}
-												<option value="{{this}}">{{@key}}</option>
-											{{/each}}
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-								<div class="col-md-3">
-									<p>
-										<b>Enter Tracking Id:</b>
-									</p>
-								</div>
-								<div class="col-md-5">
-									<div class="form-group">
-										<div class="input-group">
-											<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}}disabled="true"{{/ifCond}}>
+										<div class="col-md-5">
+											<div class="form-group">
+												<div class="input-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="order_status"
+													 id="inputGroupSelect02">
+														<option disabled selected>{{objectKey orderStatus order.order_status}}</option>
+														{{#each orderStatus}}
+															{{#ifCond this ">=" ../order.order_status}}
+																<option value="{{this}}">{{objectKey ../orderStatus this}}</option>
+															{{/ifCond}}
+														{{/each}}
+													</select>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col-md-2">
-								<button type="submit" class="btn btn-primary btn-sm">Change</button>
-							</div>
-						</div>
-						
-					</form>
-					{{/ifCond}}
-					<a href="/order-track/{{order.id}}">Click here to track your order</a>
+									<div class="row">
+
+										<div class="col-md-3">
+											<p>
+												<b>Expected Delivery Date:
+													<span class="text-danger"></span>
+												</b>
+											</p>
+										</div>
+										<div class="col-md-5">
+											<div class="form-group">
+												<div class="input-group">
+													<input type="text" id="expected_delivery_date" placeholder="MM/DD/YYYY" name="expected_delivery_date"
+													 value="{{order.expected_delivery_date}}" class="form-control-customized form-control-sm"
+													 {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+											<p>
+												<b>Select Carrier:
+
+												</b>
+											</p>
+										</div>
+										<div class="col-md-5">
+											<div class="form-group">
+												<div class="input-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="provider_name"
+													 id="inputGroupSelect02" {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true"
+													 {{/ifCond}}>
+														{{#if order.Shipping.provider_name}}
+															<option value="{{order.Shipping.provider_name}}">{{ objectKey carriersCode order.Shipping.provider_name}}</option>
+														{{else}}
+															<option disabled selected>Select Carrier</option>
+														{{/if}}
+														{{#each carriersCode}}
+															<option value="{{this}}">{{@key}}</option>
+														{{/each}}
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+											<p>
+												<b>Enter Tracking Id:</b>
+											</p>
+										</div>
+										<div class="col-md-5">
+											<div class="form-group">
+												<div class="input-group">
+													<input type="text" name="tracking_id" value="{{order.Shipping.tracking_id}}" class="form-control-customized form-control-sm"
+													 {{#ifCond order.order_status ">" orderStatus.DISPATCHEDORDER}} disabled="true" {{/ifCond}}>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<button type="submit" class="btn btn-primary btn-sm">Change</button>
+										</div>
+									</div>
+
+								</form>
+							{{/ifCond}}
+							<a href="/order-track/{{order.id}}">Click here to track your order</a>
 				</div>
 				<div class="col-md-3 your_order_bg">
 					<div class="container">
 
 						{{#each marketPlaces as |marketplace|}} {{#each ../totalPriceList as |totalPrice|}} {{#ifCond marketplace.code '==' @key}}
-						<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_shipping">Shipping Ground</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">Subtotal</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" />
-						<div class="row">
-							<div class="col-md-8">
-								<p class="shop_subtotal">
-									<b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">
-									<b>{{currency totalPrice.total '$'}}</b>
-								</p>
-							</div>
-						</div>
-						{{/ifCond}} {{/each}} {{/each}}
+									<h6 class="{{cartPageClass marketplace 'CART-RIGHT'}}">{{cartPageClass marketplace 'LABEL'}} Summary</h6>
+									<hr class="common_margin" />
+									<div class="row">
+										<div class="col-md-8">
+											<p class="shop_subtotal">Subtotal</p>
+										</div>
+										<div class="col-md-4">
+											<p class="shop_subtotal float-right">{{currency totalPrice.price '$'}}</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-8">
+											<p class="shop_shipping">Shipping Ground</p>
+										</div>
+										<div class="col-md-4">
+											<p class="shop_shipping float-right">{{currency totalPrice.shipping '$'}}</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-8">
+											<p class="shop_subtotal">Subtotal</p>
+										</div>
+										<div class="col-md-4">
+											<p class="shop_subtotal float-right">{{currency totalPrice.total '$'}}</p>
+										</div>
+									</div>
+									<hr class="common_margin" />
+									<div class="row">
+										<div class="col-md-8">
+											<p class="shop_subtotal">
+												<b>{{cartPageClass marketplace 'LABEL'}} TOTAL</b>
+											</p>
+										</div>
+										<div class="col-md-4">
+											<p class="shop_subtotal float-right">
+												<b>{{currency totalPrice.total '$'}}</b>
+											</p>
+										</div>
+									</div>
+								{{/ifCond}} {{/each}} {{/each}}
 
 						<hr class="common_margin" />
 						<div class="row">
@@ -529,74 +535,78 @@
 								</p>
 							</div>
 							{{#if order.shipped_on}}
-							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
-							</div>
+								<div class="col-md-7">
+									<p class="shop_subtotal float-right">{{formatTime order.shipped_on "D MMM YYYY"}}</p>
+								</div>
 							{{else}}
-							   {{#ifCond order.order_status "<" orderStatus.DISPATCHEDORDER}}
-							<div class="col-md-7">
-								<p class="shop_subtotal float-right">Your Order Not yet shipped</p>
-							</div>
-							  {{/ifCond}}
+								{{#ifCond order.order_status "<" orderStatus.DISPATCHEDORDER}}
+									<div class="col-md-7">
+										<p class="shop_subtotal float-right">Your Order Not yet shipped</p>
+									</div>
+								{{/ifCond}}
 							{{/if}}
 						</div>
 						<hr class="common_margin" />
-                         {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
-						<div class="row">
-							<div class="col-md-5">
-								<p class="shop_subtotal">
-									<b>Expected Delivery Date:</b>
-								</p>
+						{{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
+							<div class="row">
+								<div class="col-md-5">
+									<p class="shop_subtotal">
+										<b>Expected Delivery Date:</b>
+									</p>
+								</div>
+								<div class="col-md-7">
+									<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
+								</div>
 							</div>
-							<div class="col-md-7">
-								<p class="shop_subtotal float-right">{{formatTime order.expected_delivery_date "D MMM YYYY"}}</p>
+							<hr class="common_margin" />
+						{{/ifCond}}{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
+							<div class="row">
+								<div class="col-md-6">
+									<p class="shop_subtotal">
+										<b>Delivered On:</b>
+									</p>
+								</div>
+								<div class="col-md-6">
+									<p class="shop_subtotal float-right">{{formatTime order.delivered_on "D MMM YYYY"}}</p>
+								</div>
 							</div>
-						</div>
-                        <hr class="common_margin" />{{/ifCond}}{{#ifCond order.order_status '==' orderStatus.DELIVEREDORDER}}
-						<div class="row">
-							<div class="col-md-6">
-								<p class="shop_subtotal">
-									<b>Delivered On:</b>
-								</p>
+							<hr class="common_margin" />
+						{{/ifCond}} {{#ifCond order.order_status '==' orderStatus.CANCELLEDORDER}}
+							<div class="row">
+								<div class="col-md-6">
+									<p class="shop_subtotal">
+										<b>Cancelled On:</b>
+									</p>
+								</div>
+								<div class="col-md-6">
+									<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
+								</div>
 							</div>
-							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{formatTime order.delivered_on "D MMM YYYY"}}</p>
+							<hr class="common_margin" />
+						{{/ifCond}} {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
+							<div class="row">
+								<div class="col-md-6">
+									<p class="shop_subtotal">
+										<b>Provider Name:</b>
+									</p>
+								</div>
+								<div class="col-md-6">
+									<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
+								</div>
 							</div>
-						</div>
-						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.CANCELLEDORDER}}
-						<div class="row">
-							<div class="col-md-6">
-								<p class="shop_subtotal">
-									<b>Cancelled On:</b>
-								</p>
+							<hr class="common_margin" />
+							<div class="row">
+								<div class="col-md-8">
+									<p class="shop_subtotal">
+										<b>Tracking URL:</b>
+									</p>
+								</div>
+								<div class="col-md-4">
+									<p class="shop_subtotal float-right">{{order.Shipping.tracking_id}}</p>
+								</div>
 							</div>
-							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{formatTime order.cancelled_on "D MMM YYYY"}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" /> {{/ifCond}} {{#ifCond order.order_status '==' orderStatus.DISPATCHEDORDER}}
-						<div class="row">
-							<div class="col-md-6">
-								<p class="shop_subtotal">
-									<b>Provider Name:</b>
-								</p>
-							</div>
-							<div class="col-md-6">
-								<p class="shop_subtotal float-right">{{ objectKey carriersCode order.Shipping.provider_name}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" />	
-						<div class="row">	
-							<div class="col-md-8">
-								<p class="shop_subtotal">
-									<b>Tracking URL:</b>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<p class="shop_subtotal float-right">{{order.Shipping.tracking_id}}</p>
-							</div>
-						</div>
-						<hr class="common_margin" /> {{/ifCond}}
+							<hr class="common_margin" />
+						{{/ifCond}}
 					</div>
 				</div>
 			</div>
@@ -612,35 +622,36 @@
 				<h5 class="modal-title" id="exampleModalLongTitle">Reason for Cancellation</h5>
 			</div>
 			<div class="alert" id="gtc-cancel-alert">
-					<button type="button" class="close" data-dismiss="alert">
-						<span aria-hidden="true">&times;</span>
-					</button>
-						<span class="cancel-message"></span>
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<span class="cancel-message"></span>
 			</div>
 			<form id="cancelReason" class="form">
 				<div class="modal-body">
 					<div class="row">
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control">Please enter the reason for order cancellation:<span class="text-danger">*</span></label>
-								<textarea type="text" class="form-control-customized form-control-sm"  name="reason_for_cancellation" id="reason_for_cancellation" required></textarea>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Please enter the reason for order cancellation:<span class="text-danger">*</span></label>
+								<textarea type="text" class="form-control-customized form-control-sm" name="reason_for_cancellation" id="reason_for_cancellation"
+								 required></textarea>
 							</div>
-	                    </div>
+						</div>
 						<input type="hidden" id="item_id" name="item_id_name" value="">
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-								<input class="required" type="checkbox" onclick ="document.getElementById('submitBtn').disabled=false;" name="checkbox"/>
-								 <label class="label-control">Are you sure you want to cancel this item from you order?</label>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input class="required" type="checkbox" onclick="document.getElementById('submitBtn').disabled=false;" name="checkbox" />
+								<label class="label-control">Are you sure you want to cancel this item from you order?</label>
 							</div>
-	                    </div>
-	                </div>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
 
 					<button class="ladda-button btn btn-small btn-primary" id="submitBtn" disabled="disabled" type="submit" data-style="expand-left">
-					<span class="ladda-label">Submit</span>
-					<span class="ladda-spinner"></span>
+						<span class="ladda-label">Submit</span>
+						<span class="ladda-spinner"></span>
 					</button>
 				</div>
 			</form>
