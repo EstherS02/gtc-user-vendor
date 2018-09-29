@@ -608,7 +608,6 @@ export function sendOrderMail(orderIdStore,req) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
-			console.log(JSON.stringify(OrderList))
 			if(user.user_contact_email){
 
 				vendorMail(OrderList, user);
@@ -810,7 +809,7 @@ function sendUpgrademail(plan_id, user) {
 					var body = response.body;
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
-					body = body.replace('%cost%', upgradeplanobj.cost);
+					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
 					sendEmail({
 						to: email,
 						subject: subject,
