@@ -19,6 +19,9 @@
 		});
 		$(function () {
 			$("#gtc-form-alert").hide();
+			$(".checkbox").change(function(e) {
+   				$('#checkbox').prop('checked', false);
+			});
 			$("#searchOrderhistory").submit(function (e) {
 				e.preventDefault();
 				let formInput = $("#searchOrderhistory :input").filter(function (index, element) {
@@ -158,6 +161,7 @@
 	</script>
 
 	{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+	{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 	<div class="wrapper-content bg-gray">
 		<div class="gtc-container">
 			<div class="row">
@@ -235,8 +239,8 @@
 												<div class="form-group mb-2">
 													<div class="input-group gtc-rounded">
 														
-														<input type="text"  name="keyword" {{#if queryURI.keyword}}
-														value={{queryURI.keyword}}{{/if}} class="form-control form-control-sm" placeholder="Search Order#" />
+														<input type="text"  name="keyword"
+														value="{{queryURI.keyword}}" class="form-control form-control-sm" placeholder="Search Order#" />
 														<button type="submit" class="btn btn-sm btn-gtc">
 															<i class="fa fa-search"></i>
 														</button>
@@ -250,15 +254,15 @@
 									<div class="col-sm-12">
 										<div class="cart-top-header">
 											<div class="alignleft cart-top-left">
-												<span class="m-r-sm text-muted">{{count}} items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+												<span class="m-r-sm text-muted">{{count}}  items total from {{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}} begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
 											</div>
 											<div class="alignright cart-top-right">
 												<span class="m-r-sm text-muted">
 													Entries per page : 
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}"> 10</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}"> 25</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}"> 100</a>
-													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}"> All </a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'start_date'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}} > 10</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'start_date'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}} > 25</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'start_date'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}} > 100</a>
+													<a href="/order-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'start_date'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}} > All </a>
 												</span>
 											</div>
 											<div style="clear: both;"></div>
@@ -270,7 +274,7 @@
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -284,12 +288,20 @@
 												{{#if Order}}
 												{{#each Order}}
 												<tr>
-													<td ><input type="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
+													<td ><input type="checkbox" class="checkbox" id="check{{this.id}}" value="{{this.id}}"></td>
 													<td><a href="/order-history/{{this.id}}">{{this.id}}</a></td>
 													<td style="display:none">{{this.purchase_order_id}}</td>
 									  				<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 									  				<td>Stripe</td>
-									  				<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+													  {{#ifCond this.order_status '==' 6}}
+									  				<td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													  {{else ifCond this.order_status '==' 7}}
+													  <td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													    {{else ifCond this.order_status '==' 8}}
+													  <td style="color:goldenrod">{{objectKey ../orderStatus  this.order_status}}</td>
+													    {{else ifCond this.order_status '!=' ''}}
+													  <td class="text_green_color">{{objectKey ../orderStatus  this.order_status}}</td>
+													  {{/ifCond}}
 									  				<td><a href="/order-track/{{this.id}}">Track Order</a></td>
 									  				<td class="text_blue_color" value="{{this.id}}" id="refund" ><a href="/refund/{{this.id}}">
 													  <i class="fas fa-credit-card"></i> Request Refund</a></td>
@@ -306,12 +318,7 @@
 									  			</tr>
 									  			{{else}}
 									  			<tr>
-									  				<td></td>
-									  				<td></td>
-									  				<td>
-									  					No Data Found
-									  				</td>
-									  				<td colspan="6"></td>
+									  				<tr><td colspan="7" style="text-align:center;">No orders Found</td></tr>
 									  			</tr>
 									  			{{/if}}
 									  		</tbody>

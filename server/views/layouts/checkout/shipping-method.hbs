@@ -1,23 +1,23 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script type="text/javascript">
-$(document).ready(function() {
-	$("#continue").click(function(e) {
-		e.preventDefault();
-		window.location.href = "/order-checkout/payment-method" + window.location.search;
+	$(document).ready(function() {
+		$("#continue").click(function(e) {
+			e.preventDefault();
+			window.location.href = "/order-checkout/payment-method" + window.location.search;
+		});
+		$("#shippingMethodLink").click(function(e) {
+			e.preventDefault();
+			window.location.href = "/order-checkout/shipping-method" + window.location.search;
+		});
+		$("#paymentMethodLink").click(function(e) {
+			e.preventDefault();
+			window.location.href = "/order-checkout/payment-method" + window.location.search;
+		});
 	});
-	$("#shippingMethodLink").click(function(e) {
-		e.preventDefault();
-		window.location.href = "/order-checkout/shipping-method" + window.location.search;
-	});
-	$("#paymentMethodLink").click(function(e) {
-		e.preventDefault();
-		window.location.href = "/order-checkout/payment-method" + window.location.search;
-	});
-});
 
-function CartPage() {
-	window.location.href = "/cart";
-}
+	function CartPage() {
+		window.location.href = "/cart";
+	}
 </script>
 <div class="wrapper-content">
 	<div class="container-sm">
@@ -40,12 +40,12 @@ function CartPage() {
 			</div>
 			<div class="alignright">
 				{{#if LoggedInUser.id}}
-				<span class="text-sm">You're logged in as </span>
-				<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
-				<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
+					<span class="text-sm">You're logged in as </span>
+					<a class="text-sm" href="javascript:;">{{LoggedInUser.first_name}}</a>
+					<button type="button" class="btn btn-sm btn-primary">SWITCH ACCOUNT</button>
 				{{else}}
-				<span class="text-sm">
-					<a href="/login">Login</a> to see seller information</span>
+					<span class="text-sm">
+						<a href="/login">LOGIN</a> to see seller information</span>
 				{{/if}}
 			</div>
 			<div style="clear: both;"></div>
@@ -59,7 +59,9 @@ function CartPage() {
 					<div class="m-cart-body-1">
 						<div class="row">
 							<div class="col-md-3 col-12">
-								<label class="label-control text-sm text-black"><strong>Billing Address</strong></label>
+								<label class="label-control text-sm text-black">
+									<strong>Billing Address</strong>
+								</label>
 							</div>
 							<div class="col-md-8 col-12">
 								<div class="row">
@@ -67,16 +69,16 @@ function CartPage() {
 										<div class="form-group m-b-none">
 											<div class="address-content">
 												{{#if selected_billing_address}}
-												<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
-												<p>{{selected_billing_address.company_name}}</p>
-												<p>{{selected_billing_address.address_line1}}</p>
-												<p>{{selected_billing_address.address_line2}}</p>
-												<p>{{selected_billing_address.city}}</p>
-												<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
-												<p>{{selected_billing_address.postal_code}}</p>
-												<p>{{selected_billing_address.phone}}</p>
+													<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
+													<p>{{selected_billing_address.company_name}}</p>
+													<p>{{selected_billing_address.address_line1}}</p>
+													<p>{{selected_billing_address.address_line2}}</p>
+													<p>{{selected_billing_address.city}}</p>
+													<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
+													<p>{{selected_billing_address.postal_code}}</p>
+													<p>{{selected_billing_address.phone}}</p>
 												{{else}}
-												-
+													-
 												{{/if}}
 											</div>
 										</div>
@@ -89,7 +91,9 @@ function CartPage() {
 					<div class="m-cart-body-1">
 						<div class="row">
 							<div class="col-md-3 col-12">
-								<label class="label-control text-sm text-black"><strong>Shipping Address</strong></label>
+								<label class="label-control text-sm text-black">
+									<strong>Shipping Address</strong>
+								</label>
 							</div>
 							<div class="col-md-8 col-12">
 								<div class="row">
@@ -97,16 +101,16 @@ function CartPage() {
 										<div class="form-group m-b-none">
 											<div class="address-content">
 												{{#if selected_billing_address}}
-												<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
-												<p>{{selected_billing_address.company_name}}</p>
-												<p>{{selected_billing_address.address_line1}}</p>
-												<p>{{selected_billing_address.address_line2}}</p>
-												<p>{{selected_billing_address.city}}</p>
-												<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
-												<p>{{selected_billing_address.postal_code}}</p>
-												<p>{{selected_billing_address.phone}}</p>
+													<h3>{{selected_billing_address.first_name}} {{selected_billing_address.last_name}}</h3>
+													<p>{{selected_billing_address.company_name}}</p>
+													<p>{{selected_billing_address.address_line1}}</p>
+													<p>{{selected_billing_address.address_line2}}</p>
+													<p>{{selected_billing_address.city}}</p>
+													<p>{{selected_billing_address.State.name}}, {{selected_billing_address.Country.name}}</p>
+													<p>{{selected_billing_address.postal_code}}</p>
+													<p>{{selected_billing_address.phone}}</p>
 												{{else}}
-												-
+													-
 												{{/if}}
 											</div>
 										</div>
@@ -119,7 +123,9 @@ function CartPage() {
 					<div class="m-cart-body-1">
 						<div class="row">
 							<div class="col-md-3 col-12">
-								<label class="label-control text-sm text-black"><strong>Shipping Method</strong></label>
+								<label class="label-control text-sm text-black">
+									<strong>Shipping Method</strong>
+								</label>
 							</div>
 							<div class="col-md-8 col-12">
 								<div class="row">
@@ -127,7 +133,8 @@ function CartPage() {
 										<div class="form-group">
 											<div class="address-content">
 												<h3>STANDARD SHIPPING</h3>
-											</h3>
+												</h3>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -135,31 +142,90 @@ function CartPage() {
 						</div>
 					</div>
 				</div>
-				</div>
 				<div class="col-sm-3half no-padding">
 					<div class="header-right header-lg gtc-p-l-r">
 						<h2 class="header-lg-text">YOUR ORDER</h2>
 					</div>
 					<div class="cart-summary">
-						{{#ifCond isCartEmpty '!=' true}}
-						{{#each marketPlaces as |marketplace|}}
-						{{#each ../totalPriceList as |totalPrice|}}
-						{{#ifCond marketplace.code '==' @key}}
-						<h2 class="text-marketplace-{{marketplace.id}}">{{cartPageClass marketplace 'LABEL'}} Summary</h2>
-						<div class="cart-hr-line"></div>
-						<div class="summary-m-total">
-							<p class="summary-info">Subtotal<span>{{currency totalPrice.price '$'}}</span></p>
-							<p class="summary-info">Shipping Ground<span>{{currency totalPrice.shipping '$'}}</span></p>
-						</div>
-						<div class="cart-hr-line"></div>
-						<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">{{cartPageClass marketplace 'LABEL'}} TOTAL<span>{{currency totalPrice.total '$'}}</span></p>
-						{{/ifCond}}
-						{{/each}}
-						{{/each}}
-						<div class="grand-total">
-							<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL<span>{{currency totalPriceList.grandTotal '$'}}</span></p>
-						</div>
-						{{/ifCond}}
+						{{#if cart.total_items}}
+							{{#each cart.marketplace_summary}}
+								{{#ifCond @root.marketPlace.WHOLESALE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Wholesale Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">WHOLESALE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.PUBLIC '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Shop Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SHOP TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.SERVICE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Service Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SERVICE TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+								{{#ifCond @root.marketPlace.LIFESTYLE '==' @key}}
+									<h2 class="text-marketplace-{{@key}}">Subscription Summary</h2>
+									<div class="cart-hr-line"></div>
+									<div class="summary-m-total">
+										<p class="summary-info">Subtotal
+											<span>{{currency this.sub_total '$'}}</span>
+										</p>
+										<p class="summary-info">Shipping Ground
+											<span>{{currency this.shipping_ground '$'}}</span>
+										</p>
+									</div>
+									<div class="cart-hr-line"></div>
+									<p class="summary-info text-uppercase text-black font-weight-bold m-t-xs m-b">SUBSCRIPTION TOTAL
+										<span>{{currency this.total '$'}}</span>
+									</p>
+								{{/ifCond}}
+							{{/each}}
+							<div class="grand-total">
+								<p class="summary-info text-uppercase text-black font-weight-bold">GRAND TOTAL
+									<span>{{currency cart.grant_total_with_discounted_amount '$'}}</span>
+								</p>
+							</div>
+							{{#if cart.coupon_applied}}
+								<div class="m-t-sm text-center">
+									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
+									<p><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></p>
+								</div>
+							{{/if}}
+						{{/if}}
 					</div>
 				</div>
 			</div>
@@ -167,10 +233,12 @@ function CartPage() {
 				<div class="col-sm-9half no-padding bg-white">
 					<div class="m-cart-body-bottom bg-white">
 						<button type="button" onclick="CartPage()" class="ladda-button btn btn-md btn-success" data-style="expand-left">
-							<span class="ladda-label">RETURN TO CART</span><span class="ladda-spinner"></span>
+							<span class="ladda-label">RETURN TO CART</span>
+							<span class="ladda-spinner"></span>
 						</button>
 						<button type="button" id="continue" class="ladda-button btn btn-md btn-primary alignright" data-style="expand-left">
-							<span class="ladda-label">CONTINUE TO PAYMENT METHOD</span><span class="ladda-spinner"></span>
+							<span class="ladda-label">CONTINUE TO PAYMENT METHOD</span>
+							<span class="ladda-spinner"></span>
 						</button>
 					</div>
 				</div>

@@ -41,7 +41,6 @@ export function notificationSetting(req, res) {
 					service.createRow(modelName, bodyParam).then(function(response) {
 						return;
 					});
-					// console.log(i, "not in db")
 				}
 			});
 		});
@@ -52,11 +51,27 @@ export function notificationSetting(req, res) {
 }
 export function readNotification(req,res){
 	var id= req.params.id;
-	console.log(id);
 	var modelName = "Notification";
 	var bodyParams= {is_read:0};
 	service.updateRow(modelName,bodyParams,id).then(function(response){
 		return res.status(200).send("success");
 	})
 
+}
+export function NotificationCount(req,res){
+	var modelName = "Notification";
+	var queryObj = {
+		user_id : req.user.id,
+		is_read : 1
+	};
+	service.countRows(modelName,queryObj).then(function (NotificationCount) {
+		NotificationCount = {
+			NotificationCount: NotificationCount
+		}
+		res.status(200).send(NotificationCount);
+		return;
+	}).catch(function (error) {
+		res.status(500).send("Internal server error");
+		return;
+	});
 }

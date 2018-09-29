@@ -21,6 +21,10 @@ var agenda = require('./agenda');
 var couponExpiry = require('./agenda/couponExpiry');
 var sendEmailNew = require('./agenda/send-email-new');
 var vendorPayouts = require('./agenda/vendor-payouts').vendorPayouts;
+var planRenewal = require('./agenda/plan-auto-renewal').planRenewal;
+var bulkUserPlanRenewal = require('./agenda/bulk-user-plan-auto-renewal').bulkUserPlanRenewal;
+var starterPlanExpire = require('./agenda/starter-plan-expire').starterPlanExpire;
+var featureProductExpire = require('./agenda/feature-product-expire').featureProductExpire;
 var mailListener = require('./components/mail-listener');
 var mailService = require('./api/mail/reply-mail.service');
 var aliExpressScrape = require('./agenda/aliexpress-scrape');
@@ -32,11 +36,20 @@ agenda.define(config.jobs.aliExpressScrape, aliExpressScrape);
 agenda.define(config.jobs.ebayInventory, ebayInventory);
 agenda.define(config.jobs.couponExpiry, couponExpiry);
 agenda.define(config.jobs.vendorPayouts, vendorPayouts);
+agenda.define(config.jobs.planRenewal, planRenewal);
+agenda.define(config.jobs.bulkUserPlanRenewal, bulkUserPlanRenewal);
+agenda.define(config.jobs.starterPlanExpire, starterPlanExpire);
+agenda.define(config.jobs.featureProductExpire, featureProductExpire);
 agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
+	console.log('agenda onReady')
 	agenda.every('0 0 * * *', 'couponExpiry');
 	agenda.every('8 hours', 'vendorPayouts');
+	agenda.every('12 hours', 'planRenewal');
+	agenda.every('12 hours', 'bulkUserPlanRenewal');
+	agenda.every('12 hours', 'starterPlanExpire');
+	agenda.every('12 hours', 'featureProductExpire');
 	agenda.start();
 });
 

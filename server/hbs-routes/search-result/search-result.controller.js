@@ -3,6 +3,7 @@
 const async = require('async');
 const sequelize = require('sequelize');
 const moment = require('moment');
+var _ = require('lodash');
 
 const service = require('../../api/service');
 const searchResultService = require('../../api/service/search-result.service');
@@ -10,6 +11,7 @@ const model = require('../../sqldb/model-connect');
 const status = require('../../config/status');
 const marketplace = require('../../config/marketplace');
 const marketplace_type = require('../../config/marketplace_type');
+const cartService = require('../../api/cart/cart.service');
 const config = require('../../config/environment');
 const durationConfig = require('../../config/duration');
 const productService = require('../../api/product/product.service');
@@ -28,6 +30,8 @@ export function index(req, res) {
 	var queryPaginationObj = {};
 	var productQueryParams = {};
 	var productCountQueryParams = {};
+	var productCountCategory = {};
+	var vendorDetailsQueryParams = {};
 
 	var categoryModel = "Category";
 	var marketPlaceModel = "Marketplace";
@@ -83,35 +87,41 @@ export function index(req, res) {
 
 	productQueryParams['status'] = status['ACTIVE'];
 	productCountQueryParams['status'] = status['ACTIVE'];
+	productCountCategory['status'] = status['ACTIVE'];
 
 	if (selectedMarketPlaceID) {
 		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
 		productQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
 		productCountQueryParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+		productCountCategory['marketplace_id'] = parseInt(selectedMarketPlaceID);
 	}
 
 	if (selectedMarketPlaceTypeID) {
 		queryURI['marketplace_type'] = parseInt(selectedMarketPlaceTypeID);
 		productQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
 		productCountQueryParams['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
+		productCountCategory['marketplace_type_id'] = parseInt(selectedMarketPlaceTypeID);
 	}
 
 	if (req.query.is_featured_product) {
 		isFeaturedProduct = true;
 		queryURI['is_featured_product'] = parseInt(req.query.is_featured_product);
 		productQueryParams['is_featured_product'] = parseInt(req.query.is_featured_product);
+		productCountCategory['is_featured_product'] = parseInt(req.query.is_featured_product);
 	}
 
 	if (req.query.category) {
 		queryURI['category'] = parseInt(req.query.category);
 		productQueryParams['category_id'] = parseInt(req.query.category);
 		productCountQueryParams['product_category_id'] = parseInt(req.query.category);
+		productCountCategory['product_category_id'] = parseInt(req.query.category);
 	}
 
 	if (req.query.sub_category) {
 		queryURI['sub_category'] = parseInt(req.query.sub_category);
 		productQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
 		productCountQueryParams['sub_category_id'] = parseInt(req.query.sub_category);
+		productCountCategory['sub_category_id'] = parseInt(req.query.sub_category);
 	}
 
 	if (req.query.location) {
@@ -122,13 +132,14 @@ export function index(req, res) {
 
 	if (req.query.keyword) {
 		queryPaginationObj.keyword = req.query.keyword;
-		queryURI['keyword'] = req.query.keyword;
+		queryURI['searchKeyword'] = req.query.keyword;
 		productQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
 		productCountQueryParams['product_name'] = {
 			like: '%' + req.query.keyword + '%'
 		};
+		productCountCategory['keyword'] = req.query.keyword;
 	}
 
 	if (req.query.origin) {
@@ -159,16 +170,22 @@ export function index(req, res) {
 		queryURI['vendor_id'] = req.query.vendor_id;
 		productQueryParams['vendor_id'] = req.query.vendor_id;
 		productCountQueryParams['vendor_id'] = req.query.vendor_id;
+		productCountCategory['vendor_id'] = req.query.vendor_id;
+		vendorDetailsQueryParams['vendor_id'] = req.query.vendor_id;
 	}
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			const categoryOffset = 0;
@@ -226,19 +243,18 @@ export function index(req, res) {
 				});
 		},
 		topProducts: function(callback) {
-            productQueryParams['is_featured_product'] = 1;
+			productQueryParams['is_featured_product'] = 1;
 			var topLimit = 3;
-            var order = [
-                sequelize.fn('RAND'),
-            ];
-            productService.RandomProducts(productModel, productQueryParams, topLimit, order)
-                .then(function(response) {
-                	console.log("----------------------response",response)
-                    return callback(null, response);
-                }).catch(function(error) {
-                    console.log('Error::', error);
-                    return callback(null);
-                });
+			var order = [
+				sequelize.fn('RAND'),
+			];
+			productService.RandomProducts(productModel, productQueryParams, topLimit, order)
+				.then(function(response) {
+					return callback(null, response);
+				}).catch(function(error) {
+					console.log('Error::', error);
+					return callback(null);
+				});
 		},
 		productsCountBasedOnMarketplaceTypes: function(callback) {
 			searchResultService.marketplacetypeWithProductCount(productCountQueryParams, isFeaturedProduct)
@@ -266,12 +282,41 @@ export function index(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
+		},
+		productCount: function(callback) {
+			var resultObj = {};
+			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 		}
 	}, function(error, results) {
 		queryPaginationObj['maxSize'] = 5;
 		if (!error && results) {
 			res.render('search', {
 				title: "Global Trade Connect",
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				queryPaginationObj: queryPaginationObj,
@@ -288,7 +333,8 @@ export function index(req, res) {
 				marketPlaceTypes: results.productsCountBasedOnMarketplaceTypes,
 				marketplaceURl: currentMarketPlace,
 				durations: durationConfig,
-				layout_type: layout
+				layout_type: layout,
+				productCount: results.productCount
 			});
 		} else {
 			res.render('search', error);

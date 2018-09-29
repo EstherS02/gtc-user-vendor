@@ -4,6 +4,8 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+const marketplace = require('../../config/marketplace');
+const cartService = require('../../api/cart/cart.service');
 const addressCode = require('../../config/address');
 const service = require('../../api/service');
 const async = require('async');
@@ -11,7 +13,25 @@ const populate = require('../../utilities/populate');
 
 export function userVerify(req, res) {
 	var bottomCategory = {};
+	var LoggedInUser = {};
+
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
+		LoggedInUser = req.gtcGlobalUserObj;
+	}
+
 	async.series({
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
+					return callback(null);
+				}
+			},
 			categories: function(callback) {
 				var includeArr = [];
 				const categoryOffset = 0;
@@ -41,6 +61,9 @@ export function userVerify(req, res) {
 					title: "Global Trade Connect",
 					categories: results.categories,
 					bottomCategory: bottomCategory,
+					LoggedInUser: LoggedInUser,
+					cart: results.cartInfo,
+					marketPlace: marketplace
 				});
 			} else {
 				res.render('users/user-join', err);

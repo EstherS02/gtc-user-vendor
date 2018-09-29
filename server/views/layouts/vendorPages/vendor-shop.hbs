@@ -1,29 +1,59 @@
 <script type="text/javascript">
 
-    var queryURI = {{{DisplayJSON queryURI}}}
+	var queryURI = {{{ DisplayJSON queryURI }}}
+	var test = {{{ DisplayJSON categoryWithProductCount }}}
+	console.log(test)
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		}
+		else {
+			return uri + separator + key + "=" + value;
+		}
+	}
 
-    function updateQueryStringParameter(uri, key, value) {
-      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-      if (uri.match(re)) {
-        return uri.replace(re, '$1' + key + "=" + value + '$2');
-    }
-    else {
-        return uri + separator + key + "=" + value;
-    }
-}
+	function sortSearch(e) {
+		var url = window.location.href;
+		var order;
+		if (e.value == 'newest') {
+			order = 'desc';
+		} else if (e.value == 'oldest') {
+			order = 'asc';
+		}
+		var uri = updateQueryStringParameter(url, 'field', e.value);
+		uri = updateQueryStringParameter(uri, 'order', order)
+		window.location.href = uri;
+	}
 
-$(document).on('change', "#sortListing", function() {
-  var uri = window.location.href;
-  var optionValue = $("#sortListing option:selected").val();
-  var key='order';
-  var value='desc';
-  if(optionValue== 'Oldest'){
-    value='asc';
-}
-var queries = updateQueryStringParameter(uri,key,value);
-window.location.href = queries;
-});
+
+	$(document).on('change', "#sortListing", function() {
+		var uri = window.location.href;
+		var optionValue = $("#sortListing option:selected").val();
+		var key = 'order';
+		var value = 'desc';
+		if (optionValue == 'Oldest') {
+			value = 'asc';
+		}
+		var queries = updateQueryStringParameter(uri, key, value);
+		window.location.href = queries;
+	});
+
+	function sortSearch(e) {
+		var url = window.location.href;
+		var order;
+		var selectedText=e.options[e.selectedIndex].text;
+		console.log(selectedText);
+		if (selectedText == 'Newest') {
+			order = 'desc';
+		} else {
+			order = 'asc';
+		}
+		var uri = updateQueryStringParameter(url, 'field', 'created_on');
+		uri = updateQueryStringParameter(uri, 'order', order)
+		window.location.href = uri;
+	}
 </script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -37,12 +67,54 @@ window.location.href = queries;
                 {{> vendor/vendor-left VendorDetail = VendorDetail}}
             </div>
             <div class="v-col-10 col-12 m-t-sm">
-                <div class="header-lg bg-shop">
-                <h2 class="header-lg-text">PRODUCT SHOP <p class="see-all">{{#if publicShop.count}} Showing
-                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b> of
-                        <b>{{publicShop.count}}</b>{{/if}}
-                    </p></h2>
-                </div>
+				{{!-- <div class="header-lg bg-shop">
+					<h2 class="header-lg-text">PRODUCT SHOP
+						<p class="see-all">
+							{{#if publicShop.count}} Showing
+								<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b>
+								of
+								<b>{{publicShop.count}}</b>
+								
+							{{/if}}
+						</p>
+					</h2>
+					<div class="select-container">
+						<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
+						 id="sortValue">
+							<option disabled="true" selected="true">Sort by</option>
+							<option value="product_name">Sort by Newest</option>
+						</select>
+					</div>
+				</div>
+ --}}
+			{{!-- <div class="v-col-8 v-col-10 col-12 m-t-sm"> --}}
+				<div class="row m-t-sm bg-shop">
+					<div class="col-md-6">
+						<h3 class="header-lg-text">PRODUCT SHOP</h3>
+					</div>
+					<div class="col-md-6 header-lg-text">
+						<span style="padding-left:310px">{{#if publicShop.count}} Showing
+							<b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicShop.count}}</b>
+							of
+							<b>{{publicShop.count}}</b>
+				
+						{{/if}}
+						</span>	
+						<form class="form-inline alignright">
+							<div class="form-group">
+								<div class="select-container">
+									<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
+									 id="sortValue">
+										<option disabled="true" selected="true">Sort by</option>
+										<option value="created_on" {{#ifCond queryURI.order "==" 'desc'}} selected="true" {{/ifCond}}>Newest</option>
+										<option value="created_on" {{#ifCond queryURI.order "==" 'asc'}} selected="true" {{/ifCond}}>Oldest</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				{{!-- </div> --}}
                 <div class="row no-margins">
                     <div class="col-md-9 no-padding">
                         <div class="ibox">

@@ -8,11 +8,14 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
+const shopService=require('../../../api/vendor/vendor-service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+var _ = require('lodash');
 
 export function vendorLifestyle(req, res) {
 	var LoggedInUser = {};
@@ -29,11 +32,27 @@ export function vendorLifestyle(req, res) {
 	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
+	var start_date;
+	var end_date;
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 	queryURI['marketplace_id'] = marketplace['LIFESTYLE'];
 	queryObj['vendor_id'] = vendor_id;
 	queryObj['status'] = status["ACTIVE"];
+	end_date = moment().add(0, 'd').toDate();
+	if (req.query.order == "desc") {
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}else{
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}
+
+
 	// var vevndorIncludeArr = [{
 	// 	model:model['Country']
 
@@ -50,7 +69,7 @@ export function vendorLifestyle(req, res) {
 	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	queryURI['order'] = order;
 	delete req.query.order;
@@ -64,14 +83,19 @@ export function vendorLifestyle(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
+
 		publicLifestyle: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
@@ -88,14 +112,14 @@ export function vendorLifestyle(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					// vendor_verified_status: status['ACTIVE']
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 
 			}, {
 				model: model['VendorFollower'],
@@ -104,7 +128,7 @@ export function vendorLifestyle(req, res) {
 					status: 1
 				},
 				required: false
-			},{
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
@@ -161,6 +185,33 @@ export function vendorLifestyle(req, res) {
 					return callback(null);
 				});
 		},
+		categoryWithProductCount: function(callback) {
+			var resultObj = {};
+			shopService.vendorProductCountForFilter(queryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		// console.log(results);
 		queryPaginationObj['maxSize'] = 5;
@@ -177,16 +228,14 @@ export function vendorLifestyle(req, res) {
 				categoriesWithCount: results.categoriesWithCount,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'lifestyle',
 				Plan: Plan,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-lifestyle', err);
 		}
 	});
-
-
-
 }

@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(128),
             field: 'email',
             allowNull: false
+		},
+		user_contact_email: {
+            type: DataTypes.STRING(128),
+            field: 'user_contact_email',
+            allowNull: true
         },
         hashed_pwd: {
             type: DataTypes.TEXT,
@@ -150,6 +155,7 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const User = model.User;
+    const UserPlan = model.UserPlan;
     const Address = model.Address;
     const Admin = model.Admin;
     const Cart = model.Cart;
@@ -314,6 +320,11 @@ module.exports.initRelations = () => {
     });
 
     User.hasMany(Notification, {
+        foreignKey: 'user_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+    User.hasMany(UserPlan, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

@@ -9,10 +9,13 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
+const cartService = require('../../../api/cart/cart.service');
+const shopService=require('../../../api/vendor/vendor-service')
 const Plan = require('../../../config/gtc-plan');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+var _ = require('lodash');
 const populate = require('../../../utilities/populate');
 
 
@@ -29,6 +32,9 @@ export function vendorShop(req, res) {
 	var categoryModel = "Category";
 	var bottomCategory = {};
 	var offset, limit, field, order, page;
+	var start_date;
+	var end_date;
+
 	var queryPaginationObj = {};
 	var queryObj = {};
 	var queryURI = {};
@@ -36,6 +42,21 @@ export function vendorShop(req, res) {
 	queryObj['marketplace_id'] = marketplace['PUBLIC'];
 	queryURI['marketplace_id'] = marketplace['PUBLIC'];
 	queryObj['vendor_id'] = vendor_id;
+	queryObj['status'] = status['ACTIVE'];
+
+	end_date = moment().add(0, 'd').toDate();
+	if (req.query.order == "desc") {
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	} 
+	else{
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -46,11 +67,12 @@ export function vendorShop(req, res) {
 	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	queryURI['order'] = order;
 	delete req.query.order;
 
+	
 	page = req.query.page ? parseInt(req.query.page) : 1;
 	queryPaginationObj['page'] = page;
 	queryURI['page'] = page;
@@ -60,13 +82,17 @@ export function vendorShop(req, res) {
 	queryPaginationObj['offset'] = offset;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		publicShop: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -84,13 +110,13 @@ export function vendorShop(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 			}, {
 				model: model['VendorFollower'],
 				where: {
@@ -156,9 +182,35 @@ export function vendorShop(req, res) {
 					return callback(null);
 				});
 		},
+		categoryWithProductCount: function(callback) {
+			var resultObj = {};
+			shopService.vendorProductCountForFilter(queryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		queryPaginationObj['maxSize'] = 5;
-		console.log(results.VendorDetail)
 		if (!err) {
 			res.render('vendorPages/vendor-shop', {
 				title: "Global Trade Connect",
@@ -173,15 +225,13 @@ export function vendorShop(req, res) {
 				bottomCategory: bottomCategory,
 				categoriesWithCount: results.categoriesWithCount,
 				LoggedInUser: LoggedInUser,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				selectedPage: 'shop',
 				Plan: Plan,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-shop', err);
 		}
 	});
-
-
-
 }

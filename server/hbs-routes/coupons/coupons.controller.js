@@ -7,11 +7,14 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
+// const statusCode = require('../../config/status');
 const discountType = require('../../config/discount');
 const service = require('../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const vendorPlan = require('../../config/gtc-plan');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 
 export function coupons(req, res) {
 	var LoggedInUser = {};
@@ -19,8 +22,8 @@ export function coupons(req, res) {
 	if (req.user)
 		LoggedInUser = req.user;
 
-	var queryPaginationObj={};
-    var queryURI = {};
+	var queryPaginationObj = {};
+	var queryURI = {};
 
 	let user_id = LoggedInUser.id;
 
@@ -50,7 +53,7 @@ export function coupons(req, res) {
 		};
 		queryURI['name'] = req.query.name;
 	}
-	//pagination 
+
 	var page;
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -70,10 +73,9 @@ export function coupons(req, res) {
 	delete req.query.page;
 
 	offset = (page - 1) * limit;
-    queryPaginationObj['offset'] = offset;
+	queryPaginationObj['offset'] = offset;
 
 	var maxSize;
-	// End pagination
 	queryObj['vendor_id'] = req.user.Vendor.id;
 
 	console.log('queryObj', queryObj);
@@ -81,13 +83,17 @@ export function coupons(req, res) {
 		status: status['ACTIVE']
 	};
 	async.series({
-			cartCounts: function(callback) {
-				service.cartHeader(LoggedInUser).then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
+				}
 			},
 			Coupons: function(callback) {
 				service.findRows(couponModel, queryObj, offset, limit, field, order)
@@ -108,7 +114,6 @@ export function coupons(req, res) {
 				const categoryOrder = "asc";
 				const categoryQueryObj = {};
 
-
 				categoryQueryObj['status'] = status["ACTIVE"];
 
 				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
@@ -125,30 +130,28 @@ export function coupons(req, res) {
 
 		},
 		function(err, results) {
-			console.log("-----------------=============",queryURI);
 			if (!err) {
 				maxSize = results.Coupons.count / limit;
-            if (results.Coupons.count % limit)
-                maxSize++;
-            queryPaginationObj['maxSize'] = maxSize;
+				if (results.Coupons.count % limit)
+					maxSize++;
+				queryPaginationObj['maxSize'] = maxSize;
 				res.render('vendorNav/coupons/view-coupons', {
 					title: "Global Trade Connect",
 					Coupons: results.Coupons.rows,
 					count: results.Coupons.count,
-					statusCode : status,
+					statusCode: status,
 					discountType: discountType,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader:results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					selectedPage: 'coupons',
-					// pagination
 					maxSize: maxSize,
-					queryURI:queryURI,
+					queryURI: queryURI,
 					pageSize: limit,
 					collectionSize: results.count,
-                    queryPaginationObj: queryPaginationObj,
-					// End pagination
+					queryPaginationObj: queryPaginationObj,
 					vendorPlan: vendorPlan
 				});
 			} else {
@@ -180,13 +183,17 @@ export function addCoupon(req, res) {
 	productQueryObj['vendor_id'] = req.user.Vendor.id;
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		products: function(callback) {
 			service.findRows(productModel, productQueryObj, offset, limit, field, order)
@@ -197,7 +204,6 @@ export function addCoupon(req, res) {
 					return callback(null);
 				});
 		},
-
 		categories: function(callback) {
 			var categoryModel = "Category";
 			var includeArr = [];
@@ -206,7 +212,6 @@ export function addCoupon(req, res) {
 			const categoryField = "id";
 			const categoryOrder = "asc";
 			const categoryQueryObj = {};
-
 
 			categoryQueryObj['status'] = status["ACTIVE"];
 
@@ -230,7 +235,9 @@ export function addCoupon(req, res) {
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
+				statusCode: status,
+				marketPlace: marketplace,
 				vendorPlan: vendorPlan,
 				selectedPage: 'coupons',
 			});
@@ -257,20 +264,23 @@ export function editCoupons(req, res) {
 
 	queryObj['id'] = req.query.id;
 	queryObj['vendor_id'] = req.user.Vendor.id;
-	// queryObj['status'] = status["ACTIVE"];
 	var coupon_id = 0;
 
 	field = "id";
 	order = "asc";
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		coupon: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
@@ -361,7 +371,6 @@ export function editCoupons(req, res) {
 					} else {
 						return callback(null, couponExcludeProductsID);
 					}
-					// return callback(null, couponExcludeProducts.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -385,7 +394,6 @@ export function editCoupons(req, res) {
 					} else {
 						return callback(null, couponCategoriesID);
 					}
-					// return callback(null, couponCategories.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -409,8 +417,6 @@ export function editCoupons(req, res) {
 					} else {
 						return callback(null, couponExcludeCategoriesID);
 					}
-
-					// return callback(null, couponExcludeCategories.rows);
 				}).catch(function(error) {
 					console.log('Error:::', error);
 					return callback(null);
@@ -418,7 +424,6 @@ export function editCoupons(req, res) {
 		}
 	}, function(error, results) {
 		if (!error) {
-			// console.log('results', results);
 			res.render('vendorNav/coupons/edit-coupon', {
 				title: "Global Trade Connect",
 				coupon: results.coupon,
@@ -430,13 +435,13 @@ export function editCoupons(req, res) {
 				existingCouponCategories: results.couponCategories,
 				existingCouponExcludeCategories: results.couponExcludeCategories,
 				category: results.category,
-				statusCode : status,
-				cartheader:results.cartCounts,
+				statusCode: status,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				LoggedInUser: LoggedInUser,
 				vendorPlan: vendorPlan,
 				selectedPage: 'coupons',
 			});
-
 		} else {
 			res.render('vendorNav/coupons/edit-coupon', error);
 		}

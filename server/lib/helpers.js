@@ -12,7 +12,7 @@ Handlebars.registerHelper('starCount', function(rating, color) {
     var colorless = "",
         tag1, tag2;
 
-    tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #CDBE29;"></i>';
+    tag1 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #ffa700;"></i>';
     tag2 = "<i class=" + '"fa fa-star"' + " aria-hidden=" + '"true"' + " style=" + '"color: #b9bab1;"></i>';
 
     for (var i = 0; i <= rating - 1; i++) {
@@ -109,7 +109,6 @@ Handlebars.registerHelper('SUMFloat', function(v1, v2, options) {
 
 Handlebars.registerHelper('quantityPrice', function(quantity, price, symbol, options) {
     var amt = parseInt(quantity) * parseFloat(price);
-    console.log("=--------------------------", numeral(amt).format(symbol + '0,0.00'));
     return numeral(amt).format(symbol + '0,0.00');
 });
 
@@ -572,8 +571,11 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
     return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
 Handlebars.registerHelper('dotdotdot', function(str) {
-    if (str.length > 100)
-        return str.substring(0, 100) + '...';
+    if (str.length > 100) {
+        var newStr = str.split(". ");
+        return newStr[0] + '...';
+    }
+
     return str;
 });
 Handlebars.registerHelper('decimalFixed', function(distance) {
@@ -588,3 +590,4 @@ Handlebars.registerHelper('sizeInKB', function(value) {
     var valueInKB = value / 1000;
     return valueInKB.toFixed(2);
 });
+// s = s.replace(/([A-Z])/g, ' $1').trim()

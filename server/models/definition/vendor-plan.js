@@ -45,6 +45,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+		},
+		auto_renewal_mail: {
+            type: DataTypes.INTEGER,
+            field: 'auto_renewal_mail',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

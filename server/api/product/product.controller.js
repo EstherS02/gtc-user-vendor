@@ -19,6 +19,9 @@ const planPermissions = require('../../config/plan-marketplace-permission.js');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 const mws = require('mws-advanced');
+const _ = require('lodash');
+const stripe = require('../../payment/stripe.payment');
+const paymentMethod = require('../../config/payment-method');
 
 export function productView(req, res) {
 	var productID = req.params.id;
@@ -615,59 +618,6 @@ export function featureOne(req, res) {
 		});
 }
 
-export function addProduct(req, res) {
-
-	if (req.query.marketplace == 'Private Wholesale Marketplace')
-		req.query.marketplace_id = marketplace.WHOLESALE;
-
-	if (req.query.marketplace == 'Public Marketplace')
-		req.query.marketplace_id = marketplace.PUBLIC;
-
-	if (req.query.marketplace == 'Services Marketplace')
-		req.query.marketplace_id = marketplace.SERVICE;
-
-	if (req.query.marketplace == 'Lifestyle Marketplace')
-		req.query.marketplace_id = marketplace.LIFESTYLE;
-
-	delete req.query.marketplace;
-
-	if (req.user.role === roles['VENDOR']) {
-		req.query.vendor_id = req.user.Vendor.id;
-	}
-	req.query.status = status['ACTIVE'];
-	req.query.publish_date = new Date();
-	req.query.product_slug = string_to_slug(req.query.product_name);
-	req.query.created_on = new Date();
-	req.query.created_by = req.user.Vendor.vendor_name;
-
-	service.createRow('Product', req.query)
-		.then(function(row) {
-			var product_id = row.id;
-
-			if (req.body.data) {
-				var arrayEle = JSON.parse(req.body.data);
-				updateProductMedia(arrayEle, product_id);
-			}
-
-			if (req.body.attributeArr) {
-				var attributeEle = JSON.parse(req.body.attributeArr);
-				updateProductAttribute(attributeEle, product_id);
-			}
-
-			if (req.body.discountArr) {
-				var discountArr = JSON.parse(req.body.discountArr);
-				updateDiscount(discountArr, product_id);
-			}
-
-
-			return res.status(200).send(row);
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			res.status(500).send("Internal server error");
-			return;
-		})
-}
-
 export function importProduct(req, res) {
 	var bodyParamsArray = [];
 	for (var i = 0; i < req.body.length; i++) {
@@ -696,94 +646,103 @@ export function importProduct(req, res) {
 		});
 }
 
-function updateProductMedia(arrayEle, product_id) {
-	arrayEle.forEach(function(element) {
-		element.product_id = product_id;
-		//element.created_by =
-		element.created_on = new Date();
+function string_to_slug(str) {
+	str = str.replace(/^\s+|\s+$/g, ''); // trim
+	str = str.toLowerCase();
 
-		service.createRow('ProductMedia', element)
-			.then(function(result) {
-				return;
-			})
-	});
-}
-
-function updateProductAttribute(attributeEle, product_id) {
-
-	var queryObj = {
-		product_id: product_id
+	// remove accents, swap ñ for n, etc
+	var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+	var to = "aaaaeeeeiiiioooouuuunc------";
+	for (var i = 0, l = from.length; i < l; i++) {
+		str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
 	}
 
-	model['ProductAttribute'].destroy({
-		where: queryObj
-	}).then(function(row) {
-		async.mapSeries(attributeEle, function(attributeElement, callback) {
+	str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+		.replace(/\s+/g, '-') // collapse whitespace and replace by -
+		.replace(/-+/g, '-'); // collapse dashes
 
-			attributeElement.product_id = product_id;
-			attributeElement.attribute_id = attributeElement.name;
-			attributeElement.status = 1;
-			delete attributeElement.name;
-	
-			service.createRow('ProductAttribute', attributeElement)
-				.then(function(result) {
-					return callback(null, result);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(null);
-				});
-		}, function(err, results) {
-			if(!err){
-				return Promise.resolve(results);
-			}
-			else{
-				return Promise.reject(err);
-			}			
-		});
-	}).catch(function(error) {
-		console.log("Error::", error);
-		return Promise.reject(error);
-	})
+	return str;
 }
 
-function updateDiscount(discountArr, product_id) {
+function resMessage(message, messageDetails) {
+	return {
+		message: message,
+		messageDetails: messageDetails
+	};
+}
 
-	var queryObj = {
-		product_id: product_id
+export function addProduct(req, res) {
+
+	var product_id;
+
+	if (req.query.marketplace == 'Private Wholesale Marketplace')
+		req.query.marketplace_id = marketplace.WHOLESALE;
+
+	if (req.query.marketplace == 'Public Marketplace')
+		req.query.marketplace_id = marketplace.PUBLIC;
+
+	if (req.query.marketplace == 'Services Marketplace')
+		req.query.marketplace_id = marketplace.SERVICE;
+
+	if (req.query.marketplace == 'Lifestyle Marketplace')
+		req.query.marketplace_id = marketplace.LIFESTYLE;
+
+	delete req.query.marketplace;
+
+	if (req.user.role === roles['VENDOR']) {
+		req.query.vendor_id = req.user.Vendor.id;
 	}
 
-	model['Discount'].destroy({
-		where: queryObj
-	}).then(function(row) {
+	if (req.query.status) {
+		var productStatus = req.query.status;
+		delete req.query.status;
+		req.query.status = status[productStatus]
+	}
 
-		async.mapSeries(discountArr, function(discountElement, callback) {
+	req.query.publish_date = new Date();
+	req.query.product_slug = string_to_slug(req.query.product_name);
+	req.query.created_on = new Date();
+	req.query.created_by = req.user.Vendor.vendor_name;
 
-			discountElement.product_id = product_id;
-			discountElement.created_on = new Date();
-			
-			service.createRow('Discount', discountElement)
-				.then(function(result) {
-					return callback(null, result);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(null);
-				});
-		}, function(err, results) {
-			if(!err){
-				return Promise.resolve(results);
+	service.createRow('Product', req.query)
+		.then(function(row) {
+			product_id = row.id;
+
+			if (req.body.imageArr) {
+				var imagePromise = []; 
+				var imageArr = JSON.parse(req.body.imageArr);
+				imagePromise.push(updateProductMedia(imageArr, product_id));
+				return Promise.all(imagePromise);
 			}
-			else{
-				console.log("Error::",err);
-				return Promise.reject(err);
-			}			
-		});
+		}).then(function(updatedImage){
 
-	}).catch(function(error) {
-		console.log("Error::", error);
-		return Promise.reject(error);
-	})
+			if (req.body.attributeArr) {
+				var attributePromise = []; 
+				var attributeArr = JSON.parse(req.body.attributeArr);
+				attributePromise.push(updateProductAttribute(attributeArr, product_id));
+				return Promise.all(attributePromise);
+			}
+		}).then(function(updatedAttribute){
+
+			if (req.body.discountArr) {
+				var discountPromise = [];
+				var discountArr = JSON.parse(req.body.discountArr);
+				discountPromise.push(updateDiscount(discountArr, product_id));
+				return Promise.all(discountPromise);
+			}
+		}).then(function(updatedDiscount){
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "Product Created Successfully"
+			});
+
+		}).catch(function(error) {
+			console.log('Error:::', error);
+			return res.status(500).send({
+				"message": "Error",
+				"messageDetails": "Internal server error"
+			});
+		})
 }
 
 export function editProduct(req, res) {
@@ -807,50 +766,236 @@ export function editProduct(req, res) {
 			id: product_id
 		}
 	}).then(function(row) {
-		if (row) {
-			if (req.body.attributeArr) {
-				var attributeEle = JSON.parse(req.body.attributeArr);
-				updateProductAttribute(attributeEle, product_id);
+			if (req.body.imageArr) {
+				var imagePromise = []; 
+				var imageArr = JSON.parse(req.body.imageArr);
+				imagePromise.push(updateProductMedia(imageArr, product_id));
+				return Promise.all(imagePromise);
 			}
-			if (req.body.discountArr) {
-				var discountArr = JSON.parse(req.body.discountArr);
-				updateDiscount(discountArr, product_id);
-			}
+		
+	}).then(function(){
+		if (req.body.attributeArr) {
 
-			return res.status(200).send(row);
-
-		} else {
-			res.status(500).send("Internal server error");
+			var attributePromise = []; 
+			var attributeArr = JSON.parse(req.body.attributeArr);
+			attributePromise.push(updateProductAttribute(attributeArr, product_id));
+			return Promise.all(attributePromise);
 		}
+	}).then(function(updatedAttribute){
+		if (req.body.discountArr) {
+
+			var discountPromise = [];
+			var discountArr = JSON.parse(req.body.discountArr);
+			discountPromise.push(updateDiscount(discountArr, product_id));
+			return Promise.all(discountPromise);
+		}
+
+	}).then(function(updatedDiscount){
+		return res.status(200).send({
+			"message": "Success",
+			"messageDetails": "Product Updated Successfully"
+		});
 	}).catch(function(error) {
 		console.log('Error:::', error);
-		res.status(500).send("Internal server error");
-		return;
+		return res.status(500).send({
+			"message": "Error",
+			"messageDetails": "Internal server error"
+		});
 	})
 }
 
-function string_to_slug(str) {
-	str = str.replace(/^\s+|\s+$/g, ''); // trim
-	str = str.toLowerCase();
+function updateProductMedia(imageArr, product_id) {
 
-	// remove accents, swap ñ for n, etc
-	var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-	var to = "aaaaeeeeiiiioooouuuunc------";
-	for (var i = 0, l = from.length; i < l; i++) {
-		str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+	var queryObj = {
+		product_id: product_id
 	}
 
-	str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-		.replace(/\s+/g, '-') // collapse whitespace and replace by -
-		.replace(/-+/g, '-'); // collapse dashes
+	model['ProductMedia'].destroy({
+		where: queryObj
+	}).then(function(delectedProductMedia) {
 
-	return str;
+		var mediaCreatePromise = [];
+		
+		_.forOwn(imageArr, function(imageElement) {
+
+			imageElement.product_id = product_id;
+			imageElement.created_on = new Date();
+
+			mediaCreatePromise.push(createProductMedia(imageElement));
+		})
+		return Promise.all(mediaCreatePromise);
+	
+	}).then(function(response){
+		return Promise.resolve(response);
+	
+	}).catch(function(error){
+		console.log("Error::",error);
+		return Promise.reject(error);
+	})
 }
 
+function updateProductAttribute(attributeArr, product_id){
 
-function resMessage(message, messageDetails) {
-	return {
-		message: message,
-		messageDetails: messageDetails
-	};
+	var queryObj = {
+		product_id: product_id
+	}
+
+	model['ProductAttribute'].destroy({
+		where: queryObj
+	}).then(function(delectedAttributerow) {
+		  var attributeCreatePromise = [];
+		
+		_.forOwn(attributeArr, function(attributeElement) {
+			attributeElement.product_id = product_id;
+			attributeElement.attribute_id = attributeElement.name;
+			attributeElement.status = 1;
+			delete attributeElement.name;
+
+			attributeCreatePromise.push(createProductAttribute(attributeElement));
+		});
+
+		return Promise.all(attributeCreatePromise);
+
+	}).then(function(response){
+		return Promise.resolve(response);
+
+	}).catch(function(error){
+		console.log("Error::",error);
+		return Promise.reject(error);
+	})
+}
+
+function updateDiscount(discountArr, product_id){
+	var queryObj = {
+		product_id: product_id
+	}
+
+	model['Discount'].destroy({
+		where: queryObj
+	}).then(function(delectedDiscountrow) {
+		var discountCreatePromise = [];
+
+		_.forOwn(discountArr, function(discountElement) {
+
+			discountElement.product_id = product_id;
+			discountElement.created_on = new Date();
+
+			discountCreatePromise.push(createDiscount(discountElement));
+		});
+		return Promise.all(discountCreatePromise);
+
+	}).then(function(response){
+		return Promise.resolve(response);
+
+	}).catch(function(error){
+		console.log("Error::",error);
+		return Promise.reject(error);
+	})
+}
+
+function createProductMedia(imageElement) {
+	return service.createRow('ProductMedia', imageElement);
+}
+
+function createProductAttribute(attributeElement) {
+	return service.createRow('ProductAttribute', attributeElement);
+}
+
+function createDiscount(discountElement, product_id) {
+	return service.createRow('Discount', discountElement);
+}
+
+export function featureProductWithPayment(req,res){
+
+	if(req.query.product_id){
+		
+		var featureQueryObj = {
+			product_id: req.query.product_id
+		}
+
+		service.findOneRow('FeaturedProduct', featureQueryObj)
+			.then(function(row){
+				if(!row){
+
+					if (req.query.feature_status) {
+						var featureStatus = req.query.feature_status;
+						delete req.query.feature_status;
+						req.query.feature_status = status[featureStatus]
+					}
+				
+					var featuredProductBodyParam = req.query;
+					
+					featuredProductBodyParam['status'] = status['ACTIVE'];
+					featuredProductBodyParam['created_by'] = req.user.Vendor.vendor_name;
+					featuredProductBodyParam['created_on'] = new Date();
+				
+					service.findIdRow('PaymentSetting',req.body.payment_details,[])
+						.then(function(cardDetails){
+				
+						   return stripe.chargeCustomerCard(cardDetails.stripe_customer_id, cardDetails.stripe_card_id, 
+															req.body.feature_amount, 'Payment for Featuring Product', 'usd');
+						}).then(function(paymentDetails){
+							
+							if(paymentDetails.paid) {
+				
+								var paymentObj={
+									paid_date:  new Date(paymentDetails.created),
+									paid_amount: paymentDetails.amount / 100.0,
+									payment_method: paymentMethod['STRIPE'],
+									status: status['ACTIVE'],
+									payment_response: JSON.stringify(paymentDetails),
+									created_by: req.user.Vendor.vendor_name,
+									created_on: new Date()
+								}
+								service.createRow('Payment', paymentObj)
+									.then(function(paymentRow){
+				
+										service.createRow('FeaturedProduct',featuredProductBodyParam)
+											.then(function(featuredRow){
+												return res.status(200).send({
+													"message": "SUCCESS",
+													"messageDetails": "Product Featured Successfully"
+												});
+											}).catch(function(error){
+												return res.status(400).send({
+													"message": "ERROR",
+													"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+													"errorDescription": error
+												});
+											})							
+									}).catch(function(error){
+										return res.status(400).send({
+											"message": "ERROR",
+											"messageDetails": "Featuring Product Unsuccessfull. Please try after sometimes",
+											"errorDescription": error
+										});
+									})
+							}else{
+								return res.status(500).send({
+									"message": "ERROR",
+									"messageDetails": "Featuring Product UnSuccessfull with Stripe Payment Error. Please try after sometimes"
+								});
+							}
+						}).catch(function(error){
+							return res.status(500).send({
+								"message": "ERROR",
+								"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+								"errorDescription": error
+							});
+						})		
+				}else{
+					return res.status(200).send({
+						"message": "MESSAGE",
+						"messageDetails": "You have already featured this product."
+					});
+				}
+			}).catch(function(error){
+				return res.status(500).send({
+					"message": "ERROR",
+					"messageDetails": "Featuring Product UnSuccessfull with Error.Please try after sometimes",
+					"errorDescription": error
+				});
+			})
+
+	}	
 }

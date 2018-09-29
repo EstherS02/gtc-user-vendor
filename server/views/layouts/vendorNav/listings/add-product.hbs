@@ -1,632 +1,50 @@
-<style>
-	.imageThumb {
-		height: 150px;
-		width: 150px;
-		border: 2px solid;
-		padding: 1px;
-		cursor: pointer;
-	}
-
-	.pip {
-		display: inline-block;
-		margin: 10px 10px 0 0;
-		position: relative;
-	}
-
-	.fas {
-		cursor: pointer;
-	}
-
-	.productRemoveIcon {
-		position: absolute;
-		bottom: 0px;
-		right: 0px;
-		padding: 2px 2px 2px 2px;
-		background-color: #dbdadc;
-		color: #383434;
-		font-size: 15px;
-		cursor: pointer;
-	}
-</style>
 <script>
-	var ProductMedia = {{{ DisplayJSON editProduct.ProductMedia }}}
+
 	var discountLength = {{{ DisplayJSON editProduct.Discounts.length}}}
 
-
-	var allFiles = [], UploadedImageArr= [], attributeArr = [], discountArr = [], count;
-
-	if(discountLength){
-		var discountLength = {{editProduct.Discounts.length}}
-		count = discountLength;
-	}
-	else{
-		count =0;
-	}
-
-	function addProduct(obj, productinput) {
-
-		if ($('#productForm').valid()) {
-
-			if(attributeArr.length > 0)
-			obj.attributeArr = JSON.stringify(attributeArr);
-
-			if(discountArr.length > 0 )
-			obj.discountArr = JSON.stringify(discountArr);
-
-			$.ajax({
-				type: 'POST',
-				url: '/api/product/add-product?' + productinput,
-				data: obj,
-				success: function(data) {
-
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-					//$("#productForm")[0].reset();
-					setTimeout(function() {
-						location.reload(true);
-					}, 1500);
-				},
-				error: function(error) {
-
-					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-					//$("#productForm")[0].reset();
-				}
-			})
-		}
-	}
-
-	function updateProduct(product_id,productInput){
-
-		var obj = {};
-
-		if(attributeArr.length > 0)
-			obj.attributeArr = JSON.stringify(attributeArr);
-
-		if(discountArr.length > 0 )
-			obj.discountArr = JSON.stringify(discountArr);
-
-
-		if ($('#productForm').valid()) {
-		$.ajax({
-				type: 'POST',
-				url: '/api/product/edit-product?product_id=' + product_id+'&'+productInput,
-				data: obj,
-				success: function(data) {
-
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text("Product Added Successfully")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-					//$("#productForm")[0].reset();
-					setTimeout(function() {
-						location.reload(true);
-					}, 1500);
-				},
-				error: function(error) {
-
-					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
-					$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-					$('.pip').empty();
-					$('.base_image').empty();
-					//$("#productForm")[0].reset();
-				}
-			})
-		}
-	}
-
-	function removeDiscount(e){
+	var imageFiles = [], imageArr = [], attributeArr = [], discountArr = [], count, test;
 	
-		$(e).parents(".discountRow").remove();
-		count = count-1;
+	imageFiles = {{{DisplayJSON productImages}}}
+	productBaseImage = {{{DisplayJSON productBaseImage}}}
 
-		if (count < 3) {
-			$(".discount_tier").show();
+	$("#marketplace_type_id").change(function() {
+
+		var marketplace_type_id = $('#marketplace_type_id').val();
+
+		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
+		{
+			$(".priceDiv").hide();
+			$('#price').removeAttr('value');
 		}
-	}
-
-	function removeImage(e, imageIndex) {
-
-		allFiles.splice(imageIndex, 1);
-		$(e).parents(".pip").remove();
-
-		appendImage();
-	}
-
-	function appendImage(){
-		$(".preview" ).empty();
-
-		for (var i = 0; i < allFiles.length; i++) {
-			var domElement;
-
-			domElement = "<span class=\"pip\">" + "<img class=\"imageThumb\" src=\"" + allFiles[i].UploadedImage + "\"/>" +
-						"<i class='fa fa-times productRemoveIcon' onclick='removeImage(this,"+i+")' aria-hidden='true'></i></span>"
-
-			$(".preview").append(domElement);
-
-			}
-
-			if (allFiles.length >= 6) {
-				$("#productImage").hide();
-			}else{
-				$("#productImage").show();
-			}
-	}
-
-	$(document).ready(function() {
-
-       	var test;
-
-		var product_id = $('#edit_product_id').val();
-
-		$("#gtc-cart-alert").hide();
-
-		$("#productImage").click(function(e) {
-			$("#imageUpload").click();
-		});
-
-		$("#imageUpload").change(function() {
-			test = '';
-			fasterPreview(this);
-		});
-
-		$('#baseImage').on('change', function() {
-			test = 'div.base_image';
-			fasterPreview(this);
-		});
-
-		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
-		var fileDetails = {}, baseImageFileDetails;
-
-		$('#crop-product-image').click(function() {
-
-			if (test == 'div.base_image') {
-				cropper.getCroppedCanvas().toBlob(function(blob) {
-
-					cropperOutputImage = blob;
-					fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-					fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-					//imgUp(cropperOutputImage, fileDetails["fileName"]);
-				});
-				var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
-				$(test).html(temp);
-				$('#profile-picture-modal').modal('hide');
-
-			} else {
-					
-					cropper.getCroppedCanvas().toBlob(function(blob) {
-					var fileTempHold = {};
-					fileTempHold['cropperOutputImage'] = blob;
-					fileTempHold["croppedExtension"] = blob["type"].split("/")[1];
-					fileTempHold['fileName'] = fileDetails["originalFileName"] + "." + fileTempHold["croppedExtension"];
-					fileTempHold['UploadedImage'] = cropper.getCroppedCanvas().toDataURL();
-
-					allFiles.push(fileTempHold);
-					appendImage();
-				});
-			
-				$('#profile-picture-modal').modal('hide');
-			}
-		});
-
-		$('#profile-picture-modal').on('shown.bs.modal', function() {
-			cropper = new Cropper(cropperInputImage, {
-				aspectRatio: 16 / 16,
-				minCropBoxHeight: 280,
-				minCropBoxWidth: 1364,
-				viewMode:1,
-				ready: function() { }
-			});
-		}).on('hidden.bs.modal', function() {
-			cropBoxData = cropper.getCropBoxData();
-			canvasData = cropper.getCanvasData();
-			cropper.destroy();
-		});
-
-		function fasterPreview(uploader) {
-			if (uploader.files && uploader.files[0]) {
-				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-				cropperInputImage = document.getElementById('uploaded-profile-picture');
-				$('#profile-picture-modal').modal('show');
-			}
+		else {
+			$(".priceDiv").show();
+			$("price").attr('value');
+		}
+		if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
+			$(".shippingDiv").hide();
+			$('#shipping_cost').removeAttr('value');
+		}
+		else {
+			$(".shippingDiv").show();
+			$("shipping_cost").attr('value');
 		}
 
-		$("#country").change(function() {
-			var country_id = $('#country').val();
-
-			$.ajax({
-				url: '/api/states?country_id=' + country_id,
-				type: 'GET',
-				success: function(result) {
-					$("#state").empty();
-					$("#state").append("<option disabled selected>Select State...</option>")
-					for (var i = 0; i < result.rows.length; i++) {
-						var options;
-						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-						$("#state").append(options);
-					}
-				},
-				error: function(error) {
-					console.log("Error", error);
-				}
-			});
-		});
-
-		$("#marketplace_type_id").change(function() {
-			var marketplace_type_id = $('#marketplace_type_id').val();
-
-			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }})
-			{
-				$(".priceDiv").hide();
-				$('#price').removeAttr('value');
-			}
-			else {
-				$(".priceDiv").show();
-				$("price").attr('value');
-			}
-			if (marketplace_type_id == {{ marketplaceTypeCode.WTB }} || marketplace_type_id == {{ marketplaceTypeCode.WTT }} || marketplace_type_id == {{ marketplaceTypeCode.RFQ }}) {
-				$(".shippingDiv").hide();
-				$('#shipping_cost').removeAttr('value');
-			}
-			else {
-				$(".shippingDiv").show();
-				$("shipping_cost").attr('value');
-			}
-
-			if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
-				$(".exchangingProductDiv").show();
-				$(".exchangingProductQuantityDiv").show();
-				$("exchanging_product").attr('value');
-				$("exchanging_product_quantity").attr('value');
-			}
-			else {
-				$(".exchangingProductDiv").hide();
-				$(".exchangingProductQuantityDiv").hide();
-				$('#exchanging_product').removeAttr('value');
-				$('#exchanging_product_quantity').removeAttr('value');
-			}        
-		});
-
-	$("#category").change(function() {
-		var category_id = $('#category').val();
-		$('#attributePopup').empty();
-
-		$.ajax({
-			url: '/api/sub-categories?category_id=' + category_id,
-			type: 'GET',
-			success: function(result) {
-				$("#sub_category").empty();
-				$("#sub_category").append("<option disabled selected>Select Sub Category...</option>")
-				for (var i = 0; i < result.rows.length; i++) {
-					var options;
-					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-					$("#sub_category").append(options)
-				}
-			},
-			error: function(error) {
-				console.log("Error", error);
-			}
-		});
-
-		$.ajax({
-			url: '/api/category-attributes?populate=Attribute&category_id=' + category_id,
-			type: 'GET',
-			success: function(result) {
-				$("#attributeDiv").empty();
-				var attributeRow;
-				attributeRow = '<tr></tr>';
-				for (var i = 0; i < result.rows.length; i++) {
-					var productAttribute;
-					console.log(typeof(result.rows[i].Attribute.unit));
-					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
-						"<input type='text' name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
- 
-					attributeRow = attributeRow + productAttribute;
-				}
-				var attributeSection = '<div class="form-group"><label class="label-control">Product Attributes </label>' +
-					'<div class="col-lg-8 border" style="padding: 0px;"><div class="modal-body">' +
-					'<div class="container"><table class="table"><thead><tr>' +
-					'<th class="shop_list_title"><b>Attribute</b></th><th class="shop_list_title">' +
-					'<b>Value</b></th><th></th></tr></thead><tbody>' + attributeRow + '</tbody></table></div></div></div></div>'
-
-				$('#attributeDiv').append(attributeSection);
-			},
-			error: function(error) {
-				console.log("Error", error);
-			}
-		});
+		if (marketplace_type_id == {{ marketplaceTypeCode.WTT }}) {
+			$(".exchangingProductDiv").show();
+			$(".exchangingProductQuantityDiv").show();
+			$("exchanging_product").attr('value');
+			$("exchanging_product_quantity").attr('value');
+		}
+		else {
+			$(".exchangingProductDiv").hide();
+			$(".exchangingProductQuantityDiv").hide();
+			$('#exchanging_product').removeAttr('value');
+			$('#exchanging_product_quantity').removeAttr('value');
+		}  
+		      
 	});
-	$("#productForm").validate({
-		rules: {
-			product_name: "required",
-			product_category_id: "required",
-			sub_category_id: "required",
-			marketplace_type_id: {
-				required: function() {
-					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
-						return true;
-					} else { return false; }
-				}
-			},
-			product_location: "required",
-			sku: {
-				required: true,
-			},
-			price: {
-				number: true,
-				dollarsscents: true
-			},
-			quantity_available: {
-				required: true,
-				digits: true
-			},
-			city: {
-				required: true,
-				lettersonly: true
-			},
-			shipping_cost: {
-				number: true,
-				dollarsscents: true
-			},
-			moq: {
-				required: function() {
-					if ($("input[name=marketplace]").val() == 'Private Wholesale Marketplace') {
-						return true;
-					} else { return false; }
-				}
-			},
-			exchanging_product: {
-				required: function() {
-					if ($("select[name=marketplace_type_id]").val() == 3) {
-						return true;
-					} else { return false; }
-				}
-			},
-			exchanging_product_quantity: {
-				required: function() {
-					if ($("select[name=marketplace_type_id]").val() == 3) {
-						return true;
-					} else { return false; }
-				}
-			},
-			baseImage:{
-				required: true,
-                accept:"jpg,png,jpeg,gif"
-			}
-		},
-		messages: {
-			product_name: "Please enter the product name",
-			product_category_id: "Please select product category",
-			sub_category_id: "Please select product sub-category",
-			marketplace_type_id: "Please select Type",
-			product_location: "Please select product origin",
-			sku: {
-				required: "Please enter Stock Keeping Unit"
-			},
-			price: {
-				number: "Please enter valid product price",
-				dollarsscents: "Only two decimal values accepted"
-			},
-			quantity_available: {
-				required: "Please enter available quantity",
-				digits: "Please enter valid available quantity"
-			},
-			city: {
-				required: "Please enter product origin city",
-				lettersonly: "Please enter vaild city name"
-			},
-			shipping_cost: {
-				number: "Please enter valid shipping cost",
-				dollarsscents: "Only two decimal values accepted"
-			},
-			exchanging_product: "Please enter the exchanging product name",
-			exchanging_product_quantity: "Please enter exchanging product quantity",
-			moq: "Please enter minimum order quantity",
-			baseImage:{
-				required: "Please select base Image",
-                accept: "Only image type jpg/png/jpeg/gif is allowed"
-			}
-		}
-	});
-
-	$.validator.addMethod("lettersonly", function(value, element) {
-		return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
-	}, "Letters only please");
-
-	$.validator.addMethod("dollarsscents", function(value, element) {
-		return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
-	}, "You must include two decimal places");
-
-	$("#productForm").submit(function(e) {
-
-		e.preventDefault();
-		var imageURLsArr = [];
-
-				var temp1 = $.map($('.quantity'), function(el) {
-			  		return el.value;
-		     	});
-
-				var quantArr = temp1.filter(function(v) { return v !== '' });
-
-				var typeArr = $.map($('.discount_type:radio:checked'), function(el) {
-					return el.value;
-				});
-
-				var temp2 = $.map($('.discount_amount'), function(el) {
-					return el.value;
-				});
- 
-				var amtArr = temp2.filter(function(v) { return v !== '' });
-
-				var j = 0; 
-				quantArr.forEach(function(element) {
-
-					let discount = {};
-					discount.status = 1;
-					discount.quantity = quantArr[j];
-					if (typeArr[j] == 'percentage_discount') {
-						discount.type = 1;
-						discount.percent_discount = amtArr[j];
-					}
-					else {
-						discount.type = 2;
-						discount.value_discount = amtArr[j];
-					}
-					discountArr.push(discount);
-					j++;
-				});
-
-		let productInput = $("#productForm :input").filter(function(index, element) {
-			return $(element).val() != '';
-		}).serialize();
-
-		attributeArr = $('#attributeDiv :input').filter(function(index, element) {
-			return $(element).val() != '';
-		}).serializeArray();
-
-		if(!product_id){
-			
-			$.ajaxSetup({ async: false });
-
-			if ($('#baseImage')[0].files.length > 0) {
-				var form1 = new FormData();
-
-				form1.append("file", cropperOutputImage, fileDetails["fileName"]);
-				$.ajax({
-					type: 'POST',
-					url: '/api/prod/upload',
-					data: form1,
-					cache: false,
-					dataType: 'json',
-					processData: false,
-					contentType: false,
-					success: function(data) {
-
-						var imageURLobj = {};
-
-						imageURLobj.status = 1;
-						imageURLobj.type = 1;
-						imageURLobj.base_image = 1;
-						imageURLobj.url = data.imageURL;
-
-						imageURLsArr.push(imageURLobj);
-					},
-					error: function(error) {
-						console.log("Error", error);
-					}
-				})
-			}
-			if ($("#imageUpload")[0].files.length > 0) {
-				var form2 = new FormData();
-
-				$.each(allFiles, function(i, file) {
-					form2.append("file[" + i + "]", allFiles[i].cropperOutputImage, allFiles[i].fileName);
-				});
-
-				$.ajax({
-					type: 'POST',
-					url: '/api/prod/multiple',
-					data: form2,
-					cache: false,
-					dataType: 'json',
-					processData: false,
-					contentType: false,
-					success: function(data) {
-						var imageURLs = data.imageURLs, i = 0;
-
-						imageURLs.forEach(function(element) {
-							var imageURLobj = {};
-
-							imageURLobj.status = 1;
-							imageURLobj.type = 1;
-							imageURLobj.base_image = 0;
-							imageURLobj.url = imageURLs[i];
-
-							imageURLsArr.push(imageURLobj);
-							i++;
-						});
-						var dataFormate = {};
-						dataFormate.data = JSON.stringify(imageURLsArr);
-						addProduct(dataFormate, productInput);
-					},
-					error: function(error) {
-						console.log('error', error);
-					}
-				});
-			} else {
-
-				var dataFormate = {};
-				dataFormate.data = JSON.stringify(imageURLsArr);
-				addProduct(dataFormate, productInput);
-				
-			}
-			$.ajaxSetup({ async: true });
-		}
-		else{
-			updateProduct(product_id,productInput)
-		}
-	});
-
-	$("#reset").click(function() {
-		$('.pip').empty();
-		$('.base_image').empty();
-		$("#productForm")[0].reset();
-	});
-
-	$("#editdiscount").click(function(e) {
-
-		if (count < 3) {
-
-			var domElement = '&nbsp;<div class="row discountRow"><div class="col-lg-1"><label  class="label-control">For</label></div><div class="col-lg-2">' +
-				'<input type="text" class="form-control-customized form-control-sm quantity" name="discount_quantity' + count + '" id="discount_quantity' + count + '" placeholder="20"></div>' +
-				'<div class="col-lg-2"><label  class="label-control">user receives</label></div>' +
-				'<div class="col-lg-3"><div class="row edit-listing-dis"><input type="radio" class="discount_type" id="percentage_discount0"' +
-				'name="discount_type' + count + '" value="percentage_discount" checked onclick=testPercent(' + count + ');> Total Percent Discount&nbsp; &nbsp;' +
-				'<input class="list_place_21 discount_amount percent_discount_amount' + count + '" type="text" name="percent_discount_amount' + count + '" placeholder="20%"></div>' +
-				'<div class="row edit-listing-dis"><input type="radio" class="discount_type" id="value_discount' + count + '" name="discount_type' + count + '"' +
-				'value="value_discount" onclick=testValue(' + count + ')> Total Value Discount &nbsp;&nbsp;<input class="list_place_21 discount_amount value_discount_amount' + count + '"' +
-				'type="text" name="value_discount_amount' + count + '" placeholder="20$" style="display:none" /></div></div>'+
-				'<div class="col-lg-1" style="float:right"><a href="javascript:;"  onclick="removeDiscount(this)"><small>Remove</small></a>'+
-				'</div></div>'
-
-			$('#discountAppend').append(domElement);
-
-			count = count + 1;
-			if (count == 3) {
-				$(".discount_tier").hide();
-			}
-		}
-	});
- });
-
-function testValue(count) {
-	$(".value_discount_amount" + count).show();
-	$(".percent_discount_amount" + count).hide();
-}
-
-function testPercent(count) {
-	$(".value_discount_amount" + count).hide();
-	$(".percent_discount_amount" + count).show();
-}
 </script>
+
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -657,6 +75,7 @@ function testPercent(count) {
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -848,8 +267,29 @@ function testPercent(count) {
 											<label class="label-control">Quantity Available
 												<span class="text-danger">*</span>
 											</label>
-											<input type="text" name="quantity_available" class="form-control-customized form-control-sm" value="{{editProduct.quantity_available}}"
+											<input type="text" id="quantity_available" name="quantity_available" class="form-control-customized form-control-sm" value="{{editProduct.quantity_available}}"
 											 required>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Product Status
+												<span class="text-danger">*</span>
+											</label>
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
+												 id="product_status">
+												{{#if editProduct.status}}
+												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
+												{{else}}
+												<option disabled selected>Select Status</option>
+												{{/if}}
+												<option value="ACTIVE">Active</option>
+												<option value="INACTIVE">InActive</option>
+												<option value="SUSPENDED">Suspended</option>
+												<option value="SOLDOUT">Sold Out</option>
+												</select>
+											</div>
 										</div>
 									</div>
 									{{#ifCond this.type '==' 'wholesale'}}
@@ -901,7 +341,7 @@ function testPercent(count) {
 																	<input type="text" class="form-control-customized form-control-sm quantity" value="{{this.quantity}}" name="discount_quantity{{@index}}" id="discount_quantity{{@index}}" placeholder="20">
 																</div>
 																<div class="col-lg-2">
-																	<label  class="label-control">user receives</label>
+																	<label  class="label-control">product user receives</label>
 																</div>
 																<div class="col-lg-3">
 																	<div class="row edit-listing-dis">
@@ -968,15 +408,26 @@ function testPercent(count) {
 												<span class="text-danger">*</span>
 											</label>
 											<div class="input-group">
-												{{!-- <div class="custom-file"> --}}
-													<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
-													<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
-												</div>
-											{{!-- </div> --}}
+												<input type="file" class="custom-file-input" id="baseImage" name="baseImage">
+												<label class="custom-file-label customized-file-label" for="baseImage">Choose file</label>
+											</div>
 										</div>
 										<div class="base_image">
 										</div>
 									</div>
+									{{#if editProduct}}
+									<div class="col-lg-3">
+										<div class="form-group">
+											<label class="label-control">Feature this Product:</label>
+											<div class="input-group">
+												<div class="custom-file">
+													<i class='fas fa-plus data-value' 
+													data-toggle="modal" data-target="#featureModal" data-whatever="@mdo"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+									{{/if}}
 								</div>
 								<br/>
 								<div class="row">
@@ -992,16 +443,16 @@ function testPercent(count) {
 										</div>
 									</div>
 									<div class="col-lg-12">
-										<div class="preview"></div>
+									<span class="preview"></span>
 									</div>
 								</div>
 								<br/>
-								<br/><hr/>
-
+								<br/>
+								<hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn {{#if editProduct.id}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
-											<span class="ladda-label">{{#if editProduct.id}}UPDATE{{else}}SUBMIT{{/if}}</span>
+										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
+											<span class="ladda-label">{{#if editProduct}}UPDATE{{else}}SUBMIT{{/if}}</span>
 											<span class="ladda-spinner"></span>
 										</button>
 										<button class="ladda-button btn btn-small btn-muted" type="reset" id="reset" data-style="expand-left">
@@ -1015,7 +466,174 @@ function testPercent(count) {
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}		
+			{{/ifCond}}
 		</div>
 	</div>
 </div>
+
+
+<div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">FEATURE THIS PRODUCT</h5>
+			</div>
+			<div class="alert" id="gtc-feature-form-alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="form-message"></span>
+            </div>
+			<form id="featureForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control"><b>Product Name:</b></label>
+								<input type="text" name="product_name" value="{{editProduct.product_name}}" readonly class="form-control-customized form-control-sm"
+								 required/>
+							</div>
+						</div>
+					</div><br/>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row">
+								<div class="col-lg-2">
+									<label class="label-control"><b>Status:</b></label>
+								</div>
+								<div class="col-lg-5">
+									<div class="input-group">
+										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='feature_status'>
+											<option value="ACTIVE">Active</option>
+											<option value="INACTIVE">InActive</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control"><b>Duration:</b></label>
+								<div class="row date-picker">
+									<div class="col-lg-4">
+										<input class="form-control-customized form-control-sm" id='start_date' name="start_date"
+										type="text" placeholder="mm/dd/yyyy">
+									</div>
+									<div class="col-lg-1">
+										<label class="label-control">to:</label>
+									</div>
+									<div class="col-lg-4">
+										<input class="form-control-customized form-control-sm" name="end_date" id='end_date'
+										type="text" placeholder="mm/dd/yyyy">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+									<input type="checkbox" id='feature_indefinitely' value="1" name='feature_indefinitely'> <label class="label-control">Feature this product indefinitely</label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<label class="label-control"><b>Feature this product:</b></label>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<input type="checkbox" value="1" class="positions" name="position_profilepage" id='0'> <label class="label-control">My Profile Page Only (Free)</label><br/>
+								<input type="checkbox" value="1" class="positions" name="position_searchresult" id='50'> <label class="label-control">In Search Results(+$50/mo)</label><br/>
+								{{#ifCond this.type '==' 'wholesale'}}
+									<input type="checkbox" value="1" class="positions" name="position_wholesale_landing" id='150'> <label class="label-control">Wholesale Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'shop'}}
+									<input type="checkbox" value="1" class="positions" name="position_shop_landing" id='150'> <label class="label-control">Shop Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'services'}}
+									<input type="checkbox" value="1" class="positions" name="position_service_landing"  id='150'> <label class="label-control">Services Landing(+$150/mo)</label><br/>
+								{{else ifCond this.type '==' 'lifestyle'}}
+									<input type="checkbox" value="1" class="positions" name="position_subscription_landing"  id='150'> <label class="label-control">Subscription Landing(+$150/mo)</label><br/>
+								 {{/ifCond}}
+								<input type="checkbox" value="1" class="positions" id='250' name="position_homepage"> <label class="label-control">GTC Homepage(+$250/mo)</label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control"><b>TOTAL:</b></label>
+								<label class="label-control"><b>$<span id="totalFees">0.00</span></b></label>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</button>
+					<button type="submit" class="btn btn-small btn-primary" id='continue' style="background:green">
+						<b>CONTINUE</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="featurePaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Payment:</h5>
+			</div>
+			<form id="featurePaymentForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Total Amount: <b>$<span id="feature_total"></span></b></label>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label class="label-control">Payment Method:</label>
+								<div class="input-group">
+									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="payment_details" >
+										<option disabled='disabled' selected>Select Payment Method...</option>
+											{{#each cardDetails}}
+												<option value='{{this.id}}'>{{this.card_type}} **** **** **** {{json this.card_details 'last4'}}</option>
+											{{/each}}
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</button>
+					<button type="submit" class="btn btn-small btn-primary" style="background:green">
+						<b>FEATURE</b>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="feature-success-modal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"><span id="feature_response_message"></span></h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p><span id="feature_response_message_details"></span></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="js/add-product.js"></script>
 {{> footer/bottom-footer}}

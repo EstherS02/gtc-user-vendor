@@ -15,13 +15,15 @@ const ORDER_ITEM_STATUS = require('../../config/order-item-status');
 const ORDER_PAYMENT_TYPE = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
-
+var notificationService = require('../../api/notification/notification.service')
+const numeral = require('numeral');
 
 const stripe = require('../../payment/stripe.payment');
 
 const CURRENCY = 'usd';
 
 export function makePayment(req, res) {
+	res.clearCookie('applied_coupon');
 	let user = req.user;
 	let paymentSettingId = req.body.paymentSettingId;
 
@@ -101,6 +103,15 @@ export function makePayment(req, res) {
 			}
 			return Promise.all(statusPromises);
 		}).then(orderUpdatedRows => {
+			let quantityPromises = [];
+			for (var i = 0; i < createdOrders.length; i++) {
+
+				for (var j = 0; j < createdOrders[i].items.length; j++) {
+					quantityPromises.push(updateQuantity(createdOrders[i].items[j].product_id, createdOrders[i].items[j].quantity));
+				}
+			}
+			return Promise.all(quantityPromises);
+		}).then(productQuantityUpdatedRow => {
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
@@ -114,6 +125,7 @@ export function makePayment(req, res) {
 					});
 				} else return res.status(500).send(err);
 			});
+
 		}).catch(err => {
 			console.log("err3", err);
 			if (createdOrders && createdOrders.length > 0) {
@@ -165,6 +177,29 @@ function createOrder(orderWithItems) {
 
 function createOrderItem(orderItem) {
 	return service.createRow('OrderItem', orderItem);
+}
+
+function updateQuantity(productId, placedQuantity) {
+	return service.findIdRow('Product', productId)
+		.then(product => {
+			let quantityUpdate = {};
+			let currentQuantity = product.quantity_available - placedQuantity;
+
+			quantityUpdate.quantity_available = currentQuantity;
+
+			if (currentQuantity == 0) {
+				quantityUpdate.status = status['SOLDOUT'];
+			}
+
+			return service.updateRow('Product', quantityUpdate, productId)
+				.then(upadtedRow => {
+					return Promise.resolve(upadtedRow);
+				}).catch(err => {
+					return Promise.reject(err);
+				})
+		}).catch(err => {
+			return Promise.reject(err);
+		})
 }
 
 function processCheckout(req) {
@@ -458,35 +493,32 @@ export function cancelOrder(req, res) {
 			}
 			return service.updateRow('OrderItem', updateOrderItem, orderItem.id);
 		}).then(updatestatusRow => {
-			let includeArr=[];
-			  refundObj={
-			  order_id:orderItem.order_id,
-			  order_item_status :{
-				$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
-			},
+			let includeArr = [];
+			refundObj = {
+				order_id: orderItem.order_id,
+				order_item_status: {
+					$ne: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED']
+				},
 			};
 			var field = 'created_on';
 			var order = "asc";
-			return service.findAllRows('OrderItem', includeArr,refundObj,0, null, field, order);
-	   		}).then(successPromise => {
-			if(successPromise.count=="0")
-			{
+			return service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order);
+		}).then(successPromise => {
+			if (successPromise.count == "0") {
 				let OrderItemRefund = {
-			 		reason_for_cancellation: req.body.reason_for_cancellation,
+					reason_for_cancellation: req.body.reason_for_cancellation,
 					cancelled_on: new Date(),
 					order_status: orderStatus['CANCELLEDORDER'],
-			 		last_updated_by: req.user.first_name,
-			 		last_updated_on: new Date()
-			 	};
-			 	 refundObj={
-			 		id:orderItem.order_id
-			 	};
-			    service.updateRecord('Order', OrderItemRefund,refundObj);
-			   return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
-			
-			}
-			else
-			{
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				refundObj = {
+					id: orderItem.order_id
+				};
+				service.updateRecord('Order', OrderItemRefund, refundObj);
+				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+
+			} else {
 				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
 			}
 		}).catch(error => {
@@ -500,8 +532,8 @@ function processCancelOrder(req) {
 		let includeArray = [];
 		includeArray = populate.populateData("Order,Product");
 		service.findRow('OrderItem', {
-			id: req.params.orderItemId
-		}, includeArray)
+				id: req.params.orderItemId
+			}, includeArray)
 			.then(orderItemRow => {
 				orderItemRow = JSON.parse(JSON.stringify(orderItemRow));
 				if (orderItemRow.order_item_status === ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'] || orderItemRow.order_item_status === ORDER_ITEM_STATUS['REFUND_FAILED'])
@@ -521,8 +553,8 @@ function processCancelOrder(req) {
 
 export function deleteCard(req, res) {
 	service.findRow('PaymentSetting', {
-		id: req.body.paymentSettingId
-	}, [])
+			id: req.body.paymentSettingId
+		}, [])
 		.then(paymentSetting => {
 			console.log("paymentSetting", paymentSetting);
 			if (paymentSetting && paymentSetting.user_id === req.user.id) {
@@ -537,7 +569,9 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore, user) {
+export function sendOrderMail(orderIdStore,user) {
+	var user = {};
+	user.user_contact_email = 'sumiraja28@gmail.com'
 	var orderIdStore = orderIdStore;
 	var includeArr = [{
 		model: model['OrderItem'],
@@ -548,9 +582,12 @@ export function sendOrderMail(orderIdStore, user) {
 				attributes: ['id'],
 				include: [{
 					model: model['User'],
-					attributes: ['email'],
+					attributes: ['id', 'email'],
 				}]
-			}],
+			},{
+			model:model['ProductMedia'],
+			attributes:['url']
+		}],
 		}]
 	}, {
 		model: model['Address'],
@@ -559,7 +596,7 @@ export function sendOrderMail(orderIdStore, user) {
 			model: model['State']
 		}, {
 			model: model['Country']
-		},]
+		}, ]
 	}]
 	console.log(orderIdStore);
 	var queryObj = {
@@ -569,46 +606,50 @@ export function sendOrderMail(orderIdStore, user) {
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
-			vendorMail(OrderList, user);
-			var user_email = user.email;
-			var orderNew = [];
-			var queryObjEmailTemplate = {};
-			var emailTemplateModel = "EmailTemplate";
-			queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
-			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-				.then(function(response) {
-					if (response) {
-						var email = user_email;
-						var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
-						var body;
-						body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-						_.forOwn(OrderList.rows, function(orders) {
-							body = body.replace('%COMPANY_NAME%', orders.shippingAddress.company_name ? orders.shippingAddress.company_name : '');
-							body = body.replace('%ADDRESS_LINE_1%', orders.shippingAddress.address_line1 ? orders.shippingAddress.address_line1 : '');
-							body = body.replace('%ADDRESS_LINE_2%', orders.shippingAddressaddress_line2 ? orders.shippingAddress.address_line2 : '');
-							body = body.replace('%CITY%', orders.shippingAddress.city ? orders.shippingAddress.city : '');
-							body = body.replace('%STATE%', orders.shippingAddress.State.name ? orders.shippingAddress.State.name : '');
-							body = body.replace('%COUNTRY%', orders.shippingAddress.Country.name ? orders.shippingAddress.Country.name : '');
-							orderNew.push(orders);
-						});
-						var template = Handlebars.compile(body);
-						var data = {
-							order: orderNew
-						};
-						var result = template(data);
-						sendEmail({
-							to: email,
-							subject: subject,
-							html: result
-						});
+			console.log(JSON.stringify(OrderList))
+			if(user.user_contact_email){
+
+				vendorMail(OrderList, user);
+				var user_email = user.user_contact_email;
+				var orderNew = [];
+				var queryObjEmailTemplate = {};
+				var emailTemplateModel = "EmailTemplate";
+				queryObjEmailTemplate['name'] = config.email.templates.userOrderDetail;
+				service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+					.then(function(response) {
+						if (response) {
+							var email = user_email;
+							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
+							var body;
+							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
+							body = body.replace('%User%',"Sumithra Rajan")//req.user.first_name+' ' +req.user.last_name
+							body = body.replace('%Total_Price%',numeral(OrderList.rows.total_price).format('$' + '0,0.00'))
+							body = body.replace('%currency%','$');
+							_.forOwn(OrderList.rows, function(orders) {
+								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
+								orderNew.push(orders);
+							});
+							var template = Handlebars.compile(body);
+							var data = {
+								order: orderNew
+							};
+							var result = template(data);
+							sendEmail({
+								to: email,
+								subject: subject,
+								html: result
+							});
+							return;
+						} else {
+							return;
+						}
+					}).catch(function(error) {
+						console.log('Error :::', error);
 						return;
-					} else {
-						return;
-					}
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return;
-				});
+					});
+			}
+			return;
 		}
 
 	}).catch(function(error) {
@@ -618,211 +659,276 @@ export function sendOrderMail(orderIdStore, user) {
 }
 export function vendorMail(OrderList, user) {
 	var orderNew = [];
+	var notification = [];
 	_.forOwn(OrderList.rows, function(orders) {
 		orderNew.push(sendVendorEmail(orders, user));
+		notification.push(notifications(orders));
 	});
-	return Promise.all(orderNew);
+	return Promise.all(orderNew, notification);
 }
+
 function sendVendorEmail(order, user) {
+
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
 	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(response) {
-			var email = order.OrderItems[0].Product.Vendor.User.email;
-			var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
-			var body;
-			body = response.body.replace('%ORDER_TYPE%', 'New Order');
-			body = body.replace('%ORDER_NUMBER%', order.id);
-			body = body.replace('%PLACED_BY%', user.first_name);
-			body = body.replace('%COMPANY_NAME%', order.shippingAddress.company_name ? order.shippingAddress.company_name : '');
-			body = body.replace('%ADDRESS_LINE_1%', order.shippingAddress.address_line1 ? order.shippingAddress.address_line1 : '');
-			body = body.replace('%ADDRESS_LINE_2%', order.shippingAddressaddress_line2 ? order.shippingAddress.address_line2 : '');
-			body = body.replace('%CITY%', order.shippingAddress.city ? order.shippingAddress.city : '');
-			body = body.replace('%STATE%', order.shippingAddress.State.name ? order.shippingAddress.State.name : '');
-			body = body.replace('%COUNTRY%', order.shippingAddress.Country.name ? order.shippingAddress.Country.name : '');
-			var template = Handlebars.compile(body);
-			var data = {
-				order: order
-			};
-			var result = template(data);
-			sendEmail({
-				to: email,
-				subject: subject,
-				html: result
-			});
+			if(order.OrderItems[0].Product.Vendor.User.user_contact_email){
+				var email = order.OrderItems[0].Product.Vendor.User.user_contact_email;
+				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
+				var body;
+				body = response.body.replace('%ORDER_TYPE%', 'New Order');
+				body = body.replace('%ORDER_NUMBER%', order.id);
+				body = body.replace('%PLACED_BY%', user.first_name);
+				body = body.replace('%COMPANY_NAME%', order.shippingAddress.company_name ? order.shippingAddress.company_name : '');
+				body = body.replace('%ADDRESS_LINE_1%', order.shippingAddress.address_line1 ? order.shippingAddress.address_line1 : '');
+				body = body.replace('%ADDRESS_LINE_2%', order.shippingAddressaddress_line2 ? order.shippingAddress.address_line2 : '');
+				body = body.replace('%CITY%', order.shippingAddress.city ? order.shippingAddress.city : '');
+				body = body.replace('%STATE%', order.shippingAddress.State.name ? order.shippingAddress.State.name : '');
+				body = body.replace('%COUNTRY%', order.shippingAddress.Country.name ? order.shippingAddress.Country.name : '');
+				var template = Handlebars.compile(body);
+				var data = {
+					order: order
+				};
+				var result = template(data);
+				sendEmail({
+					to: email,
+					subject: subject,
+					html: result
+				});
+			}
+			return;
 		}).catch(function(error) {
 			console.log('Error :::', error);
 			return;
 		})
-
 }
+
+function notifications(order) {
+	var queryObjNotification = {};
+	var NotificationTemplateModel = 'NotificationSetting';
+	queryObjNotification['code'] = config.notification.templates.vendorNewOrder;
+	service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		.then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = order.OrderItems[0].Product.Vendor.User.id;
+			bodyParams.description = response.description.replace('%#Order%', '/my-order/order/' + order.id);
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			service.createRow("Notification", bodyParams);
+		});
+}
+
 // plan payment method starts//
 export function makeplanPayment(req, res) {
-	var desc = "GTC ORDER";
+	var desc = "GTC Plan Payment";
+	var convertMoment = moment();
+	var start_date = new Date(convertMoment);
+	var end_date = moment().add(28, 'd').toDate();
 	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
-        then(function (response) {
-            if (response.paid = "true") {
-				
-                var paymentModel = {
-                    paid_date: new Date(response.created),
-                    paid_amount: response.amount / 100.0,
-                    payment_method: paymentMethod['STRIPE'],
-                    status: status['ACTIVE'],
-                    payment_response: JSON.stringify(response)
-				};
-				service.createRow('Payment', paymentModel);
-				if(req.body.vendor_id!= 0)
-				{
-               
-                var vendorplanModel = {
-                  plan_id : req.body.plan_id
-                  
-                };
-                var queryObj={
-                    vendor_id:req.body.vendor_id
-                };
-                service.updateRecord('VendorPlan', vendorplanModel,queryObj);
-                 return res.status(200).json({
-                    data: response
-                });
-			}
-			else
-		  {
-			var userplanModel = {
-				user_id: req.body.user_id,
-				plan_id: req.body.plan_id,
+	then(function(response) {
+		if (response.paid = "true") {
+			var paymentModel = {
+				paid_date: new Date(response.created),
+				paid_amount: response.amount / 100.0,
+				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				start_date:new Date(),
-				end_date:new Date()
+				payment_response: JSON.stringify(response)
 			};
-			service.createRow('UserPlan', userplanModel);
-			return res.status(200).json({
-				data: response
-			});
-		   }
-   
-		}
-		   else {
-                return res.status(500).json({
-                    data: err
-                });
-            }
+			service.createRow('Payment', paymentModel);
+			if (req.body.vendor_id != 0) {
 
-        });
+				var vendorplanModel = {
+					vendor_id: req.body.vendor_id,
+					plan_id: req.body.plan_id,
+					status: status['ACTIVE'],
+					auto_renewal_mail:req.body.autoRenewalMail,
+					start_date: start_date,
+					end_date: end_date
+
+				};
+				service.createRow('VendorPlan', vendorplanModel);
+					if(req.user.user_contact_email){
+						sendUpgrademail(req.body.plan_id, req.user);
+					}
+				return res.status(200).json({
+					data: response
+				});
+			} else {
+				if(req.user.user_contact_email){
+					sendUpgrademail(req.body.plan_id, req.user);
+				}
+					var userplanModel = {
+					user_id: req.body.user_id,
+					plan_id: req.body.plan_id,
+					auto_renewal_mail:req.body.autoRenewalMail,
+					status: status['ACTIVE'],
+					start_date: start_date,
+					end_date: end_date
+					};
+					service.createRow('UserPlan', userplanModel);
+					return res.status(200).json({
+					data: response
+					});
+                   }
+		} else {
+			return res.status(500).json({
+				data: err
+			});
+		}
+	});
 }
 //plan payment method ends//
 
 
+//plan upgrade email starts//
+function sendUpgrademail(plan_id, user) {
+	var includeArray = [];
+	let upgradePlanModel = {
+		id: plan_id
+	}
+	return service.findRow('Plan', upgradePlanModel, includeArray)
+		.then(upgradeplandetails => {
+			var upgradeplanobj = upgradeplandetails;
+			var queryObjEmailTemplate = {};
+			var emailTemplateModel = 'EmailTemplate';
+			queryObjEmailTemplate['name'] = config.email.templates.upgradeplan;
+			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+				.then(function(response) {
+					var email = user.user_contact_email;
+					var subject = response.subject;
+					var body;
+					var body = response.body;
+					body = body.replace('%first_name%', user.first_name);
+					body = body.replace('%name%', upgradeplanobj.name);
+					body = body.replace('%cost%', upgradeplanobj.cost);
+					sendEmail({
+						to: email,
+						subject: subject,
+						html: body
+					});
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return;
+				})
+		})
+
+}
+//plan upgrade email ends//
+
+
 export function refundOrder(req, res) {
 	var userdetails = req.user;
-	var refundOrderitemsID=[];
-	var refundsOrderitems=JSON.parse(req.body.refundOrderItems);
+	var refundOrderitemsID = [];
+	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
-	
-	
-	var order_id, paymentObj, refundObj, refundAmt,order;
+
+
+	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
 	let includeArray = [];
 	includeArray = populate.populateData("Payment");
 	let orderPaymentQueryObj = {
-	order_id: order_id,
-	order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
-	        }
-	return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray)
-	.then(paymentRow => {
-		paymentObj = JSON.parse(JSON.stringify(paymentRow));
-		let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
-		return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
-	})
-	.then(refundRow => {
-
-		refundObj = refundRow;
-		let paymentModel = {
-			refund_date: new Date(refundRow.created),
-			refund_amount: refundRow.amount / 100.0,
-			payment_method: paymentMethod['STRIPE'],
-			status: status['ACTIVE'],
-			payment_response: JSON.stringify(refundRow),
-			created_by: req.user.first_name,
-			created_on: new Date()
-		};
-		return service.createRow('Payment', paymentModel);
-		
-		
-	})
-	.then(createdPaymentRow => {
-		console.log("enterrrlooops"+parseFloat(createdPaymentRow.refund_amount).toFixed(2));
-		var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
-		sendRefundOrderMail(refundOrderitemsID, req.user,refundamt);
-		let orderPaymentModel = {
-			order_id: order_id,
-			payment_id: createdPaymentRow.id,
-			order_payment_type: ORDER_PAYMENT_TYPE['REFUND'],
-			status: status['ACTIVE'],
-			created_by: req.user.first_name,
-			created_on: new Date()
-		}
-		return service.createRow('OrderPayment', orderPaymentModel);
-	}).then(createdOrderPaymentRow => {
-		var refundsOrderitems=JSON.parse(req.body.refundOrderItems);
-		for (var i = 0; i < refundsOrderitems.length; i++) {
-	    var orderItemid =refundsOrderitems[i];
-		let updateOrderItem = {
-			reason_for_cancellation: req.body.reason_for_cancellation,
-			cancelled_on: new Date(),
-			order_item_status: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'],
-			last_updated_by: req.user.first_name,
-			last_updated_on: new Date()
-		};
-		 refundObj={
-			id:orderItemid
-		};
-		return service.updateRecord('OrderItem', updateOrderItem,refundObj);
+		order_id: order_id,
+		order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT']
 	}
-	}).then(updatestatusRow => {
-		let includeArr=[];
-		  refundObj={
-		  order_id:order_id,
-		  order_item_status :{
-			$ne: 1
-		},
-		};
-	    var field = 'created_on';
-	    var order = "asc";
-		return service.findAllRows('OrderItem', includeArr,refundObj,0, null, field, order);
-   
-	}).then(successPromise =>{
-		if(successPromise.count=="0")
-		{
-			let OrderItem = {
-				reason_for_cancellation: req.body.reason_for_cancellation,
-				cancelled_on: new Date(),
-				order_status: orderStatus['RETURNEDORDER'],
-				last_updated_by: req.user.first_name,
-				last_updated_on: new Date()
+	return service.findRow('OrderPayment', orderPaymentQueryObj, includeArray)
+		.then(paymentRow => {
+			paymentObj = JSON.parse(JSON.stringify(paymentRow));
+			let chargedPaymentRes = JSON.parse(paymentObj.Payment.payment_response);
+			return stripe.refundCustomerCard(chargedPaymentRes.id, refundAmt);
+		})
+		.then(refundRow => {
+
+			refundObj = refundRow;
+			let paymentModel = {
+				refund_date: new Date(refundRow.created),
+				refund_amount: refundRow.amount / 100.0,
+				payment_method: paymentMethod['STRIPE'],
+				status: status['ACTIVE'],
+				payment_response: JSON.stringify(refundRow),
+				created_by: req.user.first_name,
+				created_on: new Date()
 			};
-			 refundObj={
-				id:order_id
+			return service.createRow('Payment', paymentModel);
+
+
+		})
+		.then(createdPaymentRow => {
+			console.log("enterrrlooops" + parseFloat(createdPaymentRow.refund_amount).toFixed(2));
+			var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
+			if(req.user.user_contact_email){
+				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
+			}
+			let orderPaymentModel = {
+				order_id: order_id,
+				payment_id: createdPaymentRow.id,
+				order_payment_type: ORDER_PAYMENT_TYPE['REFUND'],
+				status: status['ACTIVE'],
+				created_by: req.user.first_name,
+				created_on: new Date()
+			}
+			return service.createRow('OrderPayment', orderPaymentModel);
+		}).then(createdOrderPaymentRow => {
+			var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
+			for (var i = 0; i < refundsOrderitems.length; i++) {
+				var orderItemid = refundsOrderitems[i];
+				let updateOrderItem = {
+					reason_for_cancellation: req.body.reason_for_cancellation,
+					cancelled_on: new Date(),
+					order_item_status: ORDER_ITEM_STATUS['ORDER_CANCELLED_AND_REFUND_INITIATED'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				refundObj = {
+					id: orderItemid
+				};
+				return service.updateRecord('OrderItem', updateOrderItem, refundObj);
+			}
+		}).then(updatestatusRow => {
+			let includeArr = [];
+			refundObj = {
+				order_id: order_id,
+				order_item_status: {
+					$ne: 1
+				},
 			};
-		   service.updateRecord('Order', OrderItem,refundObj);
-		   return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
-		}
-		else
-		{
-			return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
-		}
-		
-	}).catch(error => {
-		console.log("Error", error)
-		return res.status(500).send(error);
-	});
+			var field = 'created_on';
+			var order = "asc";
+			return service.findAllRows('OrderItem', includeArr, refundObj, 0, null, field, order);
+
+		}).then(successPromise => {
+			if (successPromise.count == "0") {
+				let OrderItem = {
+					reason_for_cancellation: req.body.reason_for_cancellation,
+					cancelled_on: new Date(),
+					order_status: orderStatus['RETURNEDORDER'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				};
+				refundObj = {
+					id: order_id
+				};
+				service.updateRecord('Order', OrderItem, refundObj);
+				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+			} else {
+				return res.status(200).send(resMessage("SUCCESS", "Order Cancelled and Refund Initiated. Credited to bank account to 5 to 7 bussiness days"));
+			}
+
+		}).catch(error => {
+			console.log("Error", error)
+			return res.status(500).send(error);
+		});
 }
-export function sendRefundOrderMail(refundOrderitemsID, user,refundamount) {
-	var orderItemid=refundOrderitemsID;
+export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
+	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
 		id: orderItemid
@@ -832,36 +938,36 @@ export function sendRefundOrderMail(refundOrderitemsID, user,refundamount) {
 	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
-			var vendor_email = user.email;
+			var vendor_email = user.user_contact_email;
 			var orderNew = [];
 			var queryObjEmailTemplate = {};
 			var emailTemplateModel = 'EmailTemplate';
 			queryObjEmailTemplate['name'] = config.email.templates.refundRequest;
 			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-			.then(function(response) {
-				var email = vendor_email;
-				var subject = response.subject.replace('%ORDER_TYPE%', 'Refund Order');
-				var body;
-				body = response.body.replace('%VENDOR_NAME%', user.first_name);
-				body = response.body.replace('%refundamount%', refundamount);
-				_.forOwn(orderRefundList, function(orders) {
-				    body = body.replace('%ORDER_NUMBER%',orders.Order.id);
-					orderNew.push(orders);
-				});
-				var template = Handlebars.compile(body);
-						var data = {
-							order: orderNew
-						};
-						var result = template(data);
-			   	sendEmail({
-					to: email,
-					subject: subject,
-					html: result
-				});
-			}).catch(function(error) {
-				console.log('Error :::', error);
-				return;
-			})
+				.then(function(response) {
+					var email = vendor_email;
+					var subject = response.subject.replace('%ORDER_TYPE%', 'Refund Order');
+					var body;
+					body = response.body.replace('%VENDOR_NAME%', user.first_name);
+					body = response.body.replace('%refundamount%', refundamount);
+					_.forOwn(orderRefundList, function(orders) {
+						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
+						orderNew.push(orders);
+					});
+					var template = Handlebars.compile(body);
+					var data = {
+						order: orderNew
+					};
+					var result = template(data);
+					sendEmail({
+						to: email,
+						subject: subject,
+						html: result
+					});
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return;
+				})
 		}
 	})
-}	
+}

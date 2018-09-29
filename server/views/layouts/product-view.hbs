@@ -8,7 +8,43 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 var productSpecs = {{{DisplayJSON product}}}
 var statusCode = {{{DisplayJSON status}}}
 var vendorInfo = {{{DisplayJSON  VendorDetail}}}	
+var Plan = {{{DisplayJSON Plan}}}
 $(document).ready(function() {
+	 // Configure/customize these variables. start
+    var showChar = 100;  // How many characters are shown by default
+    var ellipsestext = "...";
+    var moretext = "(See more...)";
+    var lesstext = "(See less)";
+    
+
+    $('.p-description').each(function() {
+        var content = $(this).html();
+ 
+        if(content.length > showChar) {
+ 
+            var c = content.substr(0, showChar);
+            var h = content.substr(showChar, content.length - showChar);
+ 
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+ 
+            $(this).html(html);
+        }
+ 
+    });
+ 
+    $(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+	 // Configure/customize these variables. ends//
 
 	$('[data-toggle="popover"]').popover({
 		html: true,
@@ -42,8 +78,13 @@ $(document).ready(function() {
 	});
 
 	$('#reviewSubmit').click(function() {
+		var marketplace_id = $('#marketplaceId').val();
 		if (userInfo.email) {
-			$('#reviewModal').modal('show');
+			if ((marketplace_id == 1 && userInfo.UserPlans)||(($('#typecode').val() == 'WTS') || marketplace_id != 1)) {
+				$('#reviewModal').modal('show');
+			}else{
+				window.location.href = "/upgradeplan";
+			}
 		} else {
 			$('#myModal').modal('show');
 		}
@@ -53,33 +94,40 @@ $(document).ready(function() {
 		$('#myModal').modal('show');
 	});
 
-     $("#gtc-add-to-cart").click(function () {
-		    var cartInfo = {};
-			cartInfo.product_quantity = $('#quantityInput').val();
-			if (userInfo.email) {
-				if(($('#typecode').val()=='WTS') || ($('#typecode').val()==''))
-				{
-				$.ajax({
-					type: "POST",
-					url: "/api/cart/add-cart/" + productSpecs.id,
-					data: cartInfo,
-					success: function (response) {
-						location.reload();
-					},
-					error: function (error) {
-						$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
-					}
-				});
-				}
-				else
-				{
-					 window.location.href = 'gtc-mail/compose?id='+vendorInfo.user_id+'&text='+vendorInfo.vendor_name;
+	$("#gtc-add-to-cart").click(function() {
+		var cartInfo = {};
+		var marketplace_id = $('#marketplaceId').val();
+
+		cartInfo.product_quantity = $('#quantityInput').val();
+		cartInfo.marketplace_id = marketplace_id;
+		if (userInfo.email) {
+			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
+					cartAPI(cartInfo);
+				} else {
+					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
 			} else {
-				$('#myModal').modal('show');
+				window.location.href = "/upgradeplan";
 			}
-		});
+		} else {
+			$('#myModal').modal('show');
+		}
+	});
 
+		function cartAPI(cartInfo) {
+			$.ajax({
+				type: "POST",
+				url: "/api/cart/add-cart/" + productSpecs.id,
+				data: cartInfo,
+				success: function(response) {
+					location.reload();
+				},
+				error: function(error) {
+					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+				}
+			});
+		}
 
      //ASK FOR VENDOR
     $('#SubmitAskBtn').prop('disabled', true);
@@ -96,7 +144,7 @@ $(document).ready(function() {
      $("#AskVendorForm").on("submit", function(){
         if(userInfo.email){
    		var sentInput = {};
-   		sentInput.to = vendorInfo.User.email;
+   		sentInput.to = vendorInfo.User.user_contact_email;
 		sentInput.subject = $('#AskSubject').val();
 		sentInput.message = $('#AskText').val();
 		sentInput.vendor_name = vendorInfo.vendor_name;
@@ -154,6 +202,7 @@ function compareProduct(e) {
 };
 
 function wishUpdate() {
+	
 	if (userInfo.email) {
 		var newObj = {};
 		newObj.product_id = productSpecs.id;
@@ -202,6 +251,14 @@ function mailVendor(){
 	text-align: left;
 	vertical-align: middle;
 }*/
+/*content added starts */
+.morecontent span {
+    display: none;
+}
+.morelink {
+    display: block;
+}
+/*content added ends */
 </style>
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
@@ -231,9 +288,7 @@ function mailVendor(){
                             					{{#each product.ProductMedia}}
                             					{{#if @first}} 
                             					{{else}} 
-                            					{{!-- {{#ifCond @index '<' 4}} --}}
                             					<a href="{{this.url}}" ><img src="{{this.url}}" onError="imgError(this)" width="75" class="img-fluid" height="75"></a>
-                            					{{!-- {{/ifCond}} --}}
                             					{{/if}}
                             					{{/each}}
                             				</div>
@@ -293,14 +348,14 @@ function mailVendor(){
 													<div class="add-to-bag text-right">
 														<label class="m-r-xs text-light-muted">Quantity: </label>
 														<input id="quantityInput" type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="1"
-														 {{#if product.moq }} value="{{product.moq}}" {{else}} value="1"{{/if}} min="1" max="{{product.moq}}">
+														{{#ifCond product.marketplace_id '==' 1}} {{#if product.moq }} value="{{product.moq}}" {{else}} value="1"{{/if}} {{else ifCond product.marketplace_id '!=' 1 }} value="1" {{/ifCond}} min="1" max="{{product.moq}}">
+														<input type="hidden" name="marketplace_id" id="marketplaceId" value={{product.marketplace_id}}>
 														  <input type="hidden" value="{{product.MarketplaceType.code}}" id="typecode" name="typecode"/>
 														 {{#ifCond selectedPage '==' 'wholesale'}}
 														 {{#ifCond product.MarketplaceType.code '==' "WTB"}}
 														  <a  href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<span class="m-l-xs align-middle">
 																Contact Buyer
-
 															</span>
 														</a>
 														{{else ifCond product.MarketplaceType.code '==' "WTT"}}
@@ -328,7 +383,18 @@ function mailVendor(){
 															</span>
 														</a>
 														{{/ifCond}}
-														
+														{{else ifCond selectedPage '==' 'lifestyle'}}
+														<a href="/subscription/{{product.id}}" class="btn btn-primary">
+															<svg width="18" height="16" viewBox="0 0 21.4 20.8">
+																<g fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10">
+																	<path d="M18.2 7.7h-15l-2 12.1h19z" />
+																	<path d="M14 12.4V4.3C14 2.5 12.5 1 10.7 1S7.3 2.5 7.3 4.3v8.1" />
+																</g>
+															</svg>
+															<span class="m-l-xs align-middle">
+																Subscribe
+															</span>
+														</a>
 														 {{else}}
 														<a href="javascript:;" id="gtc-add-to-cart" class="btn btn-primary">
 															<svg width="18" height="16" viewBox="0 0 21.4 20.8">
@@ -342,7 +408,6 @@ function mailVendor(){
 															</span>
 														</a>
 														{{/ifCond}}
-														
 													</div>
 													<div class="modal fadeadd-to-bag" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 													<div class="modal-dialog">
@@ -496,7 +561,7 @@ function mailVendor(){
                             			</div>
                             			<div id="productAlert"></div>
                             			{{#if product.description}}
-                            			<div class="p-description">
+                            			<div class="p-description" style="font-size:small">
                             				{{{product.description}}}
                             			</div>
 										{{!-- {{#limit product.description}} --}}

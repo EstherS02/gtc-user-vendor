@@ -218,6 +218,7 @@ module.exports.initRelations = () => {
     const SubCategory = model.SubCategory;
     const State = model.State;
     const Plan = model.Plan;
+    const ProductAdsSetting = model.ProductAdsSetting;
 
     Vendor.hasMany(BusinessHour, {
         foreignKey: 'vendor_id',
@@ -297,6 +298,11 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Vendor.hasMany(ProductAdsSetting, {
+        foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
     Vendor.belongsTo(User, {
         foreignKey: 'user_id',
         onDelete: 'NO ACTION',

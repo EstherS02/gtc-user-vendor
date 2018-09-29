@@ -8,6 +8,8 @@ const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const cartService = require('../../../api/cart/cart.service');
+const marketplace = require('../../../config/marketplace');
 const Plan = require('../../../config/gtc-plan');
 import series from 'async/series';
 var async = require('async');
@@ -29,26 +31,30 @@ export function vendorSupport(req, res) {
 
 
 	async.series({
-		Support: function(callback){
-			service.findRow(modelName, queryObj, []).then(function(response){
+		Support: function(callback) {
+			service.findRow(modelName, queryObj, []).then(function(response) {
 				console.log(response)
-				if(response){
-					return callback(null,response);
-				}else{
+				if (response) {
+					return callback(null, response);
+				} else {
 					return callback(null);
 				}
-			}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		},
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
 			}).catch(function(error) {
 				console.log('Error :::', error);
 				return callback(null);
 			});
+		},
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -109,17 +115,18 @@ export function vendorSupport(req, res) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
-			}
+		}
 	}, function(err, results) {
 		if (!err) {
 			res.render('vendorPages/vendor-support', {
 				title: "Global Trade Connect",
 				VendorDetail: results.VendorDetail,
-				Support: results.Support, 	
+				Support: results.Support,
 				bottomCategory: bottomCategory,
 				categories: results.categories,
 				LoggedInUser: LoggedInUser,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				selectedPage: 'support',
 				Plan: Plan,
 			});

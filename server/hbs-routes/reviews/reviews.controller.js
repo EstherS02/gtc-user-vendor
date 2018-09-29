@@ -5,6 +5,8 @@ const model = require('../../sqldb/model-connect');
 const reference = require('../../config/model-reference');
 const statusCode = require('../../config/status');
 const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 const sequelize = require('sequelize');
 const moment = require('moment');
 var async = require('async');
@@ -12,7 +14,7 @@ const vendorPlan = require('../../config/gtc-plan');
 
 export function reviews(req, res) {
 	var LoggedInUser = {};
-	var bottomCategory={};
+	var bottomCategory = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -35,7 +37,7 @@ export function reviews(req, res) {
 	var order = "desc"; //"asc"
 	var offset = 0;
 	var limit;
-	
+
 	vendorId = req.query.vendor_id;
 	var rating_limit = 120;
 	var queryObj = {};
@@ -61,36 +63,40 @@ export function reviews(req, res) {
 	var maxSize;
 	// End pagination
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
-		categories: function(callback) {
-		var includeArr = [];
-            const categoryOffset = 0;
-            const categoryLimit = null;
-            const categoryField = "id";
-            const categoryOrder = "asc";
-            var categoryModel = "Category";
-            const categoryQueryObj = {};
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
+					return callback(null);
+				}
+			},
+			categories: function(callback) {
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = statusCode["ACTIVE"];
+				categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                .then(function(category) {
-                    var categories = category.rows;
-                    bottomCategory['left'] = categories.slice(0, 8);
-                    bottomCategory['right'] = categories.slice(8, 16);
-                    return callback(null, category.rows);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
-		},
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 			Reviews: function(callback) {
 				model['VendorRating'].findAndCountAll({
 					where: queryObj,
@@ -116,9 +122,9 @@ export function reviews(req, res) {
 					// offset:0,
 					// limit:4,
 					attributes: [
-				'rating','title','comment','created_on','id' ,[sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
-			],
-			group: ['Review.rating']
+						'rating', 'title', 'comment', 'created_on', 'id', [sequelize.fn('COUNT', sequelize.col('Review.user_id')), 'userCount']
+					],
+					group: ['Review.rating']
 
 				}).then(function(Reviews) {
 					var productRating = [{
@@ -150,8 +156,8 @@ export function reviews(req, res) {
 						for (var i = 0; i < productRating.length; i++) {
 							for (var j = 0; j < responseRatings.length; j++) {
 								if (productRating[i].rating == responseRatings[j].rating) {
-									total = total+responseRatings[j].userCount;
-									totalAmt = totalAmt+(responseRatings[j].userCount*responseRatings[j].rating)
+									total = total + responseRatings[j].userCount;
+									totalAmt = totalAmt + (responseRatings[j].userCount * responseRatings[j].rating)
 									productRating[i].userCount = responseRatings[j].userCount;
 								}
 							}
@@ -162,13 +168,13 @@ export function reviews(req, res) {
 					var counts = JSON.parse(JSON.stringify(Reviews.count));
 					var count = 0;
 
-					if(counts.length > 0){
-						for(var a=0;a<counts.length;a++){
-							count = count+counts[a].count;
+					if (counts.length > 0) {
+						for (var a = 0; a < counts.length; a++) {
+							count = count + counts[a].count;
 						}
 					}
 					Reviews.totalCount = count;
-					queryPaginationObj['maxSize'] = count/limit;
+					queryPaginationObj['maxSize'] = count / limit;
 					queryPaginationObj['count'] = count;
 					return callback(null, Reviews);
 				}).catch(function(error) {
@@ -176,16 +182,16 @@ export function reviews(req, res) {
 					return callback(null);
 				});
 			},
-			userReviews: function(callback){
+			userReviews: function(callback) {
 				model['Review'].findAndCountAll({
 					where: queryObj,
-					include:[{
-					model:model['User'],
-					attributes: {
-						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-					}
-					},{
-						model:model['Product']
+					include: [{
+						model: model['User'],
+						attributes: {
+							exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+						}
+					}, {
+						model: model['Product']
 					}],
 					offset: offset,
 					limit: limit,
@@ -210,8 +216,9 @@ export function reviews(req, res) {
 					avgRating: results.Rating.avgRating,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
-					cartheader: results.cartCounts,
-                    bottomCategory: bottomCategory,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
+					bottomCategory: bottomCategory,
 					// pagination
 					page: page,
 					pageSize: limit,
@@ -221,12 +228,12 @@ export function reviews(req, res) {
 					// End pagination
 					vendorPlan: vendorPlan,
 					queryURI: queryURI,
-					userReviews:results.userReviews,
+					userReviews: results.userReviews,
 					userCollectionSize: results.userReviews.count,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reviews', err);
 			}
 		});
-
 }

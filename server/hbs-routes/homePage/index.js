@@ -6,11 +6,9 @@ var middleware = require('../../middleware');
 var permission = require('../../config/permission');
 var globalUser = require('../../auth/global-user-obj');
 
-
 /* Handlebars routes */
 var controller = require('./homePage.controller');
 
 router.get('/', globalUser.isGlobalObj(), controller.homePage);
-
 
 module.exports = router;

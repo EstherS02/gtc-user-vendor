@@ -5,6 +5,8 @@ const sequelize = require('sequelize');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 const config = require('../../config/environment');
+const RawQueries = require('../../raw-queries/sql-queries');
+const Sequelize_Instance = require('../../sqldb/index');
 
 export async function categoryWithProductCount(productQueryObj, isFeaturedProduct) {
 	var results = {};
@@ -111,7 +113,10 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 			attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 			include: [{
 				model: model['Product'],
-				where: productQueryObj,
+				// where: productQueryObj,
+				where:{
+					status:1,
+				},
 				include: [{
 					model: model['FeaturedProduct'],
 					where: {
@@ -142,4 +147,21 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 	} catch (error) {
 		return error;
 	}
+}
+
+export async function productCountForCategoryAndSubcategory(productCountQueryParams) {
+	return new Promise((resolve, reject) => {
+		if (productCountQueryParams) {
+			Sequelize_Instance.query(RawQueries.productCountBasedCategory(productCountQueryParams), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
 }

@@ -33,28 +33,30 @@
 					$("#addTimeSlotFormNew").hide();
 					$("#addNewTimeSlotForm").show();
 					$("#hideNewTimeSlotForm").hide();
-					$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-talk-alert .talk-message').text("New Time Slot Added Successfully")
-					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
-						$("#gtc-talk-alert").slideUp(500);
-						location.reload();
-					});
+					outputPopup("New Time Slot Added Successfully");
 				},
 				error: function (request, status, error) {
 					console.log('status', status);
 					console.log('error', error);
-					$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-talk-alert .talk-message').text(error);
-					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
-						$("#gtc-talk-alert").slideUp(500);
-					});
+					outputPopupError(error);
 				}
 			});
 		});
 	});
-
-</script>
-<script type="text/javascript">
+	function outputPopup(data){
+		$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-talk-alert .talk-message').text(data)
+					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-talk-alert").slideUp(500);
+					});
+	}
+	function outputPopupError(data){
+		$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-talk-alert .talk-message').text(data);
+					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
+						$("#gtc-talk-alert").slideUp(500);
+					});
+	}
 	$(document).ready(function () {
 		if(!$('input[name=gtc_talk_enabled]').is(':checked')){
 			$("#UpdateTalks").prop('disabled', true);
@@ -76,22 +78,15 @@
 				url: '/api/gtc-talk/store',
 				data: formData,
 				success: function (data, text) {
-					$('#gtc-talk-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-talk-alert .talk-message').text("Data Updated Successfully")
-					$("#gtc-talk-alert").fadeTo(3000, 500).slideUp(500, function() {
-						$("#gtc-talk-alert").slideUp(500);
-						location.reload();
-					});
+					outputPopup("Data Updated Successfully");
 						// location.reload();
+
 					},
 					error: function (request, status, error) {
+						outputPopupError(error);
 						console.log('status', status);
 						console.log('error', error);
-						$('#gtc-talk-alert').removeClass('alert-success').addClass('alert-danger');
-						$('#gtc-talk-alert .talk-message').text(error.responseText);
-						$("#gtc-talk-alert").fadeTo(7000, 500).slideUp(500, function() {
-							$("#gtc-talk-alert").slideUp(500);
-						});
+						
 					}
 				});
 		} else {
@@ -115,10 +110,12 @@
 							data: formData,
 							success: function (data, text) {
 								location.reload();
+								outputPopup("Data Inserted Successfully");
 							},
 							error: function (request, status, error) {
 								console.log('status', status);
 								console.log('error', error);
+								outputPopupError(error);
 							}
 						});
 					},
@@ -156,6 +153,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -248,7 +246,7 @@
 								</p>
 							</div>
 						</div>
-						<div class="row addTimeSlotFormNew">
+						<div class="row"  id="addTimeSlotFormNew">
                             <div class="col-lg-12">
 								<form>
 									<div class="row">
@@ -293,7 +291,7 @@
 										</div>
 										<div class="col-lg-1">
 											<button class="ladda-button btn btn-small btn-muted" id="uploadOperationHours" type="submit" data-style="expand-left">
-												<span class="ladda-label">Submit</span>
+												<span class="ladda-label">SUBMIT</span>
 												<span class="ladda-spinner"></span>
 											</button>
 										</div>
@@ -318,6 +316,9 @@
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

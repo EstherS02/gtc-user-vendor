@@ -1,253 +1,274 @@
-{{> header/top-header LoggedInUser = LoggedInUser}}
-{{> vendor/vendor-menu}}
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 
 <script type="text/javascript">
-$(document).ready(function() {
-	$('#btnFaSpinner').hide();
-	$('#btnAliExpressFaSpinner').hide();
-	$('#AmazonBtnFaSpinner').hide();
+	$(document).ready(function() {
+		$('#btnFaSpinner').hide();
+		$('#btnAliExpressFaSpinner').hide();
+		$('#AmazonBtnFaSpinner').hide();
 
-	$('input[type="text"]').keyup(function() {
-		if ($(this).val() != '') {
-			$(':input[type="submit"]').prop('disabled', false);
-		}
-	});
-
-	$("#importAliExpressForm").submit(function(e) {
-		e.preventDefault();
-
-		var data = {}
-		$("#popupError p").remove();
-		$(':input[type="submit"]').prop('disabled', true);
-
-		if ($('#importAliExpressForm').valid()) {
-			data['marketplace_id'] = 2;
-			data['vendor_id'] = $('#inputSellerId').val();
-
-			$('#btnAliExpressFaSpinner').show();
-
-			$.ajax({
-				type: 'POST',
-				url: '/api/product/import-aliexpress',
-				data: data,
-				success: function(data) {
-					$('#btnAliExpressFaSpinner').hide();
-					$('#importAliExpressModal').modal('toggle');
-					$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
-					setTimeout(function() {
-						$("#logMessage p").remove();
-					}, 10000);
-				},
-				error: function(response, status, error) {
-					$('#btnAliExpressFaSpinner').hide();
-					$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
-					setTimeout(function() {
-						$("#popupError p").remove();
-					}, 10000);
-				}
-			});
-		}
-	});
-
-	$("#importAliExpressForm").validate({
-		rules: {
-			seller_id: "required"
-		},
-		messages: {
-			seller_id: "Please enter seller ID"
-		}
-	});
-
-	$("#importWooCommerceForm").submit(function(e) {
-		e.preventDefault();
-
-		var credentials = {};
-		$("#popupError p").remove();
-		$(':input[type="submit"]').prop('disabled', true);
-
-		if ($('#importWooCommerceForm').valid()) {
-			credentials['marketplace_id'] = 2;
-			credentials['store_url'] = $('#inputStoreURL').val();
-			credentials['consumer_key'] = $('#inputConsumerKey').val();
-			credentials['consumer_secret'] = $('#inputConsumerSecret').val();
-			$('#btnFaSpinner').show()
-			$.ajax({
-				type: 'POST',
-				url: '/api/product/import-woocommerce',
-				data: credentials,
-				success: function(data) {
-					$('#btnFaSpinner').hide();
-					if (data.skippedProduct == 0) {
-						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully.</p>');
-					} else if (data.successProduct == 0) {
-						$('#logMessage').append('<p class="text-center text-danger m-b-xs">' + data.skippedProduct + ' products skipped while import.</p>');
-					} else {
-						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully and ' + data.skippedProduct + ' products skipped while import.</p>');
-					}
-					$('#importWooCommerModal').modal('toggle');
-					setTimeout(function() {
-						$("#logMessage p").remove();
-					}, 10000);
-				},
-				error: function(response, status, error) {
-					$('#btnFaSpinner').hide();
-					$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
-					setTimeout(function() {
-						$("#popupError p").remove();
-					}, 10000);
-				}
-			});
-		}
-	});
-
-	$("#importWooCommerceForm").validate({
-		rules: {
-			store_url: "required",
-			consumer_key: "required",
-			consumer_secret: "required"
-		},
-		messages: {
-			store_url: "Please enter store url.",
-			consumer_key: "Please enter consumer key.",
-			consumer_secret: "Please select consumer secret."
-		}
-	});
-
-	var checkConnect, ebayWindow;
-
-	checkConnect = setInterval(function() {
-		if (!ebayWindow || !ebayWindow.closed) return;
-		clearInterval(checkConnect);
-	}, 100);
-
-	var serialize = function(obj) {
-		var str = [];
-		for (var p in obj)
-			if (obj.hasOwnProperty(p)) {
-				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+		$('input[type="text"]').keyup(function() {
+			if ($(this).val() != '') {
+				$(':input[type="submit"]').prop('disabled', false);
 			}
-		return str.join("&");
-	}
+		});
 
-	$("#importEbay").click(function() {
-		const credentials = {
-			client_id: 'ChandruM-GlobalTr-PRD-aed499e41-c30cc664',
-			response_type: 'code',
-			redirect_uri: 'Chandru_M-ChandruM-Global-quegb',
-			scope: 'https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'
-		};
-		ebayWindow = window.open('https://auth.ebay.com/oauth2/authorize?' + serialize(credentials), 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
-	});
+		$("#importAliExpressForm").submit(function(e) {
+			e.preventDefault();
 
-	window.onEbayCallbackClose = function(data) {
-		$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
-		setTimeout(function() {
-			$("#logMessage p").remove();
-		}, 10000);
-	};
-
-	$("#importAmazonModalForm").validate({
-		rules: {
-			amazon_seller_id: "required",
-			amazon_auth_token: "required",
-			amazon_marketplace: "required"
-		},
-		messages: {
-			amazon_seller_id: "Please enter your seller or merchant id",
-			amazon_auth_token: "Please enter the auth Token",
-			amazon_marketplace: "Please select the marketplace region"
-		}
-	});
-
-	$('#importAmazonModalForm').submit(function(e) {
-		e.preventDefault();
-
-		if ($('#importAmazonModalForm').valid()) {
+			var data = {}
+			$("#popupError p").remove();
 			$(':input[type="submit"]').prop('disabled', true);
-			$("#amazonPopupError p").remove();
 
-			let credentials = {};
-			credentials['marketplace_id'] = 2;
-			credentials['amazon_seller_id'] = $('#amazon_seller_id').val();
-			credentials['amazon_auth_token'] = $('#amazon_auth_token').val();
-			credentials['amazon_marketplace'] = $('#amazon_marketplace').val();
+			if ($('#importAliExpressForm').valid()) {
+				data['marketplace_id'] = 2;
+				data['vendor_id'] = $('#inputSellerId').val();
 
-			$('#AmazonBtnFaSpinner').show();
-			$.ajax({
-				type: 'POST',
-				url: '/api/product/import-amazon',
-				data: credentials,
-				success: function(data, response) {
-					$('#AmazonBtnFaSpinner').hide();
-					$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
-					$('#importAmazonModal').modal('toggle');
-				},
-				error: function(response, status, error) {
-					$('#AmazonBtnFaSpinner').hide();
-					$('#amazonPopupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+				$('#btnAliExpressFaSpinner').show();
+
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-aliexpress',
+					data: data,
+					success: function(data) {
+						$('#btnAliExpressFaSpinner').hide();
+						$('#importAliExpressModal').modal('toggle');
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
+						setTimeout(function() {
+							$("#logMessage p").remove();
+						}, 10000);
+					},
+					error: function(response, status, error) {
+						$('#btnAliExpressFaSpinner').hide();
+						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						setTimeout(function() {
+							$("#popupError p").remove();
+						}, 10000);
+					}
+				});
+			}
+		});
+
+		$("#importAliExpressForm").validate({
+			rules: {
+				seller_id: "required"
+			},
+			messages: {
+				seller_id: "Please enter seller ID"
+			}
+		});
+
+		$("#importWooCommerceForm").submit(function(e) {
+			e.preventDefault();
+
+			var credentials = {};
+			$("#popupError p").remove();
+			$(':input[type="submit"]').prop('disabled', true);
+
+			if ($('#importWooCommerceForm').valid()) {
+				credentials['marketplace_id'] = 2;
+				credentials['store_url'] = $('#inputStoreURL').val();
+				credentials['consumer_key'] = $('#inputConsumerKey').val();
+				credentials['consumer_secret'] = $('#inputConsumerSecret').val();
+				$('#btnFaSpinner').show()
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-woocommerce',
+					data: credentials,
+					success: function(data) {
+						$('#btnFaSpinner').hide();
+						if (data.skippedProduct == 0) {
+							$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully.</p>');
+						} else if (data.successProduct == 0) {
+							$('#logMessage').append('<p class="text-center text-danger m-b-xs">' + data.skippedProduct + ' products skipped while import.</p>');
+						} else {
+							$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data.successProduct + ' products imported from woocommerce successfully and ' + data.skippedProduct + ' products skipped while import.</p>');
+						}
+						$('#importWooCommerModal').modal('toggle');
+						setTimeout(function() {
+							$("#logMessage p").remove();
+						}, 10000);
+					},
+					error: function(response, status, error) {
+						$('#btnFaSpinner').hide();
+						$('#popupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+						setTimeout(function() {
+							$("#popupError p").remove();
+						}, 10000);
+					}
+				});
+			}
+		});
+
+		$("#importWooCommerceForm").validate({
+			rules: {
+				store_url: "required",
+				consumer_key: "required",
+				consumer_secret: "required"
+			},
+			messages: {
+				store_url: "Please enter store url.",
+				consumer_key: "Please enter consumer key.",
+				consumer_secret: "Please select consumer secret."
+			}
+		});
+
+		var checkConnect, ebayWindow;
+
+		checkConnect = setInterval(function() {
+			if (!ebayWindow || !ebayWindow.closed) return;
+			clearInterval(checkConnect);
+		}, 100);
+
+		var serialize = function(obj) {
+			var str = [];
+			for (var p in obj)
+				if (obj.hasOwnProperty(p)) {
+					str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 				}
-			});
+			return str.join("&");
 		}
+
+		$("#importEbay").click(function() {
+			const credentials = {
+				client_id: 'ChandruM-GlobalTr-PRD-aed499e41-c30cc664',
+				response_type: 'code',
+				redirect_uri: 'Chandru_M-ChandruM-Global-quegb',
+				scope: 'https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'
+			};
+			ebayWindow = window.open('https://auth.ebay.com/oauth2/authorize?' + serialize(credentials), 'ebayOAuthPopup', 'location=0,status=0,width=800,height=400');
+		});
+
+		window.onEbayCallbackClose = function(data) {
+			$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
+			setTimeout(function() {
+				$("#logMessage p").remove();
+			}, 10000);
+		};
+
+		$("#importAmazonModalForm").validate({
+			rules: {
+				amazon_seller_id: "required",
+				amazon_auth_token: "required",
+				amazon_marketplace: "required"
+			},
+			messages: {
+				amazon_seller_id: "Please enter your seller or merchant id",
+				amazon_auth_token: "Please enter the auth Token",
+				amazon_marketplace: "Please select the marketplace region"
+			}
+		});
+
+		$('#importAmazonModalForm').submit(function(e) {
+			e.preventDefault();
+
+			if ($('#importAmazonModalForm').valid()) {
+				$(':input[type="submit"]').prop('disabled', true);
+				$("#amazonPopupError p").remove();
+
+				let credentials = {};
+				credentials['marketplace_id'] = 2;
+				credentials['amazon_seller_id'] = $('#amazon_seller_id').val();
+				credentials['amazon_auth_token'] = $('#amazon_auth_token').val();
+				credentials['amazon_marketplace'] = $('#amazon_marketplace').val();
+
+				$('#AmazonBtnFaSpinner').show();
+				$.ajax({
+					type: 'POST',
+					url: '/api/product/import-amazon',
+					data: credentials,
+					success: function(data, response) {
+						$('#AmazonBtnFaSpinner').hide();
+						$('#logMessage').append('<p class="text-center text-primary m-b-xs">' + data + '</p>');
+						$('#importAmazonModal').modal('toggle');
+					},
+					error: function(response, status, error) {
+						$('#AmazonBtnFaSpinner').hide();
+						$('#amazonPopupError').append('<p class="text-center label-control text-danger">' + response.responseText + '</p>');
+					}
+				});
+			}
+		});
 	});
-});
 </script>
 
 <div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="landing bg-white">
-                	<div id="logMessage"></div>
-                    <div class="icon-import">
-                    	<svg xmlns="http://www.w3.org/2000/svg" width="73.5" height="58" viewBox="0 0 73.5 58"><g fill="#D9D9DA"><path d="M0 33.4c3.2.1 6.5.1 9.7.2h2.5v12.2h49V33.4h12.3V58H0V33.4zM54.8 15.2c-6.2 6.1-12.1 12-17.8 17.7L19.3 15.2h8.3V0H46v15.2h8.8z"/></g></svg>
-                    </div>
-                    <h1 class="m-t-sm">BUILD YOUR STORE</h1>
-                    <p class="m-t-lg content-txt">Create your Global Trade Connect database now! You can import from the following online services or add your first product manually.</p>
-                    <div class="row m-t-lg">
-                    	<div class="col-md-3">
-                    		<div class="import">
-                    			<a href="javascript:;" id="importEbay">
-	                    			<img src="gtc-assets/img/import-ebay.png" alt="import ebay" title="import from ebay">
-	                    			<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM EBAY</p>
-                    			</a>
-                    		</div>
-                    	</div>
-                    	<div class="col-md-3">
-                    		<div class="import">
-                    			<a href="#" data-toggle="modal" data-target="#importAliExpressModal" data-whatever="@mdo">
-                    				<img src="gtc-assets/img/import-aliexpress.png" alt="import aliexpress" title="import from aliexpress">
-                    				<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM ALIEXPRESS</p>
-                    			</a>
-                    		</div>
-                    	</div>
-                    	<div class="col-md-3">
-                    		<div class="import">
-                    			<a href="#" data-toggle="modal" data-target="#importWooCommerModal" data-whatever="@mdo">
-                    				<img src="gtc-assets/img/import-wordpress.png" alt="import wordpress" title="import from wordpress">
-                    				<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM WORDPRESS</p>
-                    			</a>
-                    		</div>
-                    	</div>
-                    	<div class="col-md-3">
-                    		<div class="import">
-								<a href="#" data-toggle="modal" data-target="#importAmazonModal" data-whatever="@mdo">
-                    				<img src="gtc-assets/img/import-amazon.png" alt="import amazon" title="import from amazon">
-                    				<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM AMAZON</p>
-                    			</a>
-                    		</div>
-                    	</div>
-                    </div>
-                    <div class="row m-t-lg">
-                    	<div class="col-md-12">
-                    		<p><small>or</small></p>
-                    		<a href="listings/shop/add-product" class="btn btn-gray button-small font-weight-bold">ADD YOUR FIRST PRODUCT</a>
-                    		<p class="m-t-lg"><small>Please note: Global Trade Connect is not responsible for any information not imported and it is recommend that the check the products to ensure the information has been relayed properly.</small></p>
-                    	</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="gtc-container">
+		<div class="row">
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+				<div class="col-md-12">
+					<div class="landing bg-white">
+						<div id="logMessage"></div>
+						<div class="icon-import">
+							<svg xmlns="http://www.w3.org/2000/svg" width="73.5" height="58" viewBox="0 0 73.5 58">
+								<g fill="#D9D9DA">
+									<path d="M0 33.4c3.2.1 6.5.1 9.7.2h2.5v12.2h49V33.4h12.3V58H0V33.4zM54.8 15.2c-6.2 6.1-12.1 12-17.8 17.7L19.3 15.2h8.3V0H46v15.2h8.8z"
+									/>
+								</g>
+							</svg>
+						</div>
+						<h1 class="m-t-sm">BUILD YOUR STORE</h1>
+						<p class="m-t-lg content-txt">Create your Global Trade Connect database now! You can import from the following online services or add your first
+							product manually.</p>
+						<div class="row m-t-lg">
+							<div class="col-md-3">
+								<div class="import">
+									<a href="javascript:;" id="importEbay">
+										<img src="gtc-assets/img/import-ebay.png" alt="import ebay" title="import from ebay">
+										<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM EBAY</p>
+									</a>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="import">
+									<a href="#" data-toggle="modal" data-target="#importAliExpressModal" data-whatever="@mdo">
+										<img src="gtc-assets/img/import-aliexpress.png" alt="import aliexpress" title="import from aliexpress">
+										<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM ALIEXPRESS</p>
+									</a>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="import">
+									<a href="#" data-toggle="modal" data-target="#importWooCommerModal" data-whatever="@mdo">
+										<img src="gtc-assets/img/import-wordpress.png" alt="import wordpress" title="import from wordpress">
+										<p class="content-txt text-black m-t-xs font-weight-bold">IMPORT FROM WORDPRESS</p>
+									</a>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="import">
+									<a href="#" data-toggle="modal" data-target="#importAmazonModal" data-whatever="@mdo">
+										<img src="gtc-assets/img/import-amazon.png" alt="import amazon" title="import from amazon">
+										<p class="content-txt m-t-xs font-weight-bold">IMPORT FROM AMAZON</p>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="row m-t-lg">
+							<div class="col-md-12">
+								<p>
+									<small>or</small>
+								</p>
+								<a href="listings/shop/add-product" class="btn btn-gray button-small font-weight-bold">ADD YOUR FIRST PRODUCT</a>
+								<p class="m-t-lg">
+									<small>Please note: Global Trade Connect is not responsible for any information not imported and it is recommend that the
+										check the products to ensure the information has been relayed properly.</small>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{else}}
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-2"> </div>
+							<div class="col-md-10">
+								{{> plan-inactive}}
+							</div>
+						</div>
+					</div>
+			{{/ifCond}}
+		</div>
+	</div>
 </div>
 
 <div class="modal fade" id="importAliExpressModal" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
@@ -259,18 +280,22 @@ $(document).ready(function() {
 			<form id="importAliExpressForm" class="form">
 				<div class="modal-body">
 					<div class="row">
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">Ali Express Seller ID :</label>
-	                            <input type="text" id="inputSellerId" name="seller_id" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
-	                    <div class="col-lg-12" id="popupError"></div>
-	                </div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Ali Express Seller ID :</label>
+								<input type="text" id="inputSellerId" name="seller_id" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12" id="popupError"></div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnAliExpressFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CLOSE</button>
+					<button type="submit" class="btn btn-small btn-primary">
+						<strong>SUBMIT</strong>
+						<i id="btnAliExpressFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i>
+					</button>
 				</div>
 			</form>
 		</div>
@@ -286,30 +311,38 @@ $(document).ready(function() {
 			<form id="importWooCommerceForm" class="form">
 				<div class="modal-body">
 					<div class="row">
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">Your store URL <a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#requirements">Requirements for woocommerce setup</a></label>
-	                            <input type="text" id="inputStoreURL" name="store_url" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">Generating API Key and Secret <a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#rest-api-keys">Requirements for woocommerce setup</a></label>
-	                            <input type="text" id="inputConsumerKey" name="consumer_key" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control">Your consumer secret</label>
-	                            <input type="text" id="inputConsumerSecret" name="consumer_secret" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
-	                    <div class="col-lg-12" id="popupError"></div>
-	                </div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Your store URL
+									<a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#requirements">Requirements for woocommerce setup</a>
+								</label>
+								<input type="text" id="inputStoreURL" name="store_url" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control d-block">Generating API Key and Secret
+									<a class="alignright" target="_blank" href="https://woocommerce.github.io/woocommerce-rest-api-docs/?javascript#rest-api-keys">Requirements for woocommerce setup</a>
+								</label>
+								<input type="text" id="inputConsumerKey" name="consumer_key" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control">Your consumer secret</label>
+								<input type="text" id="inputConsumerSecret" name="consumer_secret" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12" id="popupError"></div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CLOSE</button>
+					<button type="submit" class="btn btn-small btn-primary">
+						<strong>SUBMIT</strong>
+						<i id="btnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i>
+					</button>
 				</div>
 			</form>
 		</div>
@@ -326,29 +359,34 @@ $(document).ready(function() {
 			<form id="importAmazonModalForm" class="form">
 				<div class="modal-body">
 					<div class="row">
-	                    <div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">Developer ID</label>
-	                            <input type="text" id="amazon_dev_id" name="amazon_dev_id" value="{{AmazonDeveloperID}}" class="form-control-customized form-control-sm" disabled required style="cursor:not-allowed;"/>
-	                        </div>
-							<p class="label-control d-block">Note: Copy paste our Developer ID into Amazon seller central console, authorize us and provide the Merchant Id and Auth token below to import produts into GTC. For more information visit - <a href="https://docs.developer.amazonservices.com/en_IT/faq.html#faq__developForSeller" target="_blank">Amazon seller central - Authorize a Developer</a></p>
-	                    </div>
 						<div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">Merchant ID or Seller ID</label>
-	                            <input type="text" id="amazon_seller_id" name="amazon_seller_id" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
+							<div class="form-group">
+								<label class="label-control d-block">Developer ID</label>
+								<input type="text" id="amazon_dev_id" name="amazon_dev_id" value="{{AmazonDeveloperID}}" class="form-control-customized form-control-sm"
+								 disabled required style="cursor:not-allowed;" />
+							</div>
+							<p class="label-control d-block">Note: Copy paste our Developer ID into Amazon seller central console, authorize us and provide the Merchant Id and
+								Auth token below to import produts into GTC. For more information visit -
+								<a href="https://docs.developer.amazonservices.com/en_IT/faq.html#faq__developForSeller"
+								 target="_blank">Amazon seller central - Authorize a Developer</a>
+							</p>
+						</div>
 						<div class="col-lg-12">
-	                        <div class="form-group">
-	                            <label class="label-control d-block">AuthToken</label>
-	                            <input type="text" id="amazon_auth_token" name="amazon_auth_token" class="form-control-customized form-control-sm" required/>
-	                        </div>
-	                    </div>
+							<div class="form-group">
+								<label class="label-control d-block">Merchant ID or Seller ID</label>
+								<input type="text" id="amazon_seller_id" name="amazon_seller_id" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
 						<div class="col-lg-12">
-							<div class="select-container custom-select-container"> 
+							<div class="form-group">
+								<label class="label-control d-block">AuthToken</label>
+								<input type="text" id="amazon_auth_token" name="amazon_auth_token" class="form-control-customized form-control-sm" required/>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="select-container custom-select-container">
 								<label class="label-control d-block">Choose MarketPlace Region</label>
-								<select class="form-control-customized form-control-sm" id="amazon_marketplace"name="amazon_marketplace" required>
+								<select class="form-control-customized form-control-sm" id="amazon_marketplace" name="amazon_marketplace" required>
 									<option value="">Select Seller Country</option>
 									<option value="CA">Canada</option>
 									<option value="US">United States</option>
@@ -366,14 +404,19 @@ $(document).ready(function() {
 								</select>
 							</div>
 						</div>
-	                    <div class="col-lg-12" id="amazonPopupError"></div>
-	                </div>
+						<div class="col-lg-12" id="amazonPopupError"></div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal"><b>Close</button>
-					<button type="submit" class="btn btn-small btn-primary"><strong>Submit</strong><i id="AmazonBtnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i></button>
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CLOSE</button>
+					<button type="submit" class="btn btn-small btn-primary">
+						<strong>SUBMIT</strong>
+						<i id="AmazonBtnFaSpinner" class="fa fa fa-spinner fa-spin m-l-xs"></i>
+					</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+{{> footer/bottom-footer}}

@@ -8,7 +8,8 @@ const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
 const _ = require('lodash');
-const marketPlace = require('../../../config/marketplace');
+const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const orderStatus = require('../../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -44,24 +45,23 @@ export function reporting(req, res) {
     if (req.user.role == 2)
         orderItemQueryObj.vendor_id = req.user.Vendor.id;
 
-    /*if (req.query.compare) {
-    	orderItemQueryObj.compare = req.query.compare;
-    	queryURI['compare'] = req.query.compare;
-    }*/
-
     queryURI['rep_from'] = moment(lhsBetween[0]).format("MM/DD/YYYY");
     queryURI['rep_to'] = moment(lhsBetween[1]).format("MM/DD/YYYY");;
     queryURI['com_from'] = moment(rhsBetween[0]).format("MM/DD/YYYY");;
     queryURI['com_to'] = moment(rhsBetween[1]).format("MM/DD/YYYY");;
 
     async.series({
-            cartCounts: function(callback) {
-                service.cartHeader(LoggedInUser).then(function(response) {
-                    return callback(null, response);
-                }).catch(function(error) {
-                    console.log('cartCounts Error :::', error);
+            cartInfo: function(callback) {
+                if (LoggedInUser.id) {
+                    cartService.cartCalculation(LoggedInUser.id, req)
+                        .then((cartResult) => {
+                            return callback(null, cartResult);
+                        }).catch((error) => {
+                            return callback(error);
+                        });
+                } else {
                     return callback(null);
-                });
+                }
             },
             categories: function(callback) {
                 var includeArr = [];
@@ -121,12 +121,11 @@ export function reporting(req, res) {
         function(err, results) {
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             var dropDownUrl = fullUrl.replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
-
             if (!err) {
                 res.render('vendorNav/reporting/reporting', {
                     title: "Global Trade Connect",
                     products: results.products,
-                    marketPlace: marketPlace,
+                    marketPlace: marketplace,
                     LoggedInUser: LoggedInUser,
                     categories: results.categories,
                     bottomCategory: bottomCategory,
@@ -134,11 +133,12 @@ export function reporting(req, res) {
                     vendorPlan: vendorPlan,
                     dropDownUrl: dropDownUrl,
                     queryURI: queryURI,
-                    cartheader: results.cartCounts,
+                    cart: results.cartInfo,
                     topProducts: results.topProducts,
                     topMarketPlace: results.topMarketPlace,
                     revenueChanges: results.revenueChanges,
-                    revenueCounts: results.revenueCounts
+                    revenueCounts: results.revenueCounts,
+                    statusCode: statusCode
                 });
             } else {
                 res.render('vendorNav/reporting/reporting', err);

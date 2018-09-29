@@ -121,7 +121,7 @@
 					$("#img4").show();
 				});
 			} else {
-				ouputPopup("Please select image to upload");
+				ouputPopupError("Please select image to upload");
 			}
 		});
 		// End upload Bussiness address proof image
@@ -148,6 +148,14 @@
 		function ouputPopup(data) {
 			$('#gtc-add-to-cart').prop('disabled', false);
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-cart-alert .cart-message').text(data);
+			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
+				$("#gtc-cart-alert").slideUp(500);
+			});
+		}
+		function ouputPopupError(data) {
+			$('#gtc-add-to-cart').prop('disabled', false);
+			$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
 			$('#gtc-cart-alert .cart-message').text(data);
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);
@@ -183,6 +191,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -454,8 +463,8 @@
 										 style="object-fit: contain;" /> {{/if}}
 								</div>
 								<hr style="margin-top: 25px;">
-								{{!-- <div style="display:none"> --}}
-									<div  >
+								<div style="display:none">
+									
 									<h5 class="gtc-title verfication_header" style="padding-top: 20px; padding-left: 5px; float: left;">Connect a Social Account
 									</h5>
 									<p class="verification-incomplete">
@@ -499,6 +508,9 @@
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

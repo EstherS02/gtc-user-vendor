@@ -53,7 +53,7 @@ export function productView(productID) {
 				where: {
 					status: status['ACTIVE']
 				},
-				limit: 4,
+				limit: 7,
 				offset: 0,
 				attributes: ['id', 'product_id', 'type', 'url', 'base_image', 'status'],
 				required: false
@@ -357,22 +357,7 @@ function string_to_slug(str) {
 	return str;
 }
 
-export function planDetails(params) {
-	return new Promise((resolve, reject) => {
-		if (params) {
-			Sequelize_Instance.query(RawQueries.planDetailsQuery(params), {
-				model: model['vendor_plan'],
-				type: Sequelize_Instance.QueryTypes.SELECT
-			}).then((results) => {
-				resolve(results)
-			}).catch(function(error) {
-				reject(error);
-			});
-		} else {
-			resolve()
-		}
-	});
-}
+
 export function RandomProducts(modelName,queryObj,limit,order) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findAndCountAll({

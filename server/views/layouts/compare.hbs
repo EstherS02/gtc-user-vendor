@@ -1,52 +1,50 @@
 <script type="text/javascript">
 	var userInfo = {{{ DisplayJSON LoggedInUser }}}
-
+	var Plan = {{{ DisplayJSON Plan}}}
 	$("#gtc-cart-alert").hide();
 
 	$(document).ready(function() {
 		$("a[title='compareForceSignup']").click(function() {
-				$('#myModal').modal('show');
+			$('#myModal').modal('show');
 		});
 	});
+
 	function gtcAddToCart(e) {
+		var cartInfo = {};
+		var marketplace_id = $("#marketplaceId" + e).val();
+		$('#gtc-add-to-cart').prop('disabled', true);
+
+		cartInfo.product_quantity = $('#product-quantity-' + e).val();
+		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ($("#typecode" + e).val() == '1' || $("#typecode" + e).val() == '') {
-				var cartInfo = {};
-				$('#gtc-add-to-cart').prop('disabled', true);
-				cartInfo.product_quantity = $('#product-quantity-' + e).val();
-				if ($('#product-quantity-' + e).val()) {
-					$.ajax({
-						type: "POST",
-						url: "/api/cart/add-cart/" + e,
-						data: cartInfo,
-						success: function(res) {
-							$('#gtc-add-to-cart').prop('disabled', false);
-							if (res && res.message === "SUCCESS") {
-								outputPop(res.message_details);
-								console.log(res)
-								$('#product-quantity-' + e).notify(res.message_details, "success");
-								location.reload(true);
-							}
-						},
-						error: function(error) {
-							$('#gtc-add-to-cart').prop('disabled', false);
-							if (error) {
-								if (error.status === 401)
-									return location.href = "/login";
-								$('#product-quantity-' + e).notify(error.responseJSON.message_details, "error");
-							}
-						}
-					});
+			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 1))) {
+				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
+					cartAPI(cartInfo);
 				} else {
-					$('#product-quantity-' + e).notify("Please enter the value", "error");
+					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
-			}
-			else {
-				window.location.href = 'gtc-mail/compose?id=' + $('#vendor_userid').val() + '&text=' + $('#vendor_username').val();
+			} else {
+				window.location.href = "/upgradeplan";
 			}
 		} else {
 			$('#myModal').modal('show');
 		}
+	}
+	function cartAPI(cartInfo, e) {
+
+		$.ajax({
+			type: "POST",
+			url: "/api/cart/add-cart/" + e,
+			data: cartInfo,
+			success: function(res) {
+				outputPop(res.message_details);
+				$('#product-quantity-' + e).notify(res.message_details, "success");
+				location.reload(true);
+			},
+			error: function(error) {
+				$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+			}
+		});
 	}
 
 	function removeFromCompare(argument) {
@@ -173,16 +171,19 @@
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[0].product_slug}}/{{compareProducts.[0].id}}">{{compareProducts.[0].product_name}}</a>
+									<input type="hidden" name="marketplace_id0" id="marketplaceId{{compareProducts.[0].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[1].product_slug}}/{{compareProducts.[1].id}}">{{compareProducts.[1].product_name}}</a>
+									<input type="hidden" name="marketplace_id1" id = "marketplaceId{{compareProducts.[1].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 							<div class="col-md-4 no-padding">
 								<div class="cprlist">
 									<a href="/products/{{compareProducts.[2].product_slug}}/{{compareProducts.[2].id}}">{{compareProducts.[2].product_name}}</a>
+									<input type="hidden" name="marketplace_id2" id = "marketplaceId{{compareProducts.[2].id}}" value="{{compareProducts.[0].marketplace_id}}">
 								</div>
 							</div>
 						</div>

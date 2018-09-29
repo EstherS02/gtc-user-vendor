@@ -16,6 +16,17 @@
                 </button>
                 <div class="navbar-collapse collapse" id="vendorNavBar">
                     <ul class="navbar-nav vendor-nav">
+						<li class="nav-item">
+							<a href="javascript:;" class="nav-link" style="cursor:default"><b>Current Plan:
+								{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}} Starter Seller
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.SERVICE_PROVIDER}} Service Provider 
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.LIFESTYLE_PROVIDER}} Lifestyle Provider
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}} Retailer
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}} Bulk buyer
+								{{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}} Wholesaler 
+								{{/ifCond}}</b>
+							</a>
+						</li>
                         {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.WHOLESALER}}
                             <li class="nav-item"><a href="listings/wholesale" class="nav-link">Wholesale</a></li>
                         {{else ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
@@ -25,10 +36,10 @@
                         <div  class="messages UnreadMessages"></div></a></li>
                         <li class="nav-item"><a href="/messages" class="nav-link">Messages <strong><small id="msg-count"></small></strong>
                         </a></li>
-                        <li class="nav-item"><a href="/notifications" class="nav-link">Notifications</a></li>
+                        <li class="nav-item"><a href="/notifications" class="nav-link">Notifications<strong><small class="messages" id="notificationCount"></small></strong></a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promote Your Store</a></li>
                         <li class="nav-item"><a href="/dashboard-vendor-connect" class="nav-link">Build Your Store</a></li>
-                    </ul>
+                    </ul>	
                     <a href="/vendor/support/{{this.LoggedInUser.Vendor.id}}"><span class="support">Support</span></a>
                 </div>
             </nav>
@@ -39,12 +50,10 @@
 <script type="text/javascript">
     $( document ).ready(function() {
           $('#msg-count').hide();
-       // var userInfo = {{{ DisplayJSON LoggedInUser}}}
          $.ajax({
             type: 'GET',
             url: '/api/talk/talk-count',
             success: function (data) {
-              //  console.log("data", data.length);   
               if(data.length > 0) {
                 $('#msg-count').show();
                 document.getElementById('msg-count').innerHTML = `<small class="vendor-bar-chat-count"> `+data.length +`</small>`; 
@@ -56,10 +65,22 @@
         })
          socket.on('connect', () => {
             socket.on('chat:count:receive', function(result){
-                //console.log("chat:count:receive", result);
                  document.getElementById('msg-count').innerHTML = `<small class="vendor-bar-chat-count"> `+result +`</small>`; 
             }) 
          })
+
+        $.ajax({
+            type: 'GET',
+            url: '/api/notification/notification-count',
+            success: function (data) {
+                if(data.NotificationCount>0){
+                   $("#notificationCount").html(data.NotificationCount);
+                }      
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
     });
     
 </script>

@@ -7,12 +7,15 @@ const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
 const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
+const shopService=require('../../../api/vendor/vendor-service')
 const marketplace_type = require('../../../config/marketplace_type');
 const Plan = require('../../../config/gtc-plan');
 const sequelize = require('sequelize');
 const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
+var _ = require('lodash');
 
 export function vendorServices(req, res) {
 	var LoggedInUser = {};
@@ -24,9 +27,11 @@ export function vendorServices(req, res) {
 	var productModel = "MarketplaceProduct";
 	var vendorModel = "VendorUserProduct";
 	var categoryModel = "Category";
-	var offset, limit, field, order,page;
+	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
+	var start_date;
+	var end_date;
 	var bottomCategory = {};
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['SERVICE'];
@@ -34,6 +39,19 @@ export function vendorServices(req, res) {
 	queryObj['status'] = status['ACTIVE'];
 	queryObj['vendor_id'] = vendor_id;
 
+	end_date = moment().add(0, 'd').toDate();
+	if (req.query.order == "desc") {
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}else{
+		start_date = moment().add(-30, 'd').toDate();
+		queryObj['created_on'] = {
+			$between: [start_date, end_date]
+		};
+	}
+ 
 
 	var queryPaginationObj = {};
 
@@ -46,7 +64,7 @@ export function vendorServices(req, res) {
 	field = req.query.field ? req.query.field : "created_on";
 	queryPaginationObj['field'] = field;
 	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
+	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
 	queryURI['order'] = order;
 	delete req.query.order;
@@ -61,13 +79,17 @@ export function vendorServices(req, res) {
 
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		publicService: function(callback) {
 			service.findRows(productModel, queryObj, offset, limit, field, order)
@@ -85,14 +107,14 @@ export function vendorServices(req, res) {
 
 			}, {
 				model: model['VendorPlan'],
-				required:false
+				required: false
 			}, {
 				model: model['VendorVerification'],
 				where: {
 					// vendor_verified_status: status['ACTIVE']
 					vendor_verified_status: verificationStatus['APPROVED']
 				},
-				required:false
+				required: false
 
 			}, {
 				model: model['VendorFollower'],
@@ -101,7 +123,7 @@ export function vendorServices(req, res) {
 					status: 1
 				},
 				required: false
-			},{
+			}, {
 				model: model['VendorRating'],
 				attributes: [
 					[sequelize.fn('AVG', sequelize.col('VendorRatings.rating')), 'rating'],
@@ -157,6 +179,33 @@ export function vendorServices(req, res) {
 					return callback(null);
 				});
 		},
+		categoryWithProductCount: function(callback) {
+			var resultObj = {};
+			shopService.vendorProductCountForFilter(queryObj)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.categoryname])) {
+							resultObj[o.categoryname] = {};
+							resultObj[o.categoryname]["categoryName"] = o.categoryname;
+							resultObj[o.categoryname]["categoryID"] = o.categoryid;
+							resultObj[o.categoryname]["count"] = 0;
+							resultObj[o.categoryname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["subCategoryName"] = o.subcategoryname;
+						subCatObj["subCategoryId"] = o.subcategoryid;
+						subCatObj["count"] = o.subproductcount;
+						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
+						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
 	}, function(err, results) {
 		// console.log(JSON.stringify(results.VendorDetail));
 		queryPaginationObj['maxSize'] = 5;
@@ -170,19 +219,18 @@ export function vendorServices(req, res) {
 				publicService: results.publicService,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
-				page:page,
+				page: page,
 				categories: results.categories,
 				categoriesWithCount: results.categoriesWithCount,
 				bottomCategory: bottomCategory,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser,
 				selectedPage: 'services',
 				Plan: Plan,
+				categoryWithProductCount:results.categoryWithProductCount
 			});
 		} else {
 			res.render('vendor-services', err);
 		}
 	});
-
-
 }

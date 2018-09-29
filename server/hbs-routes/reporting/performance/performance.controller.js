@@ -7,7 +7,8 @@ const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-const marketPlace = require('../../../config/marketplace');
+const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const orderStatus = require('../../../config/order_status');
 var async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -34,34 +35,38 @@ export function performance(req, res) {
 
 	let user_id = LoggedInUser.id;
 
-	if(req.query.lhs_from && req.query.lhs_to){
-        lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
-    } else {
-        lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-    }
-    if(req.query.rhs_from && req.query.rhs_to){
-        rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
-    } else {
-        rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
-    }
-    
-   	queryURI['offset'] = offset;
-   	queryURI['limit'] = limit;
-   	queryURI['lhs_from'] = lhsBetween[0];
-   	queryURI['lhs_to'] = lhsBetween[1];
-   	queryURI['rhs_from'] = rhsBetween[0];
-   	queryURI['rhs_to'] = rhsBetween[1];
-   	queryURI['compare'] = 'true';
+	if (req.query.lhs_from && req.query.lhs_to) {
+		lhsBetween.push(moment(req.query.lhs_from).format("MM/DD/YYYY"), moment(req.query.lhs_to).format("MM/DD/YYYY"))
+	} else {
+		lhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+	}
+	if (req.query.rhs_from && req.query.rhs_to) {
+		rhsBetween.push(moment(req.query.rhs_from).format("MM/DD/YYYY"), moment(req.query.rhs_to).format("MM/DD/YYYY"));
+	} else {
+		rhsBetween.push(moment().subtract(30, 'days').format("MM/DD/YYYY"), moment().format("MM/DD/YYYY"));
+	}
+
+	queryURI['offset'] = offset;
+	queryURI['limit'] = limit;
+	queryURI['lhs_from'] = lhsBetween[0];
+	queryURI['lhs_to'] = lhsBetween[1];
+	queryURI['rhs_from'] = rhsBetween[0];
+	queryURI['rhs_to'] = rhsBetween[1];
+	queryURI['compare'] = 'true';
 
 
 	async.series({
-			cartCounts: function(callback) {
-				service.cartHeader(LoggedInUser).then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
+				}
 			},
 			products: function(callback) {
 				queryObj['vendor_id'] = LoggedInUser.Vendor.id;
@@ -98,7 +103,7 @@ export function performance(req, res) {
 			performance: function(callback) {
 				let performanceQueryObj = {};
 				if (req.user.role == 2)
-					performanceQueryObj.vendor_id = req.user.Vendor.id;				
+					performanceQueryObj.vendor_id = req.user.Vendor.id;
 
 				if (req.query.compare) {
 					performanceQueryObj.compare = req.query.compare;
@@ -121,7 +126,7 @@ export function performance(req, res) {
 				res.render('vendorNav/reporting/performance', {
 					title: "Global Trade Connect",
 					products: results.products,
-					marketPlace: marketPlace,
+					marketPlace: marketplace,
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
@@ -129,8 +134,9 @@ export function performance(req, res) {
 					selectedPage: 'performance',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl,
-					cartheader: results.cartCounts,
-					performance: results.performance
+					cart: results.cartInfo,
+					performance: results.performance,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/reporting/performance', err);

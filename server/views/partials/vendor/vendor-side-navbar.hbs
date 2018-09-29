@@ -106,7 +106,7 @@
                 <li class="nav-bar"><a href="/gtc-mail/sent" class="vs-link {{#ifCond selectedPage '==' 'sent'}} active {{/ifCond}}">Sent</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/drafts" class="vs-link {{#ifCond selectedPage '==' 'drafts'}} active {{/ifCond}}">Drafts</a></li>
                 <li class="nav-bar"><a href="/gtc-mail/deleted" class="vs-link {{#ifCond selectedPage '==' 'deleted'}} active {{/ifCond}}">Deleted</a></li>
-                <li class="nav-bar"><a href="javascript:;">GTC Mail Settings</a></li>
+                <li class="nav-bar"><a href="/gtc-mail/mail-settings" class="vs-link {{#ifCond selectedPage '==' 'mail-settings'}} active {{/ifCond}}">GTC Mail Settings</a></li>
             </ul>
         </li>
         <li class="nav-bar"><a href="javascript:;" class="vs-link {{#ifCond selectedPage '==' 'contact'}} active {{/ifCond}}">Contact</a></li>
@@ -118,9 +118,17 @@
                 <li class="nav-bar"><a href="javascript:;">Direct Support(?)</a></li>
             </ul>
         </li>
-        {{#if LoggedInUser.Vendor.id}}
-        {{else}}
-        <li><a href="/vendor-form"class="vs-link {{#ifCond selectedPage '==' 'vedor-form'}} active {{/ifCond}}">Become a vendor</a></li>
-        {{/if}}
+        {{!-- <li><a href="/vendor-form"class="vs-link {{#ifCond selectedPage '==' 'vedor-form'}} active {{/ifCond}}">Become a vendor</a></li> --}}     
     </ul>
 </div>
+<br/>
+
+{{#if LoggedInUser.Vendor.id}}
+{{else}}
+	<a href="/vendor-form">
+		<button class="ladda-button btn btn-small btn-muted" data-style="expand-left">
+			<span class="ladda-label">Become a vendor</span>
+			<span class="ladda-spinner"></span>
+		</button>
+	</a>
+{{/if}}

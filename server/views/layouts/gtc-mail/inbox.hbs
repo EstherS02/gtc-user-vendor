@@ -1,9 +1,5 @@
- {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<style>
-	.clickable-row {
-		cursor: pointer;
-	}
-</style>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+{{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <script>
 	$(document).ready(function () {
 		$("#gtc-mail-alert").hide();
@@ -142,7 +138,7 @@
 											{{#each inboxMail}} 
 											<tr class="{{#ifCond this.mail_status '==' ../mailStatus.READ}} inbox-tr{{else}}inbox-tr-unread{{/ifCond}}">
 													<td scope="row">
-														<input type="checkbox" name="selected" value={{this.id}}>
+														<input type="checkbox" name="selected" value="{{this.id}}">
 													</td>
 													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.fromUser.first_name}}</td>
 													<td class='clickable-row' scope="row" id='{{this.id}}' data-href='gtc-mail/inbox/{{this.Mail.id}}'>{{this.Mail.subject}}</td>

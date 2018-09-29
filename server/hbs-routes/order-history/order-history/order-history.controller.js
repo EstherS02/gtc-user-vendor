@@ -7,7 +7,8 @@ const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const moment = require('moment');
-const marketPlace = require('../../../config/marketplace');
+const marketplace = require('../../../config/marketplace');
+const cartService = require('../../../api/cart/cart.service');
 const orderStatus = require('../../../config/order_status');
 const async = require('async');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -38,9 +39,9 @@ export function orderHistory(req, res) {
 		end_date = moment().add(0, 'd').toDate();
 		if (dateSelect == "today") {
 			//start_date = moment();
-		   var convertMoment = moment();
-           start_date =  new Date(convertMoment);
-         
+			var convertMoment = moment();
+			start_date = new Date(convertMoment);
+
 		} else if (dateSelect == "yesterday") {
 			start_date = moment().add(-1, 'd').toDate();
 			end_date = start_date;
@@ -50,45 +51,17 @@ export function orderHistory(req, res) {
 			start_date = moment().add(-15, 'd').toDate();
 		} else if (dateSelect == "last30day") {
 			start_date = moment().add(-30, 'd').toDate();
-		} else {
-			// if (from_date) {
-			// 	start_date = from_date;
-			// } else {
-			// 	start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
-			// }
-			// if (to_date) {
-			// 	end_date = to_date;
-			// } else {
-			// 	end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
-			// }
+		} else {}
+	}
+	if (dateSelect) {
+		orderQueryObj['ordered_date'] = {
+			$between: [start_date, end_date]
+		};
+		queryURI['start_date'] = start_date;
+		if (from_date && to_date) {
+			queryURI['end_date'] = end_date;
 		}
 	}
-	// } else {
-	// 	if (from_date) {
-	// 		start_date = from_date;
-	// 	} else {
-	// 		start_date = moment().add(-70, 'd').toDate("yyyy-mm-dd");
-	// 	}
-	// 	if (to_date) {
-	// 		end_date = to_date;
-	// 	} else {
-	// 		end_date = moment().add(0, 'd').toDate("yyyy-mm-dd");
-	// 	}
-	// 	orderQueryObj['ordered_date'] = {
-	// 		$between: [start_date, end_date]
-	// 	};
-	// }
-if (dateSelect) {
-	orderQueryObj['ordered_date'] = {
-		$between: [start_date, end_date]
-	};
-    queryURI['start_date'] = start_date;
-	if(from_date && to_date){
-    queryURI['end_date'] = end_date;
-    }
-	// queryURI['start_date'] = start_date;
-	// queryURI['end_date'] = end_date;
-}
 
 
 	if (marketType) {
@@ -110,6 +83,7 @@ if (dateSelect) {
 	delete req.query.offset;
 	limit = req.query.limit ? parseInt(req.query.limit) : 10;
 	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
 	delete req.query.limit;
 	order = req.query.order ? req.query.order : "desc";
 	queryPaginationObj['order'] = order;
@@ -132,32 +106,34 @@ if (dateSelect) {
 
 	var modelName = "Order";
 	orderQueryObj['user_id'] = user_id;
-	var orderIncludeArr = [
-		{
+	var orderIncludeArr = [{
 		model: model["OrderItem"],
 		include: [{
-				model: model['Product'],
-				include: [{
-					model: model['Vendor'],
-					attributes: ['id','vendor_name']
-				}],
-				attributes: ['id', 'vendor_id']
+			model: model['Product'],
+			include: [{
+				model: model['Vendor'],
+				attributes: ['id', 'vendor_name']
 			}],
-		attributes: ['id','product_id']
-		}
-	];
+			attributes: ['id', 'vendor_id']
+		}],
+		attributes: ['id', 'product_id']
+	}];
 	var queryObjCategory = {
 		status: statusCode['ACTIVE']
 	};
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -201,7 +177,7 @@ if (dateSelect) {
 		if (results.orderHistory.count > 0) {
 			results.orderHistory.rows.forEach((value, index) => {
 				total_transaction += parseFloat(value.total_price);
-				results.orderHistory.rows[index]['final_price']=((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
+				results.orderHistory.rows[index]['final_price'] = ((value.total_price) > 0) ? (parseFloat(value.total_price)).toFixed(2) : 0;
 			});
 		}
 		if (!err) {
@@ -213,9 +189,9 @@ if (dateSelect) {
 				count: results.orderHistory.count,
 				queryURI: queryURI,
 				LoggedInUser: LoggedInUser,
-				marketPlace: marketPlace,
+				marketPlace: marketplace,
 				statusCode: statusCode,
-				cartheader:results.cartCounts,
+				cart: results.cartInfo,
 				orderStatus: orderStatus,
 				totalTransaction: (total_transaction).toFixed(2),
 				page: page,

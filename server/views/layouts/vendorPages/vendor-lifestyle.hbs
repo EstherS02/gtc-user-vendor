@@ -1,28 +1,43 @@
 <script type="text/javascript">
 
-    var marketPlaceType = {{{DisplayJSON queryURI}}}
-  function updateQueryStringParameter(uri, key, value) {
-    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-    if (uri.match(re)) {
-      return uri.replace(re, '$1' + key + "=" + value + '$2');
-  }
-  else {
-      return uri + separator + key + "=" + value;
-  }
-}
+	var marketPlaceType = {{{ DisplayJSON queryURI }}}
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		}
+		else {
+			return uri + separator + key + "=" + value;
+		}
+	}
 
-$(document).on('change', "#sortListing", function() {
-    var uri = window.location.href;
-    var optionValue = $("#sortListing option:selected").val();
-    var key='order';
-    var value='desc';
-    if(optionValue== 'Oldest'){
-      value='asc';
-  }
-  var queries = updateQueryStringParameter(uri,key,value);
-  window.location.href = queries;
-});
+	$(document).on('change', "#sortListing", function() {
+		var uri = window.location.href;
+		var optionValue = $("#sortListing option:selected").val();
+		var key = 'order';
+		var value = 'desc';
+		if (optionValue == 'Oldest') {
+			value = 'asc';
+		}
+		var queries = updateQueryStringParameter(uri, key, value);
+		window.location.href = queries;
+	});
+
+	function sortSearch(e) {
+		var url = window.location.href;
+		var order;
+		var selectedText = e.options[e.selectedIndex].text;
+		console.log(selectedText);
+		if (selectedText == 'Newest') {
+			order = 'desc';
+		} else {
+			order = 'asc';
+		}
+		var uri = updateQueryStringParameter(url, 'field', 'created_on');
+		uri = updateQueryStringParameter(uri, 'order', order)
+		window.location.href = uri;
+	}
 </script>
 {{> header/top-header LoggedInUser = LoggedInUser}}
 {{> vendor/vendor-header VendorDetail = VendorDetail}}
@@ -33,12 +48,35 @@ $(document).on('change', "#sortListing", function() {
                 {{> vendor/vendor-left VendorDetail = VendorDetail}}
             </div>
             <div class="col-md-10">
-                <div class="header-lg bg-lifestyle">
+                {{!-- <div class="header-lg bg-lifestyle">
                     <h2 class="header-lg-text">LIFESTYLE MARKETPLACE<p class="see-all">{{#if publicLifestyle.count}} Showing
                         <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
                         <b>{{publicLifestyle.count}}</b>{{/if}}
                     </p></h2>
-                </div>
+                </div> --}}
+				<div class="row m-t-sm bg-lifestyle">
+					<div class="col-md-6">
+						<h3 class="header-lg-text">LIFESTYLE MARKETPLACE</h3>
+					</div>
+					<div class="col-md-6 header-lg-text">
+						<span style="padding-left:310px">{{#if publicLifestyle.count}} Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicLifestyle.count}}</b> of
+                        <b>{{publicLifestyle.count}}</b>{{/if}}
+						</span>	
+						<form class="form-inline alignright">
+							<div class="form-group">
+								<div class="select-container">
+									<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
+									 id="sortValue">
+										<option disabled="true" selected="true">Sort by</option>
+										<option value="created_on" {{#ifCond queryURI.order "==" 'desc'}} selected="true" {{/ifCond}}>Newest</option>
+										<option value="created_on" {{#ifCond queryURI.order "==" 'asc'}} selected="true" {{/ifCond}}>Oldest</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
                 <div class="row no-margins">
                     <div class="col-md-9 no-padding">
                         <div class="ibox">
