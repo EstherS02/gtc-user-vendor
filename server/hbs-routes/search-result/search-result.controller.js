@@ -128,6 +128,7 @@ export function index(req, res) {
 		queryURI['location'] = req.query.location;
 		productQueryParams['product_location_id'] = req.query.location;
 		productCountQueryParams['product_location'] = req.query.location;
+		productCountCategory['product_location'] = req.query.location;
 	}
 
 	if (req.query.keyword) {
@@ -285,6 +286,7 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
+			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^66",productCountCategory)
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
@@ -303,6 +305,33 @@ export function index(req, res) {
 						subCatObj["count"] = o.subproductcount;
 						resultObj[o.categoryname]["count"] += Number(o.subproductcount);
 						resultObj[o.categoryname]["subCategory"].push(subCatObj)
+					})
+					return callback(null, resultObj);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
+		},
+		countryProductCount: function(callback) {
+			var resultObj = {};
+			searchResultService.productCountForCountry(productCountCategory)
+				.then(function(response) {
+					var char = JSON.parse(JSON.stringify(response));
+					_.each(char, function(o) {
+						if (_.isUndefined(resultObj[o.regionname])) {
+							resultObj[o.regionname] = {};
+							resultObj[o.regionname]["regionname"] = o.regionname;
+							resultObj[o.regionname]["regionid"] = o.regionid;
+							resultObj[o.regionname]["count"] = 0;
+							resultObj[o.regionname]["subCategory"] = [];
+
+						}
+						var subCatObj = {}
+						subCatObj["countryname"] = o.countryname;
+						subCatObj["countryid"] = o.countryid;
+						subCatObj["count"] = o.productcount;
+						resultObj[o.regionname]["count"] += Number(o.productcount);
+						resultObj[o.regionname]["subCategory"].push(subCatObj)
 					})
 					return callback(null, resultObj);
 				}).catch(function(error) {
@@ -334,7 +363,8 @@ export function index(req, res) {
 				marketplaceURl: currentMarketPlace,
 				durations: durationConfig,
 				layout_type: layout,
-				productCount: results.productCount
+				productCount: results.productCount,
+				countryProductCount:results.countryProductCount
 			});
 		} else {
 			res.render('search', error);

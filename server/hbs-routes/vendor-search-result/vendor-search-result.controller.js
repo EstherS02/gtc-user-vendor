@@ -2,6 +2,7 @@
 
 const async = require('async');
 const sequelize = require('sequelize');
+var _ = require('lodash');
 
 const service = require('../../api/service');
 const vendorService = require('../../api/vendor/vendor-service')
@@ -177,31 +178,62 @@ export function index(req, res) {
 			});
 		},
 		vendorCountByCountry: function(callback) {
-			var result = {};
 			var countryCountParams = [];
 			if (selectedMarketPlaceID) {
 				countryCountParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
 			}
+			var resultObj = {};
 			if (countryCountParams.marketplace_id) {
 				vendorService.vendorCountByCountry(countryCountParams)
-					.then((response) => {
-						result.rows = JSON.parse(JSON.stringify(response));
-						return callback(null, result);
-					}).catch((error) => {
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.regionname])) {
+								resultObj[o.regionname] = {};
+								resultObj[o.regionname]["regionname"] = o.regionname;
+								resultObj[o.regionname]["regionid"] = o.regionid;
+								resultObj[o.regionname]["count"] = 0;
+								resultObj[o.regionname]["subCategory"] = [];
+
+							}
+							var subCatObj = {}
+							subCatObj["countryname"] = o.countryname;
+							subCatObj["countryid"] = o.countryid;
+							subCatObj["count"] = o.productcount;
+							resultObj[o.regionname]["count"] += Number(o.productcount);
+							resultObj[o.regionname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
+					}).catch(function(error) {
 						console.log('Error :::', error);
-						return callback(error, null);
+						return callback(null);
 					});
 			} else {
 				vendorService.vendorCountByCountryForHome()
-					.then((response) => {
-						result.rows = JSON.parse(JSON.stringify(response));
-						return callback(null, result);
-					}).catch((error) => {
+					.then(function(response) {
+						var char = JSON.parse(JSON.stringify(response));
+						_.each(char, function(o) {
+							if (_.isUndefined(resultObj[o.regionname])) {
+								resultObj[o.regionname] = {};
+								resultObj[o.regionname]["regionname"] = o.regionname;
+								resultObj[o.regionname]["regionid"] = o.regionid;
+								resultObj[o.regionname]["count"] = 0;
+								resultObj[o.regionname]["subCategory"] = [];
+
+							}
+							var subCatObj = {}
+							subCatObj["countryname"] = o.countryname;
+							subCatObj["countryid"] = o.countryid;
+							subCatObj["count"] = o.productcount;
+							resultObj[o.regionname]["count"] += Number(o.productcount);
+							resultObj[o.regionname]["subCategory"].push(subCatObj)
+						})
+						return callback(null, resultObj);
+					}).catch(function(error) {
 						console.log('Error :::', error);
-						return callback(error, null);
+						return callback(null);
 					});
 			}
-
 		},
 		vendors: function(callback) {
 			service.findAllRows(vendorModel, includeArr, queryParameters, offset, limit, field, order)
