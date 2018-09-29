@@ -134,23 +134,10 @@ export async function cartCalculation(userID, req) {
 						appliedCategoryProducts = await products;
 					}
 
-					if (appliedProducts.length > appliedCategoryProducts.length) {
-						var tmpProducts = await _.map(appliedCategoryProducts, 'id');
-						couponApplicableProducts = await _.filter(appliedProducts, function(product) {
-							return tmpProducts.indexOf(product.id) > -1;
-						});
-					} else if (appliedCategoryProducts.length > appliedProducts.length) {
-						var tmpProducts = await _.map(appliedProducts, 'id');
-						couponApplicableProducts = await _.filter(appliedCategoryProducts, function(product) {
-							return tmpProducts.indexOf(product.id) > -1;
-						});
-					} else {
-						var tmpProducts = await _.map(appliedCategoryProducts, 'id');
-						couponApplicableProducts = await _.filter(appliedProducts, function(product) {
-							return tmpProducts.indexOf(product.id) > -1;
-						});
+					var tmpProducts = await _.union(appliedProducts, appliedCategoryProducts);
+					if (tmpProducts.length > 0) {
+						couponApplicableProducts = await _.uniqBy(tmpProducts, 'id');
 					}
-
 					var totalAmount = 0;
 
 					await Promise.all(couponApplicableProducts.map(async (product) => {
