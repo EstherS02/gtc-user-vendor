@@ -631,7 +631,7 @@ export function sendOrderMail(orderIdStore,req) {
 							}
 							_.forOwn(OrderList.rows, function(orders) {
 								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%',numeral(orderPayments.total_price).format('$' + '0,0.00'))
+								body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' + '0,0.00'))
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
