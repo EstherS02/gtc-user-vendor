@@ -810,7 +810,7 @@ function sendUpgrademail(plan_id, user) {
 					var body = response.body;
 					body = body.replace('%first_name%', user.first_name);
 					body = body.replace('%name%', upgradeplanobj.name);
-					body = body.replace('%cost%', upgradeplanobj.cost);
+					body = body.replace('%cost%', numeral(upgradeplanobj.cost).format('0,0.00'));
 					sendEmail({
 						to: email,
 						subject: subject,
