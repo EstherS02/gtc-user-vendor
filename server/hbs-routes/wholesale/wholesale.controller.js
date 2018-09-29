@@ -153,7 +153,7 @@ export function wholesale(req, res) {
 		},
 		country: function(callback) {
 			delete queryObj['marketplace_id'];
-			delete queryObj['featured_position'];
+			delete queryObj['featured_position_wholesale_landing'];
 			delete queryObj['is_featured_product'];
 			limit = null;
 			service.findRows(countryModel, queryObj, offset, limit, field, order)

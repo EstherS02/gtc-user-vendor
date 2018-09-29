@@ -88,7 +88,7 @@ export function lifestyle(req, res) {
 			const productLimit = 20;
 			const productField = "id";
 			const productOrder = "asc";
-			delete queryObj['featured_position'];
+			delete queryObj['featured_position_subscription_landing'];
 			delete queryObj['is_featured_product'];
 			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
 				.then(function(lifestyle) {
