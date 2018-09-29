@@ -165,3 +165,21 @@ export async function productCountForCategoryAndSubcategory(productCountQueryPar
 		}
 	});
 }
+
+export async function productCountForCountry(productCountQueryParams) {
+	return new Promise((resolve, reject) => {
+		if (productCountQueryParams) {
+			Sequelize_Instance.query(RawQueries.productCountBasedCountry(productCountQueryParams), {
+				model: model['Product'],
+				type: Sequelize_Instance.QueryTypes.SELECT
+			}).then((results) => {
+				resolve(results)
+			}).catch(function(error) {
+				reject(error);
+			});
+		} else {
+			resolve()
+		}
+	});
+}
+
