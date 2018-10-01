@@ -10,6 +10,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
+const reportsService = require('../../../api/reports/reports.service');
 const marketPlace = require('../../../config/marketplace');
 const orderStatus = require('../../../config/order_status');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -68,6 +69,18 @@ export function accounting(req, res) {
 				.then((cartResult) => {
 					return callback(null, cartResult);
 				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		accountingReports: function(callback) {
+			var serviceQueryParams = {};
+			serviceQueryParams['from'] = new Date(queryParams['start_date']);
+			serviceQueryParams['to'] = new Date(queryParams['end_date']);
+			reportsService.AccountingReport(serviceQueryParams)
+				.then((response) => {
+					return callback(null, null);
+				})
+				.catch((error) => {
 					return callback(error);
 				});
 		},

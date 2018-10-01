@@ -51,8 +51,12 @@
 			$("#inputFromDate").datepicker("setDate", startDate);
 			$("#inputToDate").datepicker("setDate", endDate);
 		} else {
-			$("#inputFromDate").val(null);
-			$("#inputToDate").val(null);
+			if (!$("#inputFromDate").val()) {
+				$("#inputFromDate").val(null);
+			}
+			if (!$("#inputToDate").val()) {
+				$("#inputToDate").val(null);
+			}
 		}
 
 		$('#inputDateRange').on('change', function() {
@@ -112,16 +116,18 @@
 					window.location.href = "/reporting/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
 				}
 			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
 				alert("Invalid start date.");
 			}
 		});
 
 		$("#inputToDate").change(function(e) {
 			if (isDate($("#inputToDate").val())) {
-				if ($("#inputToDate").val()) {
+				if ($("#inputFromDate").val()) {
 					window.location.href = "/reporting/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
 				}
 			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
 				alert("Invalid start date.");
 			}
 		});
