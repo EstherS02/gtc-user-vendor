@@ -181,10 +181,10 @@
 							aObj["total_sales"] = parseFloat(aObj["total_sales"]).toFixed(2);
 							var tag = `<div class="reporting_block_content_individual">
 									<div class="row">
-										<div class="col-md-3 no-padding">
+										<div class="col-md-3 col-2 no-padding">
 											<h2 class="lft_count">${i + 1}</h2>
 										</div>
-										<div class="col-md-9 no-padding">
+										<div class="col-md-9 col-10 no-padding">
 											<h4 class="reporting_subject reporting_title">
 												<a href="javascript:;">${aObj["Product.city"]}</a></h4>
 											<p class="reporting_subject">Total Sales:
@@ -223,10 +223,10 @@
 							var activeBuyerList = $("#reporting-most-active-buyers");
 							var tag = `<div class="reporting_block_content_individual">
 										<div class="row">
-											<div class="col-md-3 no-padding">
+											<div class="col-md-3 col-1 no-padding">
 												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
 											</div>
-											<div class="col-md-9 no-padding">
+											<div class="col-md-9 col-11 no-padding">
 												<h4 class="reporting_subject reporting_title">
 													<a href="javascript:;">${aObj["User.first_name"]}</a></h4>
 												<p class="reporting_subject" title="${calHoursAgo(aObj["created_on"])}">${calHoursAgo(aObj["created_on"])}</p>
@@ -263,10 +263,10 @@
 							var latestRefundList = $("#reporting-latest-refunds");
 							var tag = `<div class="reporting_block_content_individual">
 									<div class="row">
-										<div class="col-md-3 no-padding">
+										<div class="col-md-3 col-1 no-padding">
 											<img src="${aObj["user_pic_url"]}" class="avatar-img" alt="${aObj["first_name"]}" onError="imgError(this)">
 										</div>
-										<div class="col-md-9 no-padding">
+										<div class="col-md-9 col-11 no-padding">
 											<h4 class="reporting_subject reporting_title">
 												<a href="javascript:;">${aObj["first_name"]}</a></h4>
 											<p class="reporting_subject">Subject:
@@ -309,10 +309,10 @@
 							var latestTicketList = $("#reporting-latest-tickets");
 							var tag = `<div class="reporting_block_content_individual">
 										<div class="row">
-											<div class="col-md-3 no-padding">
+											<div class="col-md-3 col-1 no-padding">
 												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
 											</div>
-											<div class="col-md-9 no-padding">
+											<div class="col-md-9 col-11 no-padding">
 												<h4 class="reporting_subject reporting_title">
 													<a href="javascript:;">${aObj["User.first_name"]}</a></h4>
 												<p class="reporting_subject">Subject:
@@ -397,7 +397,7 @@
 													</div>
 													<div class="select-container">
 														<select class="form-control-customized form-control-sm reporting_range_select_override" name="status">
-															<option value="CANCELLEDORDER">Last 30 Days</option>
+															<option value="Last 30 Days" selected>Last 30 Days</option>
 														</select>
 													</div>
 												</div>
@@ -445,16 +445,16 @@
 															{{/ifCond}}
 															{{#each topProducts.rows as |item|}}
 																<div class="top_perf_content row">
-																	<div class="col-md-4">
+																	<div class="col-md-4 col-4">
 																		<p class="top_perf_product_name">{{item.product_name}}</p>
 																	</div>
-																	<div class="col-md-4 top_perf_padding_override">
+																	<div class="col-md-4 col-4 top_perf_padding_override">
 																		<div class="progress top_perf_progress">
 																			<div class="progress-bar top_perf_progress_bar" role="progressbar" style="width: {{percentage @root.topProducts.total item.amount}}"
 																			 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 																		</div>
 																	</div>
-																	<div class="col-md-4">
+																	<div class="col-md-4 col-4">
 																		<p class="top_perf_product_price">{{currency item.amount '$'}}</p>
 																	</div>
 																</div>
@@ -516,7 +516,7 @@
 																</div>
 															</div>
 														</div>
-														<div class="col-md-6">
+														<div class="col-md-6 col-12">
 															<div class="row">
 																<div class="col-md-4 stat_padding">
 																	<div class="stat_title">Transactions</div>
