@@ -89,7 +89,8 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const Payment = model.Payment;
+	const Payment = model.Payment;
+	const FeaturedProduct = model.FeaturedProduct;
     const OrderPayment = model.OrderPayment;
     const OrderPaymentEscrow = model.OrderPaymentEscrow;
     const Order = model.Order;
@@ -120,6 +121,11 @@ module.exports.initRelations = () => {
         otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
+	});
+	
+	Payment.hasOne(FeaturedProduct, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
     });
-
 };
