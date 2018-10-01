@@ -98,8 +98,8 @@ function primaryCardDetails(userPlan){
 						if (paymentDetails.paid = "true"){
 							chargedAmount = paymentDetails.amount / 100.0;
 							var paymentObj = {
-								paid_date: new Date(paymentDetails.created),
-								paid_amount: paymentDetails.amount / 100.0,
+								date: new Date(paymentDetails.created),
+								amount: paymentDetails.amount / 100.0,
 								payment_method: paymentMethod['STRIPE'],
 								status: statusCode['ACTIVE'],
 								payment_response: JSON.stringify(paymentDetails)

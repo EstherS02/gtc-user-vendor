@@ -73,8 +73,8 @@ export function makePayment(req, res) {
 		}).then(charge => {
 			console.log("charge", charge);
 			var paymentModel = {
-				paid_date: new Date(charge.created),
-				paid_amount: charge.amount / 100.0,
+				date: new Date(charge.created),
+				amount: charge.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(charge)
@@ -506,7 +506,7 @@ export function cancelOrder(req, res) {
 			refundObj = refundRow;
 			let paymentModel = {
 				refund_date: new Date(refundRow.created),
-				refund_amount: refundRow.amount / 100.0,
+				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundRow),
@@ -776,8 +776,8 @@ export function makeplanPayment(req, res) {
 	then(function(response) {
 		if (response.paid = "true") {
 			var paymentModel = {
-				paid_date: new Date(response.created),
-				paid_amount: response.amount / 100.0,
+				date: new Date(response.created),
+				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(response)
@@ -893,7 +893,7 @@ export function refundOrder(req, res) {
 			refundObj = refundRow;
 			let paymentModel = {
 				refund_date: new Date(refundRow.created),
-				refund_amount: refundRow.amount / 100.0,
+				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundRow),
@@ -905,8 +905,8 @@ export function refundOrder(req, res) {
 
 		})
 		.then(createdPaymentRow => {
-			console.log("enterrrlooops" + parseFloat(createdPaymentRow.refund_amount).toFixed(2));
-			var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
+			console.log("enterrrlooops" + parseFloat(createdPaymentRow.amount).toFixed(2));
+			var refundamt = parseFloat(createdPaymentRow.amount).toFixed(2);
 			if(req.user.user_contact_email){
 				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
 			}

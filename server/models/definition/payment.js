@@ -9,34 +9,14 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        paid_date: {
+        date: {
             type: DataTypes.DATE,
-            field: 'paid_date',
+            field: 'date',
             allowNull: true
         },
-        paid_amount: {
+        amount: {
             type: DataTypes.DECIMAL(10, 4),
-            field: 'paid_amount',
-            allowNull: true
-        },
-        refund_date: {
-            type: DataTypes.DATE,
-            field: 'refund_date',
-            allowNull: true
-        },
-        refund_amount: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'refund_amount',
-            allowNull: true
-        },
-        payout_created_date: {
-            type: DataTypes.DATE,
-            field: 'payout_created_date',
-            allowNull: true
-        },
-        payout_amount: {
-            type: DataTypes.DECIMAL(10, 4),
-            field: 'payout_amount',
+            field: 'amount',
             allowNull: true
         },
         payment_method: {
