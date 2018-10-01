@@ -505,7 +505,7 @@ export function cancelOrder(req, res) {
 		}).then(refundRow => {
 			refundObj = refundRow;
 			let paymentModel = {
-				refund_date: new Date(refundRow.created),
+				date: new Date(refundRow.created),
 				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
@@ -892,7 +892,7 @@ export function refundOrder(req, res) {
 
 			refundObj = refundRow;
 			let paymentModel = {
-				refund_date: new Date(refundRow.created),
+				date: new Date(refundRow.created),
 				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
