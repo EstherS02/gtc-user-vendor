@@ -50,16 +50,16 @@ export function accounting(req, res) {
 		queryParams['range'] = 4;
 	}
 
-	if (req.query.start_date) {
-		queryParams['start_date'] = req.query.start_date;
+	if (queryParams['range'] == 4) {
+		queryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
+		queryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
 	} else {
-		queryParams['start_date'] = moment().subtract(30, 'days').format('DD-MM-YYYY');
-	}
-
-	if (req.query.end_date) {
-		queryParams['end_date'] = req.query.end_date;
-	} else {
-		queryParams['end_date'] = moment().subtract(1, 'days').format('DD-MM-YYYY');
+		if (req.query.start_date) {
+			queryParams['start_date'] = req.query.start_date;
+		}
+		if (req.query.end_date) {
+			queryParams['end_date'] = req.query.end_date;
+		}
 	}
 
 	async.series({
