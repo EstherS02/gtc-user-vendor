@@ -7,39 +7,48 @@ const service = require('../../api/service');
 const vendorPlan = require('../../config/gtc-plan');
 const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
+const populate = require('../../utilities/populate');
 
-export function subscribe(req, res) {
+export function subscriptions(req, res) {
 
-	var productId;
-	var LoggedInUser = {};
+	var LoggedInUser = {}, subscriptionQueryObj = {};
+	var subscriptionIncludeArr = []
 
-	if (req.params.id)
-		productId = req.params.id;
+	var offset, limit, field, order;
+
+	offset = 0;
+	limit = null;
+	field = "id";
+	order = "asc";
 
 	if (req.user)
 		LoggedInUser = req.user;
 
+	subscriptionIncludeArr = populate.populateData('Product');
+
 	async.series({
-		productInfo: function(callback) {
-			service.findIdRow('Product', productId, [])
-				.then(function(productInfo) {
-					return callback(null, productInfo);
+		subscriptions: function(callback) {
 
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
+			service.findRows('Subscription', subscriptionQueryObj, offset, limit, field, order, subscriptionIncludeArr) 
+				.then(function(subscriptions){
+
+					return callback(null, subscriptions);
+				}).catch(function(error){
+					return callback(error);
+				})
 		},
-
 	},function(err, results) {
 		if (!err) {
-			res.render('userNav/add-subscription', {
+			res.render('userNav/view-subscription', {
 				title: "Global Trade Connect",
 				LoggedInUser: LoggedInUser,
-				productInfo: results.productInfo
+				subscriptions: results.subscriptions.rows,
+				collectionSize: results.subscriptions.count,
+				selectedPage: 'subscription',
+				statusCode: statusCode
 			})
 		}else {
-			res.render('userNav/add-subscription', err);
+			res.render('userNav/view-subscription', err);
 		}
 	});
 }

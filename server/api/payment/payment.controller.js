@@ -9,6 +9,7 @@ const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
 const paymentMethod = require('../../config/payment-method');
+const marketPlaceCode = require('../../config/marketplace');
 const _ = require('lodash');
 const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
@@ -111,7 +112,17 @@ export function makePayment(req, res) {
 				}
 			}
 			return Promise.all(quantityPromises);
-		}).then(productQuantityUpdatedRow => {
+		}).then(productQuantityUpdatedRow=>{
+			let subscribePromises = [];
+			for (var i = 0; i < createdOrders.length; i++) {
+
+				for (var j = 0; j < createdOrders[i].items.length; j++) {
+					subscribePromises.push(updateSubscription(createdOrders[i],createdOrders[i].items[j].product_id));
+				}
+			}
+			return Promise.all(subscribePromises);
+		})
+		.then(subscriptionRow => {
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
@@ -127,7 +138,6 @@ export function makePayment(req, res) {
 					});
 				} else return res.status(500).send(err);
 			});
-
 		}).catch(err => {
 			console.log("err3", err);
 			if (createdOrders && createdOrders.length > 0) {
@@ -200,6 +210,34 @@ function updateQuantity(productId, placedQuantity) {
 					return Promise.reject(err);
 				})
 		}).catch(err => {
+			return Promise.reject(err);
+		})
+}
+
+function updateSubscription(order, productId){
+
+	var subscriptionBodyParam = {
+		user_id: order.user_id,
+		product_id: productId,
+		purchased_on : ordered_date,
+		status: status.ACTIVE,
+		created_on: new Date()
+	}
+
+	return service.findIdRow('Product',productId)
+		.then(product =>{
+			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
+
+				service.createRow('Subscription', subscriptionBodyParam)
+					.then(subscribedProduct => {
+						return Promise.resolve(subscribedProduct);
+					}).catch(err =>{
+						return Promise.reject(err);
+					})
+			}else{
+				return;
+			}
+		}).catch(err=>{
 			return Promise.reject(err);
 		})
 }

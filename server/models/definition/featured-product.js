@@ -100,11 +100,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'position_subscription_landing',
             allowNull: true
 		},
-		total_amount: {
-            type: DataTypes.DECIMAL(10, 1),
-            field: 'total_amount',
-            allowNull: false
-		},
 		payment_id: {
             type: DataTypes.BIGINT,
             field: 'payment_id',
