@@ -162,6 +162,7 @@ function createOrder(orderWithItems) {
 		for (var i = 0; i < orderItems.length; i++) {
 			orderItems[i].order_id = orderResult.id;
 			orderItems[i].order_item_status = 0;
+			orderItems[i].created_on = new Date();
 			orderItemsPromises.push(createOrderItem(orderItems[i]));
 		}
 		return Promise.all(orderItemsPromises).then(itemsResults => {
