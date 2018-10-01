@@ -96,6 +96,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'clicks',
             allowNull: true
+		},
+		payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'payment_id',
+            allowNull: false,
+            references: {
+                model: 'payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -136,7 +147,8 @@ module.exports.initRelations = () => {
     const Product = model.Product;
     const Vendor = model.Vendor;
     const Country = model.Country;
-    const State = model.State;
+	const State = model.State;
+	const Payment = model.Payment;
 
     ProductAdsSetting.belongsTo(Product, {
         foreignKey: 'product_id',
@@ -157,6 +169,12 @@ module.exports.initRelations = () => {
 
     ProductAdsSetting.belongsTo(State, {
         foreignKey: 'state_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+	});
+	
+	ProductAdsSetting.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
