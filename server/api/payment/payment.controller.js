@@ -172,6 +172,7 @@ function createOrder(orderWithItems) {
 		for (var i = 0; i < orderItems.length; i++) {
 			orderItems[i].order_id = orderResult.id;
 			orderItems[i].order_item_status = 0;
+			orderItems[i].created_on = new Date();
 			orderItemsPromises.push(createOrderItem(orderItems[i]));
 		}
 		return Promise.all(orderItemsPromises).then(itemsResults => {
@@ -971,7 +972,7 @@ export function refundOrder(req, res) {
 }
 export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 	var orderItemid = refundOrderitemsID;
-	var includeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User,Order');
+	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
 		id: orderItemid
 	}
@@ -990,10 +991,13 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 					var email = vendor_email;
 					var subject = response.subject.replace('%ORDER_TYPE%', 'Refund Order');
 					var body;
-					body = response.body.replace('%VENDOR_NAME%', user.first_name);
-					body = response.body.replace('%refundamount%', refundamount);
+					var body = response.body;
+					body = body.replace('%VENDOR_NAME%', user.first_name);
+					body = body.replace('%refundamount%', refundamount);
 					_.forOwn(orderRefundList, function(orders) {
 						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
+						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
+						orders.final_price= numeral(orders.final_price).format('0,0.00');
 						orderNew.push(orders);
 					});
 					var template = Handlebars.compile(body);
