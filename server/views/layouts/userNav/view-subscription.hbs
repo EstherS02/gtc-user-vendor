@@ -1,0 +1,114 @@
+{{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
+<div class="wrapper-content bg-gray">
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			<div class="col-sm-10">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="content-body">
+							{{!-- <div class="row">
+								<div class="col-md-12">
+									<p class="content-txt">This is where you manage all of your subscriptions on the Global Trade Connect. </p>
+									<span class="pull-right" style="font-size:12px"><a href="listings/{{this.type}}">Clear All</a></span>
+								</div>
+							</div> --}}
+							<div class="row">
+									<div class="col-md-7">
+											<div class="form-inline">
+											<div class="form-group mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="{{this.type}}" onChange="changeStatus(this);">
+														{{#select queryURI.status}}
+														<option disabled selected>CHANGE STATUS</option>
+														<option value="ACTIVE">Active</option>
+														<option value="INACTIVE">InActive</option>
+														{{/select}}
+													</select>
+												</div>
+											</div>
+											{{!-- <div class="form-group mb-2">
+												<button class="btn btn-small btn-muted" name="{{this.type}}" onclick="edit(this);">EDIT/FEATURE</button>
+											</div> --}}
+											</div>
+									</div>
+									<div class="col-md-5">
+										<div class="form-inline ml-auto pull-right">
+											<div class="form-group mb-2">
+												<div class="input-group gtc-rounded">
+													<input type="search" class="form-control form-control-sm" placeholder="Search subscribed products" onChange="search(this);" {{#if queryURI.keyword}}
+													value={{queryURI.keyword}}{{/if}}>
+													<button type="submit" class="btn btn-sm btn-gtc">
+														<i class="fa fa-search"></i>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12">		
+										<div class="cart-top-header">
+											<div class="alignleft cart-top-left">
+												<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
+											</div>
+											<div class="alignright cart-top-right">
+												
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th scope="col">
+															<input type="checkbox" id="checkbox" onclick="selectAll(this);">
+														</th>
+														<th scope="col">Subscribed Products</th>
+														<th scope="col">Price</th>
+														<th>Purchased On</th>
+														<th>Last Order Placed On</th>
+														<th>Next Order Place On</th>
+														<th colspan="2">Status</th>
+													</tr>
+												</thead>
+												<tbody>
+												{{#each subscriptions}}
+													<tr>
+														<td><input type="checkbox" class="checkbox" name="selected" value={{this.id}}></td>
+														<td>
+															<a href="{{../this.type}}/{{this.Product.product_slug}}/{{this.Product.id}}">
+																<img src="{{this.Product.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
+															{{this.Product.product_name}}</a>
+														</td>
+														<td>{{this.Product.price}}</td>
+														<td>{{ prettifyDate this.end_date }}</td>
+														<td></td>
+														<td></td>
+														<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
+															{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
+															{{else ifCond this.status '==' ../statusCode.INACTIVE}}  In Active {{/ifCond}}
+														</td>
+														<td>
+															<a href="javascript:;" >
+																<i class="fa fa-chain-broken" aria-hidden="true"></i>  Un Subscribe</a>
+														</td>
+													</tr>
+												{{/each}}				
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{> footer/bottom-footer}}

@@ -119,6 +119,29 @@
 													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Lifestyle Marketplace" readonly> {{/ifCond}}
 											</div>
 										</div>
+									 	{{#ifCond this.type '==' 'lifestyle'}}
+										<div class="col-lg-6">
+											<div class="form-group">
+												<label class="label-control">Subscription Duration & Duration Unit:
+													<span class="text-danger">*</span>
+												</label>
+												<div class="row">
+													<div class="col-lg-4">
+														<input type="number" min='1' max='30' class="form-control-customized form-control-sm" required>
+													</div>
+													<div class="col-lg-4">
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required>
+															{{#select queryURI.dateSelect}}
+																<option> Days</option>
+																<option value="today">Week</option>
+																<option value="yesterday">Month</option>
+															{{/select}}
+														</select>
+													</div>
+												</div>
+											</div>	
+										</div>
+										{{/ifCond}}
 										{{#ifCond this.type '==' 'wholesale'}}
 											<div class="col-lg-4">
 												<div class="form-group">

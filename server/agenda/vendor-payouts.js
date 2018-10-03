@@ -162,8 +162,8 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 if(paymentMethod['STRIPE']){
                     var paymentObj = {
-                        payout_created_date: new Date(payoutDetails[0].created),
-                        payout_amount: payoutAmount,
+                        date: new Date(payoutDetails[0].created),
+                        amount: payoutAmount,
                         payment_method: paymentMethod['STRIPE'],
                         status: statusCode['ACTIVE'],
                         payment_response: JSON.stringify(payoutDetails)
@@ -171,8 +171,8 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                 }
                 else  if(paymentMethod['PAYPAL']){
                     paymentObj = {
-                       payout_created_date: new Date(),
-                       payout_amount: payoutAmount,
+                       date: new Date(),
+                       amount: payoutAmount,
                        payment_method: paymentMethod['PAYPAL'],
                        status: statusCode['ACTIVE'],
                        payment_response: JSON.stringify(payoutDetails)
