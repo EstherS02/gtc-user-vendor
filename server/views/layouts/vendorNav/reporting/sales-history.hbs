@@ -83,6 +83,9 @@ $("#total_refund").val(total);
 		});
 	});
 	$(document).ready(function() {
+		$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
 
 		var orderItems, totalTag;
 
@@ -265,6 +268,7 @@ $("#total_refund").val(total);
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -363,10 +367,10 @@ $("#total_refund").val(total);
 										<div class="alignright cart-top-right">
 											<span class="m-r-sm text-muted">
 												Entries per page :
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}"> 10</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}"> 25</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}"> 100</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}"> All </a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}} > 10</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
+												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}}> All </a>
 											</span>
 										</div>
 										<div style="clear: both;"></div>
@@ -378,7 +382,7 @@ $("#total_refund").val(total);
 											<thead>
 												<tr>
 													<th scope="col">
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th scope="col">Order#</th>
 													<th style="display:none" scope="col">purchase order id</th>
@@ -395,7 +399,7 @@ $("#total_refund").val(total);
 												{{#each Order}}
 													<tr>
 														<td>
-															<input type="checkbox" value="{{this.id}}">
+															<input type="checkbox" class="checkbox" value="{{this.id}}">
 														</td>
 														<td>
 															<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
@@ -434,11 +438,7 @@ $("#total_refund").val(total);
 													<td>{{currency totalTransaction '$'}}CAD</td>
 												</tr>
 												{{else}}
-												<tr>
-													<td></td>
-													<td> No Data Found</td>
-													<td colspan="7"></td>
-												</tr>
+												<tr><td colspan="7" style="text-align:center;">No Data Found</td></tr>
 												{{/if}}
 											</tbody>
 										</table>
@@ -482,6 +482,9 @@ $("#total_refund").val(total);
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>
@@ -533,9 +536,9 @@ $("#total_refund").val(total);
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-						<b>Cancel</button>
+						<b>CANCEL</button>
 					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-						<b>Continue</b>
+						<b>CONTINUE</b>
 					</button>
 				</div>
 			</form>
@@ -559,9 +562,9 @@ $("#total_refund").val(total);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-					<b>Cancel</button>
+					<b>CANCEL</button>
 				<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-					<b>Yes</b>
+					<b>YES</b>
 				</button>
 			</div>
 			</form>
@@ -583,7 +586,7 @@ $("#total_refund").val(total);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/reporting/sales-history'">
-					<b>Ok</button>
+					<b>OK</button>
 			</div>
 		</div>
 	</div>

@@ -13,5 +13,5 @@ router.post('/card', auth.isAuthenticated(), controller.createCard);
 router.post('/cancel-order/:orderItemId', auth.isAuthenticated(), controller.cancelOrder);
 router.post('/refund-order/:orderId', auth.isAuthenticated(), controller.refundOrder);
 router.delete('/card', auth.isAuthenticated(), controller.deleteCard);
-router.get('/vendorMail', auth.isAuthenticated(), controller.vendorMail)
+// router.get('/sendOrderMail', controller.sendOrderMail)
 module.exports = router;

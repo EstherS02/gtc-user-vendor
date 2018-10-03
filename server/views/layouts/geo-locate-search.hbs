@@ -75,7 +75,8 @@
 									<b class="geo_search_filter">FILTER BY PRICE</b>
 								</p>
 								<p class="right-header-xs">
-									<input type="number" placeholder="From" id="min_price_input" class="geo_search_from filter-price-input" /> &nbsp;&nbsp;-&nbsp;&nbsp;
+									<input type="number" placeholder="From" id="min_price_input" class="geo_search_from filter-price-input" />
+									&nbsp;&nbsp;-&nbsp;&nbsp;
 									<input type="number" placeholder="To" id="max_price_input" class="geo_search_to filter-price-input" />&nbsp;
 									<button class="geo_search_update cursor-pointer filter-geo-locate-update" onclick="priceUpdate();"> <b>UPDATE</b></button>
 								</p>
@@ -112,7 +113,6 @@
 	var advSearchVendorObj = {{{ DisplayJSON advancedSearchByVendor }}}
 	var advMapObj = Object.keys(advSearchVendorObj);
 
-	console.log(advSearchVendorObj)
 
 	function initMap(geoUserLat, geoUserLng) {
 		formattedLocation = new google.maps.LatLng(geoUserLat, geoUserLng);
@@ -128,8 +128,7 @@
 
 		for (let i = 0; i < advMapObj.length; i++) {
 			let mapObjProduct = advSearchVendorObj[advMapObj[i]];
-
-			var content = `<p><img src="` + mapObjProduct[0].Vendor.vendor_profile_pic_url + `" style="width: 50px; height: 50px;">
+			var content = `<p><img src="` + mapObjProduct[0].Vendor.vendor_profile_pic_url + `" onError="imgError(this)" style="width: 50px; height: 50px;">
                 <span style="font-size: 12px;">`+ mapObjProduct[0].Vendor.vendor_name + `</span>
                 <span class="text_blue_color" style="font-size: 8px;left: 49px;position: absolute;top: 35px;">Online Payments</span>
                 </p>`;
@@ -138,13 +137,12 @@
 				if (j === 4) {
 					break;
 				}
-				more_content = more_content + `<a href="javascript:;"><img src="` + mapObjProduct[j].ProductMedia[0].url + `" style="width: 40px; height: 30px;"></a>`;
+				more_content = more_content + `<a href="javascript:;"><img src="` + mapObjProduct[j].ProductMedia[0].url + `" onError="imgError(this)" style="width: 40px; height: 30px;"></a>`;
 			}
 			content = content + `<p>` + more_content + `<a href="javascript:;">See All</a></p>`;
 			createMarker(mapObjProduct[0].Vendor.latitude, mapObjProduct[0].Vendor.longitude, content, title);
 
 		}
-
 		if (advMapObj.length > 0)
 			map.fitBounds(bounds);
 

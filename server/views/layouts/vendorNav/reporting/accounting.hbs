@@ -1,139 +1,227 @@
+<script type="text/javascript">
+	$(function() {
+		$("#inputFromDate").datepicker({
+			trigger: $("#inputFromDateRange"),
+			autoHide: true
+		});
+		$("#inputToDate").datepicker({
+			trigger: $("#inputToDateRange"),
+			autoHide: true
+		});
+	});
+
+	$(document).ready(function() {
+		if ($("#inputDateRange").val() == 1) {
+			$("#inputFromDate").datepicker("setDate", new Date());
+			$("#inputToDate").datepicker("setDate", new Date());
+		} else if ($("#inputDateRange").val() == 2) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 1);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", startDate);
+		} else if ($("#inputDateRange").val() == 3) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 7);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 4) {
+			var startDate = new Date();
+			var endDate = new Date();
+			startDate.setDate(startDate.getDate() - 30);
+			endDate.setDate(endDate.getDate() - 1);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 5) {
+			var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+			var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else if ($("#inputDateRange").val() == 6) {
+			var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+			var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+			$("#inputFromDate").datepicker("setDate", startDate);
+			$("#inputToDate").datepicker("setDate", endDate);
+		} else {
+			if (!$("#inputFromDate").val()) {
+				$("#inputFromDate").val(null);
+			}
+			if (!$("#inputToDate").val()) {
+				$("#inputToDate").val(null);
+			}
+		}
+
+		$('#inputDateRange').on('change', function() {
+			if ($("#inputDateRange").val() == 1) {
+				$("#inputFromDate").datepicker("setDate", new Date());
+				$("#inputToDate").datepicker("setDate", new Date());
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 2) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 1);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", startDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 3) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 7);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 4) {
+				var startDate = new Date();
+				var endDate = new Date();
+				startDate.setDate(startDate.getDate() - 30);
+				endDate.setDate(endDate.getDate() - 1);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 5) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else if ($("#inputDateRange").val() == 6) {
+				var startDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+				var endDate = new Date(new Date().getFullYear(), new Date().getMonth() - 1 + 1, 0);
+
+				$("#inputFromDate").datepicker("setDate", startDate);
+				$("#inputToDate").datepicker("setDate", endDate);
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val() + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
+			}
+		});
+
+		$("#inputFromDate").change(function(e) {
+			if (isDate($("#inputFromDate").val())) {
+				if ($("#inputToDate").val()) {
+					window.location.href = "/reporting/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				}
+			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
+				alert("Invalid start date.");
+			}
+		});
+
+		$("#inputToDate").change(function(e) {
+			if (isDate($("#inputToDate").val())) {
+				if ($("#inputFromDate").val()) {
+					window.location.href = "/reporting/accounting?range=" + 7 + "&start_date=" + $("#inputFromDate").val() + "&end_date=" + $("#inputToDate").val();
+				}
+			} else {
+				window.location.href = "/reporting/accounting?range=" + $("#inputDateRange").val();
+				alert("Invalid start date.");
+			}
+		});
+
+		function isDate(txtDate) {
+			var currVal = txtDate;
+			if (currVal == '')
+				return false;
+			var rxDatePattern = /^(\d{1,2})(\/|-)(\d{1,2})(\/|-)(\d{4})$/;
+			var dtArray = currVal.match(rxDatePattern);
+			if (dtArray == null)
+				return false;
+			dtMonth = dtArray[1];
+			dtDay = dtArray[3];
+			dtYear = dtArray[5];
+			if (dtMonth < 1 || dtMonth > 12)
+				return false;
+			else if (dtDay < 1 || dtDay > 31)
+				return false;
+			else if ((dtMonth == 4 || dtMonth == 6 || dtMonth == 9 || dtMonth == 11) && dtDay == 31)
+				return false;
+			else if (dtMonth == 2) {
+				var isleap = (dtYear % 4 == 0 && (dtYear % 100 != 0 || dtYear % 400 == 0));
+				if (dtDay > 29 || (dtDay == 29 && !isleap))
+					return false;
+			}
+			return true;
+		}
+	});
+</script>
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
-    <div class="gtc-container">
-        <div class="row">
-            <div class="col-sm-2">
-                {{> vendor/vendor-side-navbar}}
-            </div>
-            <div class="col-sm-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="ibox-title row">
-                            <div class="col-md-8">
-                                <h2>Accounting</h2>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="float-right report_cur_pa">
-                                    <span class="report_cur"> Current location:</span> Calgary, Alberta, Canada (
-                                    <span class="report_chan">change</span>)</p>
-                            </div>
-                        </div>
-
-                        <div class="content-body">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <p class="report_da">Date Range</p>
-                                </div>
-                                <div class="col-sm-2" style="padding: 0px;">
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon1"
-                                            id="datepicker">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon1">
-                                                <i class="fa fa-calendar  "></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-1 common_padding1">
-                                    <p style="padding: 3px 17px; font-size: 12px;"> to</p>
-                                </div>
-                                <div class="col-sm-2" style="padding: 0px;">
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control social_input" name="username" placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon1"
-                                            id="datepicker1">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text calender_face_1" id="basic-addon1">
-                                                <i class="fa fa-calendar  "></i>
-                                            </span>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <select class="acc-days">
-                                        <option value="Last 30 Days" selected>Last 30 Days</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <p class="report_dal">$33,000
-                                        <span class="report_dal_span"> CAD</span>
-                                    </p>
-                                    <p class="report_total">Total Ad Revenue, Processing Fees, Subscription Fees, Membership Fees, </p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="report_dal_1">$12,000
-                                        <span class="report_dal_span_1">CAD</span>
-                                    </p>
-                                    <p class="report_total_1">Payments in Escrow </p>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <p class="report_dal_1">$34,000
-                                        <span class="report_dal_span_1">CAD </span>
-                                    </p>
-                                    <p class="report_total_2">Ad &nbsp;Featured Listings Revenue</p>
-                                    <p class="report_total_2">
-                                        <a href="">View Full Report</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="report_dal_1">$6,000
-                                        <span class="report_dal_span_1">CAD </span>
-                                    </p>
-                                    <p class="report_total_2">Processing Fees</p>
-                                    <p class="report_total_2">
-                                        <a href="">View Full Report</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="report_dal_1">$7,000
-                                        <span class="report_dal_span_1">CAD </span>
-                                    </p>
-                                    <p class="report_total_2">Subscription Fees</p>
-                                    <p class="report_total_2">
-                                        <a href="">View Full Report</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-2">
-                                    <p class="report_dal_1">$6,000
-                                        <span class="report_dal_span_1">CAD </span>
-                                    </p>
-                                    <p class="report_total_2">GTC Pay Escrow Fees</p>
-                                    <p class="report_total_2">
-                                        <a href="">View Full Report</a>
-                                    </p>
-                                </div>
-                                <div class="col-md-3">
-                                    <p class="report_dal_1">$12,000
-                                        <span class="report_dal_span_1">CAD </span>
-                                    </p>
-                                    <p class="report_total_2">Marketing Service Fees</p>
-                                    <p class="report_total_2">
-                                        <a href="">View Full Report</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="report_other">Other </p>
-                                    <p class="report_tax">
-                                        <a href="dashboard-vendor-reports-tax.html"> Tax Summary (Collected based on Country, State/Province) </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="gtc-container">
+		<div class="row">
+			<div class="col-sm-2">
+				{{> vendor/vendor-side-navbar}}
+			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+									<h2>
+										<span>Accounting</span>
+										<span class="font-sm m-t-xs text-muted float-right">Current location: <span class="text-black text-500">{{LoggedInUser.Vendor.city}}, {{LoggedInUser.Vendor.State.name}}, {{LoggedInUser.Vendor.Country.name}}</span></span>
+									</h2>
+							</div>
+							<div class="hr-line"></div>
+							<div class="content-body m-t-sm">
+								<form class="inline-form">
+									<div class="form-group m-r-lg">
+										<label class="label-control">Date Range : </label>
+									</div>
+									<div class="form-group m-r">
+										<div class="input-group">
+											<input id="inputFromDate" type="text" class="custom-form-control date_range_picker" value="{{queryParams.start_date}}" placeholder="MM/DD/YYYY" aria-label="inputFromDateRange" aria-describedby="inputFromDateRange">
+											<div class="input-group-append cursor-pointer">
+												<span class="input-group-text" id="inputFromDateRange">
+													<img class="calendar-icon" src="../../img/calendar.png">
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group m-r">
+										<label class="label-control">to</label>
+									</div>
+									<div class="form-group m-r">
+										<div class="input-group">
+											<input id="inputToDate" name="to_date" type="text" class="custom-form-control date_range_picker" value="{{queryParams.end_date}}" placeholder="MM/DD/YYYY" aria-label="inputToDateRange" aria-describedby="inputToDateRange">
+											<div class="input-group-append cursor-pointer">
+												<span class="input-group-text" id="inputToDateRange">
+													<img class="calendar-icon" src="../../img/calendar.png">
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group m-r">
+										<div class="select-container">
+											<select id="inputDateRange" class="form-control-customized form-control-sm custom-dropdown" name="date_range">
+												{{#each dateRangeOptions}}
+													<option {{#ifCond @root.queryParams.range '==' this.value}} selected="true" {{/ifCond}} value="{{this.value}}">{{this.column}}</option>
+												{{/each}}
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{else}} 
+					{{> plan-inactive}}
+			{{/ifCond}}
+		</div>
+	</div>
 </div>
 {{> footer/bottom-footer}}

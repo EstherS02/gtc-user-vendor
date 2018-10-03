@@ -179,6 +179,12 @@ function hasRole(roleRequired) {
 		},
 		attributes: ['id', 'name', 'code', 'currency_id', 'status']
 	}, {
+		model: model["State"],
+		where: {
+			status: status['ACTIVE']
+		},
+		attributes: ['id', 'name', 'code', 'country_id', 'status']
+	}, {
 		model: model["Currency"],
 		where: {
 			status: status['ACTIVE']
@@ -350,7 +356,105 @@ function hasPermission() {
 			}
 		});
 }
+function isAuthenticatedUserPlan(){
+return compose()
+		.use(function(req, res, next) {
+			if (req.query && req.query.hasOwnProperty('access_token')) {
+				req.headers.authorization = 'Bearer ' + req.query.access_token;
+			}
+			validateJwt(req, res, next);
+		})
+		.use(function(err, req, res, next) {
+			if (err.name === 'UnauthorizedError') {
+				if (new RegExp("api").test(req.originalUrl) || new RegExp("auth").test(req.originalUrl)) {
+					return res.status(err.status).send({
+						message: err.message
+					});
+				} else {
+					return res.redirect('/login');
+				}
+			}
+			next();
+		})
+		.use(function(req, res, next) {
+			let queryObj = {};
 
+			queryObj['id'] = req.user.userId;
+
+			model['User'].findOne({
+					include:[{
+						model:model['UserPlan'],
+						where:{
+							status:{
+								$eq:status['ACTIVE']
+							}
+						},
+						required:false,
+					}],
+					where: queryObj,
+					attributes: {
+						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+					}
+				}).then(function(user) {
+					if (user) {
+						req.user = plainTextResponse(user);
+
+						let vendorQueryObj = {};
+
+						vendorQueryObj['status'] = {
+							'$eq': status["ACTIVE"]
+						}
+						if(user.UserPlans.length <= 0){
+							req.user['UserPlans'] = false;
+						}
+
+						vendorQueryObj['user_id'] = req.user.id;
+
+						model['Vendor'].findOne({
+							where: vendorQueryObj,
+
+							include: [{
+								model: model['Country']
+							}, {
+								model: model['Currency']
+							}, {
+								model: model['Timezone']
+							}, {
+								model: model['VendorPlan'],
+								where: {
+									status: {
+										$eq: status['ACTIVE']
+									}
+								}
+							}, {
+								model: model['VendorVerification'],
+								required: false
+							}]
+						}).then(function(vendorObj) {
+							if (vendorObj) {
+								req.user['Vendor'] = vendorObj.toJSON();
+								req.user['VendorStatus'] = true;
+								return next();
+							} else {
+								req.user['Vendor'] = false;
+								return next();
+							}
+						}).catch(function(error) {
+							req.user['Vendor'] = false;
+							return next();
+						});
+						//next();
+					} else {
+						res.status(404).send("User not found");
+						return;
+					}
+				})
+				.catch(function(error) {
+					console.log('Error:::', error);
+					return next(error);
+				});
+		});
+}
 function getIndexOfAction(array, value) {
 	if (value) {
 		if (array.length > 0) {
@@ -377,3 +481,4 @@ exports.isAuthenticatedUser = isAuthenticatedUser;
 exports.isLoggedIn = isLoggedIn;
 exports.hasRole = hasRole;
 exports.hasPermission = hasPermission;
+exports.isAuthenticatedUserPlan = isAuthenticatedUserPlan;

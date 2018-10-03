@@ -7,32 +7,39 @@ const statusCode = require('../../config/status');
 const dayCode = require('../../config/days');
 const position = require('../../config/position');
 const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 const async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
 
 export function talk(req, res) {
 	var modelName = 'TalkSetting';
 	var timeModel = "Timezone";
-	var queryObj1 = {}, LoggedInUser = {};
-    var bottomCategory ={};
+	var queryObj1 = {},
+		LoggedInUser = {};
+	var bottomCategory = {};
 	var queryObj = {
 		vendor_id: req.user.Vendor.id
 	};
 	var includeArr = [];
 
-	if(req.user)
+	if (req.user)
 		LoggedInUser = req.user;
-		let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
 
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
 		talk: function(callback) {
 			service.findOneRow(modelName, queryObj, includeArr)
 				.then(function(talkSetting) {
@@ -67,31 +74,30 @@ export function talk(req, res) {
 				})
 		},
 		categories: function(callback) {
-            var includeArr = [];
-            const categoryOffset = 0;
-            const categoryLimit = null;
-            const categoryField = "id";
-            const categoryOrder = "asc";
-            var categoryModel = "Category";
-            const categoryQueryObj = {};
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                .then(function(category) {
-                    var categories = category.rows;
-                    bottomCategory['left'] = categories.slice(0, 8);
-                    bottomCategory['right'] = categories.slice(8, 16);
-                    return callback(null, category.rows);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 
-        }
+		}
 	}, function(error, results) {
 		if (!error) {
-			// console.log('results', results);
 			res.render('vendorNav/talk', {
 				title: "Global Trade Connect",
 				talk: results.talk,
@@ -99,11 +105,13 @@ export function talk(req, res) {
 				timeZone: results.timeZone,
 				dayCode: dayCode,
 				categories: results.categories,
-                bottomCategory: bottomCategory,
+				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser,
-				selectedPage:'gtc-talk',
-				cartheader: results.cartCounts,
-				vendorPlan:vendorPlan
+				selectedPage: 'gtc-talk',
+				cart: results.cartInfo,
+				marketPlace: marketplace,
+				vendorPlan: vendorPlan,
+				statusCode:statusCode
 			});
 		} else {
 			res.render('vendorNav/talk', error);
@@ -112,51 +120,56 @@ export function talk(req, res) {
 }
 
 
-export function chat(req,res){
+export function chat(req, res) {
 
-	var LoggedInUser = {}, bottomCategory ={};
-	if(req.user)
+	var LoggedInUser = {},
+		bottomCategory = {};
+	if (req.user)
 		LoggedInUser = req.user;
-		let user_id = LoggedInUser.id;
+	let user_id = LoggedInUser.id;
 
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
 		},
-	    categories: function(callback) {
-            var includeArr = [];
-            const categoryOffset = 0;
-            const categoryLimit = null;
-            const categoryField = "id";
-            const categoryOrder = "asc";
-            var categoryModel = "Category";
-            const categoryQueryObj = {};
+		categories: function(callback) {
+			var includeArr = [];
+			const categoryOffset = 0;
+			const categoryLimit = null;
+			const categoryField = "id";
+			const categoryOrder = "asc";
+			var categoryModel = "Category";
+			const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = statusCode["ACTIVE"];
+			categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                .then(function(category) {
-                    var categories = category.rows;
-                    bottomCategory['left'] = categories.slice(0, 8);
-                    bottomCategory['right'] = categories.slice(8, 16);
-                    return callback(null, category.rows);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+				.then(function(category) {
+					var categories = category.rows;
+					bottomCategory['left'] = categories.slice(0, 8);
+					bottomCategory['right'] = categories.slice(8, 16);
+					return callback(null, category.rows);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 
 		}
-	},function(error, results) {
+	}, function(error, results) {
 		if (!error) {
 			res.render('chat', {
 				title: "Global Trade Connect",
 				categories: results.categories,
-                bottomCategory: bottomCategory,
+				bottomCategory: bottomCategory,
 				LoggedInUser: LoggedInUser
 			});
 		} else {

@@ -37,7 +37,8 @@ export function createStarterSeller(req, res) {
     bodyParams = req.body;
     bodyParams['user_id'] = req.user.id;
     bodyParams['status'] = status['ACTIVE'];
-    bodyParams['created_on'] = new Date();
+	bodyParams['created_on'] = new Date();
+	
 
     queryObj['user_id'] = req.user.id;
 
@@ -68,8 +69,8 @@ export function createStarterSeller(req, res) {
                                                 var verndorPlanObj = {};
                                                 verndorPlanObj['vendor_id'] = vendorRow.id;
                                                 verndorPlanObj['plan_id'] = planRow.id;
-                                                verndorPlanObj['status'] = status['ACTIVE'];
-                                                verndorPlanObj['start_date'] = new Date();
+												verndorPlanObj['status'] = status['ACTIVE'];
+												verndorPlanObj['start_date'] = new Date();
                                                 if (planRow.duration_unit == durationUnit['DAYS']) {
                                                     verndorPlanObj['end_date'] = moment().add(planRow.duration, 'days').format('YYYY-MM-DD');
                                                 }
@@ -223,7 +224,8 @@ export function create(req, res) {
             return;
         } else {
             bodyParams["status"] = status["ACTIVE"];
-            bodyParams["role"] = roles["VENDOR"];
+			bodyParams["role"] = roles["VENDOR"];
+			bodyParams["contact_email"] = req.body.email;
             model['User'].create(bodyParams)
                 .then(function(user) {
                     if (user) {

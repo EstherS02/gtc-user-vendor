@@ -19,10 +19,22 @@
         }
         
     }
+	function usershowDetails()
+	{
+          $('#planHide').hide();
+          $('#userPlanShow').hide();
+          $('#vendorPlanShow').show();
+		  $('#userPlaninfo').show(); 		
+	}
+	function showsplan()
+	{
+		var uri = window.location.pathname;
+		window.location.href=uri;
+	}
   </script>
 <section id="userPlanShow">
 	    <div class="text-center which_pkg" style="margin-bottom: 0px;">
-			<div id="userPlaninfo" class="pull-right"> <a href="/upgradeplan"><b>Go Back</b></a></div>
+			<div id="userPlaninfo" class="pull-right"> <a href="javascript:;" onclick="showsplan()"><b>Go Back</b></a></div>
         <div class="container">
             <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
             <p class="which_pkg_p">We have a several options to get you started, or dive in with the our most robust offering. </p>
@@ -97,7 +109,7 @@
 <section id="vendorPlanShow">
     <div class="text-center which_pkg" style="margin-bottom: 0px;">
         <div class="container">
-			<div id="userPlaninfo" class="pull-right"> <a href="/upgradeplan"><b>Go Back</b></a></div>
+			<div id="userPlaninfo" class="pull-right"> <a href="javascript:;" onclick="showsplan()"><b>Go Back</b></a></div>
             <h1 class="which_pkg_h1">Which Package Should I Choose?</h1>
             <p class="which_pkg_p">Whether you're just networking, or looking to build your wholesale empire, we have the solution for you </p>
             <div class="row" >

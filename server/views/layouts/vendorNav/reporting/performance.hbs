@@ -23,6 +23,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -109,7 +110,7 @@
 										</div>
 										<div class="col-md-1">
 											<button class="update-btn1" style="margin-left: 22px;background-color: green;
-																    color: #fff" onclick="onSearch()">Update</button>
+																    color: #fff" onclick="onSearch()">UPDATE</button>
 										</div>
 									</div>
 								</div>
@@ -229,6 +230,9 @@
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

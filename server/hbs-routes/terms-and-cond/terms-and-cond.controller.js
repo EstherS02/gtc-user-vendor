@@ -10,9 +10,12 @@ const moment = require('moment');
 import series from 'async/series';
 var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 
 export function termsAndCond(req, res) {
-	var LoggedInUser = {}, termsAndCondQueryObj={};
+	var LoggedInUser = {},
+		termsAndCondQueryObj = {};
 	var bottomCategory = {};
 	var termsAndCondModel = 'TermsAndCond'
 
@@ -24,24 +27,28 @@ export function termsAndCond(req, res) {
 		status: statusCode['ACTIVE']
 	};
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
-		categories: function(callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			var categoryModel = "Category";
-			const categoryQueryObj = {};
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
+					return callback(null);
+				}
+			},
+			categories: function(callback) {
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
 
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
+				categoryQueryObj['status'] = statusCode["ACTIVE"];
 
 				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
 					.then(function(category) {
@@ -54,22 +61,21 @@ export function termsAndCond(req, res) {
 						return callback(null);
 					});
 
-		},
-        termsAndCond: function(callback){
+			},
+			termsAndCond: function(callback) {
 
-			termsAndCondQueryObj['vendor_id'] = LoggedInUser.Vendor.id;
-			termsAndCondQueryObj['status'] = statusCode['ACTIVE'];
-			
-			service.findOneRow(termsAndCondModel, termsAndCondQueryObj, [])
-				.then(function(termsAndCond) {
-					return callback(null, termsAndCond);
-				})
-				.catch(function(error) {
-					consolelog('Error:::', error);
-					return callback(error, null);
-				})
+				termsAndCondQueryObj['vendor_id'] = LoggedInUser.Vendor.id;
+				termsAndCondQueryObj['status'] = statusCode['ACTIVE'];
 
-		}
+				service.findOneRow(termsAndCondModel, termsAndCondQueryObj, [])
+					.then(function(termsAndCond) {
+						return callback(null, termsAndCond);
+					})
+					.catch(function(error) {
+						consolelog('Error:::', error);
+						return callback(error, null);
+					});
+			}
 		},
 		function(err, results) {
 			if (!err) {
@@ -78,10 +84,12 @@ export function termsAndCond(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					selectedPage: 'terms-and-cond',
 					vendorPlan: vendorPlan,
-					termsAndCond: results.termsAndCond
+					termsAndCond: results.termsAndCond,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/terms-and-cond', err);

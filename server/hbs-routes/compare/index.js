@@ -9,6 +9,6 @@ var globalUser = require('../../auth/global-user-obj');
 
 var controller = require('./compare.controller');
 
-router.get('/', globalUser.isGlobalObj(), controller.compare);
+router.get('/', globalUser.isGlobalObjUser(), controller.compare);
 
 module.exports = router;

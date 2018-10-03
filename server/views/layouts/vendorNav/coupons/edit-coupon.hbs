@@ -28,6 +28,7 @@
 				newCoupon.expiry_date = $('#inputExpiryDate').val();
 				newCoupon.minimum_spend = $('#inputMinimumSpend').val();
 				newCoupon.maximum_spend = $('#inputMaximumSpend').val();
+				newCoupon.status = $('#inputStatus').val();
 				newCoupon.individual_use_only = $('#inputIndividualUseOnly').is(':checked') ? 1 : 0;
 				newCoupon.excluse_sale_item = $('#inputExcluseSaleItem').is(':checked') ? 1 : 0;
 				newCoupon.usage_limit = $('#inputUsageLimit').val();
@@ -48,9 +49,7 @@
 						auth.alertService(xhr.status, data);
 					},
 					error: function(request, status, error) {
-						console.log('request', request);
-						console.log('status', status);
-						console.log('error', error);
+						auth.alertService(request.status, request.responseText);
 					}
 				});
 			}
@@ -110,207 +109,287 @@
 		});
 		$(".multiSelect").trigger('change');
 	});
+
+	function cancelCoupon() {
+		window.location.href = "/coupons";
+	}
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}{{> vendor/vendor-menu}}
-<div id="vendorAlert" tabindex="1"><div class="gtc-container"></div></div>
+<div id="vendorAlert" tabindex="1">
+	<div class="gtc-container"></div>
+</div>
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2>Create/Edit Coupon</h2>
-						</div>
-						<div class="hr-line"></div>
-						<div class="content-body m-t">
-							<form id="couponForm">
-								{{#if coupon.id }}
-								<div class="row">
-									<div class="col-8">
-										<div class="form-group">
-											<input type="text" name="id" id="inputId" class="form-control-customized form-control-sm" value="{{coupon.id}}" disabled="true">
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+								<h2>
+									{{#if coupon.id }} Edit Coupon
+										<input type="hidden" name="coupon_id" value="{{coupon.id}}" />
+									{{else}}Create Coupon {{/if}}
+								</h2>
+							</div>
+							<div class="hr-line"></div>
+							<div class="content-body m-t">
+								<form id="couponForm">
+									{{#if coupon.id }}
+										<div class="row">
+											<div class="col-8">
+												<div class="form-group">
+													<input type="hidden" name="id" id="inputId" class="form-control-customized form-control-sm" value="{{coupon.id}}" disabled="true">
+												</div>
+											</div>
 										</div>
-									</div>
-								</div>
-								{{/if}}
-								<div class="row">
-									<div class="col-8">
-										<div class="form-group">
-											<input type="text" name="coupon_name" id="inputCouponName" class="form-control-customized form-control-sm" value="{{coupon.coupon_name}}" placeholder="Enter coupon name" required="true" autofocus="true">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="text" name="coupon_code" id="inputCouponCode" class="form-control-customized form-control-sm" value="{{coupon.code}}" placeholder="Enter coupon code" required="true">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<div class="select-container">
-												<select name="discount_type" id="inputDiscountType" class="form-control-customized form-control-sm" required="true">
-													<option disabled="true" selected="true">Select discount type</option>
-													<option value="1" {{#ifCond coupon.discount_type "==" 1}} selected="true" {{/ifCond}}>Percentage</option>
-													<option value="2" {{#ifCond coupon.discount_type "==" 2}} selected="true" {{/ifCond}}>Fixed Price</option>
-												</select>
+									{{/if}}
+									<div class="row">
+										<div class="col-8">
+											<div class="form-group">
+												<input type="text" name="coupon_name" id="inputCouponName" class="form-control-customized form-control-sm" value="{{coupon.coupon_name}}"
+												 placeholder="Enter coupon name" required="true" autofocus="true">
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{coupon.discount_value}}" placeholder="Discount value" required="true">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="text" name="expiry_date" id="inputExpiryDate" class="form-control-customized form-control-sm" value="{{coupon.expiry_date}}" placeholder="YYYY-MM-DD" required="false">
-										</div>
-									</div>
-									<div class="col-2 no-padding">
-										<label class="label-control">Expiry date</label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{coupon.minimum_spend}}" placeholder="Minimum Spend">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{coupon.maximum_spend}}" placeholder="Maximum Spend">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<div class="customCheckbox">
-												<input type="checkbox" name="individual_use_only" id="inputIndividualUseOnly" class="customCheckboxInput" {{#if coupon.individual_use_only}}checked{{/if}}>
-												<label class="checkbox-b" for="inputIndividualUseOnly"></label>
-												<small class="m-l"><strong>Individual use only</strong></small>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="text" name="coupon_code" id="inputCouponCode" class="form-control-customized form-control-sm" value="{{coupon.code}}"
+												 placeholder="Enter coupon code" required="true">
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<div class="customCheckbox">
-												<input type="checkbox" name="excluse_sale_item" id="inputExcluseSaleItem" class="customCheckboxInput" {{#if coupon.excluse_sale_item}}checked{{/if}}>
-												<label class="checkbox-b" for="inputExcluseSaleItem"></label>
-												<small class="m-l"><strong>Excluse sale item</strong></small>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<div class="select-container">
+													<select name="discount_type" id="inputDiscountType" class="form-control-customized form-control-sm" required="true">
+														{{#select coupon.discount_type}}
+															<option value='' selected disabled="true">Discount Type</option>
+															<option value="1">Percentage</option>
+															<option value="2">Fixed Price</option>
+														{{/select}}
+													</select>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-6">
-										<div class="form-group">
-											<div class="select-container">
-												<select name="categories" id="inputCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
-													{{#if existingCouponCategories}} {{{optionsSelectedCategory categories existingCouponCategories}}} {{else}}
-														{{#each categories}}
-															<option value= {{this.id}}>{{this.name}}</option>
-														{{/each}}
-													{{/if}}
-												</select>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="text" name="discount_value" id="inputDiscountValue" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.discount_value}}"
+												 placeholder="Discount value" required="true">
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-6">
-										<div class="form-group">
-											<div class="select-container">
-												<select name="exclude_categories" id="inputExcludeCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
-													{{#if existingCouponExcludeCategories}} {{{optionsSelectedCategory categories existingCouponExcludeCategories}}} {{else}}
-														{{#each categories}}
-															<option value= {{this.id}}>{{this.name}}</option>
-														{{/each}}
-													{{/if}}
-												</select>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="text" name="expiry_date" id="inputExpiryDate" class="form-control-customized form-control-sm" value="{{coupon.expiry_date}}"
+												 placeholder="YYYY-MM-DD" required="false">
+											</div>
+										</div>
+										<div class="col-2 no-padding">
+											<label class="label-control vend_edit_list_spanstyle">Expiry date</label>
+										</div>
+									</div>
+									{{#if coupon.id }}
+										<div class="row">
+											<div class="col-4">
+												<div class="form-group">
+													<div class="select-container">
+														<select name="status" id="inputStatus" class="form-control-customized form-control-sm" required="true">
+															<option disabled="true" selected="true">Select status</option>
+															{{#select coupon.status}}
+																<option value="{{statusCode.ACTIVE}}">Active</option>
+																<option value="{{statusCode.SUSPENDED}}">Suspended</option>
+																<option value="{{statusCode.SOLDOUT}}">Sold Out</option>
+															{{/select}}
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									{{/if}}
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="number" name="minimum_spend" id="inputMinimumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.minimum_spend}}"
+												 placeholder="Minimum Spend">
+											</div>
+										</div>
+										<div class="col-6 no-padding">
+											<label class="label-control vend_edit_list_spanstyle">Set the Minimum spend (including subtotal with taxes) allowed to use the coupon</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="number" name="maximum_spend" id="inputMaximumSpend" class="form-control-customized form-control-sm" value="{{decimalFixed coupon.maximum_spend}}"
+												 placeholder="Maximum Spend">
+											</div>
+										</div>
+										<div class="col-6 no-padding">
+											<label class="label-control vend_edit_list_spanstyle">Set the Maximum spend (including subtotal with taxes) allowed to use the coupon</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<div class="customCheckbox">
+													<input type="checkbox" name="individual_use_only" id="inputIndividualUseOnly" class="customCheckboxInput" {{#if coupon.individual_use_only}}
+													 checked {{/if}}>
+													<label class="checkbox-b" for="inputIndividualUseOnly"></label>
+													<small class="m-l">
+														<strong>Individual use only</strong>
+													</small>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-6">
-										<div class="form-group">
-											<div class="select-container">
-												<select name="products" id="inputProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
-													{{#if existingCouponProducts}} {{{optionsSelected products existingCouponProducts}}} {{else}}
-														{{#each products}}
-															<option value= {{this.id}}>{{this.product_name}}</option>
-														{{/each}}
-													{{/if}}
-												</select>
+									<div class="row">
+										<div class="col-2">
+											<div class="form-group">
+												<div class="customCheckbox">
+													<input type="checkbox" name="excluse_sale_item" id="inputExcluseSaleItem" class="customCheckboxInput" {{#if coupon.excluse_sale_item}}
+													 checked {{/if}}>
+													<label class="checkbox-b" for="inputExcluseSaleItem"></label>
+													<small class="m-l">
+														<strong>Excluse sale item</strong>
+													</small>
+												</div>
+											</div>
+										</div>
+										<div class="col-10 no-padding">
+											<label class="label-control vend_edit_list_spanstyle">Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is
+												not on sale. Per-cart coupons will only work if there are no sale items iin the cart.</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-5">
+											<div class="form-group">
+												<div class="select-container">
+													<select name="categories" id="inputCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
+														{{#if existingCouponCategories}} {{{optionsSelectedCategory categories existingCouponCategories}}} {{else}}
+															{{#each categories}}
+																<option value= {{this.id}}>{{this.name}}</option>
+															{{/each}}
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">Products must be in this category for this coupon to be applicable</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-5">
+											<div class="form-group">
+												<div class="select-container">
+													<select name="exclude_categories" id="inputExcludeCategories" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
+														{{#if existingCouponExcludeCategories}} {{{optionsSelectedCategory categories existingCouponExcludeCategories}}} {{else}}
+															{{#each categories}}
+																<option value= {{this.id}}>{{this.name}}</option>
+															{{/each}}
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">Products must not be in this category for this coupon to be applicable</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-5">
+											<div class="form-group">
+												<div class="select-container">
+													<select name="products" id="inputProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
+														{{#if existingCouponProducts}} {{{optionsSelected products existingCouponProducts}}} {{else}}
+															{{#each products}}
+																<option value= {{this.id}}>{{this.product_name}}</option>
+															{{/each}}
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">Products which need to be in the cart for this coupon to be applicable</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-5">
+											<div class="form-group">
+												<div class="select-container">
+													<select name="exclude_products" id="inputExcludeProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
+														{{#if existingCouponExcludeProducts}} {{{optionsSelected products existingCouponExcludeProducts}}} {{else}}
+															{{#each products}}
+																<option value= {{this.id}}>{{this.product_name}}</option>
+															{{/each}}
+														{{/if}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">Products which must not be in the cart for this coupon to be applicable</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="number" name="usage_limit" id="inputUsageLimit" class="form-control-customized form-control-sm" value="{{coupon.usage_limit}}"
+												 placeholder="Usage Limit">
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">How many times this coupon can be used before it is void (default is unlimited)</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="number" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" class="form-control-customized form-control-sm"
+												 value="{{coupon.limit_usage_to_x_items}}" placeholder="Limit usage to X items">
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">The maximum items this coupon can be applied to when using product discount (default is all)</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-4">
+											<div class="form-group">
+												<input type="number" name="usage_limit_per_user" id="inputUsageLimitPerUser" class="form-control-customized form-control-sm"
+												 value="{{coupon.usage_limit_per_user}}" placeholder="Usage limit per user">
+											</div>
+										</div>
+										<div class="col-6">
+											<label class="label-control vend_edit_list_spanstyle">How many times this coupons can be used by an individual (default is unlimited)</label>
+										</div>
+									</div>
+									<div class="hr-line"></div>
+									<div class="row">
+										<div class="col-12">
+											<div class="form-group">
+												<button class="btn btn-md btn-success m-t" type="submit">SUBMIT</button>
+												<button class="btn btn-md btn-muted m-t" onclick="cancelCoupon()" type="button">CANCEL</button>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-6">
-										<div class="form-group">
-											<div class="select-container">
-												<select name="exclude_products" id="inputExcludeProducts" multiple="multiple" class="form-control-customized form-control-sm multiSelect">
-													{{#if existingCouponExcludeProducts}} {{{optionsSelected products existingCouponExcludeProducts}}} {{else}}
-														{{#each products}}
-															<option value= {{this.id}}>{{this.product_name}}</option>
-														{{/each}}
-													{{/if}}
-												</select>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="usage_limit" id="inputUsageLimit" class="form-control-customized form-control-sm" value="{{coupon.usage_limit}}" placeholder="Usage Limit">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="limit_usage_to_x_items" id="inputLimitUsageToXItems" class="form-control-customized form-control-sm" value="{{coupon.limit_usage_to_x_items}}" placeholder="Limit usage to X items">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-4">
-										<div class="form-group">
-											<input type="number" name="usage_limit_per_user" id="inputUsageLimitPerUser" class="form-control-customized form-control-sm" value="{{coupon.usage_limit_per_user}}" placeholder="Usage limit per user">
-										</div>
-									</div>
-								</div>
-								<div class="hr-line"></div>
-								<div class="row">
-									<div class="col-12">
-										<div class="form-group">
-											<button class="btn btn-md btn-success m-t" type="submit">SUBMIT</button>
-											<button class="btn btn-md btn-muted m-t" type="button">CANCEL</button>
-										</div>
-									</div>
-								</div>
-							</form>
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+				{{else}}
+					{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

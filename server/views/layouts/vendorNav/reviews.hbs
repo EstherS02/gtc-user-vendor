@@ -6,6 +6,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -70,48 +71,52 @@
 								</div>
 							</div>
 						</div>
+						{{!-- Pagination starts --}}
+							<div class="row">
+								<div style="margin:0 auto;width:100px;">
+								{{#pagination queryPaginationObj.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#unless startFromFirstPage}}
+													<li class="page-item">
+														<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+													</li>
+												{{/unless}} 
+												{{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="../reviews?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+													</li>
+												{{/each}}
+												{{#unless endAtLastPage}}
+													<li class="page-item">
+														<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+													</li>
+												{{/unless}}
+											</ul>
+										</nav>
+									{{/pagination}}
+				{{!-- 					{{#pagination collectionSize page pageSize maxSize}}
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												{{#each pages}}
+													<li class="page-item {{#if isCurrent}} active {{/if}}">
+														<a class="page-link" href="reviews?page={{page}}&limit={{../../pageSize}}" </a>
+													</li>
+												{{/each}}
+											</ul>
+										</nav>
+									{{/pagination}} --}}
+								</div>
+							</div>
+						{{!-- Pagination Ends --}}
+						
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
-		{{!-- Pagination starts --}}
-			<div class="row">
-				<div style="margin:0 auto;width:100px;">
-				{{#pagination queryPaginationObj.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-						<nav aria-label="Page navigation example">
-							<ul class="pagination justify-content-center">
-								{{#unless startFromFirstPage}}
-									 <li class="page-item">
-										<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-									</li>
-								{{/unless}} 
-								{{#each pages}}
-									<li class="page-item {{#if isCurrent}} active {{/if}}">
-										<a class="page-link" href="../reviews?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-									</li>
-								{{/each}}
-								{{#unless endAtLastPage}}
-									<li class="page-item">
-										<a class="page-link" href="../reviews?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-									</li>
-								{{/unless}}
-							</ul>
-						</nav>
-					{{/pagination}}
-{{!-- 					{{#pagination collectionSize page pageSize maxSize}}
-						<nav aria-label="Page navigation example">
-							<ul class="pagination justify-content-center">
-								{{#each pages}}
-									<li class="page-item {{#if isCurrent}} active {{/if}}">
-										<a class="page-link" href="reviews?page={{page}}&limit={{../../pageSize}}" </a>
-									</li>
-								{{/each}}
-							</ul>
-						</nav>
-					{{/pagination}} --}}
-				</div>
-			</div>
-						{{!-- Pagination Ends --}}
 	</div>
 </div>
 {{> footer/bottom-footer}} 

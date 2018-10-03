@@ -9,10 +9,12 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 var async = require('async');
 const vendorPlan = require('../../config/gtc-plan');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 
 export function shippingSettings(req, res) {
 	var LoggedInUser = {};
-    var bottomCategory ={};
+	var bottomCategory = {};
 
 	if (req.user)
 		LoggedInUser = req.user;
@@ -27,14 +29,18 @@ export function shippingSettings(req, res) {
 	var vendorModelName = "VendorShippingLocation";
 
 	async.series({
-		cartCounts: function(callback) {
-            service.cartHeader(LoggedInUser).then(function(response) {
-                return callback(null, response);
-            }).catch(function(error) {
-                console.log('Error :::', error);
-                return callback(null);
-            });
-        },
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
+					return callback(null);
+				}
+			},
 			Countries: function(callback) {
 				service.findRows(modelName, {}, 0, null, 'id', 'asc', [])
 					.then(function(results) {
@@ -49,16 +55,16 @@ export function shippingSettings(req, res) {
 					.then(function(results) {
 						var vendorCountriesID = [];
 						var vendorCountries = {};
-					if (results.rows.length > 0) {
-						for (var i = 0; i < results.rows.length; i++) {
-							vendorCountriesID.push(results.rows[i].country_id);
+						if (results.rows.length > 0) {
+							for (var i = 0; i < results.rows.length; i++) {
+								vendorCountriesID.push(results.rows[i].country_id);
+							}
+							vendorCountries.vendorCountriesID = vendorCountriesID;
+							vendorCountries.count = results.count;
+							return callback(null, vendorCountries);
+						} else {
+							return callback(null, vendorCountriesID);
 						}
-						vendorCountries.vendorCountriesID = vendorCountriesID;
-						vendorCountries.count = results.count;
-						return callback(null, vendorCountries);
-					} else {
-						return callback(null, vendorCountriesID);
-					}
 						return callback(null, results);
 					}).catch(function(error) {
 						console.log('Error :::', error);
@@ -66,28 +72,28 @@ export function shippingSettings(req, res) {
 					});
 			},
 			categories: function(callback) {
-            var includeArr = [];
-            const categoryOffset = 0;
-            const categoryLimit = null;
-            const categoryField = "id";
-            const categoryOrder = "asc";
-            var categoryModel = "Category";
-            const categoryQueryObj = {};
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
 
-            categoryQueryObj['status'] = statusCode["ACTIVE"];
+				categoryQueryObj['status'] = statusCode["ACTIVE"];
 
-            service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-                .then(function(category) {
-                    var categories = category.rows;
-                    bottomCategory['left'] = categories.slice(0, 8);
-                    bottomCategory['right'] = categories.slice(8, 16);
-                    return callback(null, category.rows);
-                }).catch(function(error) {
-                    console.log('Error :::', error);
-                    return callback(null);
-                });
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 
-        }
+			}
 		},
 		function(err, results) {
 			// console.log(results.vendorCountries)
@@ -95,13 +101,15 @@ export function shippingSettings(req, res) {
 				res.render('vendorNav/shipping-settings', {
 					title: "Global Trade Connect",
 					Countries: results.Countries,
-					LoggedInUser:LoggedInUser,
+					LoggedInUser: LoggedInUser,
 					categories: results.categories,
-                	bottomCategory: bottomCategory,
-                	cartheader: results.cartCounts,
-					vendorCountry:results.vendorCountries,
-					selectedPage:"shipping-settings",
-					vendorPlan:vendorPlan
+					bottomCategory: bottomCategory,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
+					vendorCountry: results.vendorCountries,
+					selectedPage: "shipping-settings",
+					vendorPlan: vendorPlan,
+					statusCode: statusCode
 				});
 			} else {
 				res.render('vendorNav/shipping-settings', err);

@@ -1,0 +1,237 @@
+<script>
+ $(document).ready(function() {
+ 	$("#startDate").datepicker({
+ 		format: 'yyyy-mm-dd',
+ 		autohide: true,
+ 	});
+ 	$("#endDate").datepicker({
+ 		format: 'yyyy-mm-dd',
+ 		autohide: true,
+ 	});
+ 	$("#gtc-form-alert").hide();
+ 	$("#endDate").change(function(){
+ 		var startDate = $('#startDate').val();
+ 		let currentUTCDate = moment.utc().format('YYYY-MM-DD');
+ 		if(startDate){
+ 			var endDate = new Date($('#endDate').val());
+ 			var from = new Date(startDate);
+ 			if(from > endDate){
+ 				$('#endDate').val("");
+ 				$( "#endDate" ).datepicker( "destroy" );
+ 				$("#endDate").datepicker();
+ 				outputPopupError("End date should not less than start date");
+ 			}
+ 		}else{
+ 			outputPopupError("Please select start date");
+ 		}
+ 	});
+ 	$("#startDate").change(function(){
+ 		var startDate = $('#startDate').val();
+ 		let currentUTCDate = new Date();
+ 			var from = new Date(startDate);
+ 			if(from < currentUTCDate){
+ 				$('#startDate').val("");
+ 				// $("#endDate").hide();
+ 				$("#startDate").datepicker("destroy" );
+ 				 $("#startDate").datepicker();
+ 				outputPopupError("Start Date should not less than Current Date");
+ 			}
+ 	});
+
+ 	function outputPopupError(data){
+ 		$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+		$('#gtc-form-alert .form-message').text(data);
+		$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#gtc-form-alert").slideUp(500);
+		});
+ 	}
+ 	function outputPopup(data){
+ 		$('#gtc-form-alert').removeClass('alert-danger').addClass('alert-success');
+		$('#gtc-form-alert .form-message').text(data);
+		$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+			$("#gtc-form-alert").slideUp(500);
+		});
+ 	}
+
+
+ 	$("#country").change(function() {
+ 		var country_id = $('#country').val();
+
+ 		$.ajax({
+ 			url: '/api/states?country_id=' + country_id + '&field=name&order=asc',
+ 			type: 'GET',
+ 			success: function(result) {
+ 				$("#state").empty();
+ 				let selectOptionProvince = `<option selected disabled>Select Province...</option>`;
+ 				$('#state').append(selectOptionProvince);
+ 				for (var i = 0; i < result.rows.length; i++) {
+ 					var options;
+ 					options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+ 					$("#state").append(options)
+ 				}
+ 			},
+ 			error: function(error) {
+ 				console.log("Error", error);
+ 			}
+ 		});
+ 	});
+ 	 $("#adForm").submit(function(e) {
+ 	 	console.log("hai")
+ 	 	e.preventDefault();
+ 	 	var form = new FormData();
+            form.append("file",file.files[0]);
+            let inputForm = $("#vendorForm :input").filter(function(index, element) {
+                return $(element).val() != '';
+            }).serialize();
+            let formInput = inputForm;
+
+            if ($('#adForm').valid()) {
+                $.ajax({
+                    url: '/api/advertisement/',
+                    type: 'POST',
+                    data: form,
+                    cache: false,
+	                dataType: 'json',
+	                processData: false,
+	                contentType: false,
+                    success: function(result) {
+                        // window.location.href = '/dashboard-vendor-connect';
+                    },
+                    error: function(error) {
+                        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+                        $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
+                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+                            $("#gtc-form-alert").slideUp(500);
+                        });
+                    }
+                });
+            }
+ 	 });
+ });
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+<div class="wrapper-content bg-gray">
+    <div class="gtc-container">
+        <div class="row">
+            <div class="col-sm-2">
+                {{> vendor/vendor-side-navbar}}
+            </div>
+            <div class="col-sm-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="ibox-title">
+                            <h2>Advertisement Form</h2>
+                        </div>
+                        <div class="alert" id="gtc-form-alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="content-body">
+                            <form id="adForm" class="form">
+                                <div class="row">
+                                	 <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Ad Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="name" placeholder="Ad Name" class="form-control-customized form-control-sm" required="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                	 <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="label-control">Ad Position <span class="text-danger">*</span></label>
+                                             <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="position" id="position" required>
+                                                    <option disabled selected>Select Location...</option>
+                                                    {{#each Position}}
+                                                    <option value="{{this}}">{{@key}}</option>
+                                                    {{/each}}
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="label-control">Ad Image <span class="text-danger">*</span></label>
+                                            {{!-- <input type="file" name="file" class="form-control-customized form-control-sm" required="true"> --}}
+                                            <div class="input-group">
+                                                <div class="custom-file custom_error_message">
+                                                    <input type="file" class="custom-file-input" id="image_url" name="image_url" required>
+                                                    <label class="custom-file-label customized-file-label" for="icon">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                	 <div class="col-lg-8">
+                                        <div class="form-group">
+                                            <label class="label-control">Target URL <span class="text-danger">*</span></label>
+                                            <input type="text" name="target_url" placeholder="Target URL" class="form-control-customized form-control-sm" required="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                	 <div class="col-lg-6">
+                                        <label class="label-control">Start Date <span class="text-danger">*</span></label>
+                                        <div class="input-group ">
+										  <input type="text" class="form-control-customized" name="startDate" id="startDate" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+										  <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
+										  </div>
+										</div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="label-control">End Date <span class="text-danger">*</span></label>
+                                        <div class="input-group ">
+										  <input type="text" class="form-control-customized" style="width:90%" placeholder="Recipient's username" aria-label="Recipient's username" id="endDate" name="endDate" aria-describedby="basic-addon2">
+										  <div class="input-group-append">
+										    <span class="input-group-text" id="basic-addon2"><i class="far fa-calendar-alt"></i></span>
+										  </div>
+										</div>
+                                    </div>
+                                </div>
+                                 
+                                <div class="row">
+                                	 <div class="col-lg-4">
+                                        <div class="form-group input-append date form_datetime">
+                                            <label class="label-control">Country <span class="text-danger">*</span></label>
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="country" id="country" required>
+                                                    <option disabled selected>Select Location...</option>
+                                                    {{#each country}}
+                                                    <option value="{{this.id}}">{{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-control">Province<span class="text-danger">*</span></label>
+                                            <select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="state" id="state" required>
+                                                    <option disabled selected>Select Province...</option>
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group">
+                                            <label class="label-control">City<span class="text-danger">*</span></label>
+                                            <input type="text" name="city" class="form-control-customized form-control-sm" required="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <button type="submit" class="btn btn-primary btn-sm">SUBMIT</button>
+                                        <button type="button" class="btn btn-gray btn-sm">CANCEL</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+{{> footer/bottom-footer}}

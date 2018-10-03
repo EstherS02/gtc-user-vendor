@@ -31,6 +31,17 @@ module.exports = (sequelize, DataTypes) => {
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
 		},
+		payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'payment_id',
+            allowNull: true,
+            references: {
+                model: 'payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
+        },
 		start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',
@@ -45,6 +56,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
+		},
+		auto_renewal_mail: {
+            type: DataTypes.INTEGER,
+            field: 'auto_renewal_mail',
+            allowNull: true
         },
         created_by: {
             type: DataTypes.STRING(64),

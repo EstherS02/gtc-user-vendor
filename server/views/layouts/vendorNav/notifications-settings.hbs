@@ -18,6 +18,9 @@
 	}
 	var oldArray = [];
 	$(document).ready(function() {
+		$(".checkbox").change(function(e) {
+   			$('#checkbox').prop('checked', false);
+		});
 		$("#gtc-notify-alert").hide();
 		$("#updateBtn").prop("disabled", true);
 		var checkboxes = document.getElementsByTagName("input");
@@ -93,6 +96,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -113,7 +117,7 @@
 											<thead>
 												<tr>
 													<th>
-														<input type="checkbox" onclick="selectAll(this);">
+														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
 													<th>Event</th>
 													<th>Code</th>
@@ -125,11 +129,11 @@
 												<tr>
 													{{#if this.VendorNotificationSettings}}
 													<td>
-														<input type="checkbox" value="{{this.id}}">
+														<input type="checkbox" value="{{this.id}}" class="checkbox">
 													</td>
 													{{else}}
 													<td>
-														<input type="checkbox" value="{{this.id}}" checked>
+														<input type="checkbox" value="{{this.id}}" checked class="checkbox">
 													</td>
 													{{/if}}
 													<td>
@@ -160,6 +164,9 @@
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

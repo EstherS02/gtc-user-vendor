@@ -1,20 +1,27 @@
-<style>
-	p {
-		margin-bottom: 0rem;
-	}
-
-	p.lt-user-name {
-		font-size: 13px;
-	}
-  .check_report1 {
-		margin-top: 5px;
-		margin-left: 15px;
-	}
-</style>
 <script type="text/javascript">
 
-	$(function () {
-		$("#rep_from, #rep_to,#com_from,#com_to").datepicker();
+	$(function() {
+		$("#rep_from").datepicker({
+			trigger: $("#date_range_from"),
+			autoHide: true
+		});
+
+		$('#rep_from').datepicker('getMonthName', true);
+
+		$("#rep_to").datepicker({
+			trigger: $("#date_range_to"),
+			autoHide: true
+		});
+
+		$("#com_from").datepicker({
+			trigger: $("#compare_range_from"),
+			autoHide: true
+		});
+
+		$("#com_to").datepicker({
+			trigger: $("#compare_range_to"),
+			autoHide: true
+		});
 	});
 
 	function onSearch() {
@@ -26,9 +33,9 @@
 		location.href = "/reporting?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare;
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 		//get the line chart canvas
-		var ctx = $("#line-chartcanvas");
+		var ctx = $("#revenue-line-chartcanvas");
 
 		var lhsData = [],
 			rhsData = [];
@@ -56,9 +63,9 @@
 		$.ajax({
 			type: "GET",
 			url: "/api/reports/revenue-changes?lhs_from=" + from + "&lhs_to=" + to + "&rhs_from=" + Cfrom + "&rhs_to=" + Cto + "&compare=" + Compare,
-			success: function (data) {
-				between.forEach(function (aDate) {
-					var objA = _.find(data.past_range, function (pastDate) {
+			success: function(data) {
+				between.forEach(function(aDate) {
+					var objA = _.find(data.past_range, function(pastDate) {
 						var pastDateVal = $.datepicker.formatDate('M dd', new Date(pastDate.item_created_on));
 						return aDate.toString() == pastDateVal.toString();
 					})
@@ -67,7 +74,7 @@
 					else
 						lhsData.push(null);
 
-					var objB = _.find(data.current_range, function (currData) {
+					var objB = _.find(data.current_range, function(currData) {
 						var currDateVal = $.datepicker.formatDate('M dd', new Date(currData.item_created_on));
 						return aDate.toString() == currDateVal.toString();
 					})
@@ -167,22 +174,41 @@
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/top-selling-cities",
-				success: function (data) {
-					data.forEach(function (aObj) {
-						var ulTopCities = $("#topCities");
-						var tag = `<div class="user-details" >
-									<div class="col-md-3 latest-tickets">
-										<img src="../../img/img_avatar.png" class="avatar-img">
+				success: function(data) {
+					if (data.length > 0) {
+						data.forEach(function(aObj, i) {
+							var ulTopCities = $("#reporting-top-selling-cities");
+							aObj["total_sales"] = parseFloat(aObj["total_sales"]).toFixed(2);
+							var tag = `<div class="reporting_block_content_individual">
+									<div class="row">
+										<div class="col-md-3 col-2 no-padding">
+											<h2 class="lft_count">${i + 1}</h2>
+										</div>
+										<div class="col-md-9 col-10 no-padding">
+											<h4 class="reporting_subject reporting_title">
+												<a href="javascript:;">${aObj["Product.city"]}</a></h4>
+											<p class="reporting_subject">Total Sales:
+												<span title="${aObj["total_sales"]}">${aObj["total_sales"]}</span>
+											</p>
+										</div>
 									</div>
-									<div class="col-md-9" style="float: right;">
-										<p class="lt-user-name" style="font-size: 11px;">`+ aObj["Product.city"] + `</p>
-										<p class="ts-rate" style="font-size: 11px;">Total sales:
-										<span>`+ aObj["total_sales"] + `</span>
-										</p>
+									<hr class="widget-line no-margin-top">
+								</div>`
+							ulTopCities.append(tag);
+						});
+					} else {
+						var ulTopCities = $("#reporting-top-selling-cities");
+						var tag = `<div class="reporting_block_content_individual">
+									<div class="row">
+										<div class="col-md-12 no-padding">
+											<p class="no_records_found">No Records Found</p>
+										</div>
 									</div>
+									<hr class="widget-line no-margin-top">
 								</div>`
 						ulTopCities.append(tag);
-					});
+					}
+
 				}
 			});
 		}
@@ -191,47 +217,38 @@
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/active-buyers",
-				success: function (data) {
-					data.forEach(function (aObj) {
-						var activeBuyerList = $("#activeBuyers");
-						var tag = `<div class="user-details">
-										<div class="col-md-3 latest-tickets">
-											<img src="../../img/img_avatar.png" class="avatar-img">
+				success: function(data) {
+					if (data.length > 0) {
+						data.forEach(function(aObj) {
+							var activeBuyerList = $("#reporting-most-active-buyers");
+							var tag = `<div class="reporting_block_content_individual">
+										<div class="row">
+											<div class="col-md-3 col-1 no-padding">
+												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
+											</div>
+											<div class="col-md-9 col-11 no-padding">
+												<h4 class="reporting_subject reporting_title">
+													<a href="javascript:;">${aObj["User.first_name"]}</a></h4>
+												<p class="reporting_subject" title="${calHoursAgo(aObj["created_on"])}">${calHoursAgo(aObj["created_on"])}</p>
+											</div>
 										</div>
-										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+ aObj["User.first_name"] + `</p>
-											<p class="ts-rate">`+ calHoursAgo(aObj["created_on"]) + `</p>
+										<hr class="widget-line">
+									</div>`;
+							activeBuyerList.append(tag);
+						});
+					} else {
+						let tag = `<div class="reporting_block_content_individual">
+										<div class="row">
+											<div class="col-md-12 no-padding">
+												<p class="no_records_found">No Records Found</p>
+											</div>
 										</div>
-									</div>`
-						activeBuyerList.append(tag);
-					});
-				}
-			});
-		}
+										<hr class="widget-line">
+									</div>`;
+						$('#reporting-most-active-buyers').append(tag);
+					}
 
-		function getLatestTickets() {
-			$.ajax({
-				type: "GET",
-				url: "/api/reports/latest-tickets",
-				success: function (data) {
-					data.forEach(function (aObj) {
-						var latestTicketList = $("#latestTickets");
-						var tag = `<div class="user-details" >
-										<div class="col-md-3 latest-tickets">
-											<img src="../../img/img_avatar.png" class="avatar-img">
-										</div>
-										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+ aObj["User.first_name"] + `</p>
-											<p style="font-size: 11px;">subject:
-												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ aObj["message"] + `</span>
-											</p>
-											<p style="font-size: 11px;">Status:
-												<span class="lt-status">`+ getStatus(aObj["status"]) + `</span>
-											</p>
-										</div>
-									</div>`
-						latestTicketList.append(tag);
-					});
+
 				}
 			});
 		}
@@ -240,39 +257,86 @@
 			$.ajax({
 				type: "GET",
 				url: "/api/reports/latest-refunds",
-				success: function (data) {
-					if(data.length>0)
-					{
-					data.forEach(function (aObj) {
-
-						var latestRefundList = $("#latestRefunds");
-						var tag = `<div class="user-details" style="margin-top: 10px;">
-										<div class="col-md-3 latest-tickets">
-											<img src="../../img/img_avatar.png" class="avatar-img">
+				success: function(data) {
+					if (data.length > 0) {
+						data.forEach(function(aObj) {
+							var latestRefundList = $("#reporting-latest-refunds");
+							var tag = `<div class="reporting_block_content_individual">
+									<div class="row">
+										<div class="col-md-3 col-1 no-padding">
+											<img src="${aObj["user_pic_url"]}" class="avatar-img" alt="${aObj["first_name"]}" onError="imgError(this)">
 										</div>
-										<div class="col-md-9" style="float: right;">
-											<p class="lt-user-name">`+ aObj["first_name"] + `</p>
-											<p>subject:
-												<span class="lt-user-name" style="font-size: 10px; display: inline-block; width: 100px; white-space: nowrap; overflow: hidden !important; text-overflow: ellipsis;">`+ `-` + `</span>
+										<div class="col-md-9 col-11 no-padding">
+											<h4 class="reporting_subject reporting_title">
+												<a href="javascript:;">${aObj["first_name"]}</a></h4>
+											<p class="reporting_subject">Subject:
+												<span class="lt-user-name">-</span>
 											</p>
-											<p>Status:
-											<span class="lt-status">`+ getStatus(aObj["status"]) + `</span>
+											<p class="reporting_subject">Status:
+												<span class="lt-status">${getStatus(aObj["status"])}</span>
 											</p>
 										</div>
+									</div>
+									<hr class="widget-line">
+								</div>`
+							latestRefundList.append(tag);
+						});
+					}
+					else {
+						var latestRefundList = $("#reporting-latest-refunds");
+						var tag = `<div class="reporting_block_content_individual">
+										<div class="row">
+											<div class="col-md-12 no-padding">
+												<p class="no_records_found">No Records Found</p>
+											</div>
+										</div>
+										<hr class="widget-line">
 									</div>`
 						latestRefundList.append(tag);
-					});
 					}
-					else
-					{
-							var latestRefundList = $("#latestRefunds");
-							var tag = `<div class="user-details" style="margin-top: 10px;">
-										<div class="col-md-3 latest-tickets text-nowrap" style="font-size:12px">
-											No records found
+				}
+			});
+		}
+
+
+		function getLatestTickets() {
+			$.ajax({
+				type: "GET",
+				url: "/api/reports/latest-tickets",
+				success: function(data) {
+					if (data.length > 0) {
+						data.forEach(function(aObj) {
+							var latestTicketList = $("#reporting-latest-tickets");
+							var tag = `<div class="reporting_block_content_individual">
+										<div class="row">
+											<div class="col-md-3 col-1 no-padding">
+												<img src="${aObj["User.user_pic_url"]}" class="avatar-img" alt="${aObj["User.first_name"]}" onError="imgError(this)">
+											</div>
+											<div class="col-md-9 col-11 no-padding">
+												<h4 class="reporting_subject reporting_title">
+													<a href="javascript:;">${aObj["User.first_name"]}</a></h4>
+												<p class="reporting_subject">Subject:
+													<span class="lt-user-name" title="${aObj["message"]}">${aObj["message"]}</span>
+												</p>
+												<p class="reporting_subject">Status:
+													<span class="lt-status">${getStatus(aObj["status"])}</span>
+												</p>
+											</div>
 										</div>
-									
-									</div>`
-							latestRefundList.append(tag);		
+										<hr class="widget-line">
+									</div>`;
+							latestTicketList.append(tag);
+						});
+					} else {
+						let domEl = `<div class="reporting_block_content_individual">
+										<div class="row">
+											<div class="col-md-12 no-padding">
+												<p class="no_records_found">No Records Found</p>
+											</div>
+										</div>
+										<hr class="widget-line">
+									</div>`;
+						$('#reporting-latest-tickets').append(domEl);
 					}
 				}
 			});
@@ -283,535 +347,284 @@
 		getLatestTickets();
 		getLatestRefunds();
 
-	});	
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
-<div class="wrapper-content bg-gray">
-	<div class="container-fluid">
+	});
+</script>
+
+{{> header/top-header LoggedInUser = LoggedInUser}}
+{{> vendor/vendor-menu}}
+
+<div class="wrapper-content bg-gray reporting_content">
+	<!-- no container because of full width chart -->
+	<div class="">
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2" style="padding-left: 5.5%;">
 				{{> vendor/vendor-side-navbar}}
 			</div>
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2></h2>
-						</div>
-						<div class="content-body">
-							<div class="container-fluid">
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+								<h2></h2>
+							</div>
+							<div class="content-body">
 								<div class="row">
-									<div class="col-md-8" style="padding: 0px;">
-										<div class="row" style="font-size:9px">
-											<div class="col-md-1">
-												<h6 style="font-size:9px" class="text-nowrap">Date Range</h6>
-											</div>
-											<div class="col-md-1">
-												<div class="col-sm-3">
-													<div class="input-group report-Date">
-														<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
-														 value="{{queryURI.rep_from}}" id="datepicker3" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-1"></div>
-											<div class="col-md-1 to_label" style="font-size:10px;">to</div>
-											<div class="col-md-1">
-												<div class="col-sm-3">
-													<div class="input-group report-Date2">
-														<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-1 select_drop">
-												<select class="acc-days1" style="width: 91px">
-													<option value="Last 30 Days" selected>Last 30 Days</option>
-												</select>
-											</div>
-											<div class="col-md-1"></div>
-											<div class="col-md-1">
-												<div class="col-md-3 check_align">
-													<input id="compare" type="checkbox" value="true" class="check_report1" checked="">
-													<p class="report_date-range1" style="padding-top: 1px;margin-left: 30px;">Compare to</p>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<div class="col-sm-3">
-													<div class="input-group compare_first_date">
-														<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 value="{{queryURI.com_from}}" aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-1" style="left:0px">to</div>
-											<div class="col-md-1">
-												<div class="col-sm-3">
-													<div class="input-group compare_second_date">
-														<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 value="{{queryURI.com_to}}" aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-1">
-												<button class="update-btn1 report_update " onclick="onSearch()" style="background-color: green; color: #fff;font-size: 10px;padding: 5px 5px;">Update</button>
-											</div>
-										</div>
-										{{!--
-										<h6>working:::::::::::</h6> --}} {{!--
-										<div class="col-sm-6" style="padding: 0px; float: left;">
+									<div class="col-md-8">
+										<section class="reporting_date_range">
 											<div class="row">
-												<p class="report_date-range">Date Range</p>
-												<div class="col-sm-3">
-													<div class="input-group report-Date">
-														<input class="form-control social_input" type="text" id="rep_from" aria-label="Username" placeholder="MM/DD/YYYY" aria-describedby="basic-addon2"
-														 value="{{queryURI.rep_from}}" id="datepicker3" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
+												<div class="col-md-6 no-padding" style="display:inline-flex">
+													<div class="form-inline">
+														<p class="report_date_range_title">Date Range</p>
+														<div class="input-group mb-3 date_range_group">
+															<input id="rep_from" type="text" class="form-control date_range_picker" placeholder="MM/DD/YYYY" value="{{queryURI.rep_from}}"
+															 aria-label="date_range_from" aria-describedby="date_range_from">
+															<div class="input-group-append cursor-pointer">
+																<span class="input-group-text" id="date_range_from">
+																	<img class="calendar-icon" src="../../img/calendar.png">
+																</span>
+															</div>
+														</div>
+														<p class="report_date_range_title">to</p>
+														<div class="input-group mb-3 date_range_group">
+															<input id="rep_to" type="text" class="form-control date_range_picker" placeholder="MM/DD/YYYY"
+															 aria-label="date_range_to" aria-describedby="date_range_to" value="{{queryURI.rep_to}}">
+															<div class="input-group-append cursor-pointer">
+																<span class="input-group-text" id="date_range_to">
+																	<img class="calendar-icon" src="../../img/calendar.png">
+																</span>
+															</div>
 														</div>
 													</div>
-												</div>
-
-												<div class="col-md-1 common_padding1">
-													<p style="padding: 3px 17px; font-size: 12px;"> to</p>
-												</div>
-												<div class="col-sm-3">
-													<div class="input-group report-Date">
-														<input type="text" class="form-control social_input" id="rep_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 aria-describedby="basic-addon2" id="datepicker4" value="{{queryURI.rep_to}}" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
-														</div>
-
-
+													<div class="select-container">
+														<select class="form-control-customized form-control-sm reporting_range_select_override" name="status">
+															<option value="Last 30 Days" selected>Last 30 Days</option>
+														</select>
 													</div>
 												</div>
-												<div class="col-md-2">
-													<select class="acc-days1" style="width: 91px">
-														<option value="Last 30 Days" selected>Last 30 Days</option>
-													</select>
+												<div class="col-md-6 no-padding" style="display: inline-flex;">
+													<input id="compare" type="checkbox" value="true" class="check_report1" checked="checked">
+													<div class="form-inline">
+														<p class="report_date_range_title">Compare to</p>
+														<div class="input-group mb-3 date_range_group">
+															<input type="text" id="com_from" class="form-control date_range_picker" placeholder="MM/DD/YYYY" value="{{queryURI.com_from}}"
+															 aria-label="compare_range_from" aria-describedby="compare_range_from">
+															<div class="input-group-append cursor-pointer">
+																<span class="input-group-text" id="compare_range_from">
+																	<img class="calendar-icon" src="../../img/calendar.png">
+																</span>
+															</div>
+														</div>
+														<p class="report_date_range_title">to</p>
+														<div class="input-group mb-3 date_range_group">
+															<input type="text" id="com_to" class="form-control date_range_picker" placeholder="MM/DD/YYYY"
+															 aria-label="compare_range_to" aria-describedby="compare_range_to" value="{{queryURI.com_to}}">
+															<div class="input-group-append cursor-pointer">
+																<span class="input-group-text" id="compare_range_to">
+																	<img class="calendar-icon" src="../../img/calendar.png">
+																</span>
+															</div>
+														</div>
+													</div>
+													<button class="update-btn1 report_update report_update_btn_override" onclick="onSearch()">UPDATE</button>
 												</div>
 											</div>
-										</div> --}} {{!--
-										<div class="col-sm-6" style="padding:0px; float: right;">
+										</section>
+										<section class="reporting_top_performing" style="margin-bottom: 17px;margin-top: 20px;">
 											<div class="row">
-												<div class="col-md-3">
-													<input id="compare" type="checkbox" value="true" class="check_report" checked>
-													<p class="report_date-range1" style="padding-top: 1px;margin-left: 26px;">Compare to</p>
-												</div>
-												<div class="col-sm-3">
-													<div class="input-group compare_first_date">
-														<input type="text" class="form-control social_input" id="com_from" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 value="{{queryURI.com_from}}" aria-describedby="basic-addon2" id="datepicker5" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
+												<div class="col-md-6">
+													<div class="card chart_top_performing_height">
+														<div class="card-body chat_top_performing_padding">
+															<p class="top_perf_price">{{currency topProducts.total '$'}}</p>
+															<p class="top_perf_price_gain">+ {{currency topProducts.diff_total '$'}}</p>
+															<p class="top_perf_price_versus">{{currency topProducts.current_total '$'}} vs {{currency topProducts.past_total '$'}}</p>
+															<p class="top_perf_title">Top Performing Products by total sales</p>
+															{{#ifCond topProducts.rows.length '==' "0"}}
+																<div class="top_perf_product_name" style="text-align:center">
+																	No Product Found
+																</div>
+															{{/ifCond}}
+															{{#each topProducts.rows as |item|}}
+																<div class="top_perf_content row">
+																	<div class="col-md-4 col-4">
+																		<p class="top_perf_product_name">{{item.product_name}}</p>
+																	</div>
+																	<div class="col-md-4 col-4 top_perf_padding_override">
+																		<div class="progress top_perf_progress">
+																			<div class="progress-bar top_perf_progress_bar" role="progressbar" style="width: {{percentage @root.topProducts.total item.amount}}"
+																			 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+																		</div>
+																	</div>
+																	<div class="col-md-4 col-4">
+																		<p class="top_perf_product_price">{{currency item.amount '$'}}</p>
+																	</div>
+																</div>
+															{{/each}}
 														</div>
+														<p class="reporting_chart_see_all">
+															<a href="javascript:;" style="color: white;">More &#9658;</a>
+														</p>
 													</div>
 												</div>
-												<p class="toreport_date"> to</p>
-												<div class="col-sm-3">
-													<div class="input-group compare_second_date">
-														<input type="text" class="form-control social_input" id="com_to" name="username" placeholder="MM/DD/YYYY" aria-label="Username"
-														 value="{{queryURI.com_to}}" aria-describedby="basic-addon2" id="datepicker6" autocomplete="off">
-														<div class="input-group-prepend">
-															<span class="input-group-text calender_face_1" id="basic-addon2">
-																<img class="calendar-icon" src="../../img/calendar.png">
-															</span>
+												<div class="col-md-6">
+													<div class="card chart_top_performing_height">
+														<div class="card-body chat_top_performing_padding">
+															<p class="top_perf_price">{{currency topMarketPlace.total '$'}}</p>
+															<p class="top_perf_price_gain">+ {{currency topMarketPlace.diff_total '$'}}</p>
+															<p class="top_perf_price_versus">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
+															<p class="top_perf_title top_perf_margin_override">Top Performing Marketplaces by total sales</p>
+															<div class="top_perf_marketplace_content row">
+																<ul class="chart top_perf_marketplace_vertical_chart">
+																	{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
+																</ul>
+															</div>
 														</div>
-
-
+														<p class="reporting_chart_see_all">
+															<a href="javascript:;" style="color: white;">More &#9658;</a>
+														</p>
 													</div>
-												</div>
-												<div class="col-md-1">
-													<button class="update-btn1 report_update " onclick="onSearch()" style="background-color: green; color: #fff;font-size: 10px;padding: 5px 5px;margin-left: -12px;">Update</button>
 												</div>
 											</div>
-										</div> --}}
-										<div class="col-md-6 total-sales">
-											<div class="pts report_border">
-												<p class="product-total-sale">{{currency topProducts.total '$'}}</p>
-												<p class="product-total-sale1">{{currency topProducts.diff_total '$'}}</p>
-												<br>
-												<br>
-												<p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topProducts.current_total '$'}} vs {{currency topProducts.past_total '$'}}</p>
-												<br>
-												<p class="product-total-sale-title">TOP PERFORMING PRODUCTS BY TOTAL SALE</p>
-												<br>
-												<div class="container horizontal flat">
-													
-														{{#ifCond  topProducts.rows.length '==' "0"}}
-													<div style="font-size:12px;text-align:center">No Product Found</div>
-													{{/ifCond}}
-													{{#each topProducts.rows as |item|}}
-												
+										</section>
+										<section class="reporting_recent_revenue">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="card chat_revenue_height">
+														<div class="card-body">
+															<p class="revenue_chart_title">RECENT REVENUE CHANGES</p>
+															<canvas id="revenue-line-chartcanvas"></canvas>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+										<section class="reporting_bottom_stat" style="margin-top:10px;">
+											<div class="card stat_cancel_card_border">
+												<div class="card-body">
 													<div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">{{item.product_name}}</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">{{currency item.amount '$'}}</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal" style="width: {{percentage @root.topProducts.total item.amount}}">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">{{percentage @root.topProducts.total item.amount}}</span>
-																		</div>
-																	</div>
+														<div class="col-md-3">
+															<div class="row">
+																<div class="col-md-6 no-padding">
+																	<div class="stat_title">Revenue($)</div>
+																	<div class="stat_price">+ {{currency revenueCounts.revenue.diff_revenue '$'}}</div>
+																	<div class="stat_price_compare">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
+																</div>
+																<div class="col-md-6 no-padding">
+																	<div class="stat_title">Revenue(%)</div>
+																	<div class="stat_price">+ {{revenueCounts.revenue_count.diff_count}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.revenue_count.current_count}} vs
+																		{{revenueCounts.revenue_count.past_count}}</div>
 																</div>
 															</div>
-
 														</div>
-													</div>
-													{{/each}}
-														{{#ifCond  topProducts.total  '!=' "0.00"}}
-													<div class="form-group" style="margin-top: 15px;">
-														&nbsp;
-													</div>
-													{{/ifCond}}
-											         {{#ifCond  topProducts.total  '==' "0.00"}}
-													   <div class="form-group" style="margin-top: 132px;">
-														&nbsp;
-													</div>
-													{{/ifCond}}
-													<!-- <div class="row">
-														<div class="col-md-12" style="padding: 0px;">
-															<div class="col-md-2" style="padding: 0px; float: left;">
-																<p class="product-bar-chart">Product #2</p>
-															</div>
-															<div class="col-md-2" style="padding: 0px; float: right;">
-																<p class="product-bar-chart">$343,000</p>
-															</div>
-															<div class="col-md-8" style="padding: 0px; float: right;">
-																<div class="progress-bar horizontal">
-																	<div class="progress-track">
-																		<div class="progress-fill">
-																			<span style="display: none;">82%</span>
-																		</div>
-																	</div>
+														<div class="col-md-6 col-12">
+															<div class="row">
+																<div class="col-md-4 stat_padding">
+																	<div class="stat_title">Transactions</div>
+																	<div class="stat_price">+ {{revenueCounts.completed_count.diff_completed}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.completed_count.current_completed}} vs
+																		{{revenueCounts.completed_count.past_completed}}</div>
+																</div>
+																<div class="col-md-4 stat_padding">
+																	<div class="stat_title">Returns</div>
+																	<div class="stat_price stat_price_red">+ {{revenueCounts.returns_count.diff_returned}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.returns_count.current_returned}} vs
+																		{{revenueCounts.returns_count.past_returned}}</div>
+																</div>
+																<div class="col-md-4 stat_padding">
+																	<div class="stat_title">Disputes</div>
+																	<div class="stat_price">- ${{revenueCounts.disputes_count.diff_disputes}}</div>
+																	<div class="stat_price_compare">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs
+																		{{currency revenueCounts.disputes_count.past_disputes
+															'$'}}</div>
 																</div>
 															</div>
-
 														</div>
-													</div>-->
+														<div class="col-md-3">
+															<div class="row">
+																<div class="col-md-6 no-padding">
+																	<div class="stat_title">Refunds</div>
+																	<div class="stat_price stat_price_red">+ {{revenueCounts.refunds_count.diff_refunds}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.refunds_count.current_refunds}} vs
+																		{{revenueCounts.refunds_count.past_refunds}}</div>
+																</div>
+																<div class="col-md-6 no-padding">
+																	<div class="stat_title">Cancellations</div>
+																	<div class="stat_price stat_price_red">+ {{revenueCounts.cancelled_count.diff_cancelled}}</div>
+																	<div class="stat_price_compare">{{revenueCounts.cancelled_count.current_cancelled}} vs
+																		{{revenueCounts.cancelled_count.past_cancelled}}</div>
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
-											<p class="lt-more">
-												<a href="javascript:;" style="color: white;">More &#9658;</a>
-											</p>
-
-										</div>
-										<div class="col-md-6 total-sales" style="float: right;padding-top:25px">
-											<div class=""></div>
-											<div class="pts report_border">
-												<p class="product-total-sale">{{currency topMarketPlace.total '$'}}</p>
-												<p class="product-total-sale1">{{currency topMarketPlace.diff_total '$'}}</p>
-												<br>
-												<br>
-												<p class="product-total-sale2" style="margin-bottom: 0px;">{{currency topMarketPlace.current_total '$'}} vs {{currency topMarketPlace.past_total '$'}}</p>
-												<br>
-												<p class="product-total-sale-title">TOP PERFORMING MARKETPLACE BY TOTAL SALE</p>
-                                                  	{{#ifCond  topMarketPlace.total  '==' "0.00"}}
-													 
-													<p class="common_top" style="font-size:12px;text-align:center">No Product Found</p>
-													{{/ifCond}}
-												<ul class="chart">
-													{{marketPlaceChart topMarketPlace.total topMarketPlace.rows}}
-													<!-- <li>
-														<span class="wholesale" style="height:60%" title="Wholesale"></span>
-													</li>
-													<li>
-														<span class="shop" style="height:40%" title="Shop"></span>
-													</li>
-													<li>
-														<span class="services" style="height:20%" title="Services"></span>
-													</li>
-													<li>
-														<span class="subscription" style="height:10%" title="Subscription"></span>
-													</li> -->
-												</ul>
-												 
-												{{#ifCond  topMarketPlace.total '!=' "0.00"}}
-												<div class="form-group">
-													&nbsp;
-												</div>
-												{{/ifCond}}
-												 
-												
-
-											</div>
-
-											<p class="lt-more">
-												<a href="javascript:;" style="color: white;">More &#9658;</a>
-											</p>
-										</div>
-
+										</section>
 									</div>
-
-
 									<div class="col-md-4">
-										<div class="row">
-											<div class="col-md-6" style="padding-right: 0px;">
-												<div class="outside-border">
-													<p class="latest-tickets-title">Latest Tickets</p>
-													<div class="row landing-tables" id="latestTickets">
-														<!-- <div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div> -->
-													</div>
-												</div>
-												<p class="lt-see-all">
-													<a href="javascript:;" style="color: white;">See All &#9658;</a>
-												</p>
-											</div>
-											<div class="col-md-6" style="padding-right: 0px;">
-												<div class="outside-border">
-													<p class="latest-refund-title">Latest Refund</p>
-													<div class="row landing-tables" id="latestRefunds">
-														<!-- <div class="user-details">
-															<div class="col-md-3 latest-tickets">
-																<img src="../../img/img_avatar.png" class="avatar-img">
-															</div>
-															<div class="col-md-9" style="float: right;">
-																<p class="lt-user-name">User Name</p>
-																<p>subject:
-																	<span class="lt-user-name">1213345</span>
-																</p>
-																<p>Status:
-																	<span class="lt-status">Open</span>
-																</p>
-															</div>
-														</div> -->
-													</div>
-												</div>
-												<p class="lt-see-all">
-													<a href="javascript:;" style="color: white;">See All &#9658;</a>
-												</p>
-											</div>
-										</div>
-									</div>
-
-								</div>
-							
-							<div class="row">
-								<div class="col-md-8">
-									<div class="line-chart-container report_border revenue_top">
-										<div class="line-chart">
-											<p class="line-chart-title">RECENT REVENUE CHANGES</p>
-
-											<!-- <label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 26,2017 - Jun 01,2017</label>
-											<input type="text" class="checked-input">
-											<br>
-											<br>
-
-											<label for="squaredOne" style="float: right; font-size: 11px;line-height: 10px;">May 19,2017- may 25,2017</label>
-											<input type="text" class="unchecked-input"> -->
-
-											<div class="chart-container">
-												<canvas id="line-chartcanvas"></canvas>
-											</div>
-										</div>
-									</div>
-
-
-									{{!--
-									<div id="grid">
-										<div id="item1">
-											<p class="line-chart-footer">Revenue($)</p>
-											<p class="line-chart-footer">Revenue(%)</p>
-											<p class="line-chart-footer">Completed</p>
-											<p class="line-chart-footer">Returns</p>
-											<p class="line-chart-footer">Disputes</p>
-											<p class="line-chart-footer">Refunds</p>
-											<p class="line-chart-footer">Cancelation</p>
-										</div>
-										<div id="item2"></div>
-									</div> --}} {{!--
-									<div>
-										<p class="line-chart-green1 line-chart-footer pd0">{{currency revenueCounts.revenue.diff_revenue '$'}}</p>
-										{{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
-										<p class="line-chart-green2 line-chart-footer pd0" style="padding-left: 24px;">{{revenueCounts.revenue_count.diff_count}}</p>
-										{{else}}
-										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.revenue_count.diff_count}}</p>
-										{{/ifCond}}
-
-										<p class="line-chart-green2 line-chart-footer pd0">{{revenueCounts.completed_count.diff_completed}}</p>
-										<p class="line-chart-green3 line-chart-footer pd0">{{revenueCounts.returns_count.diff_returned}}</p>
-										{{#ifCond revenueCounts.completed_count.diff_completed '!=' 0}}
-										<p class="line-chart-red1 line-chart-footer pd0" style="padding-left: 53px;">{{revenueCounts.disputes_count.diff_disputes}}</p>
-										{{else}}
-										<p class="line-chart-red1 line-chart-footer pd0">{{revenueCounts.disputes_count.diff_disputes}}</p>
-										{{/ifCond}}
-
-										<p class="line-chart-green4 line-chart-footer pd0">{{revenueCounts.refunds_count.diff_refunds}}</p>
-										<p class="line-chart-red2 line-chart-footer pd0">{{revenueCounts.cancelled_count.diff_cancelled}}</p>
-									</div> --}} {{!--
-									<div>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 20px; margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 34px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 50px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 60px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes
-											'$'}}
-										</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</p>
-										<p class="line-chart-vs line-chart-footer pd0 space_trap" style="padding-left: 28px; margin-bottom: 1rem;margin-top: 1px;">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</p>
-									</div> --}}
-
-									<div class="container">
-										<div class="row">
-											<div class="col-sm-3">
-												<div class="row">
-													<div class="col-md-6">
-														<div class="well line-chart-content">Revenue($)</div>
-														<div class="well line-chart-second">{{currency revenueCounts.revenue.diff_revenue '$'}}</div>
-														<div class="well line-chart-third">{{currency revenueCounts.revenue.current_revenue '$'}} vs {{currency revenueCounts.revenue.past_revenue '$'}}</div>
-
-													</div>
-													<div class="col-md-6">
-														<div class="well line-chart-content">Revenue(%)</div>
-														<div class="well" style="font-size: 14px;color:green">{{revenueCounts.revenue_count.diff_count}}</div>
-														<div class="well line-chart-third">{{revenueCounts.revenue_count.current_count}} vs {{revenueCounts.revenue_count.past_count}}</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-sm-6">
-												<div class="row">
-													<div class="col-md-4">
-														<div class="well line-chart-content">Completed</div>
-														<div class="well line-chart-second">{{revenueCounts.completed_count.diff_completed}}</div>
-														<div class="well line-chart-third">{{revenueCounts.completed_count.current_completed}} vs {{revenueCounts.completed_count.past_completed}}</div>
-													</div>
-													<div class="col-md-4">
-														<div class="well line-chart-content">Returns</div>
-														<div class="well line-chart-second">{{revenueCounts.returns_count.diff_returned}}</div>
-														<div class="well line-chart-third">{{revenueCounts.returns_count.current_returned}} vs {{revenueCounts.returns_count.past_returned}}</div>
-													</div>
-													<div class="col-sm-4">
-														<div class="well line-chart-content">Disputes</div>
-														<div class="well" style="font-size: 14px;color:red">{{revenueCounts.disputes_count.diff_disputes}}</div>
-														<div class="well line-chart-third">{{currency revenueCounts.disputes_count.current_disputes '$'}} vs {{currency revenueCounts.disputes_count.past_disputes
-															'$'}}
+										<section class="reporting_stat_widgets">
+											<div class="row">
+												<div class="col-md-6 reporting_widget_padding">
+													<div class="card reporting_widget_block">
+														<p class="card-title reporting_widget_latest_ticket">Latest tickets</p>
+														<div class="card-body reporting_widget_block_content" id="reporting-latest-tickets">
 														</div>
+														<p class="card-title reporting_widget_see_all">
+															<a href="javascript:;">See All &#9658;</a>
+														</p>
+													</div>
+												</div>
+												<div class="col-md-6 reporting_widget_padding">
+													<div class="card reporting_widget_block">
+														<p class="card-title reporting_widget_latest_refund">Latest refunds</p>
+														<div class="card-body reporting_widget_block_content" id="reporting-latest-refunds">
+
+														</div>
+														<p class="card-title reporting_widget_see_all">
+															<a href="javascript:;">See All &#9658;</a>
+														</p>
 													</div>
 												</div>
 											</div>
-											<div class="col-sm-3">
-												<div class="row">
-													<div class="col-md-6">
-														<div class="well line-chart-content">Refunds</div>
-														<div class="well" style="font-size: 14px;color:red">{{revenueCounts.refunds_count.diff_refunds}}</div>
-														<div class="well line-chart-third">{{revenueCounts.refunds_count.current_refunds}} vs {{revenueCounts.refunds_count.past_refunds}}</div>
+										</section>
+										<section class="reporting_stat_widgets" style="margin-top: 15px;">
+											<div class="row">
+												<div class="col-md-6 reporting_widget_padding">
+													<div class="card reporting_widget_block">
+														<p class="card-title reporting_widget_active_buyers">Most Active Buyers</p>
+														<div class="card-body reporting_widget_block_content reporting_bottom_widget_override" id="reporting-most-active-buyers">
+
+														</div>
+														<p class="card-title reporting_widget_see_all">
+															<a href="javascript:;">See All &#9658;</a>
+														</p>
 													</div>
-													<div class="col-md-6">
-														<div class="well line-chart-content">Cancelation</div>
-														<div class="well line-chart-second">{{revenueCounts.cancelled_count.diff_cancelled}}</div>
-														<div class="well line-chart-third">{{revenueCounts.cancelled_count.current_cancelled}} vs {{revenueCounts.cancelled_count.past_cancelled}}</div>
+												</div>
+												<div class="col-md-6 reporting_widget_padding">
+													<div class="card reporting_widget_block">
+														<p class="card-title reporting_widget_top_selling_cities">Top Selling Cities</p>
+														<div class="card-body reporting_widget_block_content reporting_bottom_widget_override" id="reporting-top-selling-cities">
+
+														</div>
+														<p class="card-title reporting_widget_see_all">
+															<a href="javascript:;">See All &#9658;</a>
+														</p>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>
-
-								</div>
-
-
-								<div class="col-md-4">
-									<div class="row">
-										<div class="col-md-6" style="padding: 10px;">
-											<div class="outside-border">
-												<p class="most-active-buyers">Most Active Buyers</p>
-												<div class="row landing-tables" id="activeBuyers">
-												</div>
-												<!-- <div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p>1 hour ago</p>
-														</div>
-													</div>
-												</div>-->
-											</div>
-											<p class="lt-see-all">
-												<a href="javascript:;" style="color: white;">See All &#9658;</a>
-											</p>
-										</div>
-										<div class="col-md-6" style="padding: 10px 13px 10px 5px;">
-											<div class="outside-border">
-												<p class="top-selling-cities">Top Selling Cities</p>
-												<div class="row landing-tables" id="topCities"></div>
-												<!-- <div class="row landing-tables">
-													<div class="user-details">
-														<div class="col-md-3 latest-tickets">
-															<img src="../../img/img_avatar.png" class="avatar-img">
-														</div>
-														<div class="col-md-9" style="float: right;">
-															<p class="lt-user-name">User Name</p>
-
-															<p class="ts-rate">Total sales:
-																<span> 101,010</span>
-															</p>
-														</div>
-													</div>
-												</div> -->
-												<p class="lt-see-all">
-													<a href="javascript:;" style="color: white;">See All &#9658;</a>
-												</p>
-											</div>
-										</div>
+										</section>
 									</div>
 								</div>
-</div>
-
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+				{{else}}
+					{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
-	</div>
-	
-	
-	{{> footer/bottom-footer}}
+</div>
+
+
+
+{{> footer/bottom-footer}}

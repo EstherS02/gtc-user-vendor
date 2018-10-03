@@ -83,7 +83,7 @@ export function vendorPayouts(job, done) {
 
 function checkpaymentEscrow(order) {
 
-    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder;
+    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder, orderTotal, gtcFees, stripeOrPaypalFees;
     var orderPaymentEscrowModel = 'OrderPaymentEscrow';
     var payoutVendorPromises = [];
 
@@ -97,7 +97,13 @@ function checkpaymentEscrow(order) {
             if (row) {
                 return;
             } else {
-                payoutAmount = order.Order.total_price - order.Order.gtc_fees;
+				orderTotal = order.Order.total_price;
+				gtcFees =  order.Order.gtc_fees;
+				stripeOrPaypalFees = orderTotal* 0.1;
+			
+				payoutAmount = orderTotal - gtcFees;
+				payoutAmount = payoutAmount - stripeOrPaypalFees;
+
                 payoutVendor = order.Order.Products[0].Vendor.id;
                 payoutOrder = order.order_id;
 
@@ -139,7 +145,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                     return Promise.all(paypalPromises);
                 }
                 else {
-                    stripeConnectMail(vendor);
+					if(vendor.User.user_contact_email){
+						stripeConnectMail(vendor);
+					}
                     return;
                 }
             } else {
@@ -154,8 +162,8 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 if(paymentMethod['STRIPE']){
                     var paymentObj = {
-                        payout_created_date: new Date(payoutDetails[0].created),
-                        payout_amount: payoutAmount,
+                        date: new Date(payoutDetails[0].created),
+                        amount: payoutAmount,
                         payment_method: paymentMethod['STRIPE'],
                         status: statusCode['ACTIVE'],
                         payment_response: JSON.stringify(payoutDetails)
@@ -163,8 +171,8 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                 }
                 else  if(paymentMethod['PAYPAL']){
                     paymentObj = {
-                       payout_created_date: new Date(),
-                       payout_amount: payoutAmount,
+                       date: new Date(),
+                       amount: payoutAmount,
                        payment_method: paymentMethod['PAYPAL'],
                        status: statusCode['ACTIVE'],
                        payment_response: JSON.stringify(payoutDetails)
@@ -187,8 +195,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
 
                 return service.createRow('OrderPaymentEscrow', orderPaymentEscrowObj)
                     .then(function (orderPaymentEscrowObj) {
-
-                        payoutMail(vendorInfo, payoutOrder, payoutAmount);
+						if(vendorInfo.User.user_contact_email){
+							payoutMail(vendorInfo, payoutOrder, payoutAmount);
+						}
                         return Promise.resolve(orderPaymentEscrowObj);
 
 
@@ -218,7 +227,7 @@ function stripeConnectMail(vendor) {
         .then(function (response) {
             if (response) {
                 var username = vendor.vendor_name;
-                var email = vendor.User.email;
+                var email = vendor.User.user_contact_email;
 
                 var subject = response.subject;
                 var body = response.body.replace('%USERNAME%', username);
@@ -249,7 +258,7 @@ function payoutMail(vendor, payoutOrder, payoutAmount) {
         .then(function (response) {
             if (response) {
                 var username = vendor.vendor_name;
-                var email = vendor.User.email;
+                var email = vendor.User.user_contact_email;
                 var date = new Date();
 
                 var subject = response.subject;

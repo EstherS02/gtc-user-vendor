@@ -5,6 +5,8 @@ const service = require('../../api/service');
 const status = require('../../config/status');
 const roles = require('../../config/roles');
 const vendorPlan = require('../../config/gtc-plan');
+const cartService = require('../../api/cart/cart.service');
+const marketplace = require('../../config/marketplace');
 
 export function vendorForm(req, res) {
 
@@ -27,13 +29,17 @@ export function vendorForm(req, res) {
 	}
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -59,7 +65,7 @@ export function vendorForm(req, res) {
 		country: function(callback) {
 			const countryField = 'name';
 			const countryOrder = 'ASC';
-			
+
 			service.findRows(countryModel, queryObj, offset, limit, countryField, countryOrder)
 				.then(function(country) {
 					return callback(null, country.rows);
@@ -100,7 +106,8 @@ export function vendorForm(req, res) {
 					bottomCategory: bottomCategory,
 					LoggedInUser: LoggedInUser,
 					country: results.country,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					currency: results.currency,
 					timezone: results.timezone,
 					selectedPage: 'vendor-form',

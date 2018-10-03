@@ -1,12 +1,13 @@
 'use strict';
+
+const async = require('async');
 const sequelize = require('sequelize');
-const config = require('../../config/environment');
+
 const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
 const status = require('../../config/status');
 const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
 const marketplace = require('../../config/marketplace');
-const async = require('async');
 
 export function directory(req, res) {
 	var categoryModel = "Category";
@@ -29,13 +30,17 @@ export function directory(req, res) {
 	queryObj['status'] = status["ACTIVE"];
 
 	async.series({
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		},
 		categories: function(callback) {
 			var includeArr = [];
@@ -90,7 +95,6 @@ export function directory(req, res) {
 		},
 		wholesalers: function(callback) {
 			var result = {};
-			console.log("wholesalers")
 			queryObj['type'] = 'Private Wholesale Marketplace';
 			field = 'sales_count';
 			order = 'desc';
@@ -99,27 +103,29 @@ export function directory(req, res) {
 				.then(function(wholesalers) {
 					result.rows = JSON.parse(JSON.stringify(wholesalers.rows));
 					var vendorAvgRating = {};
-						vendorAvgRating['status'] = {
-							'$eq': status["ACTIVE"]
-						}
-						async.mapSeries(result.rows, function(aVendor, cb) {
-							vendorAvgRating['vendor_id'] = aVendor.id;
-							model['ProductRatings'].findOne({
-								where: vendorAvgRating,
-								attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
-							}).then(function(data) {
-								var ratingObj = JSON.parse(JSON.stringify(data))
-								aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-								cb(null, data);
-							}).catch(function(error) {
-								console.log('Error:::', error);
-								cb(error, null);
-							});
-						}, function done(err, success) {
-							if (!err) {
-								return callback(null, result);
-							}
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
 						});
+					}, function done(err, success) {
+						if (!err) {
+							return callback(null, result);
+						}
+					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -136,34 +142,35 @@ export function directory(req, res) {
 				.then(function(retailers) {
 					result.rows = JSON.parse(JSON.stringify(retailers.rows));
 					var vendorAvgRating = {};
-						vendorAvgRating['status'] = {
-							'$eq': status["ACTIVE"]
-						}
-						async.mapSeries(result.rows, function(aVendor, cb) {
-							vendorAvgRating['vendor_id'] = aVendor.id;
-							model['ProductRatings'].findOne({
-								where: vendorAvgRating,
-								attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
-							}).then(function(data) {
-								var ratingObj = JSON.parse(JSON.stringify(data))
-								aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-								cb(null, data);
-							}).catch(function(error) {
-								console.log('Error:::', error);
-								cb(error, null);
-							});
-						}, function done(err, success) {
-							if (!err) {
-								return callback(null, result);
-							}
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
 						});
+					}, function done(err, success) {
+						if (!err) {
+							return callback(null, result);
+						}
+					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		servicesProviders: function(callback) {
-			console.log("servicesProviders")
 			var result = {};
 			queryObj['type'] = 'Services Marketplace';
 			field = 'sales_count';
@@ -173,34 +180,35 @@ export function directory(req, res) {
 				.then(function(servicesProviders) {
 					result.rows = JSON.parse(JSON.stringify(servicesProviders.rows));
 					var vendorAvgRating = {};
-						vendorAvgRating['status'] = {
-							'$eq': status["ACTIVE"]
-						}
-						async.mapSeries(result.rows, function(aVendor, cb) {
-							vendorAvgRating['vendor_id'] = aVendor.id;
-							model['ProductRatings'].findOne({
-								where: vendorAvgRating,
-								attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
-							}).then(function(data) {
-								var ratingObj = JSON.parse(JSON.stringify(data))
-								aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-								cb(null, data);
-							}).catch(function(error) {
-								console.log('Error:::', error);
-								cb(error, null);
-							});
-						}, function done(err, success) {
-							if (!err) {
-								return callback(null, result);
-							}
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
 						});
+					}, function done(err, success) {
+						if (!err) {
+							return callback(null, result);
+						}
+					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
 				});
 		},
 		subscriptionProviders: function(callback) {
-			console.log("subscriptionProviders")
 			var result = {};
 			queryObj['type'] = 'Lifestyle Marketplace';
 			field = 'sales_count';
@@ -210,27 +218,29 @@ export function directory(req, res) {
 				.then(function(subscriptionProviders) {
 					result.rows = JSON.parse(JSON.stringify(subscriptionProviders.rows));
 					var vendorAvgRating = {};
-						vendorAvgRating['status'] = {
-							'$eq': status["ACTIVE"]
-						}
-						async.mapSeries(result.rows, function(aVendor, cb) {
-							vendorAvgRating['vendor_id'] = aVendor.id;
-							model['ProductRatings'].findOne({
-								where: vendorAvgRating,
-								attributes: [[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']],
-							}).then(function(data) {
-								var ratingObj = JSON.parse(JSON.stringify(data))
-								aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
-								cb(null, data);
-							}).catch(function(error) {
-								console.log('Error:::', error);
-								cb(error, null);
-							});
-						}, function done(err, success) {
-							if (!err) {
-								return callback(null, result);
-							}
+					vendorAvgRating['status'] = {
+						'$eq': status["ACTIVE"]
+					}
+					async.mapSeries(result.rows, function(aVendor, cb) {
+						vendorAvgRating['vendor_id'] = aVendor.id;
+						model['ProductRatings'].findOne({
+							where: vendorAvgRating,
+							attributes: [
+								[sequelize.fn('AVG', sequelize.col('product_rating')), 'rating']
+							],
+						}).then(function(data) {
+							var ratingObj = JSON.parse(JSON.stringify(data))
+							aVendor['avg_rating'] = ratingObj.rating ? ratingObj.rating : '0.0';
+							cb(null, data);
+						}).catch(function(error) {
+							console.log('Error:::', error);
+							cb(error, null);
 						});
+					}, function done(err, success) {
+						if (!err) {
+							return callback(null, result);
+						}
+					});
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -249,9 +259,9 @@ export function directory(req, res) {
 				servicesProviders: results.servicesProviders,
 				subscriptionProviders: results.subscriptionProviders,
 				depart: results.depart,
-				cartheader:results.cartCounts,
 				LoggedInUser: LoggedInUser,
-				marketplace: marketplace
+				cart: results.cartInfo,
+				marketPlace: marketplace
 			});
 		} else {
 			res.render('directory', err);

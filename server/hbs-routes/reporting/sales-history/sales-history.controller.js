@@ -119,7 +119,8 @@ export function salesHistory(req, res) {
     queryPaginationObj['offset'] = offset;
     delete req.query.offset;
     limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    queryPaginationObj['limit'] = limit;
+	queryPaginationObj['limit'] = limit;
+	queryURI['limit'] = limit;
     delete req.query.limit;
     order = req.query.order ? req.query.order : "desc";
     queryPaginationObj['order'] = order;
@@ -196,6 +197,7 @@ export function salesHistory(req, res) {
             }
         },
         function(err, results) {
+            console.log(req)
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
             maxSize = results.orderHistory.count / limit;

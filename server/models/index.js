@@ -43,6 +43,7 @@ function init(sequelize) {
     model.MarketplaceType = sequelize.import('./definition/marketplace-type.js');
     model.MarketplaceProduct = sequelize.import('./definition/marketplace-products.js');
     model.Notification = sequelize.import('./definition/notification.js');
+    model.NotificationSetting = sequelize.import('./definition/notification-setting.js');
     model.OrderItem = sequelize.import('./definition/order-items.js');
     model.OrderPayment = sequelize.import('./definition/order-payment.js');
     model.OrderPaymentEscrow = sequelize.import('./definition/order-payment-escrow.js');
@@ -56,6 +57,7 @@ function init(sequelize) {
     model.ProductRatings = sequelize.import('./definition/product-ratings.js');
     model.ProductAdsSetting = sequelize.import('./definition/product-ads-setting.js');
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
+    model.ProductDiscount = sequelize.import('./definition/product-discount.js');
     model.ProductMedia = sequelize.import('./definition/product-media.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Review = sequelize.import('./definition/reviews.js');
@@ -123,6 +125,7 @@ function init(sequelize) {
     require('./definition/marketplace-type.js').initRelations();
     require('./definition/marketplace-products.js').initRelations();
     require('./definition/notification.js').initRelations();
+    require('./definition/notification-setting.js').initRelations();
     require('./definition/order-items.js').initRelations();
     require('./definition/order-payment.js').initRelations();
     require('./definition/order-payment-escrow.js').initRelations();
@@ -136,6 +139,7 @@ function init(sequelize) {
     require('./definition/product-ratings.js').initRelations();
     require('./definition/product-ads-setting.js').initRelations();
     require('./definition/product-attribute.js').initRelations();
+    require('./definition/product-discount.js').initRelations();
     require('./definition/product-media.js').initRelations();
     require('./definition/region.js').initRelations();
     require('./definition/reviews.js').initRelations();

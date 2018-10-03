@@ -80,7 +80,23 @@ var all = {
             payoutMail: 'PAYOUT-MAIL',
             askToVendor: 'ASK-TO-VENDOR',
 			returnRequest: 'USER-RETURN-REQUEST',
-			refundRequest: 'VENDOR-TO-REFUND'
+			refundRequest: 'VENDOR-TO-REFUND',
+			upgradeplan:'UPGRADE-PLAN',
+			autoRenewalNoPrimaryCard : 'AUTO-RENEWAL-NO-PRIMARY-CARD',
+			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
+			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
+			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
+			planExpired : "PLAN-EXPIRED"
+        }
+    },
+    //Notification
+    notification: {
+        templates: {
+            vendorNewOrder: 'NEW-ORDER',
+            productReview: 'PRODUCT-REVIEW',
+            likesComments: 'LIKE-AND-COMMENT',
+            newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
+            orderCancelled: 'ORDER-CANCELLED'
         }
     },
     jobs: {
@@ -89,7 +105,11 @@ var all = {
         "vendorPayouts": "vendorPayouts",
         "aliExpressScrape": "aliexpress-scrape",
         "ebayInventory": "ebay-inventory",
-        "amazonImportJob": "amazonImportJob"
+		"amazonImportJob": "amazonImportJob",
+		"starterPlanExpire": "starterPlanExpire",
+		"featureProductExpire": "featureProductExpire",
+		"planRenewal": "planRenewal",
+		"bulkUserPlanRenewal":"bulkUserPlanRenewal"
     },
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,

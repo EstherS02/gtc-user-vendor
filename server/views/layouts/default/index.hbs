@@ -1,132 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <script type="text/javascript">
-        window.FontAwesomeConfig = {
-            searchPseudoElements: true
-        };
-        function imgError(image) {
-            image.onerror = "";
-            image.src = "/gtc-assets/images/no-product-image.jpg";
-            return true;
-        }
-        function UserImgError(image) {
-            image.onerror = "";
-            image.src = "img/avatar.png";
-            return true;
-        }
-        
-    </script>
-    <script type="text/javascript">
-         var userId = {{{DisplayJSON LoggedInUser.id}}};
-    </script>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Trade Connect</title>
-    <base href="/">
-    <link rel="shortcut icon" href="gtc-assets/images/favicon.ico" />
-    <link rel="stylesheet" href="css/gtc-custom-fonts.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/plugins/bootstrap-4/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/fontawesome/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="css/gtc-style.css">
-    <link rel="stylesheet" href="css/gtc-custom-style.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/css/theme.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/css/style.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/css/message.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive.css">
-    <link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive-new.css">
-   
-    <link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
-    <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
-    <link rel="stylesheet" href="plugins/datepicker/css/datepicker.min.css">
-    <link rel="stylesheet" href="plugins/jquery-bar-rating/themes/fontawesome-stars.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="plugins/cropperjs/cropper.min.css">
-
-    {{!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet"> --}}
-    <link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css">
-    <link href="plugins/summernote/summernote-bs4.css" rel="stylesheet">
-    <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="plugins/toaster/toastr.css">
-
-
-    <script src="https://apis.google.com/js/api:client.js"></script>
-    <script type="text/javascript" src="gtc-assets/js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="gtc-assets/js/jssocials.js"></script>
-    <script type="text/javascript" src="gtc-assets/js/popper.min.js"></script>
-    <script type="text/javascript" src="js/Chart.js"></script>
-    <script type="text/javascript" src="gtc-assets/plugins/bootstrap-4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="auth.service.js"></script>
-    <script type="text/javascript" src="js/login.js"></script>
-    <script type="text/javascript">
-        $(window).scroll(function () {
-            $('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
-        });
-    </script>
-    <script src="plugins/jquery-validate/jquery.validate.min.js"></script>
-	<script src="plugins/jquery-validate/additional-methods.min.js"></script>
-    <script type="text/javascript" src="plugins/handlebars-v4.0.11.js"></script>
-    <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/sockets.js"></script> 
-    <script src="plugins/toaster/toastr.min.js"></script>
-     <script src="plugins/socketio/socket.io.js"></script>
-</head>
-
-<body>
-    
-       
-    
-    
-    {{> environment}} {{> global-scripts}} {{{body}}}
-
-
-    {{!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --}}
-    {{!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script> --}}
-
-    <script src="plugins/datepicker/js/datepicker.min.js"></script>
-    <script src="plugins/select2/js/select2.min.js"></script>
-    <script src="plugins/jquery-bar-rating/jquery.barrating.min.js"></script>
-    <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
-    <script src="plugins/magnific-popup/custom-magnific-popup.js"></script>
-    <script src="plugins/lodash/lodash.min.js"></script>
-    {{!-- <script src="../../../config/environment"></script> --}}
-    <script src="plugins/cropperjs/cropper.min.js"></script>
-    <script src="plugins/notifyjs/notify.min.js"></script>
-    <script src="plugins/ladda/spin.min.js"></script>
-    <script src="plugins/ladda/ladda.min.js"></script>
-    <script src="plugins/ladda/ladda.jquery.min.js"></script>
-    <script src="plugins/ladda/customLadda.js"></script>
-    <script src="plugins/moment/moment.min.js"></script>
-    <script type="text/javascript" src="plugins/summernote/summernote-bs4.js"></script>
-    <!--<script type="text/javascript">
-        var userInfo = {{{DisplayJSON LoggedInUser}}};
-        console.log("emitSocket",emitSocket);
-        console.log("SOCKET OUT", socket);
-       // emitSocket.userJoin(userInfo);
-        var timer = setTimeout(function() {
-            if (userInfo && userInfo.id != null) {
-                console.log("SOCKET INNNN", socket);
-                socket.emit('user:join', userInfo);
-            }
-            socket.on('chat:receive', function(data) {
-                if (userInfo.id != data.from_id) {
-                    console.log("user room emitting..", data);
-                    toastr.options.closeButton = true;
-                    toastr.options.showEasing = 'easeOutBounce';
-                    toastr.options.showMethod = 'slideDown';
-                    toastr.options.progressBar = true;
-                    toastr.options.closeMethod = 'slideUp'
-                    toastr.info(data.message, data.User.first_name, {
-                        timeOut: 3000
-                    });
-                }
-            })
-        }, 1000);
-    </script>-->
-</body>
-
+	<head>
+		<script type="text/javascript">
+			window.FontAwesomeConfig = {
+				searchPseudoElements: true
+			};
+			function imgError(image) {
+				image.onerror = "";
+				image.src = "/gtc-assets/images/no-product-image.jpg";
+				return true;
+			}
+			function UserImgError(image) {
+				image.onerror = "";
+				image.src = "img/avatar.png";
+				return true;
+			}
+		</script>
+		<script type="text/javascript">
+			var userId = {{{ DisplayJSON LoggedInUser.id }}};
+		</script>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Global Trade Connect</title>
+		<base href="/">
+		<link rel="shortcut icon" href="gtc-assets/images/favicon.ico" />
+		<link rel="stylesheet" href="css/gtc-custom-fonts.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/plugins/bootstrap-4/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/fontawesome/css/fontawesome-all.min.css">
+		<link rel="stylesheet" href="css/gtc-style.css">
+		<link rel="stylesheet" href="css/gtc-custom-style.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/css/theme.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/css/style.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/css/message.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive.css">
+		<link rel="stylesheet" type="text/css" href="gtc-assets/css/responsive-new.css">
+		<link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
+		<link rel="stylesheet" href="plugins/select2/css/select2.min.css">
+		<link rel="stylesheet" href="plugins/datepicker/css/datepicker.min.css">
+		<link rel="stylesheet" href="plugins/jquery-bar-rating/themes/fontawesome-stars.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="plugins/cropperjs/cropper.min.css">
+		<link rel="stylesheet" href="plugins/ladda/ladda-themeless.min.css">
+		<link href="plugins/summernote/summernote-bs4.css" rel="stylesheet">
+		<link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
+		<link rel="stylesheet" href="plugins/toaster/toastr.css">
+		<script src="https://apis.google.com/js/api:client.js"></script>
+		<script type="text/javascript" src="gtc-assets/js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="gtc-assets/js/jssocials.js"></script>
+		<script type="text/javascript" src="gtc-assets/js/popper.min.js"></script>
+		<script type="text/javascript" src="js/Chart.js"></script>
+		<script type="text/javascript" src="gtc-assets/plugins/bootstrap-4/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="auth.service.js"></script>
+		<script type="text/javascript" src="js/login.js"></script>
+		<script type="text/javascript">
+			$(window).scroll(function() {
+				$('.sticky-top').toggleClass('scrolled', $(this).scrollTop() > 50);
+			});
+		</script>
+		<script src="plugins/jquery-validate/jquery.validate.min.js"></script>
+		<script src="plugins/jquery-validate/additional-methods.min.js"></script>
+		<script type="text/javascript" src="plugins/handlebars-v4.0.11.js"></script>
+		<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="js/sockets.js"></script>
+		<script src="plugins/toaster/toastr.min.js"></script>
+		<script src="plugins/socketio/socket.io.js"></script>
+	</head>
+	<body>
+		{{> environment}} {{> global-scripts}} {{{body}}}
+		<script src="plugins/datepicker/js/datepicker.min.js"></script>
+		<script src="plugins/select2/js/select2.min.js"></script>
+		<script src="plugins/jquery-bar-rating/jquery.barrating.min.js"></script>
+		<script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+		<script src="plugins/magnific-popup/custom-magnific-popup.js"></script>
+		<script src="plugins/lodash/lodash.min.js"></script>
+		<script src="plugins/cropperjs/cropper.min.js"></script>
+		<script src="plugins/notifyjs/notify.min.js"></script>
+		<script src="plugins/ladda/spin.min.js"></script>
+		<script src="plugins/ladda/ladda.min.js"></script>
+		<script src="plugins/ladda/ladda.jquery.min.js"></script>
+		<script src="plugins/ladda/customLadda.js"></script>
+		<script src="plugins/moment/moment.min.js"></script>
+		<script type="text/javascript" src="plugins/summernote/summernote-bs4.js"></script>
+	</body>
 </html>

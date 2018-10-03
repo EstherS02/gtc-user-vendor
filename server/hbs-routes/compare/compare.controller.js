@@ -1,17 +1,16 @@
 'use strict';
 
-const config = require('../../config/environment');
-const model = require('../../sqldb/model-connect');
-const reference = require('../../config/model-reference');
-const status = require('../../config/status');
-const service = require('../../api/service');
-const productService = require('../../api/product/product.service');
-const sequelize = require('sequelize');
-const marketplace = require('../../config/marketplace');
-const moment = require('moment');
 const _ = require('lodash');
-import series from 'async/series';
-var async = require('async');
+const async = require('async');
+const sequelize = require('sequelize');
+
+const model = require('../../sqldb/model-connect');
+const status = require('../../config/status');
+const marketplace = require('../../config/marketplace');
+const service = require('../../api/service');
+const cartService = require('../../api/cart/cart.service');
+const productService = require('../../api/product/product.service');
+const Plan = require('../../config/gtc-plan');
 
 export function compare(req, res) {
 	var LoggedInUser = {};
@@ -20,12 +19,10 @@ export function compare(req, res) {
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable) {
 		LoggedInUser = req.gtcGlobalUserObj;
 	}
-
 	var field = 'id';
 	var order = 'asc';
 	var includeArr = [];
 	var compareProductIDs;
-	// var product_category_id = 1;
 	var product_category_id = [];
 
 	if (req.session && req.session['compare']) {
@@ -79,23 +76,23 @@ export function compare(req, res) {
 		RelatedProducts: function(callback) {
 			var limit = 9;
 			var order = [
-				    sequelize.fn( 'RAND' ),
-				  ];
+				sequelize.fn('RAND'),
+			];
 			var queryObj = {
 				sub_category_id: product_category_id,
 				marketplace_id: {
 					$ne: marketplace['WHOLESALE']
 				}
 			};
-			if(product_category_id.length>0){
-			productService.RandomProducts("MarketplaceProduct", queryObj, limit, order)
-				.then(function(response) {
-					return callback(null, response);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-			}else{
+			if (product_category_id.length > 0) {
+				productService.RandomProducts("MarketplaceProduct", queryObj, limit, order)
+					.then(function(response) {
+						return callback(null, response);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			} else {
 				return callback(null);
 			}
 		},
@@ -121,13 +118,17 @@ export function compare(req, res) {
 					return callback(null);
 				});
 		},
-		cartCounts: function(callback) {
-			service.cartHeader(LoggedInUser).then(function(response) {
-				return callback(null, response);
-			}).catch(function(error) {
-				console.log('Error :::', error);
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
 				return callback(null);
-			});
+			}
 		}
 	}, function(error, results) {
 		var newAttributes = [];
@@ -135,17 +136,18 @@ export function compare(req, res) {
 			if (results.productAttributes.count > 0) {
 				newAttributes = _.unionBy(results.productAttributes.rows, newAttributes, 'attribute_id');
 			}
-
 			res.render('compare', {
 				title: "Global Trade Connect",
 				categories: results.categories,
 				bottomCategory: bottomCategory,
-				cartheader: results.cartCounts,
+				cart: results.cartInfo,
+				marketPlace: marketplace,
 				compareProducts: results.compareProducts,
 				RelatedProducts: results.RelatedProducts,
 				uniqueAttribute: newAttributes,
 				productAttributes: results.productAttributes.rows,
-				LoggedInUser: LoggedInUser
+				LoggedInUser: LoggedInUser,
+				Plan: Plan
 			});
 		} else {
 			res.render('compare', err);

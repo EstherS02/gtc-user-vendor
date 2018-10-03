@@ -31,8 +31,6 @@ export function addOrRemoveWishlist(req, res) {
 				// Item not found, create a new one
 				return model[modelName].create(data)
 					.then(function(response) {
-
-						console.log("create", response)
 						return res.status(200).status(200).json({
 							type: "wish"
 						});
@@ -63,7 +61,6 @@ export function vendorQuestion(req, res) {
 
 	if (req.user)
 		LoggedInUser = req.user;
-	console.log(req.body);
 	req.checkBody('subject', 'Missing Subject Value').notEmpty();
 	req.checkBody('message', 'Missing Message Value').notEmpty();
 	var errors = req.validationErrors();
@@ -73,30 +70,30 @@ export function vendorQuestion(req, res) {
 		return;
 	}
 	// res.status(200).send(req.body);
-	 var queryObjEmailTemplate = {};
+	var queryObjEmailTemplate = {};
     var emailTemplateModel = 'EmailTemplate';
     queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
     service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
         .then(function(response) {
-                        var email = req.body.to;
-                        // console.log("----------=-=-=-=-=-==",order.OrderItems[0].Product.Vendor.User.email);
-                        var subject = response.subject.replace('%SUBJECT%', req.body.subject);
-                        var body;
-                            body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
-                            body = body.replace('%USER_NAME%',LoggedInUser.first_name);
-                            body = body.replace('%MESSAGE%', req.body.message);
-                        sendEmail({
-                            to: email,
-                            subject: subject,
-                            html: body
-                        });
-                        return res.status(200).send("Your Question sent to this vendor");
+
+			if(req.body.to){
+				var email = req.body.to;
+				var subject = response.subject.replace('%SUBJECT%', req.body.subject);
+				var body;
+				body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
+				body = body.replace('%USER_NAME%',LoggedInUser.first_name);
+				body = body.replace('%MESSAGE%', req.body.message);
+				sendEmail({
+					to: email,
+					subject: subject,
+					html: body
+				});
+			}					
+            return res.status(200).send("Your Question sent to this vendor");
         }).catch(function(error) {
             console.log('Error :::', error);
             return;
         })
-
-
 }
 
 export function AddToCompare(req, res) {
@@ -127,7 +124,6 @@ export function AddToCompare(req, res) {
 		}
 	}
 	req.session['compare'] = compare;
-	console.log("req.session.compare", req.session['compare']);
 	return res.status(200).json(result);
 } 
 
@@ -145,7 +141,6 @@ export function removeFromCompare(req,res) {
 	  compare.splice(index, 1);
 	}
 	req.session['compare'] = compare;
-	console.log("req.session.compare", req.session['compare']);
 	return res.status(200).json({
 						message : "SUCCESS",
 						message_details : "The One Product remove from your compare list",

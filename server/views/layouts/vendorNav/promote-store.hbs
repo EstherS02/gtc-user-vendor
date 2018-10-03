@@ -50,6 +50,7 @@
 			<div class="col-sm-2">
 				{{> vendor/vendor-side-navbar}}
 			</div>
+			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
 			<div class="col-sm-10">
 				<div class="ibox">
 					<div class="ibox-content">
@@ -91,7 +92,7 @@
 												<div class="col-md-12">
 													<h5>SHARE YOUR STORE!</h5>
 													<input type="hidden" id="vendor_id" name="vendor_id" value = {{LoggedInUser.Vendor.id}}>
-													<input type="hidden" id="vendor_name" name="vendor_name" value={{LoggedInUser.Vendor.vendor_name}}>
+													<input type="hidden" id="vendor_name" name="vendor_name" value=""{{LoggedInUser.Vendor.vendor_name}}>"
 													<p>Let everyone know where to buy your products on GTC!</p>
 													<div class="alignright text-right">
 														<a id="shareIcons" class="alignleft"></a>
@@ -110,6 +111,9 @@
 					</div>
 				</div>
 			</div>
+			{{else}}
+				{{> plan-inactive}}
+			{{/ifCond}}
 		</div>
 	</div>
 </div>

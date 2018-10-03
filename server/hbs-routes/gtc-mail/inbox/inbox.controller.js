@@ -7,14 +7,19 @@ const _ = require('lodash');
 const config = require('../../../config/environment');
 const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
-const statusCode = require('../../../config/status');
+const status = require('../../../config/status');
 const service = require('../../../api/service');
 const populate = require('../../../utilities/populate');
 const vendorPlan = require('../../../config/gtc-plan');
 const mailStatus = require('../../../config/mail-status');
+const cartService = require('../../../api/cart/cart.service');
+const marketplace = require('../../../config/marketplace');
 
 export function inbox(req, res) {
-	var LoggedInUser = {}, queryURI = {}, bottomCategory = {}, queryPaginationObj = {};
+	var LoggedInUser = {},
+		queryURI = {},
+		bottomCategory = {},
+		queryPaginationObj = {};
 	var offset, limit, field, order, page, maxSize, includeArray = [];
 
 	offset = 0;
@@ -24,18 +29,18 @@ export function inbox(req, res) {
 	var mailModel = 'UserMail';
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-    queryPaginationObj['offset'] = offset;
-    delete req.query.offset;
-    limit = req.query.limit ? parseInt(req.query.limit) : 10;
-    queryPaginationObj['limit'] = limit;
-    delete req.query.limit;
-    order = req.query.order ? req.query.order : "desc";
-    queryPaginationObj['order'] = order;
-    delete req.query.order;
-    page = req.query.page ? parseInt(req.query.page) : 1;
-    queryPaginationObj['page'] = page;
+	queryPaginationObj['offset'] = offset;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : 10;
+	queryPaginationObj['limit'] = limit;
+	delete req.query.limit;
+	order = req.query.order ? req.query.order : "desc";
+	queryPaginationObj['order'] = order;
+	delete req.query.order;
+	page = req.query.page ? parseInt(req.query.page) : 1;
+	queryPaginationObj['page'] = page;
 	delete req.query.page;
-	
+
 	offset = (page - 1) * limit;
 
 
@@ -46,51 +51,55 @@ export function inbox(req, res) {
 
 	var queryObj = {
 		user_id: user_id,
-		'$or': [
-			{ mail_status: mailStatus["READ"] },
-			{ mail_status: mailStatus["UNREAD"] }
-		],
-		status: statusCode["ACTIVE"],
+		'$or': [{
+			mail_status: mailStatus["READ"]
+		}, {
+			mail_status: mailStatus["UNREAD"]
+		}],
+		status: status["ACTIVE"],
 	};
 
 	async.series({
-		cartCounts: function (callback) {
-			service.cartHeader(LoggedInUser).then(function (response) {
-				return callback(null, response);
-			}).catch(function (error) {
-				console.log('Error :::', error);
-				return callback(null);
-			});
-		},
-		categories: function (callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			var categoryModel = "Category";
-			const categoryQueryObj = {};
-
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function (category) {
-					var categories = category.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
-				}).catch(function (error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
-		},
-		inboxMail: function (callback) {
+				}
+			},
+			categories: function(callback) {
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
 
-			includeArray = [
-				{
+				categoryQueryObj['status'] = status["ACTIVE"];
+
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			inboxMail: function(callback) {
+
+				includeArray = [{
 					"model": model['Mail'],
 					where: {
-						status: statusCode["ACTIVE"],
+						status: status["ACTIVE"],
 						//to_id : user_id	
 					},
 					include: [{
@@ -100,19 +109,19 @@ export function inbox(req, res) {
 					}],
 				}];
 
-			service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
-				.then(function (mail) {
-					return callback(null, mail);
+				service.findRows(mailModel, queryObj, offset, limit, field, order, includeArray)
+					.then(function(mail) {
+						return callback(null, mail);
 
-				}).catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
-		}
-	},
-		function (err, results) {
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			}
+		},
+		function(err, results) {
 			maxSize = results.inboxMail.count / limit;
-            if (results.inboxMail.count % limit)
+			if (results.inboxMail.count % limit)
 				maxSize++;
 
 			queryPaginationObj['maxSize'] = maxSize;
@@ -125,7 +134,8 @@ export function inbox(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					inboxMail: results.inboxMail.rows,
 					mailStatus: mailStatus,
 					collectionSize: results.inboxMail.count,
@@ -146,8 +156,12 @@ export function inbox(req, res) {
 
 
 export function message(req, res) {
-	var LoggedInUser = {}, queryObj = {}, bottomCategory = {}, mail_id, path;
-	var includeArr = [], messageArr = [];
+	var LoggedInUser = {},
+		queryObj = {},
+		bottomCategory = {},
+		mail_id, path;
+	var includeArr = [],
+		messageArr = [];
 	var mailModal = "Mail";
 	var messageUserModel = "UserMail";
 
@@ -160,72 +174,75 @@ export function message(req, res) {
 	if (req.params.path)
 		path = req.params.path;
 
-	messageArr = [
-		{
-			model: model['User'],
-			as: 'fromUser',
-			attributes: ['id', 'first_name']
-		}];
+	messageArr = [{
+		model: model['User'],
+		as: 'fromUser',
+		attributes: ['id', 'first_name']
+	}];
 
 	async.series({
-		cartCounts: function (callback) {
-			service.cartHeader(LoggedInUser).then(function (response) {
-				return callback(null, response);
-			}).catch(function (error) {
-				console.log('Error :::', error);
-				return callback(null);
-			});
-		},
-		categories: function (callback) {
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			var categoryModel = "Category";
-			const categoryQueryObj = {};
-
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function (category) {
-					var categories = category.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
-				}).catch(function (error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
-		},
-		message: function (callback) {
+				}
+			},
+			categories: function(callback) {
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
 
-			service.findIdRow(mailModal, mail_id, messageArr)
-				.then(function (message) {
-					return callback(null, message);
-				})
-				.catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				})
-		},
+				categoryQueryObj['status'] = status["ACTIVE"];
 
-		messageUserId: function (callback) {
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
+			message: function(callback) {
 
-			queryObj = {
-				mail_id: req.params.id,
-				user_id: req.user.id
+				service.findIdRow(mailModal, mail_id, messageArr)
+					.then(function(message) {
+						return callback(null, message);
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					})
+			},
+
+			messageUserId: function(callback) {
+
+				queryObj = {
+					mail_id: req.params.id,
+					user_id: req.user.id
+				}
+				service.findRow(messageUserModel, queryObj, [])
+					.then(function(messageUser) {
+						return callback(null, messageUser.id);
+					})
+					.catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					})
 			}
-			service.findRow(messageUserModel, queryObj, [])
-				.then(function (messageUser) {
-					return callback(null, messageUser.id);
-				})
-				.catch(function (error) {
-					console.log('Error :::', error);
-					return callback(null);
-				})
-		}
-	},
-		function (err, results) {
+		},
+		function(err, results) {
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -234,7 +251,8 @@ export function message(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					message: results.message,
 					messageUserId: results.messageUserId,
 					selectedPage: path,
@@ -256,38 +274,42 @@ export function compose(req, res) {
 		LoggedInUser = req.user;
 
 	async.series({
-		cartCounts: function (callback) {
-			service.cartHeader(LoggedInUser).then(function (response) {
-				return callback(null, response);
-			}).catch(function (error) {
-				console.log('Error :::', error);
-				return callback(null);
-			});
-		},
-		categories: function (callback) {
-			var includeArr = [];
-			const categoryOffset = 0;
-			const categoryLimit = null;
-			const categoryField = "id";
-			const categoryOrder = "asc";
-			var categoryModel = "Category";
-			const categoryQueryObj = {};
-
-			categoryQueryObj['status'] = statusCode["ACTIVE"];
-
-			service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
-				.then(function (category) {
-					var categories = category.rows;
-					bottomCategory['left'] = categories.slice(0, 8);
-					bottomCategory['right'] = categories.slice(8, 16);
-					return callback(null, category.rows);
-				}).catch(function (error) {
-					console.log('Error :::', error);
+			cartInfo: function(callback) {
+				if (LoggedInUser.id) {
+					cartService.cartCalculation(LoggedInUser.id, req)
+						.then((cartResult) => {
+							return callback(null, cartResult);
+						}).catch((error) => {
+							return callback(error);
+						});
+				} else {
 					return callback(null);
-				});
+				}
+			},
+			categories: function(callback) {
+				var includeArr = [];
+				const categoryOffset = 0;
+				const categoryLimit = null;
+				const categoryField = "id";
+				const categoryOrder = "asc";
+				var categoryModel = "Category";
+				const categoryQueryObj = {};
+
+				categoryQueryObj['status'] = status["ACTIVE"];
+
+				service.findAllRows(categoryModel, includeArr, categoryQueryObj, categoryOffset, categoryLimit, categoryField, categoryOrder)
+					.then(function(category) {
+						var categories = category.rows;
+						bottomCategory['left'] = categories.slice(0, 8);
+						bottomCategory['right'] = categories.slice(8, 16);
+						return callback(null, category.rows);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
+			},
 		},
-	},
-		function (err, results) {
+		function(err, results) {
 			if (!err) {
 				var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
 				var dropDownUrl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '');
@@ -296,7 +318,8 @@ export function compose(req, res) {
 					LoggedInUser: LoggedInUser,
 					categories: results.categories,
 					bottomCategory: bottomCategory,
-					cartheader: results.cartCounts,
+					cart: results.cartInfo,
+					marketPlace: marketplace,
 					selectedPage: 'inbox',
 					vendorPlan: vendorPlan,
 					dropDownUrl: dropDownUrl
