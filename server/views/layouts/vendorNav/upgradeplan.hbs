@@ -101,7 +101,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 		e.preventDefault();
 		if ($('#userPlandetails').valid()) { 
 			
-			if($('#userplanStatus').val()=='2')
+			if(($('#userplanStatus').val()=='2')|| ($('#userplanStatus').val()=='0'))
 			{
             var plan_id = document.getElementById("selectplan").value;
             $.ajax({
@@ -468,12 +468,12 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 							</div>
 						</div> --}}
 						         <div class="row">
-									<div class="col-md-12">
-										{{#if userplanDetails}}
-										<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails.rows.[0].status}}"/>
-											{{else}}
-										<input type="hidden" name="userplanStatus" id="userplanStatus" value="1"/>
-										{{/if}}
+									<div class="col-md-12"> 
+										{{#ifCond userplanDetails.count '!=' 0}}
+										<input type="hidden" name="userplanStatus" id="userplanStatus"  value="{{userplanDetails.rows.[0].status}}"/>
+											{{else ifCond userplanDetails.count '==' 0 }}
+										<input type="hidden" name="userplanStatus" id="userplanStatus" value="0"/>
+										{{/ifCond}}
 										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
 											<span class="ladda-label">UPGRADE</span>
 											

@@ -10,6 +10,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
+const reportsService = require('../../../api/reports/reports.service');
 const marketPlace = require('../../../config/marketplace');
 const orderStatus = require('../../../config/order_status');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -50,16 +51,16 @@ export function accounting(req, res) {
 		queryParams['range'] = 4;
 	}
 
-	if (req.query.start_date) {
-		queryParams['start_date'] = req.query.start_date;
+	if (queryParams['range'] == 4) {
+		queryParams['start_date'] = moment().subtract(30, 'days').format('MM/DD/YYYY');
+		queryParams['end_date'] = moment().subtract(1, 'days').format('MM/DD/YYYY');
 	} else {
-		queryParams['start_date'] = moment().subtract(30, 'days').format('DD-MM-YYYY');
-	}
-
-	if (req.query.end_date) {
-		queryParams['end_date'] = req.query.end_date;
-	} else {
-		queryParams['end_date'] = moment().subtract(1, 'days').format('DD-MM-YYYY');
+		if (req.query.start_date) {
+			queryParams['start_date'] = req.query.start_date;
+		}
+		if (req.query.end_date) {
+			queryParams['end_date'] = req.query.end_date;
+		}
 	}
 
 	async.series({
@@ -68,6 +69,18 @@ export function accounting(req, res) {
 				.then((cartResult) => {
 					return callback(null, cartResult);
 				}).catch((error) => {
+					return callback(error);
+				});
+		},
+		accountingReports: function(callback) {
+			var serviceQueryParams = {};
+			serviceQueryParams['from'] = new Date(queryParams['start_date']);
+			serviceQueryParams['to'] = new Date(queryParams['end_date']);
+			reportsService.AccountingReport(serviceQueryParams)
+				.then((response) => {
+					return callback(null, null);
+				})
+				.catch((error) => {
 					return callback(error);
 				});
 		},

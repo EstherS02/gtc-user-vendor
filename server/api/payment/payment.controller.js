@@ -782,12 +782,13 @@ export function makeplanPayment(req, res) {
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(response)
 			};
-			service.createRow('Payment', paymentModel);
+			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
 
 				var vendorplanModel = {
 					vendor_id: req.body.vendor_id,
 					plan_id: req.body.plan_id,
+					payment_id: createdPaymentRow.id,
 					status: status['ACTIVE'],
 					auto_renewal_mail:req.body.autoRenewalMail,
 					start_date: start_date,
@@ -808,6 +809,7 @@ export function makeplanPayment(req, res) {
 					var userplanModel = {
 					user_id: req.body.user_id,
 					plan_id: req.body.plan_id,
+					payment_id: createdPaymentRow.id,
 					auto_renewal_mail:req.body.autoRenewalMail,
 					status: status['ACTIVE'],
 					start_date: start_date,
@@ -817,7 +819,9 @@ export function makeplanPayment(req, res) {
 					return res.status(200).json({
 					data: response
 					});
-                   }
+				   }
+				});
+			
 		} else {
 			return res.status(500).json({
 				data: err
