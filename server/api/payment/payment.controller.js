@@ -780,7 +780,10 @@ export function makeplanPayment(req, res) {
 				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(response)
+				payment_response: JSON.stringify(response),
+				created_by: req.user.first_name,
+				created_on: new Date()
+				
 			};
 			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
@@ -792,8 +795,10 @@ export function makeplanPayment(req, res) {
 					status: status['ACTIVE'],
 					auto_renewal_mail:req.body.autoRenewalMail,
 					start_date: start_date,
-					end_date: end_date
-
+					end_date: end_date,
+					created_by: req.user.first_name,
+					created_on: new Date()
+					
 				};
 				service.createRow('VendorPlan', vendorplanModel);
 					if(req.user.user_contact_email){
@@ -813,7 +818,9 @@ export function makeplanPayment(req, res) {
 					auto_renewal_mail:req.body.autoRenewalMail,
 					status: status['ACTIVE'],
 					start_date: start_date,
-					end_date: end_date
+					end_date: end_date,
+					created_by: req.user.first_name,
+					created_on: new Date()
 					};
 					service.createRow('UserPlan', userplanModel);
 					return res.status(200).json({
