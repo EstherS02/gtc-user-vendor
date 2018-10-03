@@ -151,6 +151,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'exchanging_product_quantity',
             allowNull: true
 		},
+		subscription_duration: {
+            type: DataTypes.INTEGER,
+            field: 'subscription_duration',
+            allowNull: false
+        },
+        subscription_duration_unit: {
+            type: DataTypes.INTEGER,
+            field: 'subscription_duration_unit',
+            allowNull: false
+        },
         created_by: {
             type: DataTypes.STRING(64),
             field: 'created_by',
@@ -236,7 +246,7 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
-    Product.hasMany(FeaturedProduct, {
+    Product.hasOne(FeaturedProduct, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

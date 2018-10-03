@@ -10,6 +10,7 @@ var controller = require('./api/auth/auth.controller');
 
 export default function(app) {
 
+	app.use('/api/subscription', require('./api/subscription'));
 
     /* Server REST API Routes */
     app.post('/auth/admin-token', require('./admin-auth'));

@@ -412,11 +412,12 @@ $("#total_refund").val(total);
 																	<i class="fas fa-credit-card"></i>
 																	Issue Refund</p>
 																	{{else}}
-																	<p    style="cursor:pointer">
+																	<p style="cursor:pointer">
 																	
 																	Refund Issued</p>
 																
-																	{{/ifCond}}
+																	{{/ifCond}} 
+																	
 															</td>
 															<td class="text_blue_color">
 																<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">

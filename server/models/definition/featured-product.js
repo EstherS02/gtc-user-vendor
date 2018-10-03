@@ -99,6 +99,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'position_subscription_landing',
             allowNull: true
+		},
+		payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'payment_id',
+            allowNull: false,
+            references: {
+                model: 'payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         created_by: {
             type: DataTypes.STRING(64),
@@ -135,11 +146,18 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-    const FeaturedProduct = model.FeaturedProduct;
+	const FeaturedProduct = model.FeaturedProduct;
+	const Payment = model.Payment;
     const Product = model.Product;
 
     FeaturedProduct.belongsTo(Product, {
         foreignKey: 'product_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+	});
+
+	FeaturedProduct.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
