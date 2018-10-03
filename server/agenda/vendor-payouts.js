@@ -18,7 +18,7 @@ const CURRENCY = 'usd';
 
 export function vendorPayouts(job, done) {
 
-    console.log("**********JOBS CALLED")
+    console.log("**********JOBS CALLED");
     console.log('agenda for vendor payouts..');
 
     var orderPaymentModel = 'OrderPayment';
