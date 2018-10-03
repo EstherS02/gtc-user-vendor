@@ -30,6 +30,17 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+		},
+	   payment_id: {
+            type: DataTypes.BIGINT,
+            field: 'payment_id',
+            allowNull: true,
+            references: {
+                model: 'payment',
+                key: 'id'
+            },
+            onUpdate: 'NO ACTION',
+            onDelete: 'NO ACTION'
         },
         start_date: {
             type: DataTypes.DATEONLY,

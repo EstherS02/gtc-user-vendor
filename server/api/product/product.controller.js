@@ -939,8 +939,8 @@ export function featureProductWithPayment(req,res){
 							if(paymentDetails.paid) {
 				
 								var paymentObj={
-									paid_date:  new Date(paymentDetails.created),
-									paid_amount: paymentDetails.amount / 100.0,
+									date:  new Date(paymentDetails.created),
+									amount: paymentDetails.amount / 100.0,
 									payment_method: paymentMethod['STRIPE'],
 									status: status['ACTIVE'],
 									payment_response: JSON.stringify(paymentDetails),

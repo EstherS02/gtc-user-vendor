@@ -6,6 +6,6 @@ var auth = require('../../auth/auth.service')
 
 var subscriptionCtrl = require('./subscription.controller');
 
-router.get('/:product_id',  auth.isAuthenticated(), subscriptionCtrl.subscribe);
+router.get('/',  auth.isAuthenticated(), subscriptionCtrl.subscriptions);
 
 module.exports = router;

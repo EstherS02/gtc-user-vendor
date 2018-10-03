@@ -9,6 +9,7 @@ const populate = require('../../utilities/populate');
 const status = require('../../config/status');
 const orderStatus = require('../../config/order_status');
 const paymentMethod = require('../../config/payment-method');
+const marketPlaceCode = require('../../config/marketplace');
 const _ = require('lodash');
 const moment = require('moment');
 const ORDER_ITEM_STATUS = require('../../config/order-item-status');
@@ -72,8 +73,8 @@ export function makePayment(req, res) {
 		}).then(charge => {
 			console.log("charge", charge);
 			var paymentModel = {
-				paid_date: new Date(charge.created),
-				paid_amount: charge.amount / 100.0,
+				date: new Date(charge.created),
+				amount: charge.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(charge)
@@ -111,7 +112,17 @@ export function makePayment(req, res) {
 				}
 			}
 			return Promise.all(quantityPromises);
-		}).then(productQuantityUpdatedRow => {
+		}).then(productQuantityUpdatedRow=>{
+			let subscribePromises = [];
+			for (var i = 0; i < createdOrders.length; i++) {
+
+				for (var j = 0; j < createdOrders[i].items.length; j++) {
+					subscribePromises.push(updateSubscription(createdOrders[i],createdOrders[i].items[j].product_id));
+				}
+			}
+			return Promise.all(subscribePromises);
+		})
+		.then(subscriptionRow => {
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
@@ -127,7 +138,6 @@ export function makePayment(req, res) {
 					});
 				} else return res.status(500).send(err);
 			});
-
 		}).catch(err => {
 			console.log("err3", err);
 			if (createdOrders && createdOrders.length > 0) {
@@ -162,6 +172,7 @@ function createOrder(orderWithItems) {
 		for (var i = 0; i < orderItems.length; i++) {
 			orderItems[i].order_id = orderResult.id;
 			orderItems[i].order_item_status = 0;
+			orderItems[i].created_on = new Date();
 			orderItemsPromises.push(createOrderItem(orderItems[i]));
 		}
 		return Promise.all(orderItemsPromises).then(itemsResults => {
@@ -200,6 +211,34 @@ function updateQuantity(productId, placedQuantity) {
 					return Promise.reject(err);
 				})
 		}).catch(err => {
+			return Promise.reject(err);
+		})
+}
+
+function updateSubscription(order, productId){
+
+	var subscriptionBodyParam = {
+		user_id: order.user_id,
+		product_id: productId,
+		purchased_on : ordered_date,
+		status: status.ACTIVE,
+		created_on: new Date()
+	}
+
+	return service.findIdRow('Product',productId)
+		.then(product =>{
+			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
+
+				service.createRow('Subscription', subscriptionBodyParam)
+					.then(subscribedProduct => {
+						return Promise.resolve(subscribedProduct);
+					}).catch(err =>{
+						return Promise.reject(err);
+					})
+			}else{
+				return;
+			}
+		}).catch(err=>{
 			return Promise.reject(err);
 		})
 }
@@ -466,8 +505,8 @@ export function cancelOrder(req, res) {
 		}).then(refundRow => {
 			refundObj = refundRow;
 			let paymentModel = {
-				refund_date: new Date(refundRow.created),
-				refund_amount: refundRow.amount / 100.0,
+				date: new Date(refundRow.created),
+				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundRow),
@@ -737,18 +776,19 @@ export function makeplanPayment(req, res) {
 	then(function(response) {
 		if (response.paid = "true") {
 			var paymentModel = {
-				paid_date: new Date(response.created),
-				paid_amount: response.amount / 100.0,
+				date: new Date(response.created),
+				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(response)
 			};
-			service.createRow('Payment', paymentModel);
+			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
 
 				var vendorplanModel = {
 					vendor_id: req.body.vendor_id,
 					plan_id: req.body.plan_id,
+					payment_id: createdPaymentRow.id,
 					status: status['ACTIVE'],
 					auto_renewal_mail:req.body.autoRenewalMail,
 					start_date: start_date,
@@ -769,6 +809,7 @@ export function makeplanPayment(req, res) {
 					var userplanModel = {
 					user_id: req.body.user_id,
 					plan_id: req.body.plan_id,
+					payment_id: createdPaymentRow.id,
 					auto_renewal_mail:req.body.autoRenewalMail,
 					status: status['ACTIVE'],
 					start_date: start_date,
@@ -778,7 +819,9 @@ export function makeplanPayment(req, res) {
 					return res.status(200).json({
 					data: response
 					});
-                   }
+				   }
+				});
+			
 		} else {
 			return res.status(500).json({
 				data: err
@@ -853,8 +896,8 @@ export function refundOrder(req, res) {
 
 			refundObj = refundRow;
 			let paymentModel = {
-				refund_date: new Date(refundRow.created),
-				refund_amount: refundRow.amount / 100.0,
+				date: new Date(refundRow.created),
+				amount: refundRow.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
 				payment_response: JSON.stringify(refundRow),
@@ -866,8 +909,8 @@ export function refundOrder(req, res) {
 
 		})
 		.then(createdPaymentRow => {
-			console.log("enterrrlooops" + parseFloat(createdPaymentRow.refund_amount).toFixed(2));
-			var refundamt = parseFloat(createdPaymentRow.refund_amount).toFixed(2);
+			console.log("enterrrlooops" + parseFloat(createdPaymentRow.amount).toFixed(2));
+			var refundamt = parseFloat(createdPaymentRow.amount).toFixed(2);
 			if(req.user.user_contact_email){
 				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
 			}
@@ -933,7 +976,7 @@ export function refundOrder(req, res) {
 }
 export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 	var orderItemid = refundOrderitemsID;
-	var includeArr = populate.populateData('Product,Product.Vendor,Product.Vendor.User,Order');
+	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
 		id: orderItemid
 	}
@@ -952,10 +995,13 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 					var email = vendor_email;
 					var subject = response.subject.replace('%ORDER_TYPE%', 'Refund Order');
 					var body;
-					body = response.body.replace('%VENDOR_NAME%', user.first_name);
-					body = response.body.replace('%refundamount%', refundamount);
+					var body = response.body;
+					body = body.replace('%VENDOR_NAME%', user.first_name);
+					body = body.replace('%refundamount%', refundamount);
 					_.forOwn(orderRefundList, function(orders) {
 						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
+						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
+						orders.final_price= numeral(orders.final_price).format('0,0.00');
 						orderNew.push(orders);
 					});
 					var template = Handlebars.compile(body);
