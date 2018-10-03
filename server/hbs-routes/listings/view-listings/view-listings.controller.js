@@ -13,11 +13,7 @@ const url = require('url');
 export function viewListings(req, res) {
 
 	var offset, limit, field, order, page, type, maxSize;;
-	var queryParams = {},
-		LoggedInUser = {},
-		bottomCategory = {},
-		queryURI = {},
-		queryPaginationObj = {};
+	var queryParams = {}, LoggedInUser = {}, bottomCategory = {}, queryURI = {}, queryPaginationObj = {};
 
 	var productModel = "MarketplaceProduct";
 	var categoryModel = "Category";
