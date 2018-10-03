@@ -57,6 +57,7 @@ function init(sequelize) {
     model.ProductRatings = sequelize.import('./definition/product-ratings.js');
     model.ProductAdsSetting = sequelize.import('./definition/product-ads-setting.js');
     model.ProductAttribute = sequelize.import('./definition/product-attribute.js');
+    model.ProductDiscount = sequelize.import('./definition/product-discount.js');
     model.ProductMedia = sequelize.import('./definition/product-media.js');
     model.Region = sequelize.import('./definition/region.js');
     model.Review = sequelize.import('./definition/reviews.js');
@@ -138,6 +139,7 @@ function init(sequelize) {
     require('./definition/product-ratings.js').initRelations();
     require('./definition/product-ads-setting.js').initRelations();
     require('./definition/product-attribute.js').initRelations();
+    require('./definition/product-discount.js').initRelations();
     require('./definition/product-media.js').initRelations();
     require('./definition/region.js').initRelations();
     require('./definition/reviews.js').initRelations();
