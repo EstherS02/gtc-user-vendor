@@ -163,7 +163,16 @@ function createOrder(orderWithItems) {
 	delete orderWithItems.items;
 
 	var order = orderWithItems;
-	order.gtc_fees = 1.00;
+	order.gtc_fees = total_price * 0.01;
+	order.plan_fees = 1.00;
+	// var plan_fee_amount=0;
+	// _.forOwn(orderItems,function(element){
+		// if((element.Product.marketplace_id == marketPlaceCode.SERVICES)||element.Product.marketplace_id == marketPlaceCode.LIFESTYLE){
+			// plan_fee_amount = plan_fee_amount+element.Product.price;
+		// }
+	// })
+	// order.plan_fees = plan_fee_amount*0.1;
+
 
 	return service.createRow('Order', order).then(orderResult => {
 		order.id = orderResult.id;
@@ -172,7 +181,6 @@ function createOrder(orderWithItems) {
 		for (var i = 0; i < orderItems.length; i++) {
 			orderItems[i].order_id = orderResult.id;
 			orderItems[i].order_item_status = 0;
-			orderItems[i].plan_fees = 0.0000;
 			orderItems[i].created_on = new Date();
 			orderItemsPromises.push(createOrderItem(orderItems[i]));
 		}
@@ -611,7 +619,7 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore,req) {
+export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail(req,res) {
 	var user = {};
 	user=req.user;
 	var orderIdStore = orderIdStore;
@@ -685,9 +693,9 @@ export function sendOrderMail(orderIdStore,req) {
 								html: result
 							});
 							return;
-						} else {
-							return;
-						}
+						} 
+					// }).then(function(output){
+
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return;
