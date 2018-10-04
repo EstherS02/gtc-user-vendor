@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
+		},
+		quantity: {
+            type: DataTypes.INTEGER,
+            field: 'quantity',
+            allowNull: false
         },
         purchased_on: {
             type: DataTypes.DATEONLY,
