@@ -20,11 +20,38 @@ export async function index(req, res) {
 	var results = {};
 	var queryObj = {};
 	var includeArray = [];
+	var vendorAttributes = [];
+	var vendorPlanQueryObj = {};
 
 	results['count'] = 0;
 	results['rows'] = [];
 
+	vendorPlanQueryObj['status'] = status['ACTIVE'];
+	vendorPlanQueryObj['start_date'] = {
+		'$lte': new Date()
+	}
+	vendorPlanQueryObj['end_date'] = {
+		'$gte': new Date()
+	}
+
+	if (req.user) {
+		vendorAttributes = ['id', 'vendor_name', 'vendor_profile_pic_url'];
+	} else {
+		vendorAttributes = ['vendor_profile_pic_url'];
+	}
+
 	includeArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: vendorPlanQueryObj
+		}],
+		attributes: vendorAttributes,
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
 		model: model['Marketplace'],
 		attributes: ['id', 'name', 'code'],
 		where: {
@@ -60,7 +87,7 @@ export async function index(req, res) {
 	try {
 		const productResponse = await model['Product'].findAll({
 			where: queryObj,
-			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'status', 'quantity_available', 'moq'],
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'moq', 'status'],
 			include: includeArray
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
