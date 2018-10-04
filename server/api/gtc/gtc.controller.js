@@ -8,6 +8,7 @@ const async = require('async');
 const moment = require('moment');
 
 const service = require('../service');
+const productService = require('../product/product.service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
@@ -16,89 +17,30 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export async function index(req, res) {
-	var results = {};
+export function indexA(req, res) {
 	var queryObj = {};
-	var includeArray = [];
-	var vendorAttributes = [];
-	var vendorPlanQueryObj = {};
+	var offset, limit, field, order;
 
-	results['count'] = 0;
-	results['rows'] = [];
+	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	delete req.query.offset;
+	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	delete req.query.limit;
+	field = req.query.field ? req.query.field : "id";
+	delete req.query.field;
+	order = req.query.order ? req.query.order : "asc";
+	delete req.query.order;
 
-	vendorPlanQueryObj['status'] = status['ACTIVE'];
-	vendorPlanQueryObj['start_date'] = {
-		'$lte': new Date()
-	}
-	vendorPlanQueryObj['end_date'] = {
-		'$gte': new Date()
-	}
-
-	if (req.user) {
-		vendorAttributes = ['id', 'vendor_name', 'vendor_profile_pic_url'];
-	} else {
-		vendorAttributes = ['vendor_profile_pic_url'];
-	}
-
-	includeArray = [{
-		model: model['Vendor'],
-		include: [{
-			model: model['VendorPlan'],
-			attributes: [],
-			where: vendorPlanQueryObj
-		}],
-		attributes: vendorAttributes,
-		where: {
-			status: status['ACTIVE']
-		}
-	}, {
-		model: model['Marketplace'],
-		attributes: ['id', 'name', 'code'],
-		where: {
-			status: status['ACTIVE']
-		}
-	}, {
-		model: model['MarketplaceType'],
-		attributes: ['id', 'marketplace_id', 'name', 'code'],
-		required: false,
-		where: {
-			status: status['ACTIVE']
-		}
-	}, {
-		model: model['Country'],
-		attributes: ['id', 'name', 'code'],
-		where: {
-			status: status['ACTIVE']
-		}
-	}, {
-		model: model['Category'],
-		attributes: ['id', 'name', 'code', 'description'],
-		where: {
-			status: status['ACTIVE']
-		}
-	}, {
-		model: model['SubCategory'],
-		attributes: ['id', 'category_id', 'name', 'code'],
-		where: {
-			status: status['ACTIVE']
-		}
-	}];
-
-	try {
-		const productResponse = await model['Product'].findAll({
-			where: queryObj,
-			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'moq', 'status'],
-			include: includeArray
+	productService.queryAllProducts(req, queryObj, offset, limit, field, order)
+		.then((response) => {
+			return res.status(200).send(response);
+		})
+		.catch((error) => {
+			console.log('index Error:::', error);
+			return res.status(500).send(error);
 		});
-		const products = await JSON.parse(JSON.stringify(productResponse));
-		return res.status(200).send(products);
-	} catch (error) {
-		console.log('index Error:::', error);
-		return res.status(500).send(error);
-	}
 }
 
-export function indexA(req, res) {
+export function index(req, res) {
 
 	var offset, limit, field, order;
 	var queryObj = {};
