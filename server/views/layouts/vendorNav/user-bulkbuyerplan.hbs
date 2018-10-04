@@ -196,162 +196,9 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 									</button>
 									<span class="cart-message"></span>
 								</div>
-								{{#if LoggedInUser.Vendor.id}}
-								<form id="plandetailsform" name="plandetailsform">
-									<div class="row">
-										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-											Current Plan:
-										</div>
-										<div class="col-md-4">
-											<div class="input-group mb-3">
-												<div class="input-group-prepend">
-												</div>
-												<span style="font-size:12px">{{PlanDetails.rows.[0].Plan.name}}</span>
-											</div>
-										</div>
-
-									</div>
-									<div class="row">
-											<div class="col-md-2 social_face" style="font-size:14px">
-												Select Plan
-											</div>
-											<div class="col-md-3">
-
-												<div class="form-group">
-
-													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														  required>
-															<option value='' selected="">Select Plan</option>
-                                                            {{#ifCond PlanDetails.rows.[0].Plan.name '==' "STARTER SELLER"}}
-																<option value="2">Service Provider</option>
-																<option value="3">Lifestyle Provider</option>
-																<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-																
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
-																<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
-																	<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
-																<option value="2">Service Provider</option>
-																<option value="3">Lifestyle Provider</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
-															  <option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-														</select>
-
-													</div>
-												</div>
-											</div>
-
-											<div class="col-md-1">
-												<div class="text-nowrap" onclick="showDetails()">
-													<a href="javascript:;">Show Details</a>
-												</div>
-											</div>
-
-
-										</div>
-									<div class="row">
-										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-											Select card details
-										</div>
-										<div class="col-md-3">
-										
-												
-												<div class="form-group">
-
-													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" 
-														 id="selectcard_details" required>
-															{{#ifCond carddetails '!=' '' }}
-
-															{{#each carddetails}}
-																<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
-															{{/each}}
-							                             	{{else}}
-								                        	<option disabled="" selected="">Select card details</option>
-														{{/ifCond}}
-
-														</select>
-
-													</div>
-												</div>
-
-										</div>
-										<div class="col-md-1">
-											<div class="text-nowrap">
-												<a href="/billing-settings">Add Card</a>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-											Auto-Renewal
-										</div>
-										<div class="col-md-4">
-											<div class="input-group mb-3">
-												<div class="input-group-prepend">
-												</div>
-												<span style="font-size:12px"><input type="checkbox" name="autorenewalmail"></span>
-											</div>
-										</div>
-
-									</div>
-									{{#each carddetails}}
-										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
-										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
-									{{/each}}
-
-									<input type="hidden" name="amount" id="amount" value="">
-									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{LoggedInUser.Vendor.id}}">
-									<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
-									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.rows.[0].status}}">
-									<hr style="margin-top: 10px" />
-
-									{{!-- <div class="row">
-
-										<div class="col-md-2">
-
-											<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
-												<span class="ladda-label">Upgrade</span>
-												<span class="ladda-spinner"></span>
-											</button>
-										</div>
-
-										<div class="col-md-2">
-
-											<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
-												<span class="ladda-label">Cancel</span>
-												<span class="ladda-spinner"></span>
-											</button>
-										</div>
-										</div> --}}
-										<div class="row">
-									<div class="col-md-12">
-											{{!-- <input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/> --}}
-										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
-											<span class="ladda-label">UPGRADE</span>
-											
-										<span class="ladda-spinner"></span></button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											
-										<span class="ladda-spinner"></span></button>
-									</div>
-					    </div>
-										</form>
-						              </div>
 							
-							 {{else}}
+							
+							
 							<form id="userPlandetails" name="userPlandetails">
 							   <div class="row">
                                {{!-- <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}"> --}}
@@ -373,7 +220,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 								</div>
     							</div>
 	       						<div class="col-md-1">
-								<div class="text-nowrap" onclick="showDetails()">
+								<div class="text-nowrap" onclick="usershowDetails()">
 								<a href="javascript:;">Show Details</a>
 			     				</div>
 				     			</div>
@@ -424,8 +271,8 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 									<input type="hidden" name="amount" id="useramount" value="">
 									<input type="hidden" name="vendor_id" value="0">
 									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
-						{{/if}}
-							{{#if LoggedInUser.Vendor.id}}
+					
+						
 					
 								{{!-- <div class="col-md-2" >
                                      
@@ -442,7 +289,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
                                             <span class="ladda-spinner"></span>
                                         </button>
                                     </div> --}}
-							{{else}}
+						
 								<hr style="margin-top: 10px" />
 						{{!-- <div class="row">
 						
@@ -484,7 +331,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 										<span class="ladda-spinner"></span></button>
 									</div>
 					          </div>
-                         	{{/if}}
+                         
 						</form>
 					</div>
 				</div>
