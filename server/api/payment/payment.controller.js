@@ -117,12 +117,12 @@ export function makePayment(req, res) {
 			for (var i = 0; i < createdOrders.length; i++) {
 
 				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					subscribePromises.push(updateSubscription(createdOrders[i],createdOrders[i].items[j].product_id));
+					subscribePromises.push(updateSubscription(createdOrders[i].order,createdOrders[i].items[j]));
 				}
 			}
 			return Promise.all(subscribePromises);
 		})
-		.then(subscriptionRow => {
+		.then(subscriptionRow => { 
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
@@ -163,7 +163,16 @@ function createOrder(orderWithItems) {
 	delete orderWithItems.items;
 
 	var order = orderWithItems;
-	order.gtc_fees = 1.00;
+	order.gtc_fees = order.total_price * 0.01;
+	order.plan_fees = 1.00;
+	// var plan_fee_amount=0;
+	// _.forOwn(orderItems,function(element){
+		// if((element.Product.marketplace_id == marketPlaceCode.SERVICES)||element.Product.marketplace_id == marketPlaceCode.LIFESTYLE){
+			// plan_fee_amount = plan_fee_amount+element.Product.price;
+		// }
+	// })
+	// order.plan_fees = plan_fee_amount*0.1;
+
 
 	return service.createRow('Order', order).then(orderResult => {
 		order.id = orderResult.id;
@@ -215,17 +224,18 @@ function updateQuantity(productId, placedQuantity) {
 		})
 }
 
-function updateSubscription(order, productId){
+function updateSubscription(order, item){
 
 	var subscriptionBodyParam = {
 		user_id: order.user_id,
-		product_id: productId,
-		purchased_on : ordered_date,
+		product_id: item.product_id,
+		quantity: item.quantity,
+		purchased_on : order.ordered_date,
 		status: status.ACTIVE,
 		created_on: new Date()
 	}
 
-	return service.findIdRow('Product',productId)
+	return service.findIdRow('Product',item.product_id)
 		.then(product =>{
 			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
 
@@ -233,6 +243,7 @@ function updateSubscription(order, productId){
 					.then(subscribedProduct => {
 						return Promise.resolve(subscribedProduct);
 					}).catch(err =>{
+						console.log("Error:::",err);
 						return Promise.reject(err);
 					})
 			}else{
@@ -610,7 +621,7 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore,req) {
+export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail(req,res) {
 	var user = {};
 	user=req.user;
 	var orderIdStore = orderIdStore;
@@ -684,9 +695,9 @@ export function sendOrderMail(orderIdStore,req) {
 								html: result
 							});
 							return;
-						} else {
-							return;
-						}
+						} 
+					// }).then(function(output){
+
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return;

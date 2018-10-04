@@ -18,11 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             field: 'type',
             allowNull: false
         },
-        position: {
-            type: DataTypes.STRING(45),
-            field: 'position',
-            allowNull: true
-        },
         start_date: {
             type: DataTypes.DATEONLY,
             field: 'start_date',

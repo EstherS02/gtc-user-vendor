@@ -91,6 +91,16 @@ module.exports = (sequelize, DataTypes) => {
             field: 'gtc_fees',
             allowNull: false
         },
+        plan_fees: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'plan_fees',
+            allowNull: true
+        },
+        vendor_pay: {
+            type: DataTypes.DECIMAL(10, 4),
+            field: 'vendor_pay',
+            allowNull: false
+        },
         coupon_id: {
             type: DataTypes.BIGINT,
             field: 'coupon_id',
