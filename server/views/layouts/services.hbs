@@ -190,11 +190,15 @@
 						</div>
 						<div class="alignright">
 							<div class="xs-svg-icon">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-									<circle fill="#E44766" cx="12" cy="12" r="12"></circle>
-									<path fill="#FFF" d="M12 0l2.7 8.3h8.7l-7 5.1 2.7 8.3-7.1-5.1-7.1 5.1 2.7-8.3-7-5.1h8.7z"></path>
-								</svg>
-								<a href="#">POST AN AD IN THIS CATEGORY</a>
+								{{#if LoggedInUser.Vendor}}
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+										<circle fill="#E44766" cx="12" cy="12" r="12"></circle>
+										<path fill="#FFF" d="M12 0l2.7 8.3h8.7l-7 5.1 2.7 8.3-7.1-5.1-7.1 5.1 2.7-8.3-7-5.1h8.7z"></path>
+									</svg>
+									<a href="/promote-store">
+										<span>POST AN AD IN THIS CATEGORY</span>
+									</a>
+								{{/if}}
 							</div>
 						</div>
 						<div style="clear: both;"></div>

@@ -268,7 +268,16 @@
 			$('#myModal').modal('show');
 		}
 	})
+
 	});
+$(document).on('click', '#navbardrop', function() {
+	var plan = $('#thisType').val();
+	if(plan){
+		$("#listingA").attr("href", "/listings/"+plan);
+	}else{
+		$('#listing').hide();
+	}
+});
 </script>
 {{#navbarSetting LoggedInUser.id selectedPage}}
 {{!-- Start Image crop modal window --}}
@@ -373,6 +382,7 @@
 									<li class="nav-item {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">
 										<a  href="/vendor/wholesale/{{VendorDetail.id}}" class="nav-link">WHOLESALE
 										</a>
+										<input type="hidden" name="tyepName" value="wholesale" id = "thisType">
 									</li>
 									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
 										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
@@ -412,28 +422,34 @@
 									<li class="nav-item {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">
 										<a  href="/vendor/shop/{{VendorDetail.id}}" class="nav-link">SHOP
 										</a>
+										<input type="hidden" name="tyepName" value="shop" id = "thisType">
+
 									</li>
 									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
 										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
 										</a>
 									</li>
-									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
-										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
-										</a>
-									</li>
-									{{/ifCond}}
-
-									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.LIFESTYLE_PROVIDER}}
 									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
 										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
 										</a>
 									</li>
 									{{/ifCond}}
 									{{!-- LIFESTYLE_PROVIDER --}}
+
+									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.LIFESTYLE_PROVIDER}}
+									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
+										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
+										</a>
+										<input type="hidden" name="tyepName" value="lifestyle" id = "thisType">
+									</li>
+									{{/ifCond}}
+									{{!-- SERVICE_PROVIDER --}}
 									{{#ifCond VendorDetail.VendorPlans.[0].plan_id "==" Plan.SERVICE_PROVIDER}}
 									<li class="nav-item {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">
 										<a  href="/vendor/services/{{VendorDetail.id}}" class="nav-link">SERVICES
 										</a>
+										<input type="hidden" name="tyepName" value="services" id = "thisType">
+
 									</li>
 									{{/ifCond}}
 									{{!-- STARTER_SELLER --}}
@@ -449,6 +465,7 @@
 									<li class="nav-item {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">
 										<a  href="/vendor/lifestyle/{{VendorDetail.id}}" class="nav-link">LIFESTYLE
 										</a>
+										<input type="hidden" name="tyepName" value="lifestyle" id = "thisType">
 									</li>
 									{{/ifCond}}
 									{{!-- Common Link --}}
@@ -471,10 +488,10 @@
 										</a>
 										<div class="dropdown-menu dropdown-menu-list" aria-labelledby="dropdownMenuButton">
 												<ul>
-													<li><a href="/edit-listing">Edit Listings</a></li>
-													<li><a href="/vendor/order-history">Order History</a></li>
+													<li id="listing"><a id="listingA" href="/edit-listing">Edit Listings</a></li>
+													<li><a href="order-history">Order History</a></li>
 													<li><a href="/coupons">Edit/Add Coupons</a></li>
-													<li><a href="/reporting/performance">Reporting</a></li>
+													<li><a href="/reporting">Reporting</a></li>
 													<div class="hr-line-solid"></div>
 													<li><a href="/reviews">See My Reviews</a></li>
 													<li><a href="/promote-store">Store Branding</a></li>

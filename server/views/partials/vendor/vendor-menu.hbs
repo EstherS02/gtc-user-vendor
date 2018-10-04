@@ -36,7 +36,7 @@
                         <div  class="messages UnreadMessages"></div></a></li>
                         <li class="nav-item"><a href="/messages" class="nav-link">Messages <strong><small id="msg-count"></small></strong>
                         </a></li>
-                        <li class="nav-item"><a href="/notifications" class="nav-link">Notifications<strong><small class="messages" id="notificationCount"></small></strong></a></li>
+                        <li class="nav-item" ><a href="/notifications" class="nav-link">Notifications<strong><small class="messages" id="notificationCount" style="padding:3px"></small></strong></a></li>
                         <li class="nav-item"><a href="/promote-store" class="nav-link">Promote Your Store</a></li>
                         <li class="nav-item"><a href="/dashboard-vendor-connect" class="nav-link">Build Your Store</a></li>
                     </ul>	
@@ -46,6 +46,40 @@
         </div>
     </div>
 </div>
+{{else}}
+<div class="vendor-body">
+    <div class="vendor-menu-wrapper">
+        <div class="gtc-container">
+            <nav class="navbar navbar-expand-sm vendor-menu">
+                <a class="navbar-brand" href="/reporting">
+                <img  src="{{LoggedInUser.user_pic_url}}" width="60" onError="UserImgError(this)" height="40" class="d-inline-block object-fit" alt="">
+                 <span class="vendor-name">{{LoggedInUser.first_name}} {{LoggedInUser.first_name}}</span>
+                </a>
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="vendorNavBar">
+                    <ul class="navbar-nav vendor-nav">
+                        {{#if LoggedInUser.UserPlans}}
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link" style="cursor:default"><b>Current Plan:
+                                {{#ifCond LoggedInUser.UserPlans.plan_id '==' vendorPlan.BULKBUYER}} BULKBUYER
+                                {{/ifCond}}</b>
+                            </a>
+                        </li>
+                        {{/if}}
+                        <li class="nav-item"><a href="/gtc-mail/inbox" class="nav-link">Inbox
+                        <div  class="messages UnreadMessages"></div></a></li>
+                        <li class="nav-item"><a href="/messages" class="nav-link">Messages <strong><small id="msg-count"></small></strong>
+                        </a></li>
+                        <li class="nav-item" ><a href="/notifications" class="nav-link">Notifications<strong><small class="messages" id="notificationCount" style="padding:3px"></small></strong></a></li>
+                    </ul>   
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+{{/if}}
 
 <script type="text/javascript">
     $( document ).ready(function() {
@@ -84,5 +118,3 @@
     });
     
 </script>
-{{/if}}
-

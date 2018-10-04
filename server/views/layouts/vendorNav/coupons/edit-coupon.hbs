@@ -6,11 +6,32 @@
 </script>
 <script type="text/javascript"> 
 	$(function() {
+		let expiredate = $('#inputExpiryDate').val();
 		$("#inputExpiryDate").datepicker({
 			format: 'yyyy-mm-dd',
 			autoHide: true
 		});
+		$("#inputExpiryDate").change(function() {
+			let currentUTCDate = new Date();
+			var endDate = new Date($('#inputExpiryDate').val());
+			var end = new Date(endDate);
+
+			if (currentUTCDate > end) {
+				$("#inputExpiryDate").datepicker("destroy");
+				$("#inputExpiryDate").datepicker();
+				$('#inputExpiryDate').val(expiredate);
+				auth.alertService(500, "Expire Date should not less than Current Date");
+
+			}
+		});
+		if(expiredate){
+			$("#submitForm").prop("disabled", true);
+		}
+		$('#couponForm').keyup(function() {
+			$("#submitForm").prop("disabled", false);
+        });
 	});
+
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -46,6 +67,7 @@
 					data: JSON.stringify(newCoupon),
 					processData: false,
 					success: function(data, statusText, xhr) {
+						$("#submitForm").prop("disabled", true);
 						auth.alertService(xhr.status, data);
 					},
 					error: function(request, status, error) {
@@ -377,7 +399,7 @@
 									<div class="row">
 										<div class="col-12">
 											<div class="form-group">
-												<button class="btn btn-md btn-success m-t" type="submit">SUBMIT</button>
+												<button class="btn btn-md btn-success m-t"  id="submitForm" type="submit">SUBMIT</button>
 												<button class="btn btn-md btn-muted m-t" onclick="cancelCoupon()" type="button">CANCEL</button>
 											</div>
 										</div>
