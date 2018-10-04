@@ -83,7 +83,7 @@ export function vendorPayouts(job, done) {
 
 function checkpaymentEscrow(order) {
 
-    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder, orderTotal, gtcFees, stripeOrPaypalFees;
+    var paymentEscrowQueryObj = {}, payoutAmount, payoutVendor, payoutOrder, vendorPay, gtcFees, stripeOrPaypalFees;
     var orderPaymentEscrowModel = 'OrderPaymentEscrow';
     var payoutVendorPromises = [];
 
@@ -97,12 +97,10 @@ function checkpaymentEscrow(order) {
             if (row) {
                 return;
             } else {
-				orderTotal = order.Order.total_price;
-				gtcFees =  order.Order.gtc_fees;
+				vendorPay = order.Order.vendor_pay;
 				stripeOrPaypalFees = orderTotal* 0.1;
 			
-				payoutAmount = orderTotal - gtcFees;
-				payoutAmount = payoutAmount - stripeOrPaypalFees;
+				payoutAmount = vendorPay - stripeOrPaypalFees;
 
                 payoutVendor = order.Order.Products[0].Vendor.id;
                 payoutOrder = order.order_id;
@@ -158,9 +156,9 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
             var paymentPromises = [];
             var paymentObj ={};
 
-             if(payoutDetails){ 
+             if(payoutDetails.paid){ 
 
-                if(paymentMethod['STRIPE']){
+                if(PaymentMethod == paymentMethod['STRIPE']){
                     var paymentObj = {
                         date: new Date(payoutDetails[0].created),
                         amount: payoutAmount,
@@ -169,7 +167,7 @@ function fetchPayoutVendorInfo(payoutVendor, payoutAmount, payoutOrder) {
                         payment_response: JSON.stringify(payoutDetails)
                     };
                 }
-                else  if(paymentMethod['PAYPAL']){
+                else  if(PaymentMethod == paymentMethod['PAYPAL']){
                     paymentObj = {
                        date: new Date(),
                        amount: payoutAmount,
@@ -251,7 +249,6 @@ function stripeConnectMail(vendor) {
 function payoutMail(vendor, payoutOrder, payoutAmount) {
 
     var emailTemplateQueryObj = {};
-    var emailTemplateModel = "EmailTemplate";
     emailTemplateQueryObj['name'] = config.email.templates.payoutMail;
 
     return service.findOneRow('EmailTemplate', emailTemplateQueryObj)

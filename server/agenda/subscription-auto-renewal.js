@@ -1,22 +1,22 @@
 const sequelize = require('sequelize');
-const model = require('../../sqldb/model-connect');
-const config = require('../../config/environment');
-const statusCode = require('../../config/status');
-const service = require('../service');
+const model = require('../sqldb/model-connect');
+const config = require('../config/environment');
+const statusCode = require('../config/status');
+const service = require('../api/service');
 const moment = require('moment');
 const _ = require('lodash');
-const stripe = require('../../payment/stripe.payment');
-const sendEmail = require('../../agenda/send-email');
-const durationCode = require('../../config/duration-unit');
-const orderStatusCode = require('../../config/order_status');
-const paymentMethod = require('../../config/payment-method');
-const orderPaymentType = require('../../config/order-payment-type');
+const stripe = require('../payment/stripe.payment');
+const sendEmail = require('./send-email');
+const durationCode = require('../config/duration-unit');
+const orderStatusCode = require('../config/order_status');
+const paymentMethod = require('../config/payment-method');
+const orderPaymentType = require('../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 
 const CURRENCY = 'usd';
 const current_date = new Date();
 
-export function subscription(req, res) {
+export function subscriptionAutoRenewal(req, res) {
 
 	console.log('********************JOBS CALLED');
 	console.log('agenda for subscription orders..');

@@ -949,6 +949,8 @@ export function featureProductWithPayment(req,res){
 								}
 								service.createRow('Payment', paymentObj)
 									.then(function(paymentRow){
+
+										featuredProductBodyParam['payment_id'] = paymentRow.id;
 				
 										service.createRow('FeaturedProduct',featuredProductBodyParam)
 											.then(function(featuredRow){
@@ -996,6 +998,5 @@ export function featureProductWithPayment(req,res){
 					"errorDescription": error
 				});
 			})
-
 	}	
 }
