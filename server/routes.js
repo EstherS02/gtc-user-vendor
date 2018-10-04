@@ -19,7 +19,8 @@ export default function(app) {
     app.use('/api/auth', require('./api/auth'));
     app.use('/api/cart', require('./api/cart'));
     app.use('/api/appclients', require('./api/appclients'));
-    app.use('/api/admin', require('./api/admin'));
+	app.use('/api/admin', require('./api/admin'));
+	app.use('/api/order', require('./api/order'));
     app.use('/api/order-history', require('./api/order-history'));
     app.use('/api/product', require('./api/product'));
     app.use('/api/upgrade-plan', require('./api/upgrade-plan'));

@@ -166,11 +166,16 @@ let sqlQueries = {
 	productCountBasedCountry: function(productCountQueryParams) {
 		let baseQuery = "SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location"
 		let groupQuery = "GROUP BY country.name ORDER by region.id"
-
-		if (productCountQueryParams.keyword) {
-			let query=`SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" GROUP BY country.name ORDER by region.id`;
+		if(productCountQueryParams.marketplace_id && productCountQueryParams.keyword){
+			let query=`SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.marketplace_id=(`+productCountQueryParams.marketplace_id+`) and product.status=(`+productCountQueryParams.status+`) GROUP BY country.name ORDER by region.id`;
 			return query;
-		} else {
+		}else if (productCountQueryParams.keyword) {
+			let query=`SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location and product.product_name LIKE "%` + productCountQueryParams.keyword + `%" and product.status=(`+productCountQueryParams.status+`) GROUP BY country.name ORDER by region.id`;
+			return query;
+		} else if(productCountQueryParams.is_featured_product){
+			let query=`SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(marketplace_products.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN marketplace_products on country.id = marketplace_products.product_location_id and marketplace_products.is_featured_product=(`+productCountQueryParams.is_featured_product+`) and marketplace_products.marketplace_id=(`+productCountQueryParams.marketplace_id+`) and marketplace_products.status=(`+productCountQueryParams.status+`) GROUP BY country.name ORDER by region.id`
+			return query;
+		}else {
 			for (var j in productCountQueryParams) {
 				var condition = " AND " + "product." + j + " = " + productCountQueryParams[j]
 				baseQuery = baseQuery.concat(condition)
