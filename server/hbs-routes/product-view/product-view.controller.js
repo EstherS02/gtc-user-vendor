@@ -294,12 +294,9 @@ export function product(req, res) {
 			},
 			talkThreads: function(callback) {
 				var includeArr = [];
-				// console.log("****************VENDOR ID", vendorID);
 				if (LoggedInUser.id != null && LoggedInUser.role == 3) {
 					service.findOneRow('Vendor', vendorID, includeArr)
 						.then(function(response) {
-							console.log("response.user_id", response.user_id);
-							console.log("LoggedInUser.id", LoggedInUser.id);
 							var talkIncludeArr = [];
 							var talkThreadUsersQueryObj = {};
 
@@ -311,38 +308,26 @@ export function product(req, res) {
 								attributes: ['id', 'thread_id', 'user_id']
 							}).then(function(instance) {
 								var talkUserCheck = JSON.parse(JSON.stringify(instance));
-								console.log("INSTANCE", JSON.parse(JSON.stringify(instance)));
 
 								var threadArr = _.intersection(_.map(_.filter(talkUserCheck, function(o) {
 									return o.user_id == response.user_id;
 								}), 'thread_id'), _.map(_.filter(talkUserCheck, function(o) {
 									return o.user_id == LoggedInUser.id;
 								}), 'thread_id'));
-								console.log("threadArr", threadArr);
 								if (threadArr.length > 0) {
-									console.log("Match ID", threadArr[0]);
-									// GetTalks arr
-									/*callback(null, {
-										threadID: threadArr[0],
-										talks: []
-									});*/
 									var talkThread = {};
 									talkThread['talk_thread_id'] = threadArr[0];
 									model['Talk'].findAll({
 										where: talkThread
 									}).then(function(talk) {
-										console.log("talk", talk);
 										if (talk.length > 0) {
-											console.log("talkThread", {
-												threadId: threadArr[0],
-												talk: JSON.parse(JSON.stringify(talk))
-											})
 											callback(null, {
 												threadId: threadArr[0],
 												talk: JSON.parse(JSON.stringify(talk))
 											});
 										} else {
-											console.log("start new conversation");
+
+											
 											callback(null, {
 												threadId: threadArr[0],
 												talk: JSON.parse(JSON.stringify(talk))
@@ -352,14 +337,11 @@ export function product(req, res) {
 										console.log("Error:::", err);
 									})
 								} else {
-									console.log("No threads found");
-									//callback(null);
 									var bodyParams = {};
 									bodyParams['talk_thread_status'] = 1;
 									bodyParams['status'] = 1;
 									model['TalkThread'].create(bodyParams).then(function(talkThread) {
 										if (talkThread) {
-											//console.log("new thread talkThread", JSON.parse(JSON.stringify(talkThread)));
 											var talkThreadJSON = JSON.parse(JSON.stringify(talkThread));
 											var talkTreadModel = 'TalkThreadUsers';
 											var talkThreadUserObj = [{
@@ -376,7 +358,6 @@ export function product(req, res) {
 
 											service.createBulkRow(talkTreadModel, talkThreadUserObj)
 												.then(function(talkThreadUser) {
-													console.log("TalkThreadUsers created", JSON.parse(JSON.stringify(talkThreadUser)));
 													callback(null, {
 														talkThread: talkThreadJSON.id,
 														threadId: talkThreadJSON.id,
@@ -384,7 +365,6 @@ export function product(req, res) {
 													})
 												})
 												.catch(function(err) {
-													console.log("err", err);
 													callback(null);
 												})
 
@@ -404,7 +384,6 @@ export function product(req, res) {
 							return callback(null);
 						})
 				} else {
-					// console.log("****Disable Chat******");
 					return callback(null);
 				}
 			},
