@@ -1360,9 +1360,10 @@ width: 100%;
     font-weight: bold;
 }
 .adv_search {
-    font-size: 10px!important;
+    font-size: 10px;
     font-weight: normal!important;
-    margin: 30px 10px 20px 10px!important;
+	margin: 30px 10px 20px 10px!important;
+	text-transform: capitalize;
 }
 .prf_landing_cmpy
 {
