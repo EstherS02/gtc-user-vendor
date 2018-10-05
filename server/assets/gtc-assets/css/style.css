@@ -1688,12 +1688,13 @@ ul.inner-list-view li a {
 }
 
 .p-description {
-    padding: 10px 0;
+	padding: 10px 0;
+	font-size: 0.813em;
 }
 
-.p-description p {
+/* .p-description p {
     font-size: 0.813em;
-}
+} */
 
 .p-hr {
     border: 0.5px solid #ebebf3;

@@ -94,7 +94,7 @@ $(document).ready(function() {
 		$('#myModal').modal('show');
 	});
 
-	$("#").click(function() {
+	$("#gtc-add-to-cart").click(function() {
 		var cartInfo = {};
 		var marketplace_id = $('#marketplaceId').val();
 
@@ -549,7 +549,7 @@ function mailVendor(){
                             			</div>
                             			<div id="productAlert"></div>
                             			{{#if product.description}}
-                            			<div class="p-description" style="font-size:small">
+                            			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
 										{{!-- {{#limit product.description}} --}}
