@@ -12,8 +12,14 @@ const model = require('../../sqldb/model-connect');
 
 export async function queryAllProducts(req, queryObj, offset, limit, field, order) {
 	var results = {};
-	var includeArray = [];
 	var vendorAttributes = [];
+	var orderCondition = [];
+
+	if (field && order) {
+		orderCondition.push([field, order]);
+	} else {
+		orderCondition.push(sequelize.fn('RAND'));
+	}
 
 	results['count'] = 0;
 	results['rows'] = [];
@@ -25,15 +31,7 @@ export async function queryAllProducts(req, queryObj, offset, limit, field, orde
 		vendorAttributes = ['vendor_profile_pic_url'];
 	}
 
-	includeArray = [{
-		model: model['ProductMedia'],
-		where: {
-			status: status['ACTIVE'],
-			base_image: 1
-		},
-		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
-		limit: 1
-	}, {
+	var includeArray = [{
 		model: model['Vendor'],
 		include: [{
 			model: model['VendorPlan'],
@@ -83,22 +81,41 @@ export async function queryAllProducts(req, queryObj, offset, limit, field, orde
 		where: {
 			status: status['ACTIVE']
 		}
+	}, {
+		model: model['Review'],
+		where: {
+			status: status['ACTIVE']
+		},
+		required: false
 	}];
 
 	try {
 		const productResponse = await model['Product'].findAll({
 			include: includeArray,
 			where: queryObj,
-			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'moq', 'status'],
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer', 'status', [sequelize.fn('SUM', (sequelize.fn('COALESCE', (sequelize.col('Reviews.rating')), 0))), 'product_rating']],
 			offset: offset,
 			limit: limit,
-			order: [
-				[field, order]
-			]
+			order: orderCondition,
+			group: ['id']
 		});
 		const products = await JSON.parse(JSON.stringify(productResponse));
 		if (products.length > 0) {
-			results.rows = products;
+			await Promise.all(products.map(async (product) => {
+				const currentDate = new Date();
+				const exclusiveStartDate = new Date(product.exclusive_start_date);
+				const exclusiveEndDate = new Date(product.exclusive_end_date);
+				if (product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+					const discount = ((product.price / 100) * product.exclusive_offer).toFixed(2);
+					product['product_discounted_price'] = (parseFloat(product['price']) - parseFloat(discount)).toFixed(2);
+					results.rows.push(product);
+				} else {
+					delete product.exclusive_start_date;
+					delete product.exclusive_end_date;
+					delete product.exclusive_offer;
+					results.rows.push(product);
+				}
+			}));
 			const productCount = await model['Product'].count({
 				where: queryObj
 			});
