@@ -117,12 +117,12 @@ export function makePayment(req, res) {
 			for (var i = 0; i < createdOrders.length; i++) {
 
 				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					subscribePromises.push(updateSubscription(createdOrders[i],createdOrders[i].items[j].product_id));
+					subscribePromises.push(updateSubscription(createdOrders[i].order,createdOrders[i].items[j]));
 				}
 			}
 			return Promise.all(subscribePromises);
 		})
-		.then(subscriptionRow => {
+		.then(subscriptionRow => { 
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
@@ -162,7 +162,6 @@ function createOrder(orderWithItems) {
 	var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
 	delete orderWithItems.items;
 	var order = orderWithItems;
-	
 	return service.createRow('Order', order).then(orderResult => {
 		order.id = orderResult.id;
 		console.log("order.id", order.id);
@@ -213,17 +212,18 @@ function updateQuantity(productId, placedQuantity) {
 		})
 }
 
-function updateSubscription(order, productId){
+function updateSubscription(order, item){
 
 	var subscriptionBodyParam = {
 		user_id: order.user_id,
-		product_id: productId,
-		purchased_on : ordered_date,
+		product_id: item.product_id,
+		quantity: item.quantity,
+		purchased_on : order.ordered_date,
 		status: status.ACTIVE,
 		created_on: new Date()
 	}
 
-	return service.findIdRow('Product',productId)
+	return service.findIdRow('Product',item.product_id)
 		.then(product =>{
 			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
 
@@ -231,6 +231,7 @@ function updateSubscription(order, productId){
 					.then(subscribedProduct => {
 						return Promise.resolve(subscribedProduct);
 					}).catch(err =>{
+						console.log("Error:::",err);
 						return Promise.reject(err);
 					})
 			}else{
@@ -380,8 +381,8 @@ function processCheckout(req) {
 						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
 						var calulatedShippingSum = (itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-						gtc_fees = gtc_fees + (calulatedSum*0.01);
-						plan_fees = plan_fees+ (calulatedSum*0.1)
+						gtc_fees = gtc_fees + (calulatedSum*config.fee.gtc_fees);
+						plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees)
 						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
 						totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
@@ -666,7 +667,7 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
 							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
-							body = body.replace('%currency%','$');
+							body = body.replace('/%currency%/g','$');
 							body = body.replace('%UserName%',user.first_name) //+' '+user.last_name
 							if(user.last_name != null || user.last_name != 'null'){
 							body = body.replace('%UserLastName%',user.last_name) //+' '+		
@@ -767,6 +768,7 @@ function notifications(order) {
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
 		});
+		return;
 }
 
 // plan payment method starts//

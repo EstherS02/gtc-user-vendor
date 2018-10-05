@@ -215,73 +215,7 @@ export async function indexOld(req, res) {
 	}
 }
 
-export function index(req,res){
-	var user = {};
-	user=req.user;
-	var orderIdStore = 525;//orderIdStore;
-	var includeArr = [{
-		model: model['OrderItem'],
-		include: [{
-			model: model['Product'],
-			include: [{
-				"model": model['Vendor'],
-				attributes: ['id'],
-				include: [{
-					model: model['User'],
-					attributes: ['id', 'email'],
-				}]
-			},{
-			model:model['ProductMedia'],
-			attributes:['url']
-		}],
-		}]
-	}, {
-		model: model['Address'],
-		as: 'shippingAddress',
-		include: [{
-			model: model['State']
-		}, {
-			model: model['Country']
-		}, ]
-	}]
-	var queryObj = {
-		id: orderIdStore
-	}
-	var field = 'created_on';
-	var order = "asc";
-	var plan_amount = 0;
-	var gtc_amount = 0;
-	var total_amount = 0;
-	var vendor_pay = 0;
-	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
-		if (OrderList) {
-			var OrderItems = OrderList.rows;
-
-				_.forOwn(OrderItems,function(element){
-					_.forOwn(element.OrderItems,function(newElement){
-						console.log("--------------=================================",newElement)
-						if((newElement.Product.marketplace_id == 3)||(newElement.Product.marketplace_id == 4)){
-							var newOne = (newElement.Product.price*newElement.quantity*10/100);
-							console.log(newOne)
-							plan_amount = plan_amount+newOne;
-							gtc_amount = gtc_amount+(newElement.Product.price*newElement.quantity*1/100);
-							total_amount = total_amount+(newElement.Product.price * newElement.quantity);
-
-						}
-					})
-				})
-				vendor_pay = total_amount-plan_amount-gtc_amount;
-				console.log("----------",plan_amount,gtc_amount,total_amount,vendor_pay)
-
-			return;
-		}
-
-	}).catch(function(error) {
-		console.log('Error :::', error);
-		return;
-	});
-}
-export function indexA(req, res) {
+export function index(req, res) {
 
 	var offset, limit, field, order;
 	var queryObj = {};

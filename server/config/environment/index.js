@@ -86,17 +86,23 @@ var all = {
 			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
 			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
 			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
-			planExpired : "PLAN-EXPIRED"
+			planExpired : "PLAN-EXPIRED",
+			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER"
         }
     },
     //Notification
     notification: {
         templates: {
+            refundRequest: 'REFUND-REQUEST',
+            refundProcessing:'REFUND-PROCESSING',
+            refundSuccessful:'REFUND-SUCCESSFUL',
             vendorNewOrder: 'NEW-ORDER',
             productReview: 'PRODUCT-REVIEW',
             likesComments: 'LIKE-AND-COMMENT',
             newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
-            orderCancelled: 'ORDER-CANCELLED'
+            orderCancelled: 'ORDER-CANCELLED',
+            orderDetail: 'ORDER-DETAIL',
+            orderStatus :'ORDER-STATUS'
         }
     },
     jobs: {
@@ -109,7 +115,12 @@ var all = {
 		"starterPlanExpire": "starterPlanExpire",
 		"featureProductExpire": "featureProductExpire",
 		"planRenewal": "planRenewal",
-		"bulkUserPlanRenewal":"bulkUserPlanRenewal"
+		"bulkUserPlanRenewal":"bulkUserPlanRenewal",
+		"subscriptionAutoRenewal":"subscriptionAutoRenewal"
+    },
+    fee:{
+        gtc_fees: 0.01,
+        plan_fees: 0.1,
     },
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,
