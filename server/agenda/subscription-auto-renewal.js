@@ -136,7 +136,7 @@ function subscriptionOrder(eachSubscription) {
 						orderBodyParam['user_id'] = eachSubscription.user_id;
 						orderBodyParam['invoice_id'] = uuidv1();
 						orderBodyParam['purchase_order_id'] = 'PO-' + uuidv1();
-						orderBodyParam['ordered_date'] = new Date();
+						orderBodyParam['ordered_date'] = current_date;
 						orderBodyParam['status'] = statusCode['ACTIVE'];
 						orderBodyParam['total_price'] = finalPrice;
 						orderBodyParam['gtc_fees'] = subscriptionTotalAmount * .01;
@@ -147,7 +147,7 @@ function subscriptionOrder(eachSubscription) {
 						orderBodyParam['vendor_pay'] = 1;
 						orderBodyParam['vendor_pay'] = 100;
 						orderBodyParam['created_by'] = eachSubscription.User.first_name;
-						orderBodyParam['created_on'] = new Date();
+						orderBodyParam['created_on'] = current_date;
 
 						return service.createRow('Order', orderBodyParam);
 
@@ -165,7 +165,7 @@ function subscriptionOrder(eachSubscription) {
 						orderItemBodyParam['final_price'] = finalPrice;
 						orderItemBodyParam['status'] = statusCode['ACTIVE'];
 						orderItemBodyParam['created_by'] = eachSubscription.User.first_name;
-						orderItemBodyParam['created_on'] = new Date();
+						orderItemBodyParam['created_on'] = current_date;
 
 						return service.createRow('OrderItem', orderItemBodyParam);
 
@@ -221,9 +221,23 @@ function subscriptionOrder(eachSubscription) {
 
 						return service.updateRow('Product', quantityUpdate, product.id);
 					
-					}).then(upadtedProductRow => {
-						console.log("upadtedProductRow",upadtedProductRow);
-						return Promise.resolve(upadtedProductRow);
+					}).then(function(upadtedProductRow){
+
+						var nextSubscriptionRenewOn = moment(current_date, "YYYY-MM-DD").add(+subscriptionDuration, 'd');
+
+						let subscriptionUpdate = {};
+						subscriptionUpdate.last_order_placed_on = current_date;
+						subscriptionUpdate.next_order_place_on = nextSubscriptionRenewOn;
+						subscriptionUpdate.last_updated_by = eachSubscription.User.first_name;
+						subscriptionUpdate.last_updated_on = current_date;
+
+						return service.updateRow('Subscription', subscriptionUpdate, eachSubscription.id);
+
+					}).then(function(updatedSubscriptionRow){
+
+						console.log("updatedSubscriptionRow",updatedSubscriptionRow);
+						return Promise.resolve(updatedSubscriptionRow);
+						
 					}).catch(function(error) {
 						console.log("Error::", error);
 
@@ -282,7 +296,7 @@ function subscriptionOrderMail(createdSubscription,eachSubscription) {
 				return;
 			}
 		}).catch(function(error){
-
+			return;
 		})
 }
 

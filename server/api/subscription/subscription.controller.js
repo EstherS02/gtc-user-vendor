@@ -296,7 +296,7 @@ function subscriptionOrderMail(createdSubscription,eachSubscription) {
 				return;
 			}
 		}).catch(function(error){
-
+			return;
 		})
 }
 
