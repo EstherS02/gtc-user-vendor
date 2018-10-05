@@ -10,6 +10,109 @@ const RawQueries = require('../../raw-queries/sql-queries');
 const roles = require('../../config/roles');
 const model = require('../../sqldb/model-connect');
 
+export async function queryAllProducts(req, queryObj, offset, limit, field, order) {
+	var results = {};
+	var includeArray = [];
+	var vendorAttributes = [];
+
+	results['count'] = 0;
+	results['rows'] = [];
+	queryObj['status'] = status['ACTIVE'];
+
+	if (req.user) {
+		vendorAttributes = ['id', 'vendor_name', 'vendor_profile_pic_url'];
+	} else {
+		vendorAttributes = ['vendor_profile_pic_url'];
+	}
+
+	includeArray = [{
+		model: model['ProductMedia'],
+		where: {
+			status: status['ACTIVE'],
+			base_image: 1
+		},
+		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
+		limit: 1
+	}, {
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': new Date()
+				},
+				end_date: {
+					'$gte': new Date()
+				}
+			}
+		}],
+		attributes: vendorAttributes,
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Marketplace'],
+		attributes: ['id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['MarketplaceType'],
+		attributes: ['id', 'marketplace_id', 'name', 'code'],
+		required: false,
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Country'],
+		attributes: ['id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['Category'],
+		attributes: ['id', 'name', 'code', 'description'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}, {
+		model: model['SubCategory'],
+		attributes: ['id', 'category_id', 'name', 'code'],
+		where: {
+			status: status['ACTIVE']
+		}
+	}];
+
+	try {
+		const productResponse = await model['Product'].findAll({
+			include: includeArray,
+			where: queryObj,
+			attributes: ['id', 'sku', 'product_name', 'product_slug', 'description', 'quantity_available', 'moq', 'status'],
+			offset: offset,
+			limit: limit,
+			order: [
+				[field, order]
+			]
+		});
+		const products = await JSON.parse(JSON.stringify(productResponse));
+		if (products.length > 0) {
+			results.rows = products;
+			const productCount = await model['Product'].count({
+				where: queryObj
+			});
+			results.count = productCount;
+			return results;
+		} else {
+			return results;
+		}
+	} catch (error) {
+		console.log('index Error:::', error);
+		return error;
+	}
+}
+
 export function productView(productID) {
 	return new Promise((resolve, reject) => {
 		model['Product'].findOne({
@@ -358,16 +461,16 @@ function string_to_slug(str) {
 }
 
 
-export function RandomProducts(modelName,queryObj,limit,order) {
+export function RandomProducts(modelName, queryObj, limit, order) {
 	return new Promise((resolve, reject) => {
 		model[modelName].findAndCountAll({
-            where: queryObj,
-            limit: limit,
-            order: order
-        }).then(function(rows) {
-            resolve(rows);
-        }).catch(function(error) {
-            reject(error);
-        });
+			where: queryObj,
+			limit: limit,
+			order: order
+		}).then(function(rows) {
+			resolve(rows);
+		}).catch(function(error) {
+			reject(error);
+		});
 	});
 }
