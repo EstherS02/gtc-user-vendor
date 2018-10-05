@@ -17,7 +17,7 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function index(req, res) {
+export function indexA(req, res) {
 	var queryObj = {};
 	var offset, limit, field, order;
 
@@ -40,7 +40,7 @@ export function index(req, res) {
 		});
 }
 
-export function indexA(req, res) {
+export function index(req, res) {
 
 	var offset, limit, field, order;
 	var queryObj = {};
