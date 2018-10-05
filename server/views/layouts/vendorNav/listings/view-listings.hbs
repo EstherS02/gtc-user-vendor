@@ -206,7 +206,7 @@
 															<img src="{{this.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
 															{{this.product_name}}</a>
 															</td>
-															<td scope="row">{{ prettifyDate this.publish_date }}</td>
+															<td scope="row">{{formatTime this.publish_date "MMM DD, YYYY"}}</td>
 															<td scope="row">{{#if this.product_selling_count}}{{this.product_selling_count}}{{else}}0{{/if}}</td>
 															<td>{{currency this.product_price '$'}} CAD</td>
 															{{#ifCond this.status '==' ../statusCode.ACTIVE}}

@@ -122,6 +122,7 @@
 													</th>
 													<th scope="col">Subscribed Products</th>
 													<th scope="col">Price</th>
+													<th scope="col">Quantity</th>
 													<th>Purchased On</th>
 													<th>Last Order Placed On</th>
 													<th>Next Order Place On</th>
@@ -138,9 +139,10 @@
 														{{this.Product.product_name}}</a>
 													</td>
 													<td>{{this.Product.price}}</td>
-													<td>{{ prettifyDate this.end_date }}</td>
-													<td></td>
-													<td></td>
+													<td>{{this.quantity}}</td>
+													<td>{{formatTime this.purchased_on "MMM DD, YYYY"}}</td>
+													<td>{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}</td>
+													<td>{{formatTime this.next_order_place_on "MMM DD, YYYY"}}</td>
 													<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
 														{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
@@ -149,12 +151,13 @@
 													{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 													<td>
 														<a href="javascript:;" id='{{this.id}}' class='unSubscribe'>
-															<i class="fa fa-chain-broken" aria-hidden="true"></i>Un Subscribe</a>
+															<i class="fas fa-unlink" aria-hidden="true"></i> Un Subscribe</a>
 													</td>
 													{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 													<td>
 														<a href="javascript:;" id='{{this.id}}' class='subscribe'>
-															<i class="fa fa-chain-broken" aria-hidden="true"></i> Subscribe</a>
+															<i class="fas fa-link" aria-hidden="true"></i> Subscribe
+														</a>
 													</td>
 													{{/ifCond}}
 												</tr>

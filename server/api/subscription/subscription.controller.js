@@ -1,26 +1,26 @@
 const sequelize = require('sequelize');
-const model = require('../sqldb/model-connect');
-const config = require('../config/environment');
-const statusCode = require('../config/status');
-const service = require('../api/service');
+const model = require('../../sqldb/model-connect');
+const config = require('../../config/environment');
+const statusCode = require('../../config/status');
+const service = require('../service');
 const moment = require('moment');
 const _ = require('lodash');
-const stripe = require('../payment/stripe.payment');
-const sendEmail = require('./send-email');
-const durationCode = require('../config/duration-unit');
-const orderStatusCode = require('../config/order_status');
-const paymentMethod = require('../config/payment-method');
-const orderPaymentType = require('../config/order-payment-type');
+const stripe = require('../../payment/stripe.payment');
+const sendEmail = require('../../agenda/send-email');
+const durationCode = require('../../config/duration-unit');
+const orderStatusCode = require('../../config/order_status');
+const paymentMethod = require('../../config/payment-method');
+const orderPaymentType = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 const numeral = require('numeral');
 
 const CURRENCY = 'usd';
 const current_date = new Date();
 
-export function subscriptionAutoRenewal(job, done) {
+export function subscription(req, res) {
 
-    console.log('********************JOBS CALLED');
-    console.log('agenda for subscription orders..');
+	console.log('********************JOBS CALLED');
+	console.log('agenda for subscription orders..');
 
 	var offset, limit, field, order;
 	var subscriptionQueryObj = {}, subscriptionIncludeArr = [];
@@ -68,10 +68,10 @@ export function subscriptionAutoRenewal(job, done) {
 			return Promise.all(subscriptionPromises);
 		}).then(function(result){
 			console.log("result",result)
-			done();
+			return res.status(200).send(result);
 
 		}).catch(function(error) {
-			done();
+			return res.status(500).send(error);
 		});
 }
 

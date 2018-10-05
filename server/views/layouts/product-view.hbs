@@ -94,14 +94,14 @@ $(document).ready(function() {
 		$('#myModal').modal('show');
 	});
 
-	$("#").click(function() {
+	$("#gtc-add-to-cart").click(function() {
 		var cartInfo = {};
 		var marketplace_id = $('#marketplaceId').val();
 
 		cartInfo.product_quantity = $('#quantityInput').val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && (userInfo.UserPlans||userInfo.Vendor.VendorPlan[0].id == 1)) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+			if ((marketplace_id == 1 && (userInfo.UserPlans)) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
 				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
 					cartAPI(cartInfo);
 				} else {
@@ -549,7 +549,7 @@ function mailVendor(){
                             			</div>
                             			<div id="productAlert"></div>
                             			{{#if product.description}}
-                            			<div class="p-description" style="font-size:small">
+                            			<div class="p-description">
                             				{{{product.description}}}
                             			</div>
 										{{!-- {{#limit product.description}} --}}
