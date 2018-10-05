@@ -11,7 +11,7 @@ var vendorInfo = {{{DisplayJSON  VendorDetail}}}
 var Plan = {{{DisplayJSON Plan}}}
 $(document).ready(function() {
 	 // Configure/customize these variables. start
-    var showChar = 100;  // How many characters are shown by default
+    var showChar = 150;  // How many characters are shown by default
     var ellipsestext = "...";
     var moretext = "(See more...)";
     var lesstext = "(See less)";
@@ -94,14 +94,14 @@ $(document).ready(function() {
 		$('#myModal').modal('show');
 	});
 
-	$("#gtc-add-to-cart").click(function() {
+	$("#").click(function() {
 		var cartInfo = {};
 		var marketplace_id = $('#marketplaceId').val();
 
 		cartInfo.product_quantity = $('#quantityInput').val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && userInfo.UserPlans) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+			if ((marketplace_id == 1 && (userInfo.UserPlans||userInfo.Vendor.VendorPlan[0].id == 1)) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
 				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
 					cartAPI(cartInfo);
 				} else {
