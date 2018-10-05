@@ -332,10 +332,10 @@ function processCheckout(req) {
 
 						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
-						var calulatedShippingSum = (itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
+						var calulatedShippingSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
 
 						totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-						totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + calulatedShippingSum;
+						// totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + calulatedShippingSum;
 						totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
 					}
 				}
@@ -380,11 +380,11 @@ function processCheckout(req) {
 
 						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
-						var calulatedShippingSum = (itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
+						var calulatedShippingSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
 						gtc_fees = gtc_fees + (calulatedSum*config.fee.gtc_fees);
 						plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees)
 						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
-						totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
+						// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
 						vendor_pay = totalPriceByVendor[vendorId]['price']-gtc_fees-plan_fees;
 
