@@ -127,10 +127,10 @@
 												</label>
 												<div class="row">
 													<div class="col-lg-4">
-														<input type="number" min='1' max='30' class="form-control-customized form-control-sm" required>
+														<input type="text" class="form-control-customized form-control-sm" name="subscription_duration">
 													</div>
 													<div class="col-lg-4">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" required>
+														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="subscription_duration_unit">
 															{{#select queryURI.dateSelect}}
 																<option> Days</option>
 																<option value="today">Week</option>

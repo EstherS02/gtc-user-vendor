@@ -139,12 +139,12 @@ module.exports = (sequelize, DataTypes) => {
         subscription_duration: {
             type: DataTypes.INTEGER,
             field: 'subscription_duration',
-            allowNull: false
+            allowNull: true
         },
         subscription_duration_unit: {
             type: DataTypes.INTEGER,
             field: 'subscription_duration_unit',
-            allowNull: false
+            allowNull: true
         },
         individual_sale_only: {
             type: DataTypes.INTEGER,

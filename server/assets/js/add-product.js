@@ -334,6 +334,21 @@ $(document).ready(function() {
 						return true;
 					} else { return false; }
 				}
+			},
+			subscription_duration: {
+				required: function() {
+					if ($("input[name=marketplace]").val() == 'Lifestyle Marketplace') {
+						return true;
+					} else { return false; }
+				},
+				digits: true
+			},
+			subscription_duration_unit:{
+				required: function() {
+					if ($("input[name=marketplace]").val() == 'Lifestyle Marketplace') {
+						return true;
+					} else { return false; }
+				}
 			}
 		},
 		messages: {
@@ -364,7 +379,12 @@ $(document).ready(function() {
 			status: "Please select product status",
 			exchanging_product: "Please enter the exchanging product name",
 			exchanging_product_quantity: "Please enter exchanging product quantity",
-			moq: "Please enter minimum order quantity"
+			moq: "Please enter minimum order quantity",
+			subscription_duration: {
+				required:"Please enter subscription duration",
+				digits: "Please enter a valid days"
+			},		
+			subscription_duration_unit: "Please select subscription duration type"
 		}
 	});
 
