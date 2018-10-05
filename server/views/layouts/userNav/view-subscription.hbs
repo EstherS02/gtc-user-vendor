@@ -149,12 +149,13 @@
 													{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 													<td>
 														<a href="javascript:;" id='{{this.id}}' class='unSubscribe'>
-															<i class="fa fa-chain-broken" aria-hidden="true"></i>Un Subscribe</a>
+															<i class="fas fa-unlink" aria-hidden="true"></i> Un Subscribe</a>
 													</td>
 													{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 													<td>
 														<a href="javascript:;" id='{{this.id}}' class='subscribe'>
-															<i class="fa fa-chain-broken" aria-hidden="true"></i> Subscribe</a>
+															<i class="fas fa-link" aria-hidden="true"></i> Subscribe
+														</a>
 													</td>
 													{{/ifCond}}
 												</tr>
