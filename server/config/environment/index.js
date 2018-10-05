@@ -86,7 +86,8 @@ var all = {
 			planAutoRenewal : 'PLAN-AUTO-RENEWAL',
 			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
 			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
-			planExpired : "PLAN-EXPIRED"
+			planExpired : "PLAN-EXPIRED",
+			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER"
         }
     },
     //Notification
@@ -109,7 +110,8 @@ var all = {
 		"starterPlanExpire": "starterPlanExpire",
 		"featureProductExpire": "featureProductExpire",
 		"planRenewal": "planRenewal",
-		"bulkUserPlanRenewal":"bulkUserPlanRenewal"
+		"bulkUserPlanRenewal":"bulkUserPlanRenewal",
+		"subscriptionAutoRenewal":"subscriptionAutoRenewal"
     },
     sesTransporter: {
         accessKeyId: process.env.SES_ACCESS_KEY_ID,

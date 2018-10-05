@@ -10,6 +10,7 @@ const sendEmail = require('../../agenda/send-email');
 const durationCode = require('../../config/duration-unit');
 const orderStatusCode = require('../../config/order_status');
 const paymentMethod = require('../../config/payment-method');
+const orderPaymentType = require('../../config/order-payment-type');
 const uuidv1 = require('uuid/v1');
 
 const CURRENCY = 'usd';
@@ -34,87 +35,88 @@ export function subscription(req, res) {
 		{
 			"model": model['Product'],
 			where: {
-                status: statusCode["ACTIVE"]
-				},
-			attributes: ['id','price','subscription_duration','subscription_duration_unit','shipping_cost'],		
+				status: statusCode["ACTIVE"]
+			},
+			attributes: ['id', 'price', 'subscription_duration', 'subscription_duration_unit', 'shipping_cost'],
 		},
 		{
 			"model": model['User'],
 			where: {
-                status: statusCode["ACTIVE"]
-				},
-			attributes: ['id','first_name'],
-
+				status: statusCode["ACTIVE"]
+			},
+			attributes: ['id', 'first_name', 'user_contact_email'],
 		}
 	]
-	
+
 	service.findAllRows('Subscription', subscriptionIncludeArr, subscriptionQueryObj, offset, limit, field, order)
-		.then(function(subscriptionRows){
+		.then(function(subscriptionRows) {
 
 			var subscriptionPromises = [];
-			_.forOwn(subscriptionRows.rows, function (eachSubscription) {
+			_.forOwn(subscriptionRows.rows, function(eachSubscription) {
 
 				subscriptionPromises.push(subscriptionOrder(eachSubscription));
 			});
 			Promise.all(promises).then(function(subscriptionResult) {
 				return res.status(200).send(subscriptionResult);
-			}).catch(function(error){
+			}).catch(function(error) {
 				return res.status(500).send(err);
 			})
-			
-		}).catch(function(error){
+
+		}).catch(function(error) {
 			return res.status(500).send(error);
 		});
 }
 
-function subscriptionOrder(eachSubscription){
+function subscriptionOrder(eachSubscription) {
 
-	var subscribedProduct, subscriptionDuration, latestSubscriptionPlacedOn, subscriptionRenewOn, subscriptionTotalAmount;
-	var subscriptionOrderQueryObj = {}, subscriptionCardDetails = {}, subscriptionOrderIncludeArr = [];
+	var subscribedProduct, subscriptionDuration, latestSubscriptionPlacedOn, subscriptionRenewOn, subscriptionTotalAmount, shippingTotal, finalPrice;
+	var subscriptionOrderQueryObj = {}, subscriptionCardDetails = {}, createdSubscription = {}, subscriptionOrderIncludeArr = [];
 
 	subscribedProduct = eachSubscription.Product;
-	subscriptionOrderQueryObj ={
+	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id
 	}
 
 	subscriptionOrderIncludeArr = [
 		{
 			"model": model['OrderItem'],
-			where:{
-				status: statusCode['ACTIVE'],	
-				product_id: subscribedProduct.id		
+			where: {
+				status: statusCode['ACTIVE'],
+				product_id: subscribedProduct.id
 			},
 			attributes: ['id'],
-		}		
+		}
 	]
 
-	if(subscribedProduct.subscription_duration_unit ==  durationCode['MONTHS']){
+	if (subscribedProduct.subscription_duration_unit == durationCode['MONTHS']) {
 		subscriptionDuration = subscribedProduct.subscription_duration * 30;
-	}else if(subscribedProduct.subscription_duration_unit ==  durationCode['DAYS']){
-		subscriptionDuration =subscribedProduct.subscription_duration;
+	} else if (subscribedProduct.subscription_duration_unit == durationCode['DAYS']) {
+		subscriptionDuration = subscribedProduct.subscription_duration;
 	}
 
 	service.findOneRow('Order', subscriptionOrderQueryObj, subscriptionOrderIncludeArr)
-		.then(function(latestSubscriptionOrder){
+		.then(function(latestSubscriptionOrder) {
 
 			latestSubscriptionPlacedOn = latestSubscriptionOrder.ordered_date;
 			subscriptionRenewOn = moment(latestSubscriptionPlacedOn, "YYYY-MM-DD").add(+subscriptionDuration, 'd');
 
-			if(subscriptionRenewOn < current_date){
+			if (subscriptionRenewOn < current_date) {
 
 				var paymentSettingModel = 'PaymentSetting';
-				var cardQueryObj={};
+				var cardQueryObj = {};
 
 				cardQueryObj['status'] = statusCode['ACTIVE'];
 				cardQueryObj['is_primary'] = 1;
-				cardQueryObj['user_id'] =  eachSubscription.user_id;
+				cardQueryObj['user_id'] = eachSubscription.user_id;
 
 				return service.findRow(paymentSettingModel, cardQueryObj, [])
-					.then(function(cardDetails){
+					.then(function(cardDetails) {
 
 						subscriptionCardDetails = cardDetails;
 
 						subscriptionTotalAmount = subscribedProduct.price * eachSubscription.quantity;
+						shippingTotal = eachSubscription.quantity * subscribedProduct.shipping_cost;
+						finalPrice = shippingTotal + subscriptionTotalAmount;
 
 						var orderBodyParam = {};
 
@@ -123,38 +125,38 @@ function subscriptionOrder(eachSubscription){
 						orderBodyParam['purchase_order_id'] = 'PO-' + uuidv1();
 						orderBodyParam['ordered_date'] = new Date();
 						orderBodyParam['status'] = statusCode['ACTIVE'];
-						orderBodyParam['total_price'] = subscriptionTotalAmount;
-						orderBodyParam['gtc_fees'] = subscriptionTotalAmount * .01; 
+						orderBodyParam['total_price'] = finalPrice;
+						orderBodyParam['gtc_fees'] = subscriptionTotalAmount * .01;
 						orderBodyParam['plan_fees'] = subscriptionTotalAmount * .1;
 						orderBodyParam['shipping_address_id'] = latestSubscriptionOrder.shipping_address_id;
 						orderBodyParam['billing_address_id'] = latestSubscriptionOrder.billing_address_id;
 						orderBodyParam['order_status'] = orderStatusCode['NEWORDER'];
+						orderBodyParam['vendor_pay'] = 1;
 						orderBodyParam['vendor_pay'] = 100;
 						orderBodyParam['created_by'] = eachSubscription.User.first_name;
 						orderBodyParam['created_on'] = new Date();
 
 						return service.createRow('Order', orderBodyParam);
 
-					}).then(function(createdSubscriptionOrder){
+					}).then(function(createdSubscriptionOrder) {
 
 						var orderItemBodyParam = {};
 
-						var shippingTotal =  eachSubscription.quantity * subscribedProduct.shipping_cost;
-						var finalPrice = shippingTotal + subscriptionTotalAmount;
+						createdSubscription = createdSubscriptionOrder;
 
 						orderItemBodyParam['order_id'] = createdSubscriptionOrder.id;
 						orderItemBodyParam['product_id'] = subscribedProduct.id;
-						orderItemBodyParam['quantity'] =  eachSubscription.quantity;
-						orderItemBodyParam['shipping_total'] =  shippingTotal;
-						orderItemBodyParam['subtotal'] =  subscriptionTotalAmount;
+						orderItemBodyParam['quantity'] = eachSubscription.quantity;
+						orderItemBodyParam['shipping_total'] = shippingTotal;
+						orderItemBodyParam['subtotal'] = subscriptionTotalAmount;
 						orderItemBodyParam['final_price'] = finalPrice;
 						orderItemBodyParam['status'] = statusCode['ACTIVE'];
 						orderItemBodyParam['created_by'] = eachSubscription.User.first_name;
 						orderItemBodyParam['created_on'] = new Date();
 
-						return service.createRow('OrderItem',orderItemBodyParam)
+						return service.createRow('OrderItem', orderItemBodyParam)
 
-					}).then(function(subscriptionOrderItemRow){
+					}).then(function(subscriptionOrderItemRow) {
 
 						var desc = 'Subscription Auto Renewal Order';
 
@@ -169,67 +171,100 @@ function subscriptionOrder(eachSubscription){
 							status: statusCode['ACTIVE'],
 							payment_response: JSON.stringify(charge)
 						};
-						console.log("-----------------paymentModelObj--------------------------",paymentModelObj);
 						return service.createRow('Payment', paymentModelObj);
-					}).then(function(paymentRow){
+					}).then(function(paymentRow) {
 
-						console.log("-------------------paymentRow-----------------------------",paymentRow);
 						var orderPaymentObj = {
-							order_id: createdSubscriptionOrder.order.id,
+							order_id: createdSubscription.id,
 							payment_id: paymentRow.id,
-							order_payment_type: ORDER_PAYMENT_TYPE['ORDER_PAYMENT'],
+							order_payment_type: orderPaymentType['ORDER_PAYMENT'],
 							status: statusCode['ACTIVE'],
 							created_on: new Date(),
 							created_by: eachSubscription.User.first_name
 						};
-						console.log("-------------------paymentRow-----------------------------",orderPaymentObj);
-						//return service.createRow('OrderPayment', orderPaymentObj)
-					/*}).then(function(orderPaymentRow){
+
+						return service.createRow('OrderPayment', orderPaymentObj)
+					}).then(function(orderPaymentRow) {
+
 						var orderStatusUpdateObj = {}
 						orderStatusUpdateObj['order_status'] = orderStatusCode['NEWORDER'];
-						
-						return service.updateRow('Order', orderStatusUpdateObj);
-					}).then(function(updatedOrderRow){
 
-						return service.findIdRow('Product', subscribedProduct.id)
-							.then(function(product){
-								let quantityUpdate = {};
-								let currentQuantity = product.quantity_available - 1;
-								quantityUpdate.quantity_available = currentQuantity;
+						return service.updateRow('Order', orderStatusUpdateObj, createdSubscriptionOrder.id);
+					}).then(function(updatedOrderRow) {
 
-								if (currentQuantity == 0) {
-									quantityUpdate.status = statusCode['SOLDOUT'];
-								}
+						subscriptionOrderMail(createdSubscription, eachSubscription);
+						return service.findIdRow('Product', subscribedProduct.id);
 
-								return service.updateRow('Product', quantityUpdate, productId)
-									.then(upadtedRow => {
-										return Promise.resolve(upadtedRow);
-									}).catch(function(error){
-									return Promise.reject(err);
-									})
-							}).catch(function(error){
-								return Promise.reject(err);
-							})*/
-					}).catch(function(error){
-						console.log("Error::",error);
+					}).then(function(product){
 
-						/*var orderStatusUpdateObj = {}
+						let quantityUpdate = {};
+						let currentQuantity = product.quantity_available - 1;
+						quantityUpdate.quantity_available = currentQuantity;
+
+						if (currentQuantity == 0) {
+							quantityUpdate.status = statusCode['SOLDOUT'];
+						}
+
+						return service.updateRow('Product', quantityUpdate, productId);
+					
+					}).then(upadtedRow => {
+
+						return Promise.resolve(upadtedRow);
+					}).catch(function(error) {
+						console.log("Error::", error);
+
+						var orderStatusUpdateObj = {}
 						orderStatusUpdateObj['order_status'] = orderStatusCode['FAILEDORDER'];
 
 						return service.updateRow('Order', orderStatusUpdateObj)
 							.then(function(updatedRow){
 								return Promise.reject(error);
 							}).catch(function(err){
-								return Promise.reject(err);
+								return Promise.reject(error);
 							})
-						return Promise.reject(error);*/
 					});
-				}else{
-					return;
-				}
-		}).catch(function(error){
+			} else {
+				return;
+			}
+		}).catch(function(error) {
 			console.log("Error::", error);
-            return Promise.reject(error);
+			return Promise.reject(error);
 		});
+}
+
+
+function subscriptionOrderMail(createdSubscription,eachSubscription) {
+
+	var emailTemplateQueryObj = {};
+    emailTemplateQueryObj['name'] = config.email.templates.payoutMail;
+
+	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
+		.then(function (response) {
+			if (response) {
+				var email = eachSubscription.User.user_contact_email;
+				
+                var subject = response.subject;
+                var body;
+				body = response.body.replace('%USERNAME%', eachSubscription.User.first_name);
+				body = response.body.replace('%PRODUCT_NAME%', eachSubscription.Product.product_name);
+				body = response.body.replace('%ORDER_ID%', createdSubscription.id);
+				body = response.body.replace('%QUANTITY%', eachSubscription.quantity);
+				body = body.replace('%currency%','$');
+				body = response.body.replace('%PRODUCT_PRICE%', eachSubscription.Product.price);
+				body = response.body.replace('%TOTAL_PRICE%', createdSubscription.total_price);
+				
+				sendEmail({
+                    to: email,
+                    subject: subject,
+                    html: body
+				});
+				
+                return;
+			}else{
+				return;
+			}
+		}).catch(function(error){
+
+		})
 }
 

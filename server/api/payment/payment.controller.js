@@ -165,6 +165,7 @@ function createOrder(orderWithItems) {
 	var order = orderWithItems;
 	order.gtc_fees = order.total_price * 0.01;
 	order.plan_fees = 1.00;
+	order.vendor_pay = 1.00;
 	// var plan_fee_amount=0;
 	// _.forOwn(orderItems,function(element){
 		// if((element.Product.marketplace_id == marketPlaceCode.SERVICES)||element.Product.marketplace_id == marketPlaceCode.LIFESTYLE){
