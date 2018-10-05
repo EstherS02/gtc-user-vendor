@@ -15,9 +15,9 @@ $(document).ready(function() {
     var ellipsestext = "...";
     var moretext = "(See more...)";
     var lesstext = "(See less)";
-    
-
-    $('.p-description').each(function() {
+    if($(".p-description p").length==0)
+	  {
+		$('.p-description').each(function() {
         var content = $(this).html();
  
         if(content.length > showChar) {
@@ -31,6 +31,24 @@ $(document).ready(function() {
         }
  
     });
+     }
+    if($(".p-description p").length==1) 
+     {
+	  $('.p-description p').each(function() {
+        var content = $(this).html();
+ 
+        if(content.length > showChar) {
+ 
+            var c = content.substr(0, showChar);
+            var h = content.substr(showChar, content.length - showChar);
+ 
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+ 
+            $(this).html(html);
+        }
+ 
+    });
+}
  
     $(".morelink").click(function(){
         if($(this).hasClass("less")) {
