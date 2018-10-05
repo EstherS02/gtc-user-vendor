@@ -83,19 +83,6 @@ export async function queryAllProducts(req, queryObj, offset, limit, field, orde
 		where: {
 			status: status['ACTIVE']
 		}
-	}, {
-		model: model['ProductDiscount'],
-		where: {
-			status: status['ACTIVE'],
-			start_date: {
-				'$lte': new Date()
-			},
-			end_date: {
-				'$gte': new Date()
-			}
-		},
-		attributes: ['id', 'discount_type', 'discount_value', 'start_date', 'end_date'],
-		required: false
 	}];
 
 	try {

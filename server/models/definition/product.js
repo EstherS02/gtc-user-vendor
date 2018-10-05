@@ -200,7 +200,6 @@ module.exports.initRelations = () => {
     const Cart = model.Cart;
     const CouponExcludedProduct = model.CouponExcludedProduct;
     const CouponProduct = model.CouponProduct;
-    const ProductDiscount = model.ProductDiscount;
     const Discount = model.Discount;
     const FeaturedProduct = model.FeaturedProduct;
     const OrderItem = model.OrderItem;
@@ -242,12 +241,6 @@ module.exports.initRelations = () => {
     });
 
     Product.hasMany(Discount, {
-        foreignKey: 'product_id',
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION'
-    });
-
-    Product.hasOne(ProductDiscount, {
         foreignKey: 'product_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
