@@ -39,6 +39,7 @@ export function makePayment(req, res) {
 	processCheckout(req)
 		.then(checkoutObjResult => {
 			checkoutObj = checkoutObjResult;
+
 			return service.findOneRow('PaymentSetting', {
 				id: paymentSettingId,
 				user_id: user.id
@@ -58,7 +59,6 @@ export function makePayment(req, res) {
 		}).then(ordersWithItems => {
 			createdOrders = ordersWithItems;
 			var orderIds = [];
-			console.log("ordersWithItems", ordersWithItems);
 			for (var i = 0; i < ordersWithItems.length; i++) {
 				orderIds.push(ordersWithItems[i].order.id);
 			}
@@ -98,7 +98,7 @@ export function makePayment(req, res) {
 			let statusPromises = [];
 			for (var i = 0; i < createdOrders.length; i++) {
 				createdOrders[i].order.order_status = orderStatus['NEWORDER'];
-				createdOrders[i].order.gtc_fees = 1.00;
+				// createdOrders[i].order.gtc_fees = 1.00;
 				orderIdStore.push(createdOrders[i].order.id);
 				statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
 			}
@@ -161,20 +161,7 @@ export function makePayment(req, res) {
 function createOrder(orderWithItems) {
 	var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
 	delete orderWithItems.items;
-
 	var order = orderWithItems;
-	order.gtc_fees = order.total_price * 0.01;
-	order.plan_fees = 1.00;
-	order.vendor_pay = 1.00;
-	// var plan_fee_amount=0;
-	// _.forOwn(orderItems,function(element){
-		// if((element.Product.marketplace_id == marketPlaceCode.SERVICES)||element.Product.marketplace_id == marketPlaceCode.LIFESTYLE){
-			// plan_fee_amount = plan_fee_amount+element.Product.price;
-		// }
-	// })
-	// order.plan_fees = plan_fee_amount*0.1;
-
-
 	return service.createRow('Order', order).then(orderResult => {
 		order.id = orderResult.id;
 		console.log("order.id", order.id);
@@ -232,6 +219,7 @@ function updateSubscription(order, item){
 		product_id: item.product_id,
 		quantity: item.quantity,
 		purchased_on : order.ordered_date,
+		last_order_placed_on: order.ordered_date,
 		status: status.ACTIVE,
 		created_on: new Date()
 	}
@@ -366,6 +354,9 @@ function processCheckout(req) {
 				totalPriceByVendor[vendorId]['price'] = 0;
 				totalPriceByVendor[vendorId]['shipping'] = 0;
 				totalPriceByVendor[vendorId]['total'] = 0;
+				var gtc_fees = 0;
+				var plan_fees = 0;
+				var vendor_pay = 0;
 
 				for (var i = 0; i < itemsValue.length; i++) {
 
@@ -391,10 +382,12 @@ function processCheckout(req) {
 						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
 						var calulatedShippingSum = (itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-
+						gtc_fees = gtc_fees + (calulatedSum*config.fee.gtc_fees);
+						plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees)
 						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
 						totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
+						vendor_pay = totalPriceByVendor[vendorId]['price']-gtc_fees-plan_fees;
 
 						var final_price = (calulatedSum + calulatedShippingSum);
 						var orderItem = {
@@ -408,15 +401,15 @@ function processCheckout(req) {
 
 						order['total_price'] = totalPriceByVendor[vendorId]['total'];
 						order['items'].push(orderItem);
+						order['gtc_fees'] = gtc_fees;
+						order['plan_fees'] = plan_fees;
+						order['vendor_pay'] = vendor_pay;
 					}
 				}
 
 				totalPriceByVendor['grandTotal'] = totalPriceByVendor['grandTotal'] + totalPriceByVendor[vendorId]['total'];
 
 			});
-
-			console.log("ordersByVendor", ordersByVendor);
-
 
 			checkoutObj.ordersByVendor = ordersByVendor;
 			checkoutObj.totalPriceByVendor = totalPriceByVendor;
@@ -675,7 +668,7 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
 							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
-							body = body.replace('%currency%','$');
+							body = body.replace('/%currency%/g','$');
 							body = body.replace('%UserName%',user.first_name) //+' '+user.last_name
 							if(user.last_name != null || user.last_name != 'null'){
 							body = body.replace('%UserLastName%',user.last_name) //+' '+		
@@ -776,6 +769,7 @@ function notifications(order) {
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
 		});
+		return;
 }
 
 // plan payment method starts//

@@ -65,7 +65,7 @@ $(document).ready(function() {
 											{{#each productReviews.rows}}
 											<div class="feed-element">
 												<a class="float-left" href="javascript:;">
-													<img alt="image" class="rounded-circle" src="{{this.User.user_pic_url}}">
+													<img alt="image" class="rounded-circle" onError="imgError(this)" src="{{this.User.user_pic_url}}">
 												</a>
 												<div class="media-body">
 													<h4 class="review-title">{{this.title}}</h4>
