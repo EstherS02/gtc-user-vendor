@@ -39,6 +39,7 @@ export function makePayment(req, res) {
 	processCheckout(req)
 		.then(checkoutObjResult => {
 			checkoutObj = checkoutObjResult;
+
 			return service.findOneRow('PaymentSetting', {
 				id: paymentSettingId,
 				user_id: user.id
@@ -58,7 +59,6 @@ export function makePayment(req, res) {
 		}).then(ordersWithItems => {
 			createdOrders = ordersWithItems;
 			var orderIds = [];
-			console.log("ordersWithItems", ordersWithItems);
 			for (var i = 0; i < ordersWithItems.length; i++) {
 				orderIds.push(ordersWithItems[i].order.id);
 			}
@@ -98,7 +98,7 @@ export function makePayment(req, res) {
 			let statusPromises = [];
 			for (var i = 0; i < createdOrders.length; i++) {
 				createdOrders[i].order.order_status = orderStatus['NEWORDER'];
-				createdOrders[i].order.gtc_fees = 1.00;
+				// createdOrders[i].order.gtc_fees = 1.00;
 				orderIdStore.push(createdOrders[i].order.id);
 				statusPromises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
 			}
@@ -161,19 +161,8 @@ export function makePayment(req, res) {
 function createOrder(orderWithItems) {
 	var orderItems = JSON.parse(JSON.stringify(orderWithItems.items));
 	delete orderWithItems.items;
-
 	var order = orderWithItems;
-	order.gtc_fees = total_price * 0.01;
-	order.plan_fees = 1.00;
-	// var plan_fee_amount=0;
-	// _.forOwn(orderItems,function(element){
-		// if((element.Product.marketplace_id == marketPlaceCode.SERVICES)||element.Product.marketplace_id == marketPlaceCode.LIFESTYLE){
-			// plan_fee_amount = plan_fee_amount+element.Product.price;
-		// }
-	// })
-	// order.plan_fees = plan_fee_amount*0.1;
-
-
+	
 	return service.createRow('Order', order).then(orderResult => {
 		order.id = orderResult.id;
 		console.log("order.id", order.id);
@@ -363,6 +352,9 @@ function processCheckout(req) {
 				totalPriceByVendor[vendorId]['price'] = 0;
 				totalPriceByVendor[vendorId]['shipping'] = 0;
 				totalPriceByVendor[vendorId]['total'] = 0;
+				var gtc_fees = 0;
+				var plan_fees = 0;
+				var vendor_pay = 0;
 
 				for (var i = 0; i < itemsValue.length; i++) {
 
@@ -388,10 +380,12 @@ function processCheckout(req) {
 						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
 
 						var calulatedShippingSum = (itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-
+						gtc_fees = gtc_fees + (calulatedSum*0.01);
+						plan_fees = plan_fees+ (calulatedSum*0.1)
 						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
 						totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
+						vendor_pay = totalPriceByVendor[vendorId]['price']-gtc_fees-plan_fees;
 
 						var final_price = (calulatedSum + calulatedShippingSum);
 						var orderItem = {
@@ -405,15 +399,15 @@ function processCheckout(req) {
 
 						order['total_price'] = totalPriceByVendor[vendorId]['total'];
 						order['items'].push(orderItem);
+						order['gtc_fees'] = gtc_fees;
+						order['plan_fees'] = plan_fees;
+						order['vendor_pay'] = vendor_pay;
 					}
 				}
 
 				totalPriceByVendor['grandTotal'] = totalPriceByVendor['grandTotal'] + totalPriceByVendor[vendorId]['total'];
 
 			});
-
-			console.log("ordersByVendor", ordersByVendor);
-
 
 			checkoutObj.ordersByVendor = ordersByVendor;
 			checkoutObj.totalPriceByVendor = totalPriceByVendor;
