@@ -16,7 +16,7 @@ const uuidv1 = require('uuid/v1');
 const CURRENCY = 'usd';
 const current_date = new Date();
 
-export function subscriptionAutoRenewal(req, res) {
+export function subscriptionAutoRenewal(job, done) {
 
     console.log('********************JOBS CALLED');
     console.log('agenda for subscription orders..');
@@ -57,13 +57,15 @@ export function subscriptionAutoRenewal(req, res) {
                 subscriptionPromises.push(subscriptionOrder(eachSubscription));
             });
             Promise.all(promises).then(function(subscriptionResult) {
-                return res.status(200).send(subscriptionResult);
+                done();
             }).catch(function(error) {
-                return res.status(500).send(err);
+                console.log("Error::", error);
+  			    done();
             })
 
         }).catch(function(error) {
-            return res.status(500).send(error);
+            console.log("Error::", error);
+  			done();
         });
 }
 
