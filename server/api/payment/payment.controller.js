@@ -232,6 +232,7 @@ function updateSubscription(order, item){
 		product_id: item.product_id,
 		quantity: item.quantity,
 		purchased_on : order.ordered_date,
+		last_order_placed_on: order.ordered_date,
 		status: status.ACTIVE,
 		created_on: new Date()
 	}
