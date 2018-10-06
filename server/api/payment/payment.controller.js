@@ -1025,7 +1025,7 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 					_.forOwn(orderRefundList, function(orders) {
 						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
 						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
-						orders.final_price= numeral(orders.final_price).format('0,0.00');
+						orders.final_price= numeral(orders.final_price).format('$' +'0,0.00');
 						orderNew.push(orders);
 					});
 					var template = Handlebars.compile(body);
