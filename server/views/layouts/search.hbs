@@ -676,7 +676,7 @@
 								<ul class="pagination justify-content-center">
 									{{#unless startFromFirstPage}}
 										<li class="page-item">
-											<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
 										</li>
 									{{/unless}}
 
@@ -688,7 +688,7 @@
 
 									{{#unless endAtLastPage}}
 										<li class="page-item">
-											<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
 										</li>
 									{{/unless}}
 
