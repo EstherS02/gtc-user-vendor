@@ -212,7 +212,7 @@ function subscriptionOrder(eachSubscription) {
 					}).then(function(product){
 
 						let quantityUpdate = {};
-						let currentQuantity = product.quantity_available - 1;
+						let currentQuantity = product.quantity_available - eachSubscription.quantity;
 						quantityUpdate.quantity_available = currentQuantity;
 
 						if (currentQuantity == 0) {
