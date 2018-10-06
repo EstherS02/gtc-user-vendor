@@ -641,6 +641,12 @@ input[name=inputQtyValue]::-webkit-inner-spin-button {
 .text-red {
 	color: #b01f38 !important;
 }
+.price-flag {
+	color: #1b64aa;
+}
+.discount-price-flag {
+	color: #b12a2b !important;
+}
 .text-black {
 	color: #484848 !important;
 }
@@ -843,12 +849,12 @@ div.product-middle-col .row {
 }
 div.product-right-col div.prc-bottom {
 	position: absolute;
-	line-height: 1.6;
-	bottom: -5px;
+	bottom: 0;
 	right: 0;
 }
 div.product-right-col div.prc-bottom p {
 	margin-bottom: 0;
+	line-height: 1.6;
 }
 div.product-right-col h4 {
 	font-size: 0.875em;
@@ -858,8 +864,8 @@ div.product-right-col h4 {
 }
 div.product-right-col h2 {
 	font-size: 1.2rem;
-	margin-bottom: 5px;
-	line-height: 1.6;
+	margin-bottom: 0;
+	line-height: 1;
 	font-weight: 600;
 }
 .search-list-body .product-right-col h2 {

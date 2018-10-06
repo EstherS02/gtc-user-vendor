@@ -95,13 +95,8 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: 'NO ACTION'
         },
         price: {
-            type: DataTypes.DECIMAL(10, 1),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'price',
-            allowNull: true
-        },
-        shipping_cost: {
-            type: DataTypes.DECIMAL(10, 1),
-            field: 'shipping_cost',
             allowNull: true
         },
         description: {
@@ -141,17 +136,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'moq',
             allowNull: true
         },
-        exchanging_product: {
-            type: DataTypes.STRING(255),
-            field: 'exchanging_product',
-            allowNull: true
-        },
-        exchanging_product_quantity: {
-            type: DataTypes.INTEGER,
-            field: 'exchanging_product_quantity',
-            allowNull: true
-		},
-		subscription_duration: {
+        subscription_duration: {
             type: DataTypes.INTEGER,
             field: 'subscription_duration',
             allowNull: true
@@ -159,6 +144,46 @@ module.exports = (sequelize, DataTypes) => {
         subscription_duration_unit: {
             type: DataTypes.INTEGER,
             field: 'subscription_duration_unit',
+            allowNull: true
+        },
+        individual_sale_only: {
+            type: DataTypes.INTEGER,
+            field: 'individual_sale_only',
+            allowNull: false
+        },
+        exclusive_sale: {
+            type: DataTypes.INTEGER,
+            field: 'exclusive_sale',
+            allowNull: false
+        },
+        exclusive_start_date: {
+            type: DataTypes.DATE,
+            field: 'exclusive_start_date',
+            allowNull: false
+        },
+        exclusive_end_date: {
+            type: DataTypes.DATE,
+            field: 'exclusive_end_date',
+            allowNull: false
+        },
+        price: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'price',
+            allowNull: true
+        },
+        exchanging_product_quantity: {
+            type: DataTypes.INTEGER,
+            field: 'exchanging_product_quantity',
+            allowNull: true
+        },
+        exchanging_product: {
+            type: DataTypes.STRING(255),
+            field: 'exchanging_product',
+            allowNull: true
+        },
+        shipping_cost: {
+            type: DataTypes.DECIMAL(10, 2),
+            field: 'shipping_cost',
             allowNull: true
         },
         created_by: {

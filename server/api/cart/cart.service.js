@@ -35,7 +35,7 @@ export async function cartCalculation(userID, req) {
 		where: {
 			status: status['ACTIVE']
 		},
-		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq'],
+		attributes: ['id', 'product_name', 'product_slug', 'marketplace_id', 'marketplace_type_id', 'vendor_id', 'price', 'moq', 'exclusive_sale', 'exclusive_start_date', 'exclusive_end_date', 'exclusive_offer'],
 		include: [{
 			model: model['Vendor'],
 			attributes: ['id', 'vendor_name']
@@ -64,10 +64,10 @@ export async function cartCalculation(userID, req) {
 
 	try {
 		const cartResonse = await service.findAllRows(cartModelName, includeArray, queryObj, 0, null, field, order);
+		cart['total_items'] = cartResonse.count;
 
 		if (cartResonse.count) {
-			cart['total_items'] = cartResonse.count;
-
+			const cartProducts = cartResonse.rows;
 			const couponIncludeArray = await [{
 				model: model['CouponProduct'],
 				where: {
@@ -138,20 +138,44 @@ export async function cartCalculation(userID, req) {
 					if (tmpProducts.length > 0) {
 						couponApplicableProducts = await _.uniqBy(tmpProducts, 'id');
 					}
-					var totalAmount = 0;
 
-					await Promise.all(couponApplicableProducts.map(async (product) => {
-						const cartProduct = await cartResonse.rows.find((obj) => obj.product_id == product.id);
+					var discountProduct = {};
+					var totalAmount;
+
+					for (let product of couponApplicableProducts) {
+						const cartProduct = await cartProducts.find((obj) => obj.product_id == product.id);
 						if (cartProduct) {
-							totalAmount = await cartProduct.Product.price * cartProduct.quantity;
-						}
-					}));
+							var currentDate = new Date();
+							var exclusiveStartDate = new Date(cartProduct.Product.exclusive_start_date);
+							var exclusiveEndDate = new Date(cartProduct.Product.exclusive_end_date);
 
-					if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
-						cart['coupon_applied'] = true;
-						cart['coupon_code'] = coupon.code;
-						cart['discount_type'] = coupon.discount_type;
-						cart['discount_value'] = coupon.discount_value;
+							if ((coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)))) {
+								var discount = ((cartProduct.Product.price / 100) * cartProduct.Product.exclusive_offer).toFixed(2);
+								var productDiscountedPrice = (parseFloat(cartProduct.Product['price']) - discount).toFixed(2);
+								totalAmount = productDiscountedPrice * cartProduct.quantity;
+
+								if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
+									cart['coupon_applied'] = true;
+									cart['coupon_code'] = coupon.code;
+									cart['discount_type'] = coupon.discount_type;
+									cart['discount_value'] = coupon.discount_value;
+									discountProduct = cartProduct;
+									break;
+								}
+							} else if ((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate < currentDate))) {
+								totalAmount = cartProduct.Product.price * cartProduct.quantity;
+								if (totalAmount >= coupon.minimum_spend && totalAmount <= coupon.maximum_spend) {
+									cart['coupon_applied'] = true;
+									cart['coupon_code'] = coupon.code;
+									cart['discount_type'] = coupon.discount_type;
+									cart['discount_value'] = coupon.discount_value;
+									discountProduct = cartProduct;
+									break;
+								}
+							} else {
+								continue;
+							}
+						}
 					}
 				}
 			}
@@ -164,8 +188,20 @@ export async function cartCalculation(userID, req) {
 			});
 			const marketplace = JSON.parse(JSON.stringify(marketplaceResponse));
 
-			await Promise.all(cartResonse.rows.map((aCart) => {
-				aCart['total_price'] = aCart.Product.price * aCart.quantity;
+			await Promise.all(cartProducts.map((aCart) => {
+				const currentDate = new Date();
+				const exclusiveStartDate = new Date(aCart.Product.exclusive_start_date);
+				const exclusiveEndDate = new Date(aCart.Product.exclusive_end_date);
+
+				if (aCart.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)) {
+					const discount = ((aCart.Product.price / 100) * aCart.Product.exclusive_offer).toFixed(2);
+					aCart.Product['discount'] = parseFloat(discount).toFixed(2);
+					aCart.Product['product_discounted_price'] = (parseFloat(aCart.Product['price']) - parseFloat(discount)).toFixed(2);
+					aCart['total_price'] = aCart.Product['product_discounted_price'] * aCart.quantity;
+				} else {
+					aCart['total_price'] = aCart.Product.price * aCart.quantity;
+				}
+
 				const index = marketplace.findIndex((obj) => obj.id == aCart.Product.marketplace_id);
 				const existsMarketplace = cart['marketplace_products'].hasOwnProperty(marketplace[index].id);
 				if (!existsMarketplace) {
@@ -185,16 +221,15 @@ export async function cartCalculation(userID, req) {
 
 				cart['marketplace_products'][aCart.Product.marketplace_id].count += 1;
 				cart['marketplace_products'][aCart.Product.marketplace_id].products.push(aCart);
+			})); 
 
-				const discountProduct = couponApplicableProducts.find((obj) => obj.id == aCart.Product.id);
-				if (cart['coupon_applied'] && (discountProduct && cart['discount_amount'] == 0)) {
-					if (coupon.discount_type == 1) {
-						cart['discount_amount'] = ((discountProduct.price / 100) * coupon.discount_value).toFixed(2);
-					} else if (coupon.discount_type == 2 && parseFloat(discountProduct.price).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
-						cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
-					}
+			if (cart['coupon_applied'] && (discountProduct && cart['discount_amount'] == 0)) {
+				if (coupon.discount_type == 1) {
+					cart['discount_amount'] = ((totalAmount / 100) * coupon.discount_value).toFixed(2);
+				} else if (coupon.discount_type == 2 && parseFloat(totalAmount).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
+					cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 				}
-			}));
+			}
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {
 				if (cart['marketplace_summary'].hasOwnProperty(key)) {
