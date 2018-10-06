@@ -1915,7 +1915,7 @@ ul.inner-list-view li a {
 }
 
 .price-tag {
-    color: #808080;
+    color: #333;
     font-size: 1em;
     font-weight: 600;
     line-height: 1.6;

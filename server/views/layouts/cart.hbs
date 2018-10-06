@@ -262,7 +262,11 @@
 														</div>
 													</td>
 													<td>
-														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+														{{#if this.Product.product_discounted_price}}
+															<span class="price-tag d-block discount-price-flag">{{currency this.Product.product_discounted_price '$'}}</span>
+														{{else}}
+															<span class="price-tag d-block price-flag">{{currency this.Product.price '$'}}</span>
+														{{/if}}
 														{{#if this.Product.moq}}
 															<small class="m-qty">Minimum Order Quantity: {{this.Product.moq}}</small>
 														{{/if}}
@@ -341,7 +345,11 @@
 														</div>
 													</td>
 													<td>
-														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
+														{{#if this.Product.product_discounted_price}}
+															<span class="price-tag d-block discount-price-flag">{{currency this.Product.product_discounted_price '$'}}</span>
+														{{else}}
+															<span class="price-tag d-block price-flag">{{currency this.Product.price '$'}}</span>
+														{{/if}}
 													</td>
 													<td>
 														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">

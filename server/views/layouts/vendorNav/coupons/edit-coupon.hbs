@@ -15,16 +15,15 @@
 			let currentUTCDate = new Date();
 			var endDate = new Date($('#inputExpiryDate').val());
 			var end = new Date(endDate);
-
+			$("#submitForm").prop("disabled", false);
 			if (currentUTCDate > end) {
 				$("#inputExpiryDate").datepicker("destroy");
 				$("#inputExpiryDate").datepicker();
 				$('#inputExpiryDate').val(expiredate);
 				auth.alertService(500, "Expire Date should not less than Current Date");
-
 			}
 		});
-		if(expiredate){
+		if (!$('#inputId').val()) {
 			$("#submitForm").prop("disabled", true);
 		}
 		$('#couponForm').keyup(function() {

@@ -516,23 +516,53 @@ export async function applyCoupon(req, res) {
 							finalProducts = await _.uniqBy(tmpProducts, 'id');
 						}
 
-						var totalAmount = 0;
+						var errorResponse = "Coupon failed to apply.";
+						var appliedCouponCode;
 
-						await Promise.all(finalProducts.map(async (product) => {
+						for (let product of finalProducts) {
 							const cartProduct = await vendorProductsInCart.find((obj) => obj.product_id == product.id);
+
 							if (cartProduct) {
-								totalAmount = await cartProduct.Product.price * cartProduct.quantity;
+								var currentDate = new Date();
+								var exclusiveStartDate = new Date(cartProduct.Product.exclusive_start_date);
+								var exclusiveEndDate = new Date(cartProduct.Product.exclusive_end_date);
+
+								if ((coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale && (exclusiveStartDate <= currentDate && exclusiveEndDate >= currentDate)))) {
+									var totalAmount = cartProduct.Product.price * cartProduct.quantity;
+									if (totalAmount < coupon.minimum_spend) {
+										errorResponse = "This promo code not applicable. Minimum spend " + coupon.minimum_spend;
+										continue;
+									} else if (totalAmount > coupon.maximum_spend) {
+										errorResponse = "This promo code not applicable. Maximum spend " + coupon.maximum_spend;
+										continue;
+									} else {
+										appliedCouponCode = coupon.code;
+										break;
+									}
+								} else if ((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate < currentDate))) {
+									var totalAmount = cartProduct.Product.price * cartProduct.quantity;
+									if (totalAmount < coupon.minimum_spend) {
+										errorResponse = "This promo code not applicable. Minimum spend " + coupon.minimum_spend;
+										continue;
+									} else if (totalAmount > coupon.maximum_spend) {
+										errorResponse = "This promo code not applicable. Maximum spend " + coupon.maximum_spend;
+										continue;
+									} else {
+										appliedCouponCode = coupon.code;
+										break;
+									}
+								} else {
+									continue;
+								}
 							}
-						}));
-						if (totalAmount < coupon.minimum_spend) {
-							return res.status(400).send("This promo code not applicable. Minimum spend " + coupon.minimum_spend);
-						} else if (totalAmount > coupon.maximum_spend) {
-							return res.status(400).send("This promo code not applicable. Maximum spend " + coupon.maximum_spend);
-						} else {
-							res.cookie("applied_coupon", coupon.code);
-							return res.status(200).send("Promo code applied successfully.");
 						}
 
+						if (appliedCouponCode) {
+							res.cookie("applied_coupon", coupon.code);
+							return res.status(200).send("Promo code applied successfully.");
+						} else {
+							return res.status(400).send(errorResponse);
+						}
 					} else {
 						return res.status(400).send("Promo code expired.");
 					}
@@ -551,10 +581,11 @@ export async function applyCoupon(req, res) {
 	}
 }
 
-export function cancelCoupon(req,res){
+export function cancelCoupon(req, res) {
 	res.clearCookie('applied_coupon');
 	return res.status(200).send('Coupon Removed Successfully.');
 }
+
 function plainTextResponse(response) {
 	return response.get({
 		plain: true

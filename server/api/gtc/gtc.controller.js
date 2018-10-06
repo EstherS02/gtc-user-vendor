@@ -17,13 +17,13 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function index(req, res) {
+export function indexA(req, res) {
 	var queryObj = {};
 	var offset, limit, field, order;
 
-	offset = req.query.offset ? parseInt(req.query.offset) : null;
+	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : null;
+	limit = req.query.limit ? parseInt(req.query.limit) : 5;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;
@@ -40,7 +40,7 @@ export function index(req, res) {
 		});
 }
 
-export function indexA(req, res) {
+export function index(req, res) {
 
 	var offset, limit, field, order;
 	var queryObj = {};
