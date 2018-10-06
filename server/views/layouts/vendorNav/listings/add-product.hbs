@@ -127,7 +127,7 @@
 												</label>
 												<div class="row">
 													<div class="col-lg-4">
-														<input type="text" class="form-control-customized form-control-sm" value={{editProduct.subscription_duration}} name="subscription_duration">
+														<input type="text" class="form-control-customized form-control-sm" value="{{editProduct.subscription_duration}}" name="subscription_duration">
 													</div>
 													<div class="col-lg-4">
 														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="subscription_duration_unit">
@@ -302,7 +302,7 @@
 												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="status"
 												 id="product_status">
 												{{#if editProduct.status}}
-												<option value="{{editProduct.status}}">{{objectKey statusCode editProduct.status}}</option>
+												<option value="{{editProduct.status}}" disabled selected>{{objectKey statusCode editProduct.status}}</option>
 												{{else}}
 												<option disabled selected>Select Status</option>
 												{{/if}}

@@ -67,10 +67,11 @@ export function subscriptionAutoRenewal(job, done) {
 			});
 			return Promise.all(subscriptionPromises);
 		}).then(function(result){
-			console.log("result",result)
+			console.log("result",result);
 			done();
 
 		}).catch(function(error) {
+			console.log("error",error);
 			done();
 		});
 }

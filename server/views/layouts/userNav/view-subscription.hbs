@@ -120,21 +120,22 @@
 													<th scope="col">
 														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
-													<th scope="col">Subscribed Products</th>
-													<th scope="col">Price</th>
-													<th scope="col">Quantity</th>
-													<th>Purchased On</th>
-													<th>Last Order Placed On</th>
-													<th>Next Order Place On</th>
+													<th style="width: 30%;" >Subscribed Products</th>
+													<th>Price</th>
+													<th>Quantity</th>
+													<th >Purchased On</th>
+													<th style="width: 10%;">Last Order Placed On</th>
+													<th style="width: 10%;">Next Order Place On</th>
 													<th colspan="2">Status</th>
 												</tr>
 											</thead>
 											<tbody>
+											{{#if subscriptions}}
 											{{#each subscriptions}}
 												<tr>
 													<td><input type="checkbox" class="checkbox" name="selected" value='{{this.id}}'></td>
 													<td>
-														<a href="{{../this.type}}/{{this.Product.product_slug}}/{{this.Product.id}}">
+														<a href="{{MarketPlaceURL this.Product.marketplace_id}}/{{this.Product.product_slug}}/{{this.Product.id}}">
 															<img src="{{this.Product.product_base_image}}" onError="imgError(this)" style="width: 30px;" />
 														{{this.Product.product_name}}</a>
 													</td>
@@ -161,7 +162,10 @@
 													</td>
 													{{/ifCond}}
 												</tr>
-											{{/each}}				
+											{{/each}}
+											{{else}}
+												<tr><td colspan="8" style="text-align:center;">No Product Subscribed</td></tr>
+											{{/if}}				
 											</tbody>
 										</table>
 									</div>
