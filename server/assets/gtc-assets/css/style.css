@@ -736,10 +736,12 @@ ul.footer-social-links li a img {
 
 .wrapper-content {
     background: #ffffff;
-    width: 100%;
+	width: 100%;
+	min-height: 60vh;
     overflow-x: hidden;
     padding: 20px 10px 40px;
 }
+/* added the .wrapper-content min-height to 100vh to set the footer for alignment*/
 
 .vendor-menu-wrapper {
     background: #ffffff;
