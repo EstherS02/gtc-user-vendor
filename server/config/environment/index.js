@@ -115,6 +115,7 @@ var all = {
 		"amazonImportJob": "amazonImportJob",
 		"starterPlanExpire": "starterPlanExpire",
 		"featureProductExpire": "featureProductExpire",
+		"subscriptionExpire":"subscriptionExpire",
 		"planRenewal": "planRenewal",
 		"bulkUserPlanRenewal":"bulkUserPlanRenewal",
 		"subscriptionAutoRenewal":"subscriptionAutoRenewal"

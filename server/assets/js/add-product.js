@@ -585,14 +585,24 @@ $(document).ready(function() {
 
 	$("#featureForm").validate({
 		rules: {
-			start_date: "required",
+			start_date: {
+				required: true,
+				date: true
+			},
 			end_date: {
-				required: "#feature_indefinitely:unchecked"
+				required: "#feature_indefinitely:unchecked",
+				date: true
 			}
 		},
 		messages: {
-			start_date: "Select start date",
-			end_date: "Select end date"
+			start_date: {
+				required: "Select start date",
+				date: "Enter valid date"
+			},
+			end_date: {
+				required: "Select end date",
+				date: "Enter valid date"
+			}
 		}
 	});
 
