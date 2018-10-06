@@ -84,7 +84,7 @@ function subscriptionOrder(eachSubscription) {
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id,
-		//order_status: orderStatusCode['DELIVEREDORDER'],
+		order_status: orderStatusCode['DELIVEREDORDER'],
 		status: statusCode["ACTIVE"]
 	}
 
@@ -173,11 +173,10 @@ function subscriptionOrder(eachSubscription) {
 					}).then(function(subscriptionOrderItemRow) {
 
 						var desc = 'Subscription Auto Renewal Order';
-
 						return stripe.chargeCustomerCard(subscriptionCardDetails.stripe_customer_id, subscriptionCardDetails.stripe_card_id, subscriptionTotalAmount, desc, CURRENCY);
 
 					}).then(charge => {
-
+						
 						var paymentModelObj = {
 							date: new Date(charge.created),
 							amount: charge.amount / 100.0,
