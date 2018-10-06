@@ -141,8 +141,8 @@
 													<td>{{this.Product.price}}</td>
 													<td>{{this.quantity}}</td>
 													<td>{{formatTime this.purchased_on "MMM DD, YYYY"}}</td>
-													<td>{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}</td>
-													<td>{{formatTime this.next_order_place_on "MMM DD, YYYY"}}</td>
+													<td>{{#if this.last_order_placed_on}}{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}{{/if}}</td>
+													<td>{{#if this.next_order_place_on}}{{formatTime this.next_order_place_on "MMM DD, YYYY"}}{{/if}}</td>
 													<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
 														{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active

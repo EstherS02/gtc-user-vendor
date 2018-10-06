@@ -87,7 +87,8 @@ var all = {
 			starterPlanExpire : 'STARTER-SELLER-EXPIRE',
 			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
 			planExpired : "PLAN-EXPIRED",
-			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER"
+			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER",
+			newProductAnnouncementMail: "NEW-PRODUCT-ANNOUNCEMENT-MAIL"
         }
     },
     //Notification
