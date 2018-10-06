@@ -46,13 +46,13 @@ agenda.define(config.jobs.amazonImportJob, amazonImportJob);
 
 agenda.on('ready', function() {
 	console.log('agenda onReady');
-	//agenda.every('8 hours', 'vendorPayouts');
-	//agenda.every('12 hours', 'planRenewal');
-	//agenda.every('12 hours', 'bulkUserPlanRenewal');
-	//agenda.every('12 hours', 'subscriptionAutoRenewal');
-	//agenda.every('12 hours', 'starterPlanExpire');
-	//agenda.every('12 hours', 'featureProductExpire');
-	agenda.every('1 minute', 'subscriptionExpire');
+	agenda.every('8 hours', 'vendorPayouts');
+	agenda.every('12 hours', 'planRenewal');
+	agenda.every('12 hours', 'bulkUserPlanRenewal');
+	agenda.every('12 hours', 'subscriptionAutoRenewal');
+	agenda.every('12 hours', 'starterPlanExpire');
+	agenda.every('12 hours', 'featureProductExpire');
+	agenda.every('12 hours', 'subscriptionExpire');
 	agenda.start();
 });
 
