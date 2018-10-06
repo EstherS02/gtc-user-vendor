@@ -18,6 +18,7 @@ const uuidv1 = require('uuid/v1');
 const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
+const durationCode = require('../../config/duration-unit');
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -227,6 +228,16 @@ function updateSubscription(order, item){
 	return service.findIdRow('Product',item.product_id)
 		.then(product =>{
 			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
+				var subscriptionDuration,subscriptionRenewOn;
+
+				if (product.subscription_duration_unit == durationCode['MONTHS']) {
+					subscriptionDuration = product.subscription_duration * 30;
+				} else if (product.subscription_duration_unit == durationCode['DAYS']) {
+					subscriptionDuration = product.subscription_duration;
+				}
+
+				subscriptionRenewOn = moment().add(+subscriptionDuration, 'd');
+				subscriptionBodyParam.next_order_place_on = subscriptionRenewOn;
 
 				service.createRow('Subscription', subscriptionBodyParam)
 					.then(subscribedProduct => {
@@ -1014,7 +1025,7 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 					_.forOwn(orderRefundList, function(orders) {
 						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
 						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
-						orders.final_price= numeral(orders.final_price).format('0,0.00');
+						orders.final_price= numeral(orders.final_price).format('$' +'0,0.00');
 						orderNew.push(orders);
 					});
 					var template = Handlebars.compile(body);

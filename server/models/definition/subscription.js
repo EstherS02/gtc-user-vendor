@@ -40,6 +40,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             field: 'purchased_on',
             allowNull: false
+		},
+		last_order_placed_on: {
+            type: DataTypes.DATEONLY,
+            field: 'last_order_placed_on',
+            allowNull: true
+		},
+		next_order_place_on: {
+            type: DataTypes.DATEONLY,
+            field: 'next_order_place_on',
+            allowNull: true
         },
         end_date: {
             type: DataTypes.DATEONLY,

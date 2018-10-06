@@ -22,6 +22,8 @@ const mws = require('mws-advanced');
 const _ = require('lodash');
 const stripe = require('../../payment/stripe.payment');
 const paymentMethod = require('../../config/payment-method');
+const sendEmail = require('../../agenda/send-email');
+const durationUnitCode = require('../../config/duration-unit');
 
 export function productView(req, res) {
 	var productID = req.params.id;
@@ -727,7 +729,7 @@ function resMessage(message, messageDetails) {
 
 export function addProduct(req, res) {
 
-	var product_id;
+	var product_id, createdProduct = {};
 
 	if (req.query.marketplace == 'Private Wholesale Marketplace')
 		req.query.marketplace_id = marketplace.WHOLESALE;
@@ -753,6 +755,12 @@ export function addProduct(req, res) {
 		req.query.status = status[productStatus]
 	}
 
+	if (req.query.subscription_duration_unit) {
+		var subscriptionDurationUnit = req.query.subscription_duration_unit;
+		delete req.query.subscription_duration_unit;
+		req.query.subscription_duration_unit = durationUnitCode[subscriptionDurationUnit]
+	}
+
 	req.query.publish_date = new Date();
 	req.query.product_slug = string_to_slug(req.query.product_name);
 	req.query.created_on = new Date();
@@ -761,6 +769,7 @@ export function addProduct(req, res) {
 	service.createRow('Product', req.query)
 		.then(function(row) {
 			product_id = row.id;
+			createdProduct = row;
 
 			if (req.body.imageArr) {
 				var imagePromise = [];
@@ -785,6 +794,9 @@ export function addProduct(req, res) {
 				return Promise.all(discountPromise);
 			}
 		}).then(function(updatedDiscount) {
+
+			//aunnouncementMailToSubscribedUser(createdProduct);
+
 			return res.status(200).send({
 				"message": "Success",
 				"messageDetails": "Product Created Successfully"
@@ -807,6 +819,12 @@ export function editProduct(req, res) {
 		var productStatus = req.query.status;
 		delete req.query.status;
 		req.query.status = status[productStatus]
+	}
+
+	if (req.query.subscription_duration_unit) {
+		var subscriptionDurationUnit = req.query.subscription_duration_unit;
+		delete req.query.subscription_duration_unit;
+		req.query.subscription_duration_unit = durationUnitCode[subscriptionDurationUnit]
 	}
 
 	req.query.product_slug = string_to_slug(req.query.product_name);
@@ -958,6 +976,24 @@ function createProductAttribute(attributeElement) {
 function createDiscount(discountElement, product_id) {
 	return service.createRow('Discount', discountElement);
 }
+
+/*function aunnouncementMailToSubscribedUser(createdProduct){
+
+	var emailTemplateQueryObj = {};
+	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
+	
+	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
+		.then(function (response) {
+			if (response) {
+
+			}else{
+				return;
+			}
+
+		}).catch(function(error){
+			return;
+		})
+}*/
 
 export function featureProductWithPayment(req, res) {
 

@@ -20,7 +20,7 @@ const current_date = new Date();
 export function subscriptionAutoRenewal(job, done) {
 
     console.log('********************JOBS CALLED');
-    console.log('agenda for subscription orders..');
+	console.log('agenda for subscription orders..');
 
 	var offset, limit, field, order;
 	var subscriptionQueryObj = {}, subscriptionIncludeArr = [];
@@ -67,10 +67,11 @@ export function subscriptionAutoRenewal(job, done) {
 			});
 			return Promise.all(subscriptionPromises);
 		}).then(function(result){
-			console.log("result",result)
+			console.log("result",result);
 			done();
 
 		}).catch(function(error) {
+			console.log("error",error);
 			done();
 		});
 }
@@ -83,7 +84,7 @@ function subscriptionOrder(eachSubscription) {
 	subscribedProduct = eachSubscription.Product;
 	subscriptionOrderQueryObj = {
 		user_id: eachSubscription.user_id,
-		//order_status: orderStatusCode['DELIVEREDORDER'],
+		order_status: orderStatusCode['DELIVEREDORDER'],
 		status: statusCode["ACTIVE"]
 	}
 
@@ -172,11 +173,10 @@ function subscriptionOrder(eachSubscription) {
 					}).then(function(subscriptionOrderItemRow) {
 
 						var desc = 'Subscription Auto Renewal Order';
-
 						return stripe.chargeCustomerCard(subscriptionCardDetails.stripe_customer_id, subscriptionCardDetails.stripe_card_id, subscriptionTotalAmount, desc, CURRENCY);
 
 					}).then(charge => {
-
+						
 						var paymentModelObj = {
 							date: new Date(charge.created),
 							amount: charge.amount / 100.0,
