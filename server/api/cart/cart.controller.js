@@ -555,6 +555,32 @@ export function cancelCoupon(req,res){
 	res.clearCookie('applied_coupon');
 	return res.status(200).send('Coupon Removed Successfully.');
 }
+
+
+export function checkAlreadySubscribed(req,res){
+	var product_id, user_id, subscriptionQueryObj = {};
+
+	product_id = req.params.id;
+	user_id = req.user.id;
+
+	subscriptionQueryObj={
+		user_id: user_id,
+		product_id: product_id,
+		status: status['ACTIVE']
+	} 
+
+	service.findOneRow('Subscription',subscriptionQueryObj)
+		.then(function(SubscriptionExist){
+			if(SubscriptionExist){
+				return res.status(200).send(SubscriptionExist);
+			}else{
+				return res.status(200).send(null);
+			}
+		}).catch(function(){
+			return res.status(400).send("Internal Server Error");
+		})	
+}
+
 function plainTextResponse(response) {
 	return response.get({
 		plain: true
