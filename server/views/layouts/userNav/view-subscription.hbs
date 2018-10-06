@@ -1,4 +1,20 @@
 <script>
+	function selectAll(ele) {
+		var checkboxes = document.getElementsByTagName('input');
+		if (ele.checked) {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = true;
+				}
+			}
+		} else {
+			for (var i = 0; i < checkboxes.length; i++) {
+				if (checkboxes[i].type == 'checkbox') {
+					checkboxes[i].checked = false;
+				}
+			}
+		}
+	}
 	function changeStatus(e) {
 		window.location.href = '/subscription?status=' + e.value;
 	}
@@ -7,7 +23,45 @@
 		window.location.href = '/subscription?keyword=' + e.value;
 	}
 
+	function editSubscription(e) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function (i) {
+			chkArray.push($(this).val());
+		});
+
+		var subscription_id = chkArray.join(',');
+
+		if (chkArray.length == 1) {
+			$("#subscription_id").val(subscription_id);
+			$('#subscriptionModel').modal('show');
+
+			$.ajax({
+				url: '/api/subscriptions/'+subscription_id+'?populate=Product',
+				type: 'GET',
+				success: function(data) {
+					$("#product_name").val(data.Product.product_name);
+					$("#product_id").val(data.product_id);
+					$("#subscription_quantity").val(data.quantity);
+					$("#subscription_end_date").val(data.end_date);
+				},
+				error: function(error){
+					console.log("error:",error);
+				}
+			});
+		}
+		else {
+			$('#gtc-subscription-alert').removeClass('alert-danger').addClass('alert-success');
+			$('#gtc-subscription-alert .subscription-message').text('Select one subscription product to edit')
+			$("#gtc-subscription-alert").fadeTo(7000, 500).slideUp(500, function () {
+			$("#gtc-subscription-alert").slideUp(500);
+			});
+		}
+	}
+
 	$(document).ready(function () {
+		$("#gtc-subscription-alert").hide();
+		$("#gtc-editSubscription-alert").hide();
+
 		$('.unSubscribe').click(function(e){
 
 			var subscriptionId = this.id;
@@ -47,6 +101,81 @@
 				}
 			});
 		});
+
+		$('#editSubscriptionForm').submit(function(e){
+			e.preventDefault();
+
+			if ($('#editSubscriptionForm').valid()) {
+
+				var subscription_id = $('#subscription_id').val();
+
+				let subscriptionInput = $("#editSubscriptionForm :input").filter(function(index, element) {
+					return $(element).val() != '';
+				}).serialize();
+
+				$.ajax({
+					url: '/api/subscriptions/'+subscription_id,
+					type: 'PUT',
+					data: subscriptionInput,
+					success: function(data) {
+						$('#gtc-editSubscription-alert').removeClass('alert-danger').addClass('alert-success');
+						$('#gtc-editSubscription-alert .editSubscription-message').text('Updated Successfully')
+						$("#gtc-editSubscription-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-editSubscription-alert").slideUp(500);
+						});
+						setTimeout(function(){
+							location.reload(true);
+						}, 2000);
+					},
+					error: function(error){
+						$('#gtc-editSubscription-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-editSubscription-alert .editSubscription-message').text('Internal Server Error. Please try later.')
+						$("#gtc-editSubscription-alert").fadeTo(7000, 500).slideUp(500, function () {
+							$("#gtc-editSubscription-alert").slideUp(500);
+						});
+					}
+				});
+			}			
+		})
+
+		$("#subscription_end_date").datepicker({
+			format: 'yyyy-mm-dd',
+			autoHide: true,
+			zIndex: 9999
+		});
+
+		$("#subscription_end_date").change(function() {
+			var endDate = $('#subscription_end_date').val();
+			let currentUTCDate = new Date();
+			var end_date = new Date(endDate);
+			if (end_date < currentUTCDate) {
+				$('#subscription_end_date').val("");
+				$('#gtc-editSubscription-alert').removeClass('alert-success').addClass('alert-danger');
+				$('#gtc-editSubscription-alert .editSubscription-message').text('End date cant be lesser than current date');
+				$("#gtc-editSubscription-alert").fadeTo(7000, 500).slideUp(500, function () {
+					$("#gtc-editSubscription-alert").slideUp(500);
+				});
+			}
+		});
+
+		$("#editSubscriptionForm").validate({
+			rules: {
+				quantity: {
+					digits: true
+				},
+				end_date: {
+					date: true
+				}
+			},
+			messages: {
+				quantity: {
+					digits: "Please enter valid quantity"
+				},
+				end_date: {
+					date: "Select valid end date"
+				}	
+			}
+		});
 	});
 </script>
 
@@ -85,6 +214,9 @@
 												</select>
 											</div>
 										</div>
+										<div class="form-group mx-sm-3 mb-2">
+											<button class="btn btn-small btn-muted" onclick="editSubscription(this);">EDIT</button>
+										</div>
 									</div>
 								</div>
 								<div class="col-md-5">
@@ -102,7 +234,13 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-12">		
+								<div class="col-sm-12">	
+									<div class="alert" id="gtc-subscription-alert">
+										<button type="button" class="close" data-dismiss="alert">
+											<span aria-hidden="true">&times;</span>
+										</button>
+										<span class="subscription-message"></span>
+									</div>	
 									<div class="cart-top-header">
 										<div class="alignleft cart-top-left">
 											<span class="m-r-sm text-muted">{{this.collectionSize}} items total</span>
@@ -120,12 +258,13 @@
 													<th scope="col">
 														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
-													<th style="width: 30%;" >Subscribed Products</th>
+													<th style="width: 20%;" >Subscribed Products</th>
 													<th>Price</th>
 													<th>Quantity</th>
-													<th >Purchased On</th>
+													<th>Purchased On</th>
 													<th style="width: 10%;">Last Order Placed On</th>
 													<th style="width: 10%;">Next Order Place On</th>
+													<th>End On</th>
 													<th colspan="2">Status</th>
 												</tr>
 											</thead>
@@ -144,6 +283,7 @@
 													<td>{{formatTime this.purchased_on "MMM DD, YYYY"}}</td>
 													<td>{{#if this.last_order_placed_on}}{{formatTime this.last_order_placed_on "MMM DD, YYYY"}}{{/if}}</td>
 													<td>{{#if this.next_order_place_on}}{{formatTime this.next_order_place_on "MMM DD, YYYY"}}{{/if}}</td>
+													<td>{{#if this.end_date}}{{formatTime this.end_date "MMM DD, YYYY"}}{{/if}}</td>
 													<td {{#ifCond this.status '==' ../statusCode.ACTIVE}} class="text_green_color"
 														{{else ifCond this.status '==' ../statusCode.INACTIVE}} class="text_red_color" {{/ifCond}}>
 														{{#ifCond this.status '==' ../statusCode.ACTIVE}}Active
@@ -194,6 +334,74 @@
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="subscriptionModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">EDIT SUBSCRIPTION</h5>
+			</div>
+			<div class="alert" id="gtc-editSubscription-alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="editSubscription-message"></span>
+            </div>
+			<form id="editSubscriptionForm" class="form">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="label-control"><b>Product Name:</b></label>
+								<input type="text" id="subscription_id" style="display:none"/>
+								<input type="text" id='product_name' readonly class="form-control-customized form-control-sm"
+								 required/>
+								 <input type="text" name="product_id" id="product_id" style="display:none"/>
+							</div>
+						</div>
+					</div><br/>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row">
+								<div class="col-lg-3">
+									<label class="label-control"><b>Quantity:</b></label>
+								</div>
+								<div class="col-lg-5">
+									<div class="input-group">
+										<input type="text" name="quantity" id="subscription_quantity" class="form-control-customized form-control-sm"
+								 		required/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div><br/>
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="row">
+								<div class="col-lg-3">
+									<label class="label-control"><b>End Date:</b></label>
+								</div>
+								<div class="col-lg-5">
+									<div class="input-group">
+										<input class="form-control-customized form-control-sm" id='subscription_end_date' name="end_date"
+										type="text" placeholder="mm/dd/yyyy">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</b>
+					</button>
+					<button type="submit" class="btn update-btn btn-small btn-muted">
+						<b>UPDATE</b>
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

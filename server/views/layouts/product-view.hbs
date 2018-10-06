@@ -121,7 +121,11 @@ $(document).ready(function() {
 		if (userInfo.email) {
 			if ((marketplace_id == 1 && (userInfo.UserPlans)) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
 				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
-					cartAPI(cartInfo);
+					if(marketplace_id == 4){
+						checkAlreadySubscribed(cartInfo);
+					}else{
+						cartAPI(cartInfo);
+					}				
 				} else {
 					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
@@ -133,19 +137,36 @@ $(document).ready(function() {
 		}
 	});
 
-		function cartAPI(cartInfo) {
-			$.ajax({
-				type: "POST",
-				url: "/api/cart/add-cart/" + productSpecs.id,
-				data: cartInfo,
-				success: function(response) {
-					location.reload();
-				},
-				error: function(error) {
-					$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+	function cartAPI(cartInfo) {
+		$.ajax({
+			type: "POST",
+			url: "/api/cart/add-cart/" + productSpecs.id,
+			data: cartInfo,
+			success: function(response) {
+				location.reload();
+			},
+			error: function(error) {
+				$('#quantityInput').notify(JSON.parse(error.responseText).message_details, "error");
+			}
+		});
+	}
+
+	function checkAlreadySubscribed(cartInfo){
+		$.ajax({
+			type: "GET",
+			url: "/api/cart/check-already-subscribed/"+productSpecs.id,
+			success: function(response){
+				if(!response){
+					cartAPI(cartInfo);
+				}else{
+					$('#alreadySubscribed').modal('show');
 				}
-			});
-		}
+			},error:function(error){
+				console.log("error::",error);
+				cartAPI(cartInfo);
+			}
+		})
+	}
 
      //ASK FOR VENDOR
     $('#SubmitAskBtn').prop('disabled', true);
@@ -848,6 +869,25 @@ function mailVendor(){
 				}
 			});
 		</script>
+	</div>
+</div>
+<div class="modal fade" id="alreadySubscribed" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Already Subscribed:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>You have already subscribed this product.</p>
+					<p>If you'd like to make any changes in subscription, please head <a href='/subscription'>here.</a></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/my-order/order'">
+					<b>Ok</button>
+			</div>
+		</div>
 	</div>
 </div>
 {{!-- {{#ifCond LoggedInUser.role "==" 3}} --}}
