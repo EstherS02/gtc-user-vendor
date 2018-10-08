@@ -531,7 +531,7 @@
 											</div>
 											<div class="col-lg-8">
 												<div class="form-group">
-													<input type="checkbox" id="sameAddr" {{shippingAddress.same_shipping_address}} {{#ifCond shippingAddress.same_shipping_address
+													<input type="checkbox" id="sameAddr" value='{{shippingAddress.same_shipping_address}}' {{#ifCond shippingAddress.same_shipping_address
 													 '==' 1}} checked {{/ifCond}} />
 													<small> My Shipping Address is the same as my billing address</small>
 												</div>

@@ -148,6 +148,7 @@ $(document).ready(function() {
 
 	$("#gtc-cart-alert").hide();
 	$('#gtc-feature-form-alert').hide();
+
 	$("#productImage").click(function(e) {
 		$("#imageUpload").click();
 	});
@@ -349,6 +350,30 @@ $(document).ready(function() {
 						return true;
 					} else { return false; }
 				}
+			},
+			exclusive_start_date:{
+				required:  function() {
+					if ($('#exclusive_sale').is(":checked")) {
+						return true;
+					} else { return false; }
+				}
+			},
+			exclusive_end_date:{
+				required: function() {
+					if ($('#exclusive_sale').is(":checked")) {
+						return true;
+					} else { return false; }
+				},
+				greaterThan: "#exclusive_start_date" 
+			},
+			exclusive_offer:{
+				required: function() {
+					if ($('#exclusive_sale').is(":checked")) {
+						return true;
+					} else { return false; }
+				},
+				number: true,
+				dollarsscents: true
 			}
 		},
 		messages: {
@@ -384,7 +409,17 @@ $(document).ready(function() {
 				required:"Please enter subscription duration",
 				digits: "Please enter a valid days"
 			},		
-			subscription_duration_unit: "Please select subscription duration type"
+			subscription_duration_unit: "Please select subscription duration type",
+			exclusive_start_date: "Please enter sales start date",
+			exclusive_end_date: {
+				required: "Please enter sales end date",
+				greaterThan: "End date should be greater than start date"
+			},
+			exclusive_offer: {
+				required: "Please enter offer amount",
+				number: "Please enter valid offer percentage",
+				dollarsscents: "Only two decimal values accepted"
+			}
 		}
 	});
 
@@ -720,4 +755,36 @@ $(document).ready(function() {
 		autoHide: true,
 		zIndex: 9999
 	});
+
+	//EXCLUSIVE SALES FUNCTIONALITY
+
+	$("#exclusive_start_date, #exclusive_end_date").datetimepicker({
+        dateFormat: 'yy-mm-dd',
+        timeFormat: 'HH:mm:ss'
+	}); 
+	  
+	if ($('#exclusive_sale').is(":checked")) {
+		$('.salesDiv').prop('disabled', false);
+	}
+
+	$("#exclusive_sale").change(function () {
+		let ischecked = $(this).is(':checked');
+		if (!ischecked) {
+			$('.salesDiv').prop('disabled', true);
+			$('.salesDiv').val(null);
+		} else {
+			$('.salesDiv').prop('disabled', false);
+		}
+	});
+
+	$.validator.addMethod("greaterThan", 
+		function(value, element, params) {
+
+			if (!/Invalid|NaN/.test(new Date(value))) {
+				return new Date(value) > new Date($(params).val());
+			}
+
+			return isNaN(value) && isNaN($(params).val()) 
+				|| (Number(value) > Number($(params).val())); 
+		},'Must be greater than {0}.');
 });
