@@ -70,10 +70,9 @@ export function homePage(req, res) {
 		wantToSell: function(callback) {
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
 					return callback(null, wantToSell.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -82,10 +81,9 @@ export function homePage(req, res) {
 		wantToBuy: function(callback) {
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTB'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToBuy) {
 					return callback(null, wantToBuy.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -94,10 +92,9 @@ export function homePage(req, res) {
 		wantToTrade: function(callback) {
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['WTT'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToTrade) {
 					return callback(null, wantToTrade.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -106,7 +103,7 @@ export function homePage(req, res) {
 		requestForQuote: function(callback) {
 			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
 			queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(requestForQuote) {
 					return callback(null, requestForQuote.rows);
 				}).catch(function(error) {
@@ -127,7 +124,7 @@ export function homePage(req, res) {
 		},
 		serviceMarketplace: function(callback) {
 			queryObj['marketplace_id'] = marketplace['SERVICE'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(serviceMarketplace) {
 					return callback(null, serviceMarketplace.rows);
 				}).catch(function(error) {
@@ -137,7 +134,7 @@ export function homePage(req, res) {
 		},
 		lifestyleMarketplace: function(callback) {
 			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(lifestyleMarketplace) {
 					return callback(null, lifestyleMarketplace.rows);
 				}).catch(function(error) {
