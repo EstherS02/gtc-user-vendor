@@ -1080,6 +1080,7 @@ function refundNotifications(refundOrderitemsID, user, refundamount) {
 			bodyParams.is_read = 1;
 			bodyParams.status = 1;
 			bodyParams.created_on = new Date();
+			bodyParams.created_by = user.first_name;
 			service.createRow("Notification", bodyParams);
 		});
 		return;
