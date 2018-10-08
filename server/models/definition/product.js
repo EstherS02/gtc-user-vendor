@@ -149,26 +149,26 @@ module.exports = (sequelize, DataTypes) => {
         individual_sale_only: {
             type: DataTypes.INTEGER,
             field: 'individual_sale_only',
-            allowNull: false
+            allowNull: true
         },
         exclusive_sale: {
             type: DataTypes.INTEGER,
             field: 'exclusive_sale',
-            allowNull: false
+            allowNull: true
         },
         exclusive_start_date: {
             type: DataTypes.DATE,
             field: 'exclusive_start_date',
-            allowNull: false
+            allowNull: true
         },
         exclusive_end_date: {
             type: DataTypes.DATE,
             field: 'exclusive_end_date',
-            allowNull: false
+            allowNull: true
         },
-        price: {
+        exclusive_sale: {
             type: DataTypes.DECIMAL(10, 2),
-            field: 'price',
+            field: 'exclusive_sale',
             allowNull: true
         },
         exchanging_product_quantity: {
