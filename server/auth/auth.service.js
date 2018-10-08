@@ -425,7 +425,8 @@ return compose()
 									status: {
 										$eq: status['ACTIVE']
 									}
-								}
+								},
+								required:false
 							}, {
 								model: model['VendorVerification'],
 								required: false
