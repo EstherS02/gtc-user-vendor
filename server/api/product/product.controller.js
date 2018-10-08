@@ -729,20 +729,28 @@ function resMessage(message, messageDetails) {
 
 export function addProduct(req, res) {
 
-	var product_id, createdProduct = {};
+	var product_id, marketplaceCode, createdProduct = {};
 
-	if (req.query.marketplace == 'Private Wholesale Marketplace')
+	if (req.query.marketplace == 'Private Wholesale Marketplace'){
 		req.query.marketplace_id = marketplace.WHOLESALE;
+		marketplaceCode = 'wholesale'
+	}		
 
-	if (req.query.marketplace == 'Public Marketplace')
+	if (req.query.marketplace == 'Public Marketplace'){
 		req.query.marketplace_id = marketplace.PUBLIC;
-
-	if (req.query.marketplace == 'Services Marketplace')
+		marketplaceCode = 'shop'
+	}
+		
+	if (req.query.marketplace == 'Services Marketplace'){
 		req.query.marketplace_id = marketplace.SERVICE;
-
-	if (req.query.marketplace == 'Lifestyle Marketplace')
+		marketplaceCode = 'services'
+	}
+		
+	if (req.query.marketplace == 'Lifestyle Marketplace'){
 		req.query.marketplace_id = marketplace.LIFESTYLE;
-
+		marketplaceCode = 'lifestyle'
+	}
+		
 	delete req.query.marketplace;
 
 	if (req.user.role === roles['VENDOR']) {
@@ -795,8 +803,7 @@ export function addProduct(req, res) {
 			}
 		}).then(function(updatedDiscount) {
 
-			//aunnouncementMailToSubscribedUser(createdProduct);
-
+			aunnouncementMailToSubscribedUser(createdProduct, marketplaceCode);
 			return res.status(200).send({
 				"message": "Success",
 				"messageDetails": "Product Created Successfully"
@@ -977,23 +984,82 @@ function createDiscount(discountElement, product_id) {
 	return service.createRow('Discount', discountElement);
 }
 
-/*function aunnouncementMailToSubscribedUser(createdProduct){
+function aunnouncementMailToSubscribedUser(createdProduct,marketplaceCode){
 
-	var emailTemplateQueryObj = {};
-	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
-	
-	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
-		.then(function (response) {
-			if (response) {
+	var offset, limit, field, order;
+	var vendorFollowerQueryObj = {}, vendorFollowerIncludeArr =[];
 
-			}else{
-				return;
-			}
+	offset = null;
+	limit = null;
+	field = 'id';
+	order = 'asc';
+
+	vendorFollowerQueryObj = {
+		vendor_id: createdProduct.vendor_id,
+		status: status['ACTIVE']
+	}
+
+	vendorFollowerIncludeArr = [
+		{
+			"model": model['User'],
+			where: {
+				status: status["ACTIVE"]
+			},
+			attributes: ['id', 'first_name', 'user_contact_email'],
+		},
+		{
+			"model": model['Vendor'],
+			where: {
+				status: status["ACTIVE"]
+			},
+			attributes: ['id', 'vendor_name'],
+		}
+	]
+
+	return service.findAllRows('VendorFollower', vendorFollowerIncludeArr, vendorFollowerQueryObj, offset, limit, field, order)
+		.then(function(vendorFollowers){
+
+			_.forOwn(vendorFollowers.rows, function(eachVendorFollower) {
+				sentMailToFollowers(eachVendorFollower, createdProduct,marketplaceCode);
+			});
 
 		}).catch(function(error){
 			return;
 		})
-}*/
+}
+
+function sentMailToFollowers(eachVendorFollower, createdProduct,marketplaceCode){
+
+	var emailTemplateQueryObj = {};
+	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
+
+	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
+		.then(function (response) {
+			if (response) {
+
+				var email = eachVendorFollower.User.user_contact_email;
+				var subject = response.subject;
+				subject = subject.replace('%VENDOR_NAME%', eachVendorFollower.Vendor.vendor_name);
+				var body;
+				body = response.body.replace('%USER_NAME%', eachVendorFollower.User.first_name);
+				body = body.replace(/%VENDOR_NAME%/g, eachVendorFollower.Vendor.vendor_name);
+				body = body.replace('%PRODUCT_NAME%', createdProduct.product_name);
+				body = body.replace('%URL%', marketplaceCode+'/'+createdProduct.product_slug+'/'+createdProduct.id);
+
+				sendEmail({
+                    to: email,
+                    subject: subject,
+                    html: body
+				});
+
+				return;
+			}else{
+				return;
+			}
+		}).catch(function(error){
+			return;
+		})
+}
 
 export function featureProductWithPayment(req, res) {
 
