@@ -56,7 +56,7 @@ var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
             <div class="col-sm-2">
                 {{> vendor/vendor-side-navbar}}
             </div>
-			{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].status '==' statusCode.ACTIVE}}
+			{{#if LoggedInUser.Vendor.VendorPlans}}
             <div class="col-sm-10">
                 <div class="ibox">
                     <div class="ibox-content">
@@ -111,7 +111,7 @@ var vendor_id = {{{ DisplayJSON LoggedInUser.Vendor.id}}}
             </div>
 			{{else}}
 				{{> plan-inactive}}
-			{{/ifCond}}
+			{{/if}}
         </div>
     </div>
 </div>
