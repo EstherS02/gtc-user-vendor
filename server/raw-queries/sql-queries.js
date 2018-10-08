@@ -96,11 +96,16 @@ let sqlQueries = {
 		return query;
 	},
 	countryCountForVendor: function(params) {
-		let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id and vendor_user_product.marketplace_id=(` + params.marketplace_id + `) GROUP BY country.name ORDER by region.id`;
-		return query;
+		if(params.marketplace_id){
+			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id and vendor_user_product.marketplace_id=(` + params.marketplace_id + `) and vendor_user_product.status=1 GROUP BY country.name ORDER by region.id`;
+			return query;
+		}else{
+			let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id and vendor_user_product.status=1 GROUP BY country.name ORDER by region.id`;
+			return query;
+		}
 	},
 	countryCountForVendorHomepage: function() {
-		let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id  GROUP BY country.name ORDER by region.id`;
+		let query = `SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(vendor_user_product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN vendor_user_product on country.id = vendor_user_product.origin_id and vendor_user_product.status=1 GROUP BY country.name ORDER by region.id`;
 		return query;
 	},
 	vendorCountByMarkerplace: function() {
@@ -164,6 +169,7 @@ let sqlQueries = {
 		}
 	},
 	productCountBasedCountry: function(productCountQueryParams) {
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",productCountQueryParams)
 		let baseQuery = "SELECT region.id as regionid,region.name as regionname,country.id as countryid,country.name as countryname,COUNT(product.id) as productcount FROM country RIGHT OUTER JOIN region on country.region_id = region.id LEFT OUTER JOIN product on country.id = product.product_location"
 		let groupQuery = "GROUP BY country.name ORDER by region.id"
 		if(productCountQueryParams.marketplace_id && productCountQueryParams.keyword){
