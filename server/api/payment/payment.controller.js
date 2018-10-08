@@ -797,10 +797,8 @@ export function makeplanPayment(req, res) {
 				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(response),
-				created_by: req.user.first_name,
-				created_on: new Date()
-				
+				payment_response: JSON.stringify(response)
+
 			};
 			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
