@@ -119,6 +119,7 @@
                     <div class="col-md-9 no-padding">
                         <div class="ibox">
                             <div class="ibox-content">
+								<div class="row">
                                 {{#each publicShop.rows}}
 									<div class="col-md-6">
 										<div class="product-body">
@@ -185,6 +186,7 @@
 										</div>
 									</div>
 								 {{/each}}
+								 </div>
                                 {{#ifCond publicShop.count '>' queryPaginationObj.limit}}
                                 <div class="row">
                                     <div class="col-md-3">
