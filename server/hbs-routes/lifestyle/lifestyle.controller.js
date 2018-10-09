@@ -26,6 +26,7 @@ export function lifestyle(req, res) {
 	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
 		LoggedInUser = req.gtcGlobalUserObj;
 
+	limit = 20;
 	offset = 0;
 	field = "id";
 	order = "asc";
@@ -70,11 +71,11 @@ export function lifestyle(req, res) {
 		featuredProducts: function(callback) {
 			queryObj['featured_position_subscription_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
-			limit = 6;
+			var featureLimit = 6;
 			var order = [
 				sequelize.fn('RAND'),
 			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
+			productService.RandomProducts(productModel, queryObj, featureLimit, order)
 				.then(function(response) {
 					return callback(null, response.rows);
 				}).catch(function(error) {
@@ -82,17 +83,13 @@ export function lifestyle(req, res) {
 					return callback(null);
 				});
 		},
-		lifestyle: function(callback) {
-			const includeArr = [];
-			const productOffset = 0;
-			const productLimit = 20;
-			const productField = "id";
-			const productOrder = "asc";
+		lifestyleMarketplace: function(callback) {
 			delete queryObj['featured_position_subscription_landing'];
 			delete queryObj['is_featured_product'];
-			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
-				.then(function(lifestyle) {
-					return callback(null, lifestyle);
+			queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(lifestyleMarketplace) {
+					return callback(null, lifestyleMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -145,7 +142,7 @@ export function lifestyle(req, res) {
 				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				featuredProducts: results.featuredProducts,
-				lifestyle: results.lifestyle,
+				lifestyleMarketplace: results.lifestyleMarketplace,
 				subscriptionProviders: results.subscriptionProviders,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser
