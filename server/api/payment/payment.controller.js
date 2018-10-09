@@ -797,10 +797,8 @@ export function makeplanPayment(req, res) {
 				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(response),
-				created_by: req.user.first_name,
-				created_on: new Date()
-				
+				payment_response: JSON.stringify(response)
+
 			};
 			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
@@ -895,6 +893,7 @@ function sendUpgrademail(plan_id, user) {
 export function refundOrder(req, res) {
 	var userdetails = req.user;
 	var refundOrderitemsID = [];
+	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
@@ -937,6 +936,7 @@ export function refundOrder(req, res) {
 			var refundamt = parseFloat(createdPaymentRow.amount).toFixed(2);
 			if(req.user.user_contact_email){
 				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
+				notification.push(refundNotifications(refundOrderitemsID, req.user, refundamt));
 			}
 			let orderPaymentModel = {
 				order_id: order_id,
@@ -1045,3 +1045,44 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 		}
 	})
 }
+function refundNotifications(refundOrderitemsID, user, refundamount) {
+	var orderItemid = refundOrderitemsID;
+	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
+	var queryObj = {
+		id: orderItemid
+	}
+	var field = 'created_on';
+	var order = "asc";
+	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
+		if (OrderRefundList) {
+			var orderRefundList = OrderRefundList.rows;
+	        var queryObjNotification = {};
+	        var NotificationTemplateModel = 'NotificationSetting';
+	        queryObjNotification['code'] = config.notification.templates.refundRequest;
+	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		    .then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = user.id;
+			var description = response.description;
+			description = description.replace('%FirstName%',user.first_name);
+			description = description.replace('%LastName%',user.last_name);
+			description = description.replace('%Refund_Amount%', refundamount);
+			description = description.replace('%vendor_url%', '/vendor/' + user.Vendor.id);
+			_.forOwn(orderRefundList, function(orders) {
+				description = description.replace('%order.number%', orders.Order.id);
+				description = description.replace('%track%', '/my-order/order/' + orders.Order.id);
+			});
+			bodyParams.description = description;
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			bodyParams.created_by = user.first_name;
+			service.createRow("Notification", bodyParams);
+		});
+		return;
+	}
+})
+}
+

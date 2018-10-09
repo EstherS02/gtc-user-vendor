@@ -98,7 +98,7 @@ $(document).ready(function() {
 			<div class="row">
 				<div class="col-md-3 search-list-left">
 					<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
-					<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{locations.count}})</p>
+					<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{vendors.count}})</p>
 					<ul class="right-list-view category-fixed">
 						{{#each VendorCountByCountry}}
 							<li>
@@ -116,7 +116,7 @@ $(document).ready(function() {
 						{{/each}}
 					</ul>
 
-					{{#ifCond marketplaceURl "==" 'sellers'}}
+					{{#ifCond marketplaceURl "==" 'directories'}}
 						<h5 class="right-header-sm" style="margin-top:10px">FILTER BY MARKETPLACE</h5>
 						<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
 						<ul class="right-list-view category-fixed">

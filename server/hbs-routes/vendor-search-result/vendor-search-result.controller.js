@@ -18,7 +18,6 @@ export function index(req, res) {
 	var marketplaceURl = fullUrl.replace(req.url, '').replace(req.protocol + '://' + req.get('host'), '').replace('/', '').trim();
 	var selectedLocation = 0;
 	var selectedMarketPlace = 0;
-
 	var page;
 	var queryURI = {};
 	var includeArr = [];
@@ -75,13 +74,17 @@ export function index(req, res) {
 		queryParameters['marketplace_id'] = marketplace['LIFESTYLE'];
 	}
 
+	queryPaginationObj['marketplaceURl'] = marketplaceURl;
+
 	if (selectedMarketPlaceID) {
 		queryURI['marketplace'] = parseInt(selectedMarketPlaceID);
+	}else{
+		queryURI['marketplace'] = req.query.marketplace;
 	}
-
+	
 	if (req.query.marketplace) {
 		queryParameters['marketplace_id'] = req.query.marketplace;
-		queryURI['selected_marketplace'] = req.query.marketplace;
+		// queryURI['selected_marketplace'] = req.query.marketplace;
 	}
 
 	if (req.query.location) {
@@ -181,6 +184,8 @@ export function index(req, res) {
 			var countryCountParams = [];
 			if (selectedMarketPlaceID) {
 				countryCountParams['marketplace_id'] = parseInt(selectedMarketPlaceID);
+			}else{
+				countryCountParams['marketplace_id'] = req.query.marketplace;
 			}
 			var resultObj = {};
 			if (countryCountParams.marketplace_id) {
