@@ -431,6 +431,17 @@ $(document).ready(function() {
 		return this.optional(element) || /^\d{0,30}(\.\d{0,2})?$/i.test(value);
 	}, "You must include two decimal places");
 
+	$.validator.addMethod("greaterThan", 
+	function(value, element, params) {
+
+		if (!/Invalid|NaN/.test(new Date(value))) {
+			return new Date(value) > new Date($(params).val());
+		}
+
+		return isNaN(value) && isNaN($(params).val()) 
+			|| (Number(value) > Number($(params).val())); 
+	},'Must be greater than {0}.');
+
 	$("#productForm").submit(function(e) {
 		e.preventDefault();
 		if ($('#productForm').valid()) {
@@ -776,15 +787,4 @@ $(document).ready(function() {
 			$('.salesDiv').prop('disabled', false);
 		}
 	});
-
-	$.validator.addMethod("greaterThan", 
-		function(value, element, params) {
-
-			if (!/Invalid|NaN/.test(new Date(value))) {
-				return new Date(value) > new Date($(params).val());
-			}
-
-			return isNaN(value) && isNaN($(params).val()) 
-				|| (Number(value) > Number($(params).val())); 
-		},'Must be greater than {0}.');
 });
