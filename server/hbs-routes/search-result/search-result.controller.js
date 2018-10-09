@@ -340,7 +340,7 @@ export function index(req, res) {
 				});
 		}
 	}, function(error, results) {
-		queryPaginationObj['maxSize'] = 2;
+		queryPaginationObj['maxSize'] = 5;
 		if (!error && results) {
 			res.render('search', {
 				title: "Global Trade Connect",
