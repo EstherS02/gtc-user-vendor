@@ -1,6 +1,5 @@
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <script>
-		{{{DisplayJSON VendorCountByCountry}}}
 	function sortSearch(e) {
 		var url = window.location.href;
 		var uri = updateQueryStringParameter(url, 'field', e.value);
@@ -18,31 +17,33 @@
 	}
 </script>
 <script type="text/javascript">
-$(document).ready(function() {
+	$(document).ready(function() {
 
-	function fix_height() {
-		var bodyHeight = $("body").height() - 378;
-		var wrapperHeigh = $('#page-wrapper').height();
-		if (bodyHeight > wrapperHeigh) {
-			$('#page-wrapper').css("min-height", bodyHeight + "px");
+		function fix_height() {
+			var bodyHeight = $("body").height() - 378;
+			var wrapperHeigh = $('#page-wrapper').height();
+			if (bodyHeight > wrapperHeigh) {
+				$('#page-wrapper').css("min-height", bodyHeight + "px");
+			}
 		}
-	}
 
-	$(window).bind("load resize scroll", function() {
-		fix_height();
+		$(window).bind("load resize scroll", function() {
+			fix_height();
+		});
 	});
-});
 </script>
 <section>
 	<div class="gtc-container">
-	
 
-	<div class="search-list-header">
+
+		<div class="search-list-header">
 			<div class="top-search-sm-header">
 				<div class="alignleft">
 					<ul class="breadcrumb">
 						<li>
-							<a href="javascript:;" class="active">{{#if queryURI.location}}{{Location queryURI.location locations.rows}}{{else}}Global{{/if}}</a>
+							<a href="javascript:;" class="active">
+								{{#if queryURI.location}}{{Location queryURI.location locations.rows}}{{else}}Global{{/if}}
+							</a>
 						</li>
 						<li>
 							<a href="#" class="active">{{Titlecase marketplaceURl}}</a>
@@ -67,15 +68,26 @@ $(document).ready(function() {
 			</div>
 			<div class="row m-t-sm">
 				<div class="col-md-8">
-					<h3>Showing <b>{{SUMFloat queryPaginationObj.offset 1}}-{{#ifCond vendors.count '<' queryPaginationObj.limit}} {{vendors.count}} {{else}} {{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}</b> of <b>{{vendors.count}} Vendors</b> matching {{#if selectedMarketPlace}}in the <b>{{selectedMarketPlace.name}}</b>{{else if marketplaceURl}}<b>{{marketplaceURl}}</b>{{/if}}</h3>
+					<h3>Showing
+						<b>{{SUMFloat queryPaginationObj.offset 1}}-
+							{{#ifCond vendors.count '<' queryPaginationObj.limit}} {{vendors.count}} {{else}}{{SUMFloat queryPaginationObj.limit queryPaginationObj.offset}} {{/ifCond}}
+						</b> of
+						<b>{{vendors.count}} Vendors</b> matching
+						{{#if selectedMarketPlace}}in the
+							<b>{{selectedMarketPlace.name}}</b>{{else if marketplaceURl}}
+							<b>{{marketplaceURl}}</b>
+						{{/if}}
+					</h3>
 				</div>
 				<div class="col-md-2">
 					<div class="alignright">
 						<label class="label-control m-r-md">View</label>
-						<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'" class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}">
+						<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='grid') 'null'}}'"
+						 class="btn btn-sm {{#ifCond queryURI.layout "==" 'grid'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'list'}} btn-white{{/ifCond}}">
 							<i class="fa fa-th-large"></i>
 						</button>
-						<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'" class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}">
+						<button type="submit" onclick="location.href = '../{{marketplaceURl}}/search?{{QueryParams queryURI (FrameObject layout='list') 'null'}}'"
+						 class="btn btn-sm {{#ifCond queryURI.layout "==" 'list'}}rounded {{/ifCond}} {{#ifCond queryURI.layout "==" 'grid'}} btn-white{{/ifCond}}">
 							<i class="fa fa-th-list"></i>
 						</button>
 					</div>
@@ -85,9 +97,10 @@ $(document).ready(function() {
 						<div class="form-group">
 							<label class="label-control m-r-md">Sort by</label>
 							<div class="select-container">
-								<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border" id="sortValue">
+								<select name="order" onchange="sortSearch(this)" class="form-control-customized rounded form-control-sm form-control-border"
+								 id="sortValue">
 									<option disabled="true" selected>Sort by</option>
-									<option value="vendor_name" >Alphabetical</option>
+									<option value="vendor_name">Alphabetical</option>
 								</select>
 							</div>
 						</div>
@@ -95,205 +108,203 @@ $(document).ready(function() {
 				</div>
 			</div>
 		</div>
-			<div class="row">
-				<div class="col-md-3 search-list-left">
-					<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
-					<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{vendors.count}})</p>
+		<div class="row">
+			<div class="col-md-3 search-list-left">
+				<h5 class="right-header-sm" style="margin-top:10px">FILTER BY LOCATION</h5>
+				<p class="right-header-xs bg{{queryURI.marketplace}}">GLOBAL ({{vendors.count}})</p>
+				<ul class="right-list-view category-fixed">
+					{{#each VendorCountByCountry}}
+						<li>
+							<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">{{this.regionname}} ({{this.count}})</a>
+							<ul class="inner-list-view collapse" id="list{{this.regionname}}">
+								{{#each this.subCategory}}
+									<li>
+										<a {{#ifCond ../../queryURI.location "==" this.countryid}} class="active" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 location=this.countryid) 'null'}}">
+											<span>{{this.countryname}} ({{this.count}})</span>
+										</a>
+									</li>
+								{{/each}}
+							</ul>
+						</li>
+					{{/each}}
+				</ul>
+
+				{{#ifCond marketplaceURl "==" 'directories'}}
+					<h5 class="right-header-sm" style="margin-top:10px">FILTER BY MARKETPLACE</h5>
+					<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
 					<ul class="right-list-view category-fixed">
-						{{#each VendorCountByCountry}}
+						{{#each allMarkerPlace.rows}}
 							<li>
-								<a data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listAGRICULTURE" class="collapsed coll" href="#list{{this.regionname}}">{{this.regionname}} ({{this.count}})</a>
-								<ul class="inner-list-view collapse" id="list{{this.regionname}}">
-									{{#each this.subCategory}}
-										<li>
-											<a {{#ifCond ../../queryURI.location "==" this.countryid}} class="active" {{/ifCond}} href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=1 location=this.countryid) 'null'}}">
-												<span>{{this.countryname}} ({{this.count}})</span>
-											</a>
-										</li>
-									{{/each}}
-								</ul>
+								<a {{#ifCond ../queryURI.marketplace "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=this.id) 'null'}}">
+									<span>{{name}} ({{vendor_count}})</span>
+								</a>
 							</li>
 						{{/each}}
 					</ul>
+				{{/ifCond}}
 
-					{{#ifCond marketplaceURl "==" 'directories'}}
-						<h5 class="right-header-sm" style="margin-top:10px">FILTER BY MARKETPLACE</h5>
-						<p class="right-header-xs bg{{queryURI.marketplace}}">ALL TYPES ({{locations.count}})</p>
-						<ul class="right-list-view category-fixed">
-							{{#each allMarkerPlace.rows}}
-									<li>
-										<a {{#ifCond ../queryURI.selected_marketplace "==" this.id}} class="active" {{/ifCond}} href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=1 marketplace=this.id) 'null'}}">
-											<span>{{name}} ({{vendor_count}})</span>
-										</a>
-									</li>
-							{{/each}}
-						</ul>
-					{{/ifCond}}
-
-				</div>
-				<div class="col-md-9">
-					<div class="search-sm-header">
-						<div class="alignleft">
-							<span class="text-sm">
-								<strong>TOP {{ convertUpperCase marketplaceURl}}
-								</strong>
-							</span>
-						</div>
-						<div style="clear: both;"></div>
+			</div>
+			<div class="col-md-9">
+				<div class="search-sm-header">
+					<div class="alignleft">
+						<span class="text-sm">
+							<strong>TOP {{ convertUpperCase marketplaceURl}}
+							</strong>
+						</span>
 					</div>
-					<div class="row">
-						{{#ifCond vendors.count '==' 0}}
-							<div class="col-md-12">
-								<p class="text-primary text-center no-margins">Not available.</p>
-							</div>
-						{{/ifCond}}
-						{{#ifCond layout_type "==" "grid" }}
-							{{#each vendors.rows}}
-								<div class="col-md-4">
-									<div class="product-body">
-										<div class="table-responsive">
-											<table class="table shoping-cart-table">
-												<tbody>
-													<tr class="d-flex">
-														<td class="col-3">
-															<div class="product-left-col">
-																<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
-															</div>
-														</td>
-														<td class="col-9">
-															<div class="product-middle-col">
-																<h3>
-																	<a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-																</h3>
-																<div class="row no-margins">
-																	<div class="col-md-4 col-4 no-padding">
-																		<span>Origin</span>
-																	</div>
-																	<div class="col-md-8 col-8 no-padding overflow-txt">
-																		<span class="text-500">{{this.origin}}</span>
-																	</div>
-																	<div class="col-md-4 col-4 no-padding">
-																		<span>Inventory</span>
-																	</div>
-																	<div class="col-md-8 col-8 no-padding">
-																		<b class="text-blue">{{this.product_count}} Products</b> Listed
-																		{{!-- <span class="text-red text-500 d-block">6 on Sale
+					<div style="clear: both;"></div>
+				</div>
+				<div class="row">
+					{{#ifCond vendors.count '==' 0}}
+						<div class="col-md-12">
+							<p class="text-primary text-center no-margins">Not available.</p>
+						</div>
+					{{/ifCond}}
+					{{#ifCond layout_type "==" "grid" }}
+						{{#each vendors.rows}}
+							<div class="col-md-4">
+								<div class="product-body">
+									<div class="table-responsive">
+										<table class="table shoping-cart-table">
+											<tbody>
+												<tr class="d-flex">
+													<td class="col-3">
+														<div class="product-left-col">
+															<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+														</div>
+													</td>
+													<td class="col-9">
+														<div class="product-middle-col">
+															<h3>
+																<a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+															</h3>
+															<div class="row no-margins">
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Origin</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding overflow-txt">
+																	<span class="text-500">{{this.origin}}</span>
+																</div>
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Inventory</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding">
+																	<b class="text-blue">{{this.product_count}} Products</b> {{!-- <span class="text-red text-500 d-block">6 on Sale
 																			<span> --}}
-																	</div>
-																	<div class="col-md-4 col-4 no-padding">
-																		<span>Seller Rating</span>
-																	</div>
-																	<div class="col-md-8 col-8 no-padding">
-																		<div class="v-rating">
-																			{{starCount rating}}
-																		</div>
+																</div>
+																<div class="col-md-4 col-4 no-padding">
+																	<span>Seller Rating</span>
+																</div>
+																<div class="col-md-8 col-8 no-padding">
+																	<div class="v-rating">
+																		{{starCount rating}}
 																	</div>
 																</div>
 															</div>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
 								</div>
-							{{/each}}
-						{{/ifCond}}
-					</div>
+							</div>
+						{{/each}}
+					{{/ifCond}}
+				</div>
 
-					<div class="row">
-						{{#ifCond layout_type "==" "list" }}
-							{{#each vendors.rows}}
-								{{!-- <div class="col-md-4">
+				<div class="row">
+					{{#ifCond layout_type "==" "list" }}
+						{{#each vendors.rows}}
+							{{!-- <div class="col-md-4">
 										<div class="product-body"> --}}
-								<div class="table-responsive">
-									<table class="table shoping-cart-table">
-										<tbody>
-											<tr class="d-flex">
-												<td class="col-3">
-													<div class="product-left-col">
-														<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
-													</div>
-												</td>
-												<td class="col-7">
-													<div class="product-middle-col">
-														<h3>
-															<a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
-														</h3>
-														<div class="row no-margins">
-															<div class="col-md-4 col-4 no-padding">
-																<span>Origin</span>
-															</div>
-															<div class="col-md-8 col-8 no-padding overflow-txt">
-																<span class="text-500">{{this.origin}}</span>
-															</div>
-															<div class="col-md-4 col-4 no-padding">
-																<span>Inventory</span>
-															</div>
-															<div class="col-md-8 col-8 no-padding">
-																<b class="text-blue">{{this.product_count}} Products</b> Listed
-																{{!-- <span class="text-red text-500 d-block">6 on Sale
+							<div class="table-responsive">
+								<table class="table shoping-cart-table">
+									<tbody>
+										<tr class="d-flex">
+											<td class="col-3">
+												<div class="product-left-col">
+													<img class="object-fit" src="{{this.url}}" alt="{{this.vendor_name}}" title="{{this.vendor_name}}">
+												</div>
+											</td>
+											<td class="col-7">
+												<div class="product-middle-col">
+													<h3>
+														<a href="/vendor/{{this.id}}" class="text-blue">{{Titlecase this.vendor_name}}</a>
+													</h3>
+													<div class="row no-margins">
+														<div class="col-md-4 col-4 no-padding">
+															<span>Origin</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding overflow-txt">
+															<span class="text-500">{{this.origin}}</span>
+														</div>
+														<div class="col-md-4 col-4 no-padding">
+															<span>Inventory</span>
+														</div>
+														<div class="col-md-8 col-8 no-padding">
+															<b class="text-blue">{{this.product_count}} Products</b> {{!-- <span class="text-red text-500 d-block">6 on Sale
 																	<span> --}}
-															</div>
+														</div>
 
+													</div>
+												</div>
+											</td>
+											<td class="col-3">
+												<div class="product-right-col">
+													<div class="row">
+														<span>Seller Rating</span>
+													</div>
+													<div class="row">
+														<div class="v-rating">
+															{{starCount rating}}
 														</div>
 													</div>
-												</td>
-												<td class="col-3">
-													<div class="product-right-col">
-														<div class="row">
-															<span>Seller Rating</span>
-														</div>
-														<div class="row">
-															<div class="v-rating">
-																{{starCount rating}}
-															</div>
-														</div>
-													</div>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							{{/each}}
-						{{/ifCond}}
-					</div>
-					<div class="search-sm-header">
-						<br>
-					</div>
-					<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
-					</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						{{/each}}
+					{{/ifCond}}
+				</div>
+				<div class="search-sm-header">
+					<br>
+				</div>
+				<div class="row col-md-12 showing_categ" style="padding: 6px;margin-top: 10px; margin-bottom: 10px;">
 				</div>
 			</div>
-			{{#ifCond vendors.count '>' queryPaginationObj.limit}}
-				<div class="row">
-					<div class="col-md-3">
-					</div>
-					<div class="col-md-7">
-						{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-							<nav aria-label="Page navigation example">
-								<ul class="pagination justify-content-center">
-									{{#unless startFromFirstPage}}
-										<li class="page-item">
-											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-										</li>
-									{{/unless}}
-									{{#each pages}}
-										<li class="page-item {{#if isCurrent}} active {{/if}}">
-											<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-										</li>
-									{{/each}}
-									{{#unless endAtLastPage}}
-										<li class="page-item">
-											<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-										</li>
-									{{/unless}}
-								</ul>
-							</nav>
-						{{/pagination}}
-					</div>
-				</div>
-			{{/ifCond}}
 		</div>
-	</section>
+		{{#ifCond vendors.count '>' queryPaginationObj.limit}}
+			<div class="row">
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-7">
+					{{#pagination vendors.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+						<nav aria-label="Page navigation example">
+							<ul class="pagination justify-content-center">
+								{{#unless startFromFirstPage}}
+									<li class="page-item">
+										<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
+									</li>
+								{{/unless}}
+								{{#each pages}}
+									<li class="page-item {{#if isCurrent}} active {{/if}}">
+										<a class="page-link" href="../{{../../marketplaceURl}}/search?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+									</li>
+								{{/each}}
+								{{#unless endAtLastPage}}
+									<li class="page-item">
+										<a class="page-link" href="../{{../marketplaceURl}}/search?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
+									</li>
+								{{/unless}}
+							</ul>
+						</nav>
+					{{/pagination}}
+				</div>
+			</div>
+		{{/ifCond}}
+	</div>
+</section>
 {{> footer/bottom-footer}}

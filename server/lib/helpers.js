@@ -221,6 +221,33 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
         return newdate;
     }
 });
+Handlebars.registerHelper('timeLeft', function(context,options){
+    var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
+    var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
+    var secondsDiff='';
+    console.log("--------------------==================",endDate.diff(currentDate) )
+    if(endDate.diff(currentDate)>0){
+    var intervals = ['days','hours','minutes'],
+      out = [];
+    var arrayEle = [];
+  for(var i=0; i<intervals.length; i++){
+      var diff = endDate.diff(currentDate, intervals[i]);
+      endDate.add(diff, intervals[i]);
+      arrayEle[intervals[i]] = diff;
+      out.push(diff + ' ' + intervals[i]);
+  }
+    if(arrayEle['minutes']<60){
+    secondsDiff = arrayEle['minutes']+'m left!';        
+    }else if(arrayEle['hours']<24){
+    secondsDiff = arrayEle['hours']+'h '+arrayEle['minutes']%60+'m left!';
+    }else if(arrayEle['days']<30){
+    secondsDiff = arrayEle['days']+'d '+arrayEle['hours']%24+'h left!';
+    }
+    }
+    return secondsDiff;
+
+
+});
 
 var serialize = function(obj) {
     var str = [];

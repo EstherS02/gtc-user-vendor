@@ -167,10 +167,10 @@ export function orderHistory(req, res) {
 		},
 
 	}, function(err, results) {
-		maxSize = results.orderHistory.count / limit;
-		if (results.orderHistory.count % limit)
-			maxSize++;
-		queryPaginationObj['maxSize'] = maxSize;
+		// maxSize = results.orderHistory.count / limit;
+		// if (results.orderHistory.count % limit)
+		// 	maxSize++;
+		queryPaginationObj['maxSize'] = 5;
 		console.log("start_date", queryPaginationObj, queryURI);
 
 		var total_transaction = 0.00;
