@@ -6,6 +6,7 @@ const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
+const productService = require('../../../api/product/product.service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const marketplace_type = require('../../../config/marketplace_type');
@@ -17,7 +18,6 @@ import series from 'async/series';
 var async = require('async');
 var _ = require('lodash');
 const populate = require('../../../utilities/populate');
-
 
 export function vendorShop(req, res) {
 	var LoggedInUser = {};
@@ -77,11 +77,10 @@ export function vendorShop(req, res) {
 				return callback(null);
 			}
 		},
-		publicShop: function(callback) {
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(wantToSell) {
-					return callback(null, wantToSell);
-
+		publicMarketplace: function(callback) {
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(publicMarketplace) {
+					return callback(null, publicMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -203,7 +202,7 @@ export function vendorShop(req, res) {
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				marketPlaceType: marketplace_type,
-				publicShop: results.publicShop,
+				publicMarketplace: results.publicMarketplace,
 				categories: results.categories,
 				bottomCategory: bottomCategory,
 				categoriesWithCount: results.categoriesWithCount,

@@ -245,7 +245,7 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTB - {{this.product_name}}</a>
+														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTB - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -319,8 +319,8 @@
 											</td>
 											<td class="col-7">
 												<div class="product-middle-col">
-													<h3>
-														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">WTT - {{this.product_name}}</a>
+													<h3 title="{{this.product_name}}">
+														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTT - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -399,7 +399,7 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">RFQ - {{this.product_name}}</a>
+														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>RFQ - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -497,7 +497,7 @@
 														</div>
 														<div class="col-md-9 col-9 no-padding overflow-txt">
 															<a class="text-500" href="/shop/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}"
-															 title="{{this.Category.name}} > {{this.SubCategory}}">{{this.Category.name}} >
+															 title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} >
 																{{this.SubCategory.name}}</a>
 														</div>
 														<div class="col-md-3 col-3 no-padding">

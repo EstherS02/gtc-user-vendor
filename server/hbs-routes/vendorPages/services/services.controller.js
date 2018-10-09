@@ -6,6 +6,7 @@ const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
+const productService = require('../../../api/product/product.service');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
 const shopService=require('../../../api/vendor/vendor-service')
@@ -75,11 +76,10 @@ export function vendorServices(req, res) {
 				return callback(null);
 			}
 		},
-		publicService: function(callback) {
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(response) {
-					return callback(null, response);
-
+		serviceMarketplace: function(callback) {
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(serviceMarketplace) {
+					return callback(null, serviceMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -200,7 +200,7 @@ export function vendorServices(req, res) {
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
-				publicService: results.publicService,
+				serviceMarketplace: results.serviceMarketplace,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				page: page,

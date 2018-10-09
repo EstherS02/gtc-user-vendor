@@ -5,6 +5,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
+const productService = require('../../../api/product/product.service');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
@@ -76,11 +77,10 @@ export function vendorLifestyle(req, res) {
 			}
 		},
 
-		publicLifestyle: function(callback) {
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(wantToSell) {
-					return callback(null, wantToSell);
-
+		lifestyleMarketplace: function(callback) {
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(lifestyleMarketplace) {
+					return callback(null, lifestyleMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -202,7 +202,7 @@ export function vendorLifestyle(req, res) {
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
-				publicLifestyle: results.publicLifestyle,
+				lifestyleMarketplace: results.lifestyleMarketplace,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				categoriesWithCount: results.categoriesWithCount,
