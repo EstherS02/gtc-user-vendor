@@ -22,6 +22,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 		window.location = '/upgradeplan';
 	}
 	$(document).ready(function() {
+      $('#gtc-form-alert').css("display","none")
 		$("#plandetailsform").validate({
 			rules: {
 				selectplan: {
@@ -99,7 +100,10 @@ var plans = {{{ DisplayJSON PlanDetails}}}
        });
 	   $("#userPlandetails").submit(function(e) {
 		e.preventDefault();
-		if ($('#userPlandetails').valid()) { 
+		
+        	if ($('#userPlandetails').valid()) { 
+				if(userInfo.email_verified==1)
+		    {
 			
 			if(($('#userplanStatus').val()=='2')|| ($('#userplanStatus').val()=='0'))
 			{
@@ -136,6 +140,17 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 			
 		   
      		}
+		  else
+	      { 
+		      $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+              $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
+              $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+              $("#gtc-form-alert").slideUp(500);
+          });
+
+	   }
+	   }
+	 
 			 
        });
 	});
@@ -189,13 +204,13 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 						</div>
 						
 						<div class="content-body">
-						
-								<div class="alert" id="gtc-social-profile">
-									<button type="button" class="close" data-dismiss="alert">
-										<span aria-hidden="true"></span>
-									</button>
-									<span class="cart-message"></span>
-								</div>
+							
+						 <div class="alert" id="gtc-form-alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span class="form-message"></span>
+                        </div>
 								{{#if LoggedInUser.Vendor.id}}
 								<form id="plandetailsform" name="plandetailsform">
 									<div class="row">
