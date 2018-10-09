@@ -797,10 +797,8 @@ export function makeplanPayment(req, res) {
 				amount: response.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(response),
-				created_by: req.user.first_name,
-				created_on: new Date()
-				
+				payment_response: JSON.stringify(response)
+
 			};
 			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
 			if (req.body.vendor_id != 0) {
@@ -1047,7 +1045,7 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 		}
 	})
 }
-function refundNotifications(refundOrderitemsID, user, refundamount) {
+function refundNotifications(refundOrderitemsID, user) {
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
@@ -1060,7 +1058,7 @@ function refundNotifications(refundOrderitemsID, user, refundamount) {
 			var orderRefundList = OrderRefundList.rows;
 	        var queryObjNotification = {};
 	        var NotificationTemplateModel = 'NotificationSetting';
-	        queryObjNotification['code'] = config.notification.templates.refundRequest;
+	        queryObjNotification['code'] = config.notification.templates.refundProcessing;
 	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
 		    .then(function(response) {
 			var bodyParams = {};
@@ -1068,11 +1066,9 @@ function refundNotifications(refundOrderitemsID, user, refundamount) {
 			var description = response.description;
 			description = description.replace('%FirstName%',user.first_name);
 			description = description.replace('%LastName%',user.last_name);
-			description = description.replace('%Refund_Amount%', refundamount);
-			description = description.replace('%vendor_url%', '/vendor/' + user.Vendor.id);
 			_.forOwn(orderRefundList, function(orders) {
-				description = description.replace('%order.number%', orders.Order.id);
-				description = description.replace('%track%', '/my-order/order/' + orders.Order.id);
+				description = description.replace('%OrderId%', orders.Order.id);
+				description = description.replace('%path%', '/my-order/order/' + orders.Order.id);
 			});
 			bodyParams.description = description;
 			bodyParams.name = response.name;

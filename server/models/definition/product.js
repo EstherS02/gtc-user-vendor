@@ -166,9 +166,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'exclusive_end_date',
             allowNull: true
         },
-        exclusive_sale: {
+        exclusive_offer: {
             type: DataTypes.DECIMAL(10, 2),
-            field: 'exclusive_sale',
+            field: 'exclusive_offer',
             allowNull: true
         },
         exchanging_product_quantity: {

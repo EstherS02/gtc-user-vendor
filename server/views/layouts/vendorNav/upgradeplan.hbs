@@ -242,7 +242,15 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 																<option value="2">Service Provider</option>
 																<option value="3">Lifestyle Provider</option>
 																<option value="6">Wholesale Pricing Guide</option>
+															{{/ifCond}} 
+															
+															{{#ifCond PlanDetails.rows.[0].plan_id '==' "4"}}
+																<option value="2">Service Provider</option>
+																<option value="3">Lifestyle Provider</option>
+																<option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}
+															
+
 															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
 															  <option value="6">Wholesale Pricing Guide</option>
 															{{/ifCond}}

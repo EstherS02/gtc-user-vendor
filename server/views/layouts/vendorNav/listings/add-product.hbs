@@ -333,9 +333,38 @@
 									<div class="col-lg-12">
 										<div class="form-group">
 											<label class="label-control">Description</label>
-											<textarea class="form-control-customized" name="description" rows="6">{{editProduct.description}}</textarea>
+											<textarea class="form-control-customized" name="description" rows="8">{{editProduct.description}}</textarea>
 										</div>
 									</div>
+									<div class="col-lg-12">
+										<div class="form-group">
+											<label class="label-control">Would you like to put the product on sale?
+											&nbsp;&nbsp;<input type="checkbox" value="1" name="exclusive_sale" id="exclusive_sale"
+											{{#if editProduct.exclusive_sale}} checked {{/if}} >&nbsp;&nbsp;Yes</label>
+										</div>
+									</div>
+								</div>
+								<div class ="row">
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Sale start date & time</label>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" value="{{formatTime editProduct.exclusive_start_date "YYYY/MM/DD hh:mm"}}" name="exclusive_start_date" id="exclusive_start_date" disabled>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Sale end date & time</label>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" value="{{formatTime editProduct.exclusive_end_date "YYYY/MM/DD hh:mm"}}" name="exclusive_end_date" id="exclusive_end_date" disabled>
+										</div>
+									</div>
+									<div class="col-lg-4">
+										<div class="form-group">
+											<label class="label-control">Offer amount (in %)</label>
+											<input type="text" class="form-control-customized form-control-sm salesDiv" value="{{editProduct.exclusive_offer}}" name="exclusive_offer" disabled>
+										</div>
+									</div>
+								</div>
+								<div class="row">
 									{{#ifCond this.type '==' 'wholesale'}}
 										<div class="col-lg-8">
 											<div class="form-group">
