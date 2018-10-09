@@ -255,10 +255,10 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 											<td class="col-3">
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
-													<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+													<h2 class="discount-price-flag text-normal">{{currency this.product_discounted_price '$'}}</h2>
 													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
 													{{else}}
-													<h2 class="price-flag">{{currency this.price '$'}}</h2>
+													<h2 class="price-flag text-normal">{{currency this.price '$'}}</h2>
 													{{/if}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
