@@ -27,6 +27,7 @@ export function shop(req, res) {
 		LoggedInUser = req.gtcGlobalUserObj;
 
 	offset = 0;
+	limit = 20;
 	field = "id";
 	order = "asc";
 
@@ -70,11 +71,11 @@ export function shop(req, res) {
 		featuredProducts: function(callback) {
 			queryObj['featured_position_shop_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
-			limit = 6;
+			var featureLimit = 6;
 			var order = [
 				sequelize.fn('RAND'),
 			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
+			productService.RandomProducts(productModel, queryObj, featureLimit, order)
 				.then(function(response) {
 					return callback(null, response.rows);
 				}).catch(function(error) {
@@ -83,14 +84,10 @@ export function shop(req, res) {
 				});
 		},
 		publicMarketplace: function(callback) {
-			const includeArr = [];
-			const productOffset = 0;
-			const productLimit = 20;
-			const productField = "id";
-			const productOrder = "asc";
 			delete queryObj['featured_position_shop_landing'];
 			delete queryObj['is_featured_product'];
-			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
+			queryObj['marketplace_id'] = marketplace['PUBLIC'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(publicMarketplace) {
 					return callback(null, publicMarketplace);
 				}).catch(function(error) {

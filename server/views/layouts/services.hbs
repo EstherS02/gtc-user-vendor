@@ -186,7 +186,7 @@
 				<div class="col-md-12">
 					<div class="top-mini-headers m-t-xs">
 						<div class="alignleft">
-							<label>Showing the most recent {{#ifCond serviceProduct.count '>' 20}} 20 {{else}} {{serviceProduct.count}} {{/ifCond}} products of {{serviceProduct.count}} products listed.</label>
+							<label>Showing the most recent {{#ifCond serviceMarketplace.count '>' 20}} 20 {{else}} {{serviceMarketplace.count}} {{/ifCond}} products of {{serviceMarketplace.count}} products listed.</label>
 						</div>
 						<div class="alignright">
 							<div class="xs-svg-icon">
@@ -204,7 +204,7 @@
 						<div style="clear: both;"></div>
 					</div>
 				</div>
-				{{#each serviceProduct.rows}}
+				{{#each serviceMarketplace.rows}}
 				<div class="col-md-3 no-padding">
 					<div class="product-list-body">
 						<div class="product-body">
@@ -215,7 +215,7 @@
 											<td class="col-2">
 												<div class="product-left-col">
 													<a href="/shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
-														<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
+														<img class="object-fit" src="{{this.ProductMedia.[0].url}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
 													</a>
 												</div>
 											</td>
@@ -229,20 +229,20 @@
 															<span>Origin</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<span class="text-500">{{this.country_name}}</span>
+															<span class="text-500">{{this.Country.name}}</span>
 														</div>
 														<div class="col-md-4 col-4 no-padding">
 															<span>Category</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding overflow-txt">
-															<a class="text-500" href="/services/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+															<a class="text-500" href="/services/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} > {{this.SubCategory.name}}</a>
 														</div>
 														<div class="col-md-4 col-4 no-padding">
 															<span>Seller</span>
 														</div>
 														<div class="col-md-8 col-8 no-padding overflow-txt">
 															{{#if ../LoggedInUser.email}}
-															<a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+															<a class="text-500" title="{{this.Vendor.vendor_name}}" href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a>
 															{{else}}
 															<a class="text-500" href="javascript:;" id="Seller_Info" title="seller">(Login for Seller Info)</a>
 															{{/if}}
@@ -252,11 +252,16 @@
 											</td>
 											<td class="col-3">
 												<div class="product-right-col">
-													<h4>{{currency this.product_price '$'}}</h4>
+													{{#if this.product_discounted_price}}
+													<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+													{{else}}
+													<h2 class="price-flag">{{currency this.price '$'}}</h2>
+													{{/if}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
 														<div class="p-rating pull-right">
-															<a href="services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
+															<a href="shop/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}">
 																{{starCount product_rating}}
 															</a>
 														</div>

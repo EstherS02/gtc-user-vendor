@@ -49,9 +49,6 @@ export function wholesale(req, res) {
 	var LoggedInUser = {};
 	var bottomCategory = {};
 
-	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
-		LoggedInUser = req.gtcGlobalUserObj;
-
 	offset = 0;
 	limit = 20;
 	field = "id";
@@ -59,7 +56,22 @@ export function wholesale(req, res) {
 
 	queryObj['status'] = status["ACTIVE"];
 
+	if (req.gtcGlobalUserObj && req.gtcGlobalUserObj.isAvailable)
+		LoggedInUser = req.gtcGlobalUserObj;
+
 	async.series({
+		cartInfo: function(callback) {
+			if (LoggedInUser.id) {
+				cartService.cartCalculation(LoggedInUser.id, req)
+					.then((cartResult) => {
+						return callback(null, cartResult);
+					}).catch((error) => {
+						return callback(error);
+					});
+			} else {
+				return callback(null);
+			}
+		},
 		categories: function(callback) {
 			var includeArr = [];
 			const categoryOffset = 0;
@@ -81,21 +93,10 @@ export function wholesale(req, res) {
 					return callback(null);
 				});
 		},
-		cartInfo: function(callback) {
-			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req)
-					.then((cartResult) => {
-						return callback(null, cartResult);
-					}).catch((error) => {
-						return callback(error);
-					});
-			} else {
-				return callback(null);
-			}
-		},
 		wantToSell: function(callback) {
-			queryObj['marketplace_type_id'] = 1;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
 					return callback(null, wantToSell.rows);
 				}).catch(function(error) {
@@ -104,8 +105,9 @@ export function wholesale(req, res) {
 				});
 		},
 		wantToBuy: function(callback) {
-			queryObj['marketplace_type_id'] = 2;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+			queryObj['marketplace_type_id'] = marketplace_type['WTB'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToBuy) {
 					return callback(null, wantToBuy.rows);
 				}).catch(function(error) {
@@ -114,8 +116,9 @@ export function wholesale(req, res) {
 				});
 		},
 		wantToTrade: function(callback) {
-			queryObj['marketplace_type_id'] = 3;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+			queryObj['marketplace_type_id'] = marketplace_type['WTT'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToTrade) {
 					return callback(null, wantToTrade.rows);
 				}).catch(function(error) {
@@ -124,8 +127,9 @@ export function wholesale(req, res) {
 				});
 		},
 		requestForQuote: function(callback) {
-			queryObj['marketplace_type_id'] = 4;
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			queryObj['marketplace_id'] = marketplace['WHOLESALE'];
+			queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(requestForQuote) {
 					return callback(null, requestForQuote.rows);
 				}).catch(function(error) {
