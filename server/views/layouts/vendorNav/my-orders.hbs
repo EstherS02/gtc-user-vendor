@@ -102,17 +102,29 @@ $("#total_refund").val(total);
 					$("#issueRefund").empty();
 
 					for (var i = 0; i < result.OrderItems.length; i++) {
+						     if(result.OrderItems[i].order_item_status!="1")
+							 {var orderItems = "<tr><td><input type='checkbox' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+							  + result.OrderItems[i].quantity + "</td><td>"
+							  + result.OrderItems[i].final_price + "</td><td>"
+							  + "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
+							  + "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
+							  + "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].final_price+" disabled style='width:auto;'></td></tr>";
 
-						orderItems = "<tr><td><input type='checkbox' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
-							+ result.OrderItems[i].quantity + "</td><td>"
-							+ result.OrderItems[i].final_price + "</td><td>"
-							+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
-							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
-							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].final_price+" disabled style='width:auto;'></td></tr>";
-
+							 }
+							else
+							{
+						      var orderItems = "<tr><td><input type='hidden' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+							  	+ result.OrderItems[i].quantity + "</td><td>"
+							    + result.OrderItems[i].final_price + "</td><td>"
+							    + "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
+							    + "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
+							    + result.OrderItems[i].final_price + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Refunded  </td></tr>";
+	  
+     					    }	 
+	
 						$("#issueRefund").append(orderItems);
 					}
-					totalTag = "<tr><td colspan='4'></td><td><b>TOTAL REFUND :</b></td><td>"
+					totalTag = "<tr><td colspan='4'></td><td><b>TOTAL REFUND : </b></td><td>"
 						+ "<input type='text' id='total_refund' class='shop_qty_num all-quantity-cart-items' disabled style='width:auto;'></td></tr>";
 
 					$("#issueRefund").append(totalTag);

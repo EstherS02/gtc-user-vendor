@@ -213,7 +213,7 @@ export function salesHistory(req, res) {
             }
 
 			// queryPaginationObj['maxSize'] = maxSize;
-			queryPaginationObj['maxSize'] = 5;
+			queryPaginationObj['maxSize'] = 3;
 
             if (!err) {
 

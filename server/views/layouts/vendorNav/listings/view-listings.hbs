@@ -227,25 +227,36 @@
 													</tbody>
 												</table>
 											</div>
-											{{#pagination collectionSize page pageSize maxSize}}
-											<nav aria-label="Page navigation example">
-												<ul class="pagination justify-content-center">
-													{{#unless startFromFirstPage}}
-													<li class="page-item">
-														<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-													</li>
-													{{/unless}} {{#each pages}}
-													<li class="page-item {{#if isCurrent}} active {{/if}}">
-														<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-													</li>
-													{{/each}} {{#unless endAtLastPage}}
-													<li class="page-item">
-														<a class="page-link" href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-													</li>
-													{{/unless}}
-												</ul>
-											</nav>
-											{{/pagination}}
+											{{#if collectionSize}}
+												<div class="row">
+													<div class="col-md-12">
+														{{#pagination collectionSize page pageSize maxSize}}
+															<nav aria-label="Page navigation example">
+																<ul class="pagination justify-content-center">
+																	{{#unless startFromFirstPage}}
+																		<li class="page-item-prev" style="margin-left:-310px;">
+																			<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+																				<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																		</li>
+																	{{/unless}}
+																	{{#each pages}}
+																		<li class="page-item {{#if isCurrent}} active {{/if}}">
+																			<a class="page-link" href="listings/{{../../this.type}}?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																		</li>
+																	{{/each}}
+																	{{#unless endAtLastPage}}
+																		<li class="page-item-next" style="margin-right:-310px;">
+																			<a href="listings/{{../this.type}}?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																				<i class="fa fa-angle-double-right"></i>
+																			</a>
+																		</li>
+																	{{/unless}}
+																</ul>
+															</nav>
+														{{/pagination}}
+													</div>
+												</div>
+											{{/if}}
 										</div>
 									</div>
 								</div>
