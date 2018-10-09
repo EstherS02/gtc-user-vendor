@@ -890,8 +890,8 @@ function mailVendor(){
 		</div>
 	</div>
 </div>
-{{!-- {{#ifCond LoggedInUser.role "==" 3}} --}}
-{{>dummy-chat-ui}}
-{{!-- {{/ifCond}} --}}
+{{#ifCond LoggedInUser.id "!=" VendorDetail.user_id}}
+{{>chat}}
+{{/ifCond}}
 {{> footer/bottom-footer}}
 
