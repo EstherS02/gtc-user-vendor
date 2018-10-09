@@ -30,7 +30,6 @@ export function services(req, res) {
 	limit = 20;
 
 	queryObj['status'] = status["ACTIVE"];
-	queryObj['marketplace_id'] = 3;
 
 	async.series({
 		cartInfo: function(callback) {
