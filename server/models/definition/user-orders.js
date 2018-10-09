@@ -38,9 +38,14 @@ module.exports = (sequelize, DataTypes) => {
             field: 'provider',
             allowNull: true
         },
-        status: {
+        user_status: {
             type: DataTypes.INTEGER,
-            field: 'status',
+            field: 'user_status',
+            allowNull: true
+		},
+		order_status: {
+            type: DataTypes.INTEGER,
+            field: 'order_status',
             allowNull: true
         },
         email_verified: {
