@@ -679,7 +679,7 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace('%Path%',req.protocol + '://' + req.get('host'));
+							body = body.replace('/%Path%/g',req.protocol + '://' + req.get('host'));
 							body = body.replace('/%currency%/g','$');
 							body = body.replace('%UserName%',user.first_name) //+' '+user.last_name
 							if(user.last_name != null || user.last_name != 'null'){
@@ -735,18 +735,21 @@ function sendVendorEmail(order, user) {
 	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(response) {
 			if(order.OrderItems[0].Product.Vendor.User.user_contact_email){
+				var orderNew=[];
 				var email = order.OrderItems[0].Product.Vendor.User.user_contact_email;
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
-				body = body.replace('%ORDER_NUMBER%', order.id);
-				body = body.replace('%PLACED_BY%', user.first_name);
-				body = body.replace('%COMPANY_NAME%', order.shippingAddress.company_name ? order.shippingAddress.company_name : '');
-				body = body.replace('%ADDRESS_LINE_1%', order.shippingAddress.address_line1 ? order.shippingAddress.address_line1 : '');
-				body = body.replace('%ADDRESS_LINE_2%', order.shippingAddressaddress_line2 ? order.shippingAddress.address_line2 : '');
-				body = body.replace('%CITY%', order.shippingAddress.city ? order.shippingAddress.city : '');
-				body = body.replace('%STATE%', order.shippingAddress.State.name ? order.shippingAddress.State.name : '');
-				body = body.replace('%COUNTRY%', order.shippingAddress.Country.name ? order.shippingAddress.Country.name : '');
+				body = body.replace('/%Path%/g','https://gtc.ibcpods.com');//req.protocol + '://' + req.get('host'));
+				body = body.replace('%UserName%', user.first_name);
+				body = body.replace('%UserLastName%', user.last_name);
+				body = body.replace('/%currency%/g','$');
+				_.forOwn(order, function(orders) {
+						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
+						body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' + '0,0.00'))
+						orderNew.push(orders);
+
+					});
 				var template = Handlebars.compile(body);
 				var data = {
 					order: order

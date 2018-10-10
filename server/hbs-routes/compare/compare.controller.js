@@ -75,6 +75,7 @@ export function compare(req, res) {
 		},
 		RelatedProducts: function(callback) {
 			var limit = 9;
+			var offset = 0;
 			var order = [
 				sequelize.fn('RAND'),
 			];
@@ -85,13 +86,14 @@ export function compare(req, res) {
 				}
 			};
 			if (product_category_id.length > 0) {
-				productService.RandomProducts("MarketplaceProduct", queryObj, limit, order)
-					.then(function(response) {
-						return callback(null, response);
-					}).catch(function(error) {
-						console.log('Error :::', error);
-						return callback(null);
-					});
+				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
+				.then(function(publicMarketplace) {
+					console.log(publicMarketplace);
+					return callback(null, publicMarketplace);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
+				});
 			} else {
 				return callback(null);
 			}
