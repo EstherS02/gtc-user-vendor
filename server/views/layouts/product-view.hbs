@@ -183,8 +183,7 @@ $(document).ready(function() {
      $("#AskVendorForm").on("submit", function(){
         if(userInfo.user_contact_email && userInfo.email_verified){
    		var sentInput = {};
-   		sentInput.to = vendorInfo.User.user_contact_email;
-   		sentInput.vendor_user_id =vendorInfo.User.id;
+   		sentInput.vendor_id = vendorInfo.id;
 		sentInput.subject = $('#AskSubject').val();
 		sentInput.message = $('#AskText').val();
 		sentInput.vendor_name = vendorInfo.vendor_name;

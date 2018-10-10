@@ -162,14 +162,13 @@ export function product(req, res) {
 			},
 			VendorDetail: function(callback) {
 				var vendorIncludeArr = [{
-					model: model['User'],
-					attributes: {
-						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-					}
-				}, {
 					model: model['Country']
 				}, {
 					model: model['VendorPlan'],
+					where:{
+						status:status['ACTIVE']
+					},
+					required:false
 				}, {
 					model: model['VendorVerification'],
 					where: {

@@ -69,46 +69,59 @@ export function vendorQuestion(req, res) {
 		res.status(400).send("Please enter the value");
 		return;
 	}
-	var queryObjNotification = {};
-	var NotificationTemplateModel = 'NotificationSetting';
-	queryObjNotification['code'] = config.notification.templates.productReview;
-	service.findOneRow(NotificationTemplateModel, queryObjNotification)
-		.then(function(response) {
-			var bodyParams = {};
-			bodyParams.user_id = req.body.vendor_user_id;
-			bodyParams.description = '<div><strong>' + req.body.subject + '</strong></div><div>' + req.body.message + '</div>';
-			bodyParams.name = response.name;
-			bodyParams.code = response.code;
-			bodyParams.is_read = 1;
-			bodyParams.status = 1;
-			bodyParams.created_on = new Date();
-			service.createRow("Notification", bodyParams);
-		});
+	var vendorId = req.body.vendor_id;
+	var includeArr = [{
+		model: model['user'],
+		attributes: {
+			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
+		}
+	}];
+	service.findIdRow('Vendor', vendorId,includeArr).then(function(result) {
+		var queryObjNotification = {};
+		var NotificationTemplateModel = 'NotificationSetting';
+		queryObjNotification['code'] = config.notification.templates.productReview;
+		service.findOneRow(NotificationTemplateModel, queryObjNotification)
+			.then(function(response) {
+				var bodyParams = {};
+				bodyParams.user_id = result.User.id;
+				bodyParams.description = '<div><strong>' + req.body.subject + '</strong></div><div>' + req.body.message + '</div>';
+				bodyParams.name = response.name;
+				bodyParams.code = response.code;
+				bodyParams.is_read = 1;
+				bodyParams.status = 1;
+				bodyParams.created_on = new Date();
+				service.createRow("Notification", bodyParams);
+			});
+		if(result.User.email_verified){
+		var queryObjEmailTemplate = {};
+		var emailTemplateModel = 'EmailTemplate';
+		queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
+		service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+			.then(function(response) {
 
-	var queryObjEmailTemplate = {};
-	var emailTemplateModel = 'EmailTemplate';
-	queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
-	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-		.then(function(response) {
-
-			if (req.body.to) {
-				var email = req.body.to;
-				var subject = response.subject.replace('%SUBJECT%', req.body.subject);
-				var body;
-				body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
-				body = body.replace('%USER_NAME%', LoggedInUser.first_name);
-				body = body.replace('%MESSAGE%', req.body.message);
-				sendEmail({
-					to: email,
-					subject: subject,
-					html: body
-				});
-			}
-			return res.status(200).send("Your Question sent to this vendor");
-		}).catch(function(error) {
-			console.log('Error :::', error);
-			return res.status(500).send("Internal Server Error");;
-		})
+				if (req.body.to) {
+					var email = result.User.user_contact_email;
+					var subject = response.subject.replace('%SUBJECT%', req.body.subject);
+					var body;
+					body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
+					body = body.replace('%USER_NAME%', LoggedInUser.first_name);
+					body = body.replace('%MESSAGE%', req.body.message);
+					sendEmail({
+						to: email,
+						subject: subject,
+						html: body
+					});
+				}
+				return res.status(200).send("Your Question sent to this vendor");
+			}).catch(function(error) {
+				console.log('Error :::', error);
+				return res.status(500).send("Internal Server Error");
+			});
+		}
+		else{
+			return res.status(500).send("Sorry you are unable to contact this vendor");
+		}
+	});
 }
 
 export function AddToCompare(req, res) {
