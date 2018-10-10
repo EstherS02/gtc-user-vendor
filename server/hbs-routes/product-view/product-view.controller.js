@@ -191,11 +191,12 @@ export function product(req, res) {
 					],
 					group: ['VendorRating.vendor_id'],
 					required: false,
-				},{
+				}, {
 					model: model['TalkSetting'],
-					where:{
+					where: {
 						gtc_talk_enabled: status['ACTIVE']
-					}
+					},
+					required: false
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
@@ -332,7 +333,7 @@ export function product(req, res) {
 											});
 										} else {
 
-											
+
 											callback(null, {
 												threadId: threadArr[0],
 												talk: JSON.parse(JSON.stringify(talk))
@@ -428,7 +429,6 @@ export function product(req, res) {
 				selectedPage = null;
 			}
 			if (!error) {
-				console.log("---------------------------------------",results.talkThreads)
 				res.render('product-view', {
 					title: "Global Trade Connect",
 					categories: results.categories,
