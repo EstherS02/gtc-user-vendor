@@ -2768,3 +2768,13 @@ select.file-uploade:after {
 :disabled {
     cursor: not-allowed !important;
 }
+
+.cart-custom-notify .notifyjs-arrow {
+    top: 26px !important;
+    left: 12px !important;
+}
+
+.cart-custom-notify .notifyjs-container {
+    top: 31px !important;
+    left: 0px !important;
+}
