@@ -6,9 +6,9 @@ var planPermissions = {};
 planPermissions[plan.STARTER_SELLER] = {};
 planPermissions[plan.SERVICE_PROVIDER] = {};
 planPermissions[plan.LIFESTYLE_PROVIDER] = {};
-planPermissions[plan.PUBLIC_SELLER_PRICING_GUIDE] = {};
+planPermissions[plan.PUBLIC_SELLER] = {};
 planPermissions[plan.BULK_BUYER] = {};
-planPermissions[plan.WHOLESALE_PRICING_GUIDE] = {};
+planPermissions[plan.WHOLESALER] = {};
 
 //permission for starter seller
 planPermissions[plan.STARTER_SELLER][marketplace.WHOLESALE] = [];
@@ -29,10 +29,10 @@ planPermissions[plan.LIFESTYLE_PROVIDER][marketplace.SERVICE] = [];
 planPermissions[plan.LIFESTYLE_PROVIDER][marketplace.LIFESTYLE] = ["*"];
 
 //permission for public seller
-planPermissions[plan.PUBLIC_SELLER_PRICING_GUIDE][marketplace.WHOLESALE] = [];
-planPermissions[plan.PUBLIC_SELLER_PRICING_GUIDE][marketplace.PUBLIC] = ["*"];
-planPermissions[plan.PUBLIC_SELLER_PRICING_GUIDE][marketplace.SERVICE] = [];
-planPermissions[plan.PUBLIC_SELLER_PRICING_GUIDE][marketplace.LIFESTYLE] = [];
+planPermissions[plan.PUBLIC_SELLER][marketplace.WHOLESALE] = [];
+planPermissions[plan.PUBLIC_SELLER][marketplace.PUBLIC] = ["*"];
+planPermissions[plan.PUBLIC_SELLER][marketplace.SERVICE] = [];
+planPermissions[plan.PUBLIC_SELLER][marketplace.LIFESTYLE] = [];
 
 //permission for bulk buyer
 planPermissions[plan.BULK_BUYER][marketplace.WHOLESALE] = [];
@@ -41,9 +41,9 @@ planPermissions[plan.BULK_BUYER][marketplace.SERVICE] = [];
 planPermissions[plan.BULK_BUYER][marketplace.LIFESTYLE] = [];
 
 //permission for whole saller
-planPermissions[plan.WHOLESALE_PRICING_GUIDE][marketplace.WHOLESALE] = ["*"];
-planPermissions[plan.WHOLESALE_PRICING_GUIDE][marketplace.PUBLIC] = ["*"];
-planPermissions[plan.WHOLESALE_PRICING_GUIDE][marketplace.SERVICE] = ["*"];
-planPermissions[plan.WHOLESALE_PRICING_GUIDE][marketplace.LIFESTYLE] = ["*"];
+planPermissions[plan.WHOLESALER][marketplace.WHOLESALE] = ["*"];
+planPermissions[plan.WHOLESALER][marketplace.PUBLIC] = ["*"];
+planPermissions[plan.WHOLESALER][marketplace.SERVICE] = ["*"];
+planPermissions[plan.WHOLESALER][marketplace.LIFESTYLE] = ["*"];
 
 module.exports = planPermissions;

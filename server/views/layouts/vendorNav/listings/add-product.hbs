@@ -113,10 +113,19 @@
 												</label>
 												{{#ifCond this.type '==' 'wholesale'}}
 													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Private Wholesale Marketplace"
-													 readonly> {{else ifCond this.type '==' 'shop'}}
-													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Public Marketplace" readonly> {{else ifCond this.type '==' 'services'}}
-													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Services Marketplace" readonly> {{else ifCond this.type '==' 'lifestyle'}}
-													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Lifestyle Marketplace" readonly> {{/ifCond}}
+													 readonly>
+													 <input type="text" id="marketplace_id" name="marketplace_id" value="{{marketplaceCode.WHOLESALE}}" hidden> 
+												{{else ifCond this.type '==' 'shop'}}
+													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Public Marketplace" readonly> 
+													<input type="text" id="marketplace_id" name="marketplace_id" value="{{marketplaceCode.PUBLIC}}" hidden> 
+												{{else ifCond this.type '==' 'services'}}
+													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Services Marketplace" readonly>
+													<input type="text" id="marketplace_id" name="marketplace_id" value="{{marketplaceCode.SERVICE}}" hidden> 
+												{{else ifCond this.type '==' 'lifestyle'}}
+													<input type="text" class="form-control-customized form-control-sm" name="marketplace" value="Lifestyle Marketplace" readonly>
+													<input type="text" id="marketplace_id" name="marketplace_id" value="{{marketplaceCode.LIFESTYLE}}" hidden> 
+												{{/ifCond}}
+
 											</div>
 										</div>
 									 	{{#ifCond this.type '==' 'lifestyle'}}
