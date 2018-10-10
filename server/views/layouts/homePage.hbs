@@ -170,7 +170,8 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTS - {{this.product_name}}</a>
+														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag"
+														 {{else}} class="text-black" {{/if}}>WTS - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -516,10 +517,10 @@
 											<td class="col-3">
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
-													<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
 													{{else}}
-													<h2 class="price-flag">{{currency this.price '$'}}</h2>
+														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
@@ -595,10 +596,10 @@
 											<td class="col-3">
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
-													<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
 													{{else}}
-													<h2 class="price-flag">{{currency this.price '$'}}</h2>
+														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
@@ -674,10 +675,10 @@
 											<td class="col-3">
 												<div class="product-right-col">
 													{{#if this.product_discounted_price}}
-													<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
-													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+														<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+														<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
 													{{else}}
-													<h2 class="price-flag">{{currency this.price '$'}}</h2>
+														<h2 class="price-flag">{{currency this.price '$'}}</h2>
 													{{/if}}
 													<div class="prc-bottom">
 														<p>Seller Rating</p>

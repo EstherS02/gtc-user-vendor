@@ -48,6 +48,45 @@
 	}
 
 	function UpdateAllCartItems() {
+		let allCartInfo = [];
+
+		for (var key in cartItems) {
+			var productsArray = cartItems[key].products;
+			for (var i = 0; i < productsArray.length; i++) {
+				let temp = {};
+				temp['product_quantity'] = $("#inputQty-" + productsArray[i].id).val();
+				temp['product_id'] = productsArray[i].product_id;
+				temp['cart_item_id'] = productsArray[i].id;
+				allCartInfo.push(temp);
+			}
+		}
+
+		$('#UpdateAllCartBtn').prop('disabled', true);
+
+		console.log(allCartInfo);
+
+		$.ajax({
+			url: '/api/cart/update-cart',
+			type: 'POST',
+			data: JSON.stringify(allCartInfo),
+			contentType: "application/json",
+			success: function(updateAllData) {
+				location.reload();
+			},
+			error: function(error) {
+				console.log(error);
+				$('#UpdateAllCartBtn').prop('disabled', false);
+				$(".quantity-input-" + error['responseJSON']['cart_item_id']).notify(
+					error.responseJSON.message_details,
+					{ elementPosition: 'bottom left' });
+			}
+		});
+
+	}
+
+
+
+	function UpdateAllCartItemsOld() {
 
 		let allCartInfo = {};
 
@@ -98,7 +137,7 @@
 		});
 	}
 
-	function UpdateGtcCart(productId, cartItemId, qtyItem, productName) {
+	function UpdateGtcCartOld(productId, cartItemId, qtyItem, productName) {
 		let cartInfo = {};
 		cartInfo["cartUpdateArray"] = [];
 
@@ -143,7 +182,7 @@
 		}
 	}
 
-	function editCoupon(){
+	function editCoupon() {
 		$.ajax({
 			url: '/api/cart/cancel-coupon',
 			type: 'GET',
@@ -231,7 +270,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -245,7 +284,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -272,15 +311,18 @@
 														{{/if}}
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)"
+														 class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -314,7 +356,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -328,7 +370,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -352,15 +394,18 @@
 														{{/if}}
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items quantity-input-{{this.id}}"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)"
+														 class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -394,7 +439,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -408,7 +453,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../services/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -428,15 +473,18 @@
 														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items quantity-input-{{this.id}}"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)"
+														 class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -470,7 +518,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -484,7 +532,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../lifestyle/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -504,15 +552,18 @@
 														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)"
+														 class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -523,7 +574,8 @@
 							{{/ifCond}}
 						{{/each}}
 						<button class="btn btn-md btn-success m-t-sm" onclick="location.href = '/'">CONTINUE SHOPPING</button>
-						<button class="btn btn-md btn-primary m-t-sm m-r-xll alignright" id="UpdateTalks" onclick="UpdateAllCartItems()">UPDATE CART</button>
+						<button class="btn btn-md btn-primary m-t-sm m-r-xll alignright" id="UpdateAllCartBtn" onclick="UpdateAllCartItems()">UPDATE
+							CART</button>
 						<div class="alert" id="gtc-cart-alert">
 							<button type="button" class="close" data-dismiss="alert">
 								<span aria-hidden="true">&times;</span>
@@ -616,7 +668,8 @@
 							{{#if cart.coupon_applied}}
 								<div class="m-t-sm text-center">
 									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
-									<div><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></div>
+									<div><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}}
+												% {{/ifCond}}OFF </strong></div>
 									<a href="javascript:;" style="font-size: small" onclick="editCoupon()"><i class="fas fa-pencil-alt">coupon</i></a>
 								</div>
 							{{else}}
@@ -633,7 +686,8 @@
 									</div>
 								</div>
 							{{/if}}
-							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
+							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left"
+							 style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
 								<span class="ladda-spinner"></span>
 							</button>
