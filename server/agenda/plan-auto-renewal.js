@@ -69,7 +69,7 @@ export function planRenewal(job, done) {
 			var primaryCardPromise = [];
 			_.forOwn(plans.rows, function (vendorPlan) {
 
-				if(vendorPlan.auto_renewal_mail == 1){
+				if(vendorPlan.auto_renewal == 1){
 					primaryCardPromise.push(primaryCardDetails(vendorPlan));
 				}else{
 					if(vendorPlan.Vendor.User.user_contact_email){

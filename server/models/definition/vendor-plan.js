@@ -57,9 +57,9 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
         },
-        auto_renewal_mail: {
+        auto_renewal: {
             type: DataTypes.INTEGER,
-            field: 'auto_renewal_mail',
+            field: 'auto_renewal',
             allowNull: true
         },
         created_by: {
