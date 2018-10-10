@@ -731,25 +731,17 @@ export function addProduct(req, res) {
 
 	var product_id, marketplaceCode, createdProduct = {};
 
-	if (req.query.marketplace == 'Private Wholesale Marketplace'){
-		req.query.marketplace_id = marketplace.WHOLESALE;
+	if (req.query.marketplace_id == marketplace.WHOLESALE)
 		marketplaceCode = 'wholesale'
-	}		
 
-	if (req.query.marketplace == 'Public Marketplace'){
-		req.query.marketplace_id = marketplace.PUBLIC;
+	if (req.query.marketplace_id == marketplace.PUBLIC)
 		marketplaceCode = 'shop'
-	}
 		
-	if (req.query.marketplace == 'Services Marketplace'){
-		req.query.marketplace_id = marketplace.SERVICE;
+	if (req.query.marketplace_id == marketplace.SERVICE)
 		marketplaceCode = 'services'
-	}
 		
-	if (req.query.marketplace == 'Lifestyle Marketplace'){
-		req.query.marketplace_id = marketplace.LIFESTYLE;
+	if (req.query.marketplace_id == marketplace.LIFESTYLE)
 		marketplaceCode = 'lifestyle'
-	}
 		
 	delete req.query.marketplace;
 
@@ -804,17 +796,11 @@ export function addProduct(req, res) {
 		}).then(function(updatedDiscount) {
 
 			aunnouncementMailToSubscribedUser(createdProduct, marketplaceCode);
-			return res.status(200).send({
-				"message": "Success",
-				"messageDetails": "Product Created Successfully"
-			});
+			return res.status(200).send("Product Created Successfully");
 
 		}).catch(function(error) {
 			console.log('Error:::', error);
-			return res.status(500).send({
-				"message": "Error",
-				"messageDetails": "Internal server error"
-			});
+			return res.status(500).send("Internal Server Error");
 		})
 }
 

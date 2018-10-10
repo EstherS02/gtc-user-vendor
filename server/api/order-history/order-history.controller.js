@@ -184,7 +184,8 @@ export function vendorCancel(req, res) {
 									reason_for_cancellation = bodyParams.reason_for_cancellation;
 									var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 									var body;
-									body = response.body.replace('%ORDER_TYPE%', 'Order Status');
+									body = response.body;
+									body = body.replace('%ORDER_TYPE%', 'Order Status');
 									body = body.replace('%ORDER_NUMBER%', purchase_order_id);
 									body = body.replace('%ITEM_NAME%', item_name);
 									body = body.replace('%VENDOR_NAME%', vendor_name);
@@ -274,17 +275,18 @@ export function returnRequest(req, res) {
 								user_name = req.user.first_name + ' ' + req.user.last_name;
 								reason_for_return = req.body.reason_for_return;
 								email = item.Product.Vendor.User.user_contact_email;
-                                returnRequestnotification(req.params.id,req.user);
+								returnRequestnotification(req.params.id,req.user);
 								service.findOneRow(emailTemplateModel, emailTemplateQueryObj)
 									.then(function(template) {
-
+										var mailBody;
+										var mailBody = template.body;
 										subject = template.subject;
-										mailBody = template.body.replace('%VENDOR_NAME%', vendor_name);
-										mailBody = template.body.replace('%ITEM%', item_name);
-										mailBody = template.body.replace('%QUANTITY%', quantity);
-										mailBody = template.body.replace('%ORDER_ID%', order_id);
-										mailBody = template.body.replace('%USER%', user_name);
-										mailBody = template.body.replace('%REASON_FOR_RETURN%', reason_for_return);
+										mailBody = mailBody.replace('%VENDOR_NAME%', vendor_name);
+										mailBody = mailBody.replace('%ITEM%', item_name);
+										mailBody = mailBody.replace('%QUANTITY%', quantity);
+										mailBody = mailBody.replace('%ORDER_ID%', order_id);
+										mailBody = mailBody.replace('%USER%', user_name);
+										mailBody = mailBody.replace('%REASON_FOR_RETURN%', reason_for_return);
 
 										sendEmail({
 											to: email,
@@ -310,7 +312,6 @@ export function returnRequest(req, res) {
 		})
 }
 function returnRequestnotification(refundOrderitemsID, user) {
-	console.log("enter the lllopppddd");
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
@@ -321,8 +322,7 @@ function returnRequestnotification(refundOrderitemsID, user) {
 	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
-			console.log("orderRefundList:::"+JSON.stringify(orderRefundList));
-	        var queryObjNotification = {};
+			var queryObjNotification = {};
 	        var NotificationTemplateModel = 'NotificationSetting';
 	        queryObjNotification['code'] = config.notification.templates.refundRequest;
 	        service.findOneRow(NotificationTemplateModel, queryObjNotification)

@@ -17,8 +17,8 @@ router.post('/import-woocommerce', auth.hasRole(roles['VENDOR']), auth.hasPermis
 router.post('/import-aliexpress', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAliExpress);
 router.post('/import-amazon', auth.hasRole(roles['VENDOR']), auth.hasPermission(), controller.importAmazon);
 router.post('/', auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.create);
-router.post('/add-product', auth.isAuthenticated(), controller.addProduct);
-router.post('/edit-product', auth.isAuthenticated(), controller.editProduct);
+router.post('/add-product',auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.addProduct);
+router.post('/edit-product',auth.hasRole(roles['VENDOR']), auth.hasPermission(), check.limitExceeds(), controller.editProduct);
 router.post('/import-product', auth.isAuthenticated(), controller.importProduct);
 router.put('/feature-one/:id', controller.featureOne);
 router.put('/feature-many', controller.featureMany);
