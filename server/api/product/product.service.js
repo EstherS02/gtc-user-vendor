@@ -95,6 +95,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 			status: status['ACTIVE'],
 			base_image: 1
 		},
+		limit: 1,
 		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
 		required: false
 	}];
@@ -128,6 +129,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				}
 			}));
 			const productCount = await model['Product'].count({
+				include: includeArray,
 				where: queryObj
 			});
 			results.count = productCount;
