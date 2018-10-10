@@ -1694,9 +1694,9 @@ ul.inner-list-view li a {
 	font-size: 0.813em;
 }
 
-/* .p-description p {
-    font-size: 0.813em;
-} */
+ .p-description p {
+    margin-bottom: 0;
+} 
 
 .p-hr {
     border: 0.5px solid #ebebf3;

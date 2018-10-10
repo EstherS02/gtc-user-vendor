@@ -9,6 +9,7 @@ const moment = require('moment');
 
 const service = require('../service');
 const productService = require('../product/product.service');
+const reportsService = require('../reports/reports.service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
@@ -18,26 +19,18 @@ const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
 export function indexA(req, res) {
-	var queryObj = {};
-	var offset, limit, field, order;
+	var queryParams = {};
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 5;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;
-
-	productService.queryAllProducts(req, queryObj, offset, limit, field, order)
+	queryParams['start_date'] = new Date(req.query.start_date);
+	queryParams['end_date'] = new Date(req.query.end_date);
+	reportsService.AccountingReport(req.user.Vendor.id, queryParams)
 		.then((response) => {
 			return res.status(200).send(response);
 		})
 		.catch((error) => {
 			console.log('index Error:::', error);
 			return res.status(500).send(error);
-		});
+		})
 }
 
 export function index(req, res) {
