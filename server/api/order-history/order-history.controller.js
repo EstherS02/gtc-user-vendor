@@ -5,6 +5,7 @@ const config = require('../../config/environment');
 const model = require('../../sqldb/model-connect');
 const service = require('../service');
 const statusCode = require('../../config/status');
+const _ = require('lodash');
 const carrierCode = require('../../config/carriers');
 const orderStaus = require('../../config/order_status');
 const sendEmail = require('../../agenda/send-email');
@@ -273,7 +274,7 @@ export function returnRequest(req, res) {
 								user_name = req.user.first_name + ' ' + req.user.last_name;
 								reason_for_return = req.body.reason_for_return;
 								email = item.Product.Vendor.User.user_contact_email;
-
+                                returnRequestnotification(req.params.id,req.user);
 								service.findOneRow(emailTemplateModel, emailTemplateQueryObj)
 									.then(function(template) {
 
@@ -307,4 +308,46 @@ export function returnRequest(req, res) {
 		}).catch(function(error) {
 			return res.status(500).send(error);
 		})
+}
+function returnRequestnotification(refundOrderitemsID, user) {
+	console.log("enter the lllopppddd");
+	var orderItemid = refundOrderitemsID;
+	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
+	var queryObj = {
+		id: orderItemid
+	}
+	var field = 'created_on';
+	var order = "asc";
+	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
+		if (OrderRefundList) {
+			var orderRefundList = OrderRefundList.rows;
+			console.log("orderRefundList:::"+JSON.stringify(orderRefundList));
+	        var queryObjNotification = {};
+	        var NotificationTemplateModel = 'NotificationSetting';
+	        queryObjNotification['code'] = config.notification.templates.refundRequest;
+	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		    .then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = user.id;
+			var description = response.description;
+			description = description.replace('%FirstName%',user.first_name);
+			description = description.replace('%LastName%',user.last_name);
+			description = description.replace('%vendor_url%', '/vendor/' + user.Vendor.id);
+			_.forOwn(orderRefundList, function(orders) {
+				description = description.replace('%order.number%', orders.Order.id);
+				description = description.replace('%track%', '/refund/' + orders.Order.id);
+				description = description.replace('%Refund_Amount%', orders.Product.price);
+			});
+			bodyParams.description = description;
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			bodyParams.created_by = user.first_name;
+			service.createRow("Notification", bodyParams);
+		});
+		return;
+	}
+})
 }

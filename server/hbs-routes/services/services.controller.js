@@ -27,9 +27,9 @@ export function services(req, res) {
 	offset = 0;
 	field = "id";
 	order = "asc";
+	limit = 20;
 
 	queryObj['status'] = status["ACTIVE"];
-	queryObj['marketplace_id'] = 3;
 
 	async.series({
 		cartInfo: function(callback) {
@@ -68,11 +68,11 @@ export function services(req, res) {
 		featuredService: function(callback) {
 			queryObj['featured_position_service_landing'] = 1;
 			queryObj['is_featured_product'] = 1;
-			limit = 6;
+			var featureLimit = 6;
 			var order = [
 				sequelize.fn('RAND'),
 			];
-			productService.RandomProducts(productModel, queryObj, limit, order)
+			productService.RandomProducts(productModel, queryObj, featureLimit, order)
 				.then(function(response) {
 					return callback(null, response.rows);
 				}).catch(function(error) {
@@ -80,17 +80,13 @@ export function services(req, res) {
 					return callback(null);
 				});
 		},
-		serviceProduct: function(callback) {
-			const includeArr = [];
-			const productOffset = 0;
-			const productLimit = 20;
-			const productField = "id";
-			const productOrder = "asc";
+		serviceMarketplace: function(callback) {
 			delete queryObj['featured_position_service_landing'];
 			delete queryObj['is_featured_product'];
-			service.findAllRows(productModel, includeArr, queryObj, productOffset, productLimit, productField, productOrder)
-				.then(function(serviceProduct) {
-					return callback(null, serviceProduct);
+			queryObj['marketplace_id'] = marketplace['SERVICE'];
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(serviceMarketplace) {
+					return callback(null, serviceMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -143,7 +139,7 @@ export function services(req, res) {
 				bottomCategory: bottomCategory,
 				marketPlace: marketplace,
 				featuredService: results.featuredService,
-				serviceProduct: results.serviceProduct,
+				serviceMarketplace: results.serviceMarketplace,
 				servicesProviders: results.servicesProviders,
 				cart: results.cartInfo,
 				LoggedInUser: LoggedInUser

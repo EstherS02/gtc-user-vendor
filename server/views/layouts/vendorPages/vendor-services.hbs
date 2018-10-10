@@ -48,9 +48,9 @@
             </div>
             <div class="col-md-10">
                 {{!-- <div class="header-lg bg-service">
-                    <h2 class="header-lg-text">SERVICES MARKETPLACE <p class="see-all">{{#if publicService.count}} Showing
-                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicService.count}}</b> of
-                        <b>{{publicService.count}}</b>{{/if}}
+                    <h2 class="header-lg-text">SERVICES MARKETPLACE <p class="see-all">{{#if serviceMarketplace.count}} Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset serviceMarketplace.count}}</b> of
+                        <b>{{serviceMarketplace.count}}</b>{{/if}}
                     </p></h2>
                 </div> --}}
 					<div class="row m-t-sm bg-service">
@@ -58,9 +58,9 @@
 						<h3 class="header-lg-text">SERVICES MARKETPLACE</h3>
 					</div>
 					<div class="col-md-6 header-lg-text">
-						<span style="padding-left:310px">{{#if publicService.count}} Showing
-                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicService.count}}</b> of
-                        <b>{{publicService.count}}</b>{{/if}}
+						<span style="padding-left:310px">{{#if serviceMarketplace.count}} Showing
+                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset serviceMarketplace.count}}</b> of
+                        <b>{{serviceMarketplace.count}}</b>{{/if}}
 						</span>	
 						<form class="form-inline alignright">
 							<div class="form-group">
@@ -81,7 +81,7 @@
                         <div class="ibox">
                             <div class="ibox-content">
                                 <div class="row">
-                                    {{#each publicService.rows}}
+                                    {{#each serviceMarketplace.rows}}
                                     <div class="col-md-6">
                                         <div class="product-body">
                                             <div class="table-responsive">
@@ -89,13 +89,16 @@
                                                     <tbody>
                                                         <tr class="d-flex">
                                                             <td class="col-2">
-                                                                <div class="product-left-col">
-                                                                    <img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}">
-                                                                </div>
+																<div class="product-left-col">
+																	<a href="wholesale/{{this.product_slug}}/{{this.id}}">
+																		<img class="object-fit" src="{{this.ProductMedia.[0].url}}" alt="{{this.product_name}}" onError="imgError(this)"
+																		title="{{this.product_name}}">
+																	</a>
+																</div>
                                                             </td>
                                                             <td class="col-7">
                                                                 <div class="product-middle-col">
-                                                                    <h3>
+																	<h3>
                                                                         <a href="/services/{{this.product_slug}}/{{this.id}}" title="{{this.product_name}}" class="text-blue">{{this.product_name}}</a>
                                                                     </h3>
                                                                     <div class="row no-margins">
@@ -103,20 +106,21 @@
                                                                             <span>Origin</span>
                                                                         </div>
                                                                         <div class="col-md-9 col-9 no-padding overflow-txt">
-                                                                            <span class="text-500">{{this.country_name}}</span>
+                                                                            <span class="text-500">{{this.Country.name}}</span>
                                                                         </div>
                                                                         <div class="col-md-3 col-3 no-padding">
                                                                             <span>Category</span>
                                                                         </div>
                                                                         <div class="col-md-9 col-9 no-padding overflow-txt">
-                                                                            <a class="text-500" href="#" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
+                                                                            <a class="text-500" href="/shop/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}"
+															 				title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}} > {{this.SubCategory.name}}</a>
                                                                         </div>
                                                                         <div class="col-md-3 col-3 no-padding">
                                                                             <span>Seller</span>
                                                                         </div>
                                                                         <div class="col-md-9 col-9 no-padding overflow-txt">
                                                                             {{#if ../LoggedInUser.email}}
-                                                                            <a class="text-500" title="{{this.vendor_name}}" href="/vendor/{{this.vendor_id}}">{{this.vendor_name}}</a>
+                                                                            <a class="text-500" title="{{this.Vendor.vendor_name}}" href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a>
                                                                             {{else}}
                                                                             <a class="text-500" href="/login">(Login for Seller Info)</a>
                                                                             {{/if}}
@@ -126,9 +130,12 @@
                                                             </td>
                                                             <td class="col-3">
                                                                 <div class="product-right-col">
-                                                                    {{!-- <small class="text-red">24h 12m left</small> --}}
-                                                                    {{!-- <h2 class="text-red">${{this.product_price}}</h2> --}}
-                                                                     <h6 class="text-red">{{currency this.product_price '$'}}</h6>
+                                                                    {{#if this.product_discounted_price}}
+																		<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																		{{else}}
+																		<h2 class="price-flag">{{currency this.price '$'}}</h2>
+																	{{/if}}
                                                                     <div class="prc-bottom">
                                                                         <p>Seller Rating</p>
                                                                         <div class="p-rating pull-right">
@@ -147,12 +154,12 @@
                                     </div>
                                     {{/each}}
                                 </div>
-                                {{#ifCond publicService.count '>' queryPaginationObj.limit}}
+                                {{#ifCond serviceMarketplace.count '>' queryPaginationObj.limit}}
                                 <div class="row">
                                     <div class="col-md-3">
                                     </div>
                                     <div class="col-md-7">
-                                        {{#pagination publicService.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+                                        {{#pagination serviceMarketplace.count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
                                         <nav aria-label="Page navigation example">
                                             <ul class="pagination justify-content-center">
                                                 {{#unless startFromFirstPage}}
@@ -175,10 +182,10 @@
                                 </div>
                                 {{/ifCond}}
                                 <div class="col-md-6">
-                                {{#if publicService.count}}
+                                {{#if serviceMarketplace.count}}
                                  <label class="label-control">Showing
-                                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset publicService.count}}</b> of
-                                        <b>{{publicService.count}}</b> Products matching
+                                        <b>{{SUMFloat queryPaginationObj.offset 1}}-{{upperCount queryPaginationObj.limit queryPaginationObj.offset serviceMarketplace.count}}</b> of
+                                        <b>{{serviceMarketplace.count}}</b> Products matching
                                         {{#if queryPaginationObj.keyword}}
                                         <span><b>"{{queryPaginationObj.keyword}}"</b>{{/if}}</span>
                                         {{#if selectedMarketPlace}}

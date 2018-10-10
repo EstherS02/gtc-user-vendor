@@ -5,6 +5,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
+const productService = require('../../../api/product/product.service');
 const service = require('../../../api/service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
@@ -32,33 +33,13 @@ export function vendorLifestyle(req, res) {
 	var offset, limit, field, order, page;
 	var queryObj = {};
 	var queryURI = {};
-	var start_date;
-	var end_date;
 	var vendor_id = req.params.id;
 	queryObj['marketplace_id'] = marketplace['LIFESTYLE'];
 	queryURI['marketplace_id'] = marketplace['LIFESTYLE'];
 	queryObj['vendor_id'] = vendor_id;
 	queryObj['status'] = status["ACTIVE"];
-	end_date = moment().add(0, 'd').toDate();
-	if (req.query.order == "desc") {
-		start_date = moment().add(-30, 'd').toDate();
-		queryObj['created_on'] = {
-			$between: [start_date, end_date]
-		};
-	}else{
-		start_date = moment().add(-30, 'd').toDate();
-		queryObj['created_on'] = {
-			$between: [start_date, end_date]
-		};
-	}
 
-
-	// var vevndorIncludeArr = [{
-	// 	model:model['Country']
-
-	// }]
 	var queryPaginationObj = {};
-	// var queryURI = {};
 
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	queryPaginationObj['offset'] = offset;
@@ -96,11 +77,10 @@ export function vendorLifestyle(req, res) {
 			}
 		},
 
-		publicLifestyle: function(callback) {
-			service.findRows(productModel, queryObj, offset, limit, field, order)
-				.then(function(wantToSell) {
-					return callback(null, wantToSell);
-
+		lifestyleMarketplace: function(callback) {
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
+				.then(function(lifestyleMarketplace) {
+					return callback(null, lifestyleMarketplace);
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -222,7 +202,7 @@ export function vendorLifestyle(req, res) {
 				VendorDetail: results.VendorDetail,
 				marketPlace: marketplace,
 				marketPlaceType: marketplace_type,
-				publicLifestyle: results.publicLifestyle,
+				lifestyleMarketplace: results.lifestyleMarketplace,
 				queryPaginationObj: queryPaginationObj,
 				queryURI: queryURI,
 				categoriesWithCount: results.categoriesWithCount,
