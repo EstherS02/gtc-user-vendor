@@ -310,7 +310,6 @@ export function returnRequest(req, res) {
 		})
 }
 function returnRequestnotification(refundOrderitemsID, user) {
-	console.log("enter the lllopppddd");
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
 	var queryObj = {
@@ -321,8 +320,7 @@ function returnRequestnotification(refundOrderitemsID, user) {
 	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
-			console.log("orderRefundList:::"+JSON.stringify(orderRefundList));
-	        var queryObjNotification = {};
+			var queryObjNotification = {};
 	        var NotificationTemplateModel = 'NotificationSetting';
 	        queryObjNotification['code'] = config.notification.templates.refundRequest;
 	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
