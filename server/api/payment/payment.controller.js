@@ -663,6 +663,8 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 	var order = "asc";
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
+
+			usernotification(OrderList,user);
 			if(user.user_contact_email){
 
 				vendorMail(OrderList, user);
@@ -782,7 +784,27 @@ function notifications(order) {
 		});
 		return;
 }
-
+function usernotification(order,user){
+var queryObjNotification = {};
+	var NotificationTemplateModel = 'NotificationSetting';
+	queryObjNotification['code'] = config.notification.templates.orderDetail;
+	service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		.then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = user.id;
+			bodyParams.description = response.description
+			bodyParams.description = bodyParams.description.replace('%Firstname%',user.first_name);
+			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
+			bodyParams.description = bodyParams.description.replace('%path%', '/order-history/' + order.id);
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			service.createRow("Notification", bodyParams);
+		});
+		return;	
+}
 // plan payment method starts//
 export function makeplanPayment(req, res) {
 	var desc = "GTC Plan Payment";

@@ -7,6 +7,7 @@ const model = require('../../../sqldb/model-connect');
 const reference = require('../../../config/model-reference');
 const statusCode = require('../../../config/status');
 const service = require('../../../api/service');
+const marketplaceCode = require('../../../config/marketplace');
 const marketplaceTypeCode = require('../../../config/marketplace_type');
 const populate = require('../../../utilities/populate');
 const vendorPlan = require('../../../config/gtc-plan');
@@ -160,6 +161,7 @@ export function addProduct(req, res) {
 				country: results.country,
 				marketplaceType: results.marketplaceType,
 				marketplaceTypeCode: marketplaceTypeCode,
+				marketplaceCode: marketplaceCode,
 				LoggedInUser: LoggedInUser,
 				cart: results.cartInfo,
 				marketPlace: marketplace,
