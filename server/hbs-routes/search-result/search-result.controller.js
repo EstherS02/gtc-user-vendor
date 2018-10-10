@@ -234,13 +234,13 @@ export function index(req, res) {
 				});
 		},
 		products: function(callback) {
-			service.findAllRows(productModel, [], productQueryParams, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, productQueryParams, offset, limit, field, order)
 				.then(function(results) {
+					console.log("--------------------------------------------",results);
 					return callback(null, results);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(error, null);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
 		},
 		topProducts: function(callback) {

@@ -222,7 +222,7 @@ Handlebars.registerHelper('FormatDate', function(context, options) {
     }
 });
 Handlebars.registerHelper('timeLeft', function(context,options){
-    var currentDate = moment().format('YYYY-M-DD HH:mm:ss');
+    var currentDate = moment().utc().format('YYYY-M-DD HH:mm:ss');
     var endDate = moment(context, 'YYYY-M-DD HH:mm:ss');
     var secondsDiff='';
     if(endDate.diff(currentDate)>0){

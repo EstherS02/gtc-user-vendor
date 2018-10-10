@@ -1,5 +1,3 @@
-
-
 if (discountLength) {
 	count = discountLength;
 }else {
@@ -8,12 +6,16 @@ if (discountLength) {
 
 function addProduct(productInput) {
 	var obj = {};
+
 	if (attributeArr.length > 0)
 		obj.attributeArr = JSON.stringify(attributeArr);
 	if (discountArr.length > 0)
 		obj.discountArr = JSON.stringify(discountArr);
 	if (imageArr.length > 0)
 		obj.imageArr = JSON.stringify(imageArr);
+	
+	obj.marketplace_id = $('#marketplace_id').val();
+
 	$.ajax({
 		type: 'POST',
 		url: '/api/product/add-product?' + productInput,
@@ -32,7 +34,7 @@ function addProduct(productInput) {
 		},
 		error: function(error) {
 			$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+			$('#gtc-cart-alert .cart-message').text(error.responseText);
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);
 			});
@@ -54,13 +56,15 @@ function updateProduct(product_id, productInput) {
 	if (imageArr.length > 0)
 		obj.imageArr = JSON.stringify(imageArr);
 
+	obj.marketplace_id = $('#marketplace_id').val();
+
 	$.ajax({
 		type: 'POST',
 		url: '/api/product/edit-product?product_id=' + product_id + '&' + productInput,
 		data: obj,
 		success: function(data) {
 			$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-			$('#gtc-cart-alert .cart-message').text("Product Updated Successfully")
+			$('#gtc-cart-alert .cart-message').text("Product Updated Successfully");
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);
 			});
@@ -72,7 +76,7 @@ function updateProduct(product_id, productInput) {
 		},
 		error: function(error) {
 			$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-			$('#gtc-cart-alert .cart-message').text("Server Issue..Please try after sometime..")
+			$('#gtc-cart-alert .cart-message').text(error.responseText);
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);
 			});
@@ -262,7 +266,6 @@ $(document).ready(function() {
 				attributeRow = '<tr></tr>';
 				for (var i = 0; i < result.rows.length; i++) {
 					var productAttribute;
-					console.log(typeof (result.rows[i].Attribute.unit));
 					productAttribute = "<tr><td>" + result.rows[i].Attribute.attr_name + "</td><td>" +
 						"<input type='text' name=" + result.rows[i].Attribute.id + " class='shop_qty_num all-quantity-cart-items' style='width:auto;'></td></tr>"
 
