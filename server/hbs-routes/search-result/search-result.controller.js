@@ -234,13 +234,12 @@ export function index(req, res) {
 				});
 		},
 		products: function(callback) {
-			service.findAllRows(productModel, [], productQueryParams, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, productQueryParams, offset, limit, field, order)
 				.then(function(results) {
 					return callback(null, results);
-				})
-				.catch(function(error) {
-					console.log('Error:::', error);
-					return callback(error, null);
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return callback(null);
 				});
 		},
 		topProducts: function(callback) {
@@ -286,7 +285,6 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^66",productCountCategory)
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
@@ -340,7 +338,7 @@ export function index(req, res) {
 				});
 		}
 	}, function(error, results) {
-		queryPaginationObj['maxSize'] = 2;
+		queryPaginationObj['maxSize'] = 5;
 		if (!error && results) {
 			res.render('search', {
 				title: "Global Trade Connect",
@@ -364,7 +362,7 @@ export function index(req, res) {
 				durations: durationConfig,
 				layout_type: layout,
 				productCount: results.productCount,
-				countryProductCount:results.countryProductCount
+				countryProductCount: results.countryProductCount
 			});
 		} else {
 			res.render('search', error);

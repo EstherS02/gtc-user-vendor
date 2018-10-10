@@ -1,5 +1,5 @@
 <script type="text/javascript"> 
-   
+
 	$(function() {
 		$("#from").datepicker({
 			format: 'yyyy-mm-dd',
@@ -16,6 +16,7 @@
 
 		});
 	});
+
 	function selectAll(ele) {
 		var checkboxes = document.getElementsByTagName('input');
 		if (ele.checked) {
@@ -34,17 +35,16 @@
 		}
 	}
 
-	function selectval()
-	{
+	function selectval() {
 		var el, i = 0;
-var total = 0;
-while(el = document.getElementsByName("chk")[i++]) {
-if(el.checked) { total= total + Number(el.value);}
-}
-console.log(total);
-$("#total_refund").val(total);
-
+		var total = 0;
+		while (el = document.getElementsByName("chk")[i++]) {
+			if (el.checked) { total = total + Number(el.value); }
+		}
+		console.log(total);
+		$("#total_refund").val(total);
 	}
+
 	function selectDatefun() {
 		var val = $("#selectDate option:selected").val();
 		if (val) {
@@ -53,6 +53,7 @@ $("#total_refund").val(total);
 			$('#to').val("");
 		}
 	}
+
 	$(function() {
 		$("#gtc-form-alert").hide();
 		$("#refundSelection").hide();
@@ -63,13 +64,13 @@ $("#total_refund").val(total);
 			}).serialize();
 			if (formInput != '') {
 				window.location.href = ' reporting/sales-history?' + formInput;
-			}else{
+			} else {
 				$("#gtc-form-alert").show();
-			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			    $('#gtc-form-alert .form-message').text("Please choose the filter options");
-			    $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-			    $("#gtc-form-alert").slideUp(500);
-			    });
+				$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+				$('#gtc-form-alert .form-message').text("Please choose the filter options");
+				$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+					$("#gtc-form-alert").slideUp(500);
+				});
 			}
 		});
 		$("#searchSaleshistory1").submit(function(e) {
@@ -82,9 +83,10 @@ $("#total_refund").val(total);
 			}
 		});
 	});
+
 	$(document).ready(function() {
 		$(".checkbox").change(function(e) {
-   			$('#checkbox').prop('checked', false);
+			$('#checkbox').prop('checked', false);
 		});
 
 		var orderItems, totalTag;
@@ -101,7 +103,7 @@ $("#total_refund").val(total);
 				success: function(result) {
 					$("#issueRefund").empty();
 
-					for (var i = 0; i < result.OrderItems.length; i++) {
+					/*for (var i = 0; i < result.OrderItems.length; i++) {
 
 						orderItems = "<tr><td><input type='checkbox' name='chk' value="+result.OrderItems[i].final_price+" id="+result.OrderItems[i].id+" onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
 							+ result.OrderItems[i].quantity + "</td><td>"
@@ -109,6 +111,27 @@ $("#total_refund").val(total);
 							+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID"+result.OrderItems[i].id+" value="+result.OrderItems[i].id+" >"
 							+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].quantity+" disabled style='width:auto;'></td><td>"
 							+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id="+result.OrderItems[i].id+" value="+result.OrderItems[i].final_price+" disabled style='width:auto;'></td></tr>";
+
+						$("#issueRefund").append(orderItems);
+					}*/
+					for (var i = 0; i < result.OrderItems.length; i++) {
+						if (result.OrderItems[i].order_item_status != "1") {
+							var orderItems = "<tr><td><input type='checkbox' name='chk' value=" + result.OrderItems[i].final_price + " id=" + result.OrderItems[i].id + " onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+								+ result.OrderItems[i].quantity + "</td><td>"
+								+ result.OrderItems[i].final_price + "</td><td>"
+								+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID" + result.OrderItems[i].id + " value=" + result.OrderItems[i].id + " >"
+								+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id=" + result.OrderItems[i].id + " value=" + result.OrderItems[i].quantity + " disabled style='width:auto;'></td><td>"
+								+ "<input type='text' min='1'   name='refund_amount[]' class='shop_qty_num all-quantity-cart-items refund_amount' id=" + result.OrderItems[i].id + " value=" + result.OrderItems[i].final_price + " disabled style='width:auto;'></td></tr>";
+
+						}
+						else {
+							var orderItems = "<tr><td><input type='hidden' name='chk' value=" + result.OrderItems[i].final_price + " id=" + result.OrderItems[i].id + " onclick='selectval()'></td><td>" + result.OrderItems[i].Product.product_name + "</td><td>"
+								+ result.OrderItems[i].quantity + "</td><td>"
+								+ result.OrderItems[i].final_price + "</td><td>"
+								+ "<input type='hidden' name='' quantity='' orderid='' class='orderItemsRefunds' disabled id=orderItemID" + result.OrderItems[i].id + " value=" + result.OrderItems[i].id + " >"
+								+ "<input type='text' min='1'  name='refund_quantity[]' class='shop_qty_num all-quantity-cart-items refund_quantity' id=" + result.OrderItems[i].id + " value=" + result.OrderItems[i].quantity + " disabled style='width:auto;'></td><td>"
+								+ result.OrderItems[i].final_price + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Refunded  </td></tr>";
+						}
 
 						$("#issueRefund").append(orderItems);
 					}
@@ -119,71 +142,67 @@ $("#total_refund").val(total);
 				},
 				error: function(error) {
 					console.log(error);
-				}	
+				}
 			})
 		});
 
 		$('#issueRefundForm').submit(function(e) {
 			e.preventDefault();
-              	   
-		  	 var bulksave = [];
-			
-				$(':checkbox:checked').each(function(i) {
+
+			var bulksave = [];
+
+			$(':checkbox:checked').each(function(i) {
 				if ($(this).val() != 'on') {
 					bulksave.push($(this).attr("id"));
 				}
 			});
-		    if(bulksave !='')
-			 {
-           $('#issueRefundModal').modal('hide');
-		   $('#conform-modal').modal('show');
-		   var total_refund = $('#total_refund').val();
-		   console.log("total_refund:::"+total_refund);
-		   var order_id = $("#order_id").html();
-		    $("#orderId").html(order_id);
-			$("#refund_amount").html(total_refund);
-			//$("#orderItemid").val(orderItemId);
-			//$("#order_refund_amount").val(refund_amount);
+			if (bulksave != '') {
+				$('#issueRefundModal').modal('hide');
+				$('#conform-modal').modal('show');
+				var total_refund = $('#total_refund').val();
+				console.log("total_refund:::" + total_refund);
+				var order_id = $("#order_id").html();
+				$("#orderId").html(order_id);
+				$("#refund_amount").html(total_refund);
+				//$("#orderItemid").val(orderItemId);
+				//$("#order_refund_amount").val(refund_amount);
 			}
-			else
-			{
-                $("#refundSelection").show();
-			    $('#refundSelection').removeClass('alert-success').addClass('alert-danger');
-			    $('#refundSelection .form-message').text("Please Select the Product Name");
-			    $("#refundSelection").fadeTo(2000, 500).slideUp(500, function () {
-			    $("#refundSelection").slideUp(500);
-			    });
+			else {
+				$("#refundSelection").show();
+				$('#refundSelection').removeClass('alert-success').addClass('alert-danger');
+				$('#refundSelection .form-message').text("Please Select the Product Name");
+				$("#refundSelection").fadeTo(2000, 500).slideUp(500, function() {
+					$("#refundSelection").slideUp(500);
+				});
 			}
-			
-		
 		});
 
-		$('#refundConformForm').submit(function(e){
-			 var bulksave = [];
-			 $(':checkbox:checked').each(function(i) {
+		$('#refundConformForm').submit(function(e) {
+			var bulksave = [];
+			$(':checkbox:checked').each(function(i) {
 				if ($(this).val() != 'on') {
 					bulksave.push($(this).attr("id"));
 				}
 			});
-			console.log("bulksave:::"+bulksave);
+			console.log("bulksave:::" + bulksave);
 			e.preventDefault();
-            var totalRefund = $("#refund_amount").html();
+			var totalRefund = $("#refund_amount").html();
 			var refund_order_id = $("#orderId").html();
-			var checkRefundItems= JSON.stringify(bulksave);
+			var checkRefundItems = JSON.stringify(bulksave);
 			var refundObj = {};
 			refundObj = {
 				total_refund: totalRefund,
-				refundOrderItems:checkRefundItems
-				
+				refundOrderItems: checkRefundItems
+
 			}
-			console.log("totalRefund:::"+totalRefund);
-			console.log("refundonj:::"+refundObj);
-		    $.ajax({
+			console.log("totalRefund:::" + totalRefund);
+			console.log("refundonj:::" + refundObj);
+			$.ajax({
 				url: '/api/payment/refund-order/' + refund_order_id,
 				type: 'POST',
 				data: refundObj,
 				success: function(result) {
-                    $('#conform-modal').modal('hide');
+					$('#conform-modal').modal('hide');
 					$('#success-modal').modal('show');
 
 				},
@@ -191,77 +210,64 @@ $("#total_refund").val(total);
 					console.log(error);
 				}
 			})
-			 
-		
 		})
 	});
 
-	
-
-		
 	$(document).on("change", ".refund_amount", function() {
 		var sum = 0;
 		$(".refund_amount").each(function() {
 			sum += +$(this).val();
-		    var currentval=$(this).val();
-			 var id = $(this).attr('id');
-			 $('#orderItemID'+id).val(currentval);
-			
+			var currentval = $(this).val();
+			var id = $(this).attr('id');
+			$('#orderItemID' + id).val(currentval);
 		});
 		$("#total_refund").val(sum);
 	});
-	function downloadCSV(args)
-	  {
-		  var chkArray = [];
-			$(':checkbox:checked').each(function(i) {
-				if ($(this).val() != 'on') {
-					chkArray.push($(this).val());
+
+	function downloadCSV(args) {
+		var chkArray = [];
+		$(':checkbox:checked').each(function(i) {
+			if ($(this).val() != 'on') {
+				chkArray.push($(this).val());
+			}
+		});
+		if (chkArray != '') {
+			var selectedvalues = JSON.stringify(chkArray);
+			$.ajax({
+				type: 'POST',
+				url: '/api/export-csv/saleshistorycsv',
+				data: { "vendor_id": $('#login_vendoruserid').val(), id: selectedvalues },
+				success: function(data) {
+					console.log("enter the loopsss");
+					var csvData = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+					var csvURL = null;
+					if (navigator.msSaveBlob) {
+						csvURL = navigator.msSaveBlob(csvData, 'saleshistory.csv');
+					} else {
+						csvURL = window.URL.createObjectURL(csvData);
+					}
+					var tempLink = document.createElement('a');
+					tempLink.href = csvURL;
+					tempLink.setAttribute('download', 'saleshistory.csv');
+					tempLink.click();
+				},
+				error: function(request, status, error) {
+					console.log('request', request);
+					console.log('status', status);
 				}
 			});
-			if(chkArray!='')
-			{
-				
-				var selectedvalues= JSON.stringify(chkArray);
-				$.ajax({
-					type: 'POST',
-					url: '/api/export-csv/saleshistorycsv',
-					data: {"vendor_id":$('#login_vendoruserid').val(),id:selectedvalues},
-					success: function(data) {
-						console.log("enter the loopsss");
-					    var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
-                        var csvURL =  null;
-                        if (navigator.msSaveBlob) {
-                        csvURL = navigator.msSaveBlob(csvData, 'saleshistory.csv');
-                        } else {
-                        csvURL = window.URL.createObjectURL(csvData);
-                        }
-                        var tempLink = document.createElement('a');
-                        tempLink.href = csvURL;
-                        tempLink.setAttribute('download', 'saleshistory.csv');
-                        tempLink.click();
-						
-					},
-					error: function(request, status, error) {
-						console.log('request', request);
-						console.log('status', status);
-					}
-				});
-				
-			}
-			else
-			{
-				$("#gtc-form-alert").show();
-			    $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-			    $('#gtc-form-alert .form-message').text("Please select the orders");
-				 $("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function () {
-			    $("#gtc-form-alert").slideUp(500);
+		}
+		else {
+			$("#gtc-form-alert").show();
+			$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+			$('#gtc-form-alert .form-message').text("Please select the orders");
+			$("#gtc-form-alert").fadeTo(2000, 500).slideUp(500, function() {
+				$("#gtc-form-alert").slideUp(500);
 			});
-			}
-           
-		    
-		  
-	  }
-</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+		}
+	}
+</script>
+{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 <div class="wrapper-content bg-gray">
 	<div class="gtc-container">
 		<div class="row">
@@ -269,219 +275,228 @@ $("#total_refund").val(total);
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			{{#if LoggedInUser.Vendor.VendorPlans}}
-			<div class="col-sm-10">
-				<div class="ibox">
-					<div class="ibox-content">
-						<div class="ibox-title">
-							<h2>Sales History
-							<span class="pull-right" style="font-size:12px"><a href="reporting/sales-history">Clear All</a></span>
-							</h2>
-						</div>
-						<div class="alert" id="gtc-form-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="form-message"></span>
-						</div><br/>
-						<div class="content-body">
-							<div class="row">
-								<div class="col-md-7">
-									<form class="form-inline" id="searchSaleshistory">
-										<div class="form-group mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="dateSelect" id="dateSelect">
-												 {{!-- {{#if queryURI.dateSelect}} --}}
-												{{#select queryURI.dateSelect}}
-													<option disabled selected>Days</option>
-													<option value="today">Today</option>
-													<option value="yesterday">Yesterday</option>
-													<option value="last7day">LAST 7 DAY</option>
-													<option value="last15day">LAST 15 DAY</option>
-													<option value="last30day">LAST 30 DAY</option>
-													{{/select}}
-													{{!--{{/if }} --}}
- 												</select>
-											</div>
-										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="marketType">
-												{{#select queryURI.marketType}}
-													<option disabled selected> Type</option>
-													{{#each marketPlace}}
-														<option value="{{this}}">{{@key}}</option>
-													{{/each}}
-													{{/select}}
-												</select>
-
-											</div>
-										</div>
-										<div class="form-group mx-sm-3 mb-2">
-											<div class="select-container">
-												<select class="form-control-customized form-control-sm" name="status">
-												{{#select queryURI.status}}
-
-													<option disabled selected>STATUS</option>
-													{{#each orderStatus}}
-														{{!-- <option value="{{@key}}">{{@key}}</option> --}}
-														<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
-													{{/each}}
-												{{/select}}
-												</select>
-											</div>
-										</div>
-										<input type="submit" value="SEARCH" class="ladda-button btn btn-small btn-muted" style="margin-top: -8px;">
-									</form>
-								</div>
-								<div class="col-md-5">
-									<div  class="form-inline ml-auto pull-right">
-										<div class="form-group mx-sm-3 mb-2">
-											<button  type="sumbit" class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
-											<input type="hidden" name="user_id" id="login_vendoruserid" value={{LoggedInUser.Vendor.id}}>
-										</div>
-										
-										
-										<form id="searchSaleshistory1" class="form-inline ml-auto pull-right">
-										<div class="form-group mb-2">
-											<div class="input-group gtc-rounded">
-
-												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Order# " {{#if queryURI.keyword}}
-												value={{queryURI.keyword}}{{/if}} aria-label="..."
-												/>
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
-											</div>
-										</div>
-									</form>
-									</div>
-								</div>
+				<div class="col-sm-10">
+					<div class="ibox">
+						<div class="ibox-content">
+							<div class="ibox-title">
+								<h2>Sales History
+									<span class="pull-right" style="font-size:12px">
+										<a href="reporting/sales-history">Clear All</a>
+									</span>
+								</h2>
 							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="cart-top-header">
-										<div class="alignleft cart-top-left">
-											<span class="m-r-sm text-muted">{{count}} items total from
-												{{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}}begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
-										</div>
-										<div class="alignright cart-top-right">
-											<span class="m-r-sm text-muted">
-												Entries per page :
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }} class="active" {{/ifCond}} > 10</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }} class="active" {{/ifCond}}> 25</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }} class="active" {{/ifCond}}> 100</a>
-												<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 500 }} class="active" {{/ifCond}}> All </a>
-											</span>
-										</div>
-										<div style="clear: both;"></div>
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<table class="table table-hover">
-											<thead>
-												<tr>
-													<th scope="col">
-														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
-													</th>
-													<th scope="col">Order#</th>
-													<th style="display:none" scope="col">purchase order id</th>
-													<th scope="col">Date</th>
-													<th scope="col">Method</th>
-													<th scope="col">Status</th>
-													<th scope="col">Notes</th>
-													<th colspan="3"></th>
-													<th scope="col">Amount</th>
-												</tr>
-											</thead>
-											<tbody>
-											{{#if Order}}
-												{{#each Order}}
-													<tr>
-														<td>
-															<input type="checkbox" class="checkbox" value="{{this.id}}">
-														</td>
-														<td>
-															<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
-														</td>
-														<td style="display:none">{{this.purchase_order_id}}</td>
-														<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
-														<td>Stripe</td>
-														<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
-														<td></td>
-														<td>
-															<a href="/order-track/{{this.id}}">Track Order</a>
-														</td>
-														<td class="text_blue_color">
-															{{#ifCond this.order_status '!=' "6" }}
-															<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
-																<i class="fas fa-credit-card"></i>
-																Issue Refund</p>
-																{{else}}
-																<p    style="cursor:pointer">
-																
-																 Refund Issued</p>
-															
-																{{/ifCond}}
-														</td>
-												 
-														<td class="text_blue_color">
-															<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
-															<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
-														</td>
-														<td>{{currency this.total_price '$'}} CAD</td>
-													</tr>
-												{{/each}}
-												<tr>
-													<td colspan="8"></td>
-													<td class="text_blue_color">Total Transaction</td>
-													<td>{{currency totalTransaction '$'}}CAD</td>
-												</tr>
-												{{else}}
-												<tr><td colspan="7" style="text-align:center;">No Data Found</td></tr>
-												{{/if}}
-											</tbody>
-										</table>
-										{{!-- Pagination starts --}}
-										{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
-										{{#if count}}
-											<div class="row">
-												<div class="col-md-3">
-												</div>
-												<div class="col-md-7">
-													{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-														<nav aria-label="Page navigation example">
-															<ul class="pagination justify-content-center">
-																{{#unless startFromFirstPage}}
-																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Previous</a>
-																	</li>
-																{{/unless}}
-																{{#each pages}}
-																	<li class="page-item {{#if isCurrent}} active {{/if}}">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-																	</li>
-																{{/each}}
-																{{#unless endAtLastPage}}
-																	<li class="page-item">
-																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next</a>
-																	</li>
-																{{/unless}}
-															</ul>
-														</nav>
-													{{/pagination}}
+							<div class="alert" id="gtc-form-alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="form-message"></span>
+							</div>
+							<br/>
+							<div class="content-body">
+								<div class="row">
+									<div class="col-md-7">
+										<form class="form-inline" id="searchSaleshistory">
+											<div class="form-group mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="dateSelect" id="dateSelect">
+														{{!-- {{#if queryURI.dateSelect}} --}}
+														{{#select queryURI.dateSelect}}
+															<option disabled selected>Days</option>
+															<option value="today">Today</option>
+															<option value="yesterday">Yesterday</option>
+															<option value="last7day">LAST 7 DAY</option>
+															<option value="last15day">LAST 15 DAY</option>
+															<option value="last30day">LAST 30 DAY</option>
+														{{/select}}
+														{{!--{{/if }} --}}
+													</select>
 												</div>
 											</div>
-										{{!-- {{/ifCond}} --}}
-										{{/if}}
-										{{!-- Pagination Ends --}}
+											<div class="form-group mx-sm-3 mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="marketType">
+														{{#select queryURI.marketType}}
+															<option disabled selected> Type</option>
+															{{#each marketPlace}}
+																<option value="{{this}}">{{@key}}</option>
+															{{/each}}
+														{{/select}}
+													</select>
+
+												</div>
+											</div>
+											<div class="form-group mx-sm-3 mb-2">
+												<div class="select-container">
+													<select class="form-control-customized form-control-sm" name="status">
+														{{#select queryURI.status}}
+
+															<option disabled selected>STATUS</option>
+															{{#each orderStatus}}
+																{{!-- <option value="{{@key}}">{{@key}}</option> --}}
+																<option value="{{@key}}">{{objectKey ../orderStatus @this}}</option>
+															{{/each}}
+														{{/select}}
+													</select>
+												</div>
+											</div>
+											<input type="submit" value="SEARCH" class="ladda-button btn btn-small btn-muted" style="margin-top: -8px;">
+										</form>
+									</div>
+									<div class="col-md-5">
+										<div class="form-inline ml-auto pull-right">
+											<div class="form-group mx-sm-3 mb-2">
+												<button type="sumbit" class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
+												<input type="hidden" name="user_id" id="login_vendoruserid" value= {{LoggedInUser.Vendor.id}}>
+											</div>
+
+
+											<form id="searchSaleshistory1" class="form-inline ml-auto pull-right">
+												<div class="form-group mb-2">
+													<div class="input-group gtc-rounded">
+
+														<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Order# " {{#if queryURI.keyword}}
+														 value= {{queryURI.keyword}} {{/if}} aria-label="..." />
+														<button type="submit" class="btn btn-sm btn-gtc">
+															<i class="fa fa-search"></i>
+														</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="cart-top-header">
+											<div class="alignleft cart-top-left">
+												<span class="m-r-sm text-muted">{{count}} items total from
+													{{#if queryURI.start_date}}{{formatTime queryURI.start_date "MMM D, Y"}}{{else}}begining {{/if}} to {{formatTime queryURI.end_date "MMM D, Y"}}</span>
+											</div>
+											<div class="alignright cart-top-right">
+												<span class="m-r-sm text-muted">
+													Entries per page :
+													<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=10) 'null'}}" {{#ifCond queryURI.limit '==' 10 }}
+													 class="active" {{/ifCond}}> 10</a>
+													<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=25) 'null'}}" {{#ifCond queryURI.limit '==' 25 }}
+													 class="active" {{/ifCond}}> 25</a>
+													<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=100) 'null'}}" {{#ifCond queryURI.limit '==' 100 }}
+													 class="active" {{/ifCond}}> 100</a>
+													<a href="reporting/sales-history?{{QueryParams queryURI (FrameObject page=1 limit=500) 'null'}}" {{#ifCond queryURI.limit '==' 500 }}
+													 class="active" {{/ifCond}}> All </a>
+												</span>
+											</div>
+											<div style="clear: both;"></div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="table-responsive">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th scope="col">
+															<input type="checkbox" id="checkbox" onclick="selectAll(this);">
+														</th>
+														<th scope="col">Order#</th>
+														<th style="display:none" scope="col">purchase order id</th>
+														<th scope="col">Date</th>
+														<th scope="col">Method</th>
+														<th scope="col">Status</th>
+														<th scope="col">Notes</th>
+														<th colspan="3"></th>
+														<th scope="col">Amount</th>
+													</tr>
+												</thead>
+												<tbody>
+													{{#if Order}}
+														{{#each Order}}
+															<tr>
+																<td>
+																	<input type="checkbox" class="checkbox" value="{{this.id}}">
+																</td>
+																<td>
+																	<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
+																</td>
+																<td style="display:none">{{this.purchase_order_id}}</td>
+																<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
+																<td>Stripe</td>
+																<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
+																<td></td>
+																<td>
+																	<a href="/order-track/{{this.id}}">Track Order</a>
+																</td>
+																<td class="text_blue_color">
+																	{{#ifCond this.order_status '!=' "6" }}
+																		<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
+																			<i class="fas fa-credit-card"></i>
+																			Issue Refund</p>
+													{{else}}
+														<p style="cursor:pointer">
+
+															Refund Issued</p>
+
+																	{{/ifCond}}
+																</td>
+
+																<td class="text_blue_color">
+																	<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
+																		<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
+																</td>
+																<td>{{currency this.total_price '$'}} CAD</td>
+															</tr>
+														{{/each}}
+														<tr>
+															<td colspan="8"></td>
+															<td class="text_blue_color">Total Transaction</td>
+															<td>{{currency totalTransaction '$'}}CAD</td>
+														</tr>
+													{{else}}
+														<tr>
+															<td colspan="10" style="text-align:center;">No Data Found</td>
+														</tr>
+													{{/if}}
+												</tbody>
+											</table>
+											{{!-- Pagination starts --}}
+											{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
+											{{#if count}}
+												<div class="row">
+													<div class="col-md-12">
+														{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+															<nav aria-label="Page navigation example">
+																<ul class="pagination justify-content-center">
+																	{{#unless startFromFirstPage}}
+																		<li class="page-item-prev" style="margin-left:-310px;">
+																			<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+																				<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																		</li>
+																	{{/unless}}
+																	{{#each pages}}
+																		<li class="page-item {{#if isCurrent}} active {{/if}}">
+																			<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																		</li>
+																	{{/each}}
+																	{{#unless endAtLastPage}}
+																		<li class="page-item-next" style="margin-right:-310px;">
+																			<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																				<i class="fa fa-angle-double-right"></i>
+																			</a>
+																		</li>
+																	{{/unless}}
+																</ul>
+															</nav>
+														{{/pagination}}
+													</div>
+												</div>
+												{{!-- {{/ifCond}} --}}
+											{{/if}}
+											{{!-- Pagination Ends --}}
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 			{{else}}
 				{{> plan-inactive}}
 			{{/if}}
@@ -499,12 +514,13 @@ $("#total_refund").val(total);
 			</div>
 			<form id="issueRefundForm" class="form">
 				<div class="modal-body">
-						<div class="alert" id="refundSelection">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="form-message"></span>
-						</div><br/>
+					<div class="alert" id="refundSelection">
+						<button type="button" class="close" data-dismiss="alert">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<span class="form-message"></span>
+					</div>
+					<br/>
 					<div class="container">
 						<table class="table table-hover">
 							<thead>
@@ -553,20 +569,20 @@ $("#total_refund").val(total);
 				<h5 class="modal-title">Refund Conformation:</h5>
 			</div>
 			<form id="refundConformForm" class="form">
-			<div class="modal-body">
-				<div class="container">
-					<p>Are you sure you want to process a refund of $
-						<span id='refund_amount'></span> for the order #
-						<span id="orderId"></span>?</p>
-						</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
-					<b>CANCEL</button>
-				<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
-					<b>YES</b>
-				</button>
-			</div>
+				<div class="modal-body">
+					<div class="container">
+						<p>Are you sure you want to process a refund of $
+							<span id='refund_amount'></span> for the order #
+							<span id="orderId"></span>?</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+						<b>CANCEL</button>
+					<button type="submit" id="submitBtn" class="btn btn-small btn-primary">
+						<b>YES</b>
+					</button>
+				</div>
 			</form>
 		</div>
 	</div>

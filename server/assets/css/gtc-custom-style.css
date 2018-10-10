@@ -1174,3 +1174,16 @@ button.update-btn1{
 #profileImage, #userUpdateBtn, #userCancelBtn, #changePwdBtn {
 	cursor: pointer;
 }
+
+
+/* search page pagintion next previous button */
+.page-item-prev {
+	margin-right: 310px;
+	margin-top: 10px;
+}
+
+.page-item-next {
+	margin-left: 310px;
+	margin-top: 10px;
+}
+/*  */

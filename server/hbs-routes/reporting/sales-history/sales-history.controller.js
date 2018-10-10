@@ -212,7 +212,9 @@ export function salesHistory(req, res) {
                 });
             }
 
-            queryPaginationObj['maxSize'] = maxSize;
+			// queryPaginationObj['maxSize'] = maxSize;
+			queryPaginationObj['maxSize'] = 3;
+
             if (!err) {
 
 				if(dropDownUrl == 'reporting'){

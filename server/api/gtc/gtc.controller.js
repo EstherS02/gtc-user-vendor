@@ -9,6 +9,7 @@ const moment = require('moment');
 
 const service = require('../service');
 const productService = require('../product/product.service');
+const reportsService = require('../reports/reports.service');
 const config = require('../../config/environment');
 const reference = require('../../config/model-reference');
 const status = require('../../config/status');
@@ -21,9 +22,11 @@ export function indexA(req, res) {
 	var queryObj = {};
 	var offset, limit, field, order;
 
+	queryObj['marketplace_id'] = 2;
+
 	offset = req.query.offset ? parseInt(req.query.offset) : 0;
 	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 5;
+	limit = req.query.limit ? parseInt(req.query.limit) : 20;
 	delete req.query.limit;
 	field = req.query.field ? req.query.field : "id";
 	delete req.query.field;

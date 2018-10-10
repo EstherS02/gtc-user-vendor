@@ -167,11 +167,11 @@ export function latestRefunds(req, res){
 	var result = {};
 	/*if (req.user.role == 2)
 		queryObj.vendor_id = req.user.Vendor.id;*/
-	queryObj.status = 6;
+	queryObj.order_status = 6;
 	model['UserOrder'].findAll({
 		raw: true,
 		where: queryObj,
-		attributes: ['id', 'first_name', 'last_name', 'status'],
+		attributes: ['id', 'first_name', 'last_name', 'user_status'],
 		group: ['id'],
 		order: [
 			['created_on', 'DESC']

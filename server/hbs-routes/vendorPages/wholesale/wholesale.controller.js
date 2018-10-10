@@ -6,6 +6,7 @@ const reference = require('../../../config/model-reference');
 const status = require('../../../config/status');
 const verificationStatus = require('../../../config/verification_status');
 const service = require('../../../api/service');
+const productService = require('../../../api/product/product.service');
 const sequelize = require('sequelize');
 const marketplace = require('../../../config/marketplace');
 const cartService = require('../../../api/cart/cart.service');
@@ -76,13 +77,10 @@ export function vendorWholesale(req, res) {
 			}
 		},
 		wantToSell: function(callback) {
-
 			queryObj['marketplace_type_id'] = marketplace_type['WTS'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToSell) {
-					console.log(wantToSell.rows)
 					return callback(null, wantToSell.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -90,10 +88,9 @@ export function vendorWholesale(req, res) {
 		},
 		wantToBuy: function(callback) {
 			queryObj['marketplace_type_id'] = marketplace_type['WTB'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToBuy) {
 					return callback(null, wantToBuy.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -101,10 +98,9 @@ export function vendorWholesale(req, res) {
 		},
 		wantToTrade: function(callback) {
 			queryObj['marketplace_type_id'] = marketplace_type['WTT'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(wantToTrade) {
 					return callback(null, wantToTrade.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
@@ -112,10 +108,9 @@ export function vendorWholesale(req, res) {
 		},
 		requestForQuote: function(callback) {
 			queryObj['marketplace_type_id'] = marketplace_type['RFQ'];
-			service.findRows(productModel, queryObj, offset, limit, field, order)
+			productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit, field, order)
 				.then(function(requestForQuote) {
 					return callback(null, requestForQuote.rows);
-
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
