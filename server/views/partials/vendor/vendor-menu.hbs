@@ -8,7 +8,7 @@
                 <img  src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" class="d-inline-block object-fit" alt="">
                 {{else}}
                 <img src="gtc-assets/img/test-user.png" width="60" height="40" class="d-inline-block object-fit" alt="">
-                {{/if}}
+                {{/if}}    
                     <span class="vendor-name">{{LoggedInUser.Vendor.vendor_name}}</span>
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@
             <nav class="navbar navbar-expand-sm vendor-menu">
                 <a class="navbar-brand" href="/reporting">
                 <img  src="{{LoggedInUser.user_pic_url}}" width="60" onError="UserImgError(this)" height="40" class="d-inline-block object-fit" alt="">
-                 <span class="vendor-name">{{LoggedInUser.first_name}} {{LoggedInUser.first_name}}</span>
+                 <span class="vendor-name">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span>
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
