@@ -202,6 +202,9 @@
 											</td>
 											<td class="col-3">
 												<div class="product-right-col">
+													{{#if this.product_discounted_price}}
+													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+													{{/if}}
 													<h4>MOQ : {{this.moq}}</h4>
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
@@ -245,7 +248,7 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTB - {{this.product_name}}</a>
+														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTB - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -277,6 +280,9 @@
 											</td>
 											<td class="col-3">
 												<div class="product-right-col">
+												{{#if this.product_discounted_price}}
+													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+													{{/if}}
 													<h4>MOQ : {{this.moq}}</h4>
 													<div class="prc-bottom">
 														<p>Seller Rating</p>
@@ -319,8 +325,8 @@
 											</td>
 											<td class="col-7">
 												<div class="product-middle-col">
-													<h3 title="{{this.product_name}}">
-														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTT - {{this.product_name}}</a>
+													<h3>
+														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>WTT - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -363,9 +369,13 @@
 													<h4>MOQ : {{this.moq}}</h4>
 													<a href="vendor/{{this.vendor_id}}">
 														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
-														 title="{{this.product_name}}">
+														 title="{{this.product_name}}" style="border-radius:50%">
 													</a>
+													{{#if this.product_discounted_price}}
+													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+													{{/if}}
 												</div>
+
 											</td>
 										</tr>
 									</tbody>
@@ -399,7 +409,7 @@
 											<td class="col-7">
 												<div class="product-middle-col">
 													<h3 title="{{this.product_name}}">
-														<a href="wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>RFQ - {{this.product_name}}</a>
+														<a href="/wholesale/{{this.product_slug}}/{{this.id}}" {{#if this.product_discounted_price}} class="discount-price-flag" {{else}} class="text-black" {{/if}}>RFQ - {{this.product_name}}</a>
 													</h3>
 													<div class="row no-margins">
 														<div class="col-md-4 col-4 no-padding">
@@ -441,9 +451,12 @@
 												<div class="product-right-col">
 													<h4>MOQ : {{this.moq}}</h4>
 													<a href="vendor/{{this.Vendor.id}}">
-														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)"
+														<img class="object-fit" src="{{this.Vendor.vendor_profile_pic_url}}" alt="{{this.product_name}}" onError="imgError(this)" style="border-radius:50%"
 														 title="{{this.product_name}}">
 													</a>
+													{{#if this.product_discounted_price}}
+													<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;</small>
+													{{/if}}
 												</div>
 											</td>
 										</tr>
@@ -844,7 +857,13 @@
 															<h3><a href="/products/{{this.product_slug}}/{{this.id}}" class="text-blue">{{this.product_name}}</a></h3>
 															<div class="row no-margins">
 																<div class="col-md-12 col-12 no-padding">
-																	<h2 class="text-red price">{{currency this.product_price '$'}}{{!-- {{this.product_price}} --}}</h2>
+																	<h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+																	{{!-- {{#if this.product_discounted_price}}
+																		<h2 class="text-red price">{{currency this.product_discounted_price '$'}}</h2>
+																		<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																	{{else}}
+																		<h2 class="text-red price">{{currency this.price '$'}}</h2>
+																	{{/if}} --}}
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Origin</span>
