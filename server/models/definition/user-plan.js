@@ -100,6 +100,7 @@ module.exports.initRelations = () => {
     const UserPlan = model.UserPlan;
     const User = model.User;
 	const Plan = model.Plan;
+    const Payment = model.Payment;
   	
 	UserPlan.belongsTo(User, {
         foreignKey: 'user_id',
@@ -109,6 +110,12 @@ module.exports.initRelations = () => {
 
     UserPlan.belongsTo(Plan, {
         foreignKey: 'plan_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    UserPlan.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
