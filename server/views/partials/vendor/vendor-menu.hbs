@@ -3,13 +3,13 @@
     <div class="vendor-menu-wrapper">
         <div class="gtc-container">
             <nav class="navbar navbar-expand-sm vendor-menu">
-                <a class="navbar-brand" href="/reporting">
+                <a class="navbar-brand" href="/vendor/{{LoggedInUser.Vendor.id}}">
                 {{#if this.LoggedInUser.Vendor.vendor_profile_pic_url}}
                 <img  src="{{LoggedInUser.Vendor.vendor_profile_pic_url}}" width="60" height="40" class="d-inline-block object-fit" alt="">
                 {{else}}
                 <img src="gtc-assets/img/test-user.png" width="60" height="40" class="d-inline-block object-fit" alt="">
-                {{/if}}    
-                    <span class="vendor-name">{{LoggedInUser.Vendor.vendor_name}}</span>
+                {{/if}}
+					<a href="/vendor/{{LoggedInUser.Vendor.id}}"><span class="vendor-name">{{LoggedInUser.Vendor.vendor_name}}</span></a>
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -51,9 +51,9 @@
     <div class="vendor-menu-wrapper">
         <div class="gtc-container">
             <nav class="navbar navbar-expand-sm vendor-menu">
-                <a class="navbar-brand" href="/reporting">
+                <a class="navbar-brand" href="/user/my-profile">
                 <img  src="{{LoggedInUser.user_pic_url}}" width="60" onError="UserImgError(this)" height="40" class="d-inline-block object-fit" alt="">
-                 <span class="vendor-name">{{LoggedInUser.first_name}} {{LoggedInUser.last_name}}</span>
+				 <a href="/user/my-profile"> <span class="vendor-name">{{LoggedInUser.first_name}}</span></a>
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#vendorNavBar" aria-controls="vendorNavBar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
