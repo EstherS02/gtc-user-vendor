@@ -181,9 +181,10 @@ $(document).ready(function() {
     });
 
      $("#AskVendorForm").on("submit", function(){
-        if(userInfo.email){
+        if(userInfo.user_contact_email && userInfo.email_verified){
    		var sentInput = {};
    		sentInput.to = vendorInfo.User.user_contact_email;
+   		sentInput.vendor_user_id =vendorInfo.User.id;
 		sentInput.subject = $('#AskSubject').val();
 		sentInput.message = $('#AskText').val();
 		sentInput.vendor_name = vendorInfo.vendor_name;
@@ -704,18 +705,18 @@ function mailVendor(){
                         			 {{#if RelatedProducts.rows}}
                         			{{#each RelatedProducts.rows}}
                         			<div class="col-md-4 no-padding">
-                        				<div class="product-list-body">
+                        				<div class="product-list-body no-padding">
                         					<div class="product-body">
                         						<div class="table-responsive">
                         							<table class="table shoping-cart-table">
                         								<tbody>
-                        									<tr class="d-flex">
+                        									<tr class="d-flex ">
                         										<td class="col-2 img-padding">
                         											<div class="product-left-col"><a href="{{../selectedPage}}/{{this.product_slug}}/{{this.id}}">
                         												<img class="object-fit" src="{{this.product_base_image}}" alt="{{this.product_name}}" onError="imgError(this)" title="{{this.product_name}}"></a>
                         											</div>
                         										</td>
-                        										<td class="col-10">
+                        										{{!-- <td class="col-10">
                         											<div class="product-middle-col">
                         												<div class="row">
                         													<div class="col-8">
@@ -749,7 +750,58 @@ function mailVendor(){
                         														<a class="text-500" href="{{MarketPlaceURL this.marketplace_id}}/search?category={{this.category_id}}&sub_category={{this.sub_category_id}}" title="{{this.category_name}} > {{this.sub_category_name}}">{{this.category_name}} > {{this.sub_category_name}}</a>
                         													</div>
                         												</div>
-                        											</td>
+                        											</div>
+                        										</td> --}}
+                        										<td class="col-7 no-margins">
+																		<div class="product-middle-col">
+																			<h3>
+																				<a href="wholesale/{{this.product_slug}}/{{this.id}}" class="text-black">{{this.product_name}}</a>
+																			</h3>
+																			<div class="row no-margins">
+																				<div class="col-md-4 col-4 no-padding">
+																					<span>Origin</span>
+																				</div>
+																				<div class="col-md-8 col-8 no-padding overflow-txt">
+																					<span class="text-500">{{this.Country.name}}</span>
+																				</div>
+																				<div class="col-md-4 col-4 no-padding">
+																					<span>Category</span>
+																				</div>
+																				<div class="col-md-8 col-8 no-padding overflow-txt">
+																					<a class="text-500" href="products/search?category={{this.Category.id}}&sub_category={{this.SubCategory.id}}" title="{{this.Category.name}} > {{this.SubCategory.name}}">{{this.Category.name}}
+																						> {{this.SubCategory.name}}</a>
+																				</div>
+																				<div class="col-md-4 col-4 no-padding">
+																					<span>Seller</span>
+																				</div>
+																				<div class="col-md-8 col-8 no-padding overflow-txt">
+																					{{#if ../LoggedInUser.email}}
+																						<a class="text-500" title="{{this.Vendor.vendor_name}}" href="/vendor/{{this.Vendor.id}}">{{this.Vendor.vendor_name}}</a>
+																					{{else}}
+																						<a title="compareForceSignup" class="text-500" href="javascript:;">(Login for Seller Info)</a>
+																					{{/if}}
+																				</div>
+																			</div>
+																	</td>
+																	<td class="col-3 no-margins">
+																		<div class="product-right-col">
+																		{{#ifCond this.Marketplace.id "==" ../marketplace.WHOLESALE}}
+																			<h4>MOQ : {{this.moq}}</h4>
+																		{{else}}
+																			{{#if this.product_discounted_price}}
+																			<h2 class="discount-price-flag">{{currency this.product_discounted_price '$'}}</h2>
+																			<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																			{{else}}
+																			<h2 class="price-flag">{{currency this.price '$'}}</h2>
+																			{{/if}}
+																		{{/ifCond}}
+																		<div class="prc-bottom">
+																			<p>Seller Rating</p>
+																			<div class="p-rating pull-right">
+																				{{starCount product_rating}}
+																			</div>
+																		</div>
+																	</td>
                         										</tr>
                         									</tbody>
                         								</table>

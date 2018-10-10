@@ -69,31 +69,46 @@ export function vendorQuestion(req, res) {
 		res.status(400).send("Please enter the value");
 		return;
 	}
-	// res.status(200).send(req.body);
-	var queryObjEmailTemplate = {};
-    var emailTemplateModel = 'EmailTemplate';
-    queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
-    service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-        .then(function(response) {
+	var queryObjNotification = {};
+	var NotificationTemplateModel = 'NotificationSetting';
+	queryObjNotification['code'] = config.notification.templates.productReview;
+	service.findOneRow(NotificationTemplateModel, queryObjNotification)
+		.then(function(response) {
+			var bodyParams = {};
+			bodyParams.user_id = req.body.vendor_user_id;
+			bodyParams.description = '<div><strong>' + req.body.subject + '</strong></div><div>' + req.body.message + '</div>';
+			bodyParams.name = response.name;
+			bodyParams.code = response.code;
+			bodyParams.is_read = 1;
+			bodyParams.status = 1;
+			bodyParams.created_on = new Date();
+			service.createRow("Notification", bodyParams);
+		});
 
-			if(req.body.to){
+	var queryObjEmailTemplate = {};
+	var emailTemplateModel = 'EmailTemplate';
+	queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
+	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+		.then(function(response) {
+
+			if (req.body.to) {
 				var email = req.body.to;
 				var subject = response.subject.replace('%SUBJECT%', req.body.subject);
 				var body;
 				body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
-				body = body.replace('%USER_NAME%',LoggedInUser.first_name);
+				body = body.replace('%USER_NAME%', LoggedInUser.first_name);
 				body = body.replace('%MESSAGE%', req.body.message);
 				sendEmail({
 					to: email,
 					subject: subject,
 					html: body
 				});
-			}					
-            return res.status(200).send("Your Question sent to this vendor");
-        }).catch(function(error) {
-            console.log('Error :::', error);
-            return;
-        })
+			}
+			return res.status(200).send("Your Question sent to this vendor");
+		}).catch(function(error) {
+			console.log('Error :::', error);
+			return res.status(500).send("Internal Server Error");;
+		})
 }
 
 export function AddToCompare(req, res) {
