@@ -13,7 +13,7 @@ planPermissions[plan.WHOLESALER] = {};
 //permission for starter seller
 planPermissions[plan.STARTER_SELLER][marketplace.WHOLESALE] = [];
 planPermissions[plan.STARTER_SELLER][marketplace.PUBLIC] = ["*"];
-planPermissions[plan.STARTER_SELLER][marketplace.SERVICE] = ["*"];
+planPermissions[plan.STARTER_SELLER][marketplace.SERVICE] = [];
 planPermissions[plan.STARTER_SELLER][marketplace.LIFESTYLE] = ["*"];
 
 //permission for service provider
@@ -31,8 +31,8 @@ planPermissions[plan.LIFESTYLE_PROVIDER][marketplace.LIFESTYLE] = ["*"];
 //permission for public seller
 planPermissions[plan.PUBLIC_SELLER][marketplace.WHOLESALE] = [];
 planPermissions[plan.PUBLIC_SELLER][marketplace.PUBLIC] = ["*"];
-planPermissions[plan.PUBLIC_SELLER][marketplace.SERVICE] = [];
-planPermissions[plan.PUBLIC_SELLER][marketplace.LIFESTYLE] = [];
+planPermissions[plan.PUBLIC_SELLER][marketplace.SERVICE] = ["*"];
+planPermissions[plan.PUBLIC_SELLER][marketplace.LIFESTYLE] = ["*"];
 
 //permission for bulk buyer
 planPermissions[plan.BULK_BUYER][marketplace.WHOLESALE] = [];

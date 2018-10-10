@@ -455,14 +455,23 @@ export function importWooCommerceProducts(product, req) {
 			}).then((newProduct) => {
 				var productMedias = [];
 				for (let i = 0; i < product.images.length; i++) {
-					var productMediaObj = {
-						product_id: newProduct.id,
-						type: 1,
-						status: status['ACTIVE'],
-						url: product.images[i].src,
-						base_image: 1,
-						created_on: new Date(),
-						created_by: req.user.first_name
+					var productMediaObj = {};
+					if (i == 0) {
+						productMediaObj['product_id'] = newProduct.id;
+						productMediaObj['type'] = 1;
+						productMediaObj['status'] = status['ACTIVE'];
+						productMediaObj['url'] = product.images[i].src;
+						productMediaObj['base_image'] = 1;
+						productMediaObj['created_on'] = new Date();
+						productMediaObj['created_by'] = req.user.first_name;
+					} else {
+						productMediaObj['product_id'] = newProduct.id;
+						productMediaObj['type'] = 1;
+						productMediaObj['status'] = status['ACTIVE'];
+						productMediaObj['url'] = product.images[i].src;
+						productMediaObj['base_image'] = 0;
+						productMediaObj['created_on'] = new Date();
+						productMediaObj['created_by'] = req.user.first_name;
 					}
 					productMedias.push(service.createRow('ProductMedia', productMediaObj));
 				}
