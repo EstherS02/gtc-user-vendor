@@ -6,27 +6,29 @@
           <div class="panel-heading top-bar">
             <div class="row" style="padding: 0px 10px;">
               <div class="col-md-8 col-xs-8">
-                {{!-- <h3 class="panel-title" style="font-size: 12px;"> --}}
-                  <img src="{{LoggedInUser.user_pic_url}}"  width="30px" height="30px" onError="UserImgError(this)" style="border-radius: 50%"> Chat Window
-                {{!-- </h3> --}}
-              </div>
+                {{#if VendorDetail.TalkSettings}}
+                  <img {{#if VendorDetail.TalkSettings.[0].talk_profile_pic_url}}src="{{VendorDetail.TalkSettings.[0].talk_profile_pic_url}}" {{else}} src="{{LoggedInUser.user_pic_url }}" {{/if}}  width="30px" height="30px" onError="UserImgError(this)" style="border-radius: 50%">
+                {{else}}
+                <img src="/gtc-assets/images/no-product-image.jpg"  width="30px" height="30px" onError="UserImgError(this)" style="border-radius: 50%">
+                {{/if}}
+                   Chat Window       </div>
               <div class="col-md-4 col-xs-4" style="text-align: right; float: right;">
                 <a href="javascript:;" class="text-white">
                   <span id="minim_chat_window" class="fas fa-window-minimize glyphicon glyphicon-minus icon_minim"></span>
                 </a>
-                {{!-- <a href="javascript:;" class="text-white">
+                <a href="javascript:;" class="text-white" style="display:none">
                   <span class="fas fa-times glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span>
-                </a> --}}
+                </a>
               </div>
             </div>
           </div>
           <div id="messagebody" class="panel-body msg_container_base panel-background" style="min-width:100px" >
+            {{#if talkThreads.talk}}
             {{#each talkThreads.talk}}
-
             {{#ifCond this.from_id "==" ../LoggedInUser.id}}
             <div class="row msg_container base_sent">
               <div class="col-md-10 col-xs-10">
-                <div class="messages msg_sent">
+                <div class="messages send msg_sent">
                   <p>{{this.message}}</p>
                   <time datetime="">{{formatTime this.created_on "LT"}}</time>
                 </div>
@@ -36,7 +38,7 @@
             <div class="row msg_container base_receive">
 
               <div class="col-md-10 col-xs-10">
-                <div class="messages msg_receive">
+                <div class="messages recieve msg_receive">
                   <p>{{this.message}}</p>
                   <time datetime="">{{formatTime this.created_on "LT"}}</time>
                 </div>
@@ -45,6 +47,18 @@
 
             {{/ifCond}}
             {{/each}}
+            {{else}}
+            {{#if VendorDetail.TalkSettings.[0].default_msg}}
+            <div class="row msg_container base_receive" onload="default_msg();">
+
+              <div class="col-md-10 col-xs-10">
+                <div class="messages recieve msg_receive">
+                  <p>{{VendorDetail.TalkSettings.[0].default_msg}}</p>
+                </div>
+              </div>
+            </div>
+            {{/if}}
+            {{/if}}
           </div>
           <div class="panel-footer panel-body">
             <div class="input-group text-background" id="sendbody">
@@ -62,7 +76,6 @@
 
     <script>
       $(function(){
-
        // console.log("TalkThreads", {{{ DisplayJSON talkThreads }}})
         if({{{ DisplayJSON LoggedInUser.id }}} != null){
           var socketChat = {
@@ -113,8 +126,8 @@
          return moment(testDate).format("LT")
         }
         })
-        $("#messagebody").hide();
-        $("#sendbody").hide();
+        // $("#messagebody").hide();
+        // $("#sendbody").hide();
   })
 
       $(document).on('click', '.panel-heading span.icon_minim', function (e) {
@@ -184,7 +197,6 @@
       send()
     }
   });
-
 </script>
 
 <style>
@@ -245,7 +257,7 @@
   }
 
   .msg_sent {
-    padding-bottom: 20px !important;
+    /*padding-bottom: 20px !important;*/
     margin-right: 0;
   }
 
@@ -254,10 +266,14 @@
     background: white;
     padding: 10px;
     border-radius: 14px;
-    box-shadow: inset 1px -1px 12px 0px rgb(216, 184, 190);
     max-width: 100%;
   }
-
+  .recieve{
+    box-shadow: inset 1px -1px 12px 0px rgb(216, 184, 190);
+  }
+  .send{
+    box-shadow: inset 1px -1px 12px 0px rgb(119, 148, 142);
+  }
   .messages>p {
     font-size: 13px;
     margin: 0 0 0.2rem 0;
