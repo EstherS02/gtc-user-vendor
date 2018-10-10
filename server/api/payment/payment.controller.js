@@ -487,7 +487,6 @@ function savePaymentSetting(user, card, isPrimary) {
 	return service.createRow('PaymentSetting', paymentSetting);
 }
 
-
 function resMessage(message, messageDetails) {
 	return {
 		message: message,
@@ -808,76 +807,87 @@ var queryObjNotification = {};
 		});
 		return;	
 }
-// plan payment method starts//
-export function makeplanPayment(req, res) {
-	var desc = "GTC Plan Payment";
-	var convertMoment = moment();
-	var start_date = new Date(convertMoment);
-	var end_date = moment().add(28, 'd').toDate();
-	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY).
-	then(function(response) {
-		if (response.paid = "true") {
-			var paymentModel = {
-				date: new Date(response.created),
-				amount: response.amount / 100.0,
+
+// PLAN PAYMENT
+
+export function makePlanPayment(req,res){
+	var upgradingPlan, desc, convertMoment, start_date, end_date; 
+	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam ={};
+
+	upgradingPlan = req.body.plan_id;
+	desc = "GTC Plan Payment";
+	convertMoment = moment();
+	start_date = new Date(convertMoment);
+	end_date = moment().add(28, 'd').toDate();
+
+	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
+	.then(function(paymentResponse){
+		if(paymentResponse.paid){
+			paymentBodyParam = {
+				date: new Date(paymentResponse.created),
+				amount: paymentResponse.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(response)
-
+				payment_response: JSON.stringify(paymentResponse)
 			};
-			service.createRow('Payment', paymentModel).then(createdPaymentRow => {
-			if (req.body.vendor_id != 0) {
-
-				var vendorplanModel = {
-					vendor_id: req.body.vendor_id,
-					plan_id: req.body.plan_id,
-					payment_id: createdPaymentRow.id,
-					status: status['ACTIVE'],
-					auto_renewal_mail:req.body.autoRenewalMail,
-					start_date: start_date,
-					end_date: end_date,
-					created_by: req.user.first_name,
-					created_on: new Date()
-					
-				};
-				service.createRow('VendorPlan', vendorplanModel);
-					if(req.user.user_contact_email){
-						sendUpgrademail(req.body.plan_id, req.user);
-					}
-				return res.status(200).json({
-					data: response
-				});
-			} else {
-				if(req.user.user_contact_email){
-					sendUpgrademail(req.body.plan_id, req.user);
-				}
-					var userplanModel = {
-					user_id: req.body.user_id,
-					plan_id: req.body.plan_id,
-					payment_id: createdPaymentRow.id,
-					auto_renewal_mail:req.body.autoRenewalMail,
-					status: status['ACTIVE'],
-					start_date: start_date,
-					end_date: end_date,
-					created_by: req.user.first_name,
-					created_on: new Date()
-					};
-					service.createRow('UserPlan', userplanModel);
-					return res.status(200).json({
-					data: response
-					});
-				   }
-				});
-			
-		} else {
-			return res.status(500).json({
-				data: err
+			return service.createRow('Payment', paymentBodyParam);
+		}else{
+			return res.status(200).send({
+				"message": "ERROR",
+				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
 			});
 		}
-	});
-}
-//plan payment method ends//
+	}).then(function(paymentRow){
+		if (req.body.vendor_id != 0) {
+			vendorPlanBodyParam ={
+				vendor_id: req.body.vendor_id,
+				plan_id: req.body.plan_id,
+				payment_id: paymentRow.id,
+				status: status['ACTIVE'],
+				auto_renewal_mail:req.body.autoRenewalMail,
+				start_date: start_date,
+				end_date: end_date,
+				created_by: req.user.first_name,
+				created_on: new Date()
+			}
+			if(req.user.user_contact_email){
+				sendUpgrademail(req.body.plan_id, req.user);
+			}
+			return service.createRow('VendorPlan', vendorPlanBodyParam);			
+		}else{
+			userPlanBodyParam = {
+				user_id: req.body.user_id,
+				plan_id: req.body.plan_id,
+				payment_id: paymentRow.id,
+				auto_renewal_mail:req.body.autoRenewalMail,
+				status: status['ACTIVE'],
+				start_date: start_date,
+				end_date: end_date,
+				created_by: req.user.first_name,
+				created_on: new Date()
+			};
+			return service.createRow('UserPlan', userplanModel);
+		}
+	}).then(function(updatedPlanRow){
 
+		if (req.body.vendor_id != 0) {
+
+			//Need to do other plan product inactivation....
+
+		}
+	}).then(function(updatedPlanRow){
+		return res.status(200).send({
+			"message": "Success",
+			"messageDetails": "	Plan upgraded successfully."
+		});	
+	}).catch(function(error){
+		return res.status(500).send({
+			"message": "ERROR",
+			"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
+			"errorDescription": error
+		});
+	})
+}
 
 //plan upgrade email starts//
 function sendUpgrademail(plan_id, user) {
@@ -924,7 +934,6 @@ export function refundOrder(req, res) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
 
-
 	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
@@ -953,8 +962,6 @@ export function refundOrder(req, res) {
 				created_on: new Date()
 			};
 			return service.createRow('Payment', paymentModel);
-
-
 		})
 		.then(createdPaymentRow => {
 			console.log("enterrrlooops" + parseFloat(createdPaymentRow.amount).toFixed(2));

@@ -168,7 +168,6 @@ export function upgradeplan(req, res) {
 				//   end_date:{
 				//   '$gte': currentDate,
 				//   }
-
 	              }
 	              var field = "id";
 				  var order = "desc";
@@ -180,10 +179,7 @@ export function upgradeplan(req, res) {
 				}).catch(function(error) {
 					console.log('Error :::', error);
 					return callback(null);
-				});
-					
-
-		
+				});		
 		}
 	}, function(err, results) {
 		if (!err) {

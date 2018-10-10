@@ -236,7 +236,6 @@ export function index(req, res) {
 		products: function(callback) {
 			productService.queryAllProducts(LoggedInUser.id, productQueryParams, offset, limit, field, order)
 				.then(function(results) {
-					console.log("--------------------------------------------",results);
 					return callback(null, results);
 				}).catch(function(error) {
 					console.log('Error :::', error);
@@ -286,7 +285,6 @@ export function index(req, res) {
 		},
 		productCount: function(callback) {
 			var resultObj = {};
-			console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^66",productCountCategory)
 			searchResultService.productCountForCategoryAndSubcategory(productCountCategory)
 				.then(function(response) {
 					var char = JSON.parse(JSON.stringify(response));
@@ -364,7 +362,7 @@ export function index(req, res) {
 				durations: durationConfig,
 				layout_type: layout,
 				productCount: results.productCount,
-				countryProductCount:results.countryProductCount
+				countryProductCount: results.countryProductCount
 			});
 		} else {
 			res.render('search', error);

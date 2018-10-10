@@ -32,6 +32,27 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		vendorAttributes = ['vendor_profile_pic_url'];
 	}
 
+	var includeCountArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}],
+		attributes: vendorAttributes,
+		where: {
+			status: status['ACTIVE']
+		}
+	}];
+
 	var includeArray = [{
 		model: model['Vendor'],
 		include: [{
@@ -95,7 +116,6 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 			status: status['ACTIVE'],
 			base_image: 1
 		},
-		limit: 1,
 		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
 		required: false
 	}];
@@ -129,7 +149,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				}
 			}));
 			const productCount = await model['Product'].count({
-				include: includeArray,
+				include: includeCountArray,
 				where: queryObj
 			});
 			results.count = productCount;
