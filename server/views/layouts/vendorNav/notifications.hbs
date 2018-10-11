@@ -5,9 +5,20 @@
 </style>
 <script>
 	$(document).ready(function() {
+		$("#noProducts").hide();
 		$('.clickable-row').click(function() {
 			var id = $(this).data('id');
 			$('#'+id).hide();
+			var notificationCount = $("#notificationCount").val();
+			notificationCount = notificationCount-1;
+			if(notificationCount==0){
+				$("#notificationCount").hide();
+				$("#pagination").hide();
+				$("#noProducts").show();
+
+			}
+			$("#notificationCount").val(notificationCount);
+			$("#notificationCount").html(notificationCount);
 			document.getElementById("Subject").innerHTML = $(this).data('name');
 			document.getElementById("Message").innerHTML = $(this).data('message');
 			var id = $(this).data('id');
@@ -57,9 +68,9 @@
 									<table class="table">
 										<thead>
 											<tr>
-												<th scope="col">Event</th>
-												<th scope="col">Description</th>
-												<th scope="col">Date</th>
+												<th width="20%" scope="col">Event</th>
+												<th width="60%" scope="col">Description</th>
+												<th width="20%" scope="col">Date</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -96,8 +107,9 @@
 								{{/pagination}}
 								</div>
 								{{else}}
-								<div> No notification received </div>
+								<div > No notification received </div>
 								{{/if}}
+								<div id="noProducts"> No notification received </div>
 							</div>
 						</div>
 					</div>

@@ -597,12 +597,15 @@ Handlebars.registerHelper('searchSubCategory', function(element, sub_cat, cat) {
     return sub_name.charAt(0).toUpperCase() + sub_name.substr(1).toLowerCase();
 });
 Handlebars.registerHelper('dotdotdot', function(str) {
+    var body = str;
+    var regex = /(<([^>]+)>)/ig;
+    var result = body.replace(regex, "");
     if (str.length > 100) {
-        var newStr = str.split(". ");
-        return newStr[0] + '...';
+        result=result.substr(0, 100);
+        return result + '...';
     }
 
-    return str;
+    return result;
 });
 Handlebars.registerHelper('decimalFixed', function(distance) {
     return parseFloat(distance).toFixed(0);
@@ -616,4 +619,3 @@ Handlebars.registerHelper('sizeInKB', function(value) {
     var valueInKB = value / 1000;
     return valueInKB.toFixed(2);
 });
-// s = s.replace(/([A-Z])/g, ' $1').trim()
