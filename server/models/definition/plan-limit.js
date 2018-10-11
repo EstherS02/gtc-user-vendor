@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'maximum_subscription',
             allowNull: true
         },
+        maximum_services: {
+            type: DataTypes.INTEGER,
+            field: 'maximum_services',
+            allowNull: true
+        },
         transaction_per_month: {
             type: DataTypes.INTEGER,
             field: 'transaction_per_month',

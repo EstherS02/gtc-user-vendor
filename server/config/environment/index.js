@@ -102,7 +102,7 @@ var all = {
             likesComments: 'LIKE-AND-COMMENT',
             newPostFromBuyerOnYourDB: 'BUYER-POST-ON-DESCUSSION-BOARD',
             orderCancelled: 'ORDER-CANCELLED',
-            orderDetail: 'ORDER-DETAIL',
+            orderDetail: 'ORDER-DETAILS',
             orderStatus :'ORDER-STATUS'
         }
     },

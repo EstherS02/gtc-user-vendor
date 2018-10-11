@@ -121,7 +121,6 @@ export function create(req, res) {
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
 
-
 	if (req.user.role === roles['ADMIN']) {
 		req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
 	}
@@ -149,9 +148,10 @@ export function create(req, res) {
 		delete bodyParams['moq'];
 	}
 	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
-	bodyParams['quantity_available'] = req.body.sku;
+	bodyParams['quantity_available'] = req.body.quantity_available;
 	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['publish_date'] = new Date();
+	bodyParams['created_by'] = req.user.first_name;
 	bodyParams['created_on'] = new Date();
 
 	service.createRow(productModelName, bodyParams)
@@ -736,13 +736,13 @@ export function addProduct(req, res) {
 
 	if (req.query.marketplace_id == marketplace.PUBLIC)
 		marketplaceCode = 'shop'
-		
+
 	if (req.query.marketplace_id == marketplace.SERVICE)
 		marketplaceCode = 'services'
-		
+
 	if (req.query.marketplace_id == marketplace.LIFESTYLE)
 		marketplaceCode = 'lifestyle'
-		
+
 	delete req.query.marketplace;
 
 	if (req.user.role === roles['VENDOR']) {
@@ -805,7 +805,6 @@ export function addProduct(req, res) {
 }
 
 export function editProduct(req, res) {
-
 	var product_id = req.query.product_id;
 
 	if (req.query.status) {
@@ -837,10 +836,8 @@ export function editProduct(req, res) {
 			imagePromise.push(updateProductMedia(imageArr, product_id));
 			return Promise.all(imagePromise);
 		}
-
 	}).then(function() {
 		if (req.body.attributeArr) {
-
 			var attributePromise = [];
 			var attributeArr = JSON.parse(req.body.attributeArr);
 			attributePromise.push(updateProductAttribute(attributeArr, product_id));
@@ -848,13 +845,11 @@ export function editProduct(req, res) {
 		}
 	}).then(function(updatedAttribute) {
 		if (req.body.discountArr) {
-
 			var discountPromise = [];
 			var discountArr = JSON.parse(req.body.discountArr);
 			discountPromise.push(updateDiscount(discountArr, product_id));
 			return Promise.all(discountPromise);
 		}
-
 	}).then(function(updatedDiscount) {
 		return res.status(200).send({
 			"message": "Success",
@@ -970,10 +965,11 @@ function createDiscount(discountElement, product_id) {
 	return service.createRow('Discount', discountElement);
 }
 
-function aunnouncementMailToSubscribedUser(createdProduct,marketplaceCode){
+function aunnouncementMailToSubscribedUser(createdProduct, marketplaceCode) {
 
 	var offset, limit, field, order;
-	var vendorFollowerQueryObj = {}, vendorFollowerIncludeArr =[];
+	var vendorFollowerQueryObj = {},
+		vendorFollowerIncludeArr = [];
 
 	offset = null;
 	limit = null;
@@ -985,42 +981,39 @@ function aunnouncementMailToSubscribedUser(createdProduct,marketplaceCode){
 		status: status['ACTIVE']
 	}
 
-	vendorFollowerIncludeArr = [
-		{
-			"model": model['User'],
-			where: {
-				status: status["ACTIVE"]
-			},
-			attributes: ['id', 'first_name', 'user_contact_email'],
+	vendorFollowerIncludeArr = [{
+		"model": model['User'],
+		where: {
+			status: status["ACTIVE"]
 		},
-		{
-			"model": model['Vendor'],
-			where: {
-				status: status["ACTIVE"]
-			},
-			attributes: ['id', 'vendor_name'],
-		}
-	]
+		attributes: ['id', 'first_name', 'user_contact_email'],
+	}, {
+		"model": model['Vendor'],
+		where: {
+			status: status["ACTIVE"]
+		},
+		attributes: ['id', 'vendor_name'],
+	}]
 
 	return service.findAllRows('VendorFollower', vendorFollowerIncludeArr, vendorFollowerQueryObj, offset, limit, field, order)
-		.then(function(vendorFollowers){
+		.then(function(vendorFollowers) {
 
 			_.forOwn(vendorFollowers.rows, function(eachVendorFollower) {
-				sentMailToFollowers(eachVendorFollower, createdProduct,marketplaceCode);
+				sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode);
 			});
 
-		}).catch(function(error){
+		}).catch(function(error) {
 			return;
 		})
 }
 
-function sentMailToFollowers(eachVendorFollower, createdProduct,marketplaceCode){
+function sentMailToFollowers(eachVendorFollower, createdProduct, marketplaceCode) {
 
 	var emailTemplateQueryObj = {};
 	emailTemplateQueryObj['name'] = config.email.templates.newProductAnnouncementMail;
 
 	return service.findOneRow('EmailTemplate', emailTemplateQueryObj)
-		.then(function (response) {
+		.then(function(response) {
 			if (response) {
 
 				var email = eachVendorFollower.User.user_contact_email;
@@ -1030,19 +1023,19 @@ function sentMailToFollowers(eachVendorFollower, createdProduct,marketplaceCode)
 				body = response.body.replace('%USER_NAME%', eachVendorFollower.User.first_name);
 				body = body.replace(/%VENDOR_NAME%/g, eachVendorFollower.Vendor.vendor_name);
 				body = body.replace('%PRODUCT_NAME%', createdProduct.product_name);
-				body = body.replace('%URL%', marketplaceCode+'/'+createdProduct.product_slug+'/'+createdProduct.id);
+				body = body.replace('%URL%', marketplaceCode + '/' + createdProduct.product_slug + '/' + createdProduct.id);
 
 				sendEmail({
-                    to: email,
-                    subject: subject,
-                    html: body
+					to: email,
+					subject: subject,
+					html: body
 				});
 
 				return;
-			}else{
+			} else {
 				return;
 			}
-		}).catch(function(error){
+		}).catch(function(error) {
 			return;
 		})
 }
