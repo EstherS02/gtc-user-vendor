@@ -38,8 +38,8 @@ function addProduct(productInput) {
 			$("#gtc-cart-alert").fadeTo(7000, 500).slideUp(500, function() {
 				$("#gtc-cart-alert").slideUp(500);
 			});
-			$('.pip').empty();
-			$('.base_image').empty();
+			//$('.pip').empty();
+			//$('.base_image').empty();
 		}
 	})
 }

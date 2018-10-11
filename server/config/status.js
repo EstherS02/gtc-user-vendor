@@ -6,5 +6,6 @@ module.exports = {
 	"HOLD": 5,
 	"CLOSED": 6,
 	"SUSPENDED": 7,
-	"SOLDOUT": 8
+	"SOLDOUT": 8,
+	"GTC_INACTIVE":9
 };

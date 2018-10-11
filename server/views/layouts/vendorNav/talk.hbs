@@ -33,6 +33,7 @@
 					$("#addTimeSlotFormNew").hide();
 					$("#addNewTimeSlotForm").show();
 					$("#hideNewTimeSlotForm").hide();
+					location.reload();
 					outputPopup("New Time Slot Added Successfully");
 				},
 				error: function (request, status, error) {
@@ -278,12 +279,15 @@
 										<div class="col-lg-1">
 											<input type="time" name="start_time" class="classic required" id="start_time">
                                         </div>
-										<div class="col-lg-2">
+										<div class="col-lg-1">
 											<input type="time" name="end_time" class="classic required" id="end_time">
                                         </div>
+
+                                        <label class="label-control" style="padding-left:20px;">Time Zone</label>
+
 										<div class="col-lg-2">
 											<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" id="time_zone">
-												<option value="" selected>Time Zone</option>
+												<option value="">selected</option>
 												{{#each this.timeZone}}
 												<option value={{this.id}}>{{this.timezone}}</option>
 												{{/each}}

@@ -119,7 +119,7 @@ $(document).ready(function() {
 		cartInfo.product_quantity = $('#quantityInput').val();
 		cartInfo.marketplace_id = marketplace_id;
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && (userInfo.UserPlans)) || (marketplace_id != 1 || ($('#typecode').val() == 'WTS'))) {
+			if ((marketplace_id == 1 && (userInfo.UserPlans)) || (marketplace_id != 1)) {
 				if (($('#typecode').val() == 'WTS') || (marketplace_id != 1)) {
 					if(marketplace_id == 4){
 						checkAlreadySubscribed(cartInfo);
@@ -130,7 +130,7 @@ $(document).ready(function() {
 					window.location.href = 'gtc-mail/compose?id=' + vendorInfo.user_id + '&text=' + vendorInfo.vendor_name;
 				}
 			} else {
-				window.location.href = "/upgradeplan";
+				$('#planUpgrade').modal('show');
 			}
 		} else {
 			$('#myModal').modal('show');
@@ -935,7 +935,26 @@ function mailVendor(){
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal" onclick="location.href='/my-order/order'">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="planUpgrade" tabindex="-1" role="dialog" aria-labelledby="importModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Upgrade Plan:</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<p>To buy wholesale product you need to be in bulk buyer plan.</p>
+					<p>If you'd like to upgrade plan, please head <a href='upgradeplan/userBulkupgradePlan'>here.</a></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-small btn-muted" data-dismiss="modal">
 					<b>Ok</button>
 			</div>
 		</div>
