@@ -820,7 +820,7 @@ export function makePlanPayment(req,res){
 	start_date = new Date(convertMoment);
 	end_date = moment().add(28, 'd').toDate();
 
-	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
+	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
 	.then(function(paymentResponse){
 		if(paymentResponse.paid){
 			paymentBodyParam = {
@@ -866,16 +866,56 @@ export function makePlanPayment(req,res){
 				created_by: req.user.first_name,
 				created_on: new Date()
 			};
-			return service.createRow('UserPlan', userplanModel);
+			return service.createRow('UserPlan', userPlanBodyParam);
 		}
 	}).then(function(updatedPlanRow){
-
 		if (req.body.vendor_id != 0) {
+			var vendorId = req.body.vendor_id;
 
-			//Need to do other plan product inactivation....
+			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
+				var productDeactivateQueryObj, productDeactivateBodyParam;
 
+				productDeactivateQueryObj = {
+					vendor_id: vendorId,
+					marketplace_id: {
+						'$ne': marketPlaceCode["LIFESTYLE"]
+					}
+				}
+
+				productDeactivateBodyParam = {
+					status: status["INACTIVE"]
+				}
+				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+
+			}else if(upgradingPlan == marketPlaceCode.SERVICE){
+				var productDeactivateQueryObj, productDeactivateBodyParam;
+
+				productDeactivateQueryObj = {
+					vendor_id: vendorId,
+					marketplace_id: {
+						'$ne': marketPlaceCode["SERVICE"]
+					}
+				}
+
+				productDeactivateBodyParam = {
+					status: status["INACTIVE"]
+				}
+				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+			
+			}else if(upgradingPlan == marketPlaceCode.PUBLIC && upgradingPlan == marketPlaceCode.WHOLESALE){
+				var productDeactivateQueryObj, productActivateBodyParam;
+
+				productDeactivateQueryObj = {
+					vendor_id: vendorId	
+				}
+
+				productActivateBodyParam = {
+					status: status["ACTIVE"]
+				}
+				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+			}	
 		}
-	}).then(function(updatedPlanRow){
+	}).then(function(updatedProductRow){
 		return res.status(200).send({
 			"message": "Success",
 			"messageDetails": "	Plan upgraded successfully."
