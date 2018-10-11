@@ -103,12 +103,17 @@
             }) 
          })
 
+         $("#notificationCount").hide();
         $.ajax({
             type: 'GET',
             url: '/api/notification/notification-count',
             success: function (data) {
                 if(data.NotificationCount>0){
+                   $("#notificationCount").show();
+                   $("#notificationCount").val(data.NotificationCount);
                    $("#notificationCount").html(data.NotificationCount);
+                }else{
+                    $("#notificationCount").hide();
                 }      
             },
             error: function (error) {

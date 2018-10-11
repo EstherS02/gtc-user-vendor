@@ -23,7 +23,7 @@ export function addOrRemoveWishlist(req, res) {
 			where: queryObj
 		})
 		.then(function(foundItem) {
-			
+
 			if (!foundItem) {
 				data.created_on = new Date();
 				data.created_by = LoggedInUser.first_name;
@@ -39,10 +39,10 @@ export function addOrRemoveWishlist(req, res) {
 			data.last_updated_on = new Date();
 			data.last_updated_by = LoggedInUser.first_name;
 			// Found an item, update it
-			if(foundItem.status == 1){
+			if (foundItem.status == 1) {
 				data.status = 0;
-				type = "unwish"; 
-			}else{
+				type = "unwish";
+			} else {
 				data.status = 1;
 				type = "wish";
 			}
@@ -51,8 +51,8 @@ export function addOrRemoveWishlist(req, res) {
 				})
 				.then(function(response) {
 					return res.status(200).json({
-							type: type
-						});
+						type: type
+					});
 				});
 		});
 }
@@ -76,7 +76,7 @@ export function vendorQuestion(req, res) {
 			exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
 		}
 	}];
-	service.findIdRow('Vendor', vendorId,includeArr).then(function(result) {
+	service.findIdRow('Vendor', vendorId, includeArr).then(function(result) {
 		var queryObjNotification = {};
 		var NotificationTemplateModel = 'NotificationSetting';
 		queryObjNotification['code'] = config.notification.templates.productReview;
@@ -92,33 +92,29 @@ export function vendorQuestion(req, res) {
 				bodyParams.created_on = new Date();
 				service.createRow("Notification", bodyParams);
 			});
-		if(result.User.email_verified){
-		var queryObjEmailTemplate = {};
-		var emailTemplateModel = 'EmailTemplate';
-		queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
-		service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
-			.then(function(response) {
-
-				if (req.body.to) {
-					var email = result.User.user_contact_email;
-					var subject = response.subject.replace('%SUBJECT%', req.body.subject);
-					var body;
-					body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
-					body = body.replace('%USER_NAME%', LoggedInUser.first_name);
-					body = body.replace('%MESSAGE%', req.body.message);
-					sendEmail({
-						to: email,
-						subject: subject,
-						html: body
-					});
-				}
-				return res.status(200).send("Your Question sent to this vendor");
-			}).catch(function(error) {
-				console.log('Error :::', error);
-				return res.status(500).send("Internal Server Error");
-			});
-		}
-		else{
+		if (result.User.email_verified && req.user.email_verified) {
+			var queryObjEmailTemplate = {};
+			var emailTemplateModel = 'EmailTemplate';
+			queryObjEmailTemplate['name'] = config.email.templates.askToVendor;
+			service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
+				.then(function(response) {
+						var email = result.User.user_contact_email;
+						var subject = response.subject.replace('%SUBJECT%', req.body.subject);
+						var body;
+						body = response.body.replace('%VENDOR_NAME%', req.body.vendor_name);
+						body = body.replace('%USER_NAME%', LoggedInUser.first_name);
+						body = body.replace('%MESSAGE%', req.body.message);
+						sendEmail({
+							to: email,
+							subject: subject,
+							html: body
+						});
+					return res.status(200).send("Your Question sent to this vendor");
+				}).catch(function(error) {
+					console.log('Error :::', error);
+					return res.status(500).send("Internal Server Error");
+				});
+		} else {
 			return res.status(500).send("Sorry you are unable to contact this vendor");
 		}
 	});
@@ -132,45 +128,44 @@ export function AddToCompare(req, res) {
 		res.status(400).send(errors);
 		return;
 	}
-	var compare = req.session['compare'] || []; 
-	if(compare.indexOf(req.body.product_id) == -1) {
-	if (compare.length < 3) {
-		compare.push(req.body.product_id);
-	} else {
-		compare.splice(0,1);
-		compare.push(req.body.product_id);
-	}
-	result ={
-			message : "SUCCESS",
-			message_details : "The One Product Added to your compare list",
+	var compare = req.session['compare'] || [];
+	if (compare.indexOf(req.body.product_id) == -1) {
+		if (compare.length < 3) {
+			compare.push(req.body.product_id);
+		} else {
+			compare.splice(0, 1);
+			compare.push(req.body.product_id);
 		}
-	}
-	else{
-		result ={
-			message : "ERROR",
-			message_details : "Product Already in your compare list",
+		result = {
+			message: "SUCCESS",
+			message_details: "The One Product Added to your compare list",
+		}
+	} else {
+		result = {
+			message: "ERROR",
+			message_details: "Product Already in your compare list",
 		}
 	}
 	req.session['compare'] = compare;
 	return res.status(200).json(result);
-} 
+}
 
-export function removeFromCompare(req,res) {
-	
+export function removeFromCompare(req, res) {
+
 	req.checkBody('product_id', 'Missing Product Value').notEmpty();
 	var errors = req.validationErrors();
 	if (errors) {
 		res.status(400).send(errors);
 		return;
 	}
-	var compare = req.session['compare'] || [];  
+	var compare = req.session['compare'] || [];
 	var index = compare.indexOf(req.body.product_id);
 	if (index > -1) {
-	  compare.splice(index, 1);
+		compare.splice(index, 1);
 	}
 	req.session['compare'] = compare;
 	return res.status(200).json({
-						message : "SUCCESS",
-						message_details : "The One Product remove from your compare list",
-					});
+		message: "SUCCESS",
+		message_details: "The One Product remove from your compare list",
+	});
 }

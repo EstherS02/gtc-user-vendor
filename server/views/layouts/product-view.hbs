@@ -98,7 +98,7 @@ $(document).ready(function() {
 	$('#reviewSubmit').click(function() {
 		var marketplace_id = $('#marketplaceId').val();
 		if (userInfo.email) {
-			if ((marketplace_id == 1 && userInfo.UserPlans)||(($('#typecode').val() == 'WTS') || marketplace_id != 1)) {
+			if ((marketplace_id == 1 && userInfo.UserPlans)||(marketplace_id != 1)) {
 				$('#reviewModal').modal('show');
 			}else{
 				window.location.href = "/upgradeplan";

@@ -55,7 +55,8 @@
 
 				},
 				error: function(request, status, error) {
-					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'> " + request.responseText + ". <a href='" + window.location.origin + "'>redirect to home</a></p>");
+					$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'>Activation Link has been Expired .Resend Verification Mail Through Profile Settings <a href='" + window.location.origin + "/"+"user/my-profile"+  "'>redirect to home</a></p>")
+					//$("#verifyMsg").append("<p class='text-primary text-center m-t-sm'> " + request.responseText + ". <a href='" + window.location.origin + "'>redirect to home</a></p>");
 				}
 			});
 		} else {
@@ -66,7 +67,7 @@
 
 {{> header/top-header LoggedInUser = LoggedInUser}}
 <section class="row1">
-	<div class="container">
+	<div class="wrapper-content container">
 		<div class="row">
 			<div class="col-md-12">
 				<div id="verifyMsg">
