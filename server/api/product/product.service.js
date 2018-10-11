@@ -32,6 +32,27 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 		vendorAttributes = ['vendor_profile_pic_url'];
 	}
 
+	var includeCountArray = [{
+		model: model['Vendor'],
+		include: [{
+			model: model['VendorPlan'],
+			attributes: [],
+			where: {
+				status: status['ACTIVE'],
+				start_date: {
+					'$lte': moment().format('YYYY-MM-DD')
+				},
+				end_date: {
+					'$gte': moment().format('YYYY-MM-DD')
+				}
+			}
+		}],
+		attributes: vendorAttributes,
+		where: {
+			status: status['ACTIVE']
+		}
+	}];
+
 	var includeArray = [{
 		model: model['Vendor'],
 		include: [{
@@ -95,7 +116,6 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 			status: status['ACTIVE'],
 			base_image: 1
 		},
-		limit: 1,
 		attributes: ['id', 'product_id', 'type', 'url', 'base_image'],
 		required: false
 	}];
@@ -129,7 +149,7 @@ export async function queryAllProducts(isUserId, queryObj, offset, limit, field,
 				}
 			}));
 			const productCount = await model['Product'].count({
-				include: includeArray,
+				include: includeCountArray,
 				where: queryObj
 			});
 			results.count = productCount;
@@ -435,14 +455,23 @@ export function importWooCommerceProducts(product, req) {
 			}).then((newProduct) => {
 				var productMedias = [];
 				for (let i = 0; i < product.images.length; i++) {
-					var productMediaObj = {
-						product_id: newProduct.id,
-						type: 1,
-						status: status['ACTIVE'],
-						url: product.images[i].src,
-						base_image: 1,
-						created_on: new Date(),
-						created_by: req.user.first_name
+					var productMediaObj = {};
+					if (i == 0) {
+						productMediaObj['product_id'] = newProduct.id;
+						productMediaObj['type'] = 1;
+						productMediaObj['status'] = status['ACTIVE'];
+						productMediaObj['url'] = product.images[i].src;
+						productMediaObj['base_image'] = 1;
+						productMediaObj['created_on'] = new Date();
+						productMediaObj['created_by'] = req.user.first_name;
+					} else {
+						productMediaObj['product_id'] = newProduct.id;
+						productMediaObj['type'] = 1;
+						productMediaObj['status'] = status['ACTIVE'];
+						productMediaObj['url'] = product.images[i].src;
+						productMediaObj['base_image'] = 0;
+						productMediaObj['created_on'] = new Date();
+						productMediaObj['created_by'] = req.user.first_name;
 					}
 					productMedias.push(service.createRow('ProductMedia', productMediaObj));
 				}

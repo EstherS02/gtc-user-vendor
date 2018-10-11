@@ -58,7 +58,7 @@ export function bulkUserPlanRenewal(job, done) {
 			var primaryCardPromise = [];
 			_.forOwn(plans.rows, function (userPlan) {
 
-				if(userPlan.auto_renewal_mail == 1){
+				if(userPlan.auto_renewal == 1){
 					primaryCardPromise.push(primaryCardDetails(userPlan));
 				}else{
 					if(userPlan.User.user_contact_email){

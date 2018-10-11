@@ -48,21 +48,19 @@
 	}
 
 	function UpdateAllCartItems() {
-
-		let allCartInfo = {};
-
-		allCartInfo["cartUpdateArray"] = [];
+		let allCartInfo = [];
 
 		for (var key in cartItems) {
 			var productsArray = cartItems[key].products;
 			for (var i = 0; i < productsArray.length; i++) {
 				let temp = {};
-				temp['product_quantity'] = $("#inputQty" + productsArray[i].id).val();
+				temp['product_quantity'] = $("#inputQty-" + productsArray[i].id).val();
 				temp['product_id'] = productsArray[i].product_id;
 				temp['cart_item_id'] = productsArray[i].id;
-				allCartInfo['cartUpdateArray'].push(temp);
+				allCartInfo.push(temp);
 			}
 		}
+		$('#UpdateAllCartBtn').prop('disabled', true);
 
 		$.ajax({
 			url: '/api/cart/update-cart',
@@ -70,80 +68,39 @@
 			data: JSON.stringify(allCartInfo),
 			contentType: "application/json",
 			success: function(updateAllData) {
-				$('#gtc-cart-alert').prop('disabled', false);
-				if (updateAllData.statusCode == 200) {
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
-					$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-						location.reload();
-					});
-				} else {
-					$('#gtc-cart-alert').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-cart-alert .cart-message').text(updateAllData.message_details);
-					$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-					});
-				}
+				location.reload();
 			},
 			error: function(error) {
-				$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-danger');
-				$('#gtc-cart-alert .cart-message').text(error.responseJSON.message_details);
-				$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
-					$("#gtc-cart-alert").slideUp(500);
-					location.reload();
-				});
-				$('#quantity-cart-' + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details, "error");
+				$('#UpdateAllCartBtn').prop('disabled', false);
+				$("#inputQty-" + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details);
+			}
+		});
+
+	}
+
+	function UpdateGtcCart(productId, cartItemId) {
+		let cartInfo = [];
+		let cartItem = {};
+		cartItem['product_quantity'] = $('#inputQty-' + cartItemId).val();
+		cartItem['product_id'] = productId;
+		cartItem['cart_item_id'] = cartItemId;
+		cartInfo.push(cartItem);
+
+		$.ajax({
+			url: '/api/cart/update-cart',
+			type: 'POST',
+			data: JSON.stringify(cartInfo),
+			contentType: "application/json",
+			success: function(updateData) {
+				location.reload();
+			},
+			error: function(error) {
+				$("#inputQty-" + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details);
 			}
 		});
 	}
 
-	function UpdateGtcCart(productId, cartItemId, qtyItem, productName) {
-		let cartInfo = {};
-		cartInfo["cartUpdateArray"] = [];
-
-		let cartItem = {};
-		if (qtyItem == '') {
-			cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
-		} else {
-			cartItem['product_quantity'] = $('#inputQty' + cartItemId).val();
-		}
-		cartItem['product_id'] = productId;
-		cartItem['cart_item_id'] = cartItemId;
-		cartInfo['cartUpdateArray'].push(cartItem);
-		if (parseInt(cartItem.product_quantity) < parseInt(qtyItem)) {
-			$('#gtc-cart-alert1').removeClass('alert-danger').addClass('alert-danger');
-			$('#gtc-cart-alert1 .cart-message').text(productName + " Minimum quantity " + qtyItem);
-			$("#gtc-cart-alert1").fadeTo(2000, 500).slideUp(500, function() {
-				$("#gtc-cart-alert1").slideUp(500);
-			});
-		} else {
-			$.ajax({
-				url: '/api/cart/update-cart',
-				type: 'POST',
-				data: JSON.stringify(cartInfo),
-				contentType: "application/json",
-				success: function(updateData) {
-					$('#gtc-cart-alert').removeClass('alert-danger').addClass('alert-success');
-					$('#gtc-cart-alert .cart-message').text(updateData.message_details);
-					$("#gtc-cart-alert").fadeTo(2000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert").slideUp(500);
-						location.reload();
-					});
-				},
-				error: function(error) {
-					console.log("Error occured while updating", error);
-					$('#gtc-cart-alert1').removeClass('alert-success').addClass('alert-danger');
-					$('#gtc-cart-alert1 .cart-message').text(error.responseJSON.message_details);
-					$("#gtc-cart-alert1").fadeTo(2000, 500).slideUp(500, function() {
-						$("#gtc-cart-alert1").slideUp(500);
-					});
-				}
-			});
-		}
-	}
-
-	function editCoupon(){
+	function editCoupon() {
 		$.ajax({
 			url: '/api/cart/cancel-coupon',
 			type: 'GET',
@@ -159,11 +116,6 @@
 	function orderCheckout() {
 		location.href = "/order-checkout/customer-information";
 	}
-
-	$(document).ready(function() {
-		$('#gtc-cart-alert').hide();
-		$('#gtc-cart-alert1').hide();
-	});
 </script> {{> header/top-header LoggedInUser = LoggedInUser}}
 <div id="vendorAlert" tabindex="1">
 	<div class="gtc-container"></div>
@@ -193,16 +145,10 @@
 		</div>
 		<div class="body-content-1">
 			<div class="row no-margins">
-				<div class="col-sm-9half no-padding bg-white">
+				<div class="col-sm-9half no-padding bg-white cart-custom-notify">
 					<div class="header-left header-lg gtc-p-l-r">
 						<h2 class="header-lg-text alignleft text-white">MY SHOPPING CART</h2>
 						<span class="header-lg-span text-white">({{cart.total_items}} Items Total)</span>
-					</div>
-					<div class="alert" id="gtc-cart-alert1">
-						<button type="button" class="close" data-dismiss="alert">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<span class="cart-message"></span>
 					</div>
 					{{#if cart.total_items}}
 						{{#each cart.marketplace_products}}
@@ -231,7 +177,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -245,7 +191,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -272,15 +218,17 @@
 														{{/if}}
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`)" class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -314,7 +262,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../shop/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -328,7 +276,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../shop/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -352,15 +300,17 @@
 														{{/if}}
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items quantity-input-{{this.id}}"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`)" class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -394,7 +344,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../services/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -408,7 +358,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../services/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -428,15 +378,17 @@
 														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items quantity-input-{{this.id}}"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`)" class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -470,7 +422,7 @@
 															<div class="product-middle-col">
 																<h3 class="m-cart-title">
 																	<a href="../lifestyle/{{this.Product.product_slug}}/{{this.Product.id}}" title="{{this.Product.product_name}}"
-																		class="text-black">{{this.Product.product_name}}</a>
+																	 class="text-black">{{this.Product.product_name}}</a>
 																</h3>
 																<div class="row no-margins">
 																	<div class="col-md-4 col-4 no-padding">
@@ -484,7 +436,7 @@
 																	</div>
 																	<div class="col-md-8 col-8 no-padding overflow-txt">
 																		<a class="text-500" href="../lifestyle/search?category={{this.Product.Category.id}}&sub_category={{this.Product.SubCategory.id}}"
-																			title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
+																		 title="{{this.Product.Category.name}} > {{this.Product.SubCategory.name}}">{{this.Product.Category.name}}>{{this.Product.SubCategory.name}}</a>
 																	</div>
 																	<div class="col-md-4 col-4 no-padding">
 																		<span>Seller</span>
@@ -504,15 +456,17 @@
 														<span class="price-tag d-block text-blue">{{currency this.Product.price '$'}}</span>
 													</td>
 													<td>
-														<input id="inputQty{{this.id}}" type="number" placeholder="1" min="1" value= {{this.quantity}} class="m-input-xxs all-quantity-cart-items" name="inputQtyValue">
-														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`,`{{this.Product.moq}}`,`{{this.Product.product_name}}`)" class="text-xs m-l-xs">
+														<input id="inputQty-{{this.id}}" type="number" placeholder="1" min="1" value={{this.quantity}} class="m-input-xxs all-quantity-cart-items"
+														 name="inputQtyValue">
+														<a href="javascript:;" onclick="UpdateGtcCart(`{{this.Product.id}}`,`{{this.id}}`)" class="text-xs m-l-xs">
 															<small>Update</small>
 														</a>
 													</td>
 													<td class="text-right">
 														{{#if this.quantity}}
 															<span class="price-tag m-b-xs d-block">{{currency this.total_price '$'}}</span>
-															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;" class="btn btn-sm btn-primary">REMOVE</button>
+															<button type="button" id="remove-cart-{{this.id}}" onclick="removeGtcCart(`{{this.id}}`)" href="javascript:;"
+															 class="btn btn-sm btn-primary">REMOVE</button>
 														{{/if}}
 													</td>
 												</tr>
@@ -523,13 +477,8 @@
 							{{/ifCond}}
 						{{/each}}
 						<button class="btn btn-md btn-success m-t-sm" onclick="location.href = '/'">CONTINUE SHOPPING</button>
-						<button class="btn btn-md btn-primary m-t-sm m-r-xll alignright" id="UpdateTalks" onclick="UpdateAllCartItems()">UPDATE CART</button>
-						<div class="alert" id="gtc-cart-alert">
-							<button type="button" class="close" data-dismiss="alert">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<span class="cart-message"></span>
-						</div>
+						<button class="btn btn-md btn-primary m-t-sm m-r-xll alignright" id="UpdateAllCartBtn" onclick="UpdateAllCartItems()">UPDATE
+							CART</button>
 					{{else}}
 						<div class="gtc-p-l-r">
 							<h3 class="empty-msg text-primary">Your Shopping Cart is empty.</h3>
@@ -616,7 +565,8 @@
 							{{#if cart.coupon_applied}}
 								<div class="m-t-sm text-center">
 									<label class="m-b-xs">Promo Code #{{cart.coupon_code}} Applied</label>
-									<div><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}} % {{/ifCond}}OFF </strong></div>
+									<div><strong class="text-black"> -{{#ifCond cart.discount_type "==" 2}} ${{/ifCond}} {{decimalFixed cart.discount_value}}{{#ifCond cart.discount_type "==" 1}}
+												% {{/ifCond}}OFF </strong></div>
 									<a href="javascript:;" style="font-size: small" onclick="editCoupon()"><i class="fas fa-pencil-alt">coupon</i></a>
 								</div>
 							{{else}}
@@ -633,7 +583,8 @@
 									</div>
 								</div>
 							{{/if}}
-							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left" style="background: #e62345;">
+							<button class="btn btn-md btn-primary m-t-sm m-b-sm btn-block" onclick="orderCheckout()" data-style="expand-left"
+							 style="background: #e62345;">
 								<span class="ladda-label">CHECKOUT NOW</span>
 								<span class="ladda-spinner"></span>
 							</button>

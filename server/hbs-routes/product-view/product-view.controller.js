@@ -132,27 +132,28 @@ export function product(req, res) {
 					});
 			},
 			RelatedProducts: function(callback) {
-				var order = "desc";
-				var includeArr = [];
-				var field = "created_on";
-				var order = [
-					sequelize.fn('RAND'),
-				];
+				var offset = 0;
+				var limit = 9;
 				var queryObj = {
-					category_id: categoryID,
+					product_category_id: categoryID,
 					vendor_id: vendorID,
 					id: {
 						$ne: productID
-					},
-					marketplace_id: {
-						$ne: marketplace['WHOLESALE']
 					}
 				};
-				// console.log("-=-=-========================------",queryObj)
-
-				productService.RandomProducts(productModel, queryObj, 9, order)
-					.then(function(response) {
-						return callback(null, response);
+				if (marketplaceID == marketplace['WHOLESALE']) {
+					queryObj['marketplace_id'] = {
+						$eq: marketplace['WHOLESALE']
+					}
+				} else {
+					queryObj['marketplace_id'] = {
+						$ne: marketplace['WHOLESALE']
+					}
+				}
+				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
+					.then(function(publicMarketplace) {
+						console.log(publicMarketplace);
+						return callback(null, publicMarketplace);
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return callback(null);
@@ -161,14 +162,13 @@ export function product(req, res) {
 			},
 			VendorDetail: function(callback) {
 				var vendorIncludeArr = [{
-					model: model['User'],
-					attributes: {
-						exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-					}
-				}, {
 					model: model['Country']
 				}, {
 					model: model['VendorPlan'],
+					where: {
+						status: status['ACTIVE']
+					},
+					required: false
 				}, {
 					model: model['VendorVerification'],
 					where: {
@@ -191,11 +191,12 @@ export function product(req, res) {
 					],
 					group: ['VendorRating.vendor_id'],
 					required: false,
-				},{
+				}, {
 					model: model['TalkSetting'],
-					where:{
+					where: {
 						gtc_talk_enabled: status['ACTIVE']
-					}
+					},
+					required: false
 				}];
 				service.findIdRow('Vendor', vendorID, vendorIncludeArr)
 					.then(function(response) {
@@ -332,7 +333,7 @@ export function product(req, res) {
 											});
 										} else {
 
-											
+
 											callback(null, {
 												threadId: threadArr[0],
 												talk: JSON.parse(JSON.stringify(talk))
@@ -428,7 +429,6 @@ export function product(req, res) {
 				selectedPage = null;
 			}
 			if (!error) {
-				console.log("---------------------------------------",results.talkThreads)
 				res.render('product-view', {
 					title: "Global Trade Connect",
 					categories: results.categories,
@@ -449,6 +449,7 @@ export function product(req, res) {
 					LoggedInUser: LoggedInUser,
 					selectedPage: selectedPage,
 					Plan: Plan,
+					marketplace: marketplace,
 					VendorAvgRating: results.VendorAvgRating,
 					categoryWithProductCount: results.categoryWithProductCount
 				});

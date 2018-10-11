@@ -5,6 +5,7 @@ var multipart = require('connect-multiparty');
 var router = express.Router();
 var multipartMiddleware = multipart();
 
+const roles = require('../../config/roles');
 var auth = require('../../auth/auth.service');
 var controller = require('./gtc.controller');
 var middleware = require('../../middleware');

@@ -5,7 +5,6 @@ const model = require('../../sqldb/model-connect');
 const service = require('../service');
 var async = require('async');
 
-
 export function selectVendorplan(req, res) {
 	var modelName = 'Plan';
 	console.log("enter the loops");

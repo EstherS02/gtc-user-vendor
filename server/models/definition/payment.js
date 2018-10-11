@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         amount: {
-            type: DataTypes.DECIMAL(10, 4),
+            type: DataTypes.DECIMAL(10, 2),
             field: 'amount',
             allowNull: true
         },
@@ -69,11 +69,13 @@ module.exports.initRelations = () => {
     delete module.exports.initRelations; // Destroy itself to prevent repeated calls.
 
     const model = require('../index');
-	const Payment = model.Payment;
-	const FeaturedProduct = model.FeaturedProduct;
+    const Payment = model.Payment;
+    const FeaturedProduct = model.FeaturedProduct;
     const OrderPayment = model.OrderPayment;
-	const OrderPaymentEscrow = model.OrderPaymentEscrow;
-	const ProductAdsSetting = model.ProductAdsSetting;
+    const OrderPaymentEscrow = model.OrderPaymentEscrow;
+    const VendorPlan = model.VendorPlan;
+    const UserPlan = model.UserPlan;
+    const ProductAdsSetting = model.ProductAdsSetting;
     const Order = model.Order;
 
     Payment.hasMany(OrderPayment, {
@@ -96,21 +98,33 @@ module.exports.initRelations = () => {
         onUpdate: 'NO ACTION'
     });
 
+    Payment.hasOne(VendorPlan, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    Payment.hasOne(UserPlan, {
+        foreignKey: 'payment_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
     Payment.belongsToMany(Order, {
         through: OrderPaymentEscrow,
         foreignKey: 'payment_id',
         otherKey: 'order_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-	});
-	
-	Payment.hasOne(FeaturedProduct, {
+    });
+
+    Payment.hasOne(FeaturedProduct, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
-	});
-	
-	Payment.hasOne(ProductAdsSetting, {
+    });
+
+    Payment.hasOne(ProductAdsSetting, {
         foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'

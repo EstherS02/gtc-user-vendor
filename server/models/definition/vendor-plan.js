@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             onUpdate: 'NO ACTION',
             onDelete: 'NO ACTION'
-		},
-	   payment_id: {
+        },
+        payment_id: {
             type: DataTypes.BIGINT,
             field: 'payment_id',
             allowNull: true,
@@ -56,10 +56,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'status',
             allowNull: false
-		},
-		auto_renewal_mail: {
+        },
+        auto_renewal: {
             type: DataTypes.INTEGER,
-            field: 'auto_renewal_mail',
+            field: 'auto_renewal',
             allowNull: true
         },
         created_by: {
@@ -93,11 +93,18 @@ module.exports.initRelations = () => {
 
     const model = require('../index');
     const VendorPlan = model.VendorPlan;
+    const Payment = model.Payment;
     const Vendor = model.Vendor;
     const Plan = model.Plan;
 
     VendorPlan.belongsTo(Vendor, {
         foreignKey: 'vendor_id',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION'
+    });
+
+    VendorPlan.belongsTo(Payment, {
+        foreignKey: 'payment_id',
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION'
     });
