@@ -19,6 +19,7 @@ const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
+const gtcPlan = require('../../config/gtc-plan')
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -869,62 +870,7 @@ export function makePlanPayment(req,res){
 		if (req.body.vendor_id != 0) {
 			var vendorId = req.body.vendor_id;
 
-			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
-
-				productDeactivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["LIFESTYLE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.SERVICE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
-
-				productDeactivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["SERVICE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
-			
-			}else if(upgradingPlan == marketPlaceCode.PUBLIC){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["WHOLESALE"]
-					},
-					status: status["GTC_INACTIVE"]
-				}
-				productActivateBodyParam = {
-					status: status["ACTIVE"]
-				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.WHOLESALE){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					status: status["GTC_INACTIVE"]
-				}
-
-				productActivateBodyParam = {
-					status: status["ACTIVE"]
-				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);	
-			}
+			// Need to do deactivating other plan products... 
 		}
 	}).then(function(updatedProductRow){
 		return res.status(200).send({
@@ -932,6 +878,7 @@ export function makePlanPayment(req,res){
 			"messageDetails": "	Plan upgraded successfully."
 		});	
 	}).catch(function(error){
+		console.log("Error:::",error);
 		return res.status(500).send({
 			"message": "ERROR",
 			"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
