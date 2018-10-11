@@ -809,9 +809,10 @@ var queryObjNotification = {};
 // PLAN PAYMENT
 
 export function makePlanPayment(req,res){
-	var upgradingPlan, desc, convertMoment, start_date, end_date; 
+	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId; 
 	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam ={};
 
+	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
 	desc = "GTC Plan Payment";
 	convertMoment = moment();
@@ -836,9 +837,9 @@ export function makePlanPayment(req,res){
 			});
 		}
 	}).then(function(paymentRow){
-		if (req.body.vendor_id != 0) {
+		if (vendorId != 0) {
 			vendorPlanBodyParam ={
-				vendor_id: req.body.vendor_id,
+				vendor_id: vendorId,
 				plan_id: req.body.plan_id,
 				payment_id: paymentRow.id,
 				status: status['ACTIVE'],
@@ -867,18 +868,57 @@ export function makePlanPayment(req,res){
 			return service.createRow('UserPlan', userPlanBodyParam);
 		}
 	}).then(function(updatedPlanRow){
-		if (req.body.vendor_id != 0) {
-			var vendorId = req.body.vendor_id;
-
-			// Need to do deactivating other plan products... 
+		if (vendorId != 0) {
+			var productDeactivateQueryObj={}, productDeactivateBodyParam={};
+			
+			productDeactivateQueryObj = {
+				vendor_id: vendorId,
+				status: status["ACTIVE"]
+			}
+			productDeactivateBodyParam={
+				status: status["GTC_INACTIVE"],
+				last_updated_by: req.user.first_name,
+				last_updated_on: new Date()
+			}
+			return service.updateNewRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);			
 		}
-	}).then(function(updatedProductRow){
+	}).then(function(deactivatedProducts){
+		if (vendorId != 0) {
+			var productActivateQueryObj={}, productActivateBodyParam={};
+
+			productActivateQueryObj.vendor_id = vendorId;
+			productActivateQueryObj.status = status["GTC_INACTIVE"];
+
+			if(upgradingPlan == gtcPlan.LIFESTYLE_PROVIDER)
+				productActivateQueryObj.marketplace_id = marketPlaceCode["LIFESTYLE"];
+
+			if(upgradingPlan == gtcPlan.SERVICE_PROVIDER)
+				productActivateQueryObj.marketplace_id = marketPlaceCode["SERVICE"];
+			
+			if(upgradingPlan == gtcPlan.PUBLIC_SELLER){
+				productActivateQueryObj = {
+					'$or': [{
+						marketplace_id: marketPlaceCode["LIFESTYLE"]
+					}, {
+						marketplace_id: marketPlaceCode["SERVICE"]
+					},{
+						marketplace_id: marketPlaceCode["PUBLIC"]
+					}],
+				};
+			}
+			productActivateBodyParam ={
+				status: status["ACTIVE"],
+				last_updated_by: req.user.first_name,
+				last_updated_on: new Date()
+			}		
+			return service.updateNewRecord('Product', productActivateBodyParam, productActivateQueryObj);
+		}
+	}).then(function(activatedProductRow){
 		return res.status(200).send({
 			"message": "Success",
 			"messageDetails": "	Plan upgraded successfully."
 		});	
 	}).catch(function(error){
-		console.log("Error:::",error);
 		return res.status(500).send({
 			"message": "ERROR",
 			"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
