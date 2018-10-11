@@ -869,11 +869,23 @@ export function makePlanPayment(req,res){
 			return service.createRow('UserPlan', userplanModel);
 		}
 	}).then(function(updatedPlanRow){
-
 		if (req.body.vendor_id != 0) {
 
-			//Need to do other plan product inactivation....
+			var offset, limit,field,order;
+			offset = null;
+			limit = null;
+			field = 'id';
+			order = 'asc';
 
+			var planMarketplaceQueryObj = {
+				plan_id: upgradingPlan,
+				status: status['ACTIVE']
+			}
+			return service.findAllRows('PlanMarketplace', [], planMarketplaceQueryObj, offset, limit, field, order);
+		}
+	}).then(function(planMarketPlaces){
+		if(planMarketPlaces){
+			
 		}
 	}).then(function(updatedPlanRow){
 		return res.status(200).send({
