@@ -111,20 +111,7 @@ let Stripe = {
                 console.log(payout);
             }
         });
-    },
-    chargeCustomerplanCard: function(custId, cardId, amount, desc, currency) {
-        var chargeObj = {
-            customer: custId,
-            source: cardId,
-            amount: parseInt(amount * 100),
-            currency: currency
-        }
-        if (desc) {
-            chargeObj.description = desc;
-        }
-         chargeObj.statement_descriptor = STMT_DESCRIPTOR;
-        return stripe.charges.create(chargeObj);
-    },
+    }
 };
 
 
