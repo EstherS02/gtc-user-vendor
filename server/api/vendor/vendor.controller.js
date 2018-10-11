@@ -1,11 +1,12 @@
 'use strict';
 
+const mv = require('mv');
+const path = require('path');
 const crypto = require('crypto');
 const uuid = require('node-uuid');
 const moment = require('moment');
 const expressValidator = require('express-validator');
 const config = require('../../config/environment');
-const sequelize = require('sequelize');
 const model = require('../../sqldb/model-connect');
 const providers = require('../../config/providers');
 const status = require('../../config/status');
@@ -14,8 +15,7 @@ const plans = require('../../config/gtc-plan');
 const durationUnit = require('../../config/duration-unit');
 const service = require('../service');
 
-export function createStarterSeller(req, res) {
-
+export async function createStarterSeller(req, res) {
 	var queryObj = {};
 	var bodyParams = {};
 	var PlanModelName = "Plan";
@@ -23,10 +23,16 @@ export function createStarterSeller(req, res) {
 	var vendorModelName = "Vendor";
 	var vendorPlanModelName = "VendorPlan";
 
+	if (!req.files.vendor_profile_picture) {
+		return res.status(400).send("Vendor profile picture missing.");
+	}
+
 	req.checkBody('vendor_name', 'Missing Query Param').notEmpty();
-	req.checkBody('base_location', 'Missing Query Param').notEmpty();
-	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
 	req.checkBody('address', 'Missing Query Param').notEmpty();
+	req.checkBody('base_location', 'Missing Query Param').notEmpty();
+	req.checkBody('province_id', 'Missing Query Param').notEmpty();
+	req.checkBody('city', 'Missing Query Param').notEmpty();
+	req.checkBody('currency_id', 'Missing Query Param').notEmpty();
 
 	var errors = req.validationErrors();
 	if (errors) {
@@ -38,87 +44,95 @@ export function createStarterSeller(req, res) {
 	bodyParams['user_id'] = req.user.id;
 	bodyParams['status'] = status['ACTIVE'];
 	bodyParams['created_on'] = new Date();
-
+	bodyParams['created_by'] = req.user.first_name;
 
 	queryObj['user_id'] = req.user.id;
 
-	if (req.user.email_verified == 0) {
-		return res.status(400).send("Your email address not verified.");
-	}
-	if (req.user.status != status['ACTIVE']) {
-		return res.status(400).send("Your account is not ACTIVE mode.");
-	}
+	try {
+		const existingVendor = await service.findOneRow(vendorModelName, queryObj);
 
-	service.findOneRow(vendorModelName, queryObj)
-		.then(function(vendor) {
-			if (!vendor) {
-				var planQueryObj = {};
-				planQueryObj['status'] = status['ACTIVE'];
-				planQueryObj['id'] = plans['STARTER_SELLER'];
+		if (!existingVendor) {
+			var planQueryObj = {};
+			planQueryObj['status'] = status['ACTIVE'];
+			planQueryObj['id'] = plans['STARTER_SELLER'];
 
-				service.findOneRow(PlanModelName, planQueryObj)
-					.then(function(planRow) {
-						if (planRow) {
-							service.createRow(vendorModelName, bodyParams)
-								.then(function(vendorRow) {
-									if (vendorRow) {
-										service.updateRow(userModelName, {
-											role: roles['VENDOR']
-										}, req.user.id).then(function(userRow) {
-											if (userRow) {
-												var verndorPlanObj = {};
-												verndorPlanObj['vendor_id'] = vendorRow.id;
-												verndorPlanObj['plan_id'] = planRow.id;
-												verndorPlanObj['status'] = status['ACTIVE'];
-												verndorPlanObj['start_date'] = new Date();
-												if (planRow.duration_unit == durationUnit['DAYS']) {
-													verndorPlanObj['end_date'] = moment().add(planRow.duration, 'days').format('YYYY-MM-DD');
-												}
-												if (planRow.duration_unit == durationUnit['MONTHS']) {
-													var totalDays = planRow.duration * 28;
-													verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
-												}
+			const startSellerPlan = await service.findOneRow(PlanModelName, planQueryObj);
 
-												service.createRow(vendorPlanModelName, verndorPlanObj)
-													.then(function(vendorPlanRow) {
-														if (vendorRow) {
-															return res.status(201).send("Vendor created successfully.");
-														} else {
-															return res.status(400).send("Failed to create vendor plan.");
-														}
-													}).catch(function(error) {
-														console.log('Error:::', error);
-														return res.status(500).send("Internal server error");
-													});
-											} else {
-												return res.status(400).send("Failed to update user role.");
-											}
-										}).catch(function(error) {
-											console.log('Error:::', error);
-											return res.status(500).send("Internal server error");
-										});
-									} else {
-										return res.status(400).send("Failed to create vendor.");
-									}
-								}).catch(function(error) {
-									console.log('Error:::', error);
-									return res.status(500).send("Internal server error");
-								});
-						} else {
-							return res.status(404).send("Plan not found.");
-						}
-					}).catch(function(error) {
-						console.log('Error:::', error);
-						return res.status(500).send("Internal server error");
-					});
+			if (startSellerPlan) {
+				const vendorProfilePicture = req.files.vendor_profile_picture;
+				const parsedFile = path.parse(vendorProfilePicture.originalFilename);
+				const timeInMilliSeconds = new Date().getTime();
+				const uploadPath = config.images_base_path + "/vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+				const vendorProfilePictureUpload = await move(vendorProfilePicture.path, uploadPath);
+				if (vendorProfilePictureUpload) {
+					bodyParams['vendor_profile_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+				}
+
+				if (req.files.vendor_cover_picture) {
+					const vendorCoverPicture = req.files.vendor_cover_picture;
+					const parsedFileVendorCover = path.parse(vendorCoverPicture.originalFilename);
+					const timeInMilliSeconds = new Date().getTime();
+					const uploadPathVendorCover = config.images_base_path + "/vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+
+					const vendorCoverPictureUpload = await move(vendorCoverPicture.path, uploadPathVendorCover);
+					if (vendorCoverPictureUpload) {
+						bodyParams['vendor_cover_pic_url'] = config.imageUrlRewritePath.base + "vendor/" + parsedFileVendorCover.name + "-" + timeInMilliSeconds + parsedFileVendorCover.ext;
+					}
+				}
+
+				const newVendor = await service.createRow(vendorModelName, bodyParams);
+				const updateExistingUser = await service.updateRow(userModelName, {
+					role: roles['VENDOR'],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}, req.user.id);
+
+				var verndorPlanObj = {};
+				verndorPlanObj['vendor_id'] = newVendor.id;
+				verndorPlanObj['plan_id'] = startSellerPlan.id;
+				verndorPlanObj['status'] = status['ACTIVE'];
+				verndorPlanObj['start_date'] = new Date();
+
+				if (startSellerPlan.duration_unit == durationUnit['DAYS']) {
+					verndorPlanObj['end_date'] = moment().add(startSellerPlan.duration, 'days').format('YYYY-MM-DD');
+				}
+
+				if (startSellerPlan.duration_unit == durationUnit['MONTHS']) {
+					var totalDays = startSellerPlan.duration * 28;
+					verndorPlanObj['end_date'] = moment().add(totalDays, 'days').format('YYYY-MM-DD');
+				}
+
+				verndorPlanObj['created_on'] = new Date();
+				verndorPlanObj['created_by'] = req.user.first_name;
+
+				const newPlan = await service.createRow(vendorPlanModelName, verndorPlanObj);
+				return res.status(201).send("Vendor created successfully.");
 			} else {
-				return res.status(409).send("Duplicate user");
+				return res.status(404).send("Plan not found.");
 			}
-		})
-		.catch(function(error) {
-			console.log('Error:::', error);
-			return res.status(500).send("Internal server error");
+		} else {
+			return res.status(409).send("You already a vendor.");
+		}
+	} catch (error) {
+		console.log("createStarterSeller Error:::", error);
+		return res.status(500).send(error);
+	}
+}
+
+export function move(copyFrom, moveTo) {
+	return new Promise((resolve, reject) => {
+		mv(copyFrom, moveTo, {
+			clobber: true,
+			mkdirp: true
+		}, function(error) {
+			if (!error) {
+				return resolve(true);
+			} else {
+				return reject(error);
+			}
 		});
+	});
 }
 
 export function create(req, res) {

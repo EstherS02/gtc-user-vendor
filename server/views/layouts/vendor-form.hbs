@@ -59,8 +59,7 @@
                 cropperOutputImage = blob;
                 fileDetails["croppedExtension"] = blob["type"].split("/")[1];
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-                console.log('test --', test);
-                //imgUp(cropperOutputImage, fileDetails["fileName"]);
+                imgUp(cropperOutputImage, fileDetails["fileName"]);
             });
             if (test == 'div.icon') {
                 var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
