@@ -231,6 +231,7 @@ export async function googleLogin(req, res, next) {
 			bodyParams['email'] = profile.email;
 			bodyParams['user_contact_email'] = profile.email;
 			bodyParams['created_on'] = new Date();
+			bodyParams['created_by'] = profile.given_name;
 			bodyParams["status"] = status["ACTIVE"];
 			bodyParams['provider'] = providers["GOOGLE"];
 			bodyParams['first_name'] = profile.given_name;
@@ -336,6 +337,7 @@ export async function facebook(req, res) {
 				bodyParams['role'] = roles['USER'];
 				bodyParams['email'] = profile.email;
 				bodyParams['created_on'] = new Date();
+				bodyParams['created_by'] = profile.first_name;
 				bodyParams["status"] = status["ACTIVE"];
 				bodyParams['provider'] = providers["FB"];
 				bodyParams['first_name'] = profile.first_name;
@@ -443,6 +445,7 @@ export async function linkedin(req, res) {
 				bodyParams['role'] = roles['USER'];
 				bodyParams['email'] = profile.emailAddress;
 				bodyParams['created_on'] = new Date();
+				bodyParams['created_by'] = profile.firstName;
 				bodyParams["status"] = status["ACTIVE"];
 				bodyParams['provider'] = providers["LINKEDIN"];
 				bodyParams['first_name'] = profile.firstName;
@@ -541,6 +544,7 @@ export async function twitter(req, res) {
 							bodyParams['role'] = roles['USER'];
 							bodyParams['email'] = profile.email;
 							bodyParams['created_on'] = new Date();
+							bodyParams['created_by'] = profile.name;
 							bodyParams["status"] = status["ACTIVE"];
 							bodyParams['provider'] = providers["TWITTER"];
 							bodyParams['first_name'] = profile.name;
