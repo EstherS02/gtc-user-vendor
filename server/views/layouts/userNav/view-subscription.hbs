@@ -258,12 +258,12 @@
 													<th scope="col">
 														<input type="checkbox" id="checkbox" onclick="selectAll(this);">
 													</th>
-													<th style="width: 20%;" >Subscribed Products</th>
+													<th style="width: 20%;" >Products</th>
 													<th>Price</th>
 													<th>Quantity</th>
 													<th>Purchased On</th>
-													<th style="width: 10%;">Last Order Placed On</th>
-													<th style="width: 10%;">Next Order Place On</th>
+													<th>Last Renewal</th>
+													<th>Next Renewal</th>
 													<th>End On</th>
 													<th colspan="2">Status</th>
 												</tr>
@@ -292,7 +292,7 @@
 													{{#ifCond this.status '==' ../statusCode.ACTIVE}}
 													<td>
 														<a href="javascript:;" id='{{this.id}}' class='unSubscribe'>
-															<i class="fas fa-unlink" aria-hidden="true"></i> Un Subscribe</a>
+															<i class="fas fa-unlink" aria-hidden="true"></i> Unsubscribe</a>
 													</td>
 													{{else ifCond this.status '==' ../statusCode.INACTIVE}}
 													<td>
