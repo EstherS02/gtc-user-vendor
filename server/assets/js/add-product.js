@@ -666,19 +666,43 @@ $(document).ready(function() {
 				featurePositionCount = featurePositionCount + 1;
 			}
 		}
-
+		
 		if (featurePositionCount < 1) {
 			outputPopupError('Please select featuring position');
 			return;
 		}
 
 		if ($('#featureForm').valid()) {
+
+			var featureStartDate, featureEndDate, from, to, featureDuration, amount, totalFeatureFees, sum;
+			featureStartDate = $('#start_date').val();
+
 			featureProductInput = $("#featureForm :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
 
-			var totalFees = $("#totalFees").html();
-			$("#feature_total").html(totalFees);
+			if($('#end_date').val()){
+
+				featureEndDate = $('#end_date').val();
+				from = moment(featureStartDate, 'YYYY-MM-DD'); 
+				to = moment(featureEndDate, 'YYYY-MM-DD');
+				featureDuration = to.diff(from, 'days');
+
+				amount = $("#totalFees").html();
+
+				sum = amount * featureDuration / 28;
+				totalFeatureFees = sum.toFixed(2);
+
+				$("#feature_total").html(totalFeatureFees);
+				$("#feature_start_date").html(featureStartDate);
+				$("#feature_end_date").html(featureEndDate);
+
+			}else{
+				totalFeatureFees  = $("#totalFees").html();
+				$("#feature_total").html(totalFeatureFees);
+				$("#feature_start_date").html(featureStartDate);
+				$("#feature_end_date").html('Indefinitely');	
+			}
 
 			$('#featureModal').modal('hide');
 			$('#featurePaymentModal').modal('show');
