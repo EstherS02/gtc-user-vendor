@@ -4,7 +4,9 @@
         var test;
         var fileDetails = {};
         var cropperOutputImage;
-        var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
+        var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url, vendor_cover_name, vendor_profile_name , vendor_cover_pic_obj, vendor_profile_pic_obj;
+
+
 
         var imagesPreview = function(uploader, placeToInsertImagePreview) {
             if (uploader.files && uploader.files[0]) {
@@ -59,19 +61,28 @@
                 cropperOutputImage = blob;
                 fileDetails["croppedExtension"] = blob["type"].split("/")[1];
                 fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-                console.log('test --', test);
+                if (test == 'div.icon') {
+                    vendor_profile_pic_obj = cropperOutputImage;
+                    vendor_profile_name = fileDetails["fileName"];
+                }
+                else {
+                    vendor_cover_pic_obj = cropperOutputImage;
+                    vendor_cover_name = fileDetails["fileName"];
+                }
                 //imgUp(cropperOutputImage, fileDetails["fileName"]);
             });
             if (test == 'div.icon') {
+                console.log("cropper.getCroppedCanvas()",cropper.getImageData());
                 var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
             } else {
+                console.log("cropper.getCroppedCanvas()",cropper.getImageData());
                 var temp = $($.parseHTML('<img style="width:400px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
             }
             $(test).html(temp);
             $('#profile-picture-modal').modal('hide');
         });
 
-        function imgUp(crop, file_name) {
+        /*function imgUp(crop, file_name) {
             var form = new FormData();
             form.append("file", crop, file_name);
             $.ajax({
@@ -95,21 +106,38 @@
                     console.log("Error", error);
                 }
             });
-        }
+        }*/
 
         $("#vendorForm").submit(function(e) {
             e.preventDefault();
             let input = $("#vendorForm :input").filter(function(index, element) {
                 return $(element).val() != '';
-            }).serialize();
+            }).serializeArray();
 
-            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url=' + vendor_cover_pic_url
+            var  formData = new FormData();
+
+            input.forEach(function(obj) {
+                formData.append(obj.name, obj.value);
+            });
+
+            if (vendor_cover_pic_obj != {}) {
+                formData.append('vendor_cover_picture', vendor_cover_pic_obj, vendor_cover_name);
+            }
+
+            if (vendor_profile_pic_obj != {}) {
+                formData.append('vendor_profile_picture', vendor_profile_pic_obj, vendor_profile_name);
+            }
+
+            //let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url=' + vendor_cover_pic_url
 
             if ($('#vendorForm').valid()) {
                 $.ajax({
-                    url: '/api/vendor/starter-seller',
                     type: 'POST',
-                    data: formInput,
+                    url: '/api/vendor/starter-seller',
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
                     success: function(result) {
                         window.location.href = '/dashboard-vendor-connect';
                     },
