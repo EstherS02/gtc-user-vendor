@@ -1,20 +1,19 @@
 <script type="text/javascript">
-var userInfo = {{{ DisplayJSON LoggedInUser }}}
-var plans = {{{ DisplayJSON PlanDetails}}}
+	var userInfo = {{{ DisplayJSON LoggedInUser }}}
+	var plans = {{{ DisplayJSON PlanDetails }}}
 	$(function() {
 		$('#planHide').show();
 		$('#userPlanShow').hide();
 		$('#vendorPlanShow').hide();
+
 		$('#selectplan').change(function() {
 			if (document.getElementById("selectplan").value != '') {
 				if (document.getElementById("selectplan").value == '1') {
 					$('#usercarddetails').hide();
-
 				}
 				else {
 					$('#usercarddetails').show();
 				}
-
 			}
 		});
 	});
@@ -22,7 +21,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 		window.location = '/upgradeplan';
 	}
 	$(document).ready(function() {
-      $('#gtc-form-alert').css("display","none")
+		$('#gtc-form-alert').css("display", "none")
 		$("#plandetailsform").validate({
 			rules: {
 				selectplan: {
@@ -31,15 +30,15 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 				selectcard_details: {
 					required: true
 				}
-		},
-		messages: {
-			selectplan: {
+			},
+			messages: {
+				selectplan: {
 					required: "Please select the plan",
 				},
 				selectcard_details: {
 					required: "Please select the card details",
-    			}
-    		}
+				}
+			}
 		});
 		$("#userPlandetails").validate({
 			rules: {
@@ -49,117 +48,98 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 				selectcard_details: {
 					required: true
 				}
-		},
-		messages: {
-			selectplan: {
+			},
+			messages: {
+				selectplan: {
 					required: "Please select the plan",
 				},
 				selectcard_details: {
 					required: "Please select the card details",
-    			}
-    		}
-		});
-	  $("#plandetailsform").submit(function(e) {
-		e.preventDefault();
-		if ($('#plandetailsform').valid()) { 
-		var planstatus=$('#plan_status').val();
-		if(planstatus=="2")
-		{
-		if ($('#plandetailsform').valid()) { 
-            var plan_id = document.getElementById("selectplan").value;
-            $.ajax({
-			url: '/api/upgrade-plan/selectplan',
-			type: 'POST',
-			contentType: 'application/json',
-			dataType: "json",
-			data: JSON.stringify({
-				id:plan_id
-			}),
-			success: function(data) {
-				
-				$('#Plan_cost').html("you have charged " + data.data.cost);
-				$('#amount').val(data.data.cost);
-				$('#myModal').modal('show');
-				
-			},
-			error: function(error) {
-				$('#complete-order-submit').prop('disabled', false);
-				$('#complete-order-submit').css({
-					'cursor': "pointer"
-				});
-			}
-		});		    	
-     		}
-		}
-		else
-		{
-			 $('#myModal2').modal('show');
-		}
-		}		 
-			 
-       });
-	   $("#userPlandetails").submit(function(e) {
-		e.preventDefault();
-		
-        	if ($('#userPlandetails').valid()) { 
-				if(userInfo.email_verified==1)
-		    {
-			
-			if(($('#userplanStatus').val()=='2')|| ($('#userplanStatus').val()=='0'))
-			{
-            var plan_id = document.getElementById("selectplan").value;
-            $.ajax({
-			url: '/api/upgrade-plan/selectplan',
-			type: 'POST',
-			contentType: 'application/json',
-			dataType: "json",
-			data: JSON.stringify({
-				id:plan_id
-			}),
-			success: function(data) {
-				
-				$('#Plan_cost').html("you have charged " + data.data.cost);
-				$('#useramount').val(data.data.cost);
-				$('#myModal').modal('show');
-				
-			},
-			error: function(error) {
-				$('#complete-order-submit').prop('disabled', false);
-				$('#complete-order-submit').css({
-					'cursor': "pointer"
-				});
+				}
 			}
 		});
+		$("#plandetailsform").submit(function(e) {
+			e.preventDefault();
+			if ($('#plandetailsform').valid()) {
+				var planstatus = $('#plan_status').val();
+				if (planstatus == "2") {
+					if ($('#plandetailsform').valid()) {
+						var plan_id = document.getElementById("selectplan").value;
+						$.ajax({
+							url: '/api/upgrade-plan/selectplan',
+							type: 'POST',
+							contentType: 'application/json',
+							dataType: "json",
+							data: JSON.stringify({
+									id: plan_id
+								}),
+							success: function(data) {
+									$('#Plan_cost').html("Total Plan Charge: $" + data.data.cost);
+									$('#amount').val(data.data.cost);
+									$('#myModal').modal('show');
+								},
+							error: function(error) {
+									$('#complete-order-submit').prop('disabled', false);
+									$('#complete-order-submit').css({
+										'cursor': "pointer"
+									});
+								}
+						});
+					}
+				}
+				else {
+					$('#myModal2').modal('show');
+				}
 			}
-			else if($('#userplanStatus').val()=='1')
-			{
-				
-				$('#myModal2').modal('show');
+		});
+		$("#userPlandetails").submit(function(e) {
+			e.preventDefault();
 
+			if ($('#userPlandetails').valid()) {
+				if (userInfo.email_verified == 1) {
+					if (($('#userplanStatus').val() == '2') || ($('#userplanStatus').val() == '0')) {
+						var plan_id = document.getElementById("selectplan").value;
+						$.ajax({
+							url: '/api/upgrade-plan/selectplan',
+							type: 'POST',
+							contentType: 'application/json',
+							dataType: "json",
+							data: JSON.stringify({
+									id: plan_id
+								}),
+							success: function(data) {
+								$('#Plan_cost').html("<b>Total Plan Charge: $<b>" + data.data.cost);
+								$('#useramount').val(data.data.cost);
+								$('#myModal').modal('show');
+							},
+							error: function(error) {
+								$('#complete-order-submit').prop('disabled', false);
+								$('#complete-order-submit').css({
+									'cursor': "pointer"
+								});
+							}
+						});
+					}
+					else if ($('#userplanStatus').val() == '1') {
+						$('#myModal2').modal('show');
+					}
+				}
+				else {
+					$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+					$('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
+					$("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-form-alert").slideUp(500);
+					});
+				}
 			}
-			
-		   
-     		}
-		  else
-	      { 
-		      $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-              $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
-              $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-              $("#gtc-form-alert").slideUp(500);
-          });
-
-	   }
-	   }
-	 
-			 
-       });
+		});
 	});
 
 	function makePayment() {
 		var plan_id = document.getElementById("selectplan").value;
-		  if($('[type="checkbox"]').is(":checked")){
-				 var autoRenewalMail = 1;
-                 }
+		if ($('[type="checkbox"]').is(":checked")) {
+			var autoRenewalMail = 1;
+		}
 		$.ajax({
 			url: '/api/payment/planpay',
 			type: 'POST',
@@ -170,9 +150,9 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 				amount: $('input[name="amount"]').val(),
 				carddetailsid: $('input[name="carddetailsid"]').val(),
 				plan_id: plan_id,
-				user_id :$('input[name="user_id"]').val(),
+				user_id: $('input[name="user_id"]').val(),
 				vendor_id: $('input[name="vendor_id"]').val(),
-				autoRenewalMail:autoRenewalMail
+				autoRenewalMail: autoRenewalMail
 			}),
 			success: function(data) {
 				setTimeout(function() {
@@ -187,8 +167,7 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 			}
 		});
 	}
-</script> 
-{{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
+</script> {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
 <div class="wrapper-content bg-gray" id="planHide">
 	<div class="gtc-container">
@@ -202,22 +181,20 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 						<div class="ibox-title">
 							<h2>Upgrade Plan</h2>
 						</div>
-						
 						<div class="content-body">
-							
-						 <div class="alert" id="gtc-form-alert">
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <span class="form-message"></span>
-                        </div>
-						 <div class="alert" id="social-profile-alert">
-                            <button type="button" class="close" data-dismiss="alert">
-                                
-                            </button>
-                            <span class="form-message"></span>
-                        </div>
-								{{#if LoggedInUser.Vendor.id}}
+							<div class="alert" id="gtc-form-alert">
+								<button type="button" class="close" data-dismiss="alert">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<span class="form-message"></span>
+							</div>
+							<div class="alert" id="social-profile-alert">
+								<button type="button" class="close" data-dismiss="alert">
+
+								</button>
+								<span class="form-message"></span>
+							</div>
+							{{#if LoggedInUser.Vendor.id}}
 								<form id="plandetailsform" name="plandetailsform">
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
@@ -230,94 +207,80 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 												<span style="font-size:12px">{{PlanDetails.rows.[0].Plan.name}}</span>
 											</div>
 										</div>
-
 									</div>
 									<div class="row">
-											<div class="col-md-2 social_face" style="font-size:14px">
-												Select Plan
-											</div>
-											<div class="col-md-3">
-
-												<div class="form-group">
-
-													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
-														  required>
-															<option value='' selected="">Select Plan</option>
-                                                            {{#ifCond PlanDetails.rows.[0].Plan.name '==' "STARTER SELLER"}}
-																<option value="2">Service Provider</option>
-																<option value="3">Lifestyle Provider</option>
-																<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-																
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
-																<option value="3">Lifestyle Provider</option>
-																<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-																
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
-																<option value="2">Service Provider</option>
-																<option value="4">Public Seller Pricing Guide</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
-																<option value="2">Service Provider</option>
-																<option value="3">Lifestyle Provider</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}} 
-															
-															{{#ifCond PlanDetails.rows.[0].plan_id '==' "4"}}
-																<option value="2">Service Provider</option>
-																<option value="3">Lifestyle Provider</option>
-																<option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-															
-
-															{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
-															  <option value="6">Wholesale Pricing Guide</option>
-															{{/ifCond}}
-														</select>
-
-													</div>
-												</div>
-											</div>
-
-											<div class="col-md-1">
-												<div class="text-nowrap" onclick="showDetails()">
-													<a href="javascript:;">Show Details</a>
-												</div>
-											</div>
-
-
+										<div class="col-md-2 social_face" style="font-size:14px">
+											Select Plan
 										</div>
+										<div class="col-md-3">
+
+											<div class="form-group">
+
+												<div class="input-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
+													 required>
+														<option value='' selected="">Select Plan</option>
+														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "STARTER SELLER"}}
+															<option value="2">Service Provider</option>
+															<option value="3">Lifestyle Provider</option>
+															<option value="4">Public Seller Pricing Guide</option>
+															<option value="6">Wholesale Pricing Guide</option>
+
+														{{/ifCond}}
+														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
+															<option value="3">Lifestyle Provider</option>
+															<option value="4">Public Seller Pricing Guide</option>
+															<option value="6">Wholesale Pricing Guide</option>
+
+														{{/ifCond}}
+														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
+															<option value="2">Service Provider</option>
+															<option value="4">Public Seller Pricing Guide</option>
+															<option value="6">Wholesale Pricing Guide</option>
+														{{/ifCond}}
+														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
+															<option value="2">Service Provider</option>
+															<option value="3">Lifestyle Provider</option>
+															<option value="6">Wholesale Pricing Guide</option>
+														{{/ifCond}}
+
+														{{#ifCond PlanDetails.rows.[0].plan_id '==' "4"}}
+															<option value="2">Service Provider</option>
+															<option value="3">Lifestyle Provider</option>
+															<option value="6">Wholesale Pricing Guide</option>
+														{{/ifCond}}
+														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
+															<option value="6">Wholesale Pricing Guide</option>
+														{{/ifCond}}
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-1">
+											<div class="text-nowrap" onclick="showDetails()">
+												<a href="javascript:;">Show Details</a>
+											</div>
+										</div>
+									</div>
 									<div class="row">
 										<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
 											Select card details
 										</div>
 										<div class="col-md-3">
-										
-												
-												<div class="form-group">
-
-													<div class="input-group">
-														<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" 
-														 id="selectcard_details" required>
-															{{#ifCond carddetails '!=' '' }}
-
+											<div class="form-group">
+												<div class="input-group">
+													<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" id="selectcard_details"
+													 required>
+														{{#ifCond carddetails '!=' '' }}
 															{{#each carddetails}}
 																<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
 															{{/each}}
-							                             	{{else}}
-								                        	<option disabled="" selected="">Select card details</option>
+														{{else}}
+															<option disabled="" selected="">Select card details</option>
 														{{/ifCond}}
-
-														</select>
-
-													</div>
+													</select>
 												</div>
-
+											</div>
 										</div>
 										<div class="col-md-1">
 											<div class="text-nowrap">
@@ -333,262 +296,238 @@ var plans = {{{ DisplayJSON PlanDetails}}}
 											<div class="input-group mb-3">
 												<div class="input-group-prepend">
 												</div>
-												<span style="font-size:12px"><input type="checkbox" name="autorenewalmail"></span>
+												<span style="font-size:12px">
+													<input type="checkbox" name="autorenewalmail">
+												</span>
 											</div>
 										</div>
-
 									</div>
 									{{#each carddetails}}
 										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
 										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 									{{/each}}
-
 									<input type="hidden" name="amount" id="amount" value="">
-									<input type="hidden" name="vendor_id"  id="vendor_id" value="{{LoggedInUser.Vendor.id}}">
+									<input type="hidden" name="vendor_id" id="vendor_id" value="{{LoggedInUser.Vendor.id}}">
 									<input type="hidden" name="user_id" id="user_id" value="{{LoggedInUser.id}}">
 									<input type="hidden" name="plan_status" id="plan_status" value="{{PlanDetails.rows.[0].status}}">
 									<hr style="margin-top: 10px" />
-
 									{{!-- <div class="row">
-
 										<div class="col-md-2">
-
 											<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
 												<span class="ladda-label">Upgrade</span>
 												<span class="ladda-spinner"></span>
 											</button>
 										</div>
-
 										<div class="col-md-2">
-
-											<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+										<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
 												<span class="ladda-label">Cancel</span>
 												<span class="ladda-spinner"></span>
 											</button>
 										</div>
 										</div> --}}
-										<div class="row">
-									<div class="col-md-12">
+									<div class="row">
+										<div class="col-md-12">
 											{{!-- <input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/> --}}
-										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
-											<span class="ladda-label">UPGRADE</span>
-											
-										<span class="ladda-spinner"></span></button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											
-										<span class="ladda-spinner"></span></button>
+											<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
+												<span class="ladda-label">UPGRADE</span>
+												<span class="ladda-spinner"></span>
+											</button>
+											<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+												<span class="ladda-label">CANCEL</span>
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
 									</div>
-					    </div>
-										</form>
-						              </div>
-							
-							 {{else}}
+								</form>
+						</div>
+						{{else}}
 							<form id="userPlandetails" name="userPlandetails">
-							   <div class="row">
-                               {{!-- <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}"> --}}
-							   <div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-								Select Plan
-							    </div>
-        						<div class="col-md-3">
-								<div class="form-group">
-								<div class="input-group">
-        						<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan" required>
-	                            {{#ifCond userplanDetails '==' "1"}}
-								<option value="5">Bulk Buyer</option>
-								{{else}}
-								<option disabled="" value='' selected="">Select Plan</option>
-								<option value="5">Bulk Buyer</option>
-								{{/ifCond}}
-								</select>
+								<div class="row">
+									{{!-- <input type="hidden" name="user_vendor_id" value="{{PlanDetails.[0].vendor_id}}"> --}}
+									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+										Select Plan
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectplan" id="selectplan"
+												 required>
+													{{#ifCond userplanDetails '==' "1"}}
+														<option value="5">Bulk Buyer</option>
+														{{else}}
+															<option disabled="" value='' selected="">Select Plan</option>
+															<option value="5">Bulk Buyer</option>
+													{{/ifCond}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<div class="text-nowrap" onclick="showDetails()">
+											<a href="javascript:;">Show Details</a>
+										</div>
+									</div>
 								</div>
+								<div class="row" id="usercarddetails">
+									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+										Select Card Details
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<div class="input-group">
+												<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="selectcard_details" required>
+													{{#ifCond carddetails '!=' '' }}
+														{{#each carddetails}}
+															<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+														{{/each}}
+														{{else}}
+															<option disabled="" selected="">Select card details</option>
+													{{/ifCond}}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<div class="text-nowrap">
+											<a href="/billing-settings">Add Card</a>
+										</div>
+									</div>
 								</div>
-    							</div>
-	       						<div class="col-md-1">
-								<div class="text-nowrap" onclick="showDetails()">
-								<a href="javascript:;">Show Details</a>
-			     				</div>
-				     			</div>
-            					</div>
-			         			<div class="row" id="usercarddetails">
-					    		<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-								Select Card Details
-						    	</div>
-							    <div class="col-md-3">
-								<div class="form-group">
-								<div class="input-group">
-								<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" 
-								 name="selectcard_details" required>
-								{{#ifCond carddetails '!=' '' }}
+								<div class="row">
+									<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
+										Auto-Renewal
+									</div>
+									<div class="col-md-4">
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+											</div>
+											<span style="font-size:12px">
+												<input type="checkbox" name="autorenewalmail">
+											</span>
+										</div>
+									</div>
+								</div>
 								{{#each carddetails}}
-								<option value="{{this}}">**** **** **** {{json this.card_details 'last4'}}</option>
+									<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
+									<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
 								{{/each}}
-                             	{{else}}
-	                        	<option disabled="" selected="">Select card details</option>
-     							{{/ifCond}}
-								</select>
-								</div>
-     							</div>
-            					</div>
-	    						<div class="col-md-1">
-								<div class="text-nowrap">
-								<a href="/billing-settings">Add Card</a>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-2 social_face text-nowrap" style="font-size:14px">
-								Auto-Renewal
-							</div>
-						<div class="col-md-4">
-						<div class="input-group mb-3">
-    					<div class="input-group-prepend">
-						</div>
-						  <span style="font-size:12px"><input type="checkbox" name="autorenewalmail"></span>
-						</div>
-						</div>
-						</div>
-							{{#each carddetails}}
-										<input type="hidden" name="stripe_customer_id" value="{{this.stripe_customer_id}}">
-										<input type="hidden" name="carddetailsid" value="{{this.stripe_card_id}}">
-									{{/each}}
 
-									<input type="hidden" name="amount" id="useramount" value="">
-									<input type="hidden" name="vendor_id" value="0">
-									<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
-						{{/if}}
-							{{#if LoggedInUser.Vendor.id}}
-					
-								{{!-- <div class="col-md-2" >
-                                     
-                                        <button type="submit" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" data-toggle="modal" data-target="#myModal">
+								<input type="hidden" name="amount" id="useramount" value="">
+								<input type="hidden" name="vendor_id" value="0">
+								<input type="hidden" name="user_id" value="{{LoggedInUser.id}}">
+								{{/if}}
+								{{#if LoggedInUser.Vendor.id}}
+									{{!-- <div class="col-md-2" >
+                                     	<button type="submit" class="ladda-button btn update-btn" data-style="expand-left"   style="border-radius:0px" data-toggle="modal" data-target="#myModal">
                                             <span class="ladda-label">Upgrade</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
                                     </div>
-                                   
-                                    <div class="col-md-2">
-                                       
+                                   <div class="col-md-2">
                                         <button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
                                             <span class="ladda-label">Cancel</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
                                     </div> --}}
-							{{else}}
-								<hr style="margin-top: 10px" />
-						{{!-- <div class="row">
-						
-								<div class="col-md-2">
-									<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
-
-									<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
-										<span class="ladda-label">Upgrade</span>
-										<span class="ladda-spinner"></span>
-									</button>
-								</div>
-
-								<div class="col-md-2">
-
-									<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
-										<span class="ladda-label">Cancel</span>
-										<span class="ladda-spinner"></span>
-									</button>
-								</div>
-
-						
-							<div class="col-md-8">
-							</div>
-						</div> --}}
-						         <div class="row">
-									<div class="col-md-12"> 
-										{{#ifCond userplanDetails.count '!=' 0}}
-										<input type="hidden" name="userplanStatus" id="userplanStatus"  value="{{userplanDetails.rows.[0].status}}"/>
-											{{else ifCond userplanDetails.count '==' 0 }}
-										<input type="hidden" name="userplanStatus" id="userplanStatus" value="0"/>
-										{{/ifCond}}
-										<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
-											<span class="ladda-label">UPGRADE</span>
-											
-										<span class="ladda-spinner"></span></button>
-										<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
-											<span class="ladda-label">CANCEL</span>
-											
-										<span class="ladda-spinner"></span></button>
+								{{else}}
+									<hr style="margin-top: 10px" />{{!-- <div class="row">
+									<div class="col-md-2">
+										<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails}}"/>
+										<button type="submit" class="ladda-button btn update-btn" data-style="expand-left" style="border-radius:0px">
+											<span class="ladda-label">Upgrade</span>
+											<span class="ladda-spinner"></span>
+										</button>
 									</div>
-					          </div>
-                         	{{/if}}
-						</form>
+									<div class="col-md-2">
+										<button type="button" class="ladda-button btn list_butt_2" data-style="expand-left" style="border-radius:0px">
+											<span class="ladda-label">Cancel</span>
+											<span class="ladda-spinner"></span>
+										</button>
+									</div>
+									<div class="col-md-8">
+									</div>
+									</div> --}}
+									<div class="row">
+										<div class="col-md-12">
+											{{#ifCond userplanDetails.count '!=' 0}}
+												<input type="hidden" name="userplanStatus" id="userplanStatus" value="{{userplanDetails.rows.[0].status}}" /> {{else ifCond userplanDetails.count '==' 0 }}
+												<input type="hidden" name="userplanStatus" id="userplanStatus" value="0" />
+											{{/ifCond}}
+											<button class="ladda-button btn update-btn btn-small btn-muted" id="userUpdateBtn" type="submit" data-style="expand-left">
+												<span class="ladda-label">UPGRADE</span>
+
+												<span class="ladda-spinner"></span>
+											</button>
+											<button class="ladda-button btn btn-small btn-muted" type="reset" id="userCancelBtn" data-style="expand-left">
+												<span class="ladda-label">CANCEL</span>
+
+												<span class="ladda-spinner"></span>
+											</button>
+										</div>
+									</div>
+								{{/if}}
+							</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 </div>
 <div id="myModal" class="modal fade" role="dialog">
 	<div class="modal-dialog">
-
-		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Upgrade plan</h4>
+				<h4 class="modal-title">Payment:</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-
 			</div>
 			<div class="modal-body">
-			    <p id="Plan_cost"></p>
+				<p id="Plan_cost"></p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">ok</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="reset" class="btn btn-small btn-muted" data-dismiss="modal">
+					<b>CANCEL<b/>
+				</button>
+				<button type="submit" class="btn btn-small btn-primary" onclick="makePayment()">
+					<b>PAY</b>
+				</button>
+				{{!-- <button type="button" class="btn btn-default" data-dismiss="modal" onclick="makePayment()">PAY</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">CANCEL</button> --}}
 			</div>
 		</div>
-
 	</div>
 </div>
 <div id="paymentSuccess" class="modal fade" role="dialog">
 	<div class="modal-dialog">
-
-		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">success</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-
 			</div>
 			<div class="modal-body">
 				<p>Payment Successfully Completed</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="paymentSuccess()">ok</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="paymentSuccess()">OK</button>
 			</div>
 		</div>
-
 	</div>
-
 </div>
 <div id="myModal2" class="modal fade" role="dialog">
 	<div class="modal-dialog">
-
-		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title">Upgrade Plan</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-
 			</div>
 			<div class="modal-body">
-
-				<p>Your Plan Not Yet Expired </p>
-				
-							</div>
+				<p>Your Current Plan Not Yet Expired </p>
+			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 			</div>
 		</div>
-
 	</div>
 </div>
 

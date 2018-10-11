@@ -19,6 +19,7 @@ const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
+const gtcPlan = require('../../config/gtc-plan')
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -817,6 +818,8 @@ export function makePlanPayment(req,res){
 	start_date = new Date(convertMoment);
 	end_date = moment().add(28, 'd').toDate();
 
+	console.log("====================================================",upgradingPlan);
+
 	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
 	.then(function(paymentResponse){
 		if(paymentResponse.paid){
@@ -869,7 +872,7 @@ export function makePlanPayment(req,res){
 		if (req.body.vendor_id != 0) {
 			var vendorId = req.body.vendor_id;
 
-			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
+			if(upgradingPlan == gtcPlan.LIFESTYLE_PROVIDER){
 				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
@@ -883,7 +886,7 @@ export function makePlanPayment(req,res){
 				}
 				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
 
-			}else if(upgradingPlan == marketPlaceCode.SERVICE){
+			}else if(upgradingPlan == gtcPlan.SERVICE_PROVIDER){
 				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
@@ -897,7 +900,7 @@ export function makePlanPayment(req,res){
 				}
 				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
 			
-			}else if(upgradingPlan == marketPlaceCode.PUBLIC){
+			}else if(upgradingPlan == gtcPlan.PUBLIC_SELLER){
 				var productActivateQueryObj = {}, productActivateBodyParam = {};
 
 				productActivateQueryObj = {
@@ -910,9 +913,9 @@ export function makePlanPayment(req,res){
 				productActivateBodyParam = {
 					status: status["ACTIVE"]
 				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);
+				return service.updateRecordNew('Product', productActivateBodyParam, productActivateQueryObj);
 
-			}else if(upgradingPlan == marketPlaceCode.WHOLESALE){
+			}else if(upgradingPlan == gtcPlan.WHOLESALER){
 				var productActivateQueryObj = {}, productActivateBodyParam = {};
 
 				productActivateQueryObj = {
@@ -932,6 +935,7 @@ export function makePlanPayment(req,res){
 			"messageDetails": "	Plan upgraded successfully."
 		});	
 	}).catch(function(error){
+		console.log("=======================================================",error);
 		return res.status(500).send({
 			"message": "ERROR",
 			"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
