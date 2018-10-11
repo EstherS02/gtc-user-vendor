@@ -69,7 +69,7 @@
 							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
 						</li>
 					{{/ifCond}}
-					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
+					{{!-- {{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.BULK_BUYER}}
 						<li class="nav-bar">
 							<a href="/listings/wholesale" class="vs-link {{#ifCond selectedPage '==' 'wholesale'}} active {{/ifCond}}">Wholesale Listings</a>
 						</li>
@@ -82,7 +82,7 @@
 						<li class="nav-bar">
 							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
 						</li>
-					{{/ifCond}}
+					{{/ifCond}} --}}
 					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.PUBLIC_SELLER}}
 						<li class="nav-bar">
 							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
@@ -107,9 +107,6 @@
 					{{#ifCond LoggedInUser.Vendor.VendorPlans.[0].plan_id '==' vendorPlan.STARTER_SELLER}}
 						<li class="nav-bar">
 							<a href="/listings/shop" class="vs-link {{#ifCond selectedPage '==' 'shop'}} active {{/ifCond}}">Shop Listings</a>
-						</li>
-						<li class="nav-bar">
-							<a href="/listings/services" class="vs-link {{#ifCond selectedPage '==' 'services'}} active {{/ifCond}}">Services Listings</a>
 						</li>
 						<li class="nav-bar">
 							<a href="/listings/lifestyle" class="vs-link {{#ifCond selectedPage '==' 'lifestyle'}} active {{/ifCond}}">Subscription Listings</a>
@@ -179,7 +176,7 @@
 			<ul class="collapse m-l vs-nav {{#if dropDownUrl}}{{#ifCond dropDownUrl "==" "gtc-mail"}}show{{/ifCond}}{{/if}}" id="collapse4Mail">
 				<li class="nav-bar">
 					<a href="/gtc-mail/inbox" class="vs-link {{#ifCond selectedPage '==' 'inbox'}} active {{/ifCond}}">Inbox
-						<div class="mail-messages UnreadMessages"></div</a>
+						<div class="mail-messages UnreadMessages"></div></a>
 				</li>
 				<li class="nav-bar">
 					<a href="/gtc-mail/sent" class="vs-link {{#ifCond selectedPage '==' 'sent'}} active {{/ifCond}}">Sent</a>

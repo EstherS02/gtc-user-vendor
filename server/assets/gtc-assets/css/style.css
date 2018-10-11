@@ -757,7 +757,9 @@ ul.footer-social-links li a img {
 .vendor-menu a {
     color: #000;
 }
-
+.vendor-menu .navbar-brand {
+	margin-right: 0;
+}
 .vendor-menu a span {
     font-family: 'Oswald', sans-serif;
     font-size: 13px;

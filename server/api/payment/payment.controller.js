@@ -680,14 +680,11 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
 							body = body.replace('/%Path%/g',req.protocol + '://' + req.get('host'));
-							body = body.replace('/%currency%/g','$');
-							body = body.replace('%UserName%',user.first_name) //+' '+user.last_name
-							if(user.last_name != null || user.last_name != 'null'){
-							body = body.replace('%UserLastName%',user.last_name) //+' '+		
-							}
+							body = body.replace(/%currency%/g,'$');
+							body = body.replace('%UserName%',user.first_name) 
 							_.forOwn(OrderList.rows, function(orders) {
 								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' + '0,0.00'))
+								body = body.replace('%Total_Price%',numeral(orders.total_price).format('0,0.00'))
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
@@ -820,7 +817,7 @@ export function makePlanPayment(req,res){
 	start_date = new Date(convertMoment);
 	end_date = moment().add(28, 'd').toDate();
 
-	stripe.chargeCustomerplanCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
+	stripe.chargeCustomerCard(req.body.stripe_customer_id, req.body.carddetailsid, req.body.amount, desc, CURRENCY)
 	.then(function(paymentResponse){
 		if(paymentResponse.paid){
 			paymentBodyParam = {
@@ -866,16 +863,70 @@ export function makePlanPayment(req,res){
 				created_by: req.user.first_name,
 				created_on: new Date()
 			};
-			return service.createRow('UserPlan', userplanModel);
+			return service.createRow('UserPlan', userPlanBodyParam);
 		}
 	}).then(function(updatedPlanRow){
-
 		if (req.body.vendor_id != 0) {
+			var vendorId = req.body.vendor_id;
 
-			//Need to do other plan product inactivation....
+			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
+				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
 
+				productDeactivateQueryObj = {
+					vendor_id: vendorId,
+					marketplace_id: {
+						'$ne': marketPlaceCode["LIFESTYLE"]
+					}
+				}
+				productDeactivateBodyParam = {
+					status: status["GTC_INACTIVE"]
+				}
+				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+
+			}else if(upgradingPlan == marketPlaceCode.SERVICE){
+				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
+
+				productDeactivateQueryObj = {
+					vendor_id: vendorId,
+					marketplace_id: {
+						'$ne': marketPlaceCode["SERVICE"]
+					}
+				}
+				productDeactivateBodyParam = {
+					status: status["GTC_INACTIVE"]
+				}
+				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+			
+			}else if(upgradingPlan == marketPlaceCode.PUBLIC){
+				var productActivateQueryObj = {}, productActivateBodyParam = {};
+
+				productActivateQueryObj = {
+					vendor_id: vendorId,
+					marketplace_id: {
+						'$ne': marketPlaceCode["WHOLESALE"]
+					},
+					status: status["GTC_INACTIVE"]
+				}
+				productActivateBodyParam = {
+					status: status["ACTIVE"]
+				}
+				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);
+
+			}else if(upgradingPlan == marketPlaceCode.WHOLESALE){
+				var productActivateQueryObj = {}, productActivateBodyParam = {};
+
+				productActivateQueryObj = {
+					vendor_id: vendorId,
+					status: status["GTC_INACTIVE"]
+				}
+
+				productActivateBodyParam = {
+					status: status["ACTIVE"]
+				}
+				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);	
+			}
 		}
-	}).then(function(updatedPlanRow){
+	}).then(function(updatedProductRow){
 		return res.status(200).send({
 			"message": "Success",
 			"messageDetails": "	Plan upgraded successfully."
@@ -920,20 +971,20 @@ function sendUpgrademail(plan_id, user) {
 					return;
 				})
 		})
-
 }
 //plan upgrade email ends//
 
 
 export function refundOrder(req, res) {
+
 	var userdetails = req.user;
+	
 	var refundOrderitemsID = [];
 	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
-
 	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
