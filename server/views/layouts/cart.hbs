@@ -37,11 +37,10 @@
 				url: '/api/cart/remove-cart/' + item,
 				type: 'DELETE',
 				success: function(result) {
-					if (result)
-						location.reload();
+					location.reload();
 				},
 				error: function(error) {
-					console.log("Error occured while deleting", error);
+					auth.alertService(error.status, error.responseText);
 				}
 			});
 		}
@@ -68,7 +67,11 @@
 			data: JSON.stringify(allCartInfo),
 			contentType: "application/json",
 			success: function(updateAllData) {
-				location.reload();
+				$('#UpdateAllCartBtn').prop('disabled', true);
+				auth.alertService(updateAllData.statusCode, updateAllData.message_details);
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
 			},
 			error: function(error) {
 				$('#UpdateAllCartBtn').prop('disabled', false);
@@ -92,7 +95,10 @@
 			data: JSON.stringify(cartInfo),
 			contentType: "application/json",
 			success: function(updateData) {
-				location.reload();
+				auth.alertService(updateData.statusCode, updateData.message_details);
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
 			},
 			error: function(error) {
 				$("#inputQty-" + error['responseJSON']['cart_item_id']).notify(error.responseJSON.message_details);
