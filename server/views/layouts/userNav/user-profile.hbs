@@ -1,12 +1,13 @@
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$("#gtc-profile-alert").hide();
 		$("#gtc-pwdreset-alert").hide();
+		$("#gtc-alert").hide();
 		$('.billing_required_field').hide();
 		$('.shipping_required_field').hide();
 
-		$('#b_company_name, #b_address1, #b_address2,#b_state,#b_country,#b_city,#b_postal_code').keyup(function () {
+		$('#b_company_name, #b_address1, #b_address2,#b_state,#b_country,#b_city,#b_postal_code').keyup(function() {
 			$('#userUpdateBtn').prop('disabled', true);
 			$('.billing_required_field').show();
 			if ($('#b_address1').val() != '' && $('#b_country').val() != '' && $('#b_state').val() != '' && $('#b_city').val() != '') {
@@ -16,7 +17,7 @@
 			}
 		});
 
-		$('#s_company_name, #s_address1, #s_address2, #s_state, #s_country,#s_city,#s_postal_code').keyup(function () {
+		$('#s_company_name, #s_address1, #s_address2, #s_state, #s_country,#s_city,#s_postal_code').keyup(function() {
 			$('#userUpdateBtn').prop('disabled', true);
 			$('.shipping_required_field').show();
 			if ($('#s_address1').val() != '' && $('#s_country').val() != '' && $('#s_state').val() != '' && $('#s_city').val() != '') {
@@ -28,8 +29,8 @@
 
 		var cropBoxData, canvasData, cropper, cropperInputImage, cropperOutputImage;
 		var fileDetails = {};
-		$('#crop-profile-image').click(function () {
-			cropper.getCroppedCanvas().toBlob(function (blob) {
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
 				cropperOutputImage = blob;
 				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
 				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
@@ -38,17 +39,17 @@
 			$('#profile-picture-modal').modal('hide');
 		})
 
-		$("#profileImage").click(function (e) {
+		$("#profileImage").click(function(e) {
 			$("#imageUpload").click();
 		});
 
-		$('#profile-picture-modal').on('shown.bs.modal', function () {
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
 			cropper = new Cropper(cropperInputImage, {
 				aspectRatio: 16 / 16,
-				viewMode:1,
-				ready: function () { }
+				viewMode: 1,
+				ready: function() { }
 			});
-		}).on('hidden.bs.modal', function () {
+		}).on('hidden.bs.modal', function() {
 			cropBoxData = cropper.getCropBoxData();
 			canvasData = cropper.getCanvasData();
 			cropper.destroy();
@@ -66,16 +67,16 @@
 			}
 		}
 
-		$("#imageUpload").change(function () {
+		$("#imageUpload").change(function() {
 			fasterPreview(this);
 		});
 
-		$("#b_country").change(function () {
+		$("#b_country").change(function() {
 			var country_id = $('#b_country').val();
 			$.ajax({
 				url: '/api/states?country_id=' + country_id,
 				type: 'GET',
-				success: function (result) {
+				success: function(result) {
 					$("#b_state").empty();
 					$("#b_state").append("<option disabled selected>Province/State</option>")
 					for (var i = 0; i < result.rows.length; i++) {
@@ -84,18 +85,18 @@
 						$("#b_state").append(options)
 					}
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log("Error", error);
 				}
 			});
 		});
 
-		$('#s_country').change(function () {
+		$('#s_country').change(function() {
 			var country_id = $('#s_country').val();
 			$.ajax({
 				url: '/api/states?country_id=' + country_id,
 				type: 'GET',
-				success: function (result) {
+				success: function(result) {
 					$("#s_state").empty();
 					$("#s_state").append("<option disabled selected>Province/State</option>")
 					for (var i = 0; i < result.rows.length; i++) {
@@ -104,7 +105,7 @@
 						$("#s_state").append(options)
 					}
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log("Error", error);
 				}
 			});
@@ -114,7 +115,7 @@
 			$("#shipping_address_div").hide();
 		}
 
-		$("#sameAddr").change(function () {
+		$("#sameAddr").change(function() {
 			let ischecked = $(this).is(':checked');
 			if (!ischecked) {
 				$('#shipping_address_div').show();
@@ -123,14 +124,14 @@
 			}
 		});
 
-		$("#userForm").submit(function (e) {
+		$("#userForm").submit(function(e) {
 
 			e.preventDefault();
 			var userUpdate = {}, data = {};
 			userUpdate.first_name = $('#first_name').val();
 			userUpdate.last_name = $('#last_name').val();
 			userUpdate.user_contact_email = $('#user_contact_email').val();
-			
+
 			if ($('#b_address1').val()) {
 				var billingUpdate = {};
 				billingUpdate.address_type = 1;
@@ -187,10 +188,10 @@
 					dataType: 'json',
 					processData: false,
 					contentType: false,
-					success: function (data) {
+					success: function(data) {
 						userUpdate.user_pic_url = data.imageURL;
 					},
-					error: function (error) {
+					error: function(error) {
 						console.log("Error", error);
 					}
 				})
@@ -203,17 +204,17 @@
 					url: '/api/users/user-profile',
 					type: 'PUT',
 					data: data,
-					success: function (updateData) {
+					success: function(updateData) {
 						$('#gtc-profile-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-profile-alert .profile-message').text("Profile Updated Successfully")
-						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-profile-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-profile-alert").slideUp(500);
 						});
-						setTimeout(function () {
+						setTimeout(function() {
 							location.reload(true);
 						}, 1000);
 					},
-					error: function (error) {
+					error: function(error) {
 						console.log("Error", error);
 					}
 				});
@@ -281,11 +282,11 @@
 			}
 		});
 
-		$("#changePwd").submit(function (e) {
+		$("#changePwd").submit(function(e) {
 
 			e.preventDefault();
 
-			let input = $("#changePwd :input").filter(function (index, element) {
+			let input = $("#changePwd :input").filter(function(index, element) {
 				return $(element).val() != '';
 			}).serialize();
 
@@ -294,21 +295,21 @@
 					url: 'api/users/change-password',
 					type: 'PUT',
 					data: input,
-					success: function (data) {
+					success: function(data) {
 						$('#gtc-pwdreset-alert').removeClass('alert-danger').addClass('alert-success');
 						$('#gtc-pwdreset-alert .pwdreset-message').text("Password Changed Successfully")
-						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-pwdreset-alert").slideUp(500);
 						});
 						$("#changePwd")[0].reset();
-						setTimeout(function () {
+						setTimeout(function() {
 							location.reload(true);
 						}, 1000);
 					},
-					error: function (error) {
+					error: function(error) {
 						$('#gtc-pwdreset-alert').removeClass('alert-success').addClass('alert-danger');
 						$('#gtc-pwdreset-alert .pwdreset-message').text(error.responseText);
-						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function () {
+						$("#gtc-pwdreset-alert").fadeTo(7000, 500).slideUp(500, function() {
 							$("#gtc-pwdreset-alert").slideUp(500);
 						});
 						$("#changePwd")[0].reset();
@@ -317,14 +318,46 @@
 			};
 		});
 
-		$('#userCancelBtn').click(function(e){
+		$('#userCancelBtn').click(function(e) {
 			window.location.href = '/user/my-profile';
 		});
+
+		$('#resendEmail').click(function() {
+		var newData = {};
+		var email = {{{ DisplayJSON LoggedInUser }}}
+		newData.email = email.email;
+			console.log(newData)
+			$.ajax({
+				type: "POST",
+				url: "/api/users/resend",
+				data: newData,
+				success: function(res) {
+					$('#gtc-alert').removeClass('alert-danger').addClass('alert-success');
+					$('#gtc-alert .pwdreset-message').text("Resend email Successfully")
+					$("#gtc-alert").fadeTo(7000, 500).slideUp(500, function() {
+						$("#gtc-alert").slideUp(500);
+					});
+				},
+				error: function(error) {
+					$('#gtc-alert').prop('disabled', false);
+					if (error) {
+						$('#gtc-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-alert .pwdreset-message').text("Failed !!!")
+						$("#gtc-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-alert").slideUp(500);
+						});
+						location.reload(true);
+					}
+				}
+			});
+		});
+		
 	});	
-</script> 
+</script>
 
 {{> header/top-header LoggedInUser = LoggedInUser}} {{> vendor/vendor-menu}}
 {{#unless LoggedInUser.user_contact_email}}{{> update-contact-mail}}{{/unless}}
+
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"
  aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
@@ -430,6 +463,20 @@
 												</div>
 											</div>
 										{{/ifCond}}
+										{{#ifCond LoggedInUser.email_verified '==' 0}}
+											<div class="row">
+												<div class="col-12">
+													<a href="javascript:;" id="resendEmail">
+													<span>Resend Email Verification</span></a>
+												</div>
+											</div>
+										{{/ifCond}}
+										<div class="alert" id="gtc-alert">
+											<button type="button" class="close" data-dismiss="alert">
+												<span aria-hidden="true">&times;</span>
+											</button>
+											<span class="pwdreset-message"></span>
+										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="row">

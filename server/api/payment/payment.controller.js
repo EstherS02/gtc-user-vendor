@@ -664,9 +664,8 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 		if (OrderList) {
 
 			usernotification(OrderList,user);
+			vendorMail(OrderList, user);
 			if(user.user_contact_email){
-
-				vendorMail(OrderList, user);
 				var user_email = user.user_contact_email;
 				var orderNew = [];
 				var queryObjEmailTemplate = {};
@@ -684,7 +683,7 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							body = body.replace('%UserName%',user.first_name) 
 							_.forOwn(OrderList.rows, function(orders) {
 								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%',numeral(orders.total_price).format('0,0.00'))
+								body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' +'0,0.00'))
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
@@ -699,8 +698,6 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							});
 							return;
 						} 
-					// }).then(function(output){
-
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return;
@@ -725,7 +722,6 @@ export function vendorMail(OrderList, user) {
 }
 
 function sendVendorEmail(order, user) {
-
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
@@ -738,12 +734,13 @@ function sendVendorEmail(order, user) {
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
 				body = body.replace('/%Path%/g','https://gtc.ibcpods.com');//req.protocol + '://' + req.get('host'));
-				body = body.replace('%UserName%', user.first_name);
-				body = body.replace('%UserLastName%', user.last_name);
-				body = body.replace('/%currency%/g','$');
+				body = body.replace('%VendorName%', 'vendor_name');
+				body = body.replace(/%currency%/g,'$');
+
 				_.forOwn(order, function(orders) {
+
 						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
-						body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' + '0,0.00'))
+						body = body.replace('%Total_Price%',numeral(order.total_price).format('$' + '0,0.00'))
 						orderNew.push(orders);
 
 					});
@@ -751,6 +748,7 @@ function sendVendorEmail(order, user) {
 				var data = {
 					order: order
 				};
+
 				var result = template(data);
 				sendEmail({
 					to: email,
@@ -780,6 +778,7 @@ function notifications(order) {
 			bodyParams.status = 1;
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
+			return;
 		});
 		return;
 }
@@ -801,6 +800,7 @@ var queryObjNotification = {};
 			bodyParams.status = 1;
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
+			return;
 		});
 		return;	
 }
