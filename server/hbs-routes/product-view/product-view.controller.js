@@ -133,7 +133,7 @@ export function product(req, res) {
 			},
 			RelatedProducts: function(callback) {
 				var offset = 0;
-				var limit=9;
+				var limit = 9;
 				var queryObj = {
 					product_category_id: categoryID,
 					vendor_id: vendorID,
@@ -141,23 +141,23 @@ export function product(req, res) {
 						$ne: productID
 					}
 				};
-				if(marketplaceID ==marketplace['WHOLESALE']){
-					queryObj['marketplace_id']= {
+				if (marketplaceID == marketplace['WHOLESALE']) {
+					queryObj['marketplace_id'] = {
 						$eq: marketplace['WHOLESALE']
 					}
-				}else{
-					queryObj['marketplace_id']= {
+				} else {
+					queryObj['marketplace_id'] = {
 						$ne: marketplace['WHOLESALE']
 					}
 				}
 				productService.queryAllProducts(LoggedInUser.id, queryObj, offset, limit)
-				.then(function(publicMarketplace) {
-					console.log(publicMarketplace);
-					return callback(null, publicMarketplace);
-				}).catch(function(error) {
-					console.log('Error :::', error);
-					return callback(null);
-				});
+					.then(function(publicMarketplace) {
+						console.log(publicMarketplace);
+						return callback(null, publicMarketplace);
+					}).catch(function(error) {
+						console.log('Error :::', error);
+						return callback(null);
+					});
 
 			},
 			VendorDetail: function(callback) {
@@ -165,10 +165,10 @@ export function product(req, res) {
 					model: model['Country']
 				}, {
 					model: model['VendorPlan'],
-					where:{
-						status:status['ACTIVE']
+					where: {
+						status: status['ACTIVE']
 					},
-					required:false
+					required: false
 				}, {
 					model: model['VendorVerification'],
 					where: {
@@ -449,7 +449,7 @@ export function product(req, res) {
 					LoggedInUser: LoggedInUser,
 					selectedPage: selectedPage,
 					Plan: Plan,
-					marketplace:marketplace,
+					marketplace: marketplace,
 					VendorAvgRating: results.VendorAvgRating,
 					categoryWithProductCount: results.categoryWithProductCount
 				});

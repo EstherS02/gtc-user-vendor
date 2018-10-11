@@ -54,14 +54,14 @@ function isAuthenticated() {
 			queryObj['id'] = req.user.userId;
 
 			model['User'].findOne({
-				include:[{
-						model:model['UserPlan'],
-						where:{
-							status:{
-								$eq:status['ACTIVE']
+					include: [{
+						model: model['UserPlan'],
+						where: {
+							status: {
+								$eq: status['ACTIVE']
 							}
 						},
-						required:false,
+						required: false,
 					}],
 					where: queryObj,
 					attributes: {
@@ -371,8 +371,9 @@ function hasPermission() {
 			}
 		});
 }
-function isAuthenticatedUserPlan(){
-return compose()
+
+function isAuthenticatedUserPlan() {
+	return compose()
 		.use(function(req, res, next) {
 			if (req.query && req.query.hasOwnProperty('access_token')) {
 				req.headers.authorization = 'Bearer ' + req.query.access_token;
@@ -397,14 +398,14 @@ return compose()
 			queryObj['id'] = req.user.userId;
 
 			model['User'].findOne({
-					include:[{
-						model:model['UserPlan'],
-						where:{
-							status:{
-								$eq:status['ACTIVE']
+					include: [{
+						model: model['UserPlan'],
+						where: {
+							status: {
+								$eq: status['ACTIVE']
 							}
 						},
-						required:false,
+						required: false,
 					}],
 					where: queryObj,
 					attributes: {
@@ -419,7 +420,7 @@ return compose()
 						vendorQueryObj['status'] = {
 							'$eq': status["ACTIVE"]
 						}
-						if(user.UserPlans.length <= 0){
+						if (user.UserPlans.length <= 0) {
 							req.user['UserPlans'] = false;
 						}
 
@@ -441,7 +442,7 @@ return compose()
 										$eq: status['ACTIVE']
 									}
 								},
-								required:false
+								required: false
 							}, {
 								model: model['VendorVerification'],
 								required: false
@@ -471,6 +472,7 @@ return compose()
 				});
 		});
 }
+
 function getIndexOfAction(array, value) {
 	if (value) {
 		if (array.length > 0) {

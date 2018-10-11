@@ -938,14 +938,15 @@ function sendUpgrademail(plan_id, user) {
 
 
 export function refundOrder(req, res) {
+
 	var userdetails = req.user;
+	
 	var refundOrderitemsID = [];
 	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
 	for (var i = 0; i < refundsOrderitems.length; i++) {
 		refundOrderitemsID.push(refundsOrderitems[i]);
 	}
-
 	var order_id, paymentObj, refundObj, refundAmt, order;
 	order_id = req.params.orderId;
 	refundAmt = req.body.total_refund;
