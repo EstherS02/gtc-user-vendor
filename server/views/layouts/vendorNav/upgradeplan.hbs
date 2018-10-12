@@ -229,6 +229,7 @@
 
 														{{/ifCond}}
 														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "SERVICE PROVIDER"}}
+															<option value="2">Service Provider</option>
 															<option value="3">Lifestyle Provider</option>
 															<option value="4">Public Seller Pricing Guide</option>
 															<option value="6">Wholesale Pricing Guide</option>
@@ -236,18 +237,21 @@
 														{{/ifCond}}
 														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "LIFESTYLE PROVIDER"}}
 															<option value="2">Service Provider</option>
+															<option value="3">Lifestyle Provider</option>
 															<option value="4">Public Seller Pricing Guide</option>
 															<option value="6">Wholesale Pricing Guide</option>
 														{{/ifCond}}
 														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "PUBLIC SELLER PRICING PROVIDER"}}
 															<option value="2">Service Provider</option>
 															<option value="3">Lifestyle Provider</option>
+															<option value="4">Public Seller Pricing Guide</option>
 															<option value="6">Wholesale Pricing Guide</option>
 														{{/ifCond}}
 
 														{{#ifCond PlanDetails.rows.[0].plan_id '==' "4"}}
 															<option value="2">Service Provider</option>
 															<option value="3">Lifestyle Provider</option>
+															<option value="4">Public Seller Pricing Guide</option>
 															<option value="6">Wholesale Pricing Guide</option>
 														{{/ifCond}}
 														{{#ifCond PlanDetails.rows.[0].Plan.name '==' "WHOLESALE PRICING GUIDE"}}
