@@ -19,6 +19,7 @@ const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
+const gtcPlan = require('../../config/gtc-plan')
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -810,9 +811,10 @@ var queryObjNotification = {};
 // PLAN PAYMENT
 
 export function makePlanPayment(req,res){
-	var upgradingPlan, desc, convertMoment, start_date, end_date; 
+	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId; 
 	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam ={};
 
+	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
 	desc = "GTC Plan Payment";
 	convertMoment = moment();
@@ -837,9 +839,9 @@ export function makePlanPayment(req,res){
 			});
 		}
 	}).then(function(paymentRow){
-		if (req.body.vendor_id != 0) {
+		if (vendorId != 0) {
 			vendorPlanBodyParam ={
-				vendor_id: req.body.vendor_id,
+				vendor_id: vendorId,
 				plan_id: req.body.plan_id,
 				payment_id: paymentRow.id,
 				status: status['ACTIVE'],
@@ -868,67 +870,52 @@ export function makePlanPayment(req,res){
 			return service.createRow('UserPlan', userPlanBodyParam);
 		}
 	}).then(function(updatedPlanRow){
-		if (req.body.vendor_id != 0) {
-			var vendorId = req.body.vendor_id;
-
-			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
-
-				productDeactivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["LIFESTYLE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.SERVICE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
-
-				productDeactivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["SERVICE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
+		if (vendorId != 0) {
+			var productDeactivateQueryObj={}, productDeactivateBodyParam={};
 			
-			}else if(upgradingPlan == marketPlaceCode.PUBLIC){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["WHOLESALE"]
-					},
-					status: status["GTC_INACTIVE"]
-				}
-				productActivateBodyParam = {
-					status: status["ACTIVE"]
-				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.WHOLESALE){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					status: status["GTC_INACTIVE"]
-				}
-
-				productActivateBodyParam = {
-					status: status["ACTIVE"]
-				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);	
+			productDeactivateQueryObj = {
+				vendor_id: vendorId,
+				status: status["ACTIVE"]
 			}
+			productDeactivateBodyParam={
+				status: status["GTC_INACTIVE"],
+				last_updated_by: req.user.first_name,
+				last_updated_on: new Date()
+			}
+			return service.updateRecordNew('Product', productDeactivateBodyParam, productDeactivateQueryObj);			
 		}
-	}).then(function(updatedProductRow){
+	}).then(function(deactivatedProducts){
+		if (vendorId != 0) {
+			var productActivateQueryObj={}, productActivateBodyParam={};
+
+			productActivateQueryObj.vendor_id = vendorId;
+			productActivateQueryObj.status = status["GTC_INACTIVE"];
+
+			if(upgradingPlan == gtcPlan.LIFESTYLE_PROVIDER)
+				productActivateQueryObj.marketplace_id = marketPlaceCode["LIFESTYLE"];
+
+			if(upgradingPlan == gtcPlan.SERVICE_PROVIDER)
+				productActivateQueryObj.marketplace_id = marketPlaceCode["SERVICE"];
+			
+			if(upgradingPlan == gtcPlan.PUBLIC_SELLER){
+				productActivateQueryObj = {
+					'$or': [{
+						marketplace_id: marketPlaceCode["LIFESTYLE"]
+					}, {
+						marketplace_id: marketPlaceCode["SERVICE"]
+					},{
+						marketplace_id: marketPlaceCode["PUBLIC"]
+					}],
+				};
+			}
+			productActivateBodyParam ={
+				status: status["ACTIVE"],
+				last_updated_by: req.user.first_name,
+				last_updated_on: new Date()
+			}		
+			return service.updateRecordNew('Product', productActivateBodyParam, productActivateQueryObj);
+		}
+	}).then(function(activatedProductRow){
 		return res.status(200).send({
 			"message": "Success",
 			"messageDetails": "	Plan upgraded successfully."

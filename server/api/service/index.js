@@ -181,7 +181,11 @@ export function updateRecordNew(modelName, bodyParams, queryObj) {
 			where: queryObj,
 			individualHooks: true
 		}).then(function([rowsUpdate, [updatedRow]]) {
-			return resolve(updatedRow.toJSON());
+			if(updatedRow){
+				return resolve(updatedRow.toJSON());
+			}else{
+				return resolve(null);
+			}
 		}).catch(function(error) {
 			return reject(error);
 		})

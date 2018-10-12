@@ -372,6 +372,28 @@ function hasPermission() {
 		});
 }
 
+function isEmailVerified() {
+	return compose()
+		.use(function(req, res, next) {
+			if (req.user.email_verified) {
+				return next();
+			} else {
+				return res.status(403).send("Forbidden! Your email address is not verified.");
+			}
+		});
+}
+
+function isAccountActive() {
+	return compose()
+		.use(function(req, res, next) {
+			if (req.user.status != status['ACTIVE']) {
+				return res.status(403).send("Forbidden! Your account is not ACTIVE mode.");
+			} else {
+				return next();
+			}
+		});
+}
+
 function isAuthenticatedUserPlan() {
 	return compose()
 		.use(function(req, res, next) {
@@ -499,4 +521,6 @@ exports.isAuthenticatedUser = isAuthenticatedUser;
 exports.isLoggedIn = isLoggedIn;
 exports.hasRole = hasRole;
 exports.hasPermission = hasPermission;
+exports.isEmailVerified = isEmailVerified;
+exports.isAccountActive = isAccountActive;
 exports.isAuthenticatedUserPlan = isAuthenticatedUserPlan;
