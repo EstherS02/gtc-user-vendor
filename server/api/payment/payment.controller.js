@@ -827,7 +827,10 @@ export function makePlanPayment(req,res){
 				amount: paymentResponse.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(paymentResponse)
+				payment_response: JSON.stringify(paymentResponse),
+				created_by: req.user.first_name,
+				created_on: new Date()
+
 			};
 			return service.createRow('Payment', paymentBodyParam);
 		}else{
