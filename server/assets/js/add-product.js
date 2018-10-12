@@ -758,6 +758,7 @@ $(document).ready(function() {
 
 	$('#end_date').change(function() {
 		$("#feature_indefinitely").prop("checked", false);
+		$('.indefiniteFeatureMsg').hide();
 	});
 
 	$("#start_date").change(function() {
