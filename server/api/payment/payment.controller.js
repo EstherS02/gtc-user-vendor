@@ -880,7 +880,7 @@ export function makePlanPayment(req,res){
 				last_updated_by: req.user.first_name,
 				last_updated_on: new Date()
 			}
-			return service.updateNewRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);			
+			return service.updateRecordNew('Product', productDeactivateBodyParam, productDeactivateQueryObj);			
 		}
 	}).then(function(deactivatedProducts){
 		if (vendorId != 0) {
@@ -911,7 +911,7 @@ export function makePlanPayment(req,res){
 				last_updated_by: req.user.first_name,
 				last_updated_on: new Date()
 			}		
-			return service.updateNewRecord('Product', productActivateBodyParam, productActivateQueryObj);
+			return service.updateRecordNew('Product', productActivateBodyParam, productActivateQueryObj);
 		}
 	}).then(function(activatedProductRow){
 		return res.status(200).send({
