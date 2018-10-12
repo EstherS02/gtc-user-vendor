@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'status',
             allowNull: false
 		},
+		feature_indefinitely: {
+            type: DataTypes.INTEGER,
+            field: 'feature_indefinitely',
+            allowNull: true
+		},
 		feature_status: {
             type: DataTypes.INTEGER,
             field: 'feature_status',
