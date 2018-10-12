@@ -394,7 +394,9 @@ function processCheckout(req) {
 
 						var calulatedShippingSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
 						gtc_fees = gtc_fees + (calulatedSum*config.fee.gtc_fees);
-						plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees)
+						if((itemsValue[i].Product.marketplace_id == marketPlaceCode.LIFESTYLE)||(itemsValue[i].Product.marketplace_id == marketPlaceCode.SERVICE)){
+							plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees);	
+						}
 						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
 						// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
@@ -635,10 +637,10 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 			model: model['Product'],
 			include: [{
 				"model": model['Vendor'],
-				attributes: ['id'],
+				attributes: ['id','vendor_name'],
 				include: [{
 					model: model['User'],
-					attributes: ['id', 'email'],
+					attributes: ['id', 'email','user_contact_email','email_verified'],
 				}]
 			},{
 			model:model['ProductMedia'],
@@ -733,8 +735,8 @@ function sendVendorEmail(order, user) {
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
-				body = body.replace('/%Path%/g','https://gtc.ibcpods.com');//req.protocol + '://' + req.get('host'));
-				body = body.replace('%VendorName%', 'vendor_name');
+				body = body.replace(/%Path%/g,'https://gtc.ibcpods.com');//req.protocol + '://' + req.get('host'));
+				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
 				body = body.replace(/%currency%/g,'$');
 
 				_.forOwn(order, function(orders) {
