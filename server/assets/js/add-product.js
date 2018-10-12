@@ -152,6 +152,7 @@ $(document).ready(function() {
 
 	$("#gtc-cart-alert").hide();
 	$('#gtc-feature-form-alert').hide();
+	$('.indefiniteFeatureMsg').hide();
 
 	$("#productImage").click(function(e) {
 		$("#imageUpload").click();
@@ -749,6 +750,9 @@ $(document).ready(function() {
 	$('#feature_indefinitely').change(function() {
 		if ($(this).is(":checked")) {
 			$('#end_date').val('');
+			$('.indefiniteFeatureMsg').show();
+		}else{
+			$('.indefiniteFeatureMsg').hide();
 		}
 	});
 
