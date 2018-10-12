@@ -6,7 +6,7 @@ const service = require('../service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 
-export async function cartCalculation(userID, req) {
+export async function cartCalculation(userID, req, res) {
 	var cart = {};
 	var queryObj = {};
 	var order = "desc";
@@ -161,6 +161,8 @@ export async function cartCalculation(userID, req) {
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
 									break;
+								} else {
+									res.clearCookie('applied_coupon');
 								}
 							} else if ((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate < currentDate))) {
 								totalAmount = cartProduct.Product.price * cartProduct.quantity;
@@ -171,6 +173,8 @@ export async function cartCalculation(userID, req) {
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
 									break;
+								} else {
+									res.clearCookie('applied_coupon');
 								}
 							} else {
 								continue;
@@ -221,7 +225,7 @@ export async function cartCalculation(userID, req) {
 
 				cart['marketplace_products'][aCart.Product.marketplace_id].count += 1;
 				cart['marketplace_products'][aCart.Product.marketplace_id].products.push(aCart);
-			})); 
+			}));
 
 			if (cart['coupon_applied'] && (discountProduct && cart['discount_amount'] == 0)) {
 				if (coupon.discount_type == 1) {

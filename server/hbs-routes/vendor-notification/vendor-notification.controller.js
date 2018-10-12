@@ -43,7 +43,7 @@ export function notificationSettings(req, res) {
 		async.series({
 			cartInfo: function(callback) {
 				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req)
+					cartService.cartCalculation(LoggedInUser.id, req, res)
 						.then((cartResult) => {
 							return callback(null, cartResult);
 						}).catch((error) => {
@@ -152,7 +152,7 @@ export function notifications(req, res) {
 	async.series({
 			cartInfo: function(callback) {
 				if (LoggedInUser.id) {
-					cartService.cartCalculation(LoggedInUser.id, req)
+					cartService.cartCalculation(LoggedInUser.id, req, res)
 						.then((cartResult) => {
 							return callback(null, cartResult);
 						}).catch((error) => {
