@@ -6,7 +6,7 @@ const service = require('../service');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
 
-export async function cartCalculation(userID, req) {
+export async function cartCalculation(userID, req, res) {
 	var cart = {};
 	var queryObj = {};
 	var order = "desc";
@@ -221,7 +221,7 @@ export async function cartCalculation(userID, req) {
 
 				cart['marketplace_products'][aCart.Product.marketplace_id].count += 1;
 				cart['marketplace_products'][aCart.Product.marketplace_id].products.push(aCart);
-			})); 
+			}));
 
 			if (cart['coupon_applied'] && (discountProduct && cart['discount_amount'] == 0)) {
 				if (coupon.discount_type == 1) {
@@ -229,6 +229,8 @@ export async function cartCalculation(userID, req) {
 				} else if (coupon.discount_type == 2 && parseFloat(totalAmount).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
 					cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 				}
+			} else {
+				res.clearCookie('applied_coupon');
 			}
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {
