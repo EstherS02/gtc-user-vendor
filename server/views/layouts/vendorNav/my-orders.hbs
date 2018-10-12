@@ -345,21 +345,17 @@ $("#total_refund").val(total);
 												<button  type="sumbit" class="btn btn-small btn-muted export-btn" onclick='downloadCSV({ filename: "stock-data.csv" });'>EXPORT</button>
 												<input type="hidden" name="user_id" id="login_vendoruserid" value={{LoggedInUser.Vendor.id}}>
 											</div>
-											
-											
 											<form id="searchSaleshistory1" class="form-inline ml-auto pull-right">
-											<div class="form-group mb-2">
-												<div class="input-group gtc-rounded">
-
-												<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Order# "
-												
-												value="{{queryURI.keyword}}" aria-label="..."
-												/>
-												<button type="submit" class="btn btn-sm btn-gtc">
-													<i class="fa fa-search"></i>
-												</button>
-											</div>
-										</form>
+												<div class="form-group mb-2">
+													<div class="input-group gtc-rounded">
+														<input type="search" id="keyword" name="keyword" class="form-control form-control-sm" placeholder="Search Order# "
+															value="{{queryURI.keyword}}" aria-label="..."/>
+														<button type="submit" class="btn btn-sm btn-gtc">
+															<i class="fa fa-search"></i>
+														</button>
+													</div>
+												</div>
+											</form>
 										</div>
 									</div>
 								</div>
