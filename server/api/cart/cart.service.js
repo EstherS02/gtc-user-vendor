@@ -161,8 +161,6 @@ export async function cartCalculation(userID, req, res) {
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
 									break;
-								} else {
-									res.clearCookie('applied_coupon');
 								}
 							} else if ((!coupon.excluse_sale_item && (cartProduct.Product.exclusive_sale || !cartProduct.Product.exclusive_sale) && (!exclusiveEndDate || exclusiveEndDate < currentDate))) {
 								totalAmount = cartProduct.Product.price * cartProduct.quantity;
@@ -173,8 +171,6 @@ export async function cartCalculation(userID, req, res) {
 									cart['discount_value'] = coupon.discount_value;
 									discountProduct = cartProduct;
 									break;
-								} else {
-									res.clearCookie('applied_coupon');
 								}
 							} else {
 								continue;
@@ -233,6 +229,8 @@ export async function cartCalculation(userID, req, res) {
 				} else if (coupon.discount_type == 2 && parseFloat(totalAmount).toFixed(2) >= parseFloat(coupon.discount_value).toFixed(2)) {
 					cart['discount_amount'] = parseFloat(coupon.discount_value).toFixed(2);
 				}
+			} else {
+				res.clearCookie('applied_coupon');
 			}
 
 			await Promise.all(Object.keys(cart['marketplace_summary']).map(async (key) => {
