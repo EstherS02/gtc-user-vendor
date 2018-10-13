@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const mv = require('mv');
 const path = require('path');
 const async = require('async');
 const moment = require('moment');
@@ -108,25 +109,54 @@ export function featureMany(req, res) {
 		});
 }
 
-export function create(req, res) {
+export async function create(req, res) {
 	var bodyParams = {};
+	var productMediaPromises = [];
 	var productModelName = "Product";
+	var productMediaModelName = "ProductMedia";
 
-	req.checkBody('product_name', 'Missing Query Param').notEmpty();
+	if (_.isEmpty(req.files)) {
+		return res.status(400).send("Minimum one product image required.");
+	}
+
 	req.checkBody('sku', 'Missing Query Param').notEmpty();
+	req.checkBody('product_name', 'Missing Query Param').notEmpty();
+	req.checkBody('status', 'Missing Query Param').notEmpty();
 	req.checkBody('marketplace_id', 'Missing Query Param').notEmpty();
 	req.checkBody('product_category_id', 'Missing Query Param').notEmpty();
 	req.checkBody('sub_category_id', 'Missing Query Param').notEmpty();
 	req.checkBody('product_location', 'Missing Query Param').notEmpty();
 	req.checkBody('state_id', 'Missing Query Param').notEmpty();
 	req.checkBody('city', 'Missing Query Param').notEmpty();
+	req.checkBody('quantity_available', 'Missing Query Param').notEmpty();
+	req.checkBody('price', 'Missing Query Param').notEmpty();
+	req.checkBody('exclusive_sale', 'Missing Query Param').notEmpty();
 
-	if (req.user.role === roles['ADMIN']) {
-		req.checkBody('vendor_id', 'Missing Query Param').notEmpty();
-	}
 	if (req.body.marketplace_id === marketplace['WHOLESALE']) {
 		req.checkBody('marketplace_type_id', 'Missing Query Param').notEmpty();
 		req.checkBody('moq', 'Missing Query Param').notEmpty();
+	} else {
+		delete req.body.moq;
+		delete req.body.marketplace_type_id;
+	}
+
+	if (req.body.exclusive_sale == 1) {
+		req.checkBody('exclusive_start_date', 'Missing Query Param').notEmpty();
+		req.checkBody('exclusive_end_date', 'Missing Query Param').notEmpty();
+		req.checkBody('exclusive_offer', 'Missing Query Param').notEmpty().isInt({
+			gt: 0
+		});
+
+		const startDate = new Date(req.body.exclusive_start_date);
+		const endDate = new Date(req.body.exclusive_end_date);
+		const currentDate = new Date();
+
+		if (startDate >= currentDate && endDate > startDate) {
+			req.body.exclusive_end_date = new Date(req.body.exclusive_end_date);
+			req.body.exclusive_start_date = new Date(req.body.exclusive_start_date);
+		} else {
+			return res.status(400).send("Invalid exclusive Start date and End date.");
+		}
 	}
 
 	var errors = req.validationErrors();
@@ -136,32 +166,63 @@ export function create(req, res) {
 	}
 
 	bodyParams = req.body;
-	if (req.user.role === roles['VENDOR']) {
-		bodyParams['vendor_id'] = req.user.Vendor.id;
-	}
-	if (bodyParams['marketplace_id'] == marketplace['WHOLESALE']) {
-		if (Object.values(marketplaceType).indexOf(bodyParams['marketplace_type_id']) == -1) {
-			return res.status(404).send("Marketplace Type not found");
-		}
-	} else {
-		delete bodyParams['marketplace_type_id'];
-		delete bodyParams['moq'];
-	}
-	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
-	bodyParams['quantity_available'] = req.body.quantity_available;
-	bodyParams['status'] = status['ACTIVE'];
+	bodyParams['vendor_id'] = req.user.Vendor.id;
 	bodyParams['publish_date'] = new Date();
+	bodyParams['product_slug'] = string_to_slug(req.body.product_name);
 	bodyParams['created_by'] = req.user.first_name;
 	bodyParams['created_on'] = new Date();
 
-	service.createRow(productModelName, bodyParams)
-		.then(function(product) {
-			return res.status(201).send(product);
-		})
-		.catch(function(error) {
-			console.log('Error:::', error);
-			return res.status(500).send("Internal server error.");
+	try {
+		const existsVendorSKU = await service.findOneRow(productModelName, {
+			sku: req.body.sku,
+			vendor_id: req.user.Vendor.id
 		});
+		if (!existsVendorSKU) {
+			const newProduct = await service.createRow(productModelName, bodyParams);
+			for (let key in req.files) {
+				if (req.files.hasOwnProperty(key)) {
+					const parsedFile = path.parse(req.files[key].originalFilename);
+					const timeInMilliSeconds = new Date().getTime();
+					const uploadPath = config.images_base_path + "/products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext;
+
+					const productMediaUpload = await move(req.files[key].path, uploadPath);
+					if (productMediaUpload) {
+						productMediaPromises.push(service.createRow(productMediaModelName, {
+							product_id: newProduct.id,
+							type: 1,
+							url: config.imageUrlRewritePath.base + "products/" + parsedFile.name + "-" + timeInMilliSeconds + parsedFile.ext,
+							base_image: 1, //req.files[key].baseImage
+							status: status['ACTIVE'],
+							created_by: req.user.first_name,
+							created_on: new Date()
+						}));
+					}
+				}
+			}
+			Promise.all(productMediaPromises);
+			return res.status(201).send(newProduct);
+		} else {
+			return res.status(409).send("Stack keep unit already exists.");
+		}
+	} catch (error) {
+		console.log('create Error:::', error);
+		return res.status(500).send(error);
+	}
+}
+
+export function move(copyFrom, moveTo) {
+	return new Promise((resolve, reject) => {
+		mv(copyFrom, moveTo, {
+			clobber: true,
+			mkdirp: true
+		}, function(error) {
+			if (!error) {
+				return resolve(true);
+			} else {
+				return reject(error);
+			}
+		});
+	});
 }
 
 export async function discountProduct(req, res) {

@@ -54,15 +54,6 @@ export function updateStatus(req, res) {
 		bodyParams['returned_on'] = date;
 	}
 
-	if (bodyParams.order_status == orderStaus.CANCELLEDORDER) {
-		order_status = 'cancelled';
-		bodyParams['cancelled_on'] = date;
-	}
-
-	if (bodyParams.order_status == orderStaus.FAILEDORDER) {
-		order_status = 'failed';
-	}
-
 	bodyParams["last_updated_on"] = new Date();
 
 	if (shippingInput === '{}') {
@@ -311,6 +302,7 @@ export function returnRequest(req, res) {
 			return res.status(500).send(error);
 		})
 }
+
 function returnRequestnotification(refundOrderitemsID, user) {
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');

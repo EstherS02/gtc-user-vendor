@@ -511,7 +511,7 @@
 								<hr/>
 								<div class="row">
 									<div class="col-md-12">
-										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small btn-muted" type="submit" data-style="expand-left">
+										<button class="ladda-button btn {{#if editProduct}}update-btn{{else}}btn-primary{{/if}} btn-small" type="submit" data-style="expand-left">
 											<span class="ladda-label">{{#if editProduct}}UPDATE{{else}}SUBMIT{{/if}}</span>
 											<span class="ladda-spinner"></span>
 										</button>
@@ -540,6 +540,11 @@
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLongTitle">FEATURE THIS PRODUCT</h5>
 			</div>
+			<div class="vendor-alert msg-warning indefiniteFeatureMsg" tabindex="1">
+				<div class="gtc-container text-center">
+					<span><i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;Feature amount auto renewed from your primary card per 28 days.</span>
+				</div>
+			</div>
 			<div class="alert" id="gtc-feature-form-alert">
                 <button type="button" class="close" data-dismiss="alert">
                     <span aria-hidden="true">&times;</span>
@@ -567,7 +572,6 @@
 									<div class="input-group">
 										<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name='feature_status'>
 											<option value="ACTIVE">Active</option>
-											<option value="INACTIVE">InActive</option>
 										</select>
 									</div>
 								</div>
@@ -618,7 +622,7 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="label-control"><b>TOTAL:</b></label>
-								<label class="label-control"><b>$<span id="totalFees">0.00</span></b></label>
+								<label class="label-control"><b>$<span id="totalFees">0.00</span> /mo</b></label>
 							</div>
 						</div>
 
@@ -647,12 +651,22 @@
 					<div class="row">
 						<div class="col-lg-12">
 							<div class="form-group">
+								<label class="label-control"><b>From</b>&nbsp;&nbsp;&nbsp;
+									<span id="feature_start_date"></span>&nbsp;&nbsp;&nbsp;<b>to</b>&nbsp;&nbsp;&nbsp;
+									<span id="feature_end_date"></span>
+								</label>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="form-group">
 								<label class="label-control">Total Amount: <b>$<span id="feature_total"></span></b></label>
 							</div>
 						</div>
 						<div class="col-lg-6">
 							<div class="form-group">
-								<label class="label-control">Payment Method:</label>
+								<label class="label-control">Payment Method:
+									<a href="/billing-settings">&nbsp;(Add Card)</a>
+								</label>
 								<div class="input-group">
 									<select class="custom-select form-control-customized form-control-sm custom_left_arrow_style" name="payment_details" >
 										<option disabled='disabled' selected>Select Payment Method...</option>

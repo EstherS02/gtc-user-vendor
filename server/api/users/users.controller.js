@@ -96,6 +96,7 @@ export function create(req, res) {
 			return;
 		} else {
 			bodyParams['user_contact_email'] = req.body.email;
+			bodyParams['created_by'] = bodyParams['first_name'];
 			bodyParams['created_on'] = new Date();
 			bodyParams["role"] = roles["USER"];
 			bodyParams["status"] = status["ACTIVE"];

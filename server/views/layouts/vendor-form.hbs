@@ -1,172 +1,166 @@
 <script type="text/javascript">
-    $(document).ready(function() {
-        $("#gtc-form-alert").hide();
-        var test;
-        var fileDetails = {};
-        var cropperOutputImage;
-        var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_pic_url, vendor_profile_pic_url;
+	$(document).ready(function() {
+		$("#gtc-form-alert").hide();
+		var test;
+		var fileDetails = {};
+		var cropperOutputImage;
+		var cropBoxData, canvasData, cropper, cropperInputImage, vendor_cover_name, vendor_profile_name, vendor_cover_pic_obj, vendor_profile_pic_obj;
 
-        var imagesPreview = function(uploader, placeToInsertImagePreview) {
-            if (uploader.files && uploader.files[0]) {
-                fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
-                fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
-                $('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
-                cropperInputImage = document.getElementById('uploaded-profile-picture');
-                $('#profile-picture-modal').modal('show');
-            }
-        };
+		var imagesPreview = function(uploader, placeToInsertImagePreview) {
+			if (uploader.files && uploader.files[0]) {
+				fileDetails["originalFileName"] = uploader.files[0]["name"].replace(/\.[^/.]+$/, "");
+				fileDetails["originalExtension"] = uploader.files[0]["type"].split("/")[1];
+				$('#uploaded-profile-picture').attr('src', window.URL.createObjectURL(uploader.files[0]));
+				cropperInputImage = document.getElementById('uploaded-profile-picture');
+				$('#profile-picture-modal').modal('show');
+			}
+		};
 
-        $('#icon').on('change', function() {
-            imagesPreview(this);
-            test = 'div.icon';
-        });
+		$('#icon').on('change', function() {
+			imagesPreview(this);
+			test = 'div.icon';
+		});
 
-        $('#cover_pic').on('change', function() {
-            imagesPreview(this);
-            test = 'div.cov_pic';
-        });
+		$('#cover_pic').on('change', function() {
+			imagesPreview(this);
+			test = 'div.cov_pic';
+		});
 
-        $('#profile-picture-modal').on('shown.bs.modal', function() {
-            if (test == 'div.icon') {
-                cropper = new Cropper(cropperInputImage, {
-                    aspectRatio: 16 / 16,
-                    minCropBoxHeight: 280,
-                    minCropBoxWidth: 1364,
-                    viewMode: 1,
-                    ready: function() {
-                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-                    }
-                });
-            } else {
-                cropper = new Cropper(cropperInputImage, {
-                    aspectRatio: 16 / 9,
-                    minCropBoxHeight: 280,
-                    minCropBoxWidth: 1364,
-                    viewMode: 1,
-                    ready: function() {
-                        //cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-                    }
-                });
-            }
-        }).on('hidden.bs.modal', function() {
-            cropBoxData = cropper.getCropBoxData();
-            canvasData = cropper.getCanvasData();
-            cropper.destroy();
-        });
+		$('#profile-picture-modal').on('shown.bs.modal', function() {
+			if (test == 'div.icon') {
+				cropper = new Cropper(cropperInputImage, {
+					aspectRatio: 16 / 16,
+					minCropBoxHeight: 280,
+					minCropBoxWidth: 1364,
+					viewMode: 1,
+					ready: function() {
+						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+					}
+				});
+			} else {
+				cropper = new Cropper(cropperInputImage, {
+					aspectRatio: 16 / 9,
+					minCropBoxHeight: 280,
+					minCropBoxWidth: 1364,
+					viewMode: 1,
+					ready: function() {
+						//cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+					}
+				});
+			}
+		}).on('hidden.bs.modal', function() {
+			cropBoxData = cropper.getCropBoxData();
+			canvasData = cropper.getCanvasData();
+			cropper.destroy();
+		});
 
-        $('#crop-profile-image').click(function() {
-            cropper.getCroppedCanvas().toBlob(function(blob) {
-                cropperOutputImage = blob;
-                fileDetails["croppedExtension"] = blob["type"].split("/")[1];
-                fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
-                console.log('test --', test);
-                //imgUp(cropperOutputImage, fileDetails["fileName"]);
-            });
-            if (test == 'div.icon') {
-                var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
-            } else {
-                var temp = $($.parseHTML('<img style="width:400px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
-            }
-            $(test).html(temp);
-            $('#profile-picture-modal').modal('hide');
-        });
+		$('#crop-profile-image').click(function() {
+			cropper.getCroppedCanvas().toBlob(function(blob) {
+				cropperOutputImage = blob;
+				fileDetails["croppedExtension"] = blob["type"].split("/")[1];
+				fileDetails["fileName"] = fileDetails["originalFileName"] + "." + fileDetails["croppedExtension"]
+				if (test == 'div.icon') {
+					vendor_profile_pic_obj = cropperOutputImage;
+					vendor_profile_name = fileDetails["fileName"];
+				} else {
+					vendor_cover_pic_obj = cropperOutputImage;
+					vendor_cover_name = fileDetails["fileName"];
+				}
+			});
+			if (test == 'div.icon') {
+				var temp = $($.parseHTML('<img style="width:200px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+			} else {
+				var temp = $($.parseHTML('<img style="width:400px; height:200px;">')).attr('src', cropper.getCroppedCanvas().toDataURL());
+			}
+			$(test).html(temp);
+			$('#profile-picture-modal').modal('hide');
+		});
 
-        function imgUp(crop, file_name) {
-            var form = new FormData();
-            form.append("file", crop, file_name);
-            $.ajax({
-                type: 'POST',
-                url: '/api/vendors/upload',
-                data: form,
-                cache: false,
-                dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    if (test == 'div.icon') {
-                        vendor_profile_pic_url = data.imageURL;
-                        console.log('vendor_profile_pic_url', vendor_profile_pic_url);
-                    } else {
-                        vendor_cover_pic_url = data.imageURL;
-                        console.log('vendor_cover_pic_url', vendor_cover_pic_url);
-                    }
-                },
-                error: function(error) {
-                    console.log("Error", error);
-                }
-            });
-        }
+		$("#vendorForm").submit(function(e) {
+			e.preventDefault();
+			let input = $("#vendorForm :input").filter(function(index, element) {
+				return $(element).val() != '';
+			}).serializeArray();
 
-        $("#vendorForm").submit(function(e) {
-            e.preventDefault();
-            let input = $("#vendorForm :input").filter(function(index, element) {
-                return $(element).val() != '';
-            }).serialize();
+			var formData = new FormData();
 
-            let formInput = input + '&vendor_profile_pic_url=' + vendor_profile_pic_url + '&vendor_cover_pic_url=' + vendor_cover_pic_url
+			input.forEach(function(obj) {
+				formData.append(obj.name, obj.value);
+			});
 
-            if ($('#vendorForm').valid()) {
-                $.ajax({
-                    url: '/api/vendor/starter-seller',
-                    type: 'POST',
-                    data: formInput,
-                    success: function(result) {
-                        window.location.href = '/dashboard-vendor-connect';
-                    },
-                    error: function(error) {
-                        $('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
-                        $('#gtc-form-alert .form-message').text("Your email address not verified yet. Please check your mail to verify.");
-                        $("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
-                            $("#gtc-form-alert").slideUp(500);
-                        });
-                    }
-                });
-            }
-        });
+			if (vendor_cover_pic_obj != {}) {
+				formData.append('vendor_cover_picture', vendor_cover_pic_obj, vendor_cover_name);
+			}
 
-        $("#country").change(function() {
-            var country_id = $('#country').val();
+			if (vendor_profile_pic_obj != {}) {
+				formData.append('vendor_profile_picture', vendor_profile_pic_obj, vendor_profile_name);
+			}
 
-            $.ajax({
-                url: '/api/states?country_id=' + country_id + '&field=name&order=asc',
-                type: 'GET',
-                success: function(result) {
-                    $("#state").empty();
-                    let selectOptionProvince = `<option selected disabled>Select Province...</option>`;
-                    $('#state').append(selectOptionProvince);
-                    for (var i = 0; i < result.rows.length; i++) {
-                        var options;
-                        options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
-                        $("#state").append(options)
-                    }
-                },
-                error: function(error) {
-                    console.log("Error", error);
-                }
-            });
-        });
+			if ($('#vendorForm').valid()) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/vendor/starter-seller',
+					data: formData,
+					cache: false,
+					processData: false,
+					contentType: false,
+					success: function(result) {
+						window.location.href = '/dashboard-vendor-connect';
+					},
+					error: function(error) {
+						$('#gtc-form-alert').removeClass('alert-success').addClass('alert-danger');
+						$('#gtc-form-alert .form-message').text(error.responseText);
+						$("#gtc-form-alert").fadeTo(7000, 500).slideUp(500, function() {
+							$("#gtc-form-alert").slideUp(500);
+						});
+					}
+				});
+			}
+		});
 
-        $("#vendorForm").validate({
-            rules: {
-                vendor_name: "required",
-                address: "required",
-                base_location: "required",
-                province_id: "required",
-                city: "required",
-                currency_id: "required",
-                vendorIcon: "required"
-            },
-            messages: {
-                vendor_name: "Please enter vendor name",
-                address: "Please enter vendor address",
-                base_location: "Please select base location",
-                province_id: "Please select province",
-                city: "Please enter city",
-                currency_id: "Please select currency",
-                vendorIcon: "Please choose vendor icon"
-            }
-        });
-    });
+		$("#country").change(function() {
+			var country_id = $('#country').val();
+
+			$.ajax({
+				url: '/api/states?country_id=' + country_id + '&field=name&order=asc',
+				type: 'GET',
+				success: function(result) {
+					$("#state").empty();
+					let selectOptionProvince = `<option selected disabled>Select Province...</option>`;
+					$('#state').append(selectOptionProvince);
+					for (var i = 0; i < result.rows.length; i++) {
+						var options;
+						options = "<option value=" + result.rows[i].id + ">" + result.rows[i].name + "</option>";
+						$("#state").append(options)
+					}
+				},
+				error: function(error) {
+					console.log("Error", error);
+				}
+			});
+		});
+
+		$("#vendorForm").validate({
+			rules: {
+				vendor_name: "required",
+				address: "required",
+				base_location: "required",
+				province_id: "required",
+				city: "required",
+				currency_id: "required",
+				vendorIcon: "required"
+			},
+			messages: {
+				vendor_name: "Please enter vendor name",
+				address: "Please enter vendor address",
+				base_location: "Please select base location",
+				province_id: "Please select province",
+				city: "Please enter city",
+				currency_id: "Please select currency",
+				vendorIcon: "Please choose vendor icon"
+			}
+		});
+	});
 </script>
  {{> header/top-header LoggedInUser = LoggedInUser}}
 <div class="modal fade" id="profile-picture-modal" tabindex="-1" role="dialog" aria-labelledby="profile-picture-modalLabel"

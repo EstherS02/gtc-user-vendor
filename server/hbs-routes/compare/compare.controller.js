@@ -122,7 +122,7 @@ export function compare(req, res) {
 		},
 		cartInfo: function(callback) {
 			if (LoggedInUser.id) {
-				cartService.cartCalculation(LoggedInUser.id, req)
+				cartService.cartCalculation(LoggedInUser.id, req, res)
 					.then((cartResult) => {
 						return callback(null, cartResult);
 					}).catch((error) => {

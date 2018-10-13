@@ -19,6 +19,8 @@ const sendEmail = require('../../agenda/send-email');
 var notificationService = require('../../api/notification/notification.service')
 const numeral = require('numeral');
 const durationCode = require('../../config/duration-unit');
+const gtcPlan = require('../../config/gtc-plan');
+const cartService = require('../../api/cart/cart.service');
 
 const stripe = require('../../payment/stripe.payment');
 
@@ -40,7 +42,6 @@ export function makePayment(req, res) {
 	processCheckout(req)
 		.then(checkoutObjResult => {
 			checkoutObj = checkoutObjResult;
-
 			return service.findOneRow('PaymentSetting', {
 				id: paymentSettingId,
 				user_id: user.id
@@ -69,7 +70,7 @@ export function makePayment(req, res) {
 			var metadata = {};
 			metadata.orders = JSON.stringify(orderIds);
 			console.log("metadata", metadata);
-			let amt = checkoutObj.totalPrice['grandTotal'];
+			let amt = checkoutObj.grand_total;
 			return stripe.chargeCustomerCard(user.stripe_customer_id, card_details.id, amt, desc, CURRENCY, metadata);
 		}).then(charge => {
 			console.log("charge", charge);
@@ -113,24 +114,24 @@ export function makePayment(req, res) {
 				}
 			}
 			return Promise.all(quantityPromises);
-		}).then(productQuantityUpdatedRow=>{
+		}).then(productQuantityUpdatedRow => {
 			let subscribePromises = [];
 			for (var i = 0; i < createdOrders.length; i++) {
 
 				for (var j = 0; j < createdOrders[i].items.length; j++) {
-					subscribePromises.push(updateSubscription(createdOrders[i].order,createdOrders[i].items[j]));
+					subscribePromises.push(updateSubscription(createdOrders[i].order, createdOrders[i].items[j]));
 				}
 			}
 			return Promise.all(subscribePromises);
 		})
-		.then(subscriptionRow => { 
+		.then(subscriptionRow => {
 			let clearCart = [];
 			let allCartItems = checkoutObj.cartItems.rows;
 			for (let j = 0; j < allCartItems.length; j++) {
 				clearCart.push(allCartItems[j].id)
 			}
-			if(req.user.user_contact_email){
-			sendOrderMail(orderIdStore, req);
+			if (req.user.user_contact_email) {
+				sendOrderMail(orderIdStore, req);
 			}
 			service.destroyManyRow('Cart', clearCart).then(clearedCartRow => {
 				if (!(_.isNull(clearedCartRow))) {
@@ -145,7 +146,8 @@ export function makePayment(req, res) {
 				var promises = [];
 				for (var i = 0; i < createdOrders.length; i++) {
 					createdOrders[i].order.order_status = orderStatus['FAILEDORDER'];
-					createdOrders[i].order.gtc_fees = 1.00;
+					createdOrders[i].order.last_updated_on = new Date();
+					// createdOrders[i].order.gtc_fees = 1.00;
 					promises.push(service.updateRow('Order', createdOrders[i].order, createdOrders[i].order.id));
 				}
 				Promise.all(promises).then(result => {
@@ -213,22 +215,22 @@ function updateQuantity(productId, placedQuantity) {
 		})
 }
 
-function updateSubscription(order, item){
+function updateSubscription(order, item) {
 
 	var subscriptionBodyParam = {
 		user_id: order.user_id,
 		product_id: item.product_id,
 		quantity: item.quantity,
-		purchased_on : order.ordered_date,
+		purchased_on: order.ordered_date,
 		last_order_placed_on: order.ordered_date,
 		status: status.ACTIVE,
 		created_on: new Date()
 	}
 
-	return service.findIdRow('Product',item.product_id)
-		.then(product =>{
-			if(product.marketplace_id == marketPlaceCode.LIFESTYLE ){
-				var subscriptionDuration,subscriptionRenewOn;
+	return service.findIdRow('Product', item.product_id)
+		.then(product => {
+			if (product.marketplace_id == marketPlaceCode.LIFESTYLE) {
+				var subscriptionDuration, subscriptionRenewOn;
 
 				if (product.subscription_duration_unit == durationCode['MONTHS']) {
 					subscriptionDuration = product.subscription_duration * 30;
@@ -242,197 +244,122 @@ function updateSubscription(order, item){
 				service.createRow('Subscription', subscriptionBodyParam)
 					.then(subscribedProduct => {
 						return Promise.resolve(subscribedProduct);
-					}).catch(err =>{
-						console.log("Error:::",err);
+					}).catch(err => {
+						console.log("Error:::", err);
 						return Promise.reject(err);
 					})
-			}else{
+			} else {
 				return;
 			}
-		}).catch(err=>{
+		}).catch(err => {
 			return Promise.reject(err);
 		})
 }
 
 function processCheckout(req) {
 	return new Promise((resolve, reject) => {
-		var cartItems;
-		var marketPlaces;
-		var queryObj = {};
-		let includeArr = [];
+		var products = [];
+		cartService.cartCalculation(req.user.id, req)
+			.then((cartResult) => {
+				_.forOwn(cartResult['marketplace_products'], function(element) {
 
-		var user_id = req.user.id;
+					_.forOwn(element.products, function(newElement) {
+						products.push(newElement);
+					})
 
-		queryObj['user_id'] = user_id;
+				});
 
-		queryObj['status'] = {
-			'$eq': status["ACTIVE"]
-		}
+				var seperatedItemsByVendor = _.groupBy(products, "Product.Vendor.id");
+				var totalPriceByVendor = {};
+				var ordersByVendor = {};
+				var checkoutObj = {};
+				totalPriceByVendor['grandTotal'] = 0;
+				var user_id = req.user.id
+				_.forOwn(seperatedItemsByVendor, function(itemsValue, vendorId) {
+					ordersByVendor[vendorId] = {};
 
-		model["Cart"].findAndCountAll({
-			where: queryObj,
-			include: [{
-				model: model["User"],
-				attributes: {
-					exclude: ['hashed_pwd', 'salt', 'email_verified_token', 'email_verified_token_generated', 'forgot_password_token', 'forgot_password_token_generated']
-				}
-			}, {
-				model: model["Product"],
-				include: [{
-					model: model["Vendor"]
-				}, {
-					model: model["Category"]
-				}, {
-					model: model["SubCategory"]
-				}, {
-					model: model["Marketplace"]
-				}, {
-					model: model["MarketplaceType"]
-				}, {
-					model: model["Country"]
-				}, {
-					model: model["State"]
-				}, {
-					model: model["ProductMedia"],
-					where: {
-						base_image: 1,
-						status: {
-							'$eq': status["ACTIVE"]
-						}
-					}
-				}]
-			}]
-		}).then(function(data) {
-			cartItems = JSON.parse(JSON.stringify(data));
-			var searchObj = {};
-			let includeArr = [];
+					totalPriceByVendor[vendorId] = {};
+					totalPriceByVendor[vendorId]['price'] = 0;
+					totalPriceByVendor[vendorId]['shipping'] = 0;
+					totalPriceByVendor[vendorId]['total'] = 0;
+					var gtc_fees = 0;
+					var plan_fees = 0;
+					var vendor_pay = 0;
 
-			searchObj['status'] = {
-				'$eq': status["ACTIVE"]
-			}
+					for (var i = 0; i < itemsValue.length; i++) {
 
-			return service.findRows('Marketplace', searchObj, null, null, 'created_on', "asc", includeArr);
-		}).then(function(marketPlaceData) {
-			marketPlaces = JSON.parse(JSON.stringify(marketPlaceData));
+						if ((vendorId == itemsValue[i].Product.Vendor.id)) {
 
-			var totalItems = cartItems.rows;
-			var allMarketPlaces = marketPlaces.rows;
-			var totalPrice = {};
-			var defaultShipping = 0;
+							var order = ordersByVendor[vendorId];
+							if (Object.keys(order).length == 0) {
+								// create order
+								order['user_id'] = user_id;
+								order['ordered_date'] = new Date();
+								order['order_status'] = orderStatus['NEWORDER'];
+								order['status'] = status['ACTIVE'];
+								order['invoice_id'] = uuidv1();
+								order['purchase_order_id'] = 'PO-' + uuidv1();
+								order['created_by'] = req.user.first_name;
+								order['created_on'] = new Date();
+								order['billing_address_id'] = req.body.selected_billing_address_id;
+								order['shipping_address_id'] = req.body.selected_shipping_address_id;
 
-			var totalPriceByVendor = {};
+								order['items'] = [];
+							}
+							// var calulatedSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.price);
 
-			totalPrice['grandTotal'] = 0;
-			totalPriceByVendor['grandTotal'] = 0;
+							var calulatedShippingSum = 0; //(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
 
-			var seperatedItems = _.groupBy(totalItems, "Product.Marketplace.code");
 
-			var seperatedItemsByVendor = _.groupBy(totalItems, "Product.Vendor.id");
+							if (parseFloat(itemsValue[i].Product.product_discounted_price)) {
+								var calulatedSum = (parseFloat(itemsValue[i].Product.product_discounted_price) * parseFloat(itemsValue[i].quantity)).toFixed(2);
+								totalPriceByVendor[vendorId]['total'] = (parseFloat(itemsValue[i].Product.product_discounted_price) + totalPriceByVendor[vendorId]['shipping']).toFixed(2);
 
-			console.log("seperatedItems", seperatedItems);
-			console.log("seperatedItemsByVendor", seperatedItemsByVendor);
+							} else {
+								var calulatedSum = itemsValue[i].Product.price * itemsValue[i].quantity;
+							}
+							totalPriceByVendor[vendorId]['price'] = parseFloat(parseFloat(totalPriceByVendor[vendorId]['price']) + parseFloat(calulatedSum)).toFixed(2);
+							totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
+							// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
 
-			_.forOwn(seperatedItems, function(itemsValue, itemsKey) {
-				totalPrice[itemsKey] = {};
-				totalPrice[itemsKey]['price'] = 0;
-				totalPrice[itemsKey]['shipping'] = 0;
-				totalPrice[itemsKey]['total'] = 0;
+							gtc_fees = parseFloat(gtc_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.gtc_fees);
+							if ((itemsValue[i].Product.marketplace_id == marketPlaceCode.LIFESTYLE) || (itemsValue[i].Product.marketplace_id == marketPlaceCode.SERVICE)) {
+								plan_fees = parseFloat(plan_fees) + (parseFloat(totalPriceByVendor[vendorId]['price']) * config.fee.plan_fees);
+							}
+							vendor_pay = (parseFloat(totalPriceByVendor[vendorId]['price']) - parseFloat(gtc_fees) - parseFloat(plan_fees));
 
-				for (var i = 0; i < itemsValue.length; i++) {
+							var final_price = parseFloat(totalPriceByVendor[vendorId]['price'] + calulatedShippingSum).toFixed(2);
+							var orderItem = {
+								product_id: itemsValue[i].Product.id,
+								quantity: itemsValue[i].quantity,
+								subtotal: totalPriceByVendor[vendorId]['price'], //calulatedSum,
+								shipping_total: calulatedShippingSum,
+								final_price: final_price,
+								status: status['ACTIVE']
+							};
 
-					if ((itemsKey == itemsValue[i].Product.Marketplace.code) && itemsValue[i].Product.price) {
-
-						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
-
-						var calulatedShippingSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-
-						totalPrice[itemsKey]['price'] = totalPrice[itemsKey]['price'] + calulatedSum;
-						// totalPrice[itemsKey]['shipping'] = totalPrice[itemsKey]['shipping'] + calulatedShippingSum;
-						totalPrice[itemsKey]['total'] = totalPrice[itemsKey]['price'] + totalPrice[itemsKey]['shipping'];
-					}
-				}
-
-				totalPrice['grandTotal'] = totalPrice['grandTotal'] + totalPrice[itemsKey]['total'];
-			});
-
-			var ordersByVendor = {};
-			var checkoutObj = {};
-
-			_.forOwn(seperatedItemsByVendor, function(itemsValue, vendorId) {
-				ordersByVendor[vendorId] = {};
-
-				totalPriceByVendor[vendorId] = {};
-				totalPriceByVendor[vendorId]['price'] = 0;
-				totalPriceByVendor[vendorId]['shipping'] = 0;
-				totalPriceByVendor[vendorId]['total'] = 0;
-				var gtc_fees = 0;
-				var plan_fees = 0;
-				var vendor_pay = 0;
-
-				for (var i = 0; i < itemsValue.length; i++) {
-
-					if ((vendorId == itemsValue[i].Product.Vendor.id)) {
-
-						var order = ordersByVendor[vendorId];
-						if (Object.keys(order).length == 0) {
-							// create order
-							order['user_id'] = user_id;
-							order['ordered_date'] = new Date();
-							order['order_status'] = orderStatus['NEWORDER'];
-							order['status'] = status['ACTIVE'];
-							order['invoice_id'] = uuidv1();
-							order['purchase_order_id'] = 'PO-' + uuidv1();
-							order['created_by'] = req.user.first_name;
-							order['created_on'] = new Date();
-							order['billing_address_id'] = req.body.selected_billing_address_id;
-							order['shipping_address_id'] = req.body.selected_shipping_address_id;
-
-							order['items'] = [];
+							order['total_price'] = parseFloat(totalPriceByVendor[vendorId]['total']);
+							order['items'].push(orderItem);
+							order['gtc_fees'] = gtc_fees;
+							order['plan_fees'] = plan_fees;
+							order['vendor_pay'] = parseFloat(vendor_pay);
 						}
 
-						var calulatedSum = (itemsValue[i].quantity * itemsValue[i].Product.price);
-
-						var calulatedShippingSum = 0;//(itemsValue[i].quantity * itemsValue[i].Product.shipping_cost);
-						gtc_fees = gtc_fees + (calulatedSum*config.fee.gtc_fees);
-						plan_fees = plan_fees+ (calulatedSum*config.fee.plan_fees)
-						totalPriceByVendor[vendorId]['price'] = totalPriceByVendor[vendorId]['price'] + calulatedSum;
-						// totalPriceByVendor[vendorId]['shipping'] = totalPriceByVendor[vendorId]['shipping'] + calulatedShippingSum;
-						totalPriceByVendor[vendorId]['total'] = totalPriceByVendor[vendorId]['price'] + totalPriceByVendor[vendorId]['shipping'];
-						vendor_pay = totalPriceByVendor[vendorId]['price']-gtc_fees-plan_fees;
-
-						var final_price = (calulatedSum + calulatedShippingSum);
-						var orderItem = {
-							product_id: itemsValue[i].Product.id,
-							quantity: itemsValue[i].quantity,
-							subtotal: calulatedSum,
-							shipping_total: calulatedShippingSum,
-							final_price: final_price,
-							status: status['ACTIVE']
-						};
-
-						order['total_price'] = totalPriceByVendor[vendorId]['total'];
-						order['items'].push(orderItem);
-						order['gtc_fees'] = gtc_fees;
-						order['plan_fees'] = plan_fees;
-						order['vendor_pay'] = vendor_pay;
 					}
-				}
+					totalPriceByVendor['grandTotal'] = parseFloat(parseFloat(totalPriceByVendor['grandTotal']) + parseFloat(totalPriceByVendor[vendorId]['total'])).toFixed(2);
 
-				totalPriceByVendor['grandTotal'] = totalPriceByVendor['grandTotal'] + totalPriceByVendor[vendorId]['total'];
+				});
+				cartResult.ordersByVendor = ordersByVendor;
+				cartResult.totalPriceByVendor = totalPriceByVendor;
+				cartResult.cartItems = [];
+				cartResult.cartItems.rows = products;
+				cartResult.cartItems.count = products.length;
+				return resolve(cartResult);
 
+			}).catch(function(error) {
+				console.log('Error:::', error);
+				return reject(error);
 			});
-
-			checkoutObj.ordersByVendor = ordersByVendor;
-			checkoutObj.totalPriceByVendor = totalPriceByVendor;
-			checkoutObj.totalPrice = totalPrice;
-			checkoutObj.cartItems = cartItems;
-
-			resolve(checkoutObj);
-
-		}).catch(function(error) {
-			console.log('Error:::', error);
-			reject(error);
-		});
 	});
 }
 
@@ -625,9 +552,9 @@ export function deleteCard(req, res) {
 		});
 }
 
-export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail(req,res) {
+export function sendOrderMail(orderIdStore, req) { //export function sendOrderMail(req,res) {
 	var user = {};
-	user=req.user;
+	user = req.user;
 	var orderIdStore = orderIdStore;
 	var includeArr = [{
 		model: model['OrderItem'],
@@ -635,15 +562,15 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 			model: model['Product'],
 			include: [{
 				"model": model['Vendor'],
-				attributes: ['id'],
+				attributes: ['id', 'vendor_name'],
 				include: [{
 					model: model['User'],
-					attributes: ['id', 'email'],
+					attributes: ['id', 'email', 'user_contact_email', 'email_verified'],
 				}]
-			},{
-			model:model['ProductMedia'],
-			attributes:['url']
-		}],
+			}, {
+				model: model['ProductMedia'],
+				attributes: ['url']
+			}],
 		}]
 	}, {
 		model: model['Address'],
@@ -663,10 +590,9 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 	var orderItemMail = service.findAllRows('Order', includeArr, queryObj, 0, null, field, order).then(function(OrderList) {
 		if (OrderList) {
 
-			usernotification(OrderList,user);
-			if(user.user_contact_email){
-
-				vendorMail(OrderList, user);
+			usernotification(OrderList, user);
+			vendorMail(OrderList, user);
+			if (user.user_contact_email) {
 				var user_email = user.user_contact_email;
 				var orderNew = [];
 				var queryObjEmailTemplate = {};
@@ -679,12 +605,12 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 							var subject = response.subject.replace('%ORDER_TYPE%', 'Order Status');
 							var body;
 							body = response.body.replace('%ORDER_TYPE%', 'Order Status');
-							body = body.replace('/%Path%/g',req.protocol + '://' + req.get('host'));
-							body = body.replace(/%currency%/g,'$');
-							body = body.replace('%UserName%',user.first_name) 
+							body = body.replace('/%Path%/g', req.protocol + '://' + req.get('host'));
+							body = body.replace(/%currency%/g, '$');
+							body = body.replace('%UserName%', user.first_name)
 							_.forOwn(OrderList.rows, function(orders) {
-								body = body.replace('%placed_on%',moment(orders.created_on).format('MMM D, Y'));
-								body = body.replace('%Total_Price%',numeral(orders.total_price).format('0,0.00'))
+								body = body.replace('%placed_on%', moment(orders.created_on).format('MMM D, Y'));
+								body = body.replace('%Total_Price%', numeral(orders.total_price).format('$' + '0,0.00'))
 								orderNew.push(orders);
 							});
 							var template = Handlebars.compile(body);
@@ -698,9 +624,7 @@ export function sendOrderMail(orderIdStore,req) {//export function sendOrderMail
 								html: result
 							});
 							return;
-						} 
-					// }).then(function(output){
-
+						}
 					}).catch(function(error) {
 						console.log('Error :::', error);
 						return;
@@ -725,32 +649,33 @@ export function vendorMail(OrderList, user) {
 }
 
 function sendVendorEmail(order, user) {
-
 	var queryObjEmailTemplate = {};
 	var emailTemplateModel = 'EmailTemplate';
 	queryObjEmailTemplate['name'] = config.email.templates.vendorNewOrder;
 	service.findOneRow(emailTemplateModel, queryObjEmailTemplate)
 		.then(function(response) {
-			if(order.OrderItems[0].Product.Vendor.User.user_contact_email){
-				var orderNew=[];
+			if (order.OrderItems[0].Product.Vendor.User.user_contact_email) {
+				var orderNew = [];
 				var email = order.OrderItems[0].Product.Vendor.User.user_contact_email;
 				var subject = response.subject.replace('%ORDER_TYPE%', 'New Order');
 				var body;
 				body = response.body.replace('%ORDER_TYPE%', 'New Order');
-				body = body.replace('/%Path%/g','https://gtc.ibcpods.com');//req.protocol + '://' + req.get('host'));
-				body = body.replace('%UserName%', user.first_name);
-				body = body.replace('%UserLastName%', user.last_name);
-				body = body.replace('/%currency%/g','$');
-				_.forOwn(order, function(orders) {
-						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
-						body = body.replace('%Total_Price%',numeral(orders.total_price).format('$' + '0,0.00'))
-						orderNew.push(orders);
+				body = body.replace(/%Path%/g, 'https://gtc.ibcpods.com'); //req.protocol + '://' + req.get('host'));
+				body = body.replace('%VendorName%', order.OrderItems[0].Product.Vendor.vendor_name);
+				body = body.replace(/%currency%/g, '$');
 
-					});
+				_.forOwn(order, function(orders) {
+
+					body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
+					body = body.replace('%Total_Price%', numeral(order.total_price).format('$' + '0,0.00'))
+					orderNew.push(orders);
+
+				});
 				var template = Handlebars.compile(body);
 				var data = {
 					order: order
 				};
+
 				var result = template(data);
 				sendEmail({
 					to: email,
@@ -780,11 +705,13 @@ function notifications(order) {
 			bodyParams.status = 1;
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
+			return;
 		});
-		return;
+	return;
 }
-function usernotification(order,user){
-var queryObjNotification = {};
+
+function usernotification(order, user) {
+	var queryObjNotification = {};
 	var NotificationTemplateModel = 'NotificationSetting';
 	queryObjNotification['code'] = config.notification.templates.orderDetail;
 	service.findOneRow(NotificationTemplateModel, queryObjNotification)
@@ -792,7 +719,7 @@ var queryObjNotification = {};
 			var bodyParams = {};
 			bodyParams.user_id = user.id;
 			bodyParams.description = response.description
-			bodyParams.description = bodyParams.description.replace('%Firstname%',user.first_name);
+			bodyParams.description = bodyParams.description.replace('%Firstname%', user.first_name);
 			bodyParams.description = bodyParams.description.replace('%LastName%', user.last_name);
 			bodyParams.description = bodyParams.description.replace('%path%', '/order-history/' + order.id);
 			bodyParams.name = response.name;
@@ -801,16 +728,20 @@ var queryObjNotification = {};
 			bodyParams.status = 1;
 			bodyParams.created_on = new Date();
 			service.createRow("Notification", bodyParams);
+			return;
 		});
-		return;	
+	return;
 }
 
 // PLAN PAYMENT
 
-export function makePlanPayment(req,res){
-	var upgradingPlan, desc, convertMoment, start_date, end_date; 
-	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam ={};
+export function makePlanPayment(req, res) {
+	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
+	var paymentBodyParam = {},
+		vendorPlanBodyParam = {},
+		userPlanBodyParam = {};
 
+	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
 	desc = "GTC Plan Payment";
 	convertMoment = moment();
@@ -825,7 +756,10 @@ export function makePlanPayment(req,res){
 				amount: paymentResponse.amount / 100.0,
 				payment_method: paymentMethod['STRIPE'],
 				status: status['ACTIVE'],
-				payment_response: JSON.stringify(paymentResponse)
+				payment_response: JSON.stringify(paymentResponse),
+				created_by: req.user.first_name,
+				created_on: new Date()
+
 			};
 			return service.createRow('Payment', paymentBodyParam);
 		}else{
@@ -834,110 +768,97 @@ export function makePlanPayment(req,res){
 				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
 			});
 		}
-	}).then(function(paymentRow){
-		if (req.body.vendor_id != 0) {
-			vendorPlanBodyParam ={
-				vendor_id: req.body.vendor_id,
-				plan_id: req.body.plan_id,
-				payment_id: paymentRow.id,
-				status: status['ACTIVE'],
-				auto_renewal:req.body.autoRenewalMail,
-				start_date: start_date,
-				end_date: end_date,
-				created_by: req.user.first_name,
-				created_on: new Date()
+	}).then(function(paymentRow) {
+			if (vendorId != 0) {
+				vendorPlanBodyParam = {
+					vendor_id: vendorId,
+					plan_id: req.body.plan_id,
+					payment_id: paymentRow.id,
+					status: status['ACTIVE'],
+					auto_renewal: req.body.autoRenewalMail,
+					start_date: start_date,
+					end_date: end_date,
+					created_by: req.user.first_name,
+					created_on: new Date()
+				}
+				if (req.user.user_contact_email) {
+					sendUpgrademail(req.body.plan_id, req.user);
+				}
+				return service.createRow('VendorPlan', vendorPlanBodyParam);
+			} else {
+				userPlanBodyParam = {
+					user_id: req.body.user_id,
+					plan_id: req.body.plan_id,
+					payment_id: paymentRow.id,
+					auto_renewal: req.body.autoRenewalMail,
+					status: status['ACTIVE'],
+					start_date: start_date,
+					end_date: end_date,
+					created_by: req.user.first_name,
+					created_on: new Date()
+				};
+				return service.createRow('UserPlan', userPlanBodyParam);
 			}
-			if(req.user.user_contact_email){
-				sendUpgrademail(req.body.plan_id, req.user);
-			}
-			return service.createRow('VendorPlan', vendorPlanBodyParam);			
-		}else{
-			userPlanBodyParam = {
-				user_id: req.body.user_id,
-				plan_id: req.body.plan_id,
-				payment_id: paymentRow.id,
-				auto_renewal:req.body.autoRenewalMail,
-				status: status['ACTIVE'],
-				start_date: start_date,
-				end_date: end_date,
-				created_by: req.user.first_name,
-				created_on: new Date()
-			};
-			return service.createRow('UserPlan', userPlanBodyParam);
-		}
-	}).then(function(updatedPlanRow){
-		if (req.body.vendor_id != 0) {
-			var vendorId = req.body.vendor_id;
-
-			if(upgradingPlan == marketPlaceCode.LIFESTYLE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
+		}).then(function(updatedPlanRow) {
+			if (vendorId != 0) {
+				var productDeactivateQueryObj = {},
+					productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
 					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["LIFESTYLE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.SERVICE){
-				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
-
-				productDeactivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["SERVICE"]
-					}
-				}
-				productDeactivateBodyParam = {
-					status: status["GTC_INACTIVE"]
-				}
-				return service.updateRecord('Product', productDeactivateBodyParam, productDeactivateQueryObj);
-			
-			}else if(upgradingPlan == marketPlaceCode.PUBLIC){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					marketplace_id: {
-						'$ne': marketPlaceCode["WHOLESALE"]
-					},
-					status: status["GTC_INACTIVE"]
-				}
-				productActivateBodyParam = {
 					status: status["ACTIVE"]
 				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);
-
-			}else if(upgradingPlan == marketPlaceCode.WHOLESALE){
-				var productActivateQueryObj = {}, productActivateBodyParam = {};
-
-				productActivateQueryObj = {
-					vendor_id: vendorId,
-					status: status["GTC_INACTIVE"]
+				productDeactivateBodyParam = {
+					status: status["GTC_INACTIVE"],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
 				}
-
-				productActivateBodyParam = {
-					status: status["ACTIVE"]
-				}
-				return service.updateRecord('Product', productActivateBodyParam, productActivateQueryObj);	
+				return service.updateRecordNew('Product', productDeactivateBodyParam, productDeactivateQueryObj);
 			}
-		}
-	}).then(function(updatedProductRow){
-		return res.status(200).send({
-			"message": "Success",
-			"messageDetails": "	Plan upgraded successfully."
-		});	
-	}).catch(function(error){
-		return res.status(500).send({
-			"message": "ERROR",
-			"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
-			"errorDescription": error
-		});
-	})
+		}).then(function(deactivatedProducts) {
+			if (vendorId != 0) {
+				var productActivateQueryObj = {},
+					productActivateBodyParam = {};
+
+				productActivateQueryObj.vendor_id = vendorId;
+				productActivateQueryObj.status = status["GTC_INACTIVE"];
+
+				if (upgradingPlan == gtcPlan.LIFESTYLE_PROVIDER)
+					productActivateQueryObj.marketplace_id = marketPlaceCode["LIFESTYLE"];
+
+				if (upgradingPlan == gtcPlan.SERVICE_PROVIDER)
+					productActivateQueryObj.marketplace_id = marketPlaceCode["SERVICE"];
+
+				if (upgradingPlan == gtcPlan.PUBLIC_SELLER) {
+					productActivateQueryObj = {
+						'$or': [{
+							marketplace_id: marketPlaceCode["LIFESTYLE"]
+						}, {
+							marketplace_id: marketPlaceCode["SERVICE"]
+						}, {
+							marketplace_id: marketPlaceCode["PUBLIC"]
+						}],
+					};
+				}
+				productActivateBodyParam = {
+					status: status["ACTIVE"],
+					last_updated_by: req.user.first_name,
+					last_updated_on: new Date()
+				}
+				return service.updateRecordNew('Product', productActivateBodyParam, productActivateQueryObj);
+			}
+		}).then(function(activatedProductRow) {
+			return res.status(200).send({
+				"message": "Success",
+				"messageDetails": "	Plan upgraded successfully."
+			});
+		}).catch(function(error) {
+			return res.status(500).send({
+				"message": "ERROR",
+				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes.",
+				"errorDescription": error
+			});
+		})
 }
 
 //plan upgrade email starts//
@@ -978,7 +899,7 @@ function sendUpgrademail(plan_id, user) {
 export function refundOrder(req, res) {
 
 	var userdetails = req.user;
-	
+
 	var refundOrderitemsID = [];
 	var notification = [];
 	var refundsOrderitems = JSON.parse(req.body.refundOrderItems);
@@ -1017,7 +938,7 @@ export function refundOrder(req, res) {
 		.then(createdPaymentRow => {
 			console.log("enterrrlooops" + parseFloat(createdPaymentRow.amount).toFixed(2));
 			var refundamt = parseFloat(createdPaymentRow.amount).toFixed(2);
-			if(req.user.user_contact_email){
+			if (req.user.user_contact_email) {
 				sendRefundOrderMail(refundOrderitemsID, req.user, refundamt);
 				notification.push(refundNotifications(refundOrderitemsID, req.user, refundamt));
 			}
@@ -1107,8 +1028,8 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 					body = body.replace('%refundamount%', refundamount);
 					_.forOwn(orderRefundList, function(orders) {
 						body = body.replace('%ORDER_NUMBER%', orders.Order.id);
-						body = body.replace('%placed_on%',moment(new Date()).format('MMM D, Y'));
-						orders.final_price= numeral(orders.final_price).format('$' +'0,0.00');
+						body = body.replace('%placed_on%', moment(new Date()).format('MMM D, Y'));
+						orders.final_price = numeral(orders.final_price).format('$' + '0,0.00');
 						orderNew.push(orders);
 					});
 					var template = Handlebars.compile(body);
@@ -1128,6 +1049,7 @@ export function sendRefundOrderMail(refundOrderitemsID, user, refundamount) {
 		}
 	})
 }
+
 function refundNotifications(refundOrderitemsID, user) {
 	var orderItemid = refundOrderitemsID;
 	var includeArr = populate.populateData('Product,Product.ProductMedia,Product.Vendor,Product.Vendor.User,Order');
@@ -1139,31 +1061,30 @@ function refundNotifications(refundOrderitemsID, user) {
 	var orderRefundItemMail = service.findAllRows('OrderItem', includeArr, queryObj, 0, null, field, order).then(function(OrderRefundList) {
 		if (OrderRefundList) {
 			var orderRefundList = OrderRefundList.rows;
-	        var queryObjNotification = {};
-	        var NotificationTemplateModel = 'NotificationSetting';
-	        queryObjNotification['code'] = config.notification.templates.refundProcessing;
-	        service.findOneRow(NotificationTemplateModel, queryObjNotification)
-		    .then(function(response) {
-			var bodyParams = {};
-			bodyParams.user_id = user.id;
-			var description = response.description;
-			description = description.replace('%FirstName%',user.first_name);
-			description = description.replace('%LastName%',user.last_name);
-			_.forOwn(orderRefundList, function(orders) {
-				description = description.replace('%OrderId%', orders.Order.id);
-				description = description.replace('%path%', '/my-order/order/' + orders.Order.id);
-			});
-			bodyParams.description = description;
-			bodyParams.name = response.name;
-			bodyParams.code = response.code;
-			bodyParams.is_read = 1;
-			bodyParams.status = 1;
-			bodyParams.created_on = new Date();
-			bodyParams.created_by = user.first_name;
-			service.createRow("Notification", bodyParams);
-		});
-		return;
-	}
-})
+			var queryObjNotification = {};
+			var NotificationTemplateModel = 'NotificationSetting';
+			queryObjNotification['code'] = config.notification.templates.refundProcessing;
+			service.findOneRow(NotificationTemplateModel, queryObjNotification)
+				.then(function(response) {
+					var bodyParams = {};
+					bodyParams.user_id = user.id;
+					var description = response.description;
+					description = description.replace('%FirstName%', user.first_name);
+					description = description.replace('%LastName%', user.last_name);
+					_.forOwn(orderRefundList, function(orders) {
+						description = description.replace('%OrderId%', orders.Order.id);
+						description = description.replace('%path%', '/my-order/order/' + orders.Order.id);
+					});
+					bodyParams.description = description;
+					bodyParams.name = response.name;
+					bodyParams.code = response.code;
+					bodyParams.is_read = 1;
+					bodyParams.status = 1;
+					bodyParams.created_on = new Date();
+					bodyParams.created_by = user.first_name;
+					service.createRow("Notification", bodyParams);
+				});
+			return;
+		}
+	})
 }
-

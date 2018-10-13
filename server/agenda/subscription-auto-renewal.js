@@ -254,7 +254,7 @@ function subscriptionOrder(eachSubscription) {
 							})
 					});
 			} else {
-				return;
+				return Promise.resolve(null);
 			}
 		}).catch(function(error) {
 			console.log("Error::", error);
