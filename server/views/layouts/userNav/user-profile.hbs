@@ -388,6 +388,12 @@
 				{{> vendor/vendor-side-navbar}}
 			</div>
 			<div class="col-sm-10">
+				<div class="alert" id="gtc-alert">
+					<button type="button" class="close" data-dismiss="alert">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<span class="pwdreset-message"></span>
+				</div>
 				<div class="ibox">
 					<div class="ibox-content">
 						<div class="ibox-title">
@@ -465,18 +471,15 @@
 										{{/ifCond}}
 										{{#ifCond LoggedInUser.email_verified '==' 0}}
 											<div class="row">
-												<div class="col-12">
+												<div class="col-6">
+
+												</div>
+												<div class="col-6">
 													<a href="javascript:;" id="resendEmail">
-													<span>Resend Email Verification</span></a>
+													<span style="padding-left: 36px;">Resend Email Verification</span></a>
 												</div>
 											</div>
 										{{/ifCond}}
-										<div class="alert" id="gtc-alert">
-											<button type="button" class="close" data-dismiss="alert">
-												<span aria-hidden="true">&times;</span>
-											</button>
-											<span class="pwdreset-message"></span>
-										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="row">
