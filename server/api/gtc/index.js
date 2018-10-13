@@ -13,6 +13,7 @@ var permission = require('../../config/permission');
 
 router.post('/:endpoint/upload', auth.isAuthenticated(), multipartMiddleware, controller.upload);
 router.post('/:endpoint/multiple', auth.isAuthenticated(), multipartMiddleware, controller.multipleUpload);
+//router.get('/:endpoint', middleware.validateEndpoint(), auth.hasRole(roles['VENDOR']), controller.index);
 router.get('/:endpoint', middleware.validateEndpoint(), controller.index);
 router.get('/:endpoint/show', middleware.validateEndpoint(), controller.show);
 router.get('/:endpoint/:id', middleware.validateEndpoint(), controller.findById);

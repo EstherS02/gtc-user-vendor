@@ -133,6 +133,12 @@ var userInfo = {{{ DisplayJSON LoggedInUser }}}
 															<div class="row no-margins">
 																<div class="col-md-12 col-12 no-padding">
 																	<h2 class="text-red price">{{currency this.product_price '$'}}</h2>
+																	{{!-- {{#if this.product_discounted_price}}
+																	<h2 class="discount-price-flag text-normal">{{currency this.product_discounted_price '$'}}</h2>
+																	<small class="discount-price-flag">{{timeLeft this.exclusive_end_date}}&nbsp;<strong>SAVE ${{this.discount}}</strong></small>
+																	{{else}}
+																	<h2 class="price-flag text-normal">{{currency this.price '$'}}</h2>
+																	{{/if}} --}}
 																</div>
 																<div class="col-md-4 col-4 no-padding">
 																	<span>Origin</span>
