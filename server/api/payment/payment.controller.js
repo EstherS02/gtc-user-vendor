@@ -768,24 +768,7 @@ export function makePlanPayment(req, res) {
 				"messageDetails": "Plan upgrade UnSuccessfull with Stripe Payment Error. Please try after sometimes"
 			});
 		}
-	}).then(function(paymentRow){
-		if (vendorId != 0) {
-			vendorPlanBodyParam ={
-				vendor_id: vendorId,
-				plan_id: req.body.plan_id,
-				payment_id: paymentRow.id,
-				status: status['ACTIVE'],
-				auto_renewal:req.body.autoRenewalMail,
-				start_date: start_date,
-				end_date: end_date,
-				created_by: req.user.first_name,
-				created_on: new Date()
-			}
-			if(req.user.user_contact_email){
-				sendUpgrademail(req.body.plan_id, req.user);
-			}
-		}
-		}).then(function(paymentRow) {
+	}).then(function(paymentRow) {
 			if (vendorId != 0) {
 				vendorPlanBodyParam = {
 					vendor_id: vendorId,
