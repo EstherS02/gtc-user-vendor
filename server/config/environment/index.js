@@ -88,7 +88,8 @@ var all = {
 			featureProductExpire : 'FEATURE-PRODUCT-EXPIRE',
 			planExpired : "PLAN-EXPIRED",
 			subscriptionAutoRenewalOrder:"SUBSCRIPTION-AUTO-RENEWAL-ORDER",
-			newProductAnnouncementMail: "NEW-PRODUCT-ANNOUNCEMENT-MAIL"
+			newProductAnnouncementMail: "NEW-PRODUCT-ANNOUNCEMENT-MAIL",
+			featureProductAutoRenewal: "FEATURE-PRODUCT-AUTO-RENEWAL"
         }
     },
     //Notification
@@ -118,7 +119,8 @@ var all = {
 		"subscriptionExpire":"subscriptionExpire",
 		"planRenewal": "planRenewal",
 		"bulkUserPlanRenewal":"bulkUserPlanRenewal",
-		"subscriptionAutoRenewal":"subscriptionAutoRenewal"
+		"subscriptionAutoRenewal":"subscriptionAutoRenewal",
+		"featureProductAutoRenewal":"featureProductAutoRenewal"
     },
     fee:{
         gtc_fees: 0.01,

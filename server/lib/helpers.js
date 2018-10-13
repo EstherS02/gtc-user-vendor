@@ -39,7 +39,6 @@ Handlebars.registerHelper('Titlecase', function(str) {
 
 });
 
-
 Handlebars.registerHelper('DisplayJSON', function(context, options) {
     if (!context)
         return 'null';
@@ -433,6 +432,7 @@ Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     });
     return name;
 });
+
 Handlebars.registerHelper("LikeUnlike", function(likes, user) {
     let name;
     likes.forEach(function(element) {
@@ -463,7 +463,6 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
         ret += option;
     }
     return new Handlebars.SafeString(ret);
-
 });
 
 Handlebars.registerHelper('percentage', function(amtA, amtB) {
@@ -558,6 +557,71 @@ Handlebars.registerHelper('MarketPlaceURL', function(marketPlace_id, options) {
             break;
     }
     return marketPlace;
+});
+
+Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
+    if (!order_status)
+        return ' ';
+    let orderStatus;
+    switch (order_status) {
+        case 1:
+			orderStatus = "Order not yet confirmed by seller";
+            break;
+        case 2:
+			orderStatus = "Order confirmed by seller";
+            break;
+        case 3:
+			orderStatus = "Seller is processing your order";
+            break;
+        case 4:
+			orderStatus = "Order dispatched";
+			break;
+		case 5:
+			orderStatus = "Order delivered";
+			break;
+		case 7:
+			orderStatus = "Order Cancelled";
+			break;
+		case 8:
+			orderStatus = "Order Failed";
+			break;
+			
+        default:
+			orderStatus = " ";
+            break;
+    }
+    return orderStatus;
+});
+
+Handlebars.registerHelper('OrderStatusBar', function(order_status, options) {
+    if (!order_status)
+		return 'style="width:100%;"';
+		
+    let prograssBar;
+    switch (order_status) {
+        case 1:
+			prograssBar = "width:5%;";
+            break;
+        case 2:
+			prograssBar = "width:10%;background-color:green;";
+            break;
+        case 3:
+			prograssBar = "width:15%;background-color:green;";
+            break
+        case 4:
+			prograssBar = "width:20%;background-color:green;";
+			break
+		case 5:
+			prograssBar = "width:100%;background-color:green;";
+			break
+		case 6:
+			prograssBar = "width:100%;background-color:green;";
+			break;		
+        default:
+			prograssBar = "width:100%;background-color:red;";
+            break;
+    }
+    return prograssBar;
 });
 
 Handlebars.registerHelper('Location', function(id, arrayEle, options) {
