@@ -18,27 +18,18 @@ const position = require('../../config/position');
 const populate = require('../../utilities/populate')
 const model = require('../../sqldb/model-connect');
 
-export function indexA(req, res) {
-	var queryObj = {};
-	var offset, limit, field, order;
+export function indexExample(req, res) {
+	var serviceQueryParams = {};
 
-	queryObj['marketplace_id'] = 2;
+	serviceQueryParams['start_date'] = new Date(req.query.start_date);
+	serviceQueryParams['end_date'] = new Date(req.query.end_date);
 
-	offset = req.query.offset ? parseInt(req.query.offset) : 0;
-	delete req.query.offset;
-	limit = req.query.limit ? parseInt(req.query.limit) : 20;
-	delete req.query.limit;
-	field = req.query.field ? req.query.field : "id";
-	delete req.query.field;
-	order = req.query.order ? req.query.order : "asc";
-	delete req.query.order;
-
-	productService.queryAllProducts(req, queryObj, offset, limit, field, order)
+	reportsService.AccountingReport(req.user.Vendor.id, serviceQueryParams)
 		.then((response) => {
 			return res.status(200).send(response);
 		})
 		.catch((error) => {
-			console.log('index Error:::', error);
+			console.log("index Error :::", error);
 			return res.status(500).send(error);
 		});
 }

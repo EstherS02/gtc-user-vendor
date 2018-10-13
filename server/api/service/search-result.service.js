@@ -1,6 +1,7 @@
 'use strict';
 
 const async = require('async');
+const moment = require('moment');
 const sequelize = require('sequelize');
 const status = require('../../config/status');
 const model = require('../../sqldb/model-connect');
@@ -35,6 +36,24 @@ export async function categoryWithProductCount(productQueryObj, isFeaturedProduc
 			var productCount = await model['Product'].count({
 				where: productQueryObj,
 				include: [{
+					model: model['Vendor'],
+					include: [{
+						model: model['VendorPlan'],
+						attributes: [],
+						where: {
+							status: status['ACTIVE'],
+							start_date: {
+								'$lte': moment().format('YYYY-MM-DD')
+							},
+							end_date: {
+								'$gte': moment().format('YYYY-MM-DD')
+							}
+						}
+					}],
+					where: {
+						status: status['ACTIVE']
+					}
+				}, {
 					model: model['FeaturedProduct'],
 					where: {
 						status: status['ACTIVE']
@@ -84,6 +103,24 @@ export async function countryWithProductCount(productQueryObj, isFeaturedProduct
 		var productCount = await model['Product'].count({
 			where: productQueryObj,
 			include: [{
+				model: model['Vendor'],
+				include: [{
+					model: model['VendorPlan'],
+					attributes: [],
+					where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
+				}],
+				where: {
+					status: status['ACTIVE']
+				}
+			}, {
 				model: model['FeaturedProduct'],
 				where: {
 					status: status['ACTIVE']
@@ -113,9 +150,8 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 			attributes: ['id', 'name', 'code', [sequelize.fn('count', sequelize.col('Products.id')), 'product_count']],
 			include: [{
 				model: model['Product'],
-				// where: productQueryObj,
-				where:{
-					status:1,
+				where: {
+					status: status['ACTIVE']
 				},
 				include: [{
 					model: model['FeaturedProduct'],
@@ -134,6 +170,24 @@ export async function marketplacetypeWithProductCount(productQueryObj, isFeature
 		var productCount = await model['Product'].count({
 			where: productQueryObj,
 			include: [{
+				model: model['Vendor'],
+				include: [{
+					model: model['VendorPlan'],
+					attributes: [],
+					where: {
+						status: status['ACTIVE'],
+						start_date: {
+							'$lte': moment().format('YYYY-MM-DD')
+						},
+						end_date: {
+							'$gte': moment().format('YYYY-MM-DD')
+						}
+					}
+				}],
+				where: {
+					status: status['ACTIVE']
+				}
+			}, {
 				model: model['FeaturedProduct'],
 				where: {
 					status: status['ACTIVE']
@@ -182,4 +236,3 @@ export async function productCountForCountry(productCountQueryParams) {
 		}
 	});
 }
-

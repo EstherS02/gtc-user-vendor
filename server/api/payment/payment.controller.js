@@ -737,9 +737,7 @@ function usernotification(order, user) {
 
 export function makePlanPayment(req, res) {
 	var upgradingPlan, desc, convertMoment, start_date, end_date, vendorId;
-	var paymentBodyParam = {},
-		vendorPlanBodyParam = {},
-		userPlanBodyParam = {};
+	var paymentBodyParam = {}, vendorPlanBodyParam = {}, userPlanBodyParam = {};
 
 	vendorId = req.body.vendor_id;
 	upgradingPlan = req.body.plan_id;
@@ -801,8 +799,7 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(updatedPlanRow) {
 			if (vendorId != 0) {
-				var productDeactivateQueryObj = {},
-					productDeactivateBodyParam = {};
+				var productDeactivateQueryObj = {}, productDeactivateBodyParam = {};
 
 				productDeactivateQueryObj = {
 					vendor_id: vendorId,
@@ -817,8 +814,7 @@ export function makePlanPayment(req, res) {
 			}
 		}).then(function(deactivatedProducts) {
 			if (vendorId != 0) {
-				var productActivateQueryObj = {},
-					productActivateBodyParam = {};
+				var productActivateQueryObj = {}, productActivateBodyParam = {};
 
 				productActivateQueryObj.vendor_id = vendorId;
 				productActivateQueryObj.status = status["GTC_INACTIVE"];

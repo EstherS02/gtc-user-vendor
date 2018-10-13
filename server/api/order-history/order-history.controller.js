@@ -56,16 +56,12 @@ export function updateStatus(req, res) {
 
 	bodyParams["last_updated_on"] = new Date();
 
-	if (shippingInput === '{}') {
-		console.log("no shipping details");
-		orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
-			console.log(response);
-		});
-	}
-	else {
+	if (shippingInput.provider_name) {
+
 		shippingInput['status'] = statusCode.ACTIVE;
 		service.createRow('Shipping', shippingInput)
 			.then(function(res) {
+				
 				bodyParams["shipping_id"] = res.id;
 				orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
 					console.log(response);
@@ -76,6 +72,11 @@ export function updateStatus(req, res) {
 					console.log(response);
 				});
 			})
+	} else{
+		
+		orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, function(response) {
+			console.log(response);
+		});
 	}
 	return res.status(201).send("Updated");
 }
@@ -128,12 +129,14 @@ function orderStatusUpdate(paramsID, includeArr, bodyParams, order_status, res) 
 								return "Unable to sent";
 							}
 						} else {
-							return "Unable to sent";
+							return null;
 						}
 					}).catch(function(error) {
-						console.log('Error :::', error);
+						console.log('Error:::', error);
 						return error;
 					})
+			}else{
+				return null;
 			}
 		}).catch(function(error) {
 			console.log('Error :::', error);
