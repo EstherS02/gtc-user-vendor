@@ -594,8 +594,6 @@ Handlebars.registerHelper('OrderStatusText', function(order_status, options) {
 });
 
 Handlebars.registerHelper('OrderStatusBar', function(order_status, options) {
-
-	console.log("=================================",order_status);
     if (!order_status)
 		return 'style="width:100%;"';
 		
