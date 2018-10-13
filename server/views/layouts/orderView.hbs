@@ -20,17 +20,17 @@
 			if ($('#orderStatusChange').valid()) {
 				$.ajax({
 					url: '/api/order-history/' + {{ order.id }},
-			type: 'PUT',
-				data: statusInput,
+					type: 'PUT',
+					data: statusInput,
 					success: function (result) {
 						location.reload(true);
 					},
-			error: function (error) {
-				console.log("error", error);
-			}
-		});
-	}
-        });
+					error: function (error) {
+						console.log("error", error);
+				}
+			});
+		}
+    });
 
 	$("#orderStatusChange").validate({
 		rules: {
@@ -378,7 +378,6 @@
 										</div>
 									</div>
 									<div class="row">
-
 										<div class="col-md-3">
 											<p>
 												<b>Expected Delivery Date:
@@ -399,9 +398,7 @@
 									<div class="row">
 										<div class="col-md-3">
 											<p>
-												<b>Select Carrier:
-
-												</b>
+												<b>Select Carrier:</b>
 											</p>
 										</div>
 										<div class="col-md-5">
