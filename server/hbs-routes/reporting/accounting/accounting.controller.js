@@ -73,10 +73,10 @@ export function accounting(req, res) {
 				});
 		},
 		accountingReports: function(callback) {
-			var serviceQueryParams = {};
-			serviceQueryParams['from'] = new Date(queryParams['start_date']);
-			serviceQueryParams['to'] = new Date(queryParams['end_date']);
-			reportsService.AccountingReport(serviceQueryParams)
+			var accountingQueryParams = {};
+			accountingQueryParams['start_date'] = new Date(queryParams['start_date']);
+			accountingQueryParams['end_date'] = new Date(queryParams['end_date']);
+			reportsService.AccountingReport(req.user.Vendor.id, accountingQueryParams)
 				.then((response) => {
 					return callback(null, null);
 				})
