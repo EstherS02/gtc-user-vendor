@@ -410,87 +410,78 @@
 													{{#if Order}}
 														{{#each Order}}
 															<tr>
-																<td>
-																	<input type="checkbox" class="checkbox" value="{{this.id}}">
-																</td>
-																<td>
-																	<a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a>
-																</td>
+																<td><input type="checkbox" class="checkbox" value="{{this.id}}"></td>
+																<td><a href="/reporting/sales-history/{{this.id}}">{{this.id}}</a></td>
 																<td style="display:none">{{this.purchase_order_id}}</td>
 																<td>{{formatTime this.ordered_date "MMM D, Y"}}</td>
 																<td>Stripe</td>
 																<td class="text_green_color">{{objectKey ../orderStatus this.order_status}}</td>
 																<td></td>
-																<td>
-																	<a href="/order-track/{{this.id}}">Track Order</a>
-																</td>
+																<td><a href="/order-track/{{this.id}}">Track Order</a></td>
 																<td class="text_blue_color">
 																	{{#ifCond this.order_status '!=' "6" }}
 																		<p data-id="{{this.id}}" class="data-value" data-toggle="modal" data-target="#issueRefundModal" data-whatever="@mdo" style="cursor:pointer">
-																			<i class="fas fa-credit-card"></i>
-																			Issue Refund</p>
-													{{else}}
-														<p style="cursor:pointer">
-
-															Refund Issued</p>
-
+																			<i class="fas fa-credit-card"></i>Issue Refund
+																		</p>
+																	{{else}}
+																		<p style="cursor:pointer">Refund Issued</p>
 																	{{/ifCond}}
 																</td>
-
 																<td class="text_blue_color">
 																	<a href="javascript:;" onclick="javascript:location.href='gtc-mail/compose?id={{this.User.id}}&text={{this.User.first_name}}'">
-																		<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer</a>
+																		<i class="fa fa-envelope" aria-hidden="true"></i> Contact Buyer
+																	</a>
 																</td>
 																<td>{{currency this.total_price '$'}} CAD</td>
 															</tr>
 														{{/each}}
-														<tr>
-															<td colspan="8"></td>
-															<td class="text_blue_color">Total Transaction</td>
-															<td>{{currency totalTransaction '$'}}CAD</td>
-														</tr>
-													{{else}}
-														<tr>
-															<td colspan="10" style="text-align:center;">No Data Found</td>
-														</tr>
+															<tr>
+																<td colspan="8"></td>
+																<td class="text_blue_color">Total Transaction</td>
+																<td>{{currency totalTransaction '$'}}CAD</td>
+															</tr>
+														{{else}}
+															<tr>
+																<td colspan="10" style="text-align:center;">No Data Found</td>
+															</tr>
 													{{/if}}
 												</tbody>
 											</table>
-											{{!-- Pagination starts --}}
-											{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
-											{{#if count}}
-												<div class="row">
-													<div class="col-md-12">
-														{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
-															<nav aria-label="Page navigation example">
-																<ul class="pagination justify-content-center">
-																	{{#unless startFromFirstPage}}
-																		<li class="page-item-prev" style="margin-left:-310px;">
-																			<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
-																				<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
-																		</li>
-																	{{/unless}}
-																	{{#each pages}}
-																		<li class="page-item {{#if isCurrent}} active {{/if}}">
-																			<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
-																		</li>
-																	{{/each}}
-																	{{#unless endAtLastPage}}
-																		<li class="page-item-next" style="margin-right:-310px;">
-																			<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
-																				<i class="fa fa-angle-double-right"></i>
-																			</a>
-																		</li>
-																	{{/unless}}
-																</ul>
-															</nav>
-														{{/pagination}}
-													</div>
-												</div>
-												{{!-- {{/ifCond}} --}}
-											{{/if}}
-											{{!-- Pagination Ends --}}
 										</div>
+										{{!-- Pagination starts --}}
+										{{!-- {{#ifCond count '>' queryPaginationObj.limit}} --}}
+										{{#if count}}
+											<div class="row">
+												<div class="col-md-12">
+													{{#pagination count queryPaginationObj.page queryPaginationObj.limit queryPaginationObj.maxSize}}
+														<nav aria-label="Page navigation example">
+															<ul class="pagination justify-content-center">
+																{{#unless startFromFirstPage}}
+																	<li class="page-item-prev" style="margin-left:-310px;">
+																		<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(DiffFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">
+																			<i class="fa fa-angle-double-left"></i>&nbsp;Previous</a>
+																	</li>
+																{{/unless}}
+																{{#each pages}}
+																	<li class="page-item {{#if isCurrent}} active {{/if}}">
+																		<a class="page-link" href="../reporting/sales-history?{{QueryParams ../../queryURI (FrameObject page=page limit=../../queryPaginationObj.limit) 'null'}}">{{page}}</a>
+																	</li>
+																{{/each}}
+																{{#unless endAtLastPage}}
+																	<li class="page-item-next" style="margin-right:-310px;">
+																		<a href="../reporting/sales-history?{{QueryParams ../queryURI (FrameObject page=(SUMFloat ../queryPaginationObj.page 1) limit=../queryPaginationObj.limit) 'null'}}">Next&nbsp;
+																			<i class="fa fa-angle-double-right"></i>
+																		</a>
+																	</li>
+																{{/unless}}
+															</ul>
+														</nav>
+													{{/pagination}}
+												</div>
+											</div>
+											{{!-- {{/ifCond}} --}}
+										{{/if}}
+										{{!-- Pagination Ends --}}
 									</div>
 								</div>
 							</div>

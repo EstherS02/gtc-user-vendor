@@ -87,8 +87,6 @@
 													<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been delivered</span>
 													{{else ifCond orderTrack.order_status '==' orderStatus.CANCELLEDORDER }}
 													<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;">Your order has been cancelled</span>
-													{{else ifCond orderTrack.order_status '==' orderStatus.RETURNEDORDER }}
-													<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;"> Your order has been returned</span>
 													{{else ifCond orderTrack.order_status '==' orderStatus.FAILEDORDER }}
 													<span class="text_blue_color text-nowrap" style="font-size: 14px; font-weight: bold;"> Your order has been failed</span>
 													{{/ifCond}}
