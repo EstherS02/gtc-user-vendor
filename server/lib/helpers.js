@@ -39,7 +39,6 @@ Handlebars.registerHelper('Titlecase', function(str) {
 
 });
 
-
 Handlebars.registerHelper('DisplayJSON', function(context, options) {
     if (!context)
         return 'null';
@@ -433,6 +432,7 @@ Handlebars.registerHelper('Attributes', function(id, arrayEle, options) {
     });
     return name;
 });
+
 Handlebars.registerHelper("LikeUnlike", function(likes, user) {
     let name;
     likes.forEach(function(element) {
@@ -463,7 +463,6 @@ Handlebars.registerHelper('marketPlaceChart', function(totalAmt, marketPlaceArr)
         ret += option;
     }
     return new Handlebars.SafeString(ret);
-
 });
 
 Handlebars.registerHelper('percentage', function(amtA, amtB) {
